@@ -101,7 +101,7 @@ func NewArgument(name PascalString, dataType NodeId, valueRank int32, arrayDimen
 type ArgumentBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(name PascalString, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, description LocalizedText) ArgumentBuilder
+	WithMandatoryFields(name PascalString, dataType NodeId, valueRank int32, arrayDimensions []uint32, description LocalizedText) ArgumentBuilder
 	// WithName adds Name (property field)
 	WithName(PascalString) ArgumentBuilder
 	// WithNameBuilder adds Name (property field) which is build by the builder
@@ -112,8 +112,6 @@ type ArgumentBuilder interface {
 	WithDataTypeBuilder(func(NodeIdBuilder) NodeIdBuilder) ArgumentBuilder
 	// WithValueRank adds ValueRank (property field)
 	WithValueRank(int32) ArgumentBuilder
-	// WithNoOfArrayDimensions adds NoOfArrayDimensions (property field)
-	WithNoOfArrayDimensions(int32) ArgumentBuilder
 	// WithArrayDimensions adds ArrayDimensions (property field)
 	WithArrayDimensions(...uint32) ArgumentBuilder
 	// WithDescription adds Description (property field)
@@ -145,8 +143,8 @@ func (b *_ArgumentBuilder) setParent(contract ExtensionObjectDefinitionContract)
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ArgumentBuilder) WithMandatoryFields(name PascalString, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, description LocalizedText) ArgumentBuilder {
-	return b.WithName(name).WithDataType(dataType).WithValueRank(valueRank).WithNoOfArrayDimensions(noOfArrayDimensions).WithArrayDimensions(arrayDimensions...).WithDescription(description)
+func (b *_ArgumentBuilder) WithMandatoryFields(name PascalString, dataType NodeId, valueRank int32, arrayDimensions []uint32, description LocalizedText) ArgumentBuilder {
+	return b.WithName(name).WithDataType(dataType).WithValueRank(valueRank).WithArrayDimensions(arrayDimensions...).WithDescription(description)
 }
 
 func (b *_ArgumentBuilder) WithName(name PascalString) ArgumentBuilder {
@@ -187,11 +185,6 @@ func (b *_ArgumentBuilder) WithDataTypeBuilder(builderSupplier func(NodeIdBuilde
 
 func (b *_ArgumentBuilder) WithValueRank(valueRank int32) ArgumentBuilder {
 	b.ValueRank = valueRank
-	return b
-}
-
-func (b *_ArgumentBuilder) WithNoOfArrayDimensions(noOfArrayDimensions int32) ArgumentBuilder {
-	b.NoOfArrayDimensions = noOfArrayDimensions
 	return b
 }
 
@@ -493,7 +486,6 @@ func (m *_Argument) deepCopy() *_Argument {
 		m.Name.DeepCopy().(PascalString),
 		m.DataType.DeepCopy().(NodeId),
 		m.ValueRank,
-		m.NoOfArrayDimensions,
 		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
 		m.Description.DeepCopy().(LocalizedText),
 	}

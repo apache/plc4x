@@ -89,13 +89,11 @@ func NewTransferSubscriptionsRequest(requestHeader RequestHeader, subscriptionId
 type TransferSubscriptionsRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32, sendInitialValues bool) TransferSubscriptionsRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, subscriptionIds []uint32, sendInitialValues bool) TransferSubscriptionsRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) TransferSubscriptionsRequestBuilder
+	WithRequestHeader(RequestHeader) TransferSubscriptionsRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) TransferSubscriptionsRequestBuilder
-	// WithNoOfSubscriptionIds adds NoOfSubscriptionIds (property field)
-	WithNoOfSubscriptionIds(int32) TransferSubscriptionsRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) TransferSubscriptionsRequestBuilder
 	// WithSubscriptionIds adds SubscriptionIds (property field)
 	WithSubscriptionIds(...uint32) TransferSubscriptionsRequestBuilder
 	// WithSendInitialValues adds SendInitialValues (property field)
@@ -125,30 +123,25 @@ func (b *_TransferSubscriptionsRequestBuilder) setParent(contract ExtensionObjec
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_TransferSubscriptionsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32, sendInitialValues bool) TransferSubscriptionsRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfSubscriptionIds(noOfSubscriptionIds).WithSubscriptionIds(subscriptionIds...).WithSendInitialValues(sendInitialValues)
+func (b *_TransferSubscriptionsRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, subscriptionIds []uint32, sendInitialValues bool) TransferSubscriptionsRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithSubscriptionIds(subscriptionIds...).WithSendInitialValues(sendInitialValues)
 }
 
-func (b *_TransferSubscriptionsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) TransferSubscriptionsRequestBuilder {
+func (b *_TransferSubscriptionsRequestBuilder) WithRequestHeader(requestHeader RequestHeader) TransferSubscriptionsRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_TransferSubscriptionsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) TransferSubscriptionsRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_TransferSubscriptionsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) TransferSubscriptionsRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_TransferSubscriptionsRequestBuilder) WithNoOfSubscriptionIds(noOfSubscriptionIds int32) TransferSubscriptionsRequestBuilder {
-	b.NoOfSubscriptionIds = noOfSubscriptionIds
 	return b
 }
 
@@ -401,8 +394,7 @@ func (m *_TransferSubscriptionsRequest) deepCopy() *_TransferSubscriptionsReques
 	}
 	_TransferSubscriptionsRequestCopy := &_TransferSubscriptionsRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfSubscriptionIds,
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		utils.DeepCopySlice[uint32, uint32](m.SubscriptionIds),
 		m.SendInitialValues,
 		m.reservedField0,

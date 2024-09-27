@@ -91,11 +91,11 @@ func NewModifySubscriptionResponse(responseHeader ResponseHeader, revisedPublish
 type ModifySubscriptionResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) ModifySubscriptionResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) ModifySubscriptionResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) ModifySubscriptionResponseBuilder
+	WithResponseHeader(ResponseHeader) ModifySubscriptionResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ModifySubscriptionResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) ModifySubscriptionResponseBuilder
 	// WithRevisedPublishingInterval adds RevisedPublishingInterval (property field)
 	WithRevisedPublishingInterval(float64) ModifySubscriptionResponseBuilder
 	// WithRevisedLifetimeCount adds RevisedLifetimeCount (property field)
@@ -127,24 +127,24 @@ func (b *_ModifySubscriptionResponseBuilder) setParent(contract ExtensionObjectD
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ModifySubscriptionResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) ModifySubscriptionResponseBuilder {
+func (b *_ModifySubscriptionResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) ModifySubscriptionResponseBuilder {
 	return b.WithResponseHeader(responseHeader).WithRevisedPublishingInterval(revisedPublishingInterval).WithRevisedLifetimeCount(revisedLifetimeCount).WithRevisedMaxKeepAliveCount(revisedMaxKeepAliveCount)
 }
 
-func (b *_ModifySubscriptionResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) ModifySubscriptionResponseBuilder {
+func (b *_ModifySubscriptionResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) ModifySubscriptionResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_ModifySubscriptionResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ModifySubscriptionResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_ModifySubscriptionResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) ModifySubscriptionResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -392,7 +392,7 @@ func (m *_ModifySubscriptionResponse) deepCopy() *_ModifySubscriptionResponse {
 	}
 	_ModifySubscriptionResponseCopy := &_ModifySubscriptionResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		m.RevisedPublishingInterval,
 		m.RevisedLifetimeCount,
 		m.RevisedMaxKeepAliveCount,

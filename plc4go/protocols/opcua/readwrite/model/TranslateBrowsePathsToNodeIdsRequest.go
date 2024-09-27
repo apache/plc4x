@@ -83,15 +83,13 @@ func NewTranslateBrowsePathsToNodeIdsRequest(requestHeader RequestHeader, browse
 type TranslateBrowsePathsToNodeIdsRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfBrowsePaths int32, browsePaths []ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, browsePaths []BrowsePath) TranslateBrowsePathsToNodeIdsRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsRequestBuilder
+	WithRequestHeader(RequestHeader) TranslateBrowsePathsToNodeIdsRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) TranslateBrowsePathsToNodeIdsRequestBuilder
-	// WithNoOfBrowsePaths adds NoOfBrowsePaths (property field)
-	WithNoOfBrowsePaths(int32) TranslateBrowsePathsToNodeIdsRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) TranslateBrowsePathsToNodeIdsRequestBuilder
 	// WithBrowsePaths adds BrowsePaths (property field)
-	WithBrowsePaths(...ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsRequestBuilder
+	WithBrowsePaths(...BrowsePath) TranslateBrowsePathsToNodeIdsRequestBuilder
 	// Build builds the TranslateBrowsePathsToNodeIdsRequest or returns an error if something is wrong
 	Build() (TranslateBrowsePathsToNodeIdsRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,34 +115,29 @@ func (b *_TranslateBrowsePathsToNodeIdsRequestBuilder) setParent(contract Extens
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_TranslateBrowsePathsToNodeIdsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfBrowsePaths int32, browsePaths []ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfBrowsePaths(noOfBrowsePaths).WithBrowsePaths(browsePaths...)
+func (b *_TranslateBrowsePathsToNodeIdsRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, browsePaths []BrowsePath) TranslateBrowsePathsToNodeIdsRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithBrowsePaths(browsePaths...)
 }
 
-func (b *_TranslateBrowsePathsToNodeIdsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsRequestBuilder {
+func (b *_TranslateBrowsePathsToNodeIdsRequestBuilder) WithRequestHeader(requestHeader RequestHeader) TranslateBrowsePathsToNodeIdsRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_TranslateBrowsePathsToNodeIdsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) TranslateBrowsePathsToNodeIdsRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_TranslateBrowsePathsToNodeIdsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) TranslateBrowsePathsToNodeIdsRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_TranslateBrowsePathsToNodeIdsRequestBuilder) WithNoOfBrowsePaths(noOfBrowsePaths int32) TranslateBrowsePathsToNodeIdsRequestBuilder {
-	b.NoOfBrowsePaths = noOfBrowsePaths
-	return b
-}
-
-func (b *_TranslateBrowsePathsToNodeIdsRequestBuilder) WithBrowsePaths(browsePaths ...ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsRequestBuilder {
+func (b *_TranslateBrowsePathsToNodeIdsRequestBuilder) WithBrowsePaths(browsePaths ...BrowsePath) TranslateBrowsePathsToNodeIdsRequestBuilder {
 	b.BrowsePaths = browsePaths
 	return b
 }
@@ -363,9 +356,8 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) deepCopy() *_TranslateBrowsePath
 	}
 	_TranslateBrowsePathsToNodeIdsRequestCopy := &_TranslateBrowsePathsToNodeIdsRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfBrowsePaths,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.BrowsePaths),
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopySlice[BrowsePath, BrowsePath](m.BrowsePaths),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _TranslateBrowsePathsToNodeIdsRequestCopy

@@ -79,11 +79,11 @@ func NewRegisterServerResponse(responseHeader ResponseHeader) *_RegisterServerRe
 type RegisterServerResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition) RegisterServerResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader) RegisterServerResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) RegisterServerResponseBuilder
+	WithResponseHeader(ResponseHeader) RegisterServerResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServerResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) RegisterServerResponseBuilder
 	// Build builds the RegisterServerResponse or returns an error if something is wrong
 	Build() (RegisterServerResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,24 +109,24 @@ func (b *_RegisterServerResponseBuilder) setParent(contract ExtensionObjectDefin
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RegisterServerResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) RegisterServerResponseBuilder {
+func (b *_RegisterServerResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader) RegisterServerResponseBuilder {
 	return b.WithResponseHeader(responseHeader)
 }
 
-func (b *_RegisterServerResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) RegisterServerResponseBuilder {
+func (b *_RegisterServerResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) RegisterServerResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_RegisterServerResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServerResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterServerResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) RegisterServerResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -308,7 +308,7 @@ func (m *_RegisterServerResponse) deepCopy() *_RegisterServerResponse {
 	}
 	_RegisterServerResponseCopy := &_RegisterServerResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RegisterServerResponseCopy

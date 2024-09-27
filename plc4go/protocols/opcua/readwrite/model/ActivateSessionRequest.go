@@ -108,21 +108,17 @@ func NewActivateSessionRequest(requestHeader RequestHeader, clientSignature Sign
 type ActivateSessionRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, clientSignature ExtensionObjectDefinition, noOfClientSoftwareCertificates int32, clientSoftwareCertificates []ExtensionObjectDefinition, noOfLocaleIds int32, localeIds []PascalString, userIdentityToken ExtensionObject, userTokenSignature ExtensionObjectDefinition) ActivateSessionRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, clientSignature SignatureData, clientSoftwareCertificates []SignedSoftwareCertificate, localeIds []PascalString, userIdentityToken ExtensionObject, userTokenSignature SignatureData) ActivateSessionRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) ActivateSessionRequestBuilder
+	WithRequestHeader(RequestHeader) ActivateSessionRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ActivateSessionRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) ActivateSessionRequestBuilder
 	// WithClientSignature adds ClientSignature (property field)
-	WithClientSignature(ExtensionObjectDefinition) ActivateSessionRequestBuilder
+	WithClientSignature(SignatureData) ActivateSessionRequestBuilder
 	// WithClientSignatureBuilder adds ClientSignature (property field) which is build by the builder
-	WithClientSignatureBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ActivateSessionRequestBuilder
-	// WithNoOfClientSoftwareCertificates adds NoOfClientSoftwareCertificates (property field)
-	WithNoOfClientSoftwareCertificates(int32) ActivateSessionRequestBuilder
+	WithClientSignatureBuilder(func(SignatureDataBuilder) SignatureDataBuilder) ActivateSessionRequestBuilder
 	// WithClientSoftwareCertificates adds ClientSoftwareCertificates (property field)
-	WithClientSoftwareCertificates(...ExtensionObjectDefinition) ActivateSessionRequestBuilder
-	// WithNoOfLocaleIds adds NoOfLocaleIds (property field)
-	WithNoOfLocaleIds(int32) ActivateSessionRequestBuilder
+	WithClientSoftwareCertificates(...SignedSoftwareCertificate) ActivateSessionRequestBuilder
 	// WithLocaleIds adds LocaleIds (property field)
 	WithLocaleIds(...PascalString) ActivateSessionRequestBuilder
 	// WithUserIdentityToken adds UserIdentityToken (property field)
@@ -130,9 +126,9 @@ type ActivateSessionRequestBuilder interface {
 	// WithUserIdentityTokenBuilder adds UserIdentityToken (property field) which is build by the builder
 	WithUserIdentityTokenBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) ActivateSessionRequestBuilder
 	// WithUserTokenSignature adds UserTokenSignature (property field)
-	WithUserTokenSignature(ExtensionObjectDefinition) ActivateSessionRequestBuilder
+	WithUserTokenSignature(SignatureData) ActivateSessionRequestBuilder
 	// WithUserTokenSignatureBuilder adds UserTokenSignature (property field) which is build by the builder
-	WithUserTokenSignatureBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ActivateSessionRequestBuilder
+	WithUserTokenSignatureBuilder(func(SignatureDataBuilder) SignatureDataBuilder) ActivateSessionRequestBuilder
 	// Build builds the ActivateSessionRequest or returns an error if something is wrong
 	Build() (ActivateSessionRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -158,58 +154,48 @@ func (b *_ActivateSessionRequestBuilder) setParent(contract ExtensionObjectDefin
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ActivateSessionRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, clientSignature ExtensionObjectDefinition, noOfClientSoftwareCertificates int32, clientSoftwareCertificates []ExtensionObjectDefinition, noOfLocaleIds int32, localeIds []PascalString, userIdentityToken ExtensionObject, userTokenSignature ExtensionObjectDefinition) ActivateSessionRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithClientSignature(clientSignature).WithNoOfClientSoftwareCertificates(noOfClientSoftwareCertificates).WithClientSoftwareCertificates(clientSoftwareCertificates...).WithNoOfLocaleIds(noOfLocaleIds).WithLocaleIds(localeIds...).WithUserIdentityToken(userIdentityToken).WithUserTokenSignature(userTokenSignature)
+func (b *_ActivateSessionRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, clientSignature SignatureData, clientSoftwareCertificates []SignedSoftwareCertificate, localeIds []PascalString, userIdentityToken ExtensionObject, userTokenSignature SignatureData) ActivateSessionRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithClientSignature(clientSignature).WithClientSoftwareCertificates(clientSoftwareCertificates...).WithLocaleIds(localeIds...).WithUserIdentityToken(userIdentityToken).WithUserTokenSignature(userTokenSignature)
 }
 
-func (b *_ActivateSessionRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) ActivateSessionRequestBuilder {
+func (b *_ActivateSessionRequestBuilder) WithRequestHeader(requestHeader RequestHeader) ActivateSessionRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_ActivateSessionRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ActivateSessionRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_ActivateSessionRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) ActivateSessionRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_ActivateSessionRequestBuilder) WithClientSignature(clientSignature ExtensionObjectDefinition) ActivateSessionRequestBuilder {
+func (b *_ActivateSessionRequestBuilder) WithClientSignature(clientSignature SignatureData) ActivateSessionRequestBuilder {
 	b.ClientSignature = clientSignature
 	return b
 }
 
-func (b *_ActivateSessionRequestBuilder) WithClientSignatureBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ActivateSessionRequestBuilder {
-	builder := builderSupplier(b.ClientSignature.CreateExtensionObjectDefinitionBuilder())
+func (b *_ActivateSessionRequestBuilder) WithClientSignatureBuilder(builderSupplier func(SignatureDataBuilder) SignatureDataBuilder) ActivateSessionRequestBuilder {
+	builder := builderSupplier(b.ClientSignature.CreateSignatureDataBuilder())
 	var err error
 	b.ClientSignature, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "SignatureDataBuilder failed"))
 	}
 	return b
 }
 
-func (b *_ActivateSessionRequestBuilder) WithNoOfClientSoftwareCertificates(noOfClientSoftwareCertificates int32) ActivateSessionRequestBuilder {
-	b.NoOfClientSoftwareCertificates = noOfClientSoftwareCertificates
-	return b
-}
-
-func (b *_ActivateSessionRequestBuilder) WithClientSoftwareCertificates(clientSoftwareCertificates ...ExtensionObjectDefinition) ActivateSessionRequestBuilder {
+func (b *_ActivateSessionRequestBuilder) WithClientSoftwareCertificates(clientSoftwareCertificates ...SignedSoftwareCertificate) ActivateSessionRequestBuilder {
 	b.ClientSoftwareCertificates = clientSoftwareCertificates
-	return b
-}
-
-func (b *_ActivateSessionRequestBuilder) WithNoOfLocaleIds(noOfLocaleIds int32) ActivateSessionRequestBuilder {
-	b.NoOfLocaleIds = noOfLocaleIds
 	return b
 }
 
@@ -236,20 +222,20 @@ func (b *_ActivateSessionRequestBuilder) WithUserIdentityTokenBuilder(builderSup
 	return b
 }
 
-func (b *_ActivateSessionRequestBuilder) WithUserTokenSignature(userTokenSignature ExtensionObjectDefinition) ActivateSessionRequestBuilder {
+func (b *_ActivateSessionRequestBuilder) WithUserTokenSignature(userTokenSignature SignatureData) ActivateSessionRequestBuilder {
 	b.UserTokenSignature = userTokenSignature
 	return b
 }
 
-func (b *_ActivateSessionRequestBuilder) WithUserTokenSignatureBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ActivateSessionRequestBuilder {
-	builder := builderSupplier(b.UserTokenSignature.CreateExtensionObjectDefinitionBuilder())
+func (b *_ActivateSessionRequestBuilder) WithUserTokenSignatureBuilder(builderSupplier func(SignatureDataBuilder) SignatureDataBuilder) ActivateSessionRequestBuilder {
+	builder := builderSupplier(b.UserTokenSignature.CreateSignatureDataBuilder())
 	var err error
 	b.UserTokenSignature, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "SignatureDataBuilder failed"))
 	}
 	return b
 }
@@ -574,14 +560,12 @@ func (m *_ActivateSessionRequest) deepCopy() *_ActivateSessionRequest {
 	}
 	_ActivateSessionRequestCopy := &_ActivateSessionRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.ClientSignature.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfClientSoftwareCertificates,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ClientSoftwareCertificates),
-		m.NoOfLocaleIds,
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		m.ClientSignature.DeepCopy().(SignatureData),
+		utils.DeepCopySlice[SignedSoftwareCertificate, SignedSoftwareCertificate](m.ClientSoftwareCertificates),
 		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
 		m.UserIdentityToken.DeepCopy().(ExtensionObject),
-		m.UserTokenSignature.DeepCopy().(ExtensionObjectDefinition),
+		m.UserTokenSignature.DeepCopy().(SignatureData),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ActivateSessionRequestCopy

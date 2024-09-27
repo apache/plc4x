@@ -37,11 +37,14 @@ type NullExtensionObjectWithMask interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectWithMask
 	// GetBody returns Body (virtual field)
 	GetBody() ExtensionObjectDefinition
 	// IsNullExtensionObjectWithMask is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNullExtensionObjectWithMask()
+	// CreateBuilder creates a NullExtensionObjectWithMaskBuilder
+	CreateNullExtensionObjectWithMaskBuilder() NullExtensionObjectWithMaskBuilder
 }
 
 // _NullExtensionObjectWithMask is the data-structure of this message
@@ -60,6 +63,90 @@ func NewNullExtensionObjectWithMask(typeId ExpandedNodeId, encodingMask Extensio
 	_result.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NullExtensionObjectWithMaskBuilder is a builder for NullExtensionObjectWithMask
+type NullExtensionObjectWithMaskBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() NullExtensionObjectWithMaskBuilder
+	// Build builds the NullExtensionObjectWithMask or returns an error if something is wrong
+	Build() (NullExtensionObjectWithMask, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NullExtensionObjectWithMask
+}
+
+// NewNullExtensionObjectWithMaskBuilder() creates a NullExtensionObjectWithMaskBuilder
+func NewNullExtensionObjectWithMaskBuilder() NullExtensionObjectWithMaskBuilder {
+	return &_NullExtensionObjectWithMaskBuilder{_NullExtensionObjectWithMask: new(_NullExtensionObjectWithMask)}
+}
+
+type _NullExtensionObjectWithMaskBuilder struct {
+	*_NullExtensionObjectWithMask
+
+	parentBuilder *_ExtensionObjectWithMaskBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NullExtensionObjectWithMaskBuilder) = (*_NullExtensionObjectWithMaskBuilder)(nil)
+
+func (b *_NullExtensionObjectWithMaskBuilder) setParent(contract ExtensionObjectWithMaskContract) {
+	b.ExtensionObjectWithMaskContract = contract
+}
+
+func (b *_NullExtensionObjectWithMaskBuilder) WithMandatoryFields() NullExtensionObjectWithMaskBuilder {
+	return b
+}
+
+func (b *_NullExtensionObjectWithMaskBuilder) Build() (NullExtensionObjectWithMask, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NullExtensionObjectWithMask.deepCopy(), nil
+}
+
+func (b *_NullExtensionObjectWithMaskBuilder) MustBuild() NullExtensionObjectWithMask {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NullExtensionObjectWithMaskBuilder) Done() ExtensionObjectWithMaskBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NullExtensionObjectWithMaskBuilder) buildForExtensionObjectWithMask() (ExtensionObjectWithMask, error) {
+	return b.Build()
+}
+
+func (b *_NullExtensionObjectWithMaskBuilder) DeepCopy() any {
+	_copy := b.CreateNullExtensionObjectWithMaskBuilder().(*_NullExtensionObjectWithMaskBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNullExtensionObjectWithMaskBuilder creates a NullExtensionObjectWithMaskBuilder
+func (b *_NullExtensionObjectWithMask) CreateNullExtensionObjectWithMaskBuilder() NullExtensionObjectWithMaskBuilder {
+	if b == nil {
+		return NewNullExtensionObjectWithMaskBuilder()
+	}
+	return &_NullExtensionObjectWithMaskBuilder{_NullExtensionObjectWithMask: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -183,6 +270,21 @@ func (m *_NullExtensionObjectWithMask) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_NullExtensionObjectWithMask) IsNullExtensionObjectWithMask() {}
+
+func (m *_NullExtensionObjectWithMask) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NullExtensionObjectWithMask) deepCopy() *_NullExtensionObjectWithMask {
+	if m == nil {
+		return nil
+	}
+	_NullExtensionObjectWithMaskCopy := &_NullExtensionObjectWithMask{
+		m.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask).deepCopy(),
+	}
+	m.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask)._SubType = m
+	return _NullExtensionObjectWithMaskCopy
+}
 
 func (m *_NullExtensionObjectWithMask) String() string {
 	if m == nil {

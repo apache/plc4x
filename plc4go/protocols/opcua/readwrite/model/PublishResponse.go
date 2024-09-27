@@ -108,29 +108,23 @@ func NewPublishResponse(responseHeader ResponseHeader, subscriptionId uint32, av
 type PublishResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, subscriptionId uint32, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32, moreNotifications bool, notificationMessage ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) PublishResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, subscriptionId uint32, availableSequenceNumbers []uint32, moreNotifications bool, notificationMessage NotificationMessage, results []StatusCode, diagnosticInfos []DiagnosticInfo) PublishResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) PublishResponseBuilder
+	WithResponseHeader(ResponseHeader) PublishResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) PublishResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) PublishResponseBuilder
 	// WithSubscriptionId adds SubscriptionId (property field)
 	WithSubscriptionId(uint32) PublishResponseBuilder
-	// WithNoOfAvailableSequenceNumbers adds NoOfAvailableSequenceNumbers (property field)
-	WithNoOfAvailableSequenceNumbers(int32) PublishResponseBuilder
 	// WithAvailableSequenceNumbers adds AvailableSequenceNumbers (property field)
 	WithAvailableSequenceNumbers(...uint32) PublishResponseBuilder
 	// WithMoreNotifications adds MoreNotifications (property field)
 	WithMoreNotifications(bool) PublishResponseBuilder
 	// WithNotificationMessage adds NotificationMessage (property field)
-	WithNotificationMessage(ExtensionObjectDefinition) PublishResponseBuilder
+	WithNotificationMessage(NotificationMessage) PublishResponseBuilder
 	// WithNotificationMessageBuilder adds NotificationMessage (property field) which is build by the builder
-	WithNotificationMessageBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) PublishResponseBuilder
-	// WithNoOfResults adds NoOfResults (property field)
-	WithNoOfResults(int32) PublishResponseBuilder
+	WithNotificationMessageBuilder(func(NotificationMessageBuilder) NotificationMessageBuilder) PublishResponseBuilder
 	// WithResults adds Results (property field)
 	WithResults(...StatusCode) PublishResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) PublishResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) PublishResponseBuilder
 	// Build builds the PublishResponse or returns an error if something is wrong
@@ -158,35 +152,30 @@ func (b *_PublishResponseBuilder) setParent(contract ExtensionObjectDefinitionCo
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_PublishResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, subscriptionId uint32, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32, moreNotifications bool, notificationMessage ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) PublishResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithSubscriptionId(subscriptionId).WithNoOfAvailableSequenceNumbers(noOfAvailableSequenceNumbers).WithAvailableSequenceNumbers(availableSequenceNumbers...).WithMoreNotifications(moreNotifications).WithNotificationMessage(notificationMessage).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_PublishResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, subscriptionId uint32, availableSequenceNumbers []uint32, moreNotifications bool, notificationMessage NotificationMessage, results []StatusCode, diagnosticInfos []DiagnosticInfo) PublishResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithSubscriptionId(subscriptionId).WithAvailableSequenceNumbers(availableSequenceNumbers...).WithMoreNotifications(moreNotifications).WithNotificationMessage(notificationMessage).WithResults(results...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_PublishResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) PublishResponseBuilder {
+func (b *_PublishResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) PublishResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_PublishResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) PublishResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_PublishResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) PublishResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
 
 func (b *_PublishResponseBuilder) WithSubscriptionId(subscriptionId uint32) PublishResponseBuilder {
 	b.SubscriptionId = subscriptionId
-	return b
-}
-
-func (b *_PublishResponseBuilder) WithNoOfAvailableSequenceNumbers(noOfAvailableSequenceNumbers int32) PublishResponseBuilder {
-	b.NoOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers
 	return b
 }
 
@@ -200,36 +189,26 @@ func (b *_PublishResponseBuilder) WithMoreNotifications(moreNotifications bool) 
 	return b
 }
 
-func (b *_PublishResponseBuilder) WithNotificationMessage(notificationMessage ExtensionObjectDefinition) PublishResponseBuilder {
+func (b *_PublishResponseBuilder) WithNotificationMessage(notificationMessage NotificationMessage) PublishResponseBuilder {
 	b.NotificationMessage = notificationMessage
 	return b
 }
 
-func (b *_PublishResponseBuilder) WithNotificationMessageBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) PublishResponseBuilder {
-	builder := builderSupplier(b.NotificationMessage.CreateExtensionObjectDefinitionBuilder())
+func (b *_PublishResponseBuilder) WithNotificationMessageBuilder(builderSupplier func(NotificationMessageBuilder) NotificationMessageBuilder) PublishResponseBuilder {
+	builder := builderSupplier(b.NotificationMessage.CreateNotificationMessageBuilder())
 	var err error
 	b.NotificationMessage, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NotificationMessageBuilder failed"))
 	}
-	return b
-}
-
-func (b *_PublishResponseBuilder) WithNoOfResults(noOfResults int32) PublishResponseBuilder {
-	b.NoOfResults = noOfResults
 	return b
 }
 
 func (b *_PublishResponseBuilder) WithResults(results ...StatusCode) PublishResponseBuilder {
 	b.Results = results
-	return b
-}
-
-func (b *_PublishResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) PublishResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -591,15 +570,12 @@ func (m *_PublishResponse) deepCopy() *_PublishResponse {
 	}
 	_PublishResponseCopy := &_PublishResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		m.SubscriptionId,
-		m.NoOfAvailableSequenceNumbers,
 		utils.DeepCopySlice[uint32, uint32](m.AvailableSequenceNumbers),
 		m.MoreNotifications,
-		m.NotificationMessage.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfResults,
+		m.NotificationMessage.DeepCopy().(NotificationMessage),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
-		m.NoOfDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 		m.reservedField0,
 	}

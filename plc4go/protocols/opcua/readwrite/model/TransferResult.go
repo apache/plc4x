@@ -83,13 +83,11 @@ func NewTransferResult(statusCode StatusCode, availableSequenceNumbers []uint32)
 type TransferResultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(statusCode StatusCode, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32) TransferResultBuilder
+	WithMandatoryFields(statusCode StatusCode, availableSequenceNumbers []uint32) TransferResultBuilder
 	// WithStatusCode adds StatusCode (property field)
 	WithStatusCode(StatusCode) TransferResultBuilder
 	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
 	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) TransferResultBuilder
-	// WithNoOfAvailableSequenceNumbers adds NoOfAvailableSequenceNumbers (property field)
-	WithNoOfAvailableSequenceNumbers(int32) TransferResultBuilder
 	// WithAvailableSequenceNumbers adds AvailableSequenceNumbers (property field)
 	WithAvailableSequenceNumbers(...uint32) TransferResultBuilder
 	// Build builds the TransferResult or returns an error if something is wrong
@@ -117,8 +115,8 @@ func (b *_TransferResultBuilder) setParent(contract ExtensionObjectDefinitionCon
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_TransferResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32) TransferResultBuilder {
-	return b.WithStatusCode(statusCode).WithNoOfAvailableSequenceNumbers(noOfAvailableSequenceNumbers).WithAvailableSequenceNumbers(availableSequenceNumbers...)
+func (b *_TransferResultBuilder) WithMandatoryFields(statusCode StatusCode, availableSequenceNumbers []uint32) TransferResultBuilder {
+	return b.WithStatusCode(statusCode).WithAvailableSequenceNumbers(availableSequenceNumbers...)
 }
 
 func (b *_TransferResultBuilder) WithStatusCode(statusCode StatusCode) TransferResultBuilder {
@@ -136,11 +134,6 @@ func (b *_TransferResultBuilder) WithStatusCodeBuilder(builderSupplier func(Stat
 		}
 		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return b
-}
-
-func (b *_TransferResultBuilder) WithNoOfAvailableSequenceNumbers(noOfAvailableSequenceNumbers int32) TransferResultBuilder {
-	b.NoOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers
 	return b
 }
 
@@ -359,7 +352,6 @@ func (m *_TransferResult) deepCopy() *_TransferResult {
 	_TransferResultCopy := &_TransferResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
-		m.NoOfAvailableSequenceNumbers,
 		utils.DeepCopySlice[uint32, uint32](m.AvailableSequenceNumbers),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

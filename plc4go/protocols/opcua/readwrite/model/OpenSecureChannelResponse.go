@@ -97,17 +97,17 @@ func NewOpenSecureChannelResponse(responseHeader ResponseHeader, serverProtocolV
 type OpenSecureChannelResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, serverProtocolVersion uint32, securityToken ExtensionObjectDefinition, serverNonce PascalByteString) OpenSecureChannelResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, serverProtocolVersion uint32, securityToken ChannelSecurityToken, serverNonce PascalByteString) OpenSecureChannelResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) OpenSecureChannelResponseBuilder
+	WithResponseHeader(ResponseHeader) OpenSecureChannelResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) OpenSecureChannelResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) OpenSecureChannelResponseBuilder
 	// WithServerProtocolVersion adds ServerProtocolVersion (property field)
 	WithServerProtocolVersion(uint32) OpenSecureChannelResponseBuilder
 	// WithSecurityToken adds SecurityToken (property field)
-	WithSecurityToken(ExtensionObjectDefinition) OpenSecureChannelResponseBuilder
+	WithSecurityToken(ChannelSecurityToken) OpenSecureChannelResponseBuilder
 	// WithSecurityTokenBuilder adds SecurityToken (property field) which is build by the builder
-	WithSecurityTokenBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) OpenSecureChannelResponseBuilder
+	WithSecurityTokenBuilder(func(ChannelSecurityTokenBuilder) ChannelSecurityTokenBuilder) OpenSecureChannelResponseBuilder
 	// WithServerNonce adds ServerNonce (property field)
 	WithServerNonce(PascalByteString) OpenSecureChannelResponseBuilder
 	// WithServerNonceBuilder adds ServerNonce (property field) which is build by the builder
@@ -137,24 +137,24 @@ func (b *_OpenSecureChannelResponseBuilder) setParent(contract ExtensionObjectDe
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_OpenSecureChannelResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, serverProtocolVersion uint32, securityToken ExtensionObjectDefinition, serverNonce PascalByteString) OpenSecureChannelResponseBuilder {
+func (b *_OpenSecureChannelResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, serverProtocolVersion uint32, securityToken ChannelSecurityToken, serverNonce PascalByteString) OpenSecureChannelResponseBuilder {
 	return b.WithResponseHeader(responseHeader).WithServerProtocolVersion(serverProtocolVersion).WithSecurityToken(securityToken).WithServerNonce(serverNonce)
 }
 
-func (b *_OpenSecureChannelResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) OpenSecureChannelResponseBuilder {
+func (b *_OpenSecureChannelResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) OpenSecureChannelResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_OpenSecureChannelResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) OpenSecureChannelResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_OpenSecureChannelResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) OpenSecureChannelResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -164,20 +164,20 @@ func (b *_OpenSecureChannelResponseBuilder) WithServerProtocolVersion(serverProt
 	return b
 }
 
-func (b *_OpenSecureChannelResponseBuilder) WithSecurityToken(securityToken ExtensionObjectDefinition) OpenSecureChannelResponseBuilder {
+func (b *_OpenSecureChannelResponseBuilder) WithSecurityToken(securityToken ChannelSecurityToken) OpenSecureChannelResponseBuilder {
 	b.SecurityToken = securityToken
 	return b
 }
 
-func (b *_OpenSecureChannelResponseBuilder) WithSecurityTokenBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) OpenSecureChannelResponseBuilder {
-	builder := builderSupplier(b.SecurityToken.CreateExtensionObjectDefinitionBuilder())
+func (b *_OpenSecureChannelResponseBuilder) WithSecurityTokenBuilder(builderSupplier func(ChannelSecurityTokenBuilder) ChannelSecurityTokenBuilder) OpenSecureChannelResponseBuilder {
+	builder := builderSupplier(b.SecurityToken.CreateChannelSecurityTokenBuilder())
 	var err error
 	b.SecurityToken, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ChannelSecurityTokenBuilder failed"))
 	}
 	return b
 }
@@ -440,9 +440,9 @@ func (m *_OpenSecureChannelResponse) deepCopy() *_OpenSecureChannelResponse {
 	}
 	_OpenSecureChannelResponseCopy := &_OpenSecureChannelResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		m.ServerProtocolVersion,
-		m.SecurityToken.DeepCopy().(ExtensionObjectDefinition),
+		m.SecurityToken.DeepCopy().(ChannelSecurityToken),
 		m.ServerNonce.DeepCopy().(PascalByteString),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

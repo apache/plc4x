@@ -38,6 +38,7 @@ type AttributeOperand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -51,6 +52,8 @@ type AttributeOperand interface {
 	GetIndexRange() PascalString
 	// IsAttributeOperand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAttributeOperand()
+	// CreateBuilder creates a AttributeOperandBuilder
+	CreateAttributeOperandBuilder() AttributeOperandBuilder
 }
 
 // _AttributeOperand is the data-structure of this message
@@ -91,6 +94,209 @@ func NewAttributeOperand(nodeId NodeId, alias PascalString, browsePath RelativeP
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AttributeOperandBuilder is a builder for AttributeOperand
+type AttributeOperandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeId NodeId, alias PascalString, browsePath RelativePath, attributeId uint32, indexRange PascalString) AttributeOperandBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(NodeId) AttributeOperandBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) AttributeOperandBuilder
+	// WithAlias adds Alias (property field)
+	WithAlias(PascalString) AttributeOperandBuilder
+	// WithAliasBuilder adds Alias (property field) which is build by the builder
+	WithAliasBuilder(func(PascalStringBuilder) PascalStringBuilder) AttributeOperandBuilder
+	// WithBrowsePath adds BrowsePath (property field)
+	WithBrowsePath(RelativePath) AttributeOperandBuilder
+	// WithBrowsePathBuilder adds BrowsePath (property field) which is build by the builder
+	WithBrowsePathBuilder(func(RelativePathBuilder) RelativePathBuilder) AttributeOperandBuilder
+	// WithAttributeId adds AttributeId (property field)
+	WithAttributeId(uint32) AttributeOperandBuilder
+	// WithIndexRange adds IndexRange (property field)
+	WithIndexRange(PascalString) AttributeOperandBuilder
+	// WithIndexRangeBuilder adds IndexRange (property field) which is build by the builder
+	WithIndexRangeBuilder(func(PascalStringBuilder) PascalStringBuilder) AttributeOperandBuilder
+	// Build builds the AttributeOperand or returns an error if something is wrong
+	Build() (AttributeOperand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AttributeOperand
+}
+
+// NewAttributeOperandBuilder() creates a AttributeOperandBuilder
+func NewAttributeOperandBuilder() AttributeOperandBuilder {
+	return &_AttributeOperandBuilder{_AttributeOperand: new(_AttributeOperand)}
+}
+
+type _AttributeOperandBuilder struct {
+	*_AttributeOperand
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AttributeOperandBuilder) = (*_AttributeOperandBuilder)(nil)
+
+func (b *_AttributeOperandBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_AttributeOperandBuilder) WithMandatoryFields(nodeId NodeId, alias PascalString, browsePath RelativePath, attributeId uint32, indexRange PascalString) AttributeOperandBuilder {
+	return b.WithNodeId(nodeId).WithAlias(alias).WithBrowsePath(browsePath).WithAttributeId(attributeId).WithIndexRange(indexRange)
+}
+
+func (b *_AttributeOperandBuilder) WithNodeId(nodeId NodeId) AttributeOperandBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_AttributeOperandBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) AttributeOperandBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdBuilder())
+	var err error
+	b.NodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AttributeOperandBuilder) WithAlias(alias PascalString) AttributeOperandBuilder {
+	b.Alias = alias
+	return b
+}
+
+func (b *_AttributeOperandBuilder) WithAliasBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AttributeOperandBuilder {
+	builder := builderSupplier(b.Alias.CreatePascalStringBuilder())
+	var err error
+	b.Alias, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AttributeOperandBuilder) WithBrowsePath(browsePath RelativePath) AttributeOperandBuilder {
+	b.BrowsePath = browsePath
+	return b
+}
+
+func (b *_AttributeOperandBuilder) WithBrowsePathBuilder(builderSupplier func(RelativePathBuilder) RelativePathBuilder) AttributeOperandBuilder {
+	builder := builderSupplier(b.BrowsePath.CreateRelativePathBuilder())
+	var err error
+	b.BrowsePath, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "RelativePathBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AttributeOperandBuilder) WithAttributeId(attributeId uint32) AttributeOperandBuilder {
+	b.AttributeId = attributeId
+	return b
+}
+
+func (b *_AttributeOperandBuilder) WithIndexRange(indexRange PascalString) AttributeOperandBuilder {
+	b.IndexRange = indexRange
+	return b
+}
+
+func (b *_AttributeOperandBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AttributeOperandBuilder {
+	builder := builderSupplier(b.IndexRange.CreatePascalStringBuilder())
+	var err error
+	b.IndexRange, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AttributeOperandBuilder) Build() (AttributeOperand, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if b.Alias == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'alias' not set"))
+	}
+	if b.BrowsePath == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'browsePath' not set"))
+	}
+	if b.IndexRange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'indexRange' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AttributeOperand.deepCopy(), nil
+}
+
+func (b *_AttributeOperandBuilder) MustBuild() AttributeOperand {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AttributeOperandBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AttributeOperandBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AttributeOperandBuilder) DeepCopy() any {
+	_copy := b.CreateAttributeOperandBuilder().(*_AttributeOperandBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAttributeOperandBuilder creates a AttributeOperandBuilder
+func (b *_AttributeOperand) CreateAttributeOperandBuilder() AttributeOperandBuilder {
+	if b == nil {
+		return NewAttributeOperandBuilder()
+	}
+	return &_AttributeOperandBuilder{_AttributeOperand: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -275,6 +481,26 @@ func (m *_AttributeOperand) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_AttributeOperand) IsAttributeOperand() {}
+
+func (m *_AttributeOperand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AttributeOperand) deepCopy() *_AttributeOperand {
+	if m == nil {
+		return nil
+	}
+	_AttributeOperandCopy := &_AttributeOperand{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(NodeId),
+		m.Alias.DeepCopy().(PascalString),
+		m.BrowsePath.DeepCopy().(RelativePath),
+		m.AttributeId,
+		m.IndexRange.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AttributeOperandCopy
+}
 
 func (m *_AttributeOperand) String() string {
 	if m == nil {

@@ -70,9 +70,9 @@ func NewPascalString(stringValue *string) *_PascalString {
 type PascalStringBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(stringValue string) PascalStringBuilder
+	WithMandatoryFields() PascalStringBuilder
 	// WithStringValue adds StringValue (property field)
-	WithStringValue(string) PascalStringBuilder
+	WithOptionalStringValue(string) PascalStringBuilder
 	// Build builds the PascalString or returns an error if something is wrong
 	Build() (PascalString, error)
 	// MustBuild does the same as Build but panics on error
@@ -92,12 +92,12 @@ type _PascalStringBuilder struct {
 
 var _ (PascalStringBuilder) = (*_PascalStringBuilder)(nil)
 
-func (b *_PascalStringBuilder) WithMandatoryFields(stringValue string) PascalStringBuilder {
-	return b.WithStringValue(stringValue)
+func (b *_PascalStringBuilder) WithMandatoryFields() PascalStringBuilder {
+	return b
 }
 
-func (b *_PascalStringBuilder) WithStringValue(stringValue string) PascalStringBuilder {
-	b.StringValue = stringValue
+func (b *_PascalStringBuilder) WithOptionalStringValue(stringValue string) PascalStringBuilder {
+	b.StringValue = &stringValue
 	return b
 }
 
@@ -304,7 +304,7 @@ func (m *_PascalString) deepCopy() *_PascalString {
 		return nil
 	}
 	_PascalStringCopy := &_PascalString{
-		m.StringValue,
+		utils.CopyPtr[string](m.StringValue),
 	}
 	return _PascalStringCopy
 }

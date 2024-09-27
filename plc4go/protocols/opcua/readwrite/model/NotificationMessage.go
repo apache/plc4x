@@ -84,13 +84,11 @@ func NewNotificationMessage(sequenceNumber uint32, publishTime int64, notificati
 type NotificationMessageBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(sequenceNumber uint32, publishTime int64, noOfNotificationData int32, notificationData []ExtensionObject) NotificationMessageBuilder
+	WithMandatoryFields(sequenceNumber uint32, publishTime int64, notificationData []ExtensionObject) NotificationMessageBuilder
 	// WithSequenceNumber adds SequenceNumber (property field)
 	WithSequenceNumber(uint32) NotificationMessageBuilder
 	// WithPublishTime adds PublishTime (property field)
 	WithPublishTime(int64) NotificationMessageBuilder
-	// WithNoOfNotificationData adds NoOfNotificationData (property field)
-	WithNoOfNotificationData(int32) NotificationMessageBuilder
 	// WithNotificationData adds NotificationData (property field)
 	WithNotificationData(...ExtensionObject) NotificationMessageBuilder
 	// Build builds the NotificationMessage or returns an error if something is wrong
@@ -118,8 +116,8 @@ func (b *_NotificationMessageBuilder) setParent(contract ExtensionObjectDefiniti
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_NotificationMessageBuilder) WithMandatoryFields(sequenceNumber uint32, publishTime int64, noOfNotificationData int32, notificationData []ExtensionObject) NotificationMessageBuilder {
-	return b.WithSequenceNumber(sequenceNumber).WithPublishTime(publishTime).WithNoOfNotificationData(noOfNotificationData).WithNotificationData(notificationData...)
+func (b *_NotificationMessageBuilder) WithMandatoryFields(sequenceNumber uint32, publishTime int64, notificationData []ExtensionObject) NotificationMessageBuilder {
+	return b.WithSequenceNumber(sequenceNumber).WithPublishTime(publishTime).WithNotificationData(notificationData...)
 }
 
 func (b *_NotificationMessageBuilder) WithSequenceNumber(sequenceNumber uint32) NotificationMessageBuilder {
@@ -129,11 +127,6 @@ func (b *_NotificationMessageBuilder) WithSequenceNumber(sequenceNumber uint32) 
 
 func (b *_NotificationMessageBuilder) WithPublishTime(publishTime int64) NotificationMessageBuilder {
 	b.PublishTime = publishTime
-	return b
-}
-
-func (b *_NotificationMessageBuilder) WithNoOfNotificationData(noOfNotificationData int32) NotificationMessageBuilder {
-	b.NoOfNotificationData = noOfNotificationData
 	return b
 }
 
@@ -369,7 +362,6 @@ func (m *_NotificationMessage) deepCopy() *_NotificationMessage {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SequenceNumber,
 		m.PublishTime,
-		m.NoOfNotificationData,
 		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.NotificationData),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

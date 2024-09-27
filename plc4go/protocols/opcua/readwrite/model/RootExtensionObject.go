@@ -38,11 +38,14 @@ type RootExtensionObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObject
 	// GetBody returns Body (property field)
 	GetBody() ExtensionObjectDefinition
 	// IsRootExtensionObject is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRootExtensionObject()
+	// CreateBuilder creates a RootExtensionObjectBuilder
+	CreateRootExtensionObjectBuilder() RootExtensionObjectBuilder
 }
 
 // _RootExtensionObject is the data-structure of this message
@@ -69,6 +72,118 @@ func NewRootExtensionObject(typeId ExpandedNodeId, body ExtensionObjectDefinitio
 	_result.ExtensionObjectContract.(*_ExtensionObject)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RootExtensionObjectBuilder is a builder for RootExtensionObject
+type RootExtensionObjectBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(body ExtensionObjectDefinition) RootExtensionObjectBuilder
+	// WithBody adds Body (property field)
+	WithBody(ExtensionObjectDefinition) RootExtensionObjectBuilder
+	// WithBodyBuilder adds Body (property field) which is build by the builder
+	WithBodyBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RootExtensionObjectBuilder
+	// Build builds the RootExtensionObject or returns an error if something is wrong
+	Build() (RootExtensionObject, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RootExtensionObject
+}
+
+// NewRootExtensionObjectBuilder() creates a RootExtensionObjectBuilder
+func NewRootExtensionObjectBuilder() RootExtensionObjectBuilder {
+	return &_RootExtensionObjectBuilder{_RootExtensionObject: new(_RootExtensionObject)}
+}
+
+type _RootExtensionObjectBuilder struct {
+	*_RootExtensionObject
+
+	parentBuilder *_ExtensionObjectBuilder
+
+	err *utils.MultiError
+}
+
+var _ (RootExtensionObjectBuilder) = (*_RootExtensionObjectBuilder)(nil)
+
+func (b *_RootExtensionObjectBuilder) setParent(contract ExtensionObjectContract) {
+	b.ExtensionObjectContract = contract
+}
+
+func (b *_RootExtensionObjectBuilder) WithMandatoryFields(body ExtensionObjectDefinition) RootExtensionObjectBuilder {
+	return b.WithBody(body)
+}
+
+func (b *_RootExtensionObjectBuilder) WithBody(body ExtensionObjectDefinition) RootExtensionObjectBuilder {
+	b.Body = body
+	return b
+}
+
+func (b *_RootExtensionObjectBuilder) WithBodyBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RootExtensionObjectBuilder {
+	builder := builderSupplier(b.Body.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.Body, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_RootExtensionObjectBuilder) Build() (RootExtensionObject, error) {
+	if b.Body == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'body' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RootExtensionObject.deepCopy(), nil
+}
+
+func (b *_RootExtensionObjectBuilder) MustBuild() RootExtensionObject {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RootExtensionObjectBuilder) Done() ExtensionObjectBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RootExtensionObjectBuilder) buildForExtensionObject() (ExtensionObject, error) {
+	return b.Build()
+}
+
+func (b *_RootExtensionObjectBuilder) DeepCopy() any {
+	_copy := b.CreateRootExtensionObjectBuilder().(*_RootExtensionObjectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateRootExtensionObjectBuilder creates a RootExtensionObjectBuilder
+func (b *_RootExtensionObject) CreateRootExtensionObjectBuilder() RootExtensionObjectBuilder {
+	if b == nil {
+		return NewRootExtensionObjectBuilder()
+	}
+	return &_RootExtensionObjectBuilder{_RootExtensionObject: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -195,6 +310,23 @@ func (m *_RootExtensionObject) GetExtensionId() int32 {
 ////
 
 func (m *_RootExtensionObject) IsRootExtensionObject() {}
+
+func (m *_RootExtensionObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RootExtensionObject) deepCopy() *_RootExtensionObject {
+	if m == nil {
+		return nil
+	}
+	_RootExtensionObjectCopy := &_RootExtensionObject{
+		m.ExtensionObjectContract.(*_ExtensionObject).deepCopy(),
+		m.Body.DeepCopy().(ExtensionObjectDefinition),
+		m.ExtensionId,
+	}
+	m.ExtensionObjectContract.(*_ExtensionObject)._SubType = m
+	return _RootExtensionObjectCopy
+}
 
 func (m *_RootExtensionObject) String() string {
 	if m == nil {

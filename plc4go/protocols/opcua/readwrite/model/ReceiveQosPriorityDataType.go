@@ -38,11 +38,14 @@ type ReceiveQosPriorityDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetPriorityLabel returns PriorityLabel (property field)
 	GetPriorityLabel() PascalString
 	// IsReceiveQosPriorityDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReceiveQosPriorityDataType()
+	// CreateBuilder creates a ReceiveQosPriorityDataTypeBuilder
+	CreateReceiveQosPriorityDataTypeBuilder() ReceiveQosPriorityDataTypeBuilder
 }
 
 // _ReceiveQosPriorityDataType is the data-structure of this message
@@ -66,6 +69,118 @@ func NewReceiveQosPriorityDataType(priorityLabel PascalString) *_ReceiveQosPrior
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReceiveQosPriorityDataTypeBuilder is a builder for ReceiveQosPriorityDataType
+type ReceiveQosPriorityDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(priorityLabel PascalString) ReceiveQosPriorityDataTypeBuilder
+	// WithPriorityLabel adds PriorityLabel (property field)
+	WithPriorityLabel(PascalString) ReceiveQosPriorityDataTypeBuilder
+	// WithPriorityLabelBuilder adds PriorityLabel (property field) which is build by the builder
+	WithPriorityLabelBuilder(func(PascalStringBuilder) PascalStringBuilder) ReceiveQosPriorityDataTypeBuilder
+	// Build builds the ReceiveQosPriorityDataType or returns an error if something is wrong
+	Build() (ReceiveQosPriorityDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReceiveQosPriorityDataType
+}
+
+// NewReceiveQosPriorityDataTypeBuilder() creates a ReceiveQosPriorityDataTypeBuilder
+func NewReceiveQosPriorityDataTypeBuilder() ReceiveQosPriorityDataTypeBuilder {
+	return &_ReceiveQosPriorityDataTypeBuilder{_ReceiveQosPriorityDataType: new(_ReceiveQosPriorityDataType)}
+}
+
+type _ReceiveQosPriorityDataTypeBuilder struct {
+	*_ReceiveQosPriorityDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ReceiveQosPriorityDataTypeBuilder) = (*_ReceiveQosPriorityDataTypeBuilder)(nil)
+
+func (b *_ReceiveQosPriorityDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ReceiveQosPriorityDataTypeBuilder) WithMandatoryFields(priorityLabel PascalString) ReceiveQosPriorityDataTypeBuilder {
+	return b.WithPriorityLabel(priorityLabel)
+}
+
+func (b *_ReceiveQosPriorityDataTypeBuilder) WithPriorityLabel(priorityLabel PascalString) ReceiveQosPriorityDataTypeBuilder {
+	b.PriorityLabel = priorityLabel
+	return b
+}
+
+func (b *_ReceiveQosPriorityDataTypeBuilder) WithPriorityLabelBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ReceiveQosPriorityDataTypeBuilder {
+	builder := builderSupplier(b.PriorityLabel.CreatePascalStringBuilder())
+	var err error
+	b.PriorityLabel, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReceiveQosPriorityDataTypeBuilder) Build() (ReceiveQosPriorityDataType, error) {
+	if b.PriorityLabel == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'priorityLabel' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ReceiveQosPriorityDataType.deepCopy(), nil
+}
+
+func (b *_ReceiveQosPriorityDataTypeBuilder) MustBuild() ReceiveQosPriorityDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ReceiveQosPriorityDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ReceiveQosPriorityDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ReceiveQosPriorityDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateReceiveQosPriorityDataTypeBuilder().(*_ReceiveQosPriorityDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateReceiveQosPriorityDataTypeBuilder creates a ReceiveQosPriorityDataTypeBuilder
+func (b *_ReceiveQosPriorityDataType) CreateReceiveQosPriorityDataTypeBuilder() ReceiveQosPriorityDataTypeBuilder {
+	if b == nil {
+		return NewReceiveQosPriorityDataTypeBuilder()
+	}
+	return &_ReceiveQosPriorityDataTypeBuilder{_ReceiveQosPriorityDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -182,6 +297,22 @@ func (m *_ReceiveQosPriorityDataType) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_ReceiveQosPriorityDataType) IsReceiveQosPriorityDataType() {}
+
+func (m *_ReceiveQosPriorityDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReceiveQosPriorityDataType) deepCopy() *_ReceiveQosPriorityDataType {
+	if m == nil {
+		return nil
+	}
+	_ReceiveQosPriorityDataTypeCopy := &_ReceiveQosPriorityDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.PriorityLabel.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReceiveQosPriorityDataTypeCopy
+}
 
 func (m *_ReceiveQosPriorityDataType) String() string {
 	if m == nil {

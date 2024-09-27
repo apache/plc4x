@@ -83,13 +83,11 @@ func NewUnregisterNodesRequest(requestHeader RequestHeader, nodesToUnregister []
 type UnregisterNodesRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToUnregister int32, nodesToUnregister []NodeId) UnregisterNodesRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, nodesToUnregister []NodeId) UnregisterNodesRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) UnregisterNodesRequestBuilder
+	WithRequestHeader(RequestHeader) UnregisterNodesRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) UnregisterNodesRequestBuilder
-	// WithNoOfNodesToUnregister adds NoOfNodesToUnregister (property field)
-	WithNoOfNodesToUnregister(int32) UnregisterNodesRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) UnregisterNodesRequestBuilder
 	// WithNodesToUnregister adds NodesToUnregister (property field)
 	WithNodesToUnregister(...NodeId) UnregisterNodesRequestBuilder
 	// Build builds the UnregisterNodesRequest or returns an error if something is wrong
@@ -117,30 +115,25 @@ func (b *_UnregisterNodesRequestBuilder) setParent(contract ExtensionObjectDefin
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_UnregisterNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToUnregister int32, nodesToUnregister []NodeId) UnregisterNodesRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfNodesToUnregister(noOfNodesToUnregister).WithNodesToUnregister(nodesToUnregister...)
+func (b *_UnregisterNodesRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, nodesToUnregister []NodeId) UnregisterNodesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNodesToUnregister(nodesToUnregister...)
 }
 
-func (b *_UnregisterNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) UnregisterNodesRequestBuilder {
+func (b *_UnregisterNodesRequestBuilder) WithRequestHeader(requestHeader RequestHeader) UnregisterNodesRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_UnregisterNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) UnregisterNodesRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_UnregisterNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) UnregisterNodesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_UnregisterNodesRequestBuilder) WithNoOfNodesToUnregister(noOfNodesToUnregister int32) UnregisterNodesRequestBuilder {
-	b.NoOfNodesToUnregister = noOfNodesToUnregister
 	return b
 }
 
@@ -363,8 +356,7 @@ func (m *_UnregisterNodesRequest) deepCopy() *_UnregisterNodesRequest {
 	}
 	_UnregisterNodesRequestCopy := &_UnregisterNodesRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfNodesToUnregister,
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		utils.DeepCopySlice[NodeId, NodeId](m.NodesToUnregister),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

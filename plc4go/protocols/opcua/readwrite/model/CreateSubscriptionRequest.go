@@ -105,11 +105,11 @@ func NewCreateSubscriptionRequest(requestHeader RequestHeader, requestedPublishi
 type CreateSubscriptionRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, priority uint8) CreateSubscriptionRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, priority uint8) CreateSubscriptionRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) CreateSubscriptionRequestBuilder
+	WithRequestHeader(RequestHeader) CreateSubscriptionRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSubscriptionRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) CreateSubscriptionRequestBuilder
 	// WithRequestedPublishingInterval adds RequestedPublishingInterval (property field)
 	WithRequestedPublishingInterval(float64) CreateSubscriptionRequestBuilder
 	// WithRequestedLifetimeCount adds RequestedLifetimeCount (property field)
@@ -147,24 +147,24 @@ func (b *_CreateSubscriptionRequestBuilder) setParent(contract ExtensionObjectDe
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CreateSubscriptionRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, priority uint8) CreateSubscriptionRequestBuilder {
+func (b *_CreateSubscriptionRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, priority uint8) CreateSubscriptionRequestBuilder {
 	return b.WithRequestHeader(requestHeader).WithRequestedPublishingInterval(requestedPublishingInterval).WithRequestedLifetimeCount(requestedLifetimeCount).WithRequestedMaxKeepAliveCount(requestedMaxKeepAliveCount).WithMaxNotificationsPerPublish(maxNotificationsPerPublish).WithPublishingEnabled(publishingEnabled).WithPriority(priority)
 }
 
-func (b *_CreateSubscriptionRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CreateSubscriptionRequestBuilder {
+func (b *_CreateSubscriptionRequestBuilder) WithRequestHeader(requestHeader RequestHeader) CreateSubscriptionRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_CreateSubscriptionRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSubscriptionRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CreateSubscriptionRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) CreateSubscriptionRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -491,7 +491,7 @@ func (m *_CreateSubscriptionRequest) deepCopy() *_CreateSubscriptionRequest {
 	}
 	_CreateSubscriptionRequestCopy := &_CreateSubscriptionRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.RequestedPublishingInterval,
 		m.RequestedLifetimeCount,
 		m.RequestedMaxKeepAliveCount,

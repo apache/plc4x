@@ -83,15 +83,13 @@ func NewCallRequest(requestHeader RequestHeader, methodsToCall []CallMethodReque
 type CallRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) CallRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, methodsToCall []CallMethodRequest) CallRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) CallRequestBuilder
+	WithRequestHeader(RequestHeader) CallRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CallRequestBuilder
-	// WithNoOfMethodsToCall adds NoOfMethodsToCall (property field)
-	WithNoOfMethodsToCall(int32) CallRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) CallRequestBuilder
 	// WithMethodsToCall adds MethodsToCall (property field)
-	WithMethodsToCall(...ExtensionObjectDefinition) CallRequestBuilder
+	WithMethodsToCall(...CallMethodRequest) CallRequestBuilder
 	// Build builds the CallRequest or returns an error if something is wrong
 	Build() (CallRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,34 +115,29 @@ func (b *_CallRequestBuilder) setParent(contract ExtensionObjectDefinitionContra
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CallRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) CallRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfMethodsToCall(noOfMethodsToCall).WithMethodsToCall(methodsToCall...)
+func (b *_CallRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, methodsToCall []CallMethodRequest) CallRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithMethodsToCall(methodsToCall...)
 }
 
-func (b *_CallRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CallRequestBuilder {
+func (b *_CallRequestBuilder) WithRequestHeader(requestHeader RequestHeader) CallRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_CallRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CallRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CallRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) CallRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_CallRequestBuilder) WithNoOfMethodsToCall(noOfMethodsToCall int32) CallRequestBuilder {
-	b.NoOfMethodsToCall = noOfMethodsToCall
-	return b
-}
-
-func (b *_CallRequestBuilder) WithMethodsToCall(methodsToCall ...ExtensionObjectDefinition) CallRequestBuilder {
+func (b *_CallRequestBuilder) WithMethodsToCall(methodsToCall ...CallMethodRequest) CallRequestBuilder {
 	b.MethodsToCall = methodsToCall
 	return b
 }
@@ -363,9 +356,8 @@ func (m *_CallRequest) deepCopy() *_CallRequest {
 	}
 	_CallRequestCopy := &_CallRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfMethodsToCall,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.MethodsToCall),
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopySlice[CallMethodRequest, CallMethodRequest](m.MethodsToCall),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CallRequestCopy

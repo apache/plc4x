@@ -76,11 +76,9 @@ func NewRelativePath(elements []RelativePathElement) *_RelativePath {
 type RelativePathBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfElements int32, elements []ExtensionObjectDefinition) RelativePathBuilder
-	// WithNoOfElements adds NoOfElements (property field)
-	WithNoOfElements(int32) RelativePathBuilder
+	WithMandatoryFields(elements []RelativePathElement) RelativePathBuilder
 	// WithElements adds Elements (property field)
-	WithElements(...ExtensionObjectDefinition) RelativePathBuilder
+	WithElements(...RelativePathElement) RelativePathBuilder
 	// Build builds the RelativePath or returns an error if something is wrong
 	Build() (RelativePath, error)
 	// MustBuild does the same as Build but panics on error
@@ -106,16 +104,11 @@ func (b *_RelativePathBuilder) setParent(contract ExtensionObjectDefinitionContr
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RelativePathBuilder) WithMandatoryFields(noOfElements int32, elements []ExtensionObjectDefinition) RelativePathBuilder {
-	return b.WithNoOfElements(noOfElements).WithElements(elements...)
+func (b *_RelativePathBuilder) WithMandatoryFields(elements []RelativePathElement) RelativePathBuilder {
+	return b.WithElements(elements...)
 }
 
-func (b *_RelativePathBuilder) WithNoOfElements(noOfElements int32) RelativePathBuilder {
-	b.NoOfElements = noOfElements
-	return b
-}
-
-func (b *_RelativePathBuilder) WithElements(elements ...ExtensionObjectDefinition) RelativePathBuilder {
+func (b *_RelativePathBuilder) WithElements(elements ...RelativePathElement) RelativePathBuilder {
 	b.Elements = elements
 	return b
 }
@@ -311,8 +304,7 @@ func (m *_RelativePath) deepCopy() *_RelativePath {
 	}
 	_RelativePathCopy := &_RelativePath{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfElements,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Elements),
+		utils.DeepCopySlice[RelativePathElement, RelativePathElement](m.Elements),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RelativePathCopy

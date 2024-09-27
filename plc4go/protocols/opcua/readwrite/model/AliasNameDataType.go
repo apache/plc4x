@@ -83,13 +83,11 @@ func NewAliasNameDataType(aliasName QualifiedName, referencedNodes []ExpandedNod
 type AliasNameDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(aliasName QualifiedName, noOfReferencedNodes int32, referencedNodes []ExpandedNodeId) AliasNameDataTypeBuilder
+	WithMandatoryFields(aliasName QualifiedName, referencedNodes []ExpandedNodeId) AliasNameDataTypeBuilder
 	// WithAliasName adds AliasName (property field)
 	WithAliasName(QualifiedName) AliasNameDataTypeBuilder
 	// WithAliasNameBuilder adds AliasName (property field) which is build by the builder
 	WithAliasNameBuilder(func(QualifiedNameBuilder) QualifiedNameBuilder) AliasNameDataTypeBuilder
-	// WithNoOfReferencedNodes adds NoOfReferencedNodes (property field)
-	WithNoOfReferencedNodes(int32) AliasNameDataTypeBuilder
 	// WithReferencedNodes adds ReferencedNodes (property field)
 	WithReferencedNodes(...ExpandedNodeId) AliasNameDataTypeBuilder
 	// Build builds the AliasNameDataType or returns an error if something is wrong
@@ -117,8 +115,8 @@ func (b *_AliasNameDataTypeBuilder) setParent(contract ExtensionObjectDefinition
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_AliasNameDataTypeBuilder) WithMandatoryFields(aliasName QualifiedName, noOfReferencedNodes int32, referencedNodes []ExpandedNodeId) AliasNameDataTypeBuilder {
-	return b.WithAliasName(aliasName).WithNoOfReferencedNodes(noOfReferencedNodes).WithReferencedNodes(referencedNodes...)
+func (b *_AliasNameDataTypeBuilder) WithMandatoryFields(aliasName QualifiedName, referencedNodes []ExpandedNodeId) AliasNameDataTypeBuilder {
+	return b.WithAliasName(aliasName).WithReferencedNodes(referencedNodes...)
 }
 
 func (b *_AliasNameDataTypeBuilder) WithAliasName(aliasName QualifiedName) AliasNameDataTypeBuilder {
@@ -136,11 +134,6 @@ func (b *_AliasNameDataTypeBuilder) WithAliasNameBuilder(builderSupplier func(Qu
 		}
 		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
 	}
-	return b
-}
-
-func (b *_AliasNameDataTypeBuilder) WithNoOfReferencedNodes(noOfReferencedNodes int32) AliasNameDataTypeBuilder {
-	b.NoOfReferencedNodes = noOfReferencedNodes
 	return b
 }
 
@@ -364,7 +357,6 @@ func (m *_AliasNameDataType) deepCopy() *_AliasNameDataType {
 	_AliasNameDataTypeCopy := &_AliasNameDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.AliasName.DeepCopy().(QualifiedName),
-		m.NoOfReferencedNodes,
 		utils.DeepCopySlice[ExpandedNodeId, ExpandedNodeId](m.ReferencedNodes),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

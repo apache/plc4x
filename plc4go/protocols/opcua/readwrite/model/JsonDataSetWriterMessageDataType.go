@@ -38,11 +38,14 @@ type JsonDataSetWriterMessageDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetDataSetMessageContentMask returns DataSetMessageContentMask (property field)
 	GetDataSetMessageContentMask() JsonDataSetMessageContentMask
 	// IsJsonDataSetWriterMessageDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsJsonDataSetWriterMessageDataType()
+	// CreateBuilder creates a JsonDataSetWriterMessageDataTypeBuilder
+	CreateJsonDataSetWriterMessageDataTypeBuilder() JsonDataSetWriterMessageDataTypeBuilder
 }
 
 // _JsonDataSetWriterMessageDataType is the data-structure of this message
@@ -63,6 +66,97 @@ func NewJsonDataSetWriterMessageDataType(dataSetMessageContentMask JsonDataSetMe
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// JsonDataSetWriterMessageDataTypeBuilder is a builder for JsonDataSetWriterMessageDataType
+type JsonDataSetWriterMessageDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dataSetMessageContentMask JsonDataSetMessageContentMask) JsonDataSetWriterMessageDataTypeBuilder
+	// WithDataSetMessageContentMask adds DataSetMessageContentMask (property field)
+	WithDataSetMessageContentMask(JsonDataSetMessageContentMask) JsonDataSetWriterMessageDataTypeBuilder
+	// Build builds the JsonDataSetWriterMessageDataType or returns an error if something is wrong
+	Build() (JsonDataSetWriterMessageDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() JsonDataSetWriterMessageDataType
+}
+
+// NewJsonDataSetWriterMessageDataTypeBuilder() creates a JsonDataSetWriterMessageDataTypeBuilder
+func NewJsonDataSetWriterMessageDataTypeBuilder() JsonDataSetWriterMessageDataTypeBuilder {
+	return &_JsonDataSetWriterMessageDataTypeBuilder{_JsonDataSetWriterMessageDataType: new(_JsonDataSetWriterMessageDataType)}
+}
+
+type _JsonDataSetWriterMessageDataTypeBuilder struct {
+	*_JsonDataSetWriterMessageDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (JsonDataSetWriterMessageDataTypeBuilder) = (*_JsonDataSetWriterMessageDataTypeBuilder)(nil)
+
+func (b *_JsonDataSetWriterMessageDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_JsonDataSetWriterMessageDataTypeBuilder) WithMandatoryFields(dataSetMessageContentMask JsonDataSetMessageContentMask) JsonDataSetWriterMessageDataTypeBuilder {
+	return b.WithDataSetMessageContentMask(dataSetMessageContentMask)
+}
+
+func (b *_JsonDataSetWriterMessageDataTypeBuilder) WithDataSetMessageContentMask(dataSetMessageContentMask JsonDataSetMessageContentMask) JsonDataSetWriterMessageDataTypeBuilder {
+	b.DataSetMessageContentMask = dataSetMessageContentMask
+	return b
+}
+
+func (b *_JsonDataSetWriterMessageDataTypeBuilder) Build() (JsonDataSetWriterMessageDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._JsonDataSetWriterMessageDataType.deepCopy(), nil
+}
+
+func (b *_JsonDataSetWriterMessageDataTypeBuilder) MustBuild() JsonDataSetWriterMessageDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_JsonDataSetWriterMessageDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_JsonDataSetWriterMessageDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_JsonDataSetWriterMessageDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateJsonDataSetWriterMessageDataTypeBuilder().(*_JsonDataSetWriterMessageDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateJsonDataSetWriterMessageDataTypeBuilder creates a JsonDataSetWriterMessageDataTypeBuilder
+func (b *_JsonDataSetWriterMessageDataType) CreateJsonDataSetWriterMessageDataTypeBuilder() JsonDataSetWriterMessageDataTypeBuilder {
+	if b == nil {
+		return NewJsonDataSetWriterMessageDataTypeBuilder()
+	}
+	return &_JsonDataSetWriterMessageDataTypeBuilder{_JsonDataSetWriterMessageDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -179,6 +273,22 @@ func (m *_JsonDataSetWriterMessageDataType) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_JsonDataSetWriterMessageDataType) IsJsonDataSetWriterMessageDataType() {}
+
+func (m *_JsonDataSetWriterMessageDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_JsonDataSetWriterMessageDataType) deepCopy() *_JsonDataSetWriterMessageDataType {
+	if m == nil {
+		return nil
+	}
+	_JsonDataSetWriterMessageDataTypeCopy := &_JsonDataSetWriterMessageDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.DataSetMessageContentMask,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _JsonDataSetWriterMessageDataTypeCopy
+}
 
 func (m *_JsonDataSetWriterMessageDataType) String() string {
 	if m == nil {

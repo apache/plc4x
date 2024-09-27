@@ -38,6 +38,7 @@ type HistoryModifiedEvent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetEvents returns Events (property field)
 	GetEvents() []HistoryEventFieldList
@@ -45,6 +46,8 @@ type HistoryModifiedEvent interface {
 	GetModificationInfos() []ModificationInfo
 	// IsHistoryModifiedEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryModifiedEvent()
+	// CreateBuilder creates a HistoryModifiedEventBuilder
+	CreateHistoryModifiedEventBuilder() HistoryModifiedEventBuilder
 }
 
 // _HistoryModifiedEvent is the data-structure of this message
@@ -67,6 +70,104 @@ func NewHistoryModifiedEvent(events []HistoryEventFieldList, modificationInfos [
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HistoryModifiedEventBuilder is a builder for HistoryModifiedEvent
+type HistoryModifiedEventBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(events []HistoryEventFieldList, modificationInfos []ModificationInfo) HistoryModifiedEventBuilder
+	// WithEvents adds Events (property field)
+	WithEvents(...HistoryEventFieldList) HistoryModifiedEventBuilder
+	// WithModificationInfos adds ModificationInfos (property field)
+	WithModificationInfos(...ModificationInfo) HistoryModifiedEventBuilder
+	// Build builds the HistoryModifiedEvent or returns an error if something is wrong
+	Build() (HistoryModifiedEvent, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HistoryModifiedEvent
+}
+
+// NewHistoryModifiedEventBuilder() creates a HistoryModifiedEventBuilder
+func NewHistoryModifiedEventBuilder() HistoryModifiedEventBuilder {
+	return &_HistoryModifiedEventBuilder{_HistoryModifiedEvent: new(_HistoryModifiedEvent)}
+}
+
+type _HistoryModifiedEventBuilder struct {
+	*_HistoryModifiedEvent
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (HistoryModifiedEventBuilder) = (*_HistoryModifiedEventBuilder)(nil)
+
+func (b *_HistoryModifiedEventBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_HistoryModifiedEventBuilder) WithMandatoryFields(events []HistoryEventFieldList, modificationInfos []ModificationInfo) HistoryModifiedEventBuilder {
+	return b.WithEvents(events...).WithModificationInfos(modificationInfos...)
+}
+
+func (b *_HistoryModifiedEventBuilder) WithEvents(events ...HistoryEventFieldList) HistoryModifiedEventBuilder {
+	b.Events = events
+	return b
+}
+
+func (b *_HistoryModifiedEventBuilder) WithModificationInfos(modificationInfos ...ModificationInfo) HistoryModifiedEventBuilder {
+	b.ModificationInfos = modificationInfos
+	return b
+}
+
+func (b *_HistoryModifiedEventBuilder) Build() (HistoryModifiedEvent, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HistoryModifiedEvent.deepCopy(), nil
+}
+
+func (b *_HistoryModifiedEventBuilder) MustBuild() HistoryModifiedEvent {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryModifiedEventBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryModifiedEventBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryModifiedEventBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryModifiedEventBuilder().(*_HistoryModifiedEventBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHistoryModifiedEventBuilder creates a HistoryModifiedEventBuilder
+func (b *_HistoryModifiedEvent) CreateHistoryModifiedEventBuilder() HistoryModifiedEventBuilder {
+	if b == nil {
+		return NewHistoryModifiedEventBuilder()
+	}
+	return &_HistoryModifiedEventBuilder{_HistoryModifiedEvent: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -240,6 +341,23 @@ func (m *_HistoryModifiedEvent) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_HistoryModifiedEvent) IsHistoryModifiedEvent() {}
+
+func (m *_HistoryModifiedEvent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryModifiedEvent) deepCopy() *_HistoryModifiedEvent {
+	if m == nil {
+		return nil
+	}
+	_HistoryModifiedEventCopy := &_HistoryModifiedEvent{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		utils.DeepCopySlice[HistoryEventFieldList, HistoryEventFieldList](m.Events),
+		utils.DeepCopySlice[ModificationInfo, ModificationInfo](m.ModificationInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryModifiedEventCopy
+}
 
 func (m *_HistoryModifiedEvent) String() string {
 	if m == nil {

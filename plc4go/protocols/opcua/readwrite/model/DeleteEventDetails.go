@@ -38,6 +38,7 @@ type DeleteEventDetails interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -45,6 +46,8 @@ type DeleteEventDetails interface {
 	GetEventIds() []PascalByteString
 	// IsDeleteEventDetails is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeleteEventDetails()
+	// CreateBuilder creates a DeleteEventDetailsBuilder
+	CreateDeleteEventDetailsBuilder() DeleteEventDetailsBuilder
 }
 
 // _DeleteEventDetails is the data-structure of this message
@@ -70,6 +73,125 @@ func NewDeleteEventDetails(nodeId NodeId, eventIds []PascalByteString) *_DeleteE
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeleteEventDetailsBuilder is a builder for DeleteEventDetails
+type DeleteEventDetailsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeId NodeId, eventIds []PascalByteString) DeleteEventDetailsBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(NodeId) DeleteEventDetailsBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) DeleteEventDetailsBuilder
+	// WithEventIds adds EventIds (property field)
+	WithEventIds(...PascalByteString) DeleteEventDetailsBuilder
+	// Build builds the DeleteEventDetails or returns an error if something is wrong
+	Build() (DeleteEventDetails, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeleteEventDetails
+}
+
+// NewDeleteEventDetailsBuilder() creates a DeleteEventDetailsBuilder
+func NewDeleteEventDetailsBuilder() DeleteEventDetailsBuilder {
+	return &_DeleteEventDetailsBuilder{_DeleteEventDetails: new(_DeleteEventDetails)}
+}
+
+type _DeleteEventDetailsBuilder struct {
+	*_DeleteEventDetails
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DeleteEventDetailsBuilder) = (*_DeleteEventDetailsBuilder)(nil)
+
+func (b *_DeleteEventDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DeleteEventDetailsBuilder) WithMandatoryFields(nodeId NodeId, eventIds []PascalByteString) DeleteEventDetailsBuilder {
+	return b.WithNodeId(nodeId).WithEventIds(eventIds...)
+}
+
+func (b *_DeleteEventDetailsBuilder) WithNodeId(nodeId NodeId) DeleteEventDetailsBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_DeleteEventDetailsBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) DeleteEventDetailsBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdBuilder())
+	var err error
+	b.NodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DeleteEventDetailsBuilder) WithEventIds(eventIds ...PascalByteString) DeleteEventDetailsBuilder {
+	b.EventIds = eventIds
+	return b
+}
+
+func (b *_DeleteEventDetailsBuilder) Build() (DeleteEventDetails, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DeleteEventDetails.deepCopy(), nil
+}
+
+func (b *_DeleteEventDetailsBuilder) MustBuild() DeleteEventDetails {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DeleteEventDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DeleteEventDetailsBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DeleteEventDetailsBuilder) DeepCopy() any {
+	_copy := b.CreateDeleteEventDetailsBuilder().(*_DeleteEventDetailsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDeleteEventDetailsBuilder creates a DeleteEventDetailsBuilder
+func (b *_DeleteEventDetails) CreateDeleteEventDetailsBuilder() DeleteEventDetailsBuilder {
+	if b == nil {
+		return NewDeleteEventDetailsBuilder()
+	}
+	return &_DeleteEventDetailsBuilder{_DeleteEventDetails: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -223,6 +345,23 @@ func (m *_DeleteEventDetails) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_DeleteEventDetails) IsDeleteEventDetails() {}
+
+func (m *_DeleteEventDetails) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteEventDetails) deepCopy() *_DeleteEventDetails {
+	if m == nil {
+		return nil
+	}
+	_DeleteEventDetailsCopy := &_DeleteEventDetails{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(NodeId),
+		utils.DeepCopySlice[PascalByteString, PascalByteString](m.EventIds),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteEventDetailsCopy
+}
 
 func (m *_DeleteEventDetails) String() string {
 	if m == nil {

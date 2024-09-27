@@ -38,6 +38,7 @@ type VariableTypeAttributes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSpecifiedAttributes returns SpecifiedAttributes (property field)
 	GetSpecifiedAttributes() uint32
@@ -61,6 +62,8 @@ type VariableTypeAttributes interface {
 	GetIsAbstract() bool
 	// IsVariableTypeAttributes is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariableTypeAttributes()
+	// CreateBuilder creates a VariableTypeAttributesBuilder
+	CreateVariableTypeAttributesBuilder() VariableTypeAttributesBuilder
 }
 
 // _VariableTypeAttributes is the data-structure of this message
@@ -113,6 +116,244 @@ func NewVariableTypeAttributes(specifiedAttributes uint32, displayName Localized
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariableTypeAttributesBuilder is a builder for VariableTypeAttributes
+type VariableTypeAttributesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, value Variant, dataType NodeId, valueRank int32, arrayDimensions []uint32, isAbstract bool) VariableTypeAttributesBuilder
+	// WithSpecifiedAttributes adds SpecifiedAttributes (property field)
+	WithSpecifiedAttributes(uint32) VariableTypeAttributesBuilder
+	// WithDisplayName adds DisplayName (property field)
+	WithDisplayName(LocalizedText) VariableTypeAttributesBuilder
+	// WithDisplayNameBuilder adds DisplayName (property field) which is build by the builder
+	WithDisplayNameBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) VariableTypeAttributesBuilder
+	// WithDescription adds Description (property field)
+	WithDescription(LocalizedText) VariableTypeAttributesBuilder
+	// WithDescriptionBuilder adds Description (property field) which is build by the builder
+	WithDescriptionBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) VariableTypeAttributesBuilder
+	// WithWriteMask adds WriteMask (property field)
+	WithWriteMask(uint32) VariableTypeAttributesBuilder
+	// WithUserWriteMask adds UserWriteMask (property field)
+	WithUserWriteMask(uint32) VariableTypeAttributesBuilder
+	// WithValue adds Value (property field)
+	WithValue(Variant) VariableTypeAttributesBuilder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(VariantBuilder) VariantBuilder) VariableTypeAttributesBuilder
+	// WithDataType adds DataType (property field)
+	WithDataType(NodeId) VariableTypeAttributesBuilder
+	// WithDataTypeBuilder adds DataType (property field) which is build by the builder
+	WithDataTypeBuilder(func(NodeIdBuilder) NodeIdBuilder) VariableTypeAttributesBuilder
+	// WithValueRank adds ValueRank (property field)
+	WithValueRank(int32) VariableTypeAttributesBuilder
+	// WithArrayDimensions adds ArrayDimensions (property field)
+	WithArrayDimensions(...uint32) VariableTypeAttributesBuilder
+	// WithIsAbstract adds IsAbstract (property field)
+	WithIsAbstract(bool) VariableTypeAttributesBuilder
+	// Build builds the VariableTypeAttributes or returns an error if something is wrong
+	Build() (VariableTypeAttributes, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariableTypeAttributes
+}
+
+// NewVariableTypeAttributesBuilder() creates a VariableTypeAttributesBuilder
+func NewVariableTypeAttributesBuilder() VariableTypeAttributesBuilder {
+	return &_VariableTypeAttributesBuilder{_VariableTypeAttributes: new(_VariableTypeAttributes)}
+}
+
+type _VariableTypeAttributesBuilder struct {
+	*_VariableTypeAttributes
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (VariableTypeAttributesBuilder) = (*_VariableTypeAttributesBuilder)(nil)
+
+func (b *_VariableTypeAttributesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_VariableTypeAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, value Variant, dataType NodeId, valueRank int32, arrayDimensions []uint32, isAbstract bool) VariableTypeAttributesBuilder {
+	return b.WithSpecifiedAttributes(specifiedAttributes).WithDisplayName(displayName).WithDescription(description).WithWriteMask(writeMask).WithUserWriteMask(userWriteMask).WithValue(value).WithDataType(dataType).WithValueRank(valueRank).WithArrayDimensions(arrayDimensions...).WithIsAbstract(isAbstract)
+}
+
+func (b *_VariableTypeAttributesBuilder) WithSpecifiedAttributes(specifiedAttributes uint32) VariableTypeAttributesBuilder {
+	b.SpecifiedAttributes = specifiedAttributes
+	return b
+}
+
+func (b *_VariableTypeAttributesBuilder) WithDisplayName(displayName LocalizedText) VariableTypeAttributesBuilder {
+	b.DisplayName = displayName
+	return b
+}
+
+func (b *_VariableTypeAttributesBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) VariableTypeAttributesBuilder {
+	builder := builderSupplier(b.DisplayName.CreateLocalizedTextBuilder())
+	var err error
+	b.DisplayName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_VariableTypeAttributesBuilder) WithDescription(description LocalizedText) VariableTypeAttributesBuilder {
+	b.Description = description
+	return b
+}
+
+func (b *_VariableTypeAttributesBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) VariableTypeAttributesBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
+	var err error
+	b.Description, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_VariableTypeAttributesBuilder) WithWriteMask(writeMask uint32) VariableTypeAttributesBuilder {
+	b.WriteMask = writeMask
+	return b
+}
+
+func (b *_VariableTypeAttributesBuilder) WithUserWriteMask(userWriteMask uint32) VariableTypeAttributesBuilder {
+	b.UserWriteMask = userWriteMask
+	return b
+}
+
+func (b *_VariableTypeAttributesBuilder) WithValue(value Variant) VariableTypeAttributesBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariableTypeAttributesBuilder) WithValueBuilder(builderSupplier func(VariantBuilder) VariantBuilder) VariableTypeAttributesBuilder {
+	builder := builderSupplier(b.Value.CreateVariantBuilder())
+	var err error
+	b.Value, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "VariantBuilder failed"))
+	}
+	return b
+}
+
+func (b *_VariableTypeAttributesBuilder) WithDataType(dataType NodeId) VariableTypeAttributesBuilder {
+	b.DataType = dataType
+	return b
+}
+
+func (b *_VariableTypeAttributesBuilder) WithDataTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) VariableTypeAttributesBuilder {
+	builder := builderSupplier(b.DataType.CreateNodeIdBuilder())
+	var err error
+	b.DataType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_VariableTypeAttributesBuilder) WithValueRank(valueRank int32) VariableTypeAttributesBuilder {
+	b.ValueRank = valueRank
+	return b
+}
+
+func (b *_VariableTypeAttributesBuilder) WithArrayDimensions(arrayDimensions ...uint32) VariableTypeAttributesBuilder {
+	b.ArrayDimensions = arrayDimensions
+	return b
+}
+
+func (b *_VariableTypeAttributesBuilder) WithIsAbstract(isAbstract bool) VariableTypeAttributesBuilder {
+	b.IsAbstract = isAbstract
+	return b
+}
+
+func (b *_VariableTypeAttributesBuilder) Build() (VariableTypeAttributes, error) {
+	if b.DisplayName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'displayName' not set"))
+	}
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'description' not set"))
+	}
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if b.DataType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._VariableTypeAttributes.deepCopy(), nil
+}
+
+func (b *_VariableTypeAttributesBuilder) MustBuild() VariableTypeAttributes {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariableTypeAttributesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariableTypeAttributesBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_VariableTypeAttributesBuilder) DeepCopy() any {
+	_copy := b.CreateVariableTypeAttributesBuilder().(*_VariableTypeAttributesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateVariableTypeAttributesBuilder creates a VariableTypeAttributesBuilder
+func (b *_VariableTypeAttributes) CreateVariableTypeAttributesBuilder() VariableTypeAttributesBuilder {
+	if b == nil {
+		return NewVariableTypeAttributesBuilder()
+	}
+	return &_VariableTypeAttributesBuilder{_VariableTypeAttributes: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -410,6 +651,32 @@ func (m *_VariableTypeAttributes) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_VariableTypeAttributes) IsVariableTypeAttributes() {}
+
+func (m *_VariableTypeAttributes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariableTypeAttributes) deepCopy() *_VariableTypeAttributes {
+	if m == nil {
+		return nil
+	}
+	_VariableTypeAttributesCopy := &_VariableTypeAttributes{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SpecifiedAttributes,
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.Description.DeepCopy().(LocalizedText),
+		m.WriteMask,
+		m.UserWriteMask,
+		m.Value.DeepCopy().(Variant),
+		m.DataType.DeepCopy().(NodeId),
+		m.ValueRank,
+		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
+		m.IsAbstract,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _VariableTypeAttributesCopy
+}
 
 func (m *_VariableTypeAttributes) String() string {
 	if m == nil {

@@ -84,13 +84,9 @@ func NewSessionlessInvokeResponseType(namespaceUris []PascalString, serverUris [
 type SessionlessInvokeResponseTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, serviceId uint32) SessionlessInvokeResponseTypeBuilder
-	// WithNoOfNamespaceUris adds NoOfNamespaceUris (property field)
-	WithNoOfNamespaceUris(int32) SessionlessInvokeResponseTypeBuilder
+	WithMandatoryFields(namespaceUris []PascalString, serverUris []PascalString, serviceId uint32) SessionlessInvokeResponseTypeBuilder
 	// WithNamespaceUris adds NamespaceUris (property field)
 	WithNamespaceUris(...PascalString) SessionlessInvokeResponseTypeBuilder
-	// WithNoOfServerUris adds NoOfServerUris (property field)
-	WithNoOfServerUris(int32) SessionlessInvokeResponseTypeBuilder
 	// WithServerUris adds ServerUris (property field)
 	WithServerUris(...PascalString) SessionlessInvokeResponseTypeBuilder
 	// WithServiceId adds ServiceId (property field)
@@ -120,22 +116,12 @@ func (b *_SessionlessInvokeResponseTypeBuilder) setParent(contract ExtensionObje
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_SessionlessInvokeResponseTypeBuilder) WithMandatoryFields(noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, serviceId uint32) SessionlessInvokeResponseTypeBuilder {
-	return b.WithNoOfNamespaceUris(noOfNamespaceUris).WithNamespaceUris(namespaceUris...).WithNoOfServerUris(noOfServerUris).WithServerUris(serverUris...).WithServiceId(serviceId)
-}
-
-func (b *_SessionlessInvokeResponseTypeBuilder) WithNoOfNamespaceUris(noOfNamespaceUris int32) SessionlessInvokeResponseTypeBuilder {
-	b.NoOfNamespaceUris = noOfNamespaceUris
-	return b
+func (b *_SessionlessInvokeResponseTypeBuilder) WithMandatoryFields(namespaceUris []PascalString, serverUris []PascalString, serviceId uint32) SessionlessInvokeResponseTypeBuilder {
+	return b.WithNamespaceUris(namespaceUris...).WithServerUris(serverUris...).WithServiceId(serviceId)
 }
 
 func (b *_SessionlessInvokeResponseTypeBuilder) WithNamespaceUris(namespaceUris ...PascalString) SessionlessInvokeResponseTypeBuilder {
 	b.NamespaceUris = namespaceUris
-	return b
-}
-
-func (b *_SessionlessInvokeResponseTypeBuilder) WithNoOfServerUris(noOfServerUris int32) SessionlessInvokeResponseTypeBuilder {
-	b.NoOfServerUris = noOfServerUris
 	return b
 }
 
@@ -394,9 +380,7 @@ func (m *_SessionlessInvokeResponseType) deepCopy() *_SessionlessInvokeResponseT
 	}
 	_SessionlessInvokeResponseTypeCopy := &_SessionlessInvokeResponseType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfNamespaceUris,
 		utils.DeepCopySlice[PascalString, PascalString](m.NamespaceUris),
-		m.NoOfServerUris,
 		utils.DeepCopySlice[PascalString, PascalString](m.ServerUris),
 		m.ServiceId,
 	}

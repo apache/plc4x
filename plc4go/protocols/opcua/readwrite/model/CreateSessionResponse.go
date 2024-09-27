@@ -130,11 +130,11 @@ func NewCreateSessionResponse(responseHeader ResponseHeader, sessionId NodeId, a
 type CreateSessionResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, sessionId NodeId, authenticationToken NodeId, revisedSessionTimeout float64, serverNonce PascalByteString, serverCertificate PascalByteString, noOfServerEndpoints int32, serverEndpoints []ExtensionObjectDefinition, noOfServerSoftwareCertificates int32, serverSoftwareCertificates []ExtensionObjectDefinition, serverSignature ExtensionObjectDefinition, maxRequestMessageSize uint32) CreateSessionResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, sessionId NodeId, authenticationToken NodeId, revisedSessionTimeout float64, serverNonce PascalByteString, serverCertificate PascalByteString, serverEndpoints []EndpointDescription, serverSoftwareCertificates []SignedSoftwareCertificate, serverSignature SignatureData, maxRequestMessageSize uint32) CreateSessionResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) CreateSessionResponseBuilder
+	WithResponseHeader(ResponseHeader) CreateSessionResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) CreateSessionResponseBuilder
 	// WithSessionId adds SessionId (property field)
 	WithSessionId(NodeId) CreateSessionResponseBuilder
 	// WithSessionIdBuilder adds SessionId (property field) which is build by the builder
@@ -153,18 +153,14 @@ type CreateSessionResponseBuilder interface {
 	WithServerCertificate(PascalByteString) CreateSessionResponseBuilder
 	// WithServerCertificateBuilder adds ServerCertificate (property field) which is build by the builder
 	WithServerCertificateBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) CreateSessionResponseBuilder
-	// WithNoOfServerEndpoints adds NoOfServerEndpoints (property field)
-	WithNoOfServerEndpoints(int32) CreateSessionResponseBuilder
 	// WithServerEndpoints adds ServerEndpoints (property field)
-	WithServerEndpoints(...ExtensionObjectDefinition) CreateSessionResponseBuilder
-	// WithNoOfServerSoftwareCertificates adds NoOfServerSoftwareCertificates (property field)
-	WithNoOfServerSoftwareCertificates(int32) CreateSessionResponseBuilder
+	WithServerEndpoints(...EndpointDescription) CreateSessionResponseBuilder
 	// WithServerSoftwareCertificates adds ServerSoftwareCertificates (property field)
-	WithServerSoftwareCertificates(...ExtensionObjectDefinition) CreateSessionResponseBuilder
+	WithServerSoftwareCertificates(...SignedSoftwareCertificate) CreateSessionResponseBuilder
 	// WithServerSignature adds ServerSignature (property field)
-	WithServerSignature(ExtensionObjectDefinition) CreateSessionResponseBuilder
+	WithServerSignature(SignatureData) CreateSessionResponseBuilder
 	// WithServerSignatureBuilder adds ServerSignature (property field) which is build by the builder
-	WithServerSignatureBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionResponseBuilder
+	WithServerSignatureBuilder(func(SignatureDataBuilder) SignatureDataBuilder) CreateSessionResponseBuilder
 	// WithMaxRequestMessageSize adds MaxRequestMessageSize (property field)
 	WithMaxRequestMessageSize(uint32) CreateSessionResponseBuilder
 	// Build builds the CreateSessionResponse or returns an error if something is wrong
@@ -192,24 +188,24 @@ func (b *_CreateSessionResponseBuilder) setParent(contract ExtensionObjectDefini
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CreateSessionResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, sessionId NodeId, authenticationToken NodeId, revisedSessionTimeout float64, serverNonce PascalByteString, serverCertificate PascalByteString, noOfServerEndpoints int32, serverEndpoints []ExtensionObjectDefinition, noOfServerSoftwareCertificates int32, serverSoftwareCertificates []ExtensionObjectDefinition, serverSignature ExtensionObjectDefinition, maxRequestMessageSize uint32) CreateSessionResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithSessionId(sessionId).WithAuthenticationToken(authenticationToken).WithRevisedSessionTimeout(revisedSessionTimeout).WithServerNonce(serverNonce).WithServerCertificate(serverCertificate).WithNoOfServerEndpoints(noOfServerEndpoints).WithServerEndpoints(serverEndpoints...).WithNoOfServerSoftwareCertificates(noOfServerSoftwareCertificates).WithServerSoftwareCertificates(serverSoftwareCertificates...).WithServerSignature(serverSignature).WithMaxRequestMessageSize(maxRequestMessageSize)
+func (b *_CreateSessionResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, sessionId NodeId, authenticationToken NodeId, revisedSessionTimeout float64, serverNonce PascalByteString, serverCertificate PascalByteString, serverEndpoints []EndpointDescription, serverSoftwareCertificates []SignedSoftwareCertificate, serverSignature SignatureData, maxRequestMessageSize uint32) CreateSessionResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithSessionId(sessionId).WithAuthenticationToken(authenticationToken).WithRevisedSessionTimeout(revisedSessionTimeout).WithServerNonce(serverNonce).WithServerCertificate(serverCertificate).WithServerEndpoints(serverEndpoints...).WithServerSoftwareCertificates(serverSoftwareCertificates...).WithServerSignature(serverSignature).WithMaxRequestMessageSize(maxRequestMessageSize)
 }
 
-func (b *_CreateSessionResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) CreateSessionResponseBuilder {
+func (b *_CreateSessionResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) CreateSessionResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_CreateSessionResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CreateSessionResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) CreateSessionResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -291,40 +287,30 @@ func (b *_CreateSessionResponseBuilder) WithServerCertificateBuilder(builderSupp
 	return b
 }
 
-func (b *_CreateSessionResponseBuilder) WithNoOfServerEndpoints(noOfServerEndpoints int32) CreateSessionResponseBuilder {
-	b.NoOfServerEndpoints = noOfServerEndpoints
-	return b
-}
-
-func (b *_CreateSessionResponseBuilder) WithServerEndpoints(serverEndpoints ...ExtensionObjectDefinition) CreateSessionResponseBuilder {
+func (b *_CreateSessionResponseBuilder) WithServerEndpoints(serverEndpoints ...EndpointDescription) CreateSessionResponseBuilder {
 	b.ServerEndpoints = serverEndpoints
 	return b
 }
 
-func (b *_CreateSessionResponseBuilder) WithNoOfServerSoftwareCertificates(noOfServerSoftwareCertificates int32) CreateSessionResponseBuilder {
-	b.NoOfServerSoftwareCertificates = noOfServerSoftwareCertificates
-	return b
-}
-
-func (b *_CreateSessionResponseBuilder) WithServerSoftwareCertificates(serverSoftwareCertificates ...ExtensionObjectDefinition) CreateSessionResponseBuilder {
+func (b *_CreateSessionResponseBuilder) WithServerSoftwareCertificates(serverSoftwareCertificates ...SignedSoftwareCertificate) CreateSessionResponseBuilder {
 	b.ServerSoftwareCertificates = serverSoftwareCertificates
 	return b
 }
 
-func (b *_CreateSessionResponseBuilder) WithServerSignature(serverSignature ExtensionObjectDefinition) CreateSessionResponseBuilder {
+func (b *_CreateSessionResponseBuilder) WithServerSignature(serverSignature SignatureData) CreateSessionResponseBuilder {
 	b.ServerSignature = serverSignature
 	return b
 }
 
-func (b *_CreateSessionResponseBuilder) WithServerSignatureBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionResponseBuilder {
-	builder := builderSupplier(b.ServerSignature.CreateExtensionObjectDefinitionBuilder())
+func (b *_CreateSessionResponseBuilder) WithServerSignatureBuilder(builderSupplier func(SignatureDataBuilder) SignatureDataBuilder) CreateSessionResponseBuilder {
+	builder := builderSupplier(b.ServerSignature.CreateSignatureDataBuilder())
 	var err error
 	b.ServerSignature, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "SignatureDataBuilder failed"))
 	}
 	return b
 }
@@ -734,17 +720,15 @@ func (m *_CreateSessionResponse) deepCopy() *_CreateSessionResponse {
 	}
 	_CreateSessionResponseCopy := &_CreateSessionResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		m.SessionId.DeepCopy().(NodeId),
 		m.AuthenticationToken.DeepCopy().(NodeId),
 		m.RevisedSessionTimeout,
 		m.ServerNonce.DeepCopy().(PascalByteString),
 		m.ServerCertificate.DeepCopy().(PascalByteString),
-		m.NoOfServerEndpoints,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ServerEndpoints),
-		m.NoOfServerSoftwareCertificates,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ServerSoftwareCertificates),
-		m.ServerSignature.DeepCopy().(ExtensionObjectDefinition),
+		utils.DeepCopySlice[EndpointDescription, EndpointDescription](m.ServerEndpoints),
+		utils.DeepCopySlice[SignedSoftwareCertificate, SignedSoftwareCertificate](m.ServerSoftwareCertificates),
+		m.ServerSignature.DeepCopy().(SignatureData),
 		m.MaxRequestMessageSize,
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

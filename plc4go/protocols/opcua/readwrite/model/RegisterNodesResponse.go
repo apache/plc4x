@@ -83,13 +83,11 @@ func NewRegisterNodesResponse(responseHeader ResponseHeader, registeredNodeIds [
 type RegisterNodesResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) RegisterNodesResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, registeredNodeIds []NodeId) RegisterNodesResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) RegisterNodesResponseBuilder
+	WithResponseHeader(ResponseHeader) RegisterNodesResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterNodesResponseBuilder
-	// WithNoOfRegisteredNodeIds adds NoOfRegisteredNodeIds (property field)
-	WithNoOfRegisteredNodeIds(int32) RegisterNodesResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) RegisterNodesResponseBuilder
 	// WithRegisteredNodeIds adds RegisteredNodeIds (property field)
 	WithRegisteredNodeIds(...NodeId) RegisterNodesResponseBuilder
 	// Build builds the RegisterNodesResponse or returns an error if something is wrong
@@ -117,30 +115,25 @@ func (b *_RegisterNodesResponseBuilder) setParent(contract ExtensionObjectDefini
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RegisterNodesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) RegisterNodesResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfRegisteredNodeIds(noOfRegisteredNodeIds).WithRegisteredNodeIds(registeredNodeIds...)
+func (b *_RegisterNodesResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, registeredNodeIds []NodeId) RegisterNodesResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithRegisteredNodeIds(registeredNodeIds...)
 }
 
-func (b *_RegisterNodesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) RegisterNodesResponseBuilder {
+func (b *_RegisterNodesResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) RegisterNodesResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_RegisterNodesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterNodesResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterNodesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) RegisterNodesResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_RegisterNodesResponseBuilder) WithNoOfRegisteredNodeIds(noOfRegisteredNodeIds int32) RegisterNodesResponseBuilder {
-	b.NoOfRegisteredNodeIds = noOfRegisteredNodeIds
 	return b
 }
 
@@ -363,8 +356,7 @@ func (m *_RegisterNodesResponse) deepCopy() *_RegisterNodesResponse {
 	}
 	_RegisterNodesResponseCopy := &_RegisterNodesResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfRegisteredNodeIds,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		utils.DeepCopySlice[NodeId, NodeId](m.RegisteredNodeIds),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

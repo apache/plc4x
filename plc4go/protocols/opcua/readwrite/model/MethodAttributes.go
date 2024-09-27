@@ -38,6 +38,7 @@ type MethodAttributes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSpecifiedAttributes returns SpecifiedAttributes (property field)
 	GetSpecifiedAttributes() uint32
@@ -55,6 +56,8 @@ type MethodAttributes interface {
 	GetExecutable() bool
 	// IsMethodAttributes is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMethodAttributes()
+	// CreateBuilder creates a MethodAttributesBuilder
+	CreateMethodAttributesBuilder() MethodAttributesBuilder
 }
 
 // _MethodAttributes is the data-structure of this message
@@ -95,6 +98,181 @@ func NewMethodAttributes(specifiedAttributes uint32, displayName LocalizedText, 
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MethodAttributesBuilder is a builder for MethodAttributes
+type MethodAttributesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, userExecutable bool, executable bool) MethodAttributesBuilder
+	// WithSpecifiedAttributes adds SpecifiedAttributes (property field)
+	WithSpecifiedAttributes(uint32) MethodAttributesBuilder
+	// WithDisplayName adds DisplayName (property field)
+	WithDisplayName(LocalizedText) MethodAttributesBuilder
+	// WithDisplayNameBuilder adds DisplayName (property field) which is build by the builder
+	WithDisplayNameBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) MethodAttributesBuilder
+	// WithDescription adds Description (property field)
+	WithDescription(LocalizedText) MethodAttributesBuilder
+	// WithDescriptionBuilder adds Description (property field) which is build by the builder
+	WithDescriptionBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) MethodAttributesBuilder
+	// WithWriteMask adds WriteMask (property field)
+	WithWriteMask(uint32) MethodAttributesBuilder
+	// WithUserWriteMask adds UserWriteMask (property field)
+	WithUserWriteMask(uint32) MethodAttributesBuilder
+	// WithUserExecutable adds UserExecutable (property field)
+	WithUserExecutable(bool) MethodAttributesBuilder
+	// WithExecutable adds Executable (property field)
+	WithExecutable(bool) MethodAttributesBuilder
+	// Build builds the MethodAttributes or returns an error if something is wrong
+	Build() (MethodAttributes, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MethodAttributes
+}
+
+// NewMethodAttributesBuilder() creates a MethodAttributesBuilder
+func NewMethodAttributesBuilder() MethodAttributesBuilder {
+	return &_MethodAttributesBuilder{_MethodAttributes: new(_MethodAttributes)}
+}
+
+type _MethodAttributesBuilder struct {
+	*_MethodAttributes
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MethodAttributesBuilder) = (*_MethodAttributesBuilder)(nil)
+
+func (b *_MethodAttributesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_MethodAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, userExecutable bool, executable bool) MethodAttributesBuilder {
+	return b.WithSpecifiedAttributes(specifiedAttributes).WithDisplayName(displayName).WithDescription(description).WithWriteMask(writeMask).WithUserWriteMask(userWriteMask).WithUserExecutable(userExecutable).WithExecutable(executable)
+}
+
+func (b *_MethodAttributesBuilder) WithSpecifiedAttributes(specifiedAttributes uint32) MethodAttributesBuilder {
+	b.SpecifiedAttributes = specifiedAttributes
+	return b
+}
+
+func (b *_MethodAttributesBuilder) WithDisplayName(displayName LocalizedText) MethodAttributesBuilder {
+	b.DisplayName = displayName
+	return b
+}
+
+func (b *_MethodAttributesBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) MethodAttributesBuilder {
+	builder := builderSupplier(b.DisplayName.CreateLocalizedTextBuilder())
+	var err error
+	b.DisplayName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MethodAttributesBuilder) WithDescription(description LocalizedText) MethodAttributesBuilder {
+	b.Description = description
+	return b
+}
+
+func (b *_MethodAttributesBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) MethodAttributesBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
+	var err error
+	b.Description, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MethodAttributesBuilder) WithWriteMask(writeMask uint32) MethodAttributesBuilder {
+	b.WriteMask = writeMask
+	return b
+}
+
+func (b *_MethodAttributesBuilder) WithUserWriteMask(userWriteMask uint32) MethodAttributesBuilder {
+	b.UserWriteMask = userWriteMask
+	return b
+}
+
+func (b *_MethodAttributesBuilder) WithUserExecutable(userExecutable bool) MethodAttributesBuilder {
+	b.UserExecutable = userExecutable
+	return b
+}
+
+func (b *_MethodAttributesBuilder) WithExecutable(executable bool) MethodAttributesBuilder {
+	b.Executable = executable
+	return b
+}
+
+func (b *_MethodAttributesBuilder) Build() (MethodAttributes, error) {
+	if b.DisplayName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'displayName' not set"))
+	}
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'description' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MethodAttributes.deepCopy(), nil
+}
+
+func (b *_MethodAttributesBuilder) MustBuild() MethodAttributes {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MethodAttributesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MethodAttributesBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_MethodAttributesBuilder) DeepCopy() any {
+	_copy := b.CreateMethodAttributesBuilder().(*_MethodAttributesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMethodAttributesBuilder creates a MethodAttributesBuilder
+func (b *_MethodAttributes) CreateMethodAttributesBuilder() MethodAttributesBuilder {
+	if b == nil {
+		return NewMethodAttributesBuilder()
+	}
+	return &_MethodAttributesBuilder{_MethodAttributes: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -326,6 +504,29 @@ func (m *_MethodAttributes) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_MethodAttributes) IsMethodAttributes() {}
+
+func (m *_MethodAttributes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MethodAttributes) deepCopy() *_MethodAttributes {
+	if m == nil {
+		return nil
+	}
+	_MethodAttributesCopy := &_MethodAttributes{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SpecifiedAttributes,
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.Description.DeepCopy().(LocalizedText),
+		m.WriteMask,
+		m.UserWriteMask,
+		m.UserExecutable,
+		m.Executable,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MethodAttributesCopy
+}
 
 func (m *_MethodAttributes) String() string {
 	if m == nil {

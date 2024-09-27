@@ -86,15 +86,11 @@ func NewPubSubConfigurationDataType(publishedDataSets []PublishedDataSetDataType
 type PubSubConfigurationDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfPublishedDataSets int32, publishedDataSets []ExtensionObjectDefinition, noOfConnections int32, connections []ExtensionObjectDefinition, enabled bool) PubSubConfigurationDataTypeBuilder
-	// WithNoOfPublishedDataSets adds NoOfPublishedDataSets (property field)
-	WithNoOfPublishedDataSets(int32) PubSubConfigurationDataTypeBuilder
+	WithMandatoryFields(publishedDataSets []PublishedDataSetDataType, connections []PubSubConnectionDataType, enabled bool) PubSubConfigurationDataTypeBuilder
 	// WithPublishedDataSets adds PublishedDataSets (property field)
-	WithPublishedDataSets(...ExtensionObjectDefinition) PubSubConfigurationDataTypeBuilder
-	// WithNoOfConnections adds NoOfConnections (property field)
-	WithNoOfConnections(int32) PubSubConfigurationDataTypeBuilder
+	WithPublishedDataSets(...PublishedDataSetDataType) PubSubConfigurationDataTypeBuilder
 	// WithConnections adds Connections (property field)
-	WithConnections(...ExtensionObjectDefinition) PubSubConfigurationDataTypeBuilder
+	WithConnections(...PubSubConnectionDataType) PubSubConfigurationDataTypeBuilder
 	// WithEnabled adds Enabled (property field)
 	WithEnabled(bool) PubSubConfigurationDataTypeBuilder
 	// Build builds the PubSubConfigurationDataType or returns an error if something is wrong
@@ -122,26 +118,16 @@ func (b *_PubSubConfigurationDataTypeBuilder) setParent(contract ExtensionObject
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_PubSubConfigurationDataTypeBuilder) WithMandatoryFields(noOfPublishedDataSets int32, publishedDataSets []ExtensionObjectDefinition, noOfConnections int32, connections []ExtensionObjectDefinition, enabled bool) PubSubConfigurationDataTypeBuilder {
-	return b.WithNoOfPublishedDataSets(noOfPublishedDataSets).WithPublishedDataSets(publishedDataSets...).WithNoOfConnections(noOfConnections).WithConnections(connections...).WithEnabled(enabled)
+func (b *_PubSubConfigurationDataTypeBuilder) WithMandatoryFields(publishedDataSets []PublishedDataSetDataType, connections []PubSubConnectionDataType, enabled bool) PubSubConfigurationDataTypeBuilder {
+	return b.WithPublishedDataSets(publishedDataSets...).WithConnections(connections...).WithEnabled(enabled)
 }
 
-func (b *_PubSubConfigurationDataTypeBuilder) WithNoOfPublishedDataSets(noOfPublishedDataSets int32) PubSubConfigurationDataTypeBuilder {
-	b.NoOfPublishedDataSets = noOfPublishedDataSets
-	return b
-}
-
-func (b *_PubSubConfigurationDataTypeBuilder) WithPublishedDataSets(publishedDataSets ...ExtensionObjectDefinition) PubSubConfigurationDataTypeBuilder {
+func (b *_PubSubConfigurationDataTypeBuilder) WithPublishedDataSets(publishedDataSets ...PublishedDataSetDataType) PubSubConfigurationDataTypeBuilder {
 	b.PublishedDataSets = publishedDataSets
 	return b
 }
 
-func (b *_PubSubConfigurationDataTypeBuilder) WithNoOfConnections(noOfConnections int32) PubSubConfigurationDataTypeBuilder {
-	b.NoOfConnections = noOfConnections
-	return b
-}
-
-func (b *_PubSubConfigurationDataTypeBuilder) WithConnections(connections ...ExtensionObjectDefinition) PubSubConfigurationDataTypeBuilder {
+func (b *_PubSubConfigurationDataTypeBuilder) WithConnections(connections ...PubSubConnectionDataType) PubSubConfigurationDataTypeBuilder {
 	b.Connections = connections
 	return b
 }
@@ -409,10 +395,8 @@ func (m *_PubSubConfigurationDataType) deepCopy() *_PubSubConfigurationDataType 
 	}
 	_PubSubConfigurationDataTypeCopy := &_PubSubConfigurationDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfPublishedDataSets,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.PublishedDataSets),
-		m.NoOfConnections,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Connections),
+		utils.DeepCopySlice[PublishedDataSetDataType, PublishedDataSetDataType](m.PublishedDataSets),
+		utils.DeepCopySlice[PubSubConnectionDataType, PubSubConnectionDataType](m.Connections),
 		m.Enabled,
 		m.reservedField0,
 	}

@@ -38,6 +38,7 @@ type UadpWriterGroupMessageDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetGroupVersion returns GroupVersion (property field)
 	GetGroupVersion() uint32
@@ -51,6 +52,8 @@ type UadpWriterGroupMessageDataType interface {
 	GetPublishingOffset() []float64
 	// IsUadpWriterGroupMessageDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUadpWriterGroupMessageDataType()
+	// CreateBuilder creates a UadpWriterGroupMessageDataTypeBuilder
+	CreateUadpWriterGroupMessageDataTypeBuilder() UadpWriterGroupMessageDataTypeBuilder
 }
 
 // _UadpWriterGroupMessageDataType is the data-structure of this message
@@ -79,6 +82,125 @@ func NewUadpWriterGroupMessageDataType(groupVersion uint32, dataSetOrdering Data
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UadpWriterGroupMessageDataTypeBuilder is a builder for UadpWriterGroupMessageDataType
+type UadpWriterGroupMessageDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(groupVersion uint32, dataSetOrdering DataSetOrderingType, networkMessageContentMask UadpNetworkMessageContentMask, samplingOffset float64, publishingOffset []float64) UadpWriterGroupMessageDataTypeBuilder
+	// WithGroupVersion adds GroupVersion (property field)
+	WithGroupVersion(uint32) UadpWriterGroupMessageDataTypeBuilder
+	// WithDataSetOrdering adds DataSetOrdering (property field)
+	WithDataSetOrdering(DataSetOrderingType) UadpWriterGroupMessageDataTypeBuilder
+	// WithNetworkMessageContentMask adds NetworkMessageContentMask (property field)
+	WithNetworkMessageContentMask(UadpNetworkMessageContentMask) UadpWriterGroupMessageDataTypeBuilder
+	// WithSamplingOffset adds SamplingOffset (property field)
+	WithSamplingOffset(float64) UadpWriterGroupMessageDataTypeBuilder
+	// WithPublishingOffset adds PublishingOffset (property field)
+	WithPublishingOffset(...float64) UadpWriterGroupMessageDataTypeBuilder
+	// Build builds the UadpWriterGroupMessageDataType or returns an error if something is wrong
+	Build() (UadpWriterGroupMessageDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UadpWriterGroupMessageDataType
+}
+
+// NewUadpWriterGroupMessageDataTypeBuilder() creates a UadpWriterGroupMessageDataTypeBuilder
+func NewUadpWriterGroupMessageDataTypeBuilder() UadpWriterGroupMessageDataTypeBuilder {
+	return &_UadpWriterGroupMessageDataTypeBuilder{_UadpWriterGroupMessageDataType: new(_UadpWriterGroupMessageDataType)}
+}
+
+type _UadpWriterGroupMessageDataTypeBuilder struct {
+	*_UadpWriterGroupMessageDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (UadpWriterGroupMessageDataTypeBuilder) = (*_UadpWriterGroupMessageDataTypeBuilder)(nil)
+
+func (b *_UadpWriterGroupMessageDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_UadpWriterGroupMessageDataTypeBuilder) WithMandatoryFields(groupVersion uint32, dataSetOrdering DataSetOrderingType, networkMessageContentMask UadpNetworkMessageContentMask, samplingOffset float64, publishingOffset []float64) UadpWriterGroupMessageDataTypeBuilder {
+	return b.WithGroupVersion(groupVersion).WithDataSetOrdering(dataSetOrdering).WithNetworkMessageContentMask(networkMessageContentMask).WithSamplingOffset(samplingOffset).WithPublishingOffset(publishingOffset...)
+}
+
+func (b *_UadpWriterGroupMessageDataTypeBuilder) WithGroupVersion(groupVersion uint32) UadpWriterGroupMessageDataTypeBuilder {
+	b.GroupVersion = groupVersion
+	return b
+}
+
+func (b *_UadpWriterGroupMessageDataTypeBuilder) WithDataSetOrdering(dataSetOrdering DataSetOrderingType) UadpWriterGroupMessageDataTypeBuilder {
+	b.DataSetOrdering = dataSetOrdering
+	return b
+}
+
+func (b *_UadpWriterGroupMessageDataTypeBuilder) WithNetworkMessageContentMask(networkMessageContentMask UadpNetworkMessageContentMask) UadpWriterGroupMessageDataTypeBuilder {
+	b.NetworkMessageContentMask = networkMessageContentMask
+	return b
+}
+
+func (b *_UadpWriterGroupMessageDataTypeBuilder) WithSamplingOffset(samplingOffset float64) UadpWriterGroupMessageDataTypeBuilder {
+	b.SamplingOffset = samplingOffset
+	return b
+}
+
+func (b *_UadpWriterGroupMessageDataTypeBuilder) WithPublishingOffset(publishingOffset ...float64) UadpWriterGroupMessageDataTypeBuilder {
+	b.PublishingOffset = publishingOffset
+	return b
+}
+
+func (b *_UadpWriterGroupMessageDataTypeBuilder) Build() (UadpWriterGroupMessageDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._UadpWriterGroupMessageDataType.deepCopy(), nil
+}
+
+func (b *_UadpWriterGroupMessageDataTypeBuilder) MustBuild() UadpWriterGroupMessageDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UadpWriterGroupMessageDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UadpWriterGroupMessageDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_UadpWriterGroupMessageDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateUadpWriterGroupMessageDataTypeBuilder().(*_UadpWriterGroupMessageDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateUadpWriterGroupMessageDataTypeBuilder creates a UadpWriterGroupMessageDataTypeBuilder
+func (b *_UadpWriterGroupMessageDataType) CreateUadpWriterGroupMessageDataTypeBuilder() UadpWriterGroupMessageDataTypeBuilder {
+	if b == nil {
+		return NewUadpWriterGroupMessageDataTypeBuilder()
+	}
+	return &_UadpWriterGroupMessageDataTypeBuilder{_UadpWriterGroupMessageDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -278,6 +400,26 @@ func (m *_UadpWriterGroupMessageDataType) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_UadpWriterGroupMessageDataType) IsUadpWriterGroupMessageDataType() {}
+
+func (m *_UadpWriterGroupMessageDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UadpWriterGroupMessageDataType) deepCopy() *_UadpWriterGroupMessageDataType {
+	if m == nil {
+		return nil
+	}
+	_UadpWriterGroupMessageDataTypeCopy := &_UadpWriterGroupMessageDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.GroupVersion,
+		m.DataSetOrdering,
+		m.NetworkMessageContentMask,
+		m.SamplingOffset,
+		utils.DeepCopySlice[float64, float64](m.PublishingOffset),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UadpWriterGroupMessageDataTypeCopy
+}
 
 func (m *_UadpWriterGroupMessageDataType) String() string {
 	if m == nil {

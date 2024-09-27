@@ -80,13 +80,9 @@ func NewContentFilterResult(elementResults []ContentFilterElementResult, element
 type ContentFilterResultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfElementResults int32, elementResults []ExtensionObjectDefinition, noOfElementDiagnosticInfos int32, elementDiagnosticInfos []DiagnosticInfo) ContentFilterResultBuilder
-	// WithNoOfElementResults adds NoOfElementResults (property field)
-	WithNoOfElementResults(int32) ContentFilterResultBuilder
+	WithMandatoryFields(elementResults []ContentFilterElementResult, elementDiagnosticInfos []DiagnosticInfo) ContentFilterResultBuilder
 	// WithElementResults adds ElementResults (property field)
-	WithElementResults(...ExtensionObjectDefinition) ContentFilterResultBuilder
-	// WithNoOfElementDiagnosticInfos adds NoOfElementDiagnosticInfos (property field)
-	WithNoOfElementDiagnosticInfos(int32) ContentFilterResultBuilder
+	WithElementResults(...ContentFilterElementResult) ContentFilterResultBuilder
 	// WithElementDiagnosticInfos adds ElementDiagnosticInfos (property field)
 	WithElementDiagnosticInfos(...DiagnosticInfo) ContentFilterResultBuilder
 	// Build builds the ContentFilterResult or returns an error if something is wrong
@@ -114,22 +110,12 @@ func (b *_ContentFilterResultBuilder) setParent(contract ExtensionObjectDefiniti
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ContentFilterResultBuilder) WithMandatoryFields(noOfElementResults int32, elementResults []ExtensionObjectDefinition, noOfElementDiagnosticInfos int32, elementDiagnosticInfos []DiagnosticInfo) ContentFilterResultBuilder {
-	return b.WithNoOfElementResults(noOfElementResults).WithElementResults(elementResults...).WithNoOfElementDiagnosticInfos(noOfElementDiagnosticInfos).WithElementDiagnosticInfos(elementDiagnosticInfos...)
+func (b *_ContentFilterResultBuilder) WithMandatoryFields(elementResults []ContentFilterElementResult, elementDiagnosticInfos []DiagnosticInfo) ContentFilterResultBuilder {
+	return b.WithElementResults(elementResults...).WithElementDiagnosticInfos(elementDiagnosticInfos...)
 }
 
-func (b *_ContentFilterResultBuilder) WithNoOfElementResults(noOfElementResults int32) ContentFilterResultBuilder {
-	b.NoOfElementResults = noOfElementResults
-	return b
-}
-
-func (b *_ContentFilterResultBuilder) WithElementResults(elementResults ...ExtensionObjectDefinition) ContentFilterResultBuilder {
+func (b *_ContentFilterResultBuilder) WithElementResults(elementResults ...ContentFilterElementResult) ContentFilterResultBuilder {
 	b.ElementResults = elementResults
-	return b
-}
-
-func (b *_ContentFilterResultBuilder) WithNoOfElementDiagnosticInfos(noOfElementDiagnosticInfos int32) ContentFilterResultBuilder {
-	b.NoOfElementDiagnosticInfos = noOfElementDiagnosticInfos
 	return b
 }
 
@@ -366,9 +352,7 @@ func (m *_ContentFilterResult) deepCopy() *_ContentFilterResult {
 	}
 	_ContentFilterResultCopy := &_ContentFilterResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfElementResults,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ElementResults),
-		m.NoOfElementDiagnosticInfos,
+		utils.DeepCopySlice[ContentFilterElementResult, ContentFilterElementResult](m.ElementResults),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.ElementDiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

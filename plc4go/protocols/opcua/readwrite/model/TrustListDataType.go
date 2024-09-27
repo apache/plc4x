@@ -92,23 +92,15 @@ func NewTrustListDataType(specifiedLists uint32, trustedCertificates []PascalByt
 type TrustListDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(specifiedLists uint32, noOfTrustedCertificates int32, trustedCertificates []PascalByteString, noOfTrustedCrls int32, trustedCrls []PascalByteString, noOfIssuerCertificates int32, issuerCertificates []PascalByteString, noOfIssuerCrls int32, issuerCrls []PascalByteString) TrustListDataTypeBuilder
+	WithMandatoryFields(specifiedLists uint32, trustedCertificates []PascalByteString, trustedCrls []PascalByteString, issuerCertificates []PascalByteString, issuerCrls []PascalByteString) TrustListDataTypeBuilder
 	// WithSpecifiedLists adds SpecifiedLists (property field)
 	WithSpecifiedLists(uint32) TrustListDataTypeBuilder
-	// WithNoOfTrustedCertificates adds NoOfTrustedCertificates (property field)
-	WithNoOfTrustedCertificates(int32) TrustListDataTypeBuilder
 	// WithTrustedCertificates adds TrustedCertificates (property field)
 	WithTrustedCertificates(...PascalByteString) TrustListDataTypeBuilder
-	// WithNoOfTrustedCrls adds NoOfTrustedCrls (property field)
-	WithNoOfTrustedCrls(int32) TrustListDataTypeBuilder
 	// WithTrustedCrls adds TrustedCrls (property field)
 	WithTrustedCrls(...PascalByteString) TrustListDataTypeBuilder
-	// WithNoOfIssuerCertificates adds NoOfIssuerCertificates (property field)
-	WithNoOfIssuerCertificates(int32) TrustListDataTypeBuilder
 	// WithIssuerCertificates adds IssuerCertificates (property field)
 	WithIssuerCertificates(...PascalByteString) TrustListDataTypeBuilder
-	// WithNoOfIssuerCrls adds NoOfIssuerCrls (property field)
-	WithNoOfIssuerCrls(int32) TrustListDataTypeBuilder
 	// WithIssuerCrls adds IssuerCrls (property field)
 	WithIssuerCrls(...PascalByteString) TrustListDataTypeBuilder
 	// Build builds the TrustListDataType or returns an error if something is wrong
@@ -136,17 +128,12 @@ func (b *_TrustListDataTypeBuilder) setParent(contract ExtensionObjectDefinition
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_TrustListDataTypeBuilder) WithMandatoryFields(specifiedLists uint32, noOfTrustedCertificates int32, trustedCertificates []PascalByteString, noOfTrustedCrls int32, trustedCrls []PascalByteString, noOfIssuerCertificates int32, issuerCertificates []PascalByteString, noOfIssuerCrls int32, issuerCrls []PascalByteString) TrustListDataTypeBuilder {
-	return b.WithSpecifiedLists(specifiedLists).WithNoOfTrustedCertificates(noOfTrustedCertificates).WithTrustedCertificates(trustedCertificates...).WithNoOfTrustedCrls(noOfTrustedCrls).WithTrustedCrls(trustedCrls...).WithNoOfIssuerCertificates(noOfIssuerCertificates).WithIssuerCertificates(issuerCertificates...).WithNoOfIssuerCrls(noOfIssuerCrls).WithIssuerCrls(issuerCrls...)
+func (b *_TrustListDataTypeBuilder) WithMandatoryFields(specifiedLists uint32, trustedCertificates []PascalByteString, trustedCrls []PascalByteString, issuerCertificates []PascalByteString, issuerCrls []PascalByteString) TrustListDataTypeBuilder {
+	return b.WithSpecifiedLists(specifiedLists).WithTrustedCertificates(trustedCertificates...).WithTrustedCrls(trustedCrls...).WithIssuerCertificates(issuerCertificates...).WithIssuerCrls(issuerCrls...)
 }
 
 func (b *_TrustListDataTypeBuilder) WithSpecifiedLists(specifiedLists uint32) TrustListDataTypeBuilder {
 	b.SpecifiedLists = specifiedLists
-	return b
-}
-
-func (b *_TrustListDataTypeBuilder) WithNoOfTrustedCertificates(noOfTrustedCertificates int32) TrustListDataTypeBuilder {
-	b.NoOfTrustedCertificates = noOfTrustedCertificates
 	return b
 }
 
@@ -155,28 +142,13 @@ func (b *_TrustListDataTypeBuilder) WithTrustedCertificates(trustedCertificates 
 	return b
 }
 
-func (b *_TrustListDataTypeBuilder) WithNoOfTrustedCrls(noOfTrustedCrls int32) TrustListDataTypeBuilder {
-	b.NoOfTrustedCrls = noOfTrustedCrls
-	return b
-}
-
 func (b *_TrustListDataTypeBuilder) WithTrustedCrls(trustedCrls ...PascalByteString) TrustListDataTypeBuilder {
 	b.TrustedCrls = trustedCrls
 	return b
 }
 
-func (b *_TrustListDataTypeBuilder) WithNoOfIssuerCertificates(noOfIssuerCertificates int32) TrustListDataTypeBuilder {
-	b.NoOfIssuerCertificates = noOfIssuerCertificates
-	return b
-}
-
 func (b *_TrustListDataTypeBuilder) WithIssuerCertificates(issuerCertificates ...PascalByteString) TrustListDataTypeBuilder {
 	b.IssuerCertificates = issuerCertificates
-	return b
-}
-
-func (b *_TrustListDataTypeBuilder) WithNoOfIssuerCrls(noOfIssuerCrls int32) TrustListDataTypeBuilder {
-	b.NoOfIssuerCrls = noOfIssuerCrls
 	return b
 }
 
@@ -505,13 +477,9 @@ func (m *_TrustListDataType) deepCopy() *_TrustListDataType {
 	_TrustListDataTypeCopy := &_TrustListDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SpecifiedLists,
-		m.NoOfTrustedCertificates,
 		utils.DeepCopySlice[PascalByteString, PascalByteString](m.TrustedCertificates),
-		m.NoOfTrustedCrls,
 		utils.DeepCopySlice[PascalByteString, PascalByteString](m.TrustedCrls),
-		m.NoOfIssuerCertificates,
 		utils.DeepCopySlice[PascalByteString, PascalByteString](m.IssuerCertificates),
-		m.NoOfIssuerCrls,
 		utils.DeepCopySlice[PascalByteString, PascalByteString](m.IssuerCrls),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -87,17 +87,13 @@ func NewReadResponse(responseHeader ResponseHeader, results []DataValue, diagnos
 type ReadResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []DataValue, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) ReadResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, results []DataValue, diagnosticInfos []DiagnosticInfo) ReadResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) ReadResponseBuilder
+	WithResponseHeader(ResponseHeader) ReadResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ReadResponseBuilder
-	// WithNoOfResults adds NoOfResults (property field)
-	WithNoOfResults(int32) ReadResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) ReadResponseBuilder
 	// WithResults adds Results (property field)
 	WithResults(...DataValue) ReadResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) ReadResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) ReadResponseBuilder
 	// Build builds the ReadResponse or returns an error if something is wrong
@@ -125,40 +121,30 @@ func (b *_ReadResponseBuilder) setParent(contract ExtensionObjectDefinitionContr
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ReadResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []DataValue, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) ReadResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_ReadResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []DataValue, diagnosticInfos []DiagnosticInfo) ReadResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithResults(results...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_ReadResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) ReadResponseBuilder {
+func (b *_ReadResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) ReadResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_ReadResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ReadResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_ReadResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) ReadResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_ReadResponseBuilder) WithNoOfResults(noOfResults int32) ReadResponseBuilder {
-	b.NoOfResults = noOfResults
 	return b
 }
 
 func (b *_ReadResponseBuilder) WithResults(results ...DataValue) ReadResponseBuilder {
 	b.Results = results
-	return b
-}
-
-func (b *_ReadResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) ReadResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -418,10 +404,8 @@ func (m *_ReadResponse) deepCopy() *_ReadResponse {
 	}
 	_ReadResponseCopy := &_ReadResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfResults,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		utils.DeepCopySlice[DataValue, DataValue](m.Results),
-		m.NoOfDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

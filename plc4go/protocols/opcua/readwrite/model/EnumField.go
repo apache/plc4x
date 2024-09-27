@@ -38,6 +38,7 @@ type EnumField interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetValue returns Value (property field)
 	GetValue() int64
@@ -49,6 +50,8 @@ type EnumField interface {
 	GetName() PascalString
 	// IsEnumField is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEnumField()
+	// CreateBuilder creates a EnumFieldBuilder
+	CreateEnumFieldBuilder() EnumFieldBuilder
 }
 
 // _EnumField is the data-structure of this message
@@ -84,6 +87,181 @@ func NewEnumField(value int64, displayName LocalizedText, description LocalizedT
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EnumFieldBuilder is a builder for EnumField
+type EnumFieldBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value int64, displayName LocalizedText, description LocalizedText, name PascalString) EnumFieldBuilder
+	// WithValue adds Value (property field)
+	WithValue(int64) EnumFieldBuilder
+	// WithDisplayName adds DisplayName (property field)
+	WithDisplayName(LocalizedText) EnumFieldBuilder
+	// WithDisplayNameBuilder adds DisplayName (property field) which is build by the builder
+	WithDisplayNameBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) EnumFieldBuilder
+	// WithDescription adds Description (property field)
+	WithDescription(LocalizedText) EnumFieldBuilder
+	// WithDescriptionBuilder adds Description (property field) which is build by the builder
+	WithDescriptionBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) EnumFieldBuilder
+	// WithName adds Name (property field)
+	WithName(PascalString) EnumFieldBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(PascalStringBuilder) PascalStringBuilder) EnumFieldBuilder
+	// Build builds the EnumField or returns an error if something is wrong
+	Build() (EnumField, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EnumField
+}
+
+// NewEnumFieldBuilder() creates a EnumFieldBuilder
+func NewEnumFieldBuilder() EnumFieldBuilder {
+	return &_EnumFieldBuilder{_EnumField: new(_EnumField)}
+}
+
+type _EnumFieldBuilder struct {
+	*_EnumField
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (EnumFieldBuilder) = (*_EnumFieldBuilder)(nil)
+
+func (b *_EnumFieldBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_EnumFieldBuilder) WithMandatoryFields(value int64, displayName LocalizedText, description LocalizedText, name PascalString) EnumFieldBuilder {
+	return b.WithValue(value).WithDisplayName(displayName).WithDescription(description).WithName(name)
+}
+
+func (b *_EnumFieldBuilder) WithValue(value int64) EnumFieldBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_EnumFieldBuilder) WithDisplayName(displayName LocalizedText) EnumFieldBuilder {
+	b.DisplayName = displayName
+	return b
+}
+
+func (b *_EnumFieldBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) EnumFieldBuilder {
+	builder := builderSupplier(b.DisplayName.CreateLocalizedTextBuilder())
+	var err error
+	b.DisplayName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_EnumFieldBuilder) WithDescription(description LocalizedText) EnumFieldBuilder {
+	b.Description = description
+	return b
+}
+
+func (b *_EnumFieldBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) EnumFieldBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
+	var err error
+	b.Description, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_EnumFieldBuilder) WithName(name PascalString) EnumFieldBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_EnumFieldBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EnumFieldBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
+	var err error
+	b.Name, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_EnumFieldBuilder) Build() (EnumField, error) {
+	if b.DisplayName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'displayName' not set"))
+	}
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'description' not set"))
+	}
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._EnumField.deepCopy(), nil
+}
+
+func (b *_EnumFieldBuilder) MustBuild() EnumField {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EnumFieldBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EnumFieldBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_EnumFieldBuilder) DeepCopy() any {
+	_copy := b.CreateEnumFieldBuilder().(*_EnumFieldBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateEnumFieldBuilder creates a EnumFieldBuilder
+func (b *_EnumField) CreateEnumFieldBuilder() EnumFieldBuilder {
+	if b == nil {
+		return NewEnumFieldBuilder()
+	}
+	return &_EnumFieldBuilder{_EnumField: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -251,6 +429,25 @@ func (m *_EnumField) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_EnumField) IsEnumField() {}
+
+func (m *_EnumField) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EnumField) deepCopy() *_EnumField {
+	if m == nil {
+		return nil
+	}
+	_EnumFieldCopy := &_EnumField{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Value,
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.Description.DeepCopy().(LocalizedText),
+		m.Name.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EnumFieldCopy
+}
 
 func (m *_EnumField) String() string {
 	if m == nil {

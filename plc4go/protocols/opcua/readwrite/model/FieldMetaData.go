@@ -124,7 +124,7 @@ func NewFieldMetaData(name PascalString, description LocalizedText, fieldFlags D
 type FieldMetaDataBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(name PascalString, description LocalizedText, fieldFlags DataSetFieldFlags, builtInType uint8, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, dataSetFieldId GuidValue, noOfProperties int32, properties []ExtensionObjectDefinition) FieldMetaDataBuilder
+	WithMandatoryFields(name PascalString, description LocalizedText, fieldFlags DataSetFieldFlags, builtInType uint8, dataType NodeId, valueRank int32, arrayDimensions []uint32, maxStringLength uint32, dataSetFieldId GuidValue, properties []KeyValuePair) FieldMetaDataBuilder
 	// WithName adds Name (property field)
 	WithName(PascalString) FieldMetaDataBuilder
 	// WithNameBuilder adds Name (property field) which is build by the builder
@@ -143,8 +143,6 @@ type FieldMetaDataBuilder interface {
 	WithDataTypeBuilder(func(NodeIdBuilder) NodeIdBuilder) FieldMetaDataBuilder
 	// WithValueRank adds ValueRank (property field)
 	WithValueRank(int32) FieldMetaDataBuilder
-	// WithNoOfArrayDimensions adds NoOfArrayDimensions (property field)
-	WithNoOfArrayDimensions(int32) FieldMetaDataBuilder
 	// WithArrayDimensions adds ArrayDimensions (property field)
 	WithArrayDimensions(...uint32) FieldMetaDataBuilder
 	// WithMaxStringLength adds MaxStringLength (property field)
@@ -153,10 +151,8 @@ type FieldMetaDataBuilder interface {
 	WithDataSetFieldId(GuidValue) FieldMetaDataBuilder
 	// WithDataSetFieldIdBuilder adds DataSetFieldId (property field) which is build by the builder
 	WithDataSetFieldIdBuilder(func(GuidValueBuilder) GuidValueBuilder) FieldMetaDataBuilder
-	// WithNoOfProperties adds NoOfProperties (property field)
-	WithNoOfProperties(int32) FieldMetaDataBuilder
 	// WithProperties adds Properties (property field)
-	WithProperties(...ExtensionObjectDefinition) FieldMetaDataBuilder
+	WithProperties(...KeyValuePair) FieldMetaDataBuilder
 	// Build builds the FieldMetaData or returns an error if something is wrong
 	Build() (FieldMetaData, error)
 	// MustBuild does the same as Build but panics on error
@@ -182,8 +178,8 @@ func (b *_FieldMetaDataBuilder) setParent(contract ExtensionObjectDefinitionCont
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_FieldMetaDataBuilder) WithMandatoryFields(name PascalString, description LocalizedText, fieldFlags DataSetFieldFlags, builtInType uint8, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, dataSetFieldId GuidValue, noOfProperties int32, properties []ExtensionObjectDefinition) FieldMetaDataBuilder {
-	return b.WithName(name).WithDescription(description).WithFieldFlags(fieldFlags).WithBuiltInType(builtInType).WithDataType(dataType).WithValueRank(valueRank).WithNoOfArrayDimensions(noOfArrayDimensions).WithArrayDimensions(arrayDimensions...).WithMaxStringLength(maxStringLength).WithDataSetFieldId(dataSetFieldId).WithNoOfProperties(noOfProperties).WithProperties(properties...)
+func (b *_FieldMetaDataBuilder) WithMandatoryFields(name PascalString, description LocalizedText, fieldFlags DataSetFieldFlags, builtInType uint8, dataType NodeId, valueRank int32, arrayDimensions []uint32, maxStringLength uint32, dataSetFieldId GuidValue, properties []KeyValuePair) FieldMetaDataBuilder {
+	return b.WithName(name).WithDescription(description).WithFieldFlags(fieldFlags).WithBuiltInType(builtInType).WithDataType(dataType).WithValueRank(valueRank).WithArrayDimensions(arrayDimensions...).WithMaxStringLength(maxStringLength).WithDataSetFieldId(dataSetFieldId).WithProperties(properties...)
 }
 
 func (b *_FieldMetaDataBuilder) WithName(name PascalString) FieldMetaDataBuilder {
@@ -255,11 +251,6 @@ func (b *_FieldMetaDataBuilder) WithValueRank(valueRank int32) FieldMetaDataBuil
 	return b
 }
 
-func (b *_FieldMetaDataBuilder) WithNoOfArrayDimensions(noOfArrayDimensions int32) FieldMetaDataBuilder {
-	b.NoOfArrayDimensions = noOfArrayDimensions
-	return b
-}
-
 func (b *_FieldMetaDataBuilder) WithArrayDimensions(arrayDimensions ...uint32) FieldMetaDataBuilder {
 	b.ArrayDimensions = arrayDimensions
 	return b
@@ -288,12 +279,7 @@ func (b *_FieldMetaDataBuilder) WithDataSetFieldIdBuilder(builderSupplier func(G
 	return b
 }
 
-func (b *_FieldMetaDataBuilder) WithNoOfProperties(noOfProperties int32) FieldMetaDataBuilder {
-	b.NoOfProperties = noOfProperties
-	return b
-}
-
-func (b *_FieldMetaDataBuilder) WithProperties(properties ...ExtensionObjectDefinition) FieldMetaDataBuilder {
+func (b *_FieldMetaDataBuilder) WithProperties(properties ...KeyValuePair) FieldMetaDataBuilder {
 	b.Properties = properties
 	return b
 }
@@ -687,12 +673,10 @@ func (m *_FieldMetaData) deepCopy() *_FieldMetaData {
 		m.BuiltInType,
 		m.DataType.DeepCopy().(NodeId),
 		m.ValueRank,
-		m.NoOfArrayDimensions,
 		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
 		m.MaxStringLength,
 		m.DataSetFieldId.DeepCopy().(GuidValue),
-		m.NoOfProperties,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Properties),
+		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.Properties),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _FieldMetaDataCopy

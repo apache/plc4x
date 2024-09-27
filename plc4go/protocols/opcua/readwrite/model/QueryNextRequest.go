@@ -92,11 +92,11 @@ func NewQueryNextRequest(requestHeader RequestHeader, releaseContinuationPoint b
 type QueryNextRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, releaseContinuationPoint bool, continuationPoint PascalByteString) QueryNextRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, releaseContinuationPoint bool, continuationPoint PascalByteString) QueryNextRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) QueryNextRequestBuilder
+	WithRequestHeader(RequestHeader) QueryNextRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryNextRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) QueryNextRequestBuilder
 	// WithReleaseContinuationPoint adds ReleaseContinuationPoint (property field)
 	WithReleaseContinuationPoint(bool) QueryNextRequestBuilder
 	// WithContinuationPoint adds ContinuationPoint (property field)
@@ -128,24 +128,24 @@ func (b *_QueryNextRequestBuilder) setParent(contract ExtensionObjectDefinitionC
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_QueryNextRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, releaseContinuationPoint bool, continuationPoint PascalByteString) QueryNextRequestBuilder {
+func (b *_QueryNextRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, releaseContinuationPoint bool, continuationPoint PascalByteString) QueryNextRequestBuilder {
 	return b.WithRequestHeader(requestHeader).WithReleaseContinuationPoint(releaseContinuationPoint).WithContinuationPoint(continuationPoint)
 }
 
-func (b *_QueryNextRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) QueryNextRequestBuilder {
+func (b *_QueryNextRequestBuilder) WithRequestHeader(requestHeader RequestHeader) QueryNextRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_QueryNextRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryNextRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_QueryNextRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) QueryNextRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -403,7 +403,7 @@ func (m *_QueryNextRequest) deepCopy() *_QueryNextRequest {
 	}
 	_QueryNextRequestCopy := &_QueryNextRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.ReleaseContinuationPoint,
 		m.ContinuationPoint.DeepCopy().(PascalByteString),
 		m.reservedField0,

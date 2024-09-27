@@ -119,15 +119,15 @@ func NewEndpointDescription(endpointUrl PascalString, server ApplicationDescript
 type EndpointDescriptionBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(endpointUrl PascalString, server ExtensionObjectDefinition, serverCertificate PascalByteString, securityMode MessageSecurityMode, securityPolicyUri PascalString, noOfUserIdentityTokens int32, userIdentityTokens []ExtensionObjectDefinition, transportProfileUri PascalString, securityLevel uint8) EndpointDescriptionBuilder
+	WithMandatoryFields(endpointUrl PascalString, server ApplicationDescription, serverCertificate PascalByteString, securityMode MessageSecurityMode, securityPolicyUri PascalString, userIdentityTokens []UserTokenPolicy, transportProfileUri PascalString, securityLevel uint8) EndpointDescriptionBuilder
 	// WithEndpointUrl adds EndpointUrl (property field)
 	WithEndpointUrl(PascalString) EndpointDescriptionBuilder
 	// WithEndpointUrlBuilder adds EndpointUrl (property field) which is build by the builder
 	WithEndpointUrlBuilder(func(PascalStringBuilder) PascalStringBuilder) EndpointDescriptionBuilder
 	// WithServer adds Server (property field)
-	WithServer(ExtensionObjectDefinition) EndpointDescriptionBuilder
+	WithServer(ApplicationDescription) EndpointDescriptionBuilder
 	// WithServerBuilder adds Server (property field) which is build by the builder
-	WithServerBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) EndpointDescriptionBuilder
+	WithServerBuilder(func(ApplicationDescriptionBuilder) ApplicationDescriptionBuilder) EndpointDescriptionBuilder
 	// WithServerCertificate adds ServerCertificate (property field)
 	WithServerCertificate(PascalByteString) EndpointDescriptionBuilder
 	// WithServerCertificateBuilder adds ServerCertificate (property field) which is build by the builder
@@ -138,10 +138,8 @@ type EndpointDescriptionBuilder interface {
 	WithSecurityPolicyUri(PascalString) EndpointDescriptionBuilder
 	// WithSecurityPolicyUriBuilder adds SecurityPolicyUri (property field) which is build by the builder
 	WithSecurityPolicyUriBuilder(func(PascalStringBuilder) PascalStringBuilder) EndpointDescriptionBuilder
-	// WithNoOfUserIdentityTokens adds NoOfUserIdentityTokens (property field)
-	WithNoOfUserIdentityTokens(int32) EndpointDescriptionBuilder
 	// WithUserIdentityTokens adds UserIdentityTokens (property field)
-	WithUserIdentityTokens(...ExtensionObjectDefinition) EndpointDescriptionBuilder
+	WithUserIdentityTokens(...UserTokenPolicy) EndpointDescriptionBuilder
 	// WithTransportProfileUri adds TransportProfileUri (property field)
 	WithTransportProfileUri(PascalString) EndpointDescriptionBuilder
 	// WithTransportProfileUriBuilder adds TransportProfileUri (property field) which is build by the builder
@@ -173,8 +171,8 @@ func (b *_EndpointDescriptionBuilder) setParent(contract ExtensionObjectDefiniti
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_EndpointDescriptionBuilder) WithMandatoryFields(endpointUrl PascalString, server ExtensionObjectDefinition, serverCertificate PascalByteString, securityMode MessageSecurityMode, securityPolicyUri PascalString, noOfUserIdentityTokens int32, userIdentityTokens []ExtensionObjectDefinition, transportProfileUri PascalString, securityLevel uint8) EndpointDescriptionBuilder {
-	return b.WithEndpointUrl(endpointUrl).WithServer(server).WithServerCertificate(serverCertificate).WithSecurityMode(securityMode).WithSecurityPolicyUri(securityPolicyUri).WithNoOfUserIdentityTokens(noOfUserIdentityTokens).WithUserIdentityTokens(userIdentityTokens...).WithTransportProfileUri(transportProfileUri).WithSecurityLevel(securityLevel)
+func (b *_EndpointDescriptionBuilder) WithMandatoryFields(endpointUrl PascalString, server ApplicationDescription, serverCertificate PascalByteString, securityMode MessageSecurityMode, securityPolicyUri PascalString, userIdentityTokens []UserTokenPolicy, transportProfileUri PascalString, securityLevel uint8) EndpointDescriptionBuilder {
+	return b.WithEndpointUrl(endpointUrl).WithServer(server).WithServerCertificate(serverCertificate).WithSecurityMode(securityMode).WithSecurityPolicyUri(securityPolicyUri).WithUserIdentityTokens(userIdentityTokens...).WithTransportProfileUri(transportProfileUri).WithSecurityLevel(securityLevel)
 }
 
 func (b *_EndpointDescriptionBuilder) WithEndpointUrl(endpointUrl PascalString) EndpointDescriptionBuilder {
@@ -195,20 +193,20 @@ func (b *_EndpointDescriptionBuilder) WithEndpointUrlBuilder(builderSupplier fun
 	return b
 }
 
-func (b *_EndpointDescriptionBuilder) WithServer(server ExtensionObjectDefinition) EndpointDescriptionBuilder {
+func (b *_EndpointDescriptionBuilder) WithServer(server ApplicationDescription) EndpointDescriptionBuilder {
 	b.Server = server
 	return b
 }
 
-func (b *_EndpointDescriptionBuilder) WithServerBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) EndpointDescriptionBuilder {
-	builder := builderSupplier(b.Server.CreateExtensionObjectDefinitionBuilder())
+func (b *_EndpointDescriptionBuilder) WithServerBuilder(builderSupplier func(ApplicationDescriptionBuilder) ApplicationDescriptionBuilder) EndpointDescriptionBuilder {
+	builder := builderSupplier(b.Server.CreateApplicationDescriptionBuilder())
 	var err error
 	b.Server, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ApplicationDescriptionBuilder failed"))
 	}
 	return b
 }
@@ -254,12 +252,7 @@ func (b *_EndpointDescriptionBuilder) WithSecurityPolicyUriBuilder(builderSuppli
 	return b
 }
 
-func (b *_EndpointDescriptionBuilder) WithNoOfUserIdentityTokens(noOfUserIdentityTokens int32) EndpointDescriptionBuilder {
-	b.NoOfUserIdentityTokens = noOfUserIdentityTokens
-	return b
-}
-
-func (b *_EndpointDescriptionBuilder) WithUserIdentityTokens(userIdentityTokens ...ExtensionObjectDefinition) EndpointDescriptionBuilder {
+func (b *_EndpointDescriptionBuilder) WithUserIdentityTokens(userIdentityTokens ...UserTokenPolicy) EndpointDescriptionBuilder {
 	b.UserIdentityTokens = userIdentityTokens
 	return b
 }
@@ -628,12 +621,11 @@ func (m *_EndpointDescription) deepCopy() *_EndpointDescription {
 	_EndpointDescriptionCopy := &_EndpointDescription{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.EndpointUrl.DeepCopy().(PascalString),
-		m.Server.DeepCopy().(ExtensionObjectDefinition),
+		m.Server.DeepCopy().(ApplicationDescription),
 		m.ServerCertificate.DeepCopy().(PascalByteString),
 		m.SecurityMode,
 		m.SecurityPolicyUri.DeepCopy().(PascalString),
-		m.NoOfUserIdentityTokens,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.UserIdentityTokens),
+		utils.DeepCopySlice[UserTokenPolicy, UserTokenPolicy](m.UserIdentityTokens),
 		m.TransportProfileUri.DeepCopy().(PascalString),
 		m.SecurityLevel,
 	}

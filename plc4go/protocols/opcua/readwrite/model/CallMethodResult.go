@@ -91,21 +91,15 @@ func NewCallMethodResult(statusCode StatusCode, inputArgumentResults []StatusCod
 type CallMethodResultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(statusCode StatusCode, noOfInputArgumentResults int32, inputArgumentResults []StatusCode, noOfInputArgumentDiagnosticInfos int32, inputArgumentDiagnosticInfos []DiagnosticInfo, noOfOutputArguments int32, outputArguments []Variant) CallMethodResultBuilder
+	WithMandatoryFields(statusCode StatusCode, inputArgumentResults []StatusCode, inputArgumentDiagnosticInfos []DiagnosticInfo, outputArguments []Variant) CallMethodResultBuilder
 	// WithStatusCode adds StatusCode (property field)
 	WithStatusCode(StatusCode) CallMethodResultBuilder
 	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
 	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) CallMethodResultBuilder
-	// WithNoOfInputArgumentResults adds NoOfInputArgumentResults (property field)
-	WithNoOfInputArgumentResults(int32) CallMethodResultBuilder
 	// WithInputArgumentResults adds InputArgumentResults (property field)
 	WithInputArgumentResults(...StatusCode) CallMethodResultBuilder
-	// WithNoOfInputArgumentDiagnosticInfos adds NoOfInputArgumentDiagnosticInfos (property field)
-	WithNoOfInputArgumentDiagnosticInfos(int32) CallMethodResultBuilder
 	// WithInputArgumentDiagnosticInfos adds InputArgumentDiagnosticInfos (property field)
 	WithInputArgumentDiagnosticInfos(...DiagnosticInfo) CallMethodResultBuilder
-	// WithNoOfOutputArguments adds NoOfOutputArguments (property field)
-	WithNoOfOutputArguments(int32) CallMethodResultBuilder
 	// WithOutputArguments adds OutputArguments (property field)
 	WithOutputArguments(...Variant) CallMethodResultBuilder
 	// Build builds the CallMethodResult or returns an error if something is wrong
@@ -133,8 +127,8 @@ func (b *_CallMethodResultBuilder) setParent(contract ExtensionObjectDefinitionC
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CallMethodResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfInputArgumentResults int32, inputArgumentResults []StatusCode, noOfInputArgumentDiagnosticInfos int32, inputArgumentDiagnosticInfos []DiagnosticInfo, noOfOutputArguments int32, outputArguments []Variant) CallMethodResultBuilder {
-	return b.WithStatusCode(statusCode).WithNoOfInputArgumentResults(noOfInputArgumentResults).WithInputArgumentResults(inputArgumentResults...).WithNoOfInputArgumentDiagnosticInfos(noOfInputArgumentDiagnosticInfos).WithInputArgumentDiagnosticInfos(inputArgumentDiagnosticInfos...).WithNoOfOutputArguments(noOfOutputArguments).WithOutputArguments(outputArguments...)
+func (b *_CallMethodResultBuilder) WithMandatoryFields(statusCode StatusCode, inputArgumentResults []StatusCode, inputArgumentDiagnosticInfos []DiagnosticInfo, outputArguments []Variant) CallMethodResultBuilder {
+	return b.WithStatusCode(statusCode).WithInputArgumentResults(inputArgumentResults...).WithInputArgumentDiagnosticInfos(inputArgumentDiagnosticInfos...).WithOutputArguments(outputArguments...)
 }
 
 func (b *_CallMethodResultBuilder) WithStatusCode(statusCode StatusCode) CallMethodResultBuilder {
@@ -155,28 +149,13 @@ func (b *_CallMethodResultBuilder) WithStatusCodeBuilder(builderSupplier func(St
 	return b
 }
 
-func (b *_CallMethodResultBuilder) WithNoOfInputArgumentResults(noOfInputArgumentResults int32) CallMethodResultBuilder {
-	b.NoOfInputArgumentResults = noOfInputArgumentResults
-	return b
-}
-
 func (b *_CallMethodResultBuilder) WithInputArgumentResults(inputArgumentResults ...StatusCode) CallMethodResultBuilder {
 	b.InputArgumentResults = inputArgumentResults
 	return b
 }
 
-func (b *_CallMethodResultBuilder) WithNoOfInputArgumentDiagnosticInfos(noOfInputArgumentDiagnosticInfos int32) CallMethodResultBuilder {
-	b.NoOfInputArgumentDiagnosticInfos = noOfInputArgumentDiagnosticInfos
-	return b
-}
-
 func (b *_CallMethodResultBuilder) WithInputArgumentDiagnosticInfos(inputArgumentDiagnosticInfos ...DiagnosticInfo) CallMethodResultBuilder {
 	b.InputArgumentDiagnosticInfos = inputArgumentDiagnosticInfos
-	return b
-}
-
-func (b *_CallMethodResultBuilder) WithNoOfOutputArguments(noOfOutputArguments int32) CallMethodResultBuilder {
-	b.NoOfOutputArguments = noOfOutputArguments
 	return b
 }
 
@@ -474,11 +453,8 @@ func (m *_CallMethodResult) deepCopy() *_CallMethodResult {
 	_CallMethodResultCopy := &_CallMethodResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
-		m.NoOfInputArgumentResults,
 		utils.DeepCopySlice[StatusCode, StatusCode](m.InputArgumentResults),
-		m.NoOfInputArgumentDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.InputArgumentDiagnosticInfos),
-		m.NoOfOutputArguments,
 		utils.DeepCopySlice[Variant, Variant](m.OutputArguments),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

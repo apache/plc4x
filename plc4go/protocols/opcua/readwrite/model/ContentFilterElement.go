@@ -80,11 +80,9 @@ func NewContentFilterElement(filterOperator FilterOperator, filterOperands []Ext
 type ContentFilterElementBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(filterOperator FilterOperator, noOfFilterOperands int32, filterOperands []ExtensionObject) ContentFilterElementBuilder
+	WithMandatoryFields(filterOperator FilterOperator, filterOperands []ExtensionObject) ContentFilterElementBuilder
 	// WithFilterOperator adds FilterOperator (property field)
 	WithFilterOperator(FilterOperator) ContentFilterElementBuilder
-	// WithNoOfFilterOperands adds NoOfFilterOperands (property field)
-	WithNoOfFilterOperands(int32) ContentFilterElementBuilder
 	// WithFilterOperands adds FilterOperands (property field)
 	WithFilterOperands(...ExtensionObject) ContentFilterElementBuilder
 	// Build builds the ContentFilterElement or returns an error if something is wrong
@@ -112,17 +110,12 @@ func (b *_ContentFilterElementBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ContentFilterElementBuilder) WithMandatoryFields(filterOperator FilterOperator, noOfFilterOperands int32, filterOperands []ExtensionObject) ContentFilterElementBuilder {
-	return b.WithFilterOperator(filterOperator).WithNoOfFilterOperands(noOfFilterOperands).WithFilterOperands(filterOperands...)
+func (b *_ContentFilterElementBuilder) WithMandatoryFields(filterOperator FilterOperator, filterOperands []ExtensionObject) ContentFilterElementBuilder {
+	return b.WithFilterOperator(filterOperator).WithFilterOperands(filterOperands...)
 }
 
 func (b *_ContentFilterElementBuilder) WithFilterOperator(filterOperator FilterOperator) ContentFilterElementBuilder {
 	b.FilterOperator = filterOperator
-	return b
-}
-
-func (b *_ContentFilterElementBuilder) WithNoOfFilterOperands(noOfFilterOperands int32) ContentFilterElementBuilder {
-	b.NoOfFilterOperands = noOfFilterOperands
 	return b
 }
 
@@ -340,7 +333,6 @@ func (m *_ContentFilterElement) deepCopy() *_ContentFilterElement {
 	_ContentFilterElementCopy := &_ContentFilterElement{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.FilterOperator,
-		m.NoOfFilterOperands,
 		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.FilterOperands),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -38,6 +38,7 @@ type HistoryModifiedData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetDataValues returns DataValues (property field)
 	GetDataValues() []DataValue
@@ -45,6 +46,8 @@ type HistoryModifiedData interface {
 	GetModificationInfos() []ModificationInfo
 	// IsHistoryModifiedData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryModifiedData()
+	// CreateBuilder creates a HistoryModifiedDataBuilder
+	CreateHistoryModifiedDataBuilder() HistoryModifiedDataBuilder
 }
 
 // _HistoryModifiedData is the data-structure of this message
@@ -67,6 +70,104 @@ func NewHistoryModifiedData(dataValues []DataValue, modificationInfos []Modifica
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HistoryModifiedDataBuilder is a builder for HistoryModifiedData
+type HistoryModifiedDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dataValues []DataValue, modificationInfos []ModificationInfo) HistoryModifiedDataBuilder
+	// WithDataValues adds DataValues (property field)
+	WithDataValues(...DataValue) HistoryModifiedDataBuilder
+	// WithModificationInfos adds ModificationInfos (property field)
+	WithModificationInfos(...ModificationInfo) HistoryModifiedDataBuilder
+	// Build builds the HistoryModifiedData or returns an error if something is wrong
+	Build() (HistoryModifiedData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HistoryModifiedData
+}
+
+// NewHistoryModifiedDataBuilder() creates a HistoryModifiedDataBuilder
+func NewHistoryModifiedDataBuilder() HistoryModifiedDataBuilder {
+	return &_HistoryModifiedDataBuilder{_HistoryModifiedData: new(_HistoryModifiedData)}
+}
+
+type _HistoryModifiedDataBuilder struct {
+	*_HistoryModifiedData
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (HistoryModifiedDataBuilder) = (*_HistoryModifiedDataBuilder)(nil)
+
+func (b *_HistoryModifiedDataBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_HistoryModifiedDataBuilder) WithMandatoryFields(dataValues []DataValue, modificationInfos []ModificationInfo) HistoryModifiedDataBuilder {
+	return b.WithDataValues(dataValues...).WithModificationInfos(modificationInfos...)
+}
+
+func (b *_HistoryModifiedDataBuilder) WithDataValues(dataValues ...DataValue) HistoryModifiedDataBuilder {
+	b.DataValues = dataValues
+	return b
+}
+
+func (b *_HistoryModifiedDataBuilder) WithModificationInfos(modificationInfos ...ModificationInfo) HistoryModifiedDataBuilder {
+	b.ModificationInfos = modificationInfos
+	return b
+}
+
+func (b *_HistoryModifiedDataBuilder) Build() (HistoryModifiedData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HistoryModifiedData.deepCopy(), nil
+}
+
+func (b *_HistoryModifiedDataBuilder) MustBuild() HistoryModifiedData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryModifiedDataBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryModifiedDataBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryModifiedDataBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryModifiedDataBuilder().(*_HistoryModifiedDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHistoryModifiedDataBuilder creates a HistoryModifiedDataBuilder
+func (b *_HistoryModifiedData) CreateHistoryModifiedDataBuilder() HistoryModifiedDataBuilder {
+	if b == nil {
+		return NewHistoryModifiedDataBuilder()
+	}
+	return &_HistoryModifiedDataBuilder{_HistoryModifiedData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -240,6 +341,23 @@ func (m *_HistoryModifiedData) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_HistoryModifiedData) IsHistoryModifiedData() {}
+
+func (m *_HistoryModifiedData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryModifiedData) deepCopy() *_HistoryModifiedData {
+	if m == nil {
+		return nil
+	}
+	_HistoryModifiedDataCopy := &_HistoryModifiedData{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		utils.DeepCopySlice[DataValue, DataValue](m.DataValues),
+		utils.DeepCopySlice[ModificationInfo, ModificationInfo](m.ModificationInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryModifiedDataCopy
+}
 
 func (m *_HistoryModifiedData) String() string {
 	if m == nil {

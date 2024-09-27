@@ -38,6 +38,7 @@ type EventFilterResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSelectClauseResults returns SelectClauseResults (property field)
 	GetSelectClauseResults() []StatusCode
@@ -47,6 +48,8 @@ type EventFilterResult interface {
 	GetWhereClauseResult() ContentFilterResult
 	// IsEventFilterResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEventFilterResult()
+	// CreateBuilder creates a EventFilterResultBuilder
+	CreateEventFilterResultBuilder() EventFilterResultBuilder
 }
 
 // _EventFilterResult is the data-structure of this message
@@ -74,6 +77,132 @@ func NewEventFilterResult(selectClauseResults []StatusCode, selectClauseDiagnost
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EventFilterResultBuilder is a builder for EventFilterResult
+type EventFilterResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(selectClauseResults []StatusCode, selectClauseDiagnosticInfos []DiagnosticInfo, whereClauseResult ContentFilterResult) EventFilterResultBuilder
+	// WithSelectClauseResults adds SelectClauseResults (property field)
+	WithSelectClauseResults(...StatusCode) EventFilterResultBuilder
+	// WithSelectClauseDiagnosticInfos adds SelectClauseDiagnosticInfos (property field)
+	WithSelectClauseDiagnosticInfos(...DiagnosticInfo) EventFilterResultBuilder
+	// WithWhereClauseResult adds WhereClauseResult (property field)
+	WithWhereClauseResult(ContentFilterResult) EventFilterResultBuilder
+	// WithWhereClauseResultBuilder adds WhereClauseResult (property field) which is build by the builder
+	WithWhereClauseResultBuilder(func(ContentFilterResultBuilder) ContentFilterResultBuilder) EventFilterResultBuilder
+	// Build builds the EventFilterResult or returns an error if something is wrong
+	Build() (EventFilterResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EventFilterResult
+}
+
+// NewEventFilterResultBuilder() creates a EventFilterResultBuilder
+func NewEventFilterResultBuilder() EventFilterResultBuilder {
+	return &_EventFilterResultBuilder{_EventFilterResult: new(_EventFilterResult)}
+}
+
+type _EventFilterResultBuilder struct {
+	*_EventFilterResult
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (EventFilterResultBuilder) = (*_EventFilterResultBuilder)(nil)
+
+func (b *_EventFilterResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_EventFilterResultBuilder) WithMandatoryFields(selectClauseResults []StatusCode, selectClauseDiagnosticInfos []DiagnosticInfo, whereClauseResult ContentFilterResult) EventFilterResultBuilder {
+	return b.WithSelectClauseResults(selectClauseResults...).WithSelectClauseDiagnosticInfos(selectClauseDiagnosticInfos...).WithWhereClauseResult(whereClauseResult)
+}
+
+func (b *_EventFilterResultBuilder) WithSelectClauseResults(selectClauseResults ...StatusCode) EventFilterResultBuilder {
+	b.SelectClauseResults = selectClauseResults
+	return b
+}
+
+func (b *_EventFilterResultBuilder) WithSelectClauseDiagnosticInfos(selectClauseDiagnosticInfos ...DiagnosticInfo) EventFilterResultBuilder {
+	b.SelectClauseDiagnosticInfos = selectClauseDiagnosticInfos
+	return b
+}
+
+func (b *_EventFilterResultBuilder) WithWhereClauseResult(whereClauseResult ContentFilterResult) EventFilterResultBuilder {
+	b.WhereClauseResult = whereClauseResult
+	return b
+}
+
+func (b *_EventFilterResultBuilder) WithWhereClauseResultBuilder(builderSupplier func(ContentFilterResultBuilder) ContentFilterResultBuilder) EventFilterResultBuilder {
+	builder := builderSupplier(b.WhereClauseResult.CreateContentFilterResultBuilder())
+	var err error
+	b.WhereClauseResult, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ContentFilterResultBuilder failed"))
+	}
+	return b
+}
+
+func (b *_EventFilterResultBuilder) Build() (EventFilterResult, error) {
+	if b.WhereClauseResult == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'whereClauseResult' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._EventFilterResult.deepCopy(), nil
+}
+
+func (b *_EventFilterResultBuilder) MustBuild() EventFilterResult {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EventFilterResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EventFilterResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_EventFilterResultBuilder) DeepCopy() any {
+	_copy := b.CreateEventFilterResultBuilder().(*_EventFilterResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateEventFilterResultBuilder creates a EventFilterResultBuilder
+func (b *_EventFilterResult) CreateEventFilterResultBuilder() EventFilterResultBuilder {
+	if b == nil {
+		return NewEventFilterResultBuilder()
+	}
+	return &_EventFilterResultBuilder{_EventFilterResult: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -264,6 +393,24 @@ func (m *_EventFilterResult) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_EventFilterResult) IsEventFilterResult() {}
+
+func (m *_EventFilterResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EventFilterResult) deepCopy() *_EventFilterResult {
+	if m == nil {
+		return nil
+	}
+	_EventFilterResultCopy := &_EventFilterResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		utils.DeepCopySlice[StatusCode, StatusCode](m.SelectClauseResults),
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.SelectClauseDiagnosticInfos),
+		m.WhereClauseResult.DeepCopy().(ContentFilterResult),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EventFilterResultCopy
+}
 
 func (m *_EventFilterResult) String() string {
 	if m == nil {

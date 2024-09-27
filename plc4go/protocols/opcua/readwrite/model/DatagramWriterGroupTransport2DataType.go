@@ -38,6 +38,7 @@ type DatagramWriterGroupTransport2DataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetMessageRepeatCount returns MessageRepeatCount (property field)
 	GetMessageRepeatCount() uint8
@@ -55,6 +56,8 @@ type DatagramWriterGroupTransport2DataType interface {
 	GetTopic() PascalString
 	// IsDatagramWriterGroupTransport2DataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDatagramWriterGroupTransport2DataType()
+	// CreateBuilder creates a DatagramWriterGroupTransport2DataTypeBuilder
+	CreateDatagramWriterGroupTransport2DataTypeBuilder() DatagramWriterGroupTransport2DataTypeBuilder
 }
 
 // _DatagramWriterGroupTransport2DataType is the data-structure of this message
@@ -96,6 +99,202 @@ func NewDatagramWriterGroupTransport2DataType(messageRepeatCount uint8, messageR
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DatagramWriterGroupTransport2DataTypeBuilder is a builder for DatagramWriterGroupTransport2DataType
+type DatagramWriterGroupTransport2DataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(messageRepeatCount uint8, messageRepeatDelay float64, address ExtensionObject, qosCategory PascalString, datagramQos []ExtensionObject, discoveryAnnounceRate uint32, topic PascalString) DatagramWriterGroupTransport2DataTypeBuilder
+	// WithMessageRepeatCount adds MessageRepeatCount (property field)
+	WithMessageRepeatCount(uint8) DatagramWriterGroupTransport2DataTypeBuilder
+	// WithMessageRepeatDelay adds MessageRepeatDelay (property field)
+	WithMessageRepeatDelay(float64) DatagramWriterGroupTransport2DataTypeBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(ExtensionObject) DatagramWriterGroupTransport2DataTypeBuilder
+	// WithAddressBuilder adds Address (property field) which is build by the builder
+	WithAddressBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) DatagramWriterGroupTransport2DataTypeBuilder
+	// WithQosCategory adds QosCategory (property field)
+	WithQosCategory(PascalString) DatagramWriterGroupTransport2DataTypeBuilder
+	// WithQosCategoryBuilder adds QosCategory (property field) which is build by the builder
+	WithQosCategoryBuilder(func(PascalStringBuilder) PascalStringBuilder) DatagramWriterGroupTransport2DataTypeBuilder
+	// WithDatagramQos adds DatagramQos (property field)
+	WithDatagramQos(...ExtensionObject) DatagramWriterGroupTransport2DataTypeBuilder
+	// WithDiscoveryAnnounceRate adds DiscoveryAnnounceRate (property field)
+	WithDiscoveryAnnounceRate(uint32) DatagramWriterGroupTransport2DataTypeBuilder
+	// WithTopic adds Topic (property field)
+	WithTopic(PascalString) DatagramWriterGroupTransport2DataTypeBuilder
+	// WithTopicBuilder adds Topic (property field) which is build by the builder
+	WithTopicBuilder(func(PascalStringBuilder) PascalStringBuilder) DatagramWriterGroupTransport2DataTypeBuilder
+	// Build builds the DatagramWriterGroupTransport2DataType or returns an error if something is wrong
+	Build() (DatagramWriterGroupTransport2DataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DatagramWriterGroupTransport2DataType
+}
+
+// NewDatagramWriterGroupTransport2DataTypeBuilder() creates a DatagramWriterGroupTransport2DataTypeBuilder
+func NewDatagramWriterGroupTransport2DataTypeBuilder() DatagramWriterGroupTransport2DataTypeBuilder {
+	return &_DatagramWriterGroupTransport2DataTypeBuilder{_DatagramWriterGroupTransport2DataType: new(_DatagramWriterGroupTransport2DataType)}
+}
+
+type _DatagramWriterGroupTransport2DataTypeBuilder struct {
+	*_DatagramWriterGroupTransport2DataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DatagramWriterGroupTransport2DataTypeBuilder) = (*_DatagramWriterGroupTransport2DataTypeBuilder)(nil)
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) WithMandatoryFields(messageRepeatCount uint8, messageRepeatDelay float64, address ExtensionObject, qosCategory PascalString, datagramQos []ExtensionObject, discoveryAnnounceRate uint32, topic PascalString) DatagramWriterGroupTransport2DataTypeBuilder {
+	return b.WithMessageRepeatCount(messageRepeatCount).WithMessageRepeatDelay(messageRepeatDelay).WithAddress(address).WithQosCategory(qosCategory).WithDatagramQos(datagramQos...).WithDiscoveryAnnounceRate(discoveryAnnounceRate).WithTopic(topic)
+}
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) WithMessageRepeatCount(messageRepeatCount uint8) DatagramWriterGroupTransport2DataTypeBuilder {
+	b.MessageRepeatCount = messageRepeatCount
+	return b
+}
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) WithMessageRepeatDelay(messageRepeatDelay float64) DatagramWriterGroupTransport2DataTypeBuilder {
+	b.MessageRepeatDelay = messageRepeatDelay
+	return b
+}
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) WithAddress(address ExtensionObject) DatagramWriterGroupTransport2DataTypeBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) WithAddressBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) DatagramWriterGroupTransport2DataTypeBuilder {
+	builder := builderSupplier(b.Address.CreateExtensionObjectBuilder())
+	var err error
+	b.Address, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) WithQosCategory(qosCategory PascalString) DatagramWriterGroupTransport2DataTypeBuilder {
+	b.QosCategory = qosCategory
+	return b
+}
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) WithQosCategoryBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) DatagramWriterGroupTransport2DataTypeBuilder {
+	builder := builderSupplier(b.QosCategory.CreatePascalStringBuilder())
+	var err error
+	b.QosCategory, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) WithDatagramQos(datagramQos ...ExtensionObject) DatagramWriterGroupTransport2DataTypeBuilder {
+	b.DatagramQos = datagramQos
+	return b
+}
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) WithDiscoveryAnnounceRate(discoveryAnnounceRate uint32) DatagramWriterGroupTransport2DataTypeBuilder {
+	b.DiscoveryAnnounceRate = discoveryAnnounceRate
+	return b
+}
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) WithTopic(topic PascalString) DatagramWriterGroupTransport2DataTypeBuilder {
+	b.Topic = topic
+	return b
+}
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) WithTopicBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) DatagramWriterGroupTransport2DataTypeBuilder {
+	builder := builderSupplier(b.Topic.CreatePascalStringBuilder())
+	var err error
+	b.Topic, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) Build() (DatagramWriterGroupTransport2DataType, error) {
+	if b.Address == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'address' not set"))
+	}
+	if b.QosCategory == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'qosCategory' not set"))
+	}
+	if b.Topic == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'topic' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DatagramWriterGroupTransport2DataType.deepCopy(), nil
+}
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) MustBuild() DatagramWriterGroupTransport2DataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DatagramWriterGroupTransport2DataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateDatagramWriterGroupTransport2DataTypeBuilder().(*_DatagramWriterGroupTransport2DataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDatagramWriterGroupTransport2DataTypeBuilder creates a DatagramWriterGroupTransport2DataTypeBuilder
+func (b *_DatagramWriterGroupTransport2DataType) CreateDatagramWriterGroupTransport2DataTypeBuilder() DatagramWriterGroupTransport2DataTypeBuilder {
+	if b == nil {
+		return NewDatagramWriterGroupTransport2DataTypeBuilder()
+	}
+	return &_DatagramWriterGroupTransport2DataTypeBuilder{_DatagramWriterGroupTransport2DataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -334,6 +533,28 @@ func (m *_DatagramWriterGroupTransport2DataType) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_DatagramWriterGroupTransport2DataType) IsDatagramWriterGroupTransport2DataType() {}
+
+func (m *_DatagramWriterGroupTransport2DataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DatagramWriterGroupTransport2DataType) deepCopy() *_DatagramWriterGroupTransport2DataType {
+	if m == nil {
+		return nil
+	}
+	_DatagramWriterGroupTransport2DataTypeCopy := &_DatagramWriterGroupTransport2DataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.MessageRepeatCount,
+		m.MessageRepeatDelay,
+		m.Address.DeepCopy().(ExtensionObject),
+		m.QosCategory.DeepCopy().(PascalString),
+		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.DatagramQos),
+		m.DiscoveryAnnounceRate,
+		m.Topic.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DatagramWriterGroupTransport2DataTypeCopy
+}
 
 func (m *_DatagramWriterGroupTransport2DataType) String() string {
 	if m == nil {

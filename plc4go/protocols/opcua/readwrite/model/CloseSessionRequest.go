@@ -85,11 +85,11 @@ func NewCloseSessionRequest(requestHeader RequestHeader, deleteSubscriptions boo
 type CloseSessionRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, deleteSubscriptions bool) CloseSessionRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, deleteSubscriptions bool) CloseSessionRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) CloseSessionRequestBuilder
+	WithRequestHeader(RequestHeader) CloseSessionRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CloseSessionRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) CloseSessionRequestBuilder
 	// WithDeleteSubscriptions adds DeleteSubscriptions (property field)
 	WithDeleteSubscriptions(bool) CloseSessionRequestBuilder
 	// Build builds the CloseSessionRequest or returns an error if something is wrong
@@ -117,24 +117,24 @@ func (b *_CloseSessionRequestBuilder) setParent(contract ExtensionObjectDefiniti
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CloseSessionRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, deleteSubscriptions bool) CloseSessionRequestBuilder {
+func (b *_CloseSessionRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, deleteSubscriptions bool) CloseSessionRequestBuilder {
 	return b.WithRequestHeader(requestHeader).WithDeleteSubscriptions(deleteSubscriptions)
 }
 
-func (b *_CloseSessionRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CloseSessionRequestBuilder {
+func (b *_CloseSessionRequestBuilder) WithRequestHeader(requestHeader RequestHeader) CloseSessionRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_CloseSessionRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CloseSessionRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CloseSessionRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) CloseSessionRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -351,7 +351,7 @@ func (m *_CloseSessionRequest) deepCopy() *_CloseSessionRequest {
 	}
 	_CloseSessionRequestCopy := &_CloseSessionRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.DeleteSubscriptions,
 		m.reservedField0,
 	}

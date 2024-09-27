@@ -38,6 +38,7 @@ type AggregateFilter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStartTime returns StartTime (property field)
 	GetStartTime() int64
@@ -49,6 +50,8 @@ type AggregateFilter interface {
 	GetAggregateConfiguration() AggregateConfiguration
 	// IsAggregateFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAggregateFilter()
+	// CreateBuilder creates a AggregateFilterBuilder
+	CreateAggregateFilterBuilder() AggregateFilterBuilder
 }
 
 // _AggregateFilter is the data-structure of this message
@@ -81,6 +84,160 @@ func NewAggregateFilter(startTime int64, aggregateType NodeId, processingInterva
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AggregateFilterBuilder is a builder for AggregateFilter
+type AggregateFilterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(startTime int64, aggregateType NodeId, processingInterval float64, aggregateConfiguration AggregateConfiguration) AggregateFilterBuilder
+	// WithStartTime adds StartTime (property field)
+	WithStartTime(int64) AggregateFilterBuilder
+	// WithAggregateType adds AggregateType (property field)
+	WithAggregateType(NodeId) AggregateFilterBuilder
+	// WithAggregateTypeBuilder adds AggregateType (property field) which is build by the builder
+	WithAggregateTypeBuilder(func(NodeIdBuilder) NodeIdBuilder) AggregateFilterBuilder
+	// WithProcessingInterval adds ProcessingInterval (property field)
+	WithProcessingInterval(float64) AggregateFilterBuilder
+	// WithAggregateConfiguration adds AggregateConfiguration (property field)
+	WithAggregateConfiguration(AggregateConfiguration) AggregateFilterBuilder
+	// WithAggregateConfigurationBuilder adds AggregateConfiguration (property field) which is build by the builder
+	WithAggregateConfigurationBuilder(func(AggregateConfigurationBuilder) AggregateConfigurationBuilder) AggregateFilterBuilder
+	// Build builds the AggregateFilter or returns an error if something is wrong
+	Build() (AggregateFilter, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AggregateFilter
+}
+
+// NewAggregateFilterBuilder() creates a AggregateFilterBuilder
+func NewAggregateFilterBuilder() AggregateFilterBuilder {
+	return &_AggregateFilterBuilder{_AggregateFilter: new(_AggregateFilter)}
+}
+
+type _AggregateFilterBuilder struct {
+	*_AggregateFilter
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AggregateFilterBuilder) = (*_AggregateFilterBuilder)(nil)
+
+func (b *_AggregateFilterBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_AggregateFilterBuilder) WithMandatoryFields(startTime int64, aggregateType NodeId, processingInterval float64, aggregateConfiguration AggregateConfiguration) AggregateFilterBuilder {
+	return b.WithStartTime(startTime).WithAggregateType(aggregateType).WithProcessingInterval(processingInterval).WithAggregateConfiguration(aggregateConfiguration)
+}
+
+func (b *_AggregateFilterBuilder) WithStartTime(startTime int64) AggregateFilterBuilder {
+	b.StartTime = startTime
+	return b
+}
+
+func (b *_AggregateFilterBuilder) WithAggregateType(aggregateType NodeId) AggregateFilterBuilder {
+	b.AggregateType = aggregateType
+	return b
+}
+
+func (b *_AggregateFilterBuilder) WithAggregateTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) AggregateFilterBuilder {
+	builder := builderSupplier(b.AggregateType.CreateNodeIdBuilder())
+	var err error
+	b.AggregateType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AggregateFilterBuilder) WithProcessingInterval(processingInterval float64) AggregateFilterBuilder {
+	b.ProcessingInterval = processingInterval
+	return b
+}
+
+func (b *_AggregateFilterBuilder) WithAggregateConfiguration(aggregateConfiguration AggregateConfiguration) AggregateFilterBuilder {
+	b.AggregateConfiguration = aggregateConfiguration
+	return b
+}
+
+func (b *_AggregateFilterBuilder) WithAggregateConfigurationBuilder(builderSupplier func(AggregateConfigurationBuilder) AggregateConfigurationBuilder) AggregateFilterBuilder {
+	builder := builderSupplier(b.AggregateConfiguration.CreateAggregateConfigurationBuilder())
+	var err error
+	b.AggregateConfiguration, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "AggregateConfigurationBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AggregateFilterBuilder) Build() (AggregateFilter, error) {
+	if b.AggregateType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'aggregateType' not set"))
+	}
+	if b.AggregateConfiguration == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'aggregateConfiguration' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AggregateFilter.deepCopy(), nil
+}
+
+func (b *_AggregateFilterBuilder) MustBuild() AggregateFilter {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AggregateFilterBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AggregateFilterBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AggregateFilterBuilder) DeepCopy() any {
+	_copy := b.CreateAggregateFilterBuilder().(*_AggregateFilterBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAggregateFilterBuilder creates a AggregateFilterBuilder
+func (b *_AggregateFilter) CreateAggregateFilterBuilder() AggregateFilterBuilder {
+	if b == nil {
+		return NewAggregateFilterBuilder()
+	}
+	return &_AggregateFilterBuilder{_AggregateFilter: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -248,6 +405,25 @@ func (m *_AggregateFilter) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_AggregateFilter) IsAggregateFilter() {}
+
+func (m *_AggregateFilter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AggregateFilter) deepCopy() *_AggregateFilter {
+	if m == nil {
+		return nil
+	}
+	_AggregateFilterCopy := &_AggregateFilter{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.StartTime,
+		m.AggregateType.DeepCopy().(NodeId),
+		m.ProcessingInterval,
+		m.AggregateConfiguration.DeepCopy().(AggregateConfiguration),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AggregateFilterCopy
+}
 
 func (m *_AggregateFilter) String() string {
 	if m == nil {

@@ -94,7 +94,7 @@ func NewServerOnNetwork(recordId uint32, serverName PascalString, discoveryUrl P
 type ServerOnNetworkBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(recordId uint32, serverName PascalString, discoveryUrl PascalString, noOfServerCapabilities int32, serverCapabilities []PascalString) ServerOnNetworkBuilder
+	WithMandatoryFields(recordId uint32, serverName PascalString, discoveryUrl PascalString, serverCapabilities []PascalString) ServerOnNetworkBuilder
 	// WithRecordId adds RecordId (property field)
 	WithRecordId(uint32) ServerOnNetworkBuilder
 	// WithServerName adds ServerName (property field)
@@ -105,8 +105,6 @@ type ServerOnNetworkBuilder interface {
 	WithDiscoveryUrl(PascalString) ServerOnNetworkBuilder
 	// WithDiscoveryUrlBuilder adds DiscoveryUrl (property field) which is build by the builder
 	WithDiscoveryUrlBuilder(func(PascalStringBuilder) PascalStringBuilder) ServerOnNetworkBuilder
-	// WithNoOfServerCapabilities adds NoOfServerCapabilities (property field)
-	WithNoOfServerCapabilities(int32) ServerOnNetworkBuilder
 	// WithServerCapabilities adds ServerCapabilities (property field)
 	WithServerCapabilities(...PascalString) ServerOnNetworkBuilder
 	// Build builds the ServerOnNetwork or returns an error if something is wrong
@@ -134,8 +132,8 @@ func (b *_ServerOnNetworkBuilder) setParent(contract ExtensionObjectDefinitionCo
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ServerOnNetworkBuilder) WithMandatoryFields(recordId uint32, serverName PascalString, discoveryUrl PascalString, noOfServerCapabilities int32, serverCapabilities []PascalString) ServerOnNetworkBuilder {
-	return b.WithRecordId(recordId).WithServerName(serverName).WithDiscoveryUrl(discoveryUrl).WithNoOfServerCapabilities(noOfServerCapabilities).WithServerCapabilities(serverCapabilities...)
+func (b *_ServerOnNetworkBuilder) WithMandatoryFields(recordId uint32, serverName PascalString, discoveryUrl PascalString, serverCapabilities []PascalString) ServerOnNetworkBuilder {
+	return b.WithRecordId(recordId).WithServerName(serverName).WithDiscoveryUrl(discoveryUrl).WithServerCapabilities(serverCapabilities...)
 }
 
 func (b *_ServerOnNetworkBuilder) WithRecordId(recordId uint32) ServerOnNetworkBuilder {
@@ -176,11 +174,6 @@ func (b *_ServerOnNetworkBuilder) WithDiscoveryUrlBuilder(builderSupplier func(P
 		}
 		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return b
-}
-
-func (b *_ServerOnNetworkBuilder) WithNoOfServerCapabilities(noOfServerCapabilities int32) ServerOnNetworkBuilder {
-	b.NoOfServerCapabilities = noOfServerCapabilities
 	return b
 }
 
@@ -446,7 +439,6 @@ func (m *_ServerOnNetwork) deepCopy() *_ServerOnNetwork {
 		m.RecordId,
 		m.ServerName.DeepCopy().(PascalString),
 		m.DiscoveryUrl.DeepCopy().(PascalString),
-		m.NoOfServerCapabilities,
 		utils.DeepCopySlice[PascalString, PascalString](m.ServerCapabilities),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

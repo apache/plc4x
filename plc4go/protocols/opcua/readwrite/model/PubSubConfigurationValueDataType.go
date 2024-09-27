@@ -38,6 +38,7 @@ type PubSubConfigurationValueDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetConfigurationElement returns ConfigurationElement (property field)
 	GetConfigurationElement() PubSubConfigurationRefDataType
@@ -47,6 +48,8 @@ type PubSubConfigurationValueDataType interface {
 	GetIdentifier() Variant
 	// IsPubSubConfigurationValueDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPubSubConfigurationValueDataType()
+	// CreateBuilder creates a PubSubConfigurationValueDataTypeBuilder
+	CreatePubSubConfigurationValueDataTypeBuilder() PubSubConfigurationValueDataTypeBuilder
 }
 
 // _PubSubConfigurationValueDataType is the data-structure of this message
@@ -80,6 +83,174 @@ func NewPubSubConfigurationValueDataType(configurationElement PubSubConfiguratio
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PubSubConfigurationValueDataTypeBuilder is a builder for PubSubConfigurationValueDataType
+type PubSubConfigurationValueDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(configurationElement PubSubConfigurationRefDataType, name PascalString, identifier Variant) PubSubConfigurationValueDataTypeBuilder
+	// WithConfigurationElement adds ConfigurationElement (property field)
+	WithConfigurationElement(PubSubConfigurationRefDataType) PubSubConfigurationValueDataTypeBuilder
+	// WithConfigurationElementBuilder adds ConfigurationElement (property field) which is build by the builder
+	WithConfigurationElementBuilder(func(PubSubConfigurationRefDataTypeBuilder) PubSubConfigurationRefDataTypeBuilder) PubSubConfigurationValueDataTypeBuilder
+	// WithName adds Name (property field)
+	WithName(PascalString) PubSubConfigurationValueDataTypeBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(PascalStringBuilder) PascalStringBuilder) PubSubConfigurationValueDataTypeBuilder
+	// WithIdentifier adds Identifier (property field)
+	WithIdentifier(Variant) PubSubConfigurationValueDataTypeBuilder
+	// WithIdentifierBuilder adds Identifier (property field) which is build by the builder
+	WithIdentifierBuilder(func(VariantBuilder) VariantBuilder) PubSubConfigurationValueDataTypeBuilder
+	// Build builds the PubSubConfigurationValueDataType or returns an error if something is wrong
+	Build() (PubSubConfigurationValueDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PubSubConfigurationValueDataType
+}
+
+// NewPubSubConfigurationValueDataTypeBuilder() creates a PubSubConfigurationValueDataTypeBuilder
+func NewPubSubConfigurationValueDataTypeBuilder() PubSubConfigurationValueDataTypeBuilder {
+	return &_PubSubConfigurationValueDataTypeBuilder{_PubSubConfigurationValueDataType: new(_PubSubConfigurationValueDataType)}
+}
+
+type _PubSubConfigurationValueDataTypeBuilder struct {
+	*_PubSubConfigurationValueDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (PubSubConfigurationValueDataTypeBuilder) = (*_PubSubConfigurationValueDataTypeBuilder)(nil)
+
+func (b *_PubSubConfigurationValueDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_PubSubConfigurationValueDataTypeBuilder) WithMandatoryFields(configurationElement PubSubConfigurationRefDataType, name PascalString, identifier Variant) PubSubConfigurationValueDataTypeBuilder {
+	return b.WithConfigurationElement(configurationElement).WithName(name).WithIdentifier(identifier)
+}
+
+func (b *_PubSubConfigurationValueDataTypeBuilder) WithConfigurationElement(configurationElement PubSubConfigurationRefDataType) PubSubConfigurationValueDataTypeBuilder {
+	b.ConfigurationElement = configurationElement
+	return b
+}
+
+func (b *_PubSubConfigurationValueDataTypeBuilder) WithConfigurationElementBuilder(builderSupplier func(PubSubConfigurationRefDataTypeBuilder) PubSubConfigurationRefDataTypeBuilder) PubSubConfigurationValueDataTypeBuilder {
+	builder := builderSupplier(b.ConfigurationElement.CreatePubSubConfigurationRefDataTypeBuilder())
+	var err error
+	b.ConfigurationElement, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PubSubConfigurationRefDataTypeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_PubSubConfigurationValueDataTypeBuilder) WithName(name PascalString) PubSubConfigurationValueDataTypeBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_PubSubConfigurationValueDataTypeBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PubSubConfigurationValueDataTypeBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
+	var err error
+	b.Name, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_PubSubConfigurationValueDataTypeBuilder) WithIdentifier(identifier Variant) PubSubConfigurationValueDataTypeBuilder {
+	b.Identifier = identifier
+	return b
+}
+
+func (b *_PubSubConfigurationValueDataTypeBuilder) WithIdentifierBuilder(builderSupplier func(VariantBuilder) VariantBuilder) PubSubConfigurationValueDataTypeBuilder {
+	builder := builderSupplier(b.Identifier.CreateVariantBuilder())
+	var err error
+	b.Identifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "VariantBuilder failed"))
+	}
+	return b
+}
+
+func (b *_PubSubConfigurationValueDataTypeBuilder) Build() (PubSubConfigurationValueDataType, error) {
+	if b.ConfigurationElement == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'configurationElement' not set"))
+	}
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if b.Identifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'identifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PubSubConfigurationValueDataType.deepCopy(), nil
+}
+
+func (b *_PubSubConfigurationValueDataTypeBuilder) MustBuild() PubSubConfigurationValueDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PubSubConfigurationValueDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PubSubConfigurationValueDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PubSubConfigurationValueDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreatePubSubConfigurationValueDataTypeBuilder().(*_PubSubConfigurationValueDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreatePubSubConfigurationValueDataTypeBuilder creates a PubSubConfigurationValueDataTypeBuilder
+func (b *_PubSubConfigurationValueDataType) CreatePubSubConfigurationValueDataTypeBuilder() PubSubConfigurationValueDataTypeBuilder {
+	if b == nil {
+		return NewPubSubConfigurationValueDataTypeBuilder()
+	}
+	return &_PubSubConfigurationValueDataTypeBuilder{_PubSubConfigurationValueDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -230,6 +401,24 @@ func (m *_PubSubConfigurationValueDataType) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_PubSubConfigurationValueDataType) IsPubSubConfigurationValueDataType() {}
+
+func (m *_PubSubConfigurationValueDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PubSubConfigurationValueDataType) deepCopy() *_PubSubConfigurationValueDataType {
+	if m == nil {
+		return nil
+	}
+	_PubSubConfigurationValueDataTypeCopy := &_PubSubConfigurationValueDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ConfigurationElement.DeepCopy().(PubSubConfigurationRefDataType),
+		m.Name.DeepCopy().(PascalString),
+		m.Identifier.DeepCopy().(Variant),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PubSubConfigurationValueDataTypeCopy
+}
 
 func (m *_PubSubConfigurationValueDataType) String() string {
 	if m == nil {

@@ -127,7 +127,7 @@ func NewProgramDiagnosticDataType(createSessionId NodeId, createClientName Pasca
 type ProgramDiagnosticDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, noOfLastMethodInputArguments int32, lastMethodInputArguments []ExtensionObjectDefinition, noOfLastMethodOutputArguments int32, lastMethodOutputArguments []ExtensionObjectDefinition, lastMethodCallTime int64, lastMethodReturnStatus ExtensionObjectDefinition) ProgramDiagnosticDataTypeBuilder
+	WithMandatoryFields(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, lastMethodInputArguments []Argument, lastMethodOutputArguments []Argument, lastMethodCallTime int64, lastMethodReturnStatus StatusResult) ProgramDiagnosticDataTypeBuilder
 	// WithCreateSessionId adds CreateSessionId (property field)
 	WithCreateSessionId(NodeId) ProgramDiagnosticDataTypeBuilder
 	// WithCreateSessionIdBuilder adds CreateSessionId (property field) which is build by the builder
@@ -148,20 +148,16 @@ type ProgramDiagnosticDataTypeBuilder interface {
 	WithLastMethodSessionId(NodeId) ProgramDiagnosticDataTypeBuilder
 	// WithLastMethodSessionIdBuilder adds LastMethodSessionId (property field) which is build by the builder
 	WithLastMethodSessionIdBuilder(func(NodeIdBuilder) NodeIdBuilder) ProgramDiagnosticDataTypeBuilder
-	// WithNoOfLastMethodInputArguments adds NoOfLastMethodInputArguments (property field)
-	WithNoOfLastMethodInputArguments(int32) ProgramDiagnosticDataTypeBuilder
 	// WithLastMethodInputArguments adds LastMethodInputArguments (property field)
-	WithLastMethodInputArguments(...ExtensionObjectDefinition) ProgramDiagnosticDataTypeBuilder
-	// WithNoOfLastMethodOutputArguments adds NoOfLastMethodOutputArguments (property field)
-	WithNoOfLastMethodOutputArguments(int32) ProgramDiagnosticDataTypeBuilder
+	WithLastMethodInputArguments(...Argument) ProgramDiagnosticDataTypeBuilder
 	// WithLastMethodOutputArguments adds LastMethodOutputArguments (property field)
-	WithLastMethodOutputArguments(...ExtensionObjectDefinition) ProgramDiagnosticDataTypeBuilder
+	WithLastMethodOutputArguments(...Argument) ProgramDiagnosticDataTypeBuilder
 	// WithLastMethodCallTime adds LastMethodCallTime (property field)
 	WithLastMethodCallTime(int64) ProgramDiagnosticDataTypeBuilder
 	// WithLastMethodReturnStatus adds LastMethodReturnStatus (property field)
-	WithLastMethodReturnStatus(ExtensionObjectDefinition) ProgramDiagnosticDataTypeBuilder
+	WithLastMethodReturnStatus(StatusResult) ProgramDiagnosticDataTypeBuilder
 	// WithLastMethodReturnStatusBuilder adds LastMethodReturnStatus (property field) which is build by the builder
-	WithLastMethodReturnStatusBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ProgramDiagnosticDataTypeBuilder
+	WithLastMethodReturnStatusBuilder(func(StatusResultBuilder) StatusResultBuilder) ProgramDiagnosticDataTypeBuilder
 	// Build builds the ProgramDiagnosticDataType or returns an error if something is wrong
 	Build() (ProgramDiagnosticDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -187,8 +183,8 @@ func (b *_ProgramDiagnosticDataTypeBuilder) setParent(contract ExtensionObjectDe
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ProgramDiagnosticDataTypeBuilder) WithMandatoryFields(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, noOfLastMethodInputArguments int32, lastMethodInputArguments []ExtensionObjectDefinition, noOfLastMethodOutputArguments int32, lastMethodOutputArguments []ExtensionObjectDefinition, lastMethodCallTime int64, lastMethodReturnStatus ExtensionObjectDefinition) ProgramDiagnosticDataTypeBuilder {
-	return b.WithCreateSessionId(createSessionId).WithCreateClientName(createClientName).WithInvocationCreationTime(invocationCreationTime).WithLastTransitionTime(lastTransitionTime).WithLastMethodCall(lastMethodCall).WithLastMethodSessionId(lastMethodSessionId).WithNoOfLastMethodInputArguments(noOfLastMethodInputArguments).WithLastMethodInputArguments(lastMethodInputArguments...).WithNoOfLastMethodOutputArguments(noOfLastMethodOutputArguments).WithLastMethodOutputArguments(lastMethodOutputArguments...).WithLastMethodCallTime(lastMethodCallTime).WithLastMethodReturnStatus(lastMethodReturnStatus)
+func (b *_ProgramDiagnosticDataTypeBuilder) WithMandatoryFields(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, lastMethodInputArguments []Argument, lastMethodOutputArguments []Argument, lastMethodCallTime int64, lastMethodReturnStatus StatusResult) ProgramDiagnosticDataTypeBuilder {
+	return b.WithCreateSessionId(createSessionId).WithCreateClientName(createClientName).WithInvocationCreationTime(invocationCreationTime).WithLastTransitionTime(lastTransitionTime).WithLastMethodCall(lastMethodCall).WithLastMethodSessionId(lastMethodSessionId).WithLastMethodInputArguments(lastMethodInputArguments...).WithLastMethodOutputArguments(lastMethodOutputArguments...).WithLastMethodCallTime(lastMethodCallTime).WithLastMethodReturnStatus(lastMethodReturnStatus)
 }
 
 func (b *_ProgramDiagnosticDataTypeBuilder) WithCreateSessionId(createSessionId NodeId) ProgramDiagnosticDataTypeBuilder {
@@ -273,22 +269,12 @@ func (b *_ProgramDiagnosticDataTypeBuilder) WithLastMethodSessionIdBuilder(build
 	return b
 }
 
-func (b *_ProgramDiagnosticDataTypeBuilder) WithNoOfLastMethodInputArguments(noOfLastMethodInputArguments int32) ProgramDiagnosticDataTypeBuilder {
-	b.NoOfLastMethodInputArguments = noOfLastMethodInputArguments
-	return b
-}
-
-func (b *_ProgramDiagnosticDataTypeBuilder) WithLastMethodInputArguments(lastMethodInputArguments ...ExtensionObjectDefinition) ProgramDiagnosticDataTypeBuilder {
+func (b *_ProgramDiagnosticDataTypeBuilder) WithLastMethodInputArguments(lastMethodInputArguments ...Argument) ProgramDiagnosticDataTypeBuilder {
 	b.LastMethodInputArguments = lastMethodInputArguments
 	return b
 }
 
-func (b *_ProgramDiagnosticDataTypeBuilder) WithNoOfLastMethodOutputArguments(noOfLastMethodOutputArguments int32) ProgramDiagnosticDataTypeBuilder {
-	b.NoOfLastMethodOutputArguments = noOfLastMethodOutputArguments
-	return b
-}
-
-func (b *_ProgramDiagnosticDataTypeBuilder) WithLastMethodOutputArguments(lastMethodOutputArguments ...ExtensionObjectDefinition) ProgramDiagnosticDataTypeBuilder {
+func (b *_ProgramDiagnosticDataTypeBuilder) WithLastMethodOutputArguments(lastMethodOutputArguments ...Argument) ProgramDiagnosticDataTypeBuilder {
 	b.LastMethodOutputArguments = lastMethodOutputArguments
 	return b
 }
@@ -298,20 +284,20 @@ func (b *_ProgramDiagnosticDataTypeBuilder) WithLastMethodCallTime(lastMethodCal
 	return b
 }
 
-func (b *_ProgramDiagnosticDataTypeBuilder) WithLastMethodReturnStatus(lastMethodReturnStatus ExtensionObjectDefinition) ProgramDiagnosticDataTypeBuilder {
+func (b *_ProgramDiagnosticDataTypeBuilder) WithLastMethodReturnStatus(lastMethodReturnStatus StatusResult) ProgramDiagnosticDataTypeBuilder {
 	b.LastMethodReturnStatus = lastMethodReturnStatus
 	return b
 }
 
-func (b *_ProgramDiagnosticDataTypeBuilder) WithLastMethodReturnStatusBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ProgramDiagnosticDataTypeBuilder {
-	builder := builderSupplier(b.LastMethodReturnStatus.CreateExtensionObjectDefinitionBuilder())
+func (b *_ProgramDiagnosticDataTypeBuilder) WithLastMethodReturnStatusBuilder(builderSupplier func(StatusResultBuilder) StatusResultBuilder) ProgramDiagnosticDataTypeBuilder {
+	builder := builderSupplier(b.LastMethodReturnStatus.CreateStatusResultBuilder())
 	var err error
 	b.LastMethodReturnStatus, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StatusResultBuilder failed"))
 	}
 	return b
 }
@@ -716,12 +702,10 @@ func (m *_ProgramDiagnosticDataType) deepCopy() *_ProgramDiagnosticDataType {
 		m.LastTransitionTime,
 		m.LastMethodCall.DeepCopy().(PascalString),
 		m.LastMethodSessionId.DeepCopy().(NodeId),
-		m.NoOfLastMethodInputArguments,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.LastMethodInputArguments),
-		m.NoOfLastMethodOutputArguments,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.LastMethodOutputArguments),
+		utils.DeepCopySlice[Argument, Argument](m.LastMethodInputArguments),
+		utils.DeepCopySlice[Argument, Argument](m.LastMethodOutputArguments),
 		m.LastMethodCallTime,
-		m.LastMethodReturnStatus.DeepCopy().(ExtensionObjectDefinition),
+		m.LastMethodReturnStatus.DeepCopy().(StatusResult),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ProgramDiagnosticDataTypeCopy

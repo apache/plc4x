@@ -38,6 +38,7 @@ type ReadRawModifiedDetails interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetIsReadModified returns IsReadModified (property field)
 	GetIsReadModified() bool
@@ -51,6 +52,8 @@ type ReadRawModifiedDetails interface {
 	GetReturnBounds() bool
 	// IsReadRawModifiedDetails is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReadRawModifiedDetails()
+	// CreateBuilder creates a ReadRawModifiedDetailsBuilder
+	CreateReadRawModifiedDetailsBuilder() ReadRawModifiedDetailsBuilder
 }
 
 // _ReadRawModifiedDetails is the data-structure of this message
@@ -82,6 +85,125 @@ func NewReadRawModifiedDetails(isReadModified bool, startTime int64, endTime int
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReadRawModifiedDetailsBuilder is a builder for ReadRawModifiedDetails
+type ReadRawModifiedDetailsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(isReadModified bool, startTime int64, endTime int64, numValuesPerNode uint32, returnBounds bool) ReadRawModifiedDetailsBuilder
+	// WithIsReadModified adds IsReadModified (property field)
+	WithIsReadModified(bool) ReadRawModifiedDetailsBuilder
+	// WithStartTime adds StartTime (property field)
+	WithStartTime(int64) ReadRawModifiedDetailsBuilder
+	// WithEndTime adds EndTime (property field)
+	WithEndTime(int64) ReadRawModifiedDetailsBuilder
+	// WithNumValuesPerNode adds NumValuesPerNode (property field)
+	WithNumValuesPerNode(uint32) ReadRawModifiedDetailsBuilder
+	// WithReturnBounds adds ReturnBounds (property field)
+	WithReturnBounds(bool) ReadRawModifiedDetailsBuilder
+	// Build builds the ReadRawModifiedDetails or returns an error if something is wrong
+	Build() (ReadRawModifiedDetails, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReadRawModifiedDetails
+}
+
+// NewReadRawModifiedDetailsBuilder() creates a ReadRawModifiedDetailsBuilder
+func NewReadRawModifiedDetailsBuilder() ReadRawModifiedDetailsBuilder {
+	return &_ReadRawModifiedDetailsBuilder{_ReadRawModifiedDetails: new(_ReadRawModifiedDetails)}
+}
+
+type _ReadRawModifiedDetailsBuilder struct {
+	*_ReadRawModifiedDetails
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ReadRawModifiedDetailsBuilder) = (*_ReadRawModifiedDetailsBuilder)(nil)
+
+func (b *_ReadRawModifiedDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ReadRawModifiedDetailsBuilder) WithMandatoryFields(isReadModified bool, startTime int64, endTime int64, numValuesPerNode uint32, returnBounds bool) ReadRawModifiedDetailsBuilder {
+	return b.WithIsReadModified(isReadModified).WithStartTime(startTime).WithEndTime(endTime).WithNumValuesPerNode(numValuesPerNode).WithReturnBounds(returnBounds)
+}
+
+func (b *_ReadRawModifiedDetailsBuilder) WithIsReadModified(isReadModified bool) ReadRawModifiedDetailsBuilder {
+	b.IsReadModified = isReadModified
+	return b
+}
+
+func (b *_ReadRawModifiedDetailsBuilder) WithStartTime(startTime int64) ReadRawModifiedDetailsBuilder {
+	b.StartTime = startTime
+	return b
+}
+
+func (b *_ReadRawModifiedDetailsBuilder) WithEndTime(endTime int64) ReadRawModifiedDetailsBuilder {
+	b.EndTime = endTime
+	return b
+}
+
+func (b *_ReadRawModifiedDetailsBuilder) WithNumValuesPerNode(numValuesPerNode uint32) ReadRawModifiedDetailsBuilder {
+	b.NumValuesPerNode = numValuesPerNode
+	return b
+}
+
+func (b *_ReadRawModifiedDetailsBuilder) WithReturnBounds(returnBounds bool) ReadRawModifiedDetailsBuilder {
+	b.ReturnBounds = returnBounds
+	return b
+}
+
+func (b *_ReadRawModifiedDetailsBuilder) Build() (ReadRawModifiedDetails, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ReadRawModifiedDetails.deepCopy(), nil
+}
+
+func (b *_ReadRawModifiedDetailsBuilder) MustBuild() ReadRawModifiedDetails {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ReadRawModifiedDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ReadRawModifiedDetailsBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ReadRawModifiedDetailsBuilder) DeepCopy() any {
+	_copy := b.CreateReadRawModifiedDetailsBuilder().(*_ReadRawModifiedDetailsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateReadRawModifiedDetailsBuilder creates a ReadRawModifiedDetailsBuilder
+func (b *_ReadRawModifiedDetails) CreateReadRawModifiedDetailsBuilder() ReadRawModifiedDetailsBuilder {
+	if b == nil {
+		return NewReadRawModifiedDetailsBuilder()
+	}
+	return &_ReadRawModifiedDetailsBuilder{_ReadRawModifiedDetails: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -292,6 +414,28 @@ func (m *_ReadRawModifiedDetails) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ReadRawModifiedDetails) IsReadRawModifiedDetails() {}
+
+func (m *_ReadRawModifiedDetails) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReadRawModifiedDetails) deepCopy() *_ReadRawModifiedDetails {
+	if m == nil {
+		return nil
+	}
+	_ReadRawModifiedDetailsCopy := &_ReadRawModifiedDetails{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.IsReadModified,
+		m.StartTime,
+		m.EndTime,
+		m.NumValuesPerNode,
+		m.ReturnBounds,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReadRawModifiedDetailsCopy
+}
 
 func (m *_ReadRawModifiedDetails) String() string {
 	if m == nil {

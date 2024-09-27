@@ -38,6 +38,7 @@ type UpdateDataDetails interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -47,6 +48,8 @@ type UpdateDataDetails interface {
 	GetUpdateValues() []DataValue
 	// IsUpdateDataDetails is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUpdateDataDetails()
+	// CreateBuilder creates a UpdateDataDetailsBuilder
+	CreateUpdateDataDetailsBuilder() UpdateDataDetailsBuilder
 }
 
 // _UpdateDataDetails is the data-structure of this message
@@ -74,6 +77,132 @@ func NewUpdateDataDetails(nodeId NodeId, performInsertReplace PerformUpdateType,
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UpdateDataDetailsBuilder is a builder for UpdateDataDetails
+type UpdateDataDetailsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeId NodeId, performInsertReplace PerformUpdateType, updateValues []DataValue) UpdateDataDetailsBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(NodeId) UpdateDataDetailsBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) UpdateDataDetailsBuilder
+	// WithPerformInsertReplace adds PerformInsertReplace (property field)
+	WithPerformInsertReplace(PerformUpdateType) UpdateDataDetailsBuilder
+	// WithUpdateValues adds UpdateValues (property field)
+	WithUpdateValues(...DataValue) UpdateDataDetailsBuilder
+	// Build builds the UpdateDataDetails or returns an error if something is wrong
+	Build() (UpdateDataDetails, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UpdateDataDetails
+}
+
+// NewUpdateDataDetailsBuilder() creates a UpdateDataDetailsBuilder
+func NewUpdateDataDetailsBuilder() UpdateDataDetailsBuilder {
+	return &_UpdateDataDetailsBuilder{_UpdateDataDetails: new(_UpdateDataDetails)}
+}
+
+type _UpdateDataDetailsBuilder struct {
+	*_UpdateDataDetails
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (UpdateDataDetailsBuilder) = (*_UpdateDataDetailsBuilder)(nil)
+
+func (b *_UpdateDataDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_UpdateDataDetailsBuilder) WithMandatoryFields(nodeId NodeId, performInsertReplace PerformUpdateType, updateValues []DataValue) UpdateDataDetailsBuilder {
+	return b.WithNodeId(nodeId).WithPerformInsertReplace(performInsertReplace).WithUpdateValues(updateValues...)
+}
+
+func (b *_UpdateDataDetailsBuilder) WithNodeId(nodeId NodeId) UpdateDataDetailsBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_UpdateDataDetailsBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) UpdateDataDetailsBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdBuilder())
+	var err error
+	b.NodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_UpdateDataDetailsBuilder) WithPerformInsertReplace(performInsertReplace PerformUpdateType) UpdateDataDetailsBuilder {
+	b.PerformInsertReplace = performInsertReplace
+	return b
+}
+
+func (b *_UpdateDataDetailsBuilder) WithUpdateValues(updateValues ...DataValue) UpdateDataDetailsBuilder {
+	b.UpdateValues = updateValues
+	return b
+}
+
+func (b *_UpdateDataDetailsBuilder) Build() (UpdateDataDetails, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._UpdateDataDetails.deepCopy(), nil
+}
+
+func (b *_UpdateDataDetailsBuilder) MustBuild() UpdateDataDetails {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UpdateDataDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UpdateDataDetailsBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_UpdateDataDetailsBuilder) DeepCopy() any {
+	_copy := b.CreateUpdateDataDetailsBuilder().(*_UpdateDataDetailsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateUpdateDataDetailsBuilder creates a UpdateDataDetailsBuilder
+func (b *_UpdateDataDetails) CreateUpdateDataDetailsBuilder() UpdateDataDetailsBuilder {
+	if b == nil {
+		return NewUpdateDataDetailsBuilder()
+	}
+	return &_UpdateDataDetailsBuilder{_UpdateDataDetails: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -244,6 +373,24 @@ func (m *_UpdateDataDetails) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_UpdateDataDetails) IsUpdateDataDetails() {}
+
+func (m *_UpdateDataDetails) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UpdateDataDetails) deepCopy() *_UpdateDataDetails {
+	if m == nil {
+		return nil
+	}
+	_UpdateDataDetailsCopy := &_UpdateDataDetails{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(NodeId),
+		m.PerformInsertReplace,
+		utils.DeepCopySlice[DataValue, DataValue](m.UpdateValues),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UpdateDataDetailsCopy
+}
 
 func (m *_UpdateDataDetails) String() string {
 	if m == nil {

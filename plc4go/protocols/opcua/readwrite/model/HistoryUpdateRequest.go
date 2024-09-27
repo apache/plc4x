@@ -83,13 +83,11 @@ func NewHistoryUpdateRequest(requestHeader RequestHeader, historyUpdateDetails [
 type HistoryUpdateRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfHistoryUpdateDetails int32, historyUpdateDetails []ExtensionObject) HistoryUpdateRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, historyUpdateDetails []ExtensionObject) HistoryUpdateRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) HistoryUpdateRequestBuilder
+	WithRequestHeader(RequestHeader) HistoryUpdateRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) HistoryUpdateRequestBuilder
-	// WithNoOfHistoryUpdateDetails adds NoOfHistoryUpdateDetails (property field)
-	WithNoOfHistoryUpdateDetails(int32) HistoryUpdateRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) HistoryUpdateRequestBuilder
 	// WithHistoryUpdateDetails adds HistoryUpdateDetails (property field)
 	WithHistoryUpdateDetails(...ExtensionObject) HistoryUpdateRequestBuilder
 	// Build builds the HistoryUpdateRequest or returns an error if something is wrong
@@ -117,30 +115,25 @@ func (b *_HistoryUpdateRequestBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_HistoryUpdateRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfHistoryUpdateDetails int32, historyUpdateDetails []ExtensionObject) HistoryUpdateRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfHistoryUpdateDetails(noOfHistoryUpdateDetails).WithHistoryUpdateDetails(historyUpdateDetails...)
+func (b *_HistoryUpdateRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, historyUpdateDetails []ExtensionObject) HistoryUpdateRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithHistoryUpdateDetails(historyUpdateDetails...)
 }
 
-func (b *_HistoryUpdateRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) HistoryUpdateRequestBuilder {
+func (b *_HistoryUpdateRequestBuilder) WithRequestHeader(requestHeader RequestHeader) HistoryUpdateRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_HistoryUpdateRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) HistoryUpdateRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_HistoryUpdateRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) HistoryUpdateRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_HistoryUpdateRequestBuilder) WithNoOfHistoryUpdateDetails(noOfHistoryUpdateDetails int32) HistoryUpdateRequestBuilder {
-	b.NoOfHistoryUpdateDetails = noOfHistoryUpdateDetails
 	return b
 }
 
@@ -363,8 +356,7 @@ func (m *_HistoryUpdateRequest) deepCopy() *_HistoryUpdateRequest {
 	}
 	_HistoryUpdateRequestCopy := &_HistoryUpdateRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfHistoryUpdateDetails,
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.HistoryUpdateDetails),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -79,11 +79,11 @@ func NewCloseSecureChannelRequest(requestHeader RequestHeader) *_CloseSecureChan
 type CloseSecureChannelRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition) CloseSecureChannelRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader) CloseSecureChannelRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) CloseSecureChannelRequestBuilder
+	WithRequestHeader(RequestHeader) CloseSecureChannelRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CloseSecureChannelRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) CloseSecureChannelRequestBuilder
 	// Build builds the CloseSecureChannelRequest or returns an error if something is wrong
 	Build() (CloseSecureChannelRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,24 +109,24 @@ func (b *_CloseSecureChannelRequestBuilder) setParent(contract ExtensionObjectDe
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CloseSecureChannelRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition) CloseSecureChannelRequestBuilder {
+func (b *_CloseSecureChannelRequestBuilder) WithMandatoryFields(requestHeader RequestHeader) CloseSecureChannelRequestBuilder {
 	return b.WithRequestHeader(requestHeader)
 }
 
-func (b *_CloseSecureChannelRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CloseSecureChannelRequestBuilder {
+func (b *_CloseSecureChannelRequestBuilder) WithRequestHeader(requestHeader RequestHeader) CloseSecureChannelRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_CloseSecureChannelRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CloseSecureChannelRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CloseSecureChannelRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) CloseSecureChannelRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -308,7 +308,7 @@ func (m *_CloseSecureChannelRequest) deepCopy() *_CloseSecureChannelRequest {
 	}
 	_CloseSecureChannelRequestCopy := &_CloseSecureChannelRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CloseSecureChannelRequestCopy

@@ -89,15 +89,13 @@ func NewBrowseNextRequest(requestHeader RequestHeader, releaseContinuationPoints
 type BrowseNextRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, releaseContinuationPoints bool, noOfContinuationPoints int32, continuationPoints []PascalByteString) BrowseNextRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, releaseContinuationPoints bool, continuationPoints []PascalByteString) BrowseNextRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) BrowseNextRequestBuilder
+	WithRequestHeader(RequestHeader) BrowseNextRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowseNextRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) BrowseNextRequestBuilder
 	// WithReleaseContinuationPoints adds ReleaseContinuationPoints (property field)
 	WithReleaseContinuationPoints(bool) BrowseNextRequestBuilder
-	// WithNoOfContinuationPoints adds NoOfContinuationPoints (property field)
-	WithNoOfContinuationPoints(int32) BrowseNextRequestBuilder
 	// WithContinuationPoints adds ContinuationPoints (property field)
 	WithContinuationPoints(...PascalByteString) BrowseNextRequestBuilder
 	// Build builds the BrowseNextRequest or returns an error if something is wrong
@@ -125,35 +123,30 @@ func (b *_BrowseNextRequestBuilder) setParent(contract ExtensionObjectDefinition
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_BrowseNextRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, releaseContinuationPoints bool, noOfContinuationPoints int32, continuationPoints []PascalByteString) BrowseNextRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithReleaseContinuationPoints(releaseContinuationPoints).WithNoOfContinuationPoints(noOfContinuationPoints).WithContinuationPoints(continuationPoints...)
+func (b *_BrowseNextRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, releaseContinuationPoints bool, continuationPoints []PascalByteString) BrowseNextRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithReleaseContinuationPoints(releaseContinuationPoints).WithContinuationPoints(continuationPoints...)
 }
 
-func (b *_BrowseNextRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) BrowseNextRequestBuilder {
+func (b *_BrowseNextRequestBuilder) WithRequestHeader(requestHeader RequestHeader) BrowseNextRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_BrowseNextRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowseNextRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_BrowseNextRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) BrowseNextRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
 func (b *_BrowseNextRequestBuilder) WithReleaseContinuationPoints(releaseContinuationPoints bool) BrowseNextRequestBuilder {
 	b.ReleaseContinuationPoints = releaseContinuationPoints
-	return b
-}
-
-func (b *_BrowseNextRequestBuilder) WithNoOfContinuationPoints(noOfContinuationPoints int32) BrowseNextRequestBuilder {
-	b.NoOfContinuationPoints = noOfContinuationPoints
 	return b
 }
 
@@ -406,9 +399,8 @@ func (m *_BrowseNextRequest) deepCopy() *_BrowseNextRequest {
 	}
 	_BrowseNextRequestCopy := &_BrowseNextRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.ReleaseContinuationPoints,
-		m.NoOfContinuationPoints,
 		utils.DeepCopySlice[PascalByteString, PascalByteString](m.ContinuationPoints),
 		m.reservedField0,
 	}

@@ -83,11 +83,11 @@ func NewCancelRequest(requestHeader RequestHeader, requestHandle uint32) *_Cance
 type CancelRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, requestHandle uint32) CancelRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, requestHandle uint32) CancelRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) CancelRequestBuilder
+	WithRequestHeader(RequestHeader) CancelRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CancelRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) CancelRequestBuilder
 	// WithRequestHandle adds RequestHandle (property field)
 	WithRequestHandle(uint32) CancelRequestBuilder
 	// Build builds the CancelRequest or returns an error if something is wrong
@@ -115,24 +115,24 @@ func (b *_CancelRequestBuilder) setParent(contract ExtensionObjectDefinitionCont
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CancelRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, requestHandle uint32) CancelRequestBuilder {
+func (b *_CancelRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, requestHandle uint32) CancelRequestBuilder {
 	return b.WithRequestHeader(requestHeader).WithRequestHandle(requestHandle)
 }
 
-func (b *_CancelRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CancelRequestBuilder {
+func (b *_CancelRequestBuilder) WithRequestHeader(requestHeader RequestHeader) CancelRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_CancelRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CancelRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CancelRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) CancelRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -336,7 +336,7 @@ func (m *_CancelRequest) deepCopy() *_CancelRequest {
 	}
 	_CancelRequestCopy := &_CancelRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.RequestHandle,
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

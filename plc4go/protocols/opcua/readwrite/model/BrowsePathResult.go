@@ -83,15 +83,13 @@ func NewBrowsePathResult(statusCode StatusCode, targets []BrowsePathTarget) *_Br
 type BrowsePathResultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(statusCode StatusCode, noOfTargets int32, targets []ExtensionObjectDefinition) BrowsePathResultBuilder
+	WithMandatoryFields(statusCode StatusCode, targets []BrowsePathTarget) BrowsePathResultBuilder
 	// WithStatusCode adds StatusCode (property field)
 	WithStatusCode(StatusCode) BrowsePathResultBuilder
 	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
 	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) BrowsePathResultBuilder
-	// WithNoOfTargets adds NoOfTargets (property field)
-	WithNoOfTargets(int32) BrowsePathResultBuilder
 	// WithTargets adds Targets (property field)
-	WithTargets(...ExtensionObjectDefinition) BrowsePathResultBuilder
+	WithTargets(...BrowsePathTarget) BrowsePathResultBuilder
 	// Build builds the BrowsePathResult or returns an error if something is wrong
 	Build() (BrowsePathResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,8 +115,8 @@ func (b *_BrowsePathResultBuilder) setParent(contract ExtensionObjectDefinitionC
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_BrowsePathResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfTargets int32, targets []ExtensionObjectDefinition) BrowsePathResultBuilder {
-	return b.WithStatusCode(statusCode).WithNoOfTargets(noOfTargets).WithTargets(targets...)
+func (b *_BrowsePathResultBuilder) WithMandatoryFields(statusCode StatusCode, targets []BrowsePathTarget) BrowsePathResultBuilder {
+	return b.WithStatusCode(statusCode).WithTargets(targets...)
 }
 
 func (b *_BrowsePathResultBuilder) WithStatusCode(statusCode StatusCode) BrowsePathResultBuilder {
@@ -139,12 +137,7 @@ func (b *_BrowsePathResultBuilder) WithStatusCodeBuilder(builderSupplier func(St
 	return b
 }
 
-func (b *_BrowsePathResultBuilder) WithNoOfTargets(noOfTargets int32) BrowsePathResultBuilder {
-	b.NoOfTargets = noOfTargets
-	return b
-}
-
-func (b *_BrowsePathResultBuilder) WithTargets(targets ...ExtensionObjectDefinition) BrowsePathResultBuilder {
+func (b *_BrowsePathResultBuilder) WithTargets(targets ...BrowsePathTarget) BrowsePathResultBuilder {
 	b.Targets = targets
 	return b
 }
@@ -364,8 +357,7 @@ func (m *_BrowsePathResult) deepCopy() *_BrowsePathResult {
 	_BrowsePathResultCopy := &_BrowsePathResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
-		m.NoOfTargets,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Targets),
+		utils.DeepCopySlice[BrowsePathTarget, BrowsePathTarget](m.Targets),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BrowsePathResultCopy

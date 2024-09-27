@@ -38,6 +38,7 @@ type BrokerWriterGroupTransportDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetQueueName returns QueueName (property field)
 	GetQueueName() PascalString
@@ -49,6 +50,8 @@ type BrokerWriterGroupTransportDataType interface {
 	GetRequestedDeliveryGuarantee() BrokerTransportQualityOfService
 	// IsBrokerWriterGroupTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBrokerWriterGroupTransportDataType()
+	// CreateBuilder creates a BrokerWriterGroupTransportDataTypeBuilder
+	CreateBrokerWriterGroupTransportDataTypeBuilder() BrokerWriterGroupTransportDataTypeBuilder
 }
 
 // _BrokerWriterGroupTransportDataType is the data-structure of this message
@@ -84,6 +87,181 @@ func NewBrokerWriterGroupTransportDataType(queueName PascalString, resourceUri P
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BrokerWriterGroupTransportDataTypeBuilder is a builder for BrokerWriterGroupTransportDataType
+type BrokerWriterGroupTransportDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(queueName PascalString, resourceUri PascalString, authenticationProfileUri PascalString, requestedDeliveryGuarantee BrokerTransportQualityOfService) BrokerWriterGroupTransportDataTypeBuilder
+	// WithQueueName adds QueueName (property field)
+	WithQueueName(PascalString) BrokerWriterGroupTransportDataTypeBuilder
+	// WithQueueNameBuilder adds QueueName (property field) which is build by the builder
+	WithQueueNameBuilder(func(PascalStringBuilder) PascalStringBuilder) BrokerWriterGroupTransportDataTypeBuilder
+	// WithResourceUri adds ResourceUri (property field)
+	WithResourceUri(PascalString) BrokerWriterGroupTransportDataTypeBuilder
+	// WithResourceUriBuilder adds ResourceUri (property field) which is build by the builder
+	WithResourceUriBuilder(func(PascalStringBuilder) PascalStringBuilder) BrokerWriterGroupTransportDataTypeBuilder
+	// WithAuthenticationProfileUri adds AuthenticationProfileUri (property field)
+	WithAuthenticationProfileUri(PascalString) BrokerWriterGroupTransportDataTypeBuilder
+	// WithAuthenticationProfileUriBuilder adds AuthenticationProfileUri (property field) which is build by the builder
+	WithAuthenticationProfileUriBuilder(func(PascalStringBuilder) PascalStringBuilder) BrokerWriterGroupTransportDataTypeBuilder
+	// WithRequestedDeliveryGuarantee adds RequestedDeliveryGuarantee (property field)
+	WithRequestedDeliveryGuarantee(BrokerTransportQualityOfService) BrokerWriterGroupTransportDataTypeBuilder
+	// Build builds the BrokerWriterGroupTransportDataType or returns an error if something is wrong
+	Build() (BrokerWriterGroupTransportDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BrokerWriterGroupTransportDataType
+}
+
+// NewBrokerWriterGroupTransportDataTypeBuilder() creates a BrokerWriterGroupTransportDataTypeBuilder
+func NewBrokerWriterGroupTransportDataTypeBuilder() BrokerWriterGroupTransportDataTypeBuilder {
+	return &_BrokerWriterGroupTransportDataTypeBuilder{_BrokerWriterGroupTransportDataType: new(_BrokerWriterGroupTransportDataType)}
+}
+
+type _BrokerWriterGroupTransportDataTypeBuilder struct {
+	*_BrokerWriterGroupTransportDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BrokerWriterGroupTransportDataTypeBuilder) = (*_BrokerWriterGroupTransportDataTypeBuilder)(nil)
+
+func (b *_BrokerWriterGroupTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_BrokerWriterGroupTransportDataTypeBuilder) WithMandatoryFields(queueName PascalString, resourceUri PascalString, authenticationProfileUri PascalString, requestedDeliveryGuarantee BrokerTransportQualityOfService) BrokerWriterGroupTransportDataTypeBuilder {
+	return b.WithQueueName(queueName).WithResourceUri(resourceUri).WithAuthenticationProfileUri(authenticationProfileUri).WithRequestedDeliveryGuarantee(requestedDeliveryGuarantee)
+}
+
+func (b *_BrokerWriterGroupTransportDataTypeBuilder) WithQueueName(queueName PascalString) BrokerWriterGroupTransportDataTypeBuilder {
+	b.QueueName = queueName
+	return b
+}
+
+func (b *_BrokerWriterGroupTransportDataTypeBuilder) WithQueueNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BrokerWriterGroupTransportDataTypeBuilder {
+	builder := builderSupplier(b.QueueName.CreatePascalStringBuilder())
+	var err error
+	b.QueueName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BrokerWriterGroupTransportDataTypeBuilder) WithResourceUri(resourceUri PascalString) BrokerWriterGroupTransportDataTypeBuilder {
+	b.ResourceUri = resourceUri
+	return b
+}
+
+func (b *_BrokerWriterGroupTransportDataTypeBuilder) WithResourceUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BrokerWriterGroupTransportDataTypeBuilder {
+	builder := builderSupplier(b.ResourceUri.CreatePascalStringBuilder())
+	var err error
+	b.ResourceUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BrokerWriterGroupTransportDataTypeBuilder) WithAuthenticationProfileUri(authenticationProfileUri PascalString) BrokerWriterGroupTransportDataTypeBuilder {
+	b.AuthenticationProfileUri = authenticationProfileUri
+	return b
+}
+
+func (b *_BrokerWriterGroupTransportDataTypeBuilder) WithAuthenticationProfileUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BrokerWriterGroupTransportDataTypeBuilder {
+	builder := builderSupplier(b.AuthenticationProfileUri.CreatePascalStringBuilder())
+	var err error
+	b.AuthenticationProfileUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BrokerWriterGroupTransportDataTypeBuilder) WithRequestedDeliveryGuarantee(requestedDeliveryGuarantee BrokerTransportQualityOfService) BrokerWriterGroupTransportDataTypeBuilder {
+	b.RequestedDeliveryGuarantee = requestedDeliveryGuarantee
+	return b
+}
+
+func (b *_BrokerWriterGroupTransportDataTypeBuilder) Build() (BrokerWriterGroupTransportDataType, error) {
+	if b.QueueName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'queueName' not set"))
+	}
+	if b.ResourceUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'resourceUri' not set"))
+	}
+	if b.AuthenticationProfileUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'authenticationProfileUri' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BrokerWriterGroupTransportDataType.deepCopy(), nil
+}
+
+func (b *_BrokerWriterGroupTransportDataTypeBuilder) MustBuild() BrokerWriterGroupTransportDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BrokerWriterGroupTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BrokerWriterGroupTransportDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_BrokerWriterGroupTransportDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBrokerWriterGroupTransportDataTypeBuilder().(*_BrokerWriterGroupTransportDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBrokerWriterGroupTransportDataTypeBuilder creates a BrokerWriterGroupTransportDataTypeBuilder
+func (b *_BrokerWriterGroupTransportDataType) CreateBrokerWriterGroupTransportDataTypeBuilder() BrokerWriterGroupTransportDataTypeBuilder {
+	if b == nil {
+		return NewBrokerWriterGroupTransportDataTypeBuilder()
+	}
+	return &_BrokerWriterGroupTransportDataTypeBuilder{_BrokerWriterGroupTransportDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -251,6 +429,25 @@ func (m *_BrokerWriterGroupTransportDataType) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BrokerWriterGroupTransportDataType) IsBrokerWriterGroupTransportDataType() {}
+
+func (m *_BrokerWriterGroupTransportDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrokerWriterGroupTransportDataType) deepCopy() *_BrokerWriterGroupTransportDataType {
+	if m == nil {
+		return nil
+	}
+	_BrokerWriterGroupTransportDataTypeCopy := &_BrokerWriterGroupTransportDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.QueueName.DeepCopy().(PascalString),
+		m.ResourceUri.DeepCopy().(PascalString),
+		m.AuthenticationProfileUri.DeepCopy().(PascalString),
+		m.RequestedDeliveryGuarantee,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrokerWriterGroupTransportDataTypeCopy
+}
 
 func (m *_BrokerWriterGroupTransportDataType) String() string {
 	if m == nil {

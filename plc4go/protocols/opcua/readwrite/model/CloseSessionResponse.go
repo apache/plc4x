@@ -79,11 +79,11 @@ func NewCloseSessionResponse(responseHeader ResponseHeader) *_CloseSessionRespon
 type CloseSessionResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition) CloseSessionResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader) CloseSessionResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) CloseSessionResponseBuilder
+	WithResponseHeader(ResponseHeader) CloseSessionResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CloseSessionResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) CloseSessionResponseBuilder
 	// Build builds the CloseSessionResponse or returns an error if something is wrong
 	Build() (CloseSessionResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,24 +109,24 @@ func (b *_CloseSessionResponseBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CloseSessionResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) CloseSessionResponseBuilder {
+func (b *_CloseSessionResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader) CloseSessionResponseBuilder {
 	return b.WithResponseHeader(responseHeader)
 }
 
-func (b *_CloseSessionResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) CloseSessionResponseBuilder {
+func (b *_CloseSessionResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) CloseSessionResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_CloseSessionResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CloseSessionResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CloseSessionResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) CloseSessionResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -308,7 +308,7 @@ func (m *_CloseSessionResponse) deepCopy() *_CloseSessionResponse {
 	}
 	_CloseSessionResponseCopy := &_CloseSessionResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CloseSessionResponseCopy

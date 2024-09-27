@@ -87,11 +87,11 @@ func NewRepublishRequest(requestHeader RequestHeader, subscriptionId uint32, ret
 type RepublishRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, retransmitSequenceNumber uint32) RepublishRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, retransmitSequenceNumber uint32) RepublishRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) RepublishRequestBuilder
+	WithRequestHeader(RequestHeader) RepublishRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RepublishRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) RepublishRequestBuilder
 	// WithSubscriptionId adds SubscriptionId (property field)
 	WithSubscriptionId(uint32) RepublishRequestBuilder
 	// WithRetransmitSequenceNumber adds RetransmitSequenceNumber (property field)
@@ -121,24 +121,24 @@ func (b *_RepublishRequestBuilder) setParent(contract ExtensionObjectDefinitionC
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RepublishRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, retransmitSequenceNumber uint32) RepublishRequestBuilder {
+func (b *_RepublishRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, retransmitSequenceNumber uint32) RepublishRequestBuilder {
 	return b.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithRetransmitSequenceNumber(retransmitSequenceNumber)
 }
 
-func (b *_RepublishRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) RepublishRequestBuilder {
+func (b *_RepublishRequestBuilder) WithRequestHeader(requestHeader RequestHeader) RepublishRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_RepublishRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RepublishRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_RepublishRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) RepublishRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -364,7 +364,7 @@ func (m *_RepublishRequest) deepCopy() *_RepublishRequest {
 	}
 	_RepublishRequestCopy := &_RepublishRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.SubscriptionId,
 		m.RetransmitSequenceNumber,
 	}

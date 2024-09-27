@@ -101,23 +101,21 @@ func NewAxisInformation(engineeringUnits EUInformation, eURange Range, title Loc
 type AxisInformationBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(engineeringUnits ExtensionObjectDefinition, eURange ExtensionObjectDefinition, title LocalizedText, axisScaleType AxisScaleEnumeration, noOfAxisSteps int32, axisSteps []float64) AxisInformationBuilder
+	WithMandatoryFields(engineeringUnits EUInformation, eURange Range, title LocalizedText, axisScaleType AxisScaleEnumeration, axisSteps []float64) AxisInformationBuilder
 	// WithEngineeringUnits adds EngineeringUnits (property field)
-	WithEngineeringUnits(ExtensionObjectDefinition) AxisInformationBuilder
+	WithEngineeringUnits(EUInformation) AxisInformationBuilder
 	// WithEngineeringUnitsBuilder adds EngineeringUnits (property field) which is build by the builder
-	WithEngineeringUnitsBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AxisInformationBuilder
+	WithEngineeringUnitsBuilder(func(EUInformationBuilder) EUInformationBuilder) AxisInformationBuilder
 	// WithEURange adds EURange (property field)
-	WithEURange(ExtensionObjectDefinition) AxisInformationBuilder
+	WithEURange(Range) AxisInformationBuilder
 	// WithEURangeBuilder adds EURange (property field) which is build by the builder
-	WithEURangeBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AxisInformationBuilder
+	WithEURangeBuilder(func(RangeBuilder) RangeBuilder) AxisInformationBuilder
 	// WithTitle adds Title (property field)
 	WithTitle(LocalizedText) AxisInformationBuilder
 	// WithTitleBuilder adds Title (property field) which is build by the builder
 	WithTitleBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) AxisInformationBuilder
 	// WithAxisScaleType adds AxisScaleType (property field)
 	WithAxisScaleType(AxisScaleEnumeration) AxisInformationBuilder
-	// WithNoOfAxisSteps adds NoOfAxisSteps (property field)
-	WithNoOfAxisSteps(int32) AxisInformationBuilder
 	// WithAxisSteps adds AxisSteps (property field)
 	WithAxisSteps(...float64) AxisInformationBuilder
 	// Build builds the AxisInformation or returns an error if something is wrong
@@ -145,42 +143,42 @@ func (b *_AxisInformationBuilder) setParent(contract ExtensionObjectDefinitionCo
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_AxisInformationBuilder) WithMandatoryFields(engineeringUnits ExtensionObjectDefinition, eURange ExtensionObjectDefinition, title LocalizedText, axisScaleType AxisScaleEnumeration, noOfAxisSteps int32, axisSteps []float64) AxisInformationBuilder {
-	return b.WithEngineeringUnits(engineeringUnits).WithEURange(eURange).WithTitle(title).WithAxisScaleType(axisScaleType).WithNoOfAxisSteps(noOfAxisSteps).WithAxisSteps(axisSteps...)
+func (b *_AxisInformationBuilder) WithMandatoryFields(engineeringUnits EUInformation, eURange Range, title LocalizedText, axisScaleType AxisScaleEnumeration, axisSteps []float64) AxisInformationBuilder {
+	return b.WithEngineeringUnits(engineeringUnits).WithEURange(eURange).WithTitle(title).WithAxisScaleType(axisScaleType).WithAxisSteps(axisSteps...)
 }
 
-func (b *_AxisInformationBuilder) WithEngineeringUnits(engineeringUnits ExtensionObjectDefinition) AxisInformationBuilder {
+func (b *_AxisInformationBuilder) WithEngineeringUnits(engineeringUnits EUInformation) AxisInformationBuilder {
 	b.EngineeringUnits = engineeringUnits
 	return b
 }
 
-func (b *_AxisInformationBuilder) WithEngineeringUnitsBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AxisInformationBuilder {
-	builder := builderSupplier(b.EngineeringUnits.CreateExtensionObjectDefinitionBuilder())
+func (b *_AxisInformationBuilder) WithEngineeringUnitsBuilder(builderSupplier func(EUInformationBuilder) EUInformationBuilder) AxisInformationBuilder {
+	builder := builderSupplier(b.EngineeringUnits.CreateEUInformationBuilder())
 	var err error
 	b.EngineeringUnits, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "EUInformationBuilder failed"))
 	}
 	return b
 }
 
-func (b *_AxisInformationBuilder) WithEURange(eURange ExtensionObjectDefinition) AxisInformationBuilder {
+func (b *_AxisInformationBuilder) WithEURange(eURange Range) AxisInformationBuilder {
 	b.EURange = eURange
 	return b
 }
 
-func (b *_AxisInformationBuilder) WithEURangeBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AxisInformationBuilder {
-	builder := builderSupplier(b.EURange.CreateExtensionObjectDefinitionBuilder())
+func (b *_AxisInformationBuilder) WithEURangeBuilder(builderSupplier func(RangeBuilder) RangeBuilder) AxisInformationBuilder {
+	builder := builderSupplier(b.EURange.CreateRangeBuilder())
 	var err error
 	b.EURange, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RangeBuilder failed"))
 	}
 	return b
 }
@@ -205,11 +203,6 @@ func (b *_AxisInformationBuilder) WithTitleBuilder(builderSupplier func(Localize
 
 func (b *_AxisInformationBuilder) WithAxisScaleType(axisScaleType AxisScaleEnumeration) AxisInformationBuilder {
 	b.AxisScaleType = axisScaleType
-	return b
-}
-
-func (b *_AxisInformationBuilder) WithNoOfAxisSteps(noOfAxisSteps int32) AxisInformationBuilder {
-	b.NoOfAxisSteps = noOfAxisSteps
 	return b
 }
 
@@ -490,11 +483,10 @@ func (m *_AxisInformation) deepCopy() *_AxisInformation {
 	}
 	_AxisInformationCopy := &_AxisInformation{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.EngineeringUnits.DeepCopy().(ExtensionObjectDefinition),
-		m.EURange.DeepCopy().(ExtensionObjectDefinition),
+		m.EngineeringUnits.DeepCopy().(EUInformation),
+		m.EURange.DeepCopy().(Range),
 		m.Title.DeepCopy().(LocalizedText),
 		m.AxisScaleType,
-		m.NoOfAxisSteps,
 		utils.DeepCopySlice[float64, float64](m.AxisSteps),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

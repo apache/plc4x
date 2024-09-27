@@ -87,17 +87,13 @@ func NewSetMonitoringModeResponse(responseHeader ResponseHeader, results []Statu
 type SetMonitoringModeResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) SetMonitoringModeResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) SetMonitoringModeResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) SetMonitoringModeResponseBuilder
+	WithResponseHeader(ResponseHeader) SetMonitoringModeResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetMonitoringModeResponseBuilder
-	// WithNoOfResults adds NoOfResults (property field)
-	WithNoOfResults(int32) SetMonitoringModeResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) SetMonitoringModeResponseBuilder
 	// WithResults adds Results (property field)
 	WithResults(...StatusCode) SetMonitoringModeResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) SetMonitoringModeResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) SetMonitoringModeResponseBuilder
 	// Build builds the SetMonitoringModeResponse or returns an error if something is wrong
@@ -125,40 +121,30 @@ func (b *_SetMonitoringModeResponseBuilder) setParent(contract ExtensionObjectDe
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_SetMonitoringModeResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) SetMonitoringModeResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_SetMonitoringModeResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) SetMonitoringModeResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithResults(results...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_SetMonitoringModeResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) SetMonitoringModeResponseBuilder {
+func (b *_SetMonitoringModeResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) SetMonitoringModeResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_SetMonitoringModeResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetMonitoringModeResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_SetMonitoringModeResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) SetMonitoringModeResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_SetMonitoringModeResponseBuilder) WithNoOfResults(noOfResults int32) SetMonitoringModeResponseBuilder {
-	b.NoOfResults = noOfResults
 	return b
 }
 
 func (b *_SetMonitoringModeResponseBuilder) WithResults(results ...StatusCode) SetMonitoringModeResponseBuilder {
 	b.Results = results
-	return b
-}
-
-func (b *_SetMonitoringModeResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) SetMonitoringModeResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -418,10 +404,8 @@ func (m *_SetMonitoringModeResponse) deepCopy() *_SetMonitoringModeResponse {
 	}
 	_SetMonitoringModeResponseCopy := &_SetMonitoringModeResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfResults,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
-		m.NoOfDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

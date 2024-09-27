@@ -80,13 +80,9 @@ func NewDataChangeNotification(monitoredItems []MonitoredItemNotification, diagn
 type DataChangeNotificationBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfMonitoredItems int32, monitoredItems []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DataChangeNotificationBuilder
-	// WithNoOfMonitoredItems adds NoOfMonitoredItems (property field)
-	WithNoOfMonitoredItems(int32) DataChangeNotificationBuilder
+	WithMandatoryFields(monitoredItems []MonitoredItemNotification, diagnosticInfos []DiagnosticInfo) DataChangeNotificationBuilder
 	// WithMonitoredItems adds MonitoredItems (property field)
-	WithMonitoredItems(...ExtensionObjectDefinition) DataChangeNotificationBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) DataChangeNotificationBuilder
+	WithMonitoredItems(...MonitoredItemNotification) DataChangeNotificationBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) DataChangeNotificationBuilder
 	// Build builds the DataChangeNotification or returns an error if something is wrong
@@ -114,22 +110,12 @@ func (b *_DataChangeNotificationBuilder) setParent(contract ExtensionObjectDefin
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_DataChangeNotificationBuilder) WithMandatoryFields(noOfMonitoredItems int32, monitoredItems []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DataChangeNotificationBuilder {
-	return b.WithNoOfMonitoredItems(noOfMonitoredItems).WithMonitoredItems(monitoredItems...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_DataChangeNotificationBuilder) WithMandatoryFields(monitoredItems []MonitoredItemNotification, diagnosticInfos []DiagnosticInfo) DataChangeNotificationBuilder {
+	return b.WithMonitoredItems(monitoredItems...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_DataChangeNotificationBuilder) WithNoOfMonitoredItems(noOfMonitoredItems int32) DataChangeNotificationBuilder {
-	b.NoOfMonitoredItems = noOfMonitoredItems
-	return b
-}
-
-func (b *_DataChangeNotificationBuilder) WithMonitoredItems(monitoredItems ...ExtensionObjectDefinition) DataChangeNotificationBuilder {
+func (b *_DataChangeNotificationBuilder) WithMonitoredItems(monitoredItems ...MonitoredItemNotification) DataChangeNotificationBuilder {
 	b.MonitoredItems = monitoredItems
-	return b
-}
-
-func (b *_DataChangeNotificationBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) DataChangeNotificationBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -366,9 +352,7 @@ func (m *_DataChangeNotification) deepCopy() *_DataChangeNotification {
 	}
 	_DataChangeNotificationCopy := &_DataChangeNotification{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfMonitoredItems,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.MonitoredItems),
-		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[MonitoredItemNotification, MonitoredItemNotification](m.MonitoredItems),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

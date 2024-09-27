@@ -120,13 +120,11 @@ func NewPubSubKeyPushTargetDataType(applicationUri PascalString, pushTargetFolde
 type PubSubKeyPushTargetDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(applicationUri PascalString, noOfPushTargetFolder int32, pushTargetFolder []PascalString, endpointUrl PascalString, securityPolicyUri PascalString, userTokenType ExtensionObjectDefinition, requestedKeyCount uint16, retryInterval float64, noOfPushTargetProperties int32, pushTargetProperties []ExtensionObjectDefinition, noOfSecurityGroups int32, securityGroups []PascalString) PubSubKeyPushTargetDataTypeBuilder
+	WithMandatoryFields(applicationUri PascalString, pushTargetFolder []PascalString, endpointUrl PascalString, securityPolicyUri PascalString, userTokenType UserTokenPolicy, requestedKeyCount uint16, retryInterval float64, pushTargetProperties []KeyValuePair, securityGroups []PascalString) PubSubKeyPushTargetDataTypeBuilder
 	// WithApplicationUri adds ApplicationUri (property field)
 	WithApplicationUri(PascalString) PubSubKeyPushTargetDataTypeBuilder
 	// WithApplicationUriBuilder adds ApplicationUri (property field) which is build by the builder
 	WithApplicationUriBuilder(func(PascalStringBuilder) PascalStringBuilder) PubSubKeyPushTargetDataTypeBuilder
-	// WithNoOfPushTargetFolder adds NoOfPushTargetFolder (property field)
-	WithNoOfPushTargetFolder(int32) PubSubKeyPushTargetDataTypeBuilder
 	// WithPushTargetFolder adds PushTargetFolder (property field)
 	WithPushTargetFolder(...PascalString) PubSubKeyPushTargetDataTypeBuilder
 	// WithEndpointUrl adds EndpointUrl (property field)
@@ -138,19 +136,15 @@ type PubSubKeyPushTargetDataTypeBuilder interface {
 	// WithSecurityPolicyUriBuilder adds SecurityPolicyUri (property field) which is build by the builder
 	WithSecurityPolicyUriBuilder(func(PascalStringBuilder) PascalStringBuilder) PubSubKeyPushTargetDataTypeBuilder
 	// WithUserTokenType adds UserTokenType (property field)
-	WithUserTokenType(ExtensionObjectDefinition) PubSubKeyPushTargetDataTypeBuilder
+	WithUserTokenType(UserTokenPolicy) PubSubKeyPushTargetDataTypeBuilder
 	// WithUserTokenTypeBuilder adds UserTokenType (property field) which is build by the builder
-	WithUserTokenTypeBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) PubSubKeyPushTargetDataTypeBuilder
+	WithUserTokenTypeBuilder(func(UserTokenPolicyBuilder) UserTokenPolicyBuilder) PubSubKeyPushTargetDataTypeBuilder
 	// WithRequestedKeyCount adds RequestedKeyCount (property field)
 	WithRequestedKeyCount(uint16) PubSubKeyPushTargetDataTypeBuilder
 	// WithRetryInterval adds RetryInterval (property field)
 	WithRetryInterval(float64) PubSubKeyPushTargetDataTypeBuilder
-	// WithNoOfPushTargetProperties adds NoOfPushTargetProperties (property field)
-	WithNoOfPushTargetProperties(int32) PubSubKeyPushTargetDataTypeBuilder
 	// WithPushTargetProperties adds PushTargetProperties (property field)
-	WithPushTargetProperties(...ExtensionObjectDefinition) PubSubKeyPushTargetDataTypeBuilder
-	// WithNoOfSecurityGroups adds NoOfSecurityGroups (property field)
-	WithNoOfSecurityGroups(int32) PubSubKeyPushTargetDataTypeBuilder
+	WithPushTargetProperties(...KeyValuePair) PubSubKeyPushTargetDataTypeBuilder
 	// WithSecurityGroups adds SecurityGroups (property field)
 	WithSecurityGroups(...PascalString) PubSubKeyPushTargetDataTypeBuilder
 	// Build builds the PubSubKeyPushTargetDataType or returns an error if something is wrong
@@ -178,8 +172,8 @@ func (b *_PubSubKeyPushTargetDataTypeBuilder) setParent(contract ExtensionObject
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_PubSubKeyPushTargetDataTypeBuilder) WithMandatoryFields(applicationUri PascalString, noOfPushTargetFolder int32, pushTargetFolder []PascalString, endpointUrl PascalString, securityPolicyUri PascalString, userTokenType ExtensionObjectDefinition, requestedKeyCount uint16, retryInterval float64, noOfPushTargetProperties int32, pushTargetProperties []ExtensionObjectDefinition, noOfSecurityGroups int32, securityGroups []PascalString) PubSubKeyPushTargetDataTypeBuilder {
-	return b.WithApplicationUri(applicationUri).WithNoOfPushTargetFolder(noOfPushTargetFolder).WithPushTargetFolder(pushTargetFolder...).WithEndpointUrl(endpointUrl).WithSecurityPolicyUri(securityPolicyUri).WithUserTokenType(userTokenType).WithRequestedKeyCount(requestedKeyCount).WithRetryInterval(retryInterval).WithNoOfPushTargetProperties(noOfPushTargetProperties).WithPushTargetProperties(pushTargetProperties...).WithNoOfSecurityGroups(noOfSecurityGroups).WithSecurityGroups(securityGroups...)
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithMandatoryFields(applicationUri PascalString, pushTargetFolder []PascalString, endpointUrl PascalString, securityPolicyUri PascalString, userTokenType UserTokenPolicy, requestedKeyCount uint16, retryInterval float64, pushTargetProperties []KeyValuePair, securityGroups []PascalString) PubSubKeyPushTargetDataTypeBuilder {
+	return b.WithApplicationUri(applicationUri).WithPushTargetFolder(pushTargetFolder...).WithEndpointUrl(endpointUrl).WithSecurityPolicyUri(securityPolicyUri).WithUserTokenType(userTokenType).WithRequestedKeyCount(requestedKeyCount).WithRetryInterval(retryInterval).WithPushTargetProperties(pushTargetProperties...).WithSecurityGroups(securityGroups...)
 }
 
 func (b *_PubSubKeyPushTargetDataTypeBuilder) WithApplicationUri(applicationUri PascalString) PubSubKeyPushTargetDataTypeBuilder {
@@ -197,11 +191,6 @@ func (b *_PubSubKeyPushTargetDataTypeBuilder) WithApplicationUriBuilder(builderS
 		}
 		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return b
-}
-
-func (b *_PubSubKeyPushTargetDataTypeBuilder) WithNoOfPushTargetFolder(noOfPushTargetFolder int32) PubSubKeyPushTargetDataTypeBuilder {
-	b.NoOfPushTargetFolder = noOfPushTargetFolder
 	return b
 }
 
@@ -246,20 +235,20 @@ func (b *_PubSubKeyPushTargetDataTypeBuilder) WithSecurityPolicyUriBuilder(build
 	return b
 }
 
-func (b *_PubSubKeyPushTargetDataTypeBuilder) WithUserTokenType(userTokenType ExtensionObjectDefinition) PubSubKeyPushTargetDataTypeBuilder {
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithUserTokenType(userTokenType UserTokenPolicy) PubSubKeyPushTargetDataTypeBuilder {
 	b.UserTokenType = userTokenType
 	return b
 }
 
-func (b *_PubSubKeyPushTargetDataTypeBuilder) WithUserTokenTypeBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) PubSubKeyPushTargetDataTypeBuilder {
-	builder := builderSupplier(b.UserTokenType.CreateExtensionObjectDefinitionBuilder())
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithUserTokenTypeBuilder(builderSupplier func(UserTokenPolicyBuilder) UserTokenPolicyBuilder) PubSubKeyPushTargetDataTypeBuilder {
+	builder := builderSupplier(b.UserTokenType.CreateUserTokenPolicyBuilder())
 	var err error
 	b.UserTokenType, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "UserTokenPolicyBuilder failed"))
 	}
 	return b
 }
@@ -274,18 +263,8 @@ func (b *_PubSubKeyPushTargetDataTypeBuilder) WithRetryInterval(retryInterval fl
 	return b
 }
 
-func (b *_PubSubKeyPushTargetDataTypeBuilder) WithNoOfPushTargetProperties(noOfPushTargetProperties int32) PubSubKeyPushTargetDataTypeBuilder {
-	b.NoOfPushTargetProperties = noOfPushTargetProperties
-	return b
-}
-
-func (b *_PubSubKeyPushTargetDataTypeBuilder) WithPushTargetProperties(pushTargetProperties ...ExtensionObjectDefinition) PubSubKeyPushTargetDataTypeBuilder {
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithPushTargetProperties(pushTargetProperties ...KeyValuePair) PubSubKeyPushTargetDataTypeBuilder {
 	b.PushTargetProperties = pushTargetProperties
-	return b
-}
-
-func (b *_PubSubKeyPushTargetDataTypeBuilder) WithNoOfSecurityGroups(noOfSecurityGroups int32) PubSubKeyPushTargetDataTypeBuilder {
-	b.NoOfSecurityGroups = noOfSecurityGroups
 	return b
 }
 
@@ -686,16 +665,13 @@ func (m *_PubSubKeyPushTargetDataType) deepCopy() *_PubSubKeyPushTargetDataType 
 	_PubSubKeyPushTargetDataTypeCopy := &_PubSubKeyPushTargetDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ApplicationUri.DeepCopy().(PascalString),
-		m.NoOfPushTargetFolder,
 		utils.DeepCopySlice[PascalString, PascalString](m.PushTargetFolder),
 		m.EndpointUrl.DeepCopy().(PascalString),
 		m.SecurityPolicyUri.DeepCopy().(PascalString),
-		m.UserTokenType.DeepCopy().(ExtensionObjectDefinition),
+		m.UserTokenType.DeepCopy().(UserTokenPolicy),
 		m.RequestedKeyCount,
 		m.RetryInterval,
-		m.NoOfPushTargetProperties,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.PushTargetProperties),
-		m.NoOfSecurityGroups,
+		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.PushTargetProperties),
 		utils.DeepCopySlice[PascalString, PascalString](m.SecurityGroups),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

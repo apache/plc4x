@@ -87,17 +87,13 @@ func NewAddNodesResponse(responseHeader ResponseHeader, results []AddNodesResult
 type AddNodesResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) AddNodesResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, results []AddNodesResult, diagnosticInfos []DiagnosticInfo) AddNodesResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) AddNodesResponseBuilder
+	WithResponseHeader(ResponseHeader) AddNodesResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AddNodesResponseBuilder
-	// WithNoOfResults adds NoOfResults (property field)
-	WithNoOfResults(int32) AddNodesResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) AddNodesResponseBuilder
 	// WithResults adds Results (property field)
-	WithResults(...ExtensionObjectDefinition) AddNodesResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) AddNodesResponseBuilder
+	WithResults(...AddNodesResult) AddNodesResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) AddNodesResponseBuilder
 	// Build builds the AddNodesResponse or returns an error if something is wrong
@@ -125,40 +121,30 @@ func (b *_AddNodesResponseBuilder) setParent(contract ExtensionObjectDefinitionC
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_AddNodesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) AddNodesResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_AddNodesResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []AddNodesResult, diagnosticInfos []DiagnosticInfo) AddNodesResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithResults(results...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_AddNodesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) AddNodesResponseBuilder {
+func (b *_AddNodesResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) AddNodesResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_AddNodesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AddNodesResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_AddNodesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) AddNodesResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_AddNodesResponseBuilder) WithNoOfResults(noOfResults int32) AddNodesResponseBuilder {
-	b.NoOfResults = noOfResults
-	return b
-}
-
-func (b *_AddNodesResponseBuilder) WithResults(results ...ExtensionObjectDefinition) AddNodesResponseBuilder {
+func (b *_AddNodesResponseBuilder) WithResults(results ...AddNodesResult) AddNodesResponseBuilder {
 	b.Results = results
-	return b
-}
-
-func (b *_AddNodesResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) AddNodesResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -418,10 +404,8 @@ func (m *_AddNodesResponse) deepCopy() *_AddNodesResponse {
 	}
 	_AddNodesResponseCopy := &_AddNodesResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfResults,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),
-		m.NoOfDiagnosticInfos,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopySlice[AddNodesResult, AddNodesResult](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

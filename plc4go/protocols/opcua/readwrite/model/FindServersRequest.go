@@ -94,21 +94,17 @@ func NewFindServersRequest(requestHeader RequestHeader, endpointUrl PascalString
 type FindServersRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfServerUris int32, serverUris []PascalString) FindServersRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, endpointUrl PascalString, localeIds []PascalString, serverUris []PascalString) FindServersRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) FindServersRequestBuilder
+	WithRequestHeader(RequestHeader) FindServersRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) FindServersRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) FindServersRequestBuilder
 	// WithEndpointUrl adds EndpointUrl (property field)
 	WithEndpointUrl(PascalString) FindServersRequestBuilder
 	// WithEndpointUrlBuilder adds EndpointUrl (property field) which is build by the builder
 	WithEndpointUrlBuilder(func(PascalStringBuilder) PascalStringBuilder) FindServersRequestBuilder
-	// WithNoOfLocaleIds adds NoOfLocaleIds (property field)
-	WithNoOfLocaleIds(int32) FindServersRequestBuilder
 	// WithLocaleIds adds LocaleIds (property field)
 	WithLocaleIds(...PascalString) FindServersRequestBuilder
-	// WithNoOfServerUris adds NoOfServerUris (property field)
-	WithNoOfServerUris(int32) FindServersRequestBuilder
 	// WithServerUris adds ServerUris (property field)
 	WithServerUris(...PascalString) FindServersRequestBuilder
 	// Build builds the FindServersRequest or returns an error if something is wrong
@@ -136,24 +132,24 @@ func (b *_FindServersRequestBuilder) setParent(contract ExtensionObjectDefinitio
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_FindServersRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfServerUris int32, serverUris []PascalString) FindServersRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithEndpointUrl(endpointUrl).WithNoOfLocaleIds(noOfLocaleIds).WithLocaleIds(localeIds...).WithNoOfServerUris(noOfServerUris).WithServerUris(serverUris...)
+func (b *_FindServersRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, endpointUrl PascalString, localeIds []PascalString, serverUris []PascalString) FindServersRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithEndpointUrl(endpointUrl).WithLocaleIds(localeIds...).WithServerUris(serverUris...)
 }
 
-func (b *_FindServersRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) FindServersRequestBuilder {
+func (b *_FindServersRequestBuilder) WithRequestHeader(requestHeader RequestHeader) FindServersRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_FindServersRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) FindServersRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_FindServersRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) FindServersRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -176,18 +172,8 @@ func (b *_FindServersRequestBuilder) WithEndpointUrlBuilder(builderSupplier func
 	return b
 }
 
-func (b *_FindServersRequestBuilder) WithNoOfLocaleIds(noOfLocaleIds int32) FindServersRequestBuilder {
-	b.NoOfLocaleIds = noOfLocaleIds
-	return b
-}
-
 func (b *_FindServersRequestBuilder) WithLocaleIds(localeIds ...PascalString) FindServersRequestBuilder {
 	b.LocaleIds = localeIds
-	return b
-}
-
-func (b *_FindServersRequestBuilder) WithNoOfServerUris(noOfServerUris int32) FindServersRequestBuilder {
-	b.NoOfServerUris = noOfServerUris
 	return b
 }
 
@@ -470,11 +456,9 @@ func (m *_FindServersRequest) deepCopy() *_FindServersRequest {
 	}
 	_FindServersRequestCopy := &_FindServersRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.EndpointUrl.DeepCopy().(PascalString),
-		m.NoOfLocaleIds,
 		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
-		m.NoOfServerUris,
 		utils.DeepCopySlice[PascalString, PascalString](m.ServerUris),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -38,6 +38,7 @@ type DatagramWriterGroupTransportDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetMessageRepeatCount returns MessageRepeatCount (property field)
 	GetMessageRepeatCount() uint8
@@ -45,6 +46,8 @@ type DatagramWriterGroupTransportDataType interface {
 	GetMessageRepeatDelay() float64
 	// IsDatagramWriterGroupTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDatagramWriterGroupTransportDataType()
+	// CreateBuilder creates a DatagramWriterGroupTransportDataTypeBuilder
+	CreateDatagramWriterGroupTransportDataTypeBuilder() DatagramWriterGroupTransportDataTypeBuilder
 }
 
 // _DatagramWriterGroupTransportDataType is the data-structure of this message
@@ -67,6 +70,104 @@ func NewDatagramWriterGroupTransportDataType(messageRepeatCount uint8, messageRe
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DatagramWriterGroupTransportDataTypeBuilder is a builder for DatagramWriterGroupTransportDataType
+type DatagramWriterGroupTransportDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(messageRepeatCount uint8, messageRepeatDelay float64) DatagramWriterGroupTransportDataTypeBuilder
+	// WithMessageRepeatCount adds MessageRepeatCount (property field)
+	WithMessageRepeatCount(uint8) DatagramWriterGroupTransportDataTypeBuilder
+	// WithMessageRepeatDelay adds MessageRepeatDelay (property field)
+	WithMessageRepeatDelay(float64) DatagramWriterGroupTransportDataTypeBuilder
+	// Build builds the DatagramWriterGroupTransportDataType or returns an error if something is wrong
+	Build() (DatagramWriterGroupTransportDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DatagramWriterGroupTransportDataType
+}
+
+// NewDatagramWriterGroupTransportDataTypeBuilder() creates a DatagramWriterGroupTransportDataTypeBuilder
+func NewDatagramWriterGroupTransportDataTypeBuilder() DatagramWriterGroupTransportDataTypeBuilder {
+	return &_DatagramWriterGroupTransportDataTypeBuilder{_DatagramWriterGroupTransportDataType: new(_DatagramWriterGroupTransportDataType)}
+}
+
+type _DatagramWriterGroupTransportDataTypeBuilder struct {
+	*_DatagramWriterGroupTransportDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DatagramWriterGroupTransportDataTypeBuilder) = (*_DatagramWriterGroupTransportDataTypeBuilder)(nil)
+
+func (b *_DatagramWriterGroupTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DatagramWriterGroupTransportDataTypeBuilder) WithMandatoryFields(messageRepeatCount uint8, messageRepeatDelay float64) DatagramWriterGroupTransportDataTypeBuilder {
+	return b.WithMessageRepeatCount(messageRepeatCount).WithMessageRepeatDelay(messageRepeatDelay)
+}
+
+func (b *_DatagramWriterGroupTransportDataTypeBuilder) WithMessageRepeatCount(messageRepeatCount uint8) DatagramWriterGroupTransportDataTypeBuilder {
+	b.MessageRepeatCount = messageRepeatCount
+	return b
+}
+
+func (b *_DatagramWriterGroupTransportDataTypeBuilder) WithMessageRepeatDelay(messageRepeatDelay float64) DatagramWriterGroupTransportDataTypeBuilder {
+	b.MessageRepeatDelay = messageRepeatDelay
+	return b
+}
+
+func (b *_DatagramWriterGroupTransportDataTypeBuilder) Build() (DatagramWriterGroupTransportDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DatagramWriterGroupTransportDataType.deepCopy(), nil
+}
+
+func (b *_DatagramWriterGroupTransportDataTypeBuilder) MustBuild() DatagramWriterGroupTransportDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DatagramWriterGroupTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DatagramWriterGroupTransportDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DatagramWriterGroupTransportDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateDatagramWriterGroupTransportDataTypeBuilder().(*_DatagramWriterGroupTransportDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDatagramWriterGroupTransportDataTypeBuilder creates a DatagramWriterGroupTransportDataTypeBuilder
+func (b *_DatagramWriterGroupTransportDataType) CreateDatagramWriterGroupTransportDataTypeBuilder() DatagramWriterGroupTransportDataTypeBuilder {
+	if b == nil {
+		return NewDatagramWriterGroupTransportDataTypeBuilder()
+	}
+	return &_DatagramWriterGroupTransportDataTypeBuilder{_DatagramWriterGroupTransportDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -200,6 +301,23 @@ func (m *_DatagramWriterGroupTransportDataType) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_DatagramWriterGroupTransportDataType) IsDatagramWriterGroupTransportDataType() {}
+
+func (m *_DatagramWriterGroupTransportDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DatagramWriterGroupTransportDataType) deepCopy() *_DatagramWriterGroupTransportDataType {
+	if m == nil {
+		return nil
+	}
+	_DatagramWriterGroupTransportDataTypeCopy := &_DatagramWriterGroupTransportDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.MessageRepeatCount,
+		m.MessageRepeatDelay,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DatagramWriterGroupTransportDataTypeCopy
+}
 
 func (m *_DatagramWriterGroupTransportDataType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type StructureDefinition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetDefaultEncodingId returns DefaultEncodingId (property field)
 	GetDefaultEncodingId() NodeId
@@ -49,6 +50,8 @@ type StructureDefinition interface {
 	GetFields() []StructureField
 	// IsStructureDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsStructureDefinition()
+	// CreateBuilder creates a StructureDefinitionBuilder
+	CreateStructureDefinitionBuilder() StructureDefinitionBuilder
 }
 
 // _StructureDefinition is the data-structure of this message
@@ -81,6 +84,160 @@ func NewStructureDefinition(defaultEncodingId NodeId, baseDataType NodeId, struc
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// StructureDefinitionBuilder is a builder for StructureDefinition
+type StructureDefinitionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(defaultEncodingId NodeId, baseDataType NodeId, structureType StructureType, fields []StructureField) StructureDefinitionBuilder
+	// WithDefaultEncodingId adds DefaultEncodingId (property field)
+	WithDefaultEncodingId(NodeId) StructureDefinitionBuilder
+	// WithDefaultEncodingIdBuilder adds DefaultEncodingId (property field) which is build by the builder
+	WithDefaultEncodingIdBuilder(func(NodeIdBuilder) NodeIdBuilder) StructureDefinitionBuilder
+	// WithBaseDataType adds BaseDataType (property field)
+	WithBaseDataType(NodeId) StructureDefinitionBuilder
+	// WithBaseDataTypeBuilder adds BaseDataType (property field) which is build by the builder
+	WithBaseDataTypeBuilder(func(NodeIdBuilder) NodeIdBuilder) StructureDefinitionBuilder
+	// WithStructureType adds StructureType (property field)
+	WithStructureType(StructureType) StructureDefinitionBuilder
+	// WithFields adds Fields (property field)
+	WithFields(...StructureField) StructureDefinitionBuilder
+	// Build builds the StructureDefinition or returns an error if something is wrong
+	Build() (StructureDefinition, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() StructureDefinition
+}
+
+// NewStructureDefinitionBuilder() creates a StructureDefinitionBuilder
+func NewStructureDefinitionBuilder() StructureDefinitionBuilder {
+	return &_StructureDefinitionBuilder{_StructureDefinition: new(_StructureDefinition)}
+}
+
+type _StructureDefinitionBuilder struct {
+	*_StructureDefinition
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (StructureDefinitionBuilder) = (*_StructureDefinitionBuilder)(nil)
+
+func (b *_StructureDefinitionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_StructureDefinitionBuilder) WithMandatoryFields(defaultEncodingId NodeId, baseDataType NodeId, structureType StructureType, fields []StructureField) StructureDefinitionBuilder {
+	return b.WithDefaultEncodingId(defaultEncodingId).WithBaseDataType(baseDataType).WithStructureType(structureType).WithFields(fields...)
+}
+
+func (b *_StructureDefinitionBuilder) WithDefaultEncodingId(defaultEncodingId NodeId) StructureDefinitionBuilder {
+	b.DefaultEncodingId = defaultEncodingId
+	return b
+}
+
+func (b *_StructureDefinitionBuilder) WithDefaultEncodingIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) StructureDefinitionBuilder {
+	builder := builderSupplier(b.DefaultEncodingId.CreateNodeIdBuilder())
+	var err error
+	b.DefaultEncodingId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_StructureDefinitionBuilder) WithBaseDataType(baseDataType NodeId) StructureDefinitionBuilder {
+	b.BaseDataType = baseDataType
+	return b
+}
+
+func (b *_StructureDefinitionBuilder) WithBaseDataTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) StructureDefinitionBuilder {
+	builder := builderSupplier(b.BaseDataType.CreateNodeIdBuilder())
+	var err error
+	b.BaseDataType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_StructureDefinitionBuilder) WithStructureType(structureType StructureType) StructureDefinitionBuilder {
+	b.StructureType = structureType
+	return b
+}
+
+func (b *_StructureDefinitionBuilder) WithFields(fields ...StructureField) StructureDefinitionBuilder {
+	b.Fields = fields
+	return b
+}
+
+func (b *_StructureDefinitionBuilder) Build() (StructureDefinition, error) {
+	if b.DefaultEncodingId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'defaultEncodingId' not set"))
+	}
+	if b.BaseDataType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'baseDataType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._StructureDefinition.deepCopy(), nil
+}
+
+func (b *_StructureDefinitionBuilder) MustBuild() StructureDefinition {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_StructureDefinitionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_StructureDefinitionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_StructureDefinitionBuilder) DeepCopy() any {
+	_copy := b.CreateStructureDefinitionBuilder().(*_StructureDefinitionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateStructureDefinitionBuilder creates a StructureDefinitionBuilder
+func (b *_StructureDefinition) CreateStructureDefinitionBuilder() StructureDefinitionBuilder {
+	if b == nil {
+		return NewStructureDefinitionBuilder()
+	}
+	return &_StructureDefinitionBuilder{_StructureDefinition: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -268,6 +425,25 @@ func (m *_StructureDefinition) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_StructureDefinition) IsStructureDefinition() {}
+
+func (m *_StructureDefinition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StructureDefinition) deepCopy() *_StructureDefinition {
+	if m == nil {
+		return nil
+	}
+	_StructureDefinitionCopy := &_StructureDefinition{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.DefaultEncodingId.DeepCopy().(NodeId),
+		m.BaseDataType.DeepCopy().(NodeId),
+		m.StructureType,
+		utils.DeepCopySlice[StructureField, StructureField](m.Fields),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _StructureDefinitionCopy
+}
 
 func (m *_StructureDefinition) String() string {
 	if m == nil {

@@ -83,13 +83,11 @@ func NewRegisterNodesRequest(requestHeader RequestHeader, nodesToRegister []Node
 type RegisterNodesRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToRegister int32, nodesToRegister []NodeId) RegisterNodesRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, nodesToRegister []NodeId) RegisterNodesRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) RegisterNodesRequestBuilder
+	WithRequestHeader(RequestHeader) RegisterNodesRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterNodesRequestBuilder
-	// WithNoOfNodesToRegister adds NoOfNodesToRegister (property field)
-	WithNoOfNodesToRegister(int32) RegisterNodesRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) RegisterNodesRequestBuilder
 	// WithNodesToRegister adds NodesToRegister (property field)
 	WithNodesToRegister(...NodeId) RegisterNodesRequestBuilder
 	// Build builds the RegisterNodesRequest or returns an error if something is wrong
@@ -117,30 +115,25 @@ func (b *_RegisterNodesRequestBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RegisterNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToRegister int32, nodesToRegister []NodeId) RegisterNodesRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfNodesToRegister(noOfNodesToRegister).WithNodesToRegister(nodesToRegister...)
+func (b *_RegisterNodesRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, nodesToRegister []NodeId) RegisterNodesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNodesToRegister(nodesToRegister...)
 }
 
-func (b *_RegisterNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) RegisterNodesRequestBuilder {
+func (b *_RegisterNodesRequestBuilder) WithRequestHeader(requestHeader RequestHeader) RegisterNodesRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_RegisterNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterNodesRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) RegisterNodesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_RegisterNodesRequestBuilder) WithNoOfNodesToRegister(noOfNodesToRegister int32) RegisterNodesRequestBuilder {
-	b.NoOfNodesToRegister = noOfNodesToRegister
 	return b
 }
 
@@ -363,8 +356,7 @@ func (m *_RegisterNodesRequest) deepCopy() *_RegisterNodesRequest {
 	}
 	_RegisterNodesRequestCopy := &_RegisterNodesRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfNodesToRegister,
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		utils.DeepCopySlice[NodeId, NodeId](m.NodesToRegister),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

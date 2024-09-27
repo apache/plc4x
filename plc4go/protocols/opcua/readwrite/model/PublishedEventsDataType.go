@@ -38,6 +38,7 @@ type PublishedEventsDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetEventNotifier returns EventNotifier (property field)
 	GetEventNotifier() NodeId
@@ -47,6 +48,8 @@ type PublishedEventsDataType interface {
 	GetFilter() ContentFilter
 	// IsPublishedEventsDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPublishedEventsDataType()
+	// CreateBuilder creates a PublishedEventsDataTypeBuilder
+	CreatePublishedEventsDataTypeBuilder() PublishedEventsDataTypeBuilder
 }
 
 // _PublishedEventsDataType is the data-structure of this message
@@ -77,6 +80,153 @@ func NewPublishedEventsDataType(eventNotifier NodeId, selectedFields []SimpleAtt
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PublishedEventsDataTypeBuilder is a builder for PublishedEventsDataType
+type PublishedEventsDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(eventNotifier NodeId, selectedFields []SimpleAttributeOperand, filter ContentFilter) PublishedEventsDataTypeBuilder
+	// WithEventNotifier adds EventNotifier (property field)
+	WithEventNotifier(NodeId) PublishedEventsDataTypeBuilder
+	// WithEventNotifierBuilder adds EventNotifier (property field) which is build by the builder
+	WithEventNotifierBuilder(func(NodeIdBuilder) NodeIdBuilder) PublishedEventsDataTypeBuilder
+	// WithSelectedFields adds SelectedFields (property field)
+	WithSelectedFields(...SimpleAttributeOperand) PublishedEventsDataTypeBuilder
+	// WithFilter adds Filter (property field)
+	WithFilter(ContentFilter) PublishedEventsDataTypeBuilder
+	// WithFilterBuilder adds Filter (property field) which is build by the builder
+	WithFilterBuilder(func(ContentFilterBuilder) ContentFilterBuilder) PublishedEventsDataTypeBuilder
+	// Build builds the PublishedEventsDataType or returns an error if something is wrong
+	Build() (PublishedEventsDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PublishedEventsDataType
+}
+
+// NewPublishedEventsDataTypeBuilder() creates a PublishedEventsDataTypeBuilder
+func NewPublishedEventsDataTypeBuilder() PublishedEventsDataTypeBuilder {
+	return &_PublishedEventsDataTypeBuilder{_PublishedEventsDataType: new(_PublishedEventsDataType)}
+}
+
+type _PublishedEventsDataTypeBuilder struct {
+	*_PublishedEventsDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (PublishedEventsDataTypeBuilder) = (*_PublishedEventsDataTypeBuilder)(nil)
+
+func (b *_PublishedEventsDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_PublishedEventsDataTypeBuilder) WithMandatoryFields(eventNotifier NodeId, selectedFields []SimpleAttributeOperand, filter ContentFilter) PublishedEventsDataTypeBuilder {
+	return b.WithEventNotifier(eventNotifier).WithSelectedFields(selectedFields...).WithFilter(filter)
+}
+
+func (b *_PublishedEventsDataTypeBuilder) WithEventNotifier(eventNotifier NodeId) PublishedEventsDataTypeBuilder {
+	b.EventNotifier = eventNotifier
+	return b
+}
+
+func (b *_PublishedEventsDataTypeBuilder) WithEventNotifierBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) PublishedEventsDataTypeBuilder {
+	builder := builderSupplier(b.EventNotifier.CreateNodeIdBuilder())
+	var err error
+	b.EventNotifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_PublishedEventsDataTypeBuilder) WithSelectedFields(selectedFields ...SimpleAttributeOperand) PublishedEventsDataTypeBuilder {
+	b.SelectedFields = selectedFields
+	return b
+}
+
+func (b *_PublishedEventsDataTypeBuilder) WithFilter(filter ContentFilter) PublishedEventsDataTypeBuilder {
+	b.Filter = filter
+	return b
+}
+
+func (b *_PublishedEventsDataTypeBuilder) WithFilterBuilder(builderSupplier func(ContentFilterBuilder) ContentFilterBuilder) PublishedEventsDataTypeBuilder {
+	builder := builderSupplier(b.Filter.CreateContentFilterBuilder())
+	var err error
+	b.Filter, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ContentFilterBuilder failed"))
+	}
+	return b
+}
+
+func (b *_PublishedEventsDataTypeBuilder) Build() (PublishedEventsDataType, error) {
+	if b.EventNotifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'eventNotifier' not set"))
+	}
+	if b.Filter == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'filter' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PublishedEventsDataType.deepCopy(), nil
+}
+
+func (b *_PublishedEventsDataTypeBuilder) MustBuild() PublishedEventsDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PublishedEventsDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PublishedEventsDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PublishedEventsDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreatePublishedEventsDataTypeBuilder().(*_PublishedEventsDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreatePublishedEventsDataTypeBuilder creates a PublishedEventsDataTypeBuilder
+func (b *_PublishedEventsDataType) CreatePublishedEventsDataTypeBuilder() PublishedEventsDataTypeBuilder {
+	if b == nil {
+		return NewPublishedEventsDataTypeBuilder()
+	}
+	return &_PublishedEventsDataTypeBuilder{_PublishedEventsDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -247,6 +397,24 @@ func (m *_PublishedEventsDataType) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_PublishedEventsDataType) IsPublishedEventsDataType() {}
+
+func (m *_PublishedEventsDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PublishedEventsDataType) deepCopy() *_PublishedEventsDataType {
+	if m == nil {
+		return nil
+	}
+	_PublishedEventsDataTypeCopy := &_PublishedEventsDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.EventNotifier.DeepCopy().(NodeId),
+		utils.DeepCopySlice[SimpleAttributeOperand, SimpleAttributeOperand](m.SelectedFields),
+		m.Filter.DeepCopy().(ContentFilter),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PublishedEventsDataTypeCopy
+}
 
 func (m *_PublishedEventsDataType) String() string {
 	if m == nil {

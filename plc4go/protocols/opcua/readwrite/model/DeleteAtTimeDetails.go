@@ -38,6 +38,7 @@ type DeleteAtTimeDetails interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -45,6 +46,8 @@ type DeleteAtTimeDetails interface {
 	GetReqTimes() []int64
 	// IsDeleteAtTimeDetails is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeleteAtTimeDetails()
+	// CreateBuilder creates a DeleteAtTimeDetailsBuilder
+	CreateDeleteAtTimeDetailsBuilder() DeleteAtTimeDetailsBuilder
 }
 
 // _DeleteAtTimeDetails is the data-structure of this message
@@ -70,6 +73,125 @@ func NewDeleteAtTimeDetails(nodeId NodeId, reqTimes []int64) *_DeleteAtTimeDetai
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeleteAtTimeDetailsBuilder is a builder for DeleteAtTimeDetails
+type DeleteAtTimeDetailsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeId NodeId, reqTimes []int64) DeleteAtTimeDetailsBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(NodeId) DeleteAtTimeDetailsBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) DeleteAtTimeDetailsBuilder
+	// WithReqTimes adds ReqTimes (property field)
+	WithReqTimes(...int64) DeleteAtTimeDetailsBuilder
+	// Build builds the DeleteAtTimeDetails or returns an error if something is wrong
+	Build() (DeleteAtTimeDetails, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeleteAtTimeDetails
+}
+
+// NewDeleteAtTimeDetailsBuilder() creates a DeleteAtTimeDetailsBuilder
+func NewDeleteAtTimeDetailsBuilder() DeleteAtTimeDetailsBuilder {
+	return &_DeleteAtTimeDetailsBuilder{_DeleteAtTimeDetails: new(_DeleteAtTimeDetails)}
+}
+
+type _DeleteAtTimeDetailsBuilder struct {
+	*_DeleteAtTimeDetails
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DeleteAtTimeDetailsBuilder) = (*_DeleteAtTimeDetailsBuilder)(nil)
+
+func (b *_DeleteAtTimeDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DeleteAtTimeDetailsBuilder) WithMandatoryFields(nodeId NodeId, reqTimes []int64) DeleteAtTimeDetailsBuilder {
+	return b.WithNodeId(nodeId).WithReqTimes(reqTimes...)
+}
+
+func (b *_DeleteAtTimeDetailsBuilder) WithNodeId(nodeId NodeId) DeleteAtTimeDetailsBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_DeleteAtTimeDetailsBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) DeleteAtTimeDetailsBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdBuilder())
+	var err error
+	b.NodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DeleteAtTimeDetailsBuilder) WithReqTimes(reqTimes ...int64) DeleteAtTimeDetailsBuilder {
+	b.ReqTimes = reqTimes
+	return b
+}
+
+func (b *_DeleteAtTimeDetailsBuilder) Build() (DeleteAtTimeDetails, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DeleteAtTimeDetails.deepCopy(), nil
+}
+
+func (b *_DeleteAtTimeDetailsBuilder) MustBuild() DeleteAtTimeDetails {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DeleteAtTimeDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DeleteAtTimeDetailsBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DeleteAtTimeDetailsBuilder) DeepCopy() any {
+	_copy := b.CreateDeleteAtTimeDetailsBuilder().(*_DeleteAtTimeDetailsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDeleteAtTimeDetailsBuilder creates a DeleteAtTimeDetailsBuilder
+func (b *_DeleteAtTimeDetails) CreateDeleteAtTimeDetailsBuilder() DeleteAtTimeDetailsBuilder {
+	if b == nil {
+		return NewDeleteAtTimeDetailsBuilder()
+	}
+	return &_DeleteAtTimeDetailsBuilder{_DeleteAtTimeDetails: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -218,6 +340,23 @@ func (m *_DeleteAtTimeDetails) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_DeleteAtTimeDetails) IsDeleteAtTimeDetails() {}
+
+func (m *_DeleteAtTimeDetails) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteAtTimeDetails) deepCopy() *_DeleteAtTimeDetails {
+	if m == nil {
+		return nil
+	}
+	_DeleteAtTimeDetailsCopy := &_DeleteAtTimeDetails{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(NodeId),
+		utils.DeepCopySlice[int64, int64](m.ReqTimes),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteAtTimeDetailsCopy
+}
 
 func (m *_DeleteAtTimeDetails) String() string {
 	if m == nil {

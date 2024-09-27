@@ -95,21 +95,17 @@ func NewSetTriggeringRequest(requestHeader RequestHeader, subscriptionId uint32,
 type SetTriggeringRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, triggeringItemId uint32, noOfLinksToAdd int32, linksToAdd []uint32, noOfLinksToRemove int32, linksToRemove []uint32) SetTriggeringRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, triggeringItemId uint32, linksToAdd []uint32, linksToRemove []uint32) SetTriggeringRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) SetTriggeringRequestBuilder
+	WithRequestHeader(RequestHeader) SetTriggeringRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetTriggeringRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) SetTriggeringRequestBuilder
 	// WithSubscriptionId adds SubscriptionId (property field)
 	WithSubscriptionId(uint32) SetTriggeringRequestBuilder
 	// WithTriggeringItemId adds TriggeringItemId (property field)
 	WithTriggeringItemId(uint32) SetTriggeringRequestBuilder
-	// WithNoOfLinksToAdd adds NoOfLinksToAdd (property field)
-	WithNoOfLinksToAdd(int32) SetTriggeringRequestBuilder
 	// WithLinksToAdd adds LinksToAdd (property field)
 	WithLinksToAdd(...uint32) SetTriggeringRequestBuilder
-	// WithNoOfLinksToRemove adds NoOfLinksToRemove (property field)
-	WithNoOfLinksToRemove(int32) SetTriggeringRequestBuilder
 	// WithLinksToRemove adds LinksToRemove (property field)
 	WithLinksToRemove(...uint32) SetTriggeringRequestBuilder
 	// Build builds the SetTriggeringRequest or returns an error if something is wrong
@@ -137,24 +133,24 @@ func (b *_SetTriggeringRequestBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_SetTriggeringRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, triggeringItemId uint32, noOfLinksToAdd int32, linksToAdd []uint32, noOfLinksToRemove int32, linksToRemove []uint32) SetTriggeringRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithTriggeringItemId(triggeringItemId).WithNoOfLinksToAdd(noOfLinksToAdd).WithLinksToAdd(linksToAdd...).WithNoOfLinksToRemove(noOfLinksToRemove).WithLinksToRemove(linksToRemove...)
+func (b *_SetTriggeringRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, triggeringItemId uint32, linksToAdd []uint32, linksToRemove []uint32) SetTriggeringRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithTriggeringItemId(triggeringItemId).WithLinksToAdd(linksToAdd...).WithLinksToRemove(linksToRemove...)
 }
 
-func (b *_SetTriggeringRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) SetTriggeringRequestBuilder {
+func (b *_SetTriggeringRequestBuilder) WithRequestHeader(requestHeader RequestHeader) SetTriggeringRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_SetTriggeringRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetTriggeringRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_SetTriggeringRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) SetTriggeringRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -169,18 +165,8 @@ func (b *_SetTriggeringRequestBuilder) WithTriggeringItemId(triggeringItemId uin
 	return b
 }
 
-func (b *_SetTriggeringRequestBuilder) WithNoOfLinksToAdd(noOfLinksToAdd int32) SetTriggeringRequestBuilder {
-	b.NoOfLinksToAdd = noOfLinksToAdd
-	return b
-}
-
 func (b *_SetTriggeringRequestBuilder) WithLinksToAdd(linksToAdd ...uint32) SetTriggeringRequestBuilder {
 	b.LinksToAdd = linksToAdd
-	return b
-}
-
-func (b *_SetTriggeringRequestBuilder) WithNoOfLinksToRemove(noOfLinksToRemove int32) SetTriggeringRequestBuilder {
-	b.NoOfLinksToRemove = noOfLinksToRemove
 	return b
 }
 
@@ -464,12 +450,10 @@ func (m *_SetTriggeringRequest) deepCopy() *_SetTriggeringRequest {
 	}
 	_SetTriggeringRequestCopy := &_SetTriggeringRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.SubscriptionId,
 		m.TriggeringItemId,
-		m.NoOfLinksToAdd,
 		utils.DeepCopySlice[uint32, uint32](m.LinksToAdd),
-		m.NoOfLinksToRemove,
 		utils.DeepCopySlice[uint32, uint32](m.LinksToRemove),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

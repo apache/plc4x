@@ -79,11 +79,11 @@ func NewUnregisterNodesResponse(responseHeader ResponseHeader) *_UnregisterNodes
 type UnregisterNodesResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition) UnregisterNodesResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader) UnregisterNodesResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) UnregisterNodesResponseBuilder
+	WithResponseHeader(ResponseHeader) UnregisterNodesResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) UnregisterNodesResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) UnregisterNodesResponseBuilder
 	// Build builds the UnregisterNodesResponse or returns an error if something is wrong
 	Build() (UnregisterNodesResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,24 +109,24 @@ func (b *_UnregisterNodesResponseBuilder) setParent(contract ExtensionObjectDefi
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_UnregisterNodesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) UnregisterNodesResponseBuilder {
+func (b *_UnregisterNodesResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader) UnregisterNodesResponseBuilder {
 	return b.WithResponseHeader(responseHeader)
 }
 
-func (b *_UnregisterNodesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) UnregisterNodesResponseBuilder {
+func (b *_UnregisterNodesResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) UnregisterNodesResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_UnregisterNodesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) UnregisterNodesResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_UnregisterNodesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) UnregisterNodesResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -308,7 +308,7 @@ func (m *_UnregisterNodesResponse) deepCopy() *_UnregisterNodesResponse {
 	}
 	_UnregisterNodesResponseCopy := &_UnregisterNodesResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _UnregisterNodesResponseCopy

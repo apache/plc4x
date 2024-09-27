@@ -38,11 +38,14 @@ type BinaryExtensionObjectWithMask interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectWithMask
 	// GetBody returns Body (property field)
 	GetBody() ExtensionObjectDefinition
 	// IsBinaryExtensionObjectWithMask is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBinaryExtensionObjectWithMask()
+	// CreateBuilder creates a BinaryExtensionObjectWithMaskBuilder
+	CreateBinaryExtensionObjectWithMaskBuilder() BinaryExtensionObjectWithMaskBuilder
 }
 
 // _BinaryExtensionObjectWithMask is the data-structure of this message
@@ -66,6 +69,118 @@ func NewBinaryExtensionObjectWithMask(typeId ExpandedNodeId, encodingMask Extens
 	_result.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BinaryExtensionObjectWithMaskBuilder is a builder for BinaryExtensionObjectWithMask
+type BinaryExtensionObjectWithMaskBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(body ExtensionObjectDefinition) BinaryExtensionObjectWithMaskBuilder
+	// WithBody adds Body (property field)
+	WithBody(ExtensionObjectDefinition) BinaryExtensionObjectWithMaskBuilder
+	// WithBodyBuilder adds Body (property field) which is build by the builder
+	WithBodyBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BinaryExtensionObjectWithMaskBuilder
+	// Build builds the BinaryExtensionObjectWithMask or returns an error if something is wrong
+	Build() (BinaryExtensionObjectWithMask, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BinaryExtensionObjectWithMask
+}
+
+// NewBinaryExtensionObjectWithMaskBuilder() creates a BinaryExtensionObjectWithMaskBuilder
+func NewBinaryExtensionObjectWithMaskBuilder() BinaryExtensionObjectWithMaskBuilder {
+	return &_BinaryExtensionObjectWithMaskBuilder{_BinaryExtensionObjectWithMask: new(_BinaryExtensionObjectWithMask)}
+}
+
+type _BinaryExtensionObjectWithMaskBuilder struct {
+	*_BinaryExtensionObjectWithMask
+
+	parentBuilder *_ExtensionObjectWithMaskBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BinaryExtensionObjectWithMaskBuilder) = (*_BinaryExtensionObjectWithMaskBuilder)(nil)
+
+func (b *_BinaryExtensionObjectWithMaskBuilder) setParent(contract ExtensionObjectWithMaskContract) {
+	b.ExtensionObjectWithMaskContract = contract
+}
+
+func (b *_BinaryExtensionObjectWithMaskBuilder) WithMandatoryFields(body ExtensionObjectDefinition) BinaryExtensionObjectWithMaskBuilder {
+	return b.WithBody(body)
+}
+
+func (b *_BinaryExtensionObjectWithMaskBuilder) WithBody(body ExtensionObjectDefinition) BinaryExtensionObjectWithMaskBuilder {
+	b.Body = body
+	return b
+}
+
+func (b *_BinaryExtensionObjectWithMaskBuilder) WithBodyBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BinaryExtensionObjectWithMaskBuilder {
+	builder := builderSupplier(b.Body.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.Body, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BinaryExtensionObjectWithMaskBuilder) Build() (BinaryExtensionObjectWithMask, error) {
+	if b.Body == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'body' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BinaryExtensionObjectWithMask.deepCopy(), nil
+}
+
+func (b *_BinaryExtensionObjectWithMaskBuilder) MustBuild() BinaryExtensionObjectWithMask {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BinaryExtensionObjectWithMaskBuilder) Done() ExtensionObjectWithMaskBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BinaryExtensionObjectWithMaskBuilder) buildForExtensionObjectWithMask() (ExtensionObjectWithMask, error) {
+	return b.Build()
+}
+
+func (b *_BinaryExtensionObjectWithMaskBuilder) DeepCopy() any {
+	_copy := b.CreateBinaryExtensionObjectWithMaskBuilder().(*_BinaryExtensionObjectWithMaskBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBinaryExtensionObjectWithMaskBuilder creates a BinaryExtensionObjectWithMaskBuilder
+func (b *_BinaryExtensionObjectWithMask) CreateBinaryExtensionObjectWithMaskBuilder() BinaryExtensionObjectWithMaskBuilder {
+	if b == nil {
+		return NewBinaryExtensionObjectWithMaskBuilder()
+	}
+	return &_BinaryExtensionObjectWithMaskBuilder{_BinaryExtensionObjectWithMask: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -199,6 +314,22 @@ func (m *_BinaryExtensionObjectWithMask) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BinaryExtensionObjectWithMask) IsBinaryExtensionObjectWithMask() {}
+
+func (m *_BinaryExtensionObjectWithMask) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BinaryExtensionObjectWithMask) deepCopy() *_BinaryExtensionObjectWithMask {
+	if m == nil {
+		return nil
+	}
+	_BinaryExtensionObjectWithMaskCopy := &_BinaryExtensionObjectWithMask{
+		m.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask).deepCopy(),
+		m.Body.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectWithMaskContract.(*_ExtensionObjectWithMask)._SubType = m
+	return _BinaryExtensionObjectWithMaskCopy
+}
 
 func (m *_BinaryExtensionObjectWithMask) String() string {
 	if m == nil {

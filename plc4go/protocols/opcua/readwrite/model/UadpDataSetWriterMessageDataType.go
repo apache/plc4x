@@ -38,6 +38,7 @@ type UadpDataSetWriterMessageDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetDataSetMessageContentMask returns DataSetMessageContentMask (property field)
 	GetDataSetMessageContentMask() UadpDataSetMessageContentMask
@@ -49,6 +50,8 @@ type UadpDataSetWriterMessageDataType interface {
 	GetDataSetOffset() uint16
 	// IsUadpDataSetWriterMessageDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUadpDataSetWriterMessageDataType()
+	// CreateBuilder creates a UadpDataSetWriterMessageDataTypeBuilder
+	CreateUadpDataSetWriterMessageDataTypeBuilder() UadpDataSetWriterMessageDataTypeBuilder
 }
 
 // _UadpDataSetWriterMessageDataType is the data-structure of this message
@@ -75,6 +78,118 @@ func NewUadpDataSetWriterMessageDataType(dataSetMessageContentMask UadpDataSetMe
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UadpDataSetWriterMessageDataTypeBuilder is a builder for UadpDataSetWriterMessageDataType
+type UadpDataSetWriterMessageDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dataSetMessageContentMask UadpDataSetMessageContentMask, configuredSize uint16, networkMessageNumber uint16, dataSetOffset uint16) UadpDataSetWriterMessageDataTypeBuilder
+	// WithDataSetMessageContentMask adds DataSetMessageContentMask (property field)
+	WithDataSetMessageContentMask(UadpDataSetMessageContentMask) UadpDataSetWriterMessageDataTypeBuilder
+	// WithConfiguredSize adds ConfiguredSize (property field)
+	WithConfiguredSize(uint16) UadpDataSetWriterMessageDataTypeBuilder
+	// WithNetworkMessageNumber adds NetworkMessageNumber (property field)
+	WithNetworkMessageNumber(uint16) UadpDataSetWriterMessageDataTypeBuilder
+	// WithDataSetOffset adds DataSetOffset (property field)
+	WithDataSetOffset(uint16) UadpDataSetWriterMessageDataTypeBuilder
+	// Build builds the UadpDataSetWriterMessageDataType or returns an error if something is wrong
+	Build() (UadpDataSetWriterMessageDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UadpDataSetWriterMessageDataType
+}
+
+// NewUadpDataSetWriterMessageDataTypeBuilder() creates a UadpDataSetWriterMessageDataTypeBuilder
+func NewUadpDataSetWriterMessageDataTypeBuilder() UadpDataSetWriterMessageDataTypeBuilder {
+	return &_UadpDataSetWriterMessageDataTypeBuilder{_UadpDataSetWriterMessageDataType: new(_UadpDataSetWriterMessageDataType)}
+}
+
+type _UadpDataSetWriterMessageDataTypeBuilder struct {
+	*_UadpDataSetWriterMessageDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (UadpDataSetWriterMessageDataTypeBuilder) = (*_UadpDataSetWriterMessageDataTypeBuilder)(nil)
+
+func (b *_UadpDataSetWriterMessageDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_UadpDataSetWriterMessageDataTypeBuilder) WithMandatoryFields(dataSetMessageContentMask UadpDataSetMessageContentMask, configuredSize uint16, networkMessageNumber uint16, dataSetOffset uint16) UadpDataSetWriterMessageDataTypeBuilder {
+	return b.WithDataSetMessageContentMask(dataSetMessageContentMask).WithConfiguredSize(configuredSize).WithNetworkMessageNumber(networkMessageNumber).WithDataSetOffset(dataSetOffset)
+}
+
+func (b *_UadpDataSetWriterMessageDataTypeBuilder) WithDataSetMessageContentMask(dataSetMessageContentMask UadpDataSetMessageContentMask) UadpDataSetWriterMessageDataTypeBuilder {
+	b.DataSetMessageContentMask = dataSetMessageContentMask
+	return b
+}
+
+func (b *_UadpDataSetWriterMessageDataTypeBuilder) WithConfiguredSize(configuredSize uint16) UadpDataSetWriterMessageDataTypeBuilder {
+	b.ConfiguredSize = configuredSize
+	return b
+}
+
+func (b *_UadpDataSetWriterMessageDataTypeBuilder) WithNetworkMessageNumber(networkMessageNumber uint16) UadpDataSetWriterMessageDataTypeBuilder {
+	b.NetworkMessageNumber = networkMessageNumber
+	return b
+}
+
+func (b *_UadpDataSetWriterMessageDataTypeBuilder) WithDataSetOffset(dataSetOffset uint16) UadpDataSetWriterMessageDataTypeBuilder {
+	b.DataSetOffset = dataSetOffset
+	return b
+}
+
+func (b *_UadpDataSetWriterMessageDataTypeBuilder) Build() (UadpDataSetWriterMessageDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._UadpDataSetWriterMessageDataType.deepCopy(), nil
+}
+
+func (b *_UadpDataSetWriterMessageDataTypeBuilder) MustBuild() UadpDataSetWriterMessageDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UadpDataSetWriterMessageDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UadpDataSetWriterMessageDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_UadpDataSetWriterMessageDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateUadpDataSetWriterMessageDataTypeBuilder().(*_UadpDataSetWriterMessageDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateUadpDataSetWriterMessageDataTypeBuilder creates a UadpDataSetWriterMessageDataTypeBuilder
+func (b *_UadpDataSetWriterMessageDataType) CreateUadpDataSetWriterMessageDataTypeBuilder() UadpDataSetWriterMessageDataTypeBuilder {
+	if b == nil {
+		return NewUadpDataSetWriterMessageDataTypeBuilder()
+	}
+	return &_UadpDataSetWriterMessageDataTypeBuilder{_UadpDataSetWriterMessageDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -242,6 +357,25 @@ func (m *_UadpDataSetWriterMessageDataType) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_UadpDataSetWriterMessageDataType) IsUadpDataSetWriterMessageDataType() {}
+
+func (m *_UadpDataSetWriterMessageDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UadpDataSetWriterMessageDataType) deepCopy() *_UadpDataSetWriterMessageDataType {
+	if m == nil {
+		return nil
+	}
+	_UadpDataSetWriterMessageDataTypeCopy := &_UadpDataSetWriterMessageDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.DataSetMessageContentMask,
+		m.ConfiguredSize,
+		m.NetworkMessageNumber,
+		m.DataSetOffset,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UadpDataSetWriterMessageDataTypeCopy
+}
 
 func (m *_UadpDataSetWriterMessageDataType) String() string {
 	if m == nil {

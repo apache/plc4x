@@ -125,7 +125,7 @@ func NewPubSubConnectionDataType(name PascalString, enabled bool, publisherId Va
 type PubSubConnectionDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(name PascalString, enabled bool, publisherId Variant, transportProfileUri PascalString, address ExtensionObject, noOfConnectionProperties int32, connectionProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, noOfWriterGroups int32, writerGroups []PubSubGroupDataType, noOfReaderGroups int32, readerGroups []PubSubGroupDataType) PubSubConnectionDataTypeBuilder
+	WithMandatoryFields(name PascalString, enabled bool, publisherId Variant, transportProfileUri PascalString, address ExtensionObject, connectionProperties []KeyValuePair, transportSettings ExtensionObject, writerGroups []WriterGroupDataType, readerGroups []ReaderGroupDataType) PubSubConnectionDataTypeBuilder
 	// WithName adds Name (property field)
 	WithName(PascalString) PubSubConnectionDataTypeBuilder
 	// WithNameBuilder adds Name (property field) which is build by the builder
@@ -144,22 +144,16 @@ type PubSubConnectionDataTypeBuilder interface {
 	WithAddress(ExtensionObject) PubSubConnectionDataTypeBuilder
 	// WithAddressBuilder adds Address (property field) which is build by the builder
 	WithAddressBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) PubSubConnectionDataTypeBuilder
-	// WithNoOfConnectionProperties adds NoOfConnectionProperties (property field)
-	WithNoOfConnectionProperties(int32) PubSubConnectionDataTypeBuilder
 	// WithConnectionProperties adds ConnectionProperties (property field)
-	WithConnectionProperties(...ExtensionObjectDefinition) PubSubConnectionDataTypeBuilder
+	WithConnectionProperties(...KeyValuePair) PubSubConnectionDataTypeBuilder
 	// WithTransportSettings adds TransportSettings (property field)
 	WithTransportSettings(ExtensionObject) PubSubConnectionDataTypeBuilder
 	// WithTransportSettingsBuilder adds TransportSettings (property field) which is build by the builder
 	WithTransportSettingsBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) PubSubConnectionDataTypeBuilder
-	// WithNoOfWriterGroups adds NoOfWriterGroups (property field)
-	WithNoOfWriterGroups(int32) PubSubConnectionDataTypeBuilder
 	// WithWriterGroups adds WriterGroups (property field)
-	WithWriterGroups(...PubSubGroupDataType) PubSubConnectionDataTypeBuilder
-	// WithNoOfReaderGroups adds NoOfReaderGroups (property field)
-	WithNoOfReaderGroups(int32) PubSubConnectionDataTypeBuilder
+	WithWriterGroups(...WriterGroupDataType) PubSubConnectionDataTypeBuilder
 	// WithReaderGroups adds ReaderGroups (property field)
-	WithReaderGroups(...PubSubGroupDataType) PubSubConnectionDataTypeBuilder
+	WithReaderGroups(...ReaderGroupDataType) PubSubConnectionDataTypeBuilder
 	// Build builds the PubSubConnectionDataType or returns an error if something is wrong
 	Build() (PubSubConnectionDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -185,8 +179,8 @@ func (b *_PubSubConnectionDataTypeBuilder) setParent(contract ExtensionObjectDef
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_PubSubConnectionDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, publisherId Variant, transportProfileUri PascalString, address ExtensionObject, noOfConnectionProperties int32, connectionProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, noOfWriterGroups int32, writerGroups []PubSubGroupDataType, noOfReaderGroups int32, readerGroups []PubSubGroupDataType) PubSubConnectionDataTypeBuilder {
-	return b.WithName(name).WithEnabled(enabled).WithPublisherId(publisherId).WithTransportProfileUri(transportProfileUri).WithAddress(address).WithNoOfConnectionProperties(noOfConnectionProperties).WithConnectionProperties(connectionProperties...).WithTransportSettings(transportSettings).WithNoOfWriterGroups(noOfWriterGroups).WithWriterGroups(writerGroups...).WithNoOfReaderGroups(noOfReaderGroups).WithReaderGroups(readerGroups...)
+func (b *_PubSubConnectionDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, publisherId Variant, transportProfileUri PascalString, address ExtensionObject, connectionProperties []KeyValuePair, transportSettings ExtensionObject, writerGroups []WriterGroupDataType, readerGroups []ReaderGroupDataType) PubSubConnectionDataTypeBuilder {
+	return b.WithName(name).WithEnabled(enabled).WithPublisherId(publisherId).WithTransportProfileUri(transportProfileUri).WithAddress(address).WithConnectionProperties(connectionProperties...).WithTransportSettings(transportSettings).WithWriterGroups(writerGroups...).WithReaderGroups(readerGroups...)
 }
 
 func (b *_PubSubConnectionDataTypeBuilder) WithName(name PascalString) PubSubConnectionDataTypeBuilder {
@@ -266,12 +260,7 @@ func (b *_PubSubConnectionDataTypeBuilder) WithAddressBuilder(builderSupplier fu
 	return b
 }
 
-func (b *_PubSubConnectionDataTypeBuilder) WithNoOfConnectionProperties(noOfConnectionProperties int32) PubSubConnectionDataTypeBuilder {
-	b.NoOfConnectionProperties = noOfConnectionProperties
-	return b
-}
-
-func (b *_PubSubConnectionDataTypeBuilder) WithConnectionProperties(connectionProperties ...ExtensionObjectDefinition) PubSubConnectionDataTypeBuilder {
+func (b *_PubSubConnectionDataTypeBuilder) WithConnectionProperties(connectionProperties ...KeyValuePair) PubSubConnectionDataTypeBuilder {
 	b.ConnectionProperties = connectionProperties
 	return b
 }
@@ -294,22 +283,12 @@ func (b *_PubSubConnectionDataTypeBuilder) WithTransportSettingsBuilder(builderS
 	return b
 }
 
-func (b *_PubSubConnectionDataTypeBuilder) WithNoOfWriterGroups(noOfWriterGroups int32) PubSubConnectionDataTypeBuilder {
-	b.NoOfWriterGroups = noOfWriterGroups
-	return b
-}
-
-func (b *_PubSubConnectionDataTypeBuilder) WithWriterGroups(writerGroups ...PubSubGroupDataType) PubSubConnectionDataTypeBuilder {
+func (b *_PubSubConnectionDataTypeBuilder) WithWriterGroups(writerGroups ...WriterGroupDataType) PubSubConnectionDataTypeBuilder {
 	b.WriterGroups = writerGroups
 	return b
 }
 
-func (b *_PubSubConnectionDataTypeBuilder) WithNoOfReaderGroups(noOfReaderGroups int32) PubSubConnectionDataTypeBuilder {
-	b.NoOfReaderGroups = noOfReaderGroups
-	return b
-}
-
-func (b *_PubSubConnectionDataTypeBuilder) WithReaderGroups(readerGroups ...PubSubGroupDataType) PubSubConnectionDataTypeBuilder {
+func (b *_PubSubConnectionDataTypeBuilder) WithReaderGroups(readerGroups ...ReaderGroupDataType) PubSubConnectionDataTypeBuilder {
 	b.ReaderGroups = readerGroups
 	return b
 }
@@ -729,13 +708,10 @@ func (m *_PubSubConnectionDataType) deepCopy() *_PubSubConnectionDataType {
 		m.PublisherId.DeepCopy().(Variant),
 		m.TransportProfileUri.DeepCopy().(PascalString),
 		m.Address.DeepCopy().(ExtensionObject),
-		m.NoOfConnectionProperties,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ConnectionProperties),
+		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.ConnectionProperties),
 		m.TransportSettings.DeepCopy().(ExtensionObject),
-		m.NoOfWriterGroups,
-		utils.DeepCopySlice[PubSubGroupDataType, PubSubGroupDataType](m.WriterGroups),
-		m.NoOfReaderGroups,
-		utils.DeepCopySlice[PubSubGroupDataType, PubSubGroupDataType](m.ReaderGroups),
+		utils.DeepCopySlice[WriterGroupDataType, WriterGroupDataType](m.WriterGroups),
+		utils.DeepCopySlice[ReaderGroupDataType, ReaderGroupDataType](m.ReaderGroups),
 		m.reservedField0,
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -87,17 +87,13 @@ func NewRegisterServer2Response(responseHeader ResponseHeader, configurationResu
 type RegisterServer2ResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfConfigurationResults int32, configurationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) RegisterServer2ResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, configurationResults []StatusCode, diagnosticInfos []DiagnosticInfo) RegisterServer2ResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) RegisterServer2ResponseBuilder
+	WithResponseHeader(ResponseHeader) RegisterServer2ResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServer2ResponseBuilder
-	// WithNoOfConfigurationResults adds NoOfConfigurationResults (property field)
-	WithNoOfConfigurationResults(int32) RegisterServer2ResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) RegisterServer2ResponseBuilder
 	// WithConfigurationResults adds ConfigurationResults (property field)
 	WithConfigurationResults(...StatusCode) RegisterServer2ResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) RegisterServer2ResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) RegisterServer2ResponseBuilder
 	// Build builds the RegisterServer2Response or returns an error if something is wrong
@@ -125,40 +121,30 @@ func (b *_RegisterServer2ResponseBuilder) setParent(contract ExtensionObjectDefi
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RegisterServer2ResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfConfigurationResults int32, configurationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) RegisterServer2ResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfConfigurationResults(noOfConfigurationResults).WithConfigurationResults(configurationResults...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_RegisterServer2ResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, configurationResults []StatusCode, diagnosticInfos []DiagnosticInfo) RegisterServer2ResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithConfigurationResults(configurationResults...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_RegisterServer2ResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) RegisterServer2ResponseBuilder {
+func (b *_RegisterServer2ResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) RegisterServer2ResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_RegisterServer2ResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServer2ResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterServer2ResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) RegisterServer2ResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_RegisterServer2ResponseBuilder) WithNoOfConfigurationResults(noOfConfigurationResults int32) RegisterServer2ResponseBuilder {
-	b.NoOfConfigurationResults = noOfConfigurationResults
 	return b
 }
 
 func (b *_RegisterServer2ResponseBuilder) WithConfigurationResults(configurationResults ...StatusCode) RegisterServer2ResponseBuilder {
 	b.ConfigurationResults = configurationResults
-	return b
-}
-
-func (b *_RegisterServer2ResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) RegisterServer2ResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -418,10 +404,8 @@ func (m *_RegisterServer2Response) deepCopy() *_RegisterServer2Response {
 	}
 	_RegisterServer2ResponseCopy := &_RegisterServer2Response{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfConfigurationResults,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.ConfigurationResults),
-		m.NoOfDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

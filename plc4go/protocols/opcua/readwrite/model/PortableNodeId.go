@@ -38,6 +38,7 @@ type PortableNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNamespaceUri returns NamespaceUri (property field)
 	GetNamespaceUri() PascalString
@@ -45,6 +46,8 @@ type PortableNodeId interface {
 	GetIdentifier() NodeId
 	// IsPortableNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPortableNodeId()
+	// CreateBuilder creates a PortableNodeIdBuilder
+	CreatePortableNodeIdBuilder() PortableNodeIdBuilder
 }
 
 // _PortableNodeId is the data-structure of this message
@@ -73,6 +76,146 @@ func NewPortableNodeId(namespaceUri PascalString, identifier NodeId) *_PortableN
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PortableNodeIdBuilder is a builder for PortableNodeId
+type PortableNodeIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaceUri PascalString, identifier NodeId) PortableNodeIdBuilder
+	// WithNamespaceUri adds NamespaceUri (property field)
+	WithNamespaceUri(PascalString) PortableNodeIdBuilder
+	// WithNamespaceUriBuilder adds NamespaceUri (property field) which is build by the builder
+	WithNamespaceUriBuilder(func(PascalStringBuilder) PascalStringBuilder) PortableNodeIdBuilder
+	// WithIdentifier adds Identifier (property field)
+	WithIdentifier(NodeId) PortableNodeIdBuilder
+	// WithIdentifierBuilder adds Identifier (property field) which is build by the builder
+	WithIdentifierBuilder(func(NodeIdBuilder) NodeIdBuilder) PortableNodeIdBuilder
+	// Build builds the PortableNodeId or returns an error if something is wrong
+	Build() (PortableNodeId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PortableNodeId
+}
+
+// NewPortableNodeIdBuilder() creates a PortableNodeIdBuilder
+func NewPortableNodeIdBuilder() PortableNodeIdBuilder {
+	return &_PortableNodeIdBuilder{_PortableNodeId: new(_PortableNodeId)}
+}
+
+type _PortableNodeIdBuilder struct {
+	*_PortableNodeId
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (PortableNodeIdBuilder) = (*_PortableNodeIdBuilder)(nil)
+
+func (b *_PortableNodeIdBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_PortableNodeIdBuilder) WithMandatoryFields(namespaceUri PascalString, identifier NodeId) PortableNodeIdBuilder {
+	return b.WithNamespaceUri(namespaceUri).WithIdentifier(identifier)
+}
+
+func (b *_PortableNodeIdBuilder) WithNamespaceUri(namespaceUri PascalString) PortableNodeIdBuilder {
+	b.NamespaceUri = namespaceUri
+	return b
+}
+
+func (b *_PortableNodeIdBuilder) WithNamespaceUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PortableNodeIdBuilder {
+	builder := builderSupplier(b.NamespaceUri.CreatePascalStringBuilder())
+	var err error
+	b.NamespaceUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_PortableNodeIdBuilder) WithIdentifier(identifier NodeId) PortableNodeIdBuilder {
+	b.Identifier = identifier
+	return b
+}
+
+func (b *_PortableNodeIdBuilder) WithIdentifierBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) PortableNodeIdBuilder {
+	builder := builderSupplier(b.Identifier.CreateNodeIdBuilder())
+	var err error
+	b.Identifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_PortableNodeIdBuilder) Build() (PortableNodeId, error) {
+	if b.NamespaceUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'namespaceUri' not set"))
+	}
+	if b.Identifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'identifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PortableNodeId.deepCopy(), nil
+}
+
+func (b *_PortableNodeIdBuilder) MustBuild() PortableNodeId {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PortableNodeIdBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PortableNodeIdBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PortableNodeIdBuilder) DeepCopy() any {
+	_copy := b.CreatePortableNodeIdBuilder().(*_PortableNodeIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreatePortableNodeIdBuilder creates a PortableNodeIdBuilder
+func (b *_PortableNodeId) CreatePortableNodeIdBuilder() PortableNodeIdBuilder {
+	if b == nil {
+		return NewPortableNodeIdBuilder()
+	}
+	return &_PortableNodeIdBuilder{_PortableNodeId: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -206,6 +349,23 @@ func (m *_PortableNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_PortableNodeId) IsPortableNodeId() {}
+
+func (m *_PortableNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PortableNodeId) deepCopy() *_PortableNodeId {
+	if m == nil {
+		return nil
+	}
+	_PortableNodeIdCopy := &_PortableNodeId{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NamespaceUri.DeepCopy().(PascalString),
+		m.Identifier.DeepCopy().(NodeId),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PortableNodeIdCopy
+}
 
 func (m *_PortableNodeId) String() string {
 	if m == nil {

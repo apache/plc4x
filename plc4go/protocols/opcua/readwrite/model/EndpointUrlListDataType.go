@@ -76,9 +76,7 @@ func NewEndpointUrlListDataType(endpointUrlList []PascalString) *_EndpointUrlLis
 type EndpointUrlListDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfEndpointUrlList int32, endpointUrlList []PascalString) EndpointUrlListDataTypeBuilder
-	// WithNoOfEndpointUrlList adds NoOfEndpointUrlList (property field)
-	WithNoOfEndpointUrlList(int32) EndpointUrlListDataTypeBuilder
+	WithMandatoryFields(endpointUrlList []PascalString) EndpointUrlListDataTypeBuilder
 	// WithEndpointUrlList adds EndpointUrlList (property field)
 	WithEndpointUrlList(...PascalString) EndpointUrlListDataTypeBuilder
 	// Build builds the EndpointUrlListDataType or returns an error if something is wrong
@@ -106,13 +104,8 @@ func (b *_EndpointUrlListDataTypeBuilder) setParent(contract ExtensionObjectDefi
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_EndpointUrlListDataTypeBuilder) WithMandatoryFields(noOfEndpointUrlList int32, endpointUrlList []PascalString) EndpointUrlListDataTypeBuilder {
-	return b.WithNoOfEndpointUrlList(noOfEndpointUrlList).WithEndpointUrlList(endpointUrlList...)
-}
-
-func (b *_EndpointUrlListDataTypeBuilder) WithNoOfEndpointUrlList(noOfEndpointUrlList int32) EndpointUrlListDataTypeBuilder {
-	b.NoOfEndpointUrlList = noOfEndpointUrlList
-	return b
+func (b *_EndpointUrlListDataTypeBuilder) WithMandatoryFields(endpointUrlList []PascalString) EndpointUrlListDataTypeBuilder {
+	return b.WithEndpointUrlList(endpointUrlList...)
 }
 
 func (b *_EndpointUrlListDataTypeBuilder) WithEndpointUrlList(endpointUrlList ...PascalString) EndpointUrlListDataTypeBuilder {
@@ -311,7 +304,6 @@ func (m *_EndpointUrlListDataType) deepCopy() *_EndpointUrlListDataType {
 	}
 	_EndpointUrlListDataTypeCopy := &_EndpointUrlListDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfEndpointUrlList,
 		utils.DeepCopySlice[PascalString, PascalString](m.EndpointUrlList),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

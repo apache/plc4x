@@ -38,11 +38,14 @@ type DatagramConnectionTransportDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetDiscoveryAddress returns DiscoveryAddress (property field)
 	GetDiscoveryAddress() ExtensionObject
 	// IsDatagramConnectionTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDatagramConnectionTransportDataType()
+	// CreateBuilder creates a DatagramConnectionTransportDataTypeBuilder
+	CreateDatagramConnectionTransportDataTypeBuilder() DatagramConnectionTransportDataTypeBuilder
 }
 
 // _DatagramConnectionTransportDataType is the data-structure of this message
@@ -66,6 +69,118 @@ func NewDatagramConnectionTransportDataType(discoveryAddress ExtensionObject) *_
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DatagramConnectionTransportDataTypeBuilder is a builder for DatagramConnectionTransportDataType
+type DatagramConnectionTransportDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(discoveryAddress ExtensionObject) DatagramConnectionTransportDataTypeBuilder
+	// WithDiscoveryAddress adds DiscoveryAddress (property field)
+	WithDiscoveryAddress(ExtensionObject) DatagramConnectionTransportDataTypeBuilder
+	// WithDiscoveryAddressBuilder adds DiscoveryAddress (property field) which is build by the builder
+	WithDiscoveryAddressBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) DatagramConnectionTransportDataTypeBuilder
+	// Build builds the DatagramConnectionTransportDataType or returns an error if something is wrong
+	Build() (DatagramConnectionTransportDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DatagramConnectionTransportDataType
+}
+
+// NewDatagramConnectionTransportDataTypeBuilder() creates a DatagramConnectionTransportDataTypeBuilder
+func NewDatagramConnectionTransportDataTypeBuilder() DatagramConnectionTransportDataTypeBuilder {
+	return &_DatagramConnectionTransportDataTypeBuilder{_DatagramConnectionTransportDataType: new(_DatagramConnectionTransportDataType)}
+}
+
+type _DatagramConnectionTransportDataTypeBuilder struct {
+	*_DatagramConnectionTransportDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DatagramConnectionTransportDataTypeBuilder) = (*_DatagramConnectionTransportDataTypeBuilder)(nil)
+
+func (b *_DatagramConnectionTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DatagramConnectionTransportDataTypeBuilder) WithMandatoryFields(discoveryAddress ExtensionObject) DatagramConnectionTransportDataTypeBuilder {
+	return b.WithDiscoveryAddress(discoveryAddress)
+}
+
+func (b *_DatagramConnectionTransportDataTypeBuilder) WithDiscoveryAddress(discoveryAddress ExtensionObject) DatagramConnectionTransportDataTypeBuilder {
+	b.DiscoveryAddress = discoveryAddress
+	return b
+}
+
+func (b *_DatagramConnectionTransportDataTypeBuilder) WithDiscoveryAddressBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) DatagramConnectionTransportDataTypeBuilder {
+	builder := builderSupplier(b.DiscoveryAddress.CreateExtensionObjectBuilder())
+	var err error
+	b.DiscoveryAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DatagramConnectionTransportDataTypeBuilder) Build() (DatagramConnectionTransportDataType, error) {
+	if b.DiscoveryAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'discoveryAddress' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DatagramConnectionTransportDataType.deepCopy(), nil
+}
+
+func (b *_DatagramConnectionTransportDataTypeBuilder) MustBuild() DatagramConnectionTransportDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DatagramConnectionTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DatagramConnectionTransportDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DatagramConnectionTransportDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateDatagramConnectionTransportDataTypeBuilder().(*_DatagramConnectionTransportDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDatagramConnectionTransportDataTypeBuilder creates a DatagramConnectionTransportDataTypeBuilder
+func (b *_DatagramConnectionTransportDataType) CreateDatagramConnectionTransportDataTypeBuilder() DatagramConnectionTransportDataTypeBuilder {
+	if b == nil {
+		return NewDatagramConnectionTransportDataTypeBuilder()
+	}
+	return &_DatagramConnectionTransportDataTypeBuilder{_DatagramConnectionTransportDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -182,6 +297,22 @@ func (m *_DatagramConnectionTransportDataType) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_DatagramConnectionTransportDataType) IsDatagramConnectionTransportDataType() {}
+
+func (m *_DatagramConnectionTransportDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DatagramConnectionTransportDataType) deepCopy() *_DatagramConnectionTransportDataType {
+	if m == nil {
+		return nil
+	}
+	_DatagramConnectionTransportDataTypeCopy := &_DatagramConnectionTransportDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.DiscoveryAddress.DeepCopy().(ExtensionObject),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DatagramConnectionTransportDataTypeCopy
+}
 
 func (m *_DatagramConnectionTransportDataType) String() string {
 	if m == nil {

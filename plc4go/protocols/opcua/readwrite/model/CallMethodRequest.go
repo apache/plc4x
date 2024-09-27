@@ -90,7 +90,7 @@ func NewCallMethodRequest(objectId NodeId, methodId NodeId, inputArguments []Var
 type CallMethodRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(objectId NodeId, methodId NodeId, noOfInputArguments int32, inputArguments []Variant) CallMethodRequestBuilder
+	WithMandatoryFields(objectId NodeId, methodId NodeId, inputArguments []Variant) CallMethodRequestBuilder
 	// WithObjectId adds ObjectId (property field)
 	WithObjectId(NodeId) CallMethodRequestBuilder
 	// WithObjectIdBuilder adds ObjectId (property field) which is build by the builder
@@ -99,8 +99,6 @@ type CallMethodRequestBuilder interface {
 	WithMethodId(NodeId) CallMethodRequestBuilder
 	// WithMethodIdBuilder adds MethodId (property field) which is build by the builder
 	WithMethodIdBuilder(func(NodeIdBuilder) NodeIdBuilder) CallMethodRequestBuilder
-	// WithNoOfInputArguments adds NoOfInputArguments (property field)
-	WithNoOfInputArguments(int32) CallMethodRequestBuilder
 	// WithInputArguments adds InputArguments (property field)
 	WithInputArguments(...Variant) CallMethodRequestBuilder
 	// Build builds the CallMethodRequest or returns an error if something is wrong
@@ -128,8 +126,8 @@ func (b *_CallMethodRequestBuilder) setParent(contract ExtensionObjectDefinition
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CallMethodRequestBuilder) WithMandatoryFields(objectId NodeId, methodId NodeId, noOfInputArguments int32, inputArguments []Variant) CallMethodRequestBuilder {
-	return b.WithObjectId(objectId).WithMethodId(methodId).WithNoOfInputArguments(noOfInputArguments).WithInputArguments(inputArguments...)
+func (b *_CallMethodRequestBuilder) WithMandatoryFields(objectId NodeId, methodId NodeId, inputArguments []Variant) CallMethodRequestBuilder {
+	return b.WithObjectId(objectId).WithMethodId(methodId).WithInputArguments(inputArguments...)
 }
 
 func (b *_CallMethodRequestBuilder) WithObjectId(objectId NodeId) CallMethodRequestBuilder {
@@ -165,11 +163,6 @@ func (b *_CallMethodRequestBuilder) WithMethodIdBuilder(builderSupplier func(Nod
 		}
 		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return b
-}
-
-func (b *_CallMethodRequestBuilder) WithNoOfInputArguments(noOfInputArguments int32) CallMethodRequestBuilder {
-	b.NoOfInputArguments = noOfInputArguments
 	return b
 }
 
@@ -417,7 +410,6 @@ func (m *_CallMethodRequest) deepCopy() *_CallMethodRequest {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ObjectId.DeepCopy().(NodeId),
 		m.MethodId.DeepCopy().(NodeId),
-		m.NoOfInputArguments,
 		utils.DeepCopySlice[Variant, Variant](m.InputArguments),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -111,7 +111,7 @@ func NewStructureField(name PascalString, description LocalizedText, dataType No
 type StructureFieldBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) StructureFieldBuilder
+	WithMandatoryFields(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) StructureFieldBuilder
 	// WithName adds Name (property field)
 	WithName(PascalString) StructureFieldBuilder
 	// WithNameBuilder adds Name (property field) which is build by the builder
@@ -126,8 +126,6 @@ type StructureFieldBuilder interface {
 	WithDataTypeBuilder(func(NodeIdBuilder) NodeIdBuilder) StructureFieldBuilder
 	// WithValueRank adds ValueRank (property field)
 	WithValueRank(int32) StructureFieldBuilder
-	// WithNoOfArrayDimensions adds NoOfArrayDimensions (property field)
-	WithNoOfArrayDimensions(int32) StructureFieldBuilder
 	// WithArrayDimensions adds ArrayDimensions (property field)
 	WithArrayDimensions(...uint32) StructureFieldBuilder
 	// WithMaxStringLength adds MaxStringLength (property field)
@@ -159,8 +157,8 @@ func (b *_StructureFieldBuilder) setParent(contract ExtensionObjectDefinitionCon
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_StructureFieldBuilder) WithMandatoryFields(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) StructureFieldBuilder {
-	return b.WithName(name).WithDescription(description).WithDataType(dataType).WithValueRank(valueRank).WithNoOfArrayDimensions(noOfArrayDimensions).WithArrayDimensions(arrayDimensions...).WithMaxStringLength(maxStringLength).WithIsOptional(isOptional)
+func (b *_StructureFieldBuilder) WithMandatoryFields(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) StructureFieldBuilder {
+	return b.WithName(name).WithDescription(description).WithDataType(dataType).WithValueRank(valueRank).WithArrayDimensions(arrayDimensions...).WithMaxStringLength(maxStringLength).WithIsOptional(isOptional)
 }
 
 func (b *_StructureFieldBuilder) WithName(name PascalString) StructureFieldBuilder {
@@ -219,11 +217,6 @@ func (b *_StructureFieldBuilder) WithDataTypeBuilder(builderSupplier func(NodeId
 
 func (b *_StructureFieldBuilder) WithValueRank(valueRank int32) StructureFieldBuilder {
 	b.ValueRank = valueRank
-	return b
-}
-
-func (b *_StructureFieldBuilder) WithNoOfArrayDimensions(noOfArrayDimensions int32) StructureFieldBuilder {
-	b.NoOfArrayDimensions = noOfArrayDimensions
 	return b
 }
 
@@ -565,7 +558,6 @@ func (m *_StructureField) deepCopy() *_StructureField {
 		m.Description.DeepCopy().(LocalizedText),
 		m.DataType.DeepCopy().(NodeId),
 		m.ValueRank,
-		m.NoOfArrayDimensions,
 		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
 		m.MaxStringLength,
 		m.IsOptional,

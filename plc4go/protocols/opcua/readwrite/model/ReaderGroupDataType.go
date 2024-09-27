@@ -38,6 +38,7 @@ type ReaderGroupDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -61,6 +62,8 @@ type ReaderGroupDataType interface {
 	GetDataSetReaders() []DataSetReaderDataType
 	// IsReaderGroupDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReaderGroupDataType()
+	// CreateBuilder creates a ReaderGroupDataTypeBuilder
+	CreateReaderGroupDataTypeBuilder() ReaderGroupDataTypeBuilder
 }
 
 // _ReaderGroupDataType is the data-structure of this message
@@ -113,6 +116,244 @@ func NewReaderGroupDataType(name PascalString, enabled bool, securityMode Messag
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReaderGroupDataTypeBuilder is a builder for ReaderGroupDataType
+type ReaderGroupDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(name PascalString, enabled bool, securityMode MessageSecurityMode, securityGroupId PascalString, securityKeyServices []EndpointDescription, maxNetworkMessageSize uint32, groupProperties []KeyValuePair, transportSettings ExtensionObject, messageSettings ExtensionObject, dataSetReaders []DataSetReaderDataType) ReaderGroupDataTypeBuilder
+	// WithName adds Name (property field)
+	WithName(PascalString) ReaderGroupDataTypeBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(PascalStringBuilder) PascalStringBuilder) ReaderGroupDataTypeBuilder
+	// WithEnabled adds Enabled (property field)
+	WithEnabled(bool) ReaderGroupDataTypeBuilder
+	// WithSecurityMode adds SecurityMode (property field)
+	WithSecurityMode(MessageSecurityMode) ReaderGroupDataTypeBuilder
+	// WithSecurityGroupId adds SecurityGroupId (property field)
+	WithSecurityGroupId(PascalString) ReaderGroupDataTypeBuilder
+	// WithSecurityGroupIdBuilder adds SecurityGroupId (property field) which is build by the builder
+	WithSecurityGroupIdBuilder(func(PascalStringBuilder) PascalStringBuilder) ReaderGroupDataTypeBuilder
+	// WithSecurityKeyServices adds SecurityKeyServices (property field)
+	WithSecurityKeyServices(...EndpointDescription) ReaderGroupDataTypeBuilder
+	// WithMaxNetworkMessageSize adds MaxNetworkMessageSize (property field)
+	WithMaxNetworkMessageSize(uint32) ReaderGroupDataTypeBuilder
+	// WithGroupProperties adds GroupProperties (property field)
+	WithGroupProperties(...KeyValuePair) ReaderGroupDataTypeBuilder
+	// WithTransportSettings adds TransportSettings (property field)
+	WithTransportSettings(ExtensionObject) ReaderGroupDataTypeBuilder
+	// WithTransportSettingsBuilder adds TransportSettings (property field) which is build by the builder
+	WithTransportSettingsBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) ReaderGroupDataTypeBuilder
+	// WithMessageSettings adds MessageSettings (property field)
+	WithMessageSettings(ExtensionObject) ReaderGroupDataTypeBuilder
+	// WithMessageSettingsBuilder adds MessageSettings (property field) which is build by the builder
+	WithMessageSettingsBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) ReaderGroupDataTypeBuilder
+	// WithDataSetReaders adds DataSetReaders (property field)
+	WithDataSetReaders(...DataSetReaderDataType) ReaderGroupDataTypeBuilder
+	// Build builds the ReaderGroupDataType or returns an error if something is wrong
+	Build() (ReaderGroupDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReaderGroupDataType
+}
+
+// NewReaderGroupDataTypeBuilder() creates a ReaderGroupDataTypeBuilder
+func NewReaderGroupDataTypeBuilder() ReaderGroupDataTypeBuilder {
+	return &_ReaderGroupDataTypeBuilder{_ReaderGroupDataType: new(_ReaderGroupDataType)}
+}
+
+type _ReaderGroupDataTypeBuilder struct {
+	*_ReaderGroupDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ReaderGroupDataTypeBuilder) = (*_ReaderGroupDataTypeBuilder)(nil)
+
+func (b *_ReaderGroupDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ReaderGroupDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, securityMode MessageSecurityMode, securityGroupId PascalString, securityKeyServices []EndpointDescription, maxNetworkMessageSize uint32, groupProperties []KeyValuePair, transportSettings ExtensionObject, messageSettings ExtensionObject, dataSetReaders []DataSetReaderDataType) ReaderGroupDataTypeBuilder {
+	return b.WithName(name).WithEnabled(enabled).WithSecurityMode(securityMode).WithSecurityGroupId(securityGroupId).WithSecurityKeyServices(securityKeyServices...).WithMaxNetworkMessageSize(maxNetworkMessageSize).WithGroupProperties(groupProperties...).WithTransportSettings(transportSettings).WithMessageSettings(messageSettings).WithDataSetReaders(dataSetReaders...)
+}
+
+func (b *_ReaderGroupDataTypeBuilder) WithName(name PascalString) ReaderGroupDataTypeBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_ReaderGroupDataTypeBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ReaderGroupDataTypeBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
+	var err error
+	b.Name, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReaderGroupDataTypeBuilder) WithEnabled(enabled bool) ReaderGroupDataTypeBuilder {
+	b.Enabled = enabled
+	return b
+}
+
+func (b *_ReaderGroupDataTypeBuilder) WithSecurityMode(securityMode MessageSecurityMode) ReaderGroupDataTypeBuilder {
+	b.SecurityMode = securityMode
+	return b
+}
+
+func (b *_ReaderGroupDataTypeBuilder) WithSecurityGroupId(securityGroupId PascalString) ReaderGroupDataTypeBuilder {
+	b.SecurityGroupId = securityGroupId
+	return b
+}
+
+func (b *_ReaderGroupDataTypeBuilder) WithSecurityGroupIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ReaderGroupDataTypeBuilder {
+	builder := builderSupplier(b.SecurityGroupId.CreatePascalStringBuilder())
+	var err error
+	b.SecurityGroupId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReaderGroupDataTypeBuilder) WithSecurityKeyServices(securityKeyServices ...EndpointDescription) ReaderGroupDataTypeBuilder {
+	b.SecurityKeyServices = securityKeyServices
+	return b
+}
+
+func (b *_ReaderGroupDataTypeBuilder) WithMaxNetworkMessageSize(maxNetworkMessageSize uint32) ReaderGroupDataTypeBuilder {
+	b.MaxNetworkMessageSize = maxNetworkMessageSize
+	return b
+}
+
+func (b *_ReaderGroupDataTypeBuilder) WithGroupProperties(groupProperties ...KeyValuePair) ReaderGroupDataTypeBuilder {
+	b.GroupProperties = groupProperties
+	return b
+}
+
+func (b *_ReaderGroupDataTypeBuilder) WithTransportSettings(transportSettings ExtensionObject) ReaderGroupDataTypeBuilder {
+	b.TransportSettings = transportSettings
+	return b
+}
+
+func (b *_ReaderGroupDataTypeBuilder) WithTransportSettingsBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) ReaderGroupDataTypeBuilder {
+	builder := builderSupplier(b.TransportSettings.CreateExtensionObjectBuilder())
+	var err error
+	b.TransportSettings, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReaderGroupDataTypeBuilder) WithMessageSettings(messageSettings ExtensionObject) ReaderGroupDataTypeBuilder {
+	b.MessageSettings = messageSettings
+	return b
+}
+
+func (b *_ReaderGroupDataTypeBuilder) WithMessageSettingsBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) ReaderGroupDataTypeBuilder {
+	builder := builderSupplier(b.MessageSettings.CreateExtensionObjectBuilder())
+	var err error
+	b.MessageSettings, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReaderGroupDataTypeBuilder) WithDataSetReaders(dataSetReaders ...DataSetReaderDataType) ReaderGroupDataTypeBuilder {
+	b.DataSetReaders = dataSetReaders
+	return b
+}
+
+func (b *_ReaderGroupDataTypeBuilder) Build() (ReaderGroupDataType, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if b.SecurityGroupId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'securityGroupId' not set"))
+	}
+	if b.TransportSettings == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'transportSettings' not set"))
+	}
+	if b.MessageSettings == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'messageSettings' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ReaderGroupDataType.deepCopy(), nil
+}
+
+func (b *_ReaderGroupDataTypeBuilder) MustBuild() ReaderGroupDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ReaderGroupDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ReaderGroupDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ReaderGroupDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateReaderGroupDataTypeBuilder().(*_ReaderGroupDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateReaderGroupDataTypeBuilder creates a ReaderGroupDataTypeBuilder
+func (b *_ReaderGroupDataType) CreateReaderGroupDataTypeBuilder() ReaderGroupDataTypeBuilder {
+	if b == nil {
+		return NewReaderGroupDataTypeBuilder()
+	}
+	return &_ReaderGroupDataTypeBuilder{_ReaderGroupDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -455,6 +696,32 @@ func (m *_ReaderGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_ReaderGroupDataType) IsReaderGroupDataType() {}
+
+func (m *_ReaderGroupDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReaderGroupDataType) deepCopy() *_ReaderGroupDataType {
+	if m == nil {
+		return nil
+	}
+	_ReaderGroupDataTypeCopy := &_ReaderGroupDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Name.DeepCopy().(PascalString),
+		m.Enabled,
+		m.SecurityMode,
+		m.SecurityGroupId.DeepCopy().(PascalString),
+		utils.DeepCopySlice[EndpointDescription, EndpointDescription](m.SecurityKeyServices),
+		m.MaxNetworkMessageSize,
+		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.GroupProperties),
+		m.TransportSettings.DeepCopy().(ExtensionObject),
+		m.MessageSettings.DeepCopy().(ExtensionObject),
+		utils.DeepCopySlice[DataSetReaderDataType, DataSetReaderDataType](m.DataSetReaders),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReaderGroupDataTypeCopy
+}
 
 func (m *_ReaderGroupDataType) String() string {
 	if m == nil {

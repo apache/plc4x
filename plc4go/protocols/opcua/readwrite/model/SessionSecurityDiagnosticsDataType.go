@@ -129,7 +129,7 @@ func NewSessionSecurityDiagnosticsDataType(sessionId NodeId, clientUserIdOfSessi
 type SessionSecurityDiagnosticsDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(sessionId NodeId, clientUserIdOfSession PascalString, noOfClientUserIdHistory int32, clientUserIdHistory []PascalString, authenticationMechanism PascalString, encoding PascalString, transportProtocol PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, clientCertificate PascalByteString) SessionSecurityDiagnosticsDataTypeBuilder
+	WithMandatoryFields(sessionId NodeId, clientUserIdOfSession PascalString, clientUserIdHistory []PascalString, authenticationMechanism PascalString, encoding PascalString, transportProtocol PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, clientCertificate PascalByteString) SessionSecurityDiagnosticsDataTypeBuilder
 	// WithSessionId adds SessionId (property field)
 	WithSessionId(NodeId) SessionSecurityDiagnosticsDataTypeBuilder
 	// WithSessionIdBuilder adds SessionId (property field) which is build by the builder
@@ -138,8 +138,6 @@ type SessionSecurityDiagnosticsDataTypeBuilder interface {
 	WithClientUserIdOfSession(PascalString) SessionSecurityDiagnosticsDataTypeBuilder
 	// WithClientUserIdOfSessionBuilder adds ClientUserIdOfSession (property field) which is build by the builder
 	WithClientUserIdOfSessionBuilder(func(PascalStringBuilder) PascalStringBuilder) SessionSecurityDiagnosticsDataTypeBuilder
-	// WithNoOfClientUserIdHistory adds NoOfClientUserIdHistory (property field)
-	WithNoOfClientUserIdHistory(int32) SessionSecurityDiagnosticsDataTypeBuilder
 	// WithClientUserIdHistory adds ClientUserIdHistory (property field)
 	WithClientUserIdHistory(...PascalString) SessionSecurityDiagnosticsDataTypeBuilder
 	// WithAuthenticationMechanism adds AuthenticationMechanism (property field)
@@ -189,8 +187,8 @@ func (b *_SessionSecurityDiagnosticsDataTypeBuilder) setParent(contract Extensio
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithMandatoryFields(sessionId NodeId, clientUserIdOfSession PascalString, noOfClientUserIdHistory int32, clientUserIdHistory []PascalString, authenticationMechanism PascalString, encoding PascalString, transportProtocol PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, clientCertificate PascalByteString) SessionSecurityDiagnosticsDataTypeBuilder {
-	return b.WithSessionId(sessionId).WithClientUserIdOfSession(clientUserIdOfSession).WithNoOfClientUserIdHistory(noOfClientUserIdHistory).WithClientUserIdHistory(clientUserIdHistory...).WithAuthenticationMechanism(authenticationMechanism).WithEncoding(encoding).WithTransportProtocol(transportProtocol).WithSecurityMode(securityMode).WithSecurityPolicyUri(securityPolicyUri).WithClientCertificate(clientCertificate)
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithMandatoryFields(sessionId NodeId, clientUserIdOfSession PascalString, clientUserIdHistory []PascalString, authenticationMechanism PascalString, encoding PascalString, transportProtocol PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, clientCertificate PascalByteString) SessionSecurityDiagnosticsDataTypeBuilder {
+	return b.WithSessionId(sessionId).WithClientUserIdOfSession(clientUserIdOfSession).WithClientUserIdHistory(clientUserIdHistory...).WithAuthenticationMechanism(authenticationMechanism).WithEncoding(encoding).WithTransportProtocol(transportProtocol).WithSecurityMode(securityMode).WithSecurityPolicyUri(securityPolicyUri).WithClientCertificate(clientCertificate)
 }
 
 func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithSessionId(sessionId NodeId) SessionSecurityDiagnosticsDataTypeBuilder {
@@ -226,11 +224,6 @@ func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithClientUserIdOfSessionBu
 		}
 		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return b
-}
-
-func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithNoOfClientUserIdHistory(noOfClientUserIdHistory int32) SessionSecurityDiagnosticsDataTypeBuilder {
-	b.NoOfClientUserIdHistory = noOfClientUserIdHistory
 	return b
 }
 
@@ -705,7 +698,6 @@ func (m *_SessionSecurityDiagnosticsDataType) deepCopy() *_SessionSecurityDiagno
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SessionId.DeepCopy().(NodeId),
 		m.ClientUserIdOfSession.DeepCopy().(PascalString),
-		m.NoOfClientUserIdHistory,
 		utils.DeepCopySlice[PascalString, PascalString](m.ClientUserIdHistory),
 		m.AuthenticationMechanism.DeepCopy().(PascalString),
 		m.Encoding.DeepCopy().(PascalString),

@@ -83,15 +83,13 @@ func NewNetworkGroupDataType(serverUri PascalString, networkPaths []EndpointUrlL
 type NetworkGroupDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(serverUri PascalString, noOfNetworkPaths int32, networkPaths []ExtensionObjectDefinition) NetworkGroupDataTypeBuilder
+	WithMandatoryFields(serverUri PascalString, networkPaths []EndpointUrlListDataType) NetworkGroupDataTypeBuilder
 	// WithServerUri adds ServerUri (property field)
 	WithServerUri(PascalString) NetworkGroupDataTypeBuilder
 	// WithServerUriBuilder adds ServerUri (property field) which is build by the builder
 	WithServerUriBuilder(func(PascalStringBuilder) PascalStringBuilder) NetworkGroupDataTypeBuilder
-	// WithNoOfNetworkPaths adds NoOfNetworkPaths (property field)
-	WithNoOfNetworkPaths(int32) NetworkGroupDataTypeBuilder
 	// WithNetworkPaths adds NetworkPaths (property field)
-	WithNetworkPaths(...ExtensionObjectDefinition) NetworkGroupDataTypeBuilder
+	WithNetworkPaths(...EndpointUrlListDataType) NetworkGroupDataTypeBuilder
 	// Build builds the NetworkGroupDataType or returns an error if something is wrong
 	Build() (NetworkGroupDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,8 +115,8 @@ func (b *_NetworkGroupDataTypeBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_NetworkGroupDataTypeBuilder) WithMandatoryFields(serverUri PascalString, noOfNetworkPaths int32, networkPaths []ExtensionObjectDefinition) NetworkGroupDataTypeBuilder {
-	return b.WithServerUri(serverUri).WithNoOfNetworkPaths(noOfNetworkPaths).WithNetworkPaths(networkPaths...)
+func (b *_NetworkGroupDataTypeBuilder) WithMandatoryFields(serverUri PascalString, networkPaths []EndpointUrlListDataType) NetworkGroupDataTypeBuilder {
+	return b.WithServerUri(serverUri).WithNetworkPaths(networkPaths...)
 }
 
 func (b *_NetworkGroupDataTypeBuilder) WithServerUri(serverUri PascalString) NetworkGroupDataTypeBuilder {
@@ -139,12 +137,7 @@ func (b *_NetworkGroupDataTypeBuilder) WithServerUriBuilder(builderSupplier func
 	return b
 }
 
-func (b *_NetworkGroupDataTypeBuilder) WithNoOfNetworkPaths(noOfNetworkPaths int32) NetworkGroupDataTypeBuilder {
-	b.NoOfNetworkPaths = noOfNetworkPaths
-	return b
-}
-
-func (b *_NetworkGroupDataTypeBuilder) WithNetworkPaths(networkPaths ...ExtensionObjectDefinition) NetworkGroupDataTypeBuilder {
+func (b *_NetworkGroupDataTypeBuilder) WithNetworkPaths(networkPaths ...EndpointUrlListDataType) NetworkGroupDataTypeBuilder {
 	b.NetworkPaths = networkPaths
 	return b
 }
@@ -364,8 +357,7 @@ func (m *_NetworkGroupDataType) deepCopy() *_NetworkGroupDataType {
 	_NetworkGroupDataTypeCopy := &_NetworkGroupDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ServerUri.DeepCopy().(PascalString),
-		m.NoOfNetworkPaths,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NetworkPaths),
+		utils.DeepCopySlice[EndpointUrlListDataType, EndpointUrlListDataType](m.NetworkPaths),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _NetworkGroupDataTypeCopy

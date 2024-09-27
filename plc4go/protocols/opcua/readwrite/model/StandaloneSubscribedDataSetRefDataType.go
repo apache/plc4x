@@ -38,11 +38,14 @@ type StandaloneSubscribedDataSetRefDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetDataSetName returns DataSetName (property field)
 	GetDataSetName() PascalString
 	// IsStandaloneSubscribedDataSetRefDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsStandaloneSubscribedDataSetRefDataType()
+	// CreateBuilder creates a StandaloneSubscribedDataSetRefDataTypeBuilder
+	CreateStandaloneSubscribedDataSetRefDataTypeBuilder() StandaloneSubscribedDataSetRefDataTypeBuilder
 }
 
 // _StandaloneSubscribedDataSetRefDataType is the data-structure of this message
@@ -66,6 +69,118 @@ func NewStandaloneSubscribedDataSetRefDataType(dataSetName PascalString) *_Stand
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// StandaloneSubscribedDataSetRefDataTypeBuilder is a builder for StandaloneSubscribedDataSetRefDataType
+type StandaloneSubscribedDataSetRefDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dataSetName PascalString) StandaloneSubscribedDataSetRefDataTypeBuilder
+	// WithDataSetName adds DataSetName (property field)
+	WithDataSetName(PascalString) StandaloneSubscribedDataSetRefDataTypeBuilder
+	// WithDataSetNameBuilder adds DataSetName (property field) which is build by the builder
+	WithDataSetNameBuilder(func(PascalStringBuilder) PascalStringBuilder) StandaloneSubscribedDataSetRefDataTypeBuilder
+	// Build builds the StandaloneSubscribedDataSetRefDataType or returns an error if something is wrong
+	Build() (StandaloneSubscribedDataSetRefDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() StandaloneSubscribedDataSetRefDataType
+}
+
+// NewStandaloneSubscribedDataSetRefDataTypeBuilder() creates a StandaloneSubscribedDataSetRefDataTypeBuilder
+func NewStandaloneSubscribedDataSetRefDataTypeBuilder() StandaloneSubscribedDataSetRefDataTypeBuilder {
+	return &_StandaloneSubscribedDataSetRefDataTypeBuilder{_StandaloneSubscribedDataSetRefDataType: new(_StandaloneSubscribedDataSetRefDataType)}
+}
+
+type _StandaloneSubscribedDataSetRefDataTypeBuilder struct {
+	*_StandaloneSubscribedDataSetRefDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (StandaloneSubscribedDataSetRefDataTypeBuilder) = (*_StandaloneSubscribedDataSetRefDataTypeBuilder)(nil)
+
+func (b *_StandaloneSubscribedDataSetRefDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_StandaloneSubscribedDataSetRefDataTypeBuilder) WithMandatoryFields(dataSetName PascalString) StandaloneSubscribedDataSetRefDataTypeBuilder {
+	return b.WithDataSetName(dataSetName)
+}
+
+func (b *_StandaloneSubscribedDataSetRefDataTypeBuilder) WithDataSetName(dataSetName PascalString) StandaloneSubscribedDataSetRefDataTypeBuilder {
+	b.DataSetName = dataSetName
+	return b
+}
+
+func (b *_StandaloneSubscribedDataSetRefDataTypeBuilder) WithDataSetNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) StandaloneSubscribedDataSetRefDataTypeBuilder {
+	builder := builderSupplier(b.DataSetName.CreatePascalStringBuilder())
+	var err error
+	b.DataSetName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_StandaloneSubscribedDataSetRefDataTypeBuilder) Build() (StandaloneSubscribedDataSetRefDataType, error) {
+	if b.DataSetName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataSetName' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._StandaloneSubscribedDataSetRefDataType.deepCopy(), nil
+}
+
+func (b *_StandaloneSubscribedDataSetRefDataTypeBuilder) MustBuild() StandaloneSubscribedDataSetRefDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_StandaloneSubscribedDataSetRefDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_StandaloneSubscribedDataSetRefDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_StandaloneSubscribedDataSetRefDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateStandaloneSubscribedDataSetRefDataTypeBuilder().(*_StandaloneSubscribedDataSetRefDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateStandaloneSubscribedDataSetRefDataTypeBuilder creates a StandaloneSubscribedDataSetRefDataTypeBuilder
+func (b *_StandaloneSubscribedDataSetRefDataType) CreateStandaloneSubscribedDataSetRefDataTypeBuilder() StandaloneSubscribedDataSetRefDataTypeBuilder {
+	if b == nil {
+		return NewStandaloneSubscribedDataSetRefDataTypeBuilder()
+	}
+	return &_StandaloneSubscribedDataSetRefDataTypeBuilder{_StandaloneSubscribedDataSetRefDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -182,6 +297,22 @@ func (m *_StandaloneSubscribedDataSetRefDataType) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_StandaloneSubscribedDataSetRefDataType) IsStandaloneSubscribedDataSetRefDataType() {}
+
+func (m *_StandaloneSubscribedDataSetRefDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StandaloneSubscribedDataSetRefDataType) deepCopy() *_StandaloneSubscribedDataSetRefDataType {
+	if m == nil {
+		return nil
+	}
+	_StandaloneSubscribedDataSetRefDataTypeCopy := &_StandaloneSubscribedDataSetRefDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.DataSetName.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _StandaloneSubscribedDataSetRefDataTypeCopy
+}
 
 func (m *_StandaloneSubscribedDataSetRefDataType) String() string {
 	if m == nil {

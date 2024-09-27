@@ -89,17 +89,15 @@ func NewNodeTypeDescription(typeDefinitionNode ExpandedNodeId, includeSubTypes b
 type NodeTypeDescriptionBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, noOfDataToReturn int32, dataToReturn []ExtensionObjectDefinition) NodeTypeDescriptionBuilder
+	WithMandatoryFields(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, dataToReturn []QueryDataDescription) NodeTypeDescriptionBuilder
 	// WithTypeDefinitionNode adds TypeDefinitionNode (property field)
 	WithTypeDefinitionNode(ExpandedNodeId) NodeTypeDescriptionBuilder
 	// WithTypeDefinitionNodeBuilder adds TypeDefinitionNode (property field) which is build by the builder
 	WithTypeDefinitionNodeBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) NodeTypeDescriptionBuilder
 	// WithIncludeSubTypes adds IncludeSubTypes (property field)
 	WithIncludeSubTypes(bool) NodeTypeDescriptionBuilder
-	// WithNoOfDataToReturn adds NoOfDataToReturn (property field)
-	WithNoOfDataToReturn(int32) NodeTypeDescriptionBuilder
 	// WithDataToReturn adds DataToReturn (property field)
-	WithDataToReturn(...ExtensionObjectDefinition) NodeTypeDescriptionBuilder
+	WithDataToReturn(...QueryDataDescription) NodeTypeDescriptionBuilder
 	// Build builds the NodeTypeDescription or returns an error if something is wrong
 	Build() (NodeTypeDescription, error)
 	// MustBuild does the same as Build but panics on error
@@ -125,8 +123,8 @@ func (b *_NodeTypeDescriptionBuilder) setParent(contract ExtensionObjectDefiniti
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_NodeTypeDescriptionBuilder) WithMandatoryFields(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, noOfDataToReturn int32, dataToReturn []ExtensionObjectDefinition) NodeTypeDescriptionBuilder {
-	return b.WithTypeDefinitionNode(typeDefinitionNode).WithIncludeSubTypes(includeSubTypes).WithNoOfDataToReturn(noOfDataToReturn).WithDataToReturn(dataToReturn...)
+func (b *_NodeTypeDescriptionBuilder) WithMandatoryFields(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, dataToReturn []QueryDataDescription) NodeTypeDescriptionBuilder {
+	return b.WithTypeDefinitionNode(typeDefinitionNode).WithIncludeSubTypes(includeSubTypes).WithDataToReturn(dataToReturn...)
 }
 
 func (b *_NodeTypeDescriptionBuilder) WithTypeDefinitionNode(typeDefinitionNode ExpandedNodeId) NodeTypeDescriptionBuilder {
@@ -152,12 +150,7 @@ func (b *_NodeTypeDescriptionBuilder) WithIncludeSubTypes(includeSubTypes bool) 
 	return b
 }
 
-func (b *_NodeTypeDescriptionBuilder) WithNoOfDataToReturn(noOfDataToReturn int32) NodeTypeDescriptionBuilder {
-	b.NoOfDataToReturn = noOfDataToReturn
-	return b
-}
-
-func (b *_NodeTypeDescriptionBuilder) WithDataToReturn(dataToReturn ...ExtensionObjectDefinition) NodeTypeDescriptionBuilder {
+func (b *_NodeTypeDescriptionBuilder) WithDataToReturn(dataToReturn ...QueryDataDescription) NodeTypeDescriptionBuilder {
 	b.DataToReturn = dataToReturn
 	return b
 }
@@ -408,8 +401,7 @@ func (m *_NodeTypeDescription) deepCopy() *_NodeTypeDescription {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.TypeDefinitionNode.DeepCopy().(ExpandedNodeId),
 		m.IncludeSubTypes,
-		m.NoOfDataToReturn,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.DataToReturn),
+		utils.DeepCopySlice[QueryDataDescription, QueryDataDescription](m.DataToReturn),
 		m.reservedField0,
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

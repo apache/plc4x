@@ -91,19 +91,17 @@ func NewCreateMonitoredItemsRequest(requestHeader RequestHeader, subscriptionId 
 type CreateMonitoredItemsRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, timestampsToReturn TimestampsToReturn, noOfItemsToCreate int32, itemsToCreate []ExtensionObjectDefinition) CreateMonitoredItemsRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, timestampsToReturn TimestampsToReturn, itemsToCreate []MonitoredItemCreateRequest) CreateMonitoredItemsRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) CreateMonitoredItemsRequestBuilder
+	WithRequestHeader(RequestHeader) CreateMonitoredItemsRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateMonitoredItemsRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) CreateMonitoredItemsRequestBuilder
 	// WithSubscriptionId adds SubscriptionId (property field)
 	WithSubscriptionId(uint32) CreateMonitoredItemsRequestBuilder
 	// WithTimestampsToReturn adds TimestampsToReturn (property field)
 	WithTimestampsToReturn(TimestampsToReturn) CreateMonitoredItemsRequestBuilder
-	// WithNoOfItemsToCreate adds NoOfItemsToCreate (property field)
-	WithNoOfItemsToCreate(int32) CreateMonitoredItemsRequestBuilder
 	// WithItemsToCreate adds ItemsToCreate (property field)
-	WithItemsToCreate(...ExtensionObjectDefinition) CreateMonitoredItemsRequestBuilder
+	WithItemsToCreate(...MonitoredItemCreateRequest) CreateMonitoredItemsRequestBuilder
 	// Build builds the CreateMonitoredItemsRequest or returns an error if something is wrong
 	Build() (CreateMonitoredItemsRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,24 +127,24 @@ func (b *_CreateMonitoredItemsRequestBuilder) setParent(contract ExtensionObject
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CreateMonitoredItemsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, timestampsToReturn TimestampsToReturn, noOfItemsToCreate int32, itemsToCreate []ExtensionObjectDefinition) CreateMonitoredItemsRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithTimestampsToReturn(timestampsToReturn).WithNoOfItemsToCreate(noOfItemsToCreate).WithItemsToCreate(itemsToCreate...)
+func (b *_CreateMonitoredItemsRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, timestampsToReturn TimestampsToReturn, itemsToCreate []MonitoredItemCreateRequest) CreateMonitoredItemsRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithTimestampsToReturn(timestampsToReturn).WithItemsToCreate(itemsToCreate...)
 }
 
-func (b *_CreateMonitoredItemsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CreateMonitoredItemsRequestBuilder {
+func (b *_CreateMonitoredItemsRequestBuilder) WithRequestHeader(requestHeader RequestHeader) CreateMonitoredItemsRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_CreateMonitoredItemsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateMonitoredItemsRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CreateMonitoredItemsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) CreateMonitoredItemsRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -161,12 +159,7 @@ func (b *_CreateMonitoredItemsRequestBuilder) WithTimestampsToReturn(timestampsT
 	return b
 }
 
-func (b *_CreateMonitoredItemsRequestBuilder) WithNoOfItemsToCreate(noOfItemsToCreate int32) CreateMonitoredItemsRequestBuilder {
-	b.NoOfItemsToCreate = noOfItemsToCreate
-	return b
-}
-
-func (b *_CreateMonitoredItemsRequestBuilder) WithItemsToCreate(itemsToCreate ...ExtensionObjectDefinition) CreateMonitoredItemsRequestBuilder {
+func (b *_CreateMonitoredItemsRequestBuilder) WithItemsToCreate(itemsToCreate ...MonitoredItemCreateRequest) CreateMonitoredItemsRequestBuilder {
 	b.ItemsToCreate = itemsToCreate
 	return b
 }
@@ -419,11 +412,10 @@ func (m *_CreateMonitoredItemsRequest) deepCopy() *_CreateMonitoredItemsRequest 
 	}
 	_CreateMonitoredItemsRequestCopy := &_CreateMonitoredItemsRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.SubscriptionId,
 		m.TimestampsToReturn,
-		m.NoOfItemsToCreate,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ItemsToCreate),
+		utils.DeepCopySlice[MonitoredItemCreateRequest, MonitoredItemCreateRequest](m.ItemsToCreate),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CreateMonitoredItemsRequestCopy

@@ -38,6 +38,7 @@ type ReferenceTypeAttributes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSpecifiedAttributes returns SpecifiedAttributes (property field)
 	GetSpecifiedAttributes() uint32
@@ -57,6 +58,8 @@ type ReferenceTypeAttributes interface {
 	GetInverseName() LocalizedText
 	// IsReferenceTypeAttributes is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReferenceTypeAttributes()
+	// CreateBuilder creates a ReferenceTypeAttributesBuilder
+	CreateReferenceTypeAttributesBuilder() ReferenceTypeAttributesBuilder
 }
 
 // _ReferenceTypeAttributes is the data-structure of this message
@@ -102,6 +105,209 @@ func NewReferenceTypeAttributes(specifiedAttributes uint32, displayName Localize
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReferenceTypeAttributesBuilder is a builder for ReferenceTypeAttributes
+type ReferenceTypeAttributesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, symmetric bool, isAbstract bool, inverseName LocalizedText) ReferenceTypeAttributesBuilder
+	// WithSpecifiedAttributes adds SpecifiedAttributes (property field)
+	WithSpecifiedAttributes(uint32) ReferenceTypeAttributesBuilder
+	// WithDisplayName adds DisplayName (property field)
+	WithDisplayName(LocalizedText) ReferenceTypeAttributesBuilder
+	// WithDisplayNameBuilder adds DisplayName (property field) which is build by the builder
+	WithDisplayNameBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) ReferenceTypeAttributesBuilder
+	// WithDescription adds Description (property field)
+	WithDescription(LocalizedText) ReferenceTypeAttributesBuilder
+	// WithDescriptionBuilder adds Description (property field) which is build by the builder
+	WithDescriptionBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) ReferenceTypeAttributesBuilder
+	// WithWriteMask adds WriteMask (property field)
+	WithWriteMask(uint32) ReferenceTypeAttributesBuilder
+	// WithUserWriteMask adds UserWriteMask (property field)
+	WithUserWriteMask(uint32) ReferenceTypeAttributesBuilder
+	// WithSymmetric adds Symmetric (property field)
+	WithSymmetric(bool) ReferenceTypeAttributesBuilder
+	// WithIsAbstract adds IsAbstract (property field)
+	WithIsAbstract(bool) ReferenceTypeAttributesBuilder
+	// WithInverseName adds InverseName (property field)
+	WithInverseName(LocalizedText) ReferenceTypeAttributesBuilder
+	// WithInverseNameBuilder adds InverseName (property field) which is build by the builder
+	WithInverseNameBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) ReferenceTypeAttributesBuilder
+	// Build builds the ReferenceTypeAttributes or returns an error if something is wrong
+	Build() (ReferenceTypeAttributes, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReferenceTypeAttributes
+}
+
+// NewReferenceTypeAttributesBuilder() creates a ReferenceTypeAttributesBuilder
+func NewReferenceTypeAttributesBuilder() ReferenceTypeAttributesBuilder {
+	return &_ReferenceTypeAttributesBuilder{_ReferenceTypeAttributes: new(_ReferenceTypeAttributes)}
+}
+
+type _ReferenceTypeAttributesBuilder struct {
+	*_ReferenceTypeAttributes
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ReferenceTypeAttributesBuilder) = (*_ReferenceTypeAttributesBuilder)(nil)
+
+func (b *_ReferenceTypeAttributesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ReferenceTypeAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, symmetric bool, isAbstract bool, inverseName LocalizedText) ReferenceTypeAttributesBuilder {
+	return b.WithSpecifiedAttributes(specifiedAttributes).WithDisplayName(displayName).WithDescription(description).WithWriteMask(writeMask).WithUserWriteMask(userWriteMask).WithSymmetric(symmetric).WithIsAbstract(isAbstract).WithInverseName(inverseName)
+}
+
+func (b *_ReferenceTypeAttributesBuilder) WithSpecifiedAttributes(specifiedAttributes uint32) ReferenceTypeAttributesBuilder {
+	b.SpecifiedAttributes = specifiedAttributes
+	return b
+}
+
+func (b *_ReferenceTypeAttributesBuilder) WithDisplayName(displayName LocalizedText) ReferenceTypeAttributesBuilder {
+	b.DisplayName = displayName
+	return b
+}
+
+func (b *_ReferenceTypeAttributesBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ReferenceTypeAttributesBuilder {
+	builder := builderSupplier(b.DisplayName.CreateLocalizedTextBuilder())
+	var err error
+	b.DisplayName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReferenceTypeAttributesBuilder) WithDescription(description LocalizedText) ReferenceTypeAttributesBuilder {
+	b.Description = description
+	return b
+}
+
+func (b *_ReferenceTypeAttributesBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ReferenceTypeAttributesBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
+	var err error
+	b.Description, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReferenceTypeAttributesBuilder) WithWriteMask(writeMask uint32) ReferenceTypeAttributesBuilder {
+	b.WriteMask = writeMask
+	return b
+}
+
+func (b *_ReferenceTypeAttributesBuilder) WithUserWriteMask(userWriteMask uint32) ReferenceTypeAttributesBuilder {
+	b.UserWriteMask = userWriteMask
+	return b
+}
+
+func (b *_ReferenceTypeAttributesBuilder) WithSymmetric(symmetric bool) ReferenceTypeAttributesBuilder {
+	b.Symmetric = symmetric
+	return b
+}
+
+func (b *_ReferenceTypeAttributesBuilder) WithIsAbstract(isAbstract bool) ReferenceTypeAttributesBuilder {
+	b.IsAbstract = isAbstract
+	return b
+}
+
+func (b *_ReferenceTypeAttributesBuilder) WithInverseName(inverseName LocalizedText) ReferenceTypeAttributesBuilder {
+	b.InverseName = inverseName
+	return b
+}
+
+func (b *_ReferenceTypeAttributesBuilder) WithInverseNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ReferenceTypeAttributesBuilder {
+	builder := builderSupplier(b.InverseName.CreateLocalizedTextBuilder())
+	var err error
+	b.InverseName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReferenceTypeAttributesBuilder) Build() (ReferenceTypeAttributes, error) {
+	if b.DisplayName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'displayName' not set"))
+	}
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'description' not set"))
+	}
+	if b.InverseName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'inverseName' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ReferenceTypeAttributes.deepCopy(), nil
+}
+
+func (b *_ReferenceTypeAttributesBuilder) MustBuild() ReferenceTypeAttributes {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ReferenceTypeAttributesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ReferenceTypeAttributesBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ReferenceTypeAttributesBuilder) DeepCopy() any {
+	_copy := b.CreateReferenceTypeAttributesBuilder().(*_ReferenceTypeAttributesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateReferenceTypeAttributesBuilder creates a ReferenceTypeAttributesBuilder
+func (b *_ReferenceTypeAttributes) CreateReferenceTypeAttributesBuilder() ReferenceTypeAttributesBuilder {
+	if b == nil {
+		return NewReferenceTypeAttributesBuilder()
+	}
+	return &_ReferenceTypeAttributesBuilder{_ReferenceTypeAttributes: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -350,6 +556,30 @@ func (m *_ReferenceTypeAttributes) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_ReferenceTypeAttributes) IsReferenceTypeAttributes() {}
+
+func (m *_ReferenceTypeAttributes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReferenceTypeAttributes) deepCopy() *_ReferenceTypeAttributes {
+	if m == nil {
+		return nil
+	}
+	_ReferenceTypeAttributesCopy := &_ReferenceTypeAttributes{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SpecifiedAttributes,
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.Description.DeepCopy().(LocalizedText),
+		m.WriteMask,
+		m.UserWriteMask,
+		m.Symmetric,
+		m.IsAbstract,
+		m.InverseName.DeepCopy().(LocalizedText),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReferenceTypeAttributesCopy
+}
 
 func (m *_ReferenceTypeAttributes) String() string {
 	if m == nil {

@@ -188,14 +188,44 @@ type ExtensionObjectDefinitionBuilder interface {
 		DataTypeDescriptionBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsStructureDescription converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsStructureDescription() interface {
+		StructureDescriptionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsEnumDescription converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsEnumDescription() interface {
+		EnumDescriptionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsSimpleTypeDescription converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsSimpleTypeDescription() interface {
+		SimpleTypeDescriptionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUABinaryFileDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUABinaryFileDataType() interface {
+		UABinaryFileDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsPortableQualifiedName converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsPortableQualifiedName() interface {
 		PortableQualifiedNameBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsPortableNodeId converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPortableNodeId() interface {
+		PortableNodeIdBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsUnsignedRationalNumber converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsUnsignedRationalNumber() interface {
 		UnsignedRationalNumberBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDataSetMetaDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDataSetMetaDataType() interface {
+		DataSetMetaDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsFieldMetaData converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -208,6 +238,11 @@ type ExtensionObjectDefinitionBuilder interface {
 		ConfigurationVersionDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsPublishedDataSetDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPublishedDataSetDataType() interface {
+		PublishedDataSetDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsPublishedDataSetSourceDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsPublishedDataSetSourceDataType() interface {
 		PublishedDataSetSourceDataTypeBuilder
@@ -216,6 +251,21 @@ type ExtensionObjectDefinitionBuilder interface {
 	// AsPublishedVariableDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsPublishedVariableDataType() interface {
 		PublishedVariableDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsPublishedDataItemsDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPublishedDataItemsDataType() interface {
+		PublishedDataItemsDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsPublishedEventsDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPublishedEventsDataType() interface {
+		PublishedEventsDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsPublishedDataSetCustomSourceDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPublishedDataSetCustomSourceDataType() interface {
+		PublishedDataSetCustomSourceDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsDataSetWriterDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -236,6 +286,11 @@ type ExtensionObjectDefinitionBuilder interface {
 	// AsPubSubGroupDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsPubSubGroupDataType() interface {
 		PubSubGroupDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsWriterGroupDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsWriterGroupDataType() interface {
+		WriterGroupDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsWriterGroupTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -263,6 +318,16 @@ type ExtensionObjectDefinitionBuilder interface {
 		NetworkAddressDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsNetworkAddressUrlDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsNetworkAddressUrlDataType() interface {
+		NetworkAddressUrlDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReaderGroupDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReaderGroupDataType() interface {
+		ReaderGroupDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsReaderGroupTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsReaderGroupTransportDataType() interface {
 		ReaderGroupTransportDataTypeBuilder
@@ -271,6 +336,11 @@ type ExtensionObjectDefinitionBuilder interface {
 	// AsReaderGroupMessageDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsReaderGroupMessageDataType() interface {
 		ReaderGroupMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDataSetReaderDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDataSetReaderDataType() interface {
+		DataSetReaderDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsDataSetReaderTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -288,14 +358,34 @@ type ExtensionObjectDefinitionBuilder interface {
 		SubscribedDataSetDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsTargetVariablesDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsTargetVariablesDataType() interface {
+		TargetVariablesDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsFieldTargetDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsFieldTargetDataType() interface {
 		FieldTargetDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsSubscribedDataSetMirrorDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsSubscribedDataSetMirrorDataType() interface {
+		SubscribedDataSetMirrorDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsPubSubConfigurationDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsPubSubConfigurationDataType() interface {
 		PubSubConfigurationDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsStandaloneSubscribedDataSetRefDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsStandaloneSubscribedDataSetRefDataType() interface {
+		StandaloneSubscribedDataSetRefDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsStandaloneSubscribedDataSetDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsStandaloneSubscribedDataSetDataType() interface {
+		StandaloneSubscribedDataSetDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsSecurityGroupDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -308,14 +398,119 @@ type ExtensionObjectDefinitionBuilder interface {
 		PubSubKeyPushTargetDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsPubSubConfiguration2DataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPubSubConfiguration2DataType() interface {
+		PubSubConfiguration2DataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUadpWriterGroupMessageDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUadpWriterGroupMessageDataType() interface {
+		UadpWriterGroupMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUadpDataSetWriterMessageDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUadpDataSetWriterMessageDataType() interface {
+		UadpDataSetWriterMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUadpDataSetReaderMessageDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUadpDataSetReaderMessageDataType() interface {
+		UadpDataSetReaderMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsJsonWriterGroupMessageDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonWriterGroupMessageDataType() interface {
+		JsonWriterGroupMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsJsonDataSetWriterMessageDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonDataSetWriterMessageDataType() interface {
+		JsonDataSetWriterMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsJsonDataSetReaderMessageDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsJsonDataSetReaderMessageDataType() interface {
+		JsonDataSetReaderMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsQosDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsQosDataType() interface {
 		QosDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsTransmitQosDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsTransmitQosDataType() interface {
+		TransmitQosDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsTransmitQosPriorityDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsTransmitQosPriorityDataType() interface {
+		TransmitQosPriorityDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReceiveQosDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReceiveQosDataType() interface {
+		ReceiveQosDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReceiveQosPriorityDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReceiveQosPriorityDataType() interface {
+		ReceiveQosPriorityDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDatagramConnectionTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDatagramConnectionTransportDataType() interface {
+		DatagramConnectionTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDatagramConnectionTransport2DataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDatagramConnectionTransport2DataType() interface {
+		DatagramConnectionTransport2DataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDatagramWriterGroupTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDatagramWriterGroupTransportDataType() interface {
+		DatagramWriterGroupTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDatagramWriterGroupTransport2DataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDatagramWriterGroupTransport2DataType() interface {
+		DatagramWriterGroupTransport2DataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDatagramDataSetReaderTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDatagramDataSetReaderTransportDataType() interface {
+		DatagramDataSetReaderTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsBrokerConnectionTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsBrokerConnectionTransportDataType() interface {
+		BrokerConnectionTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsBrokerWriterGroupTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsBrokerWriterGroupTransportDataType() interface {
+		BrokerWriterGroupTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsBrokerDataSetWriterTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsBrokerDataSetWriterTransportDataType() interface {
+		BrokerDataSetWriterTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsBrokerDataSetReaderTransportDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsBrokerDataSetReaderTransportDataType() interface {
+		BrokerDataSetReaderTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsPubSubConfigurationRefDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsPubSubConfigurationRefDataType() interface {
 		PubSubConfigurationRefDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsPubSubConfigurationValueDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsPubSubConfigurationValueDataType() interface {
+		PubSubConfigurationValueDataTypeBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsAliasNameDataType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -358,6 +553,16 @@ type ExtensionObjectDefinitionBuilder interface {
 		StructureFieldBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsStructureDefinition converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsStructureDefinition() interface {
+		StructureDefinitionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsEnumDefinition converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsEnumDefinition() interface {
+		EnumDefinitionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsArgument converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsArgument() interface {
 		ArgumentBuilder
@@ -366,6 +571,11 @@ type ExtensionObjectDefinitionBuilder interface {
 	// AsEnumValueType converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsEnumValueType() interface {
 		EnumValueTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsEnumField converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsEnumField() interface {
+		EnumFieldBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsOptionSet converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -473,6 +683,11 @@ type ExtensionObjectDefinitionBuilder interface {
 		DiscoveryConfigurationBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsMdnsDiscoveryConfiguration converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsMdnsDiscoveryConfiguration() interface {
+		MdnsDiscoveryConfigurationBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsRegisterServer2Request converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsRegisterServer2Request() interface {
 		RegisterServer2RequestBuilder
@@ -528,6 +743,31 @@ type ExtensionObjectDefinitionBuilder interface {
 		CreateSessionResponseBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsUserIdentityToken converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUserIdentityToken() interface {
+		UserIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsAnonymousIdentityToken converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsAnonymousIdentityToken() interface {
+		AnonymousIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUserNameIdentityToken converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUserNameIdentityToken() interface {
+		UserNameIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsX509IdentityToken converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsX509IdentityToken() interface {
+		X509IdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsIssuedIdentityToken converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsIssuedIdentityToken() interface {
+		IssuedIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsActivateSessionRequest converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsActivateSessionRequest() interface {
 		ActivateSessionRequestBuilder
@@ -563,9 +803,54 @@ type ExtensionObjectDefinitionBuilder interface {
 		NodeAttributesBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsObjectAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsObjectAttributes() interface {
+		ObjectAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsVariableAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsVariableAttributes() interface {
+		VariableAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsMethodAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsMethodAttributes() interface {
+		MethodAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsObjectTypeAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsObjectTypeAttributes() interface {
+		ObjectTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsVariableTypeAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsVariableTypeAttributes() interface {
+		VariableTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReferenceTypeAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReferenceTypeAttributes() interface {
+		ReferenceTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDataTypeAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDataTypeAttributes() interface {
+		DataTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsViewAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsViewAttributes() interface {
+		ViewAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsGenericAttributeValue converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsGenericAttributeValue() interface {
 		GenericAttributeValueBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsGenericAttributes converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsGenericAttributes() interface {
+		GenericAttributesBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsAddNodesItem converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -768,6 +1053,26 @@ type ExtensionObjectDefinitionBuilder interface {
 		FilterOperandBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsElementOperand converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsElementOperand() interface {
+		ElementOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsLiteralOperand converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsLiteralOperand() interface {
+		LiteralOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsAttributeOperand converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsAttributeOperand() interface {
+		AttributeOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsSimpleAttributeOperand converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsSimpleAttributeOperand() interface {
+		SimpleAttributeOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsContentFilterElementResult converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsContentFilterElementResult() interface {
 		ContentFilterElementResultBuilder
@@ -833,6 +1138,36 @@ type ExtensionObjectDefinitionBuilder interface {
 		HistoryReadDetailsBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsReadEventDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReadEventDetails() interface {
+		ReadEventDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReadEventDetails2 converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReadEventDetails2() interface {
+		ReadEventDetails2Builder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReadRawModifiedDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReadRawModifiedDetails() interface {
+		ReadRawModifiedDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReadProcessedDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReadProcessedDetails() interface {
+		ReadProcessedDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReadAtTimeDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReadAtTimeDetails() interface {
+		ReadAtTimeDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsReadAnnotationDataDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsReadAnnotationDataDetails() interface {
+		ReadAnnotationDataDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsHistoryData converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsHistoryData() interface {
 		HistoryDataBuilder
@@ -843,9 +1178,19 @@ type ExtensionObjectDefinitionBuilder interface {
 		ModificationInfoBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsHistoryModifiedData converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsHistoryModifiedData() interface {
+		HistoryModifiedDataBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsHistoryEvent converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsHistoryEvent() interface {
 		HistoryEventBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsHistoryModifiedEvent converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsHistoryModifiedEvent() interface {
+		HistoryModifiedEventBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsHistoryReadRequest converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -876,6 +1221,36 @@ type ExtensionObjectDefinitionBuilder interface {
 	// AsHistoryUpdateDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsHistoryUpdateDetails() interface {
 		HistoryUpdateDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUpdateDataDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUpdateDataDetails() interface {
+		UpdateDataDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUpdateStructureDataDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUpdateStructureDataDetails() interface {
+		UpdateStructureDataDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsUpdateEventDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsUpdateEventDetails() interface {
+		UpdateEventDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDeleteRawModifiedDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDeleteRawModifiedDetails() interface {
+		DeleteRawModifiedDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDeleteAtTimeDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDeleteAtTimeDetails() interface {
+		DeleteAtTimeDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsDeleteEventDetails converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDeleteEventDetails() interface {
+		DeleteEventDetailsBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsHistoryUpdateResult converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -918,14 +1293,39 @@ type ExtensionObjectDefinitionBuilder interface {
 		MonitoringFilterBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsDataChangeFilter converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDataChangeFilter() interface {
+		DataChangeFilterBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsEventFilter converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsEventFilter() interface {
+		EventFilterBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsAggregateConfiguration converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsAggregateConfiguration() interface {
 		AggregateConfigurationBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsAggregateFilter converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsAggregateFilter() interface {
+		AggregateFilterBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsMonitoringFilterResult converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsMonitoringFilterResult() interface {
 		MonitoringFilterResultBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsEventFilterResult converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsEventFilterResult() interface {
+		EventFilterResultBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsAggregateFilterResult converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsAggregateFilterResult() interface {
+		AggregateFilterResultBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsMonitoringParameters converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -1043,9 +1443,19 @@ type ExtensionObjectDefinitionBuilder interface {
 		NotificationDataBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
+	// AsDataChangeNotification converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsDataChangeNotification() interface {
+		DataChangeNotificationBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
 	// AsMonitoredItemNotification converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsMonitoredItemNotification() interface {
 		MonitoredItemNotificationBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsEventNotificationList converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsEventNotificationList() interface {
+		EventNotificationListBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsEventFieldList converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -1056,6 +1466,11 @@ type ExtensionObjectDefinitionBuilder interface {
 	// AsHistoryEventFieldList converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsHistoryEventFieldList() interface {
 		HistoryEventFieldListBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}
+	// AsStatusChangeNotification converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
+	AsStatusChangeNotification() interface {
+		StatusChangeNotificationBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// AsSubscriptionAcknowledgement converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
@@ -1221,26 +1636,6 @@ type ExtensionObjectDefinitionBuilder interface {
 	// AsAnnotation converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
 	AsAnnotation() interface {
 		AnnotationBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}
-	// AsDataChangeNotification converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
-	AsDataChangeNotification() interface {
-		DataChangeNotificationBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}
-	// AsEventNotificationList converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
-	AsEventNotificationList() interface {
-		EventNotificationListBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}
-	// AsStatusChangeNotification converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
-	AsStatusChangeNotification() interface {
-		StatusChangeNotificationBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}
-	// AsUserIdentityToken converts this build to a subType of ExtensionObjectDefinition. It is always possible to return to current builder using Done()
-	AsUserIdentityToken() interface {
-		UserIdentityTokenBuilder
 		Done() ExtensionObjectDefinitionBuilder
 	}
 	// Build builds the ExtensionObjectDefinition or returns an error if something is wrong
@@ -1629,6 +2024,70 @@ func (b *_ExtensionObjectDefinitionBuilder) AsDataTypeDescription() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsStructureDescription() interface {
+	StructureDescriptionBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		StructureDescriptionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewStructureDescriptionBuilder().(*_StructureDescriptionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsEnumDescription() interface {
+	EnumDescriptionBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EnumDescriptionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEnumDescriptionBuilder().(*_EnumDescriptionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsSimpleTypeDescription() interface {
+	SimpleTypeDescriptionBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SimpleTypeDescriptionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSimpleTypeDescriptionBuilder().(*_SimpleTypeDescriptionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUABinaryFileDataType() interface {
+	UABinaryFileDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UABinaryFileDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUABinaryFileDataTypeBuilder().(*_UABinaryFileDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsPortableQualifiedName() interface {
 	PortableQualifiedNameBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -1645,6 +2104,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsPortableQualifiedName() interface 
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsPortableNodeId() interface {
+	PortableNodeIdBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PortableNodeIdBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPortableNodeIdBuilder().(*_PortableNodeIdBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsUnsignedRationalNumber() interface {
 	UnsignedRationalNumberBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -1656,6 +2131,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsUnsignedRationalNumber() interface
 		return cb
 	}
 	cb := NewUnsignedRationalNumberBuilder().(*_UnsignedRationalNumberBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDataSetMetaDataType() interface {
+	DataSetMetaDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DataSetMetaDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDataSetMetaDataTypeBuilder().(*_DataSetMetaDataTypeBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -1693,6 +2184,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsConfigurationVersionDataType() int
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsPublishedDataSetDataType() interface {
+	PublishedDataSetDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PublishedDataSetDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPublishedDataSetDataTypeBuilder().(*_PublishedDataSetDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsPublishedDataSetSourceDataType() interface {
 	PublishedDataSetSourceDataTypeBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -1720,6 +2227,54 @@ func (b *_ExtensionObjectDefinitionBuilder) AsPublishedVariableDataType() interf
 		return cb
 	}
 	cb := NewPublishedVariableDataTypeBuilder().(*_PublishedVariableDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsPublishedDataItemsDataType() interface {
+	PublishedDataItemsDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PublishedDataItemsDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPublishedDataItemsDataTypeBuilder().(*_PublishedDataItemsDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsPublishedEventsDataType() interface {
+	PublishedEventsDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PublishedEventsDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPublishedEventsDataTypeBuilder().(*_PublishedEventsDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsPublishedDataSetCustomSourceDataType() interface {
+	PublishedDataSetCustomSourceDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PublishedDataSetCustomSourceDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPublishedDataSetCustomSourceDataTypeBuilder().(*_PublishedDataSetCustomSourceDataTypeBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -1784,6 +2339,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsPubSubGroupDataType() interface {
 		return cb
 	}
 	cb := NewPubSubGroupDataTypeBuilder().(*_PubSubGroupDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsWriterGroupDataType() interface {
+	WriterGroupDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		WriterGroupDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewWriterGroupDataTypeBuilder().(*_WriterGroupDataTypeBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -1869,6 +2440,38 @@ func (b *_ExtensionObjectDefinitionBuilder) AsNetworkAddressDataType() interface
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsNetworkAddressUrlDataType() interface {
+	NetworkAddressUrlDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		NetworkAddressUrlDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewNetworkAddressUrlDataTypeBuilder().(*_NetworkAddressUrlDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReaderGroupDataType() interface {
+	ReaderGroupDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReaderGroupDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReaderGroupDataTypeBuilder().(*_ReaderGroupDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsReaderGroupTransportDataType() interface {
 	ReaderGroupTransportDataTypeBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -1896,6 +2499,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsReaderGroupMessageDataType() inter
 		return cb
 	}
 	cb := NewReaderGroupMessageDataTypeBuilder().(*_ReaderGroupMessageDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDataSetReaderDataType() interface {
+	DataSetReaderDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DataSetReaderDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDataSetReaderDataTypeBuilder().(*_DataSetReaderDataTypeBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -1949,6 +2568,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsSubscribedDataSetDataType() interf
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsTargetVariablesDataType() interface {
+	TargetVariablesDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TargetVariablesDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTargetVariablesDataTypeBuilder().(*_TargetVariablesDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsFieldTargetDataType() interface {
 	FieldTargetDataTypeBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -1965,6 +2600,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsFieldTargetDataType() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsSubscribedDataSetMirrorDataType() interface {
+	SubscribedDataSetMirrorDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SubscribedDataSetMirrorDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSubscribedDataSetMirrorDataTypeBuilder().(*_SubscribedDataSetMirrorDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsPubSubConfigurationDataType() interface {
 	PubSubConfigurationDataTypeBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -1976,6 +2627,38 @@ func (b *_ExtensionObjectDefinitionBuilder) AsPubSubConfigurationDataType() inte
 		return cb
 	}
 	cb := NewPubSubConfigurationDataTypeBuilder().(*_PubSubConfigurationDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsStandaloneSubscribedDataSetRefDataType() interface {
+	StandaloneSubscribedDataSetRefDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		StandaloneSubscribedDataSetRefDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewStandaloneSubscribedDataSetRefDataTypeBuilder().(*_StandaloneSubscribedDataSetRefDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsStandaloneSubscribedDataSetDataType() interface {
+	StandaloneSubscribedDataSetDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		StandaloneSubscribedDataSetDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewStandaloneSubscribedDataSetDataTypeBuilder().(*_StandaloneSubscribedDataSetDataTypeBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -2013,6 +2696,118 @@ func (b *_ExtensionObjectDefinitionBuilder) AsPubSubKeyPushTargetDataType() inte
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsPubSubConfiguration2DataType() interface {
+	PubSubConfiguration2DataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PubSubConfiguration2DataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPubSubConfiguration2DataTypeBuilder().(*_PubSubConfiguration2DataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUadpWriterGroupMessageDataType() interface {
+	UadpWriterGroupMessageDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UadpWriterGroupMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUadpWriterGroupMessageDataTypeBuilder().(*_UadpWriterGroupMessageDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUadpDataSetWriterMessageDataType() interface {
+	UadpDataSetWriterMessageDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UadpDataSetWriterMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUadpDataSetWriterMessageDataTypeBuilder().(*_UadpDataSetWriterMessageDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUadpDataSetReaderMessageDataType() interface {
+	UadpDataSetReaderMessageDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UadpDataSetReaderMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUadpDataSetReaderMessageDataTypeBuilder().(*_UadpDataSetReaderMessageDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonWriterGroupMessageDataType() interface {
+	JsonWriterGroupMessageDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		JsonWriterGroupMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewJsonWriterGroupMessageDataTypeBuilder().(*_JsonWriterGroupMessageDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonDataSetWriterMessageDataType() interface {
+	JsonDataSetWriterMessageDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		JsonDataSetWriterMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewJsonDataSetWriterMessageDataTypeBuilder().(*_JsonDataSetWriterMessageDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsJsonDataSetReaderMessageDataType() interface {
+	JsonDataSetReaderMessageDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		JsonDataSetReaderMessageDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewJsonDataSetReaderMessageDataTypeBuilder().(*_JsonDataSetReaderMessageDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsQosDataType() interface {
 	QosDataTypeBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -2029,6 +2824,214 @@ func (b *_ExtensionObjectDefinitionBuilder) AsQosDataType() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsTransmitQosDataType() interface {
+	TransmitQosDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TransmitQosDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTransmitQosDataTypeBuilder().(*_TransmitQosDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsTransmitQosPriorityDataType() interface {
+	TransmitQosPriorityDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TransmitQosPriorityDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTransmitQosPriorityDataTypeBuilder().(*_TransmitQosPriorityDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReceiveQosDataType() interface {
+	ReceiveQosDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReceiveQosDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReceiveQosDataTypeBuilder().(*_ReceiveQosDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReceiveQosPriorityDataType() interface {
+	ReceiveQosPriorityDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReceiveQosPriorityDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReceiveQosPriorityDataTypeBuilder().(*_ReceiveQosPriorityDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDatagramConnectionTransportDataType() interface {
+	DatagramConnectionTransportDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DatagramConnectionTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDatagramConnectionTransportDataTypeBuilder().(*_DatagramConnectionTransportDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDatagramConnectionTransport2DataType() interface {
+	DatagramConnectionTransport2DataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DatagramConnectionTransport2DataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDatagramConnectionTransport2DataTypeBuilder().(*_DatagramConnectionTransport2DataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDatagramWriterGroupTransportDataType() interface {
+	DatagramWriterGroupTransportDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DatagramWriterGroupTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDatagramWriterGroupTransportDataTypeBuilder().(*_DatagramWriterGroupTransportDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDatagramWriterGroupTransport2DataType() interface {
+	DatagramWriterGroupTransport2DataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DatagramWriterGroupTransport2DataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDatagramWriterGroupTransport2DataTypeBuilder().(*_DatagramWriterGroupTransport2DataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDatagramDataSetReaderTransportDataType() interface {
+	DatagramDataSetReaderTransportDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DatagramDataSetReaderTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDatagramDataSetReaderTransportDataTypeBuilder().(*_DatagramDataSetReaderTransportDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsBrokerConnectionTransportDataType() interface {
+	BrokerConnectionTransportDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BrokerConnectionTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBrokerConnectionTransportDataTypeBuilder().(*_BrokerConnectionTransportDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsBrokerWriterGroupTransportDataType() interface {
+	BrokerWriterGroupTransportDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BrokerWriterGroupTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBrokerWriterGroupTransportDataTypeBuilder().(*_BrokerWriterGroupTransportDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsBrokerDataSetWriterTransportDataType() interface {
+	BrokerDataSetWriterTransportDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BrokerDataSetWriterTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBrokerDataSetWriterTransportDataTypeBuilder().(*_BrokerDataSetWriterTransportDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsBrokerDataSetReaderTransportDataType() interface {
+	BrokerDataSetReaderTransportDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BrokerDataSetReaderTransportDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBrokerDataSetReaderTransportDataTypeBuilder().(*_BrokerDataSetReaderTransportDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsPubSubConfigurationRefDataType() interface {
 	PubSubConfigurationRefDataTypeBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -2040,6 +3043,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsPubSubConfigurationRefDataType() i
 		return cb
 	}
 	cb := NewPubSubConfigurationRefDataTypeBuilder().(*_PubSubConfigurationRefDataTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsPubSubConfigurationValueDataType() interface {
+	PubSubConfigurationValueDataTypeBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PubSubConfigurationValueDataTypeBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPubSubConfigurationValueDataTypeBuilder().(*_PubSubConfigurationValueDataTypeBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -2173,6 +3192,38 @@ func (b *_ExtensionObjectDefinitionBuilder) AsStructureField() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsStructureDefinition() interface {
+	StructureDefinitionBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		StructureDefinitionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewStructureDefinitionBuilder().(*_StructureDefinitionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsEnumDefinition() interface {
+	EnumDefinitionBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EnumDefinitionBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEnumDefinitionBuilder().(*_EnumDefinitionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsArgument() interface {
 	ArgumentBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -2200,6 +3251,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsEnumValueType() interface {
 		return cb
 	}
 	cb := NewEnumValueTypeBuilder().(*_EnumValueTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsEnumField() interface {
+	EnumFieldBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EnumFieldBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEnumFieldBuilder().(*_EnumFieldBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -2541,6 +3608,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsDiscoveryConfiguration() interface
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsMdnsDiscoveryConfiguration() interface {
+	MdnsDiscoveryConfigurationBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		MdnsDiscoveryConfigurationBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewMdnsDiscoveryConfigurationBuilder().(*_MdnsDiscoveryConfigurationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsRegisterServer2Request() interface {
 	RegisterServer2RequestBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -2717,6 +3800,86 @@ func (b *_ExtensionObjectDefinitionBuilder) AsCreateSessionResponse() interface 
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsUserIdentityToken() interface {
+	UserIdentityTokenBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UserIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUserIdentityTokenBuilder().(*_UserIdentityTokenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsAnonymousIdentityToken() interface {
+	AnonymousIdentityTokenBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AnonymousIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAnonymousIdentityTokenBuilder().(*_AnonymousIdentityTokenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUserNameIdentityToken() interface {
+	UserNameIdentityTokenBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UserNameIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUserNameIdentityTokenBuilder().(*_UserNameIdentityTokenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsX509IdentityToken() interface {
+	X509IdentityTokenBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		X509IdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewX509IdentityTokenBuilder().(*_X509IdentityTokenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsIssuedIdentityToken() interface {
+	IssuedIdentityTokenBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IssuedIdentityTokenBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIssuedIdentityTokenBuilder().(*_IssuedIdentityTokenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsActivateSessionRequest() interface {
 	ActivateSessionRequestBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -2829,6 +3992,134 @@ func (b *_ExtensionObjectDefinitionBuilder) AsNodeAttributes() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsObjectAttributes() interface {
+	ObjectAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ObjectAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewObjectAttributesBuilder().(*_ObjectAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsVariableAttributes() interface {
+	VariableAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariableAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariableAttributesBuilder().(*_VariableAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsMethodAttributes() interface {
+	MethodAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		MethodAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewMethodAttributesBuilder().(*_MethodAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsObjectTypeAttributes() interface {
+	ObjectTypeAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ObjectTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewObjectTypeAttributesBuilder().(*_ObjectTypeAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsVariableTypeAttributes() interface {
+	VariableTypeAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariableTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariableTypeAttributesBuilder().(*_VariableTypeAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReferenceTypeAttributes() interface {
+	ReferenceTypeAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReferenceTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReferenceTypeAttributesBuilder().(*_ReferenceTypeAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDataTypeAttributes() interface {
+	DataTypeAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DataTypeAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDataTypeAttributesBuilder().(*_DataTypeAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsViewAttributes() interface {
+	ViewAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ViewAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewViewAttributesBuilder().(*_ViewAttributesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsGenericAttributeValue() interface {
 	GenericAttributeValueBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -2840,6 +4131,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsGenericAttributeValue() interface 
 		return cb
 	}
 	cb := NewGenericAttributeValueBuilder().(*_GenericAttributeValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsGenericAttributes() interface {
+	GenericAttributesBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		GenericAttributesBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewGenericAttributesBuilder().(*_GenericAttributesBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -3485,6 +4792,70 @@ func (b *_ExtensionObjectDefinitionBuilder) AsFilterOperand() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsElementOperand() interface {
+	ElementOperandBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ElementOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewElementOperandBuilder().(*_ElementOperandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsLiteralOperand() interface {
+	LiteralOperandBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LiteralOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLiteralOperandBuilder().(*_LiteralOperandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsAttributeOperand() interface {
+	AttributeOperandBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AttributeOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAttributeOperandBuilder().(*_AttributeOperandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsSimpleAttributeOperand() interface {
+	SimpleAttributeOperandBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SimpleAttributeOperandBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSimpleAttributeOperandBuilder().(*_SimpleAttributeOperandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsContentFilterElementResult() interface {
 	ContentFilterElementResultBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -3693,6 +5064,102 @@ func (b *_ExtensionObjectDefinitionBuilder) AsHistoryReadDetails() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsReadEventDetails() interface {
+	ReadEventDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReadEventDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReadEventDetailsBuilder().(*_ReadEventDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReadEventDetails2() interface {
+	ReadEventDetails2Builder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReadEventDetails2Builder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReadEventDetails2Builder().(*_ReadEventDetails2Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReadRawModifiedDetails() interface {
+	ReadRawModifiedDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReadRawModifiedDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReadRawModifiedDetailsBuilder().(*_ReadRawModifiedDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReadProcessedDetails() interface {
+	ReadProcessedDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReadProcessedDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReadProcessedDetailsBuilder().(*_ReadProcessedDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReadAtTimeDetails() interface {
+	ReadAtTimeDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReadAtTimeDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReadAtTimeDetailsBuilder().(*_ReadAtTimeDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsReadAnnotationDataDetails() interface {
+	ReadAnnotationDataDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReadAnnotationDataDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReadAnnotationDataDetailsBuilder().(*_ReadAnnotationDataDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsHistoryData() interface {
 	HistoryDataBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -3725,6 +5192,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsModificationInfo() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsHistoryModifiedData() interface {
+	HistoryModifiedDataBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		HistoryModifiedDataBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewHistoryModifiedDataBuilder().(*_HistoryModifiedDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsHistoryEvent() interface {
 	HistoryEventBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -3736,6 +5219,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsHistoryEvent() interface {
 		return cb
 	}
 	cb := NewHistoryEventBuilder().(*_HistoryEventBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsHistoryModifiedEvent() interface {
+	HistoryModifiedEventBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		HistoryModifiedEventBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewHistoryModifiedEventBuilder().(*_HistoryModifiedEventBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -3832,6 +5331,102 @@ func (b *_ExtensionObjectDefinitionBuilder) AsHistoryUpdateDetails() interface {
 		return cb
 	}
 	cb := NewHistoryUpdateDetailsBuilder().(*_HistoryUpdateDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUpdateDataDetails() interface {
+	UpdateDataDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UpdateDataDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUpdateDataDetailsBuilder().(*_UpdateDataDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUpdateStructureDataDetails() interface {
+	UpdateStructureDataDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UpdateStructureDataDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUpdateStructureDataDetailsBuilder().(*_UpdateStructureDataDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsUpdateEventDetails() interface {
+	UpdateEventDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UpdateEventDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUpdateEventDetailsBuilder().(*_UpdateEventDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDeleteRawModifiedDetails() interface {
+	DeleteRawModifiedDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DeleteRawModifiedDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDeleteRawModifiedDetailsBuilder().(*_DeleteRawModifiedDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDeleteAtTimeDetails() interface {
+	DeleteAtTimeDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DeleteAtTimeDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDeleteAtTimeDetailsBuilder().(*_DeleteAtTimeDetailsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsDeleteEventDetails() interface {
+	DeleteEventDetailsBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DeleteEventDetailsBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDeleteEventDetailsBuilder().(*_DeleteEventDetailsBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -3965,6 +5560,38 @@ func (b *_ExtensionObjectDefinitionBuilder) AsMonitoringFilter() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsDataChangeFilter() interface {
+	DataChangeFilterBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DataChangeFilterBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDataChangeFilterBuilder().(*_DataChangeFilterBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsEventFilter() interface {
+	EventFilterBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EventFilterBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEventFilterBuilder().(*_EventFilterBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsAggregateConfiguration() interface {
 	AggregateConfigurationBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -3981,6 +5608,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsAggregateConfiguration() interface
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsAggregateFilter() interface {
+	AggregateFilterBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AggregateFilterBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAggregateFilterBuilder().(*_AggregateFilterBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsMonitoringFilterResult() interface {
 	MonitoringFilterResultBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -3992,6 +5635,38 @@ func (b *_ExtensionObjectDefinitionBuilder) AsMonitoringFilterResult() interface
 		return cb
 	}
 	cb := NewMonitoringFilterResultBuilder().(*_MonitoringFilterResultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsEventFilterResult() interface {
+	EventFilterResultBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EventFilterResultBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEventFilterResultBuilder().(*_EventFilterResultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsAggregateFilterResult() interface {
+	AggregateFilterResultBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AggregateFilterResultBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAggregateFilterResultBuilder().(*_AggregateFilterResultBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -4365,6 +6040,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsNotificationData() interface {
 	return cb
 }
 
+func (b *_ExtensionObjectDefinitionBuilder) AsDataChangeNotification() interface {
+	DataChangeNotificationBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DataChangeNotificationBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDataChangeNotificationBuilder().(*_DataChangeNotificationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
 func (b *_ExtensionObjectDefinitionBuilder) AsMonitoredItemNotification() interface {
 	MonitoredItemNotificationBuilder
 	Done() ExtensionObjectDefinitionBuilder
@@ -4376,6 +6067,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsMonitoredItemNotification() interf
 		return cb
 	}
 	cb := NewMonitoredItemNotificationBuilder().(*_MonitoredItemNotificationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsEventNotificationList() interface {
+	EventNotificationListBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EventNotificationListBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEventNotificationListBuilder().(*_EventNotificationListBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -4408,6 +6115,22 @@ func (b *_ExtensionObjectDefinitionBuilder) AsHistoryEventFieldList() interface 
 		return cb
 	}
 	cb := NewHistoryEventFieldListBuilder().(*_HistoryEventFieldListBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ExtensionObjectDefinitionBuilder) AsStatusChangeNotification() interface {
+	StatusChangeNotificationBuilder
+	Done() ExtensionObjectDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		StatusChangeNotificationBuilder
+		Done() ExtensionObjectDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewStatusChangeNotificationBuilder().(*_StatusChangeNotificationBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
@@ -4936,70 +6659,6 @@ func (b *_ExtensionObjectDefinitionBuilder) AsAnnotation() interface {
 		return cb
 	}
 	cb := NewAnnotationBuilder().(*_AnnotationBuilder)
-	cb.parentBuilder = b
-	b.childBuilder = cb
-	return cb
-}
-
-func (b *_ExtensionObjectDefinitionBuilder) AsDataChangeNotification() interface {
-	DataChangeNotificationBuilder
-	Done() ExtensionObjectDefinitionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DataChangeNotificationBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}); ok {
-		return cb
-	}
-	cb := NewDataChangeNotificationBuilder().(*_DataChangeNotificationBuilder)
-	cb.parentBuilder = b
-	b.childBuilder = cb
-	return cb
-}
-
-func (b *_ExtensionObjectDefinitionBuilder) AsEventNotificationList() interface {
-	EventNotificationListBuilder
-	Done() ExtensionObjectDefinitionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		EventNotificationListBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}); ok {
-		return cb
-	}
-	cb := NewEventNotificationListBuilder().(*_EventNotificationListBuilder)
-	cb.parentBuilder = b
-	b.childBuilder = cb
-	return cb
-}
-
-func (b *_ExtensionObjectDefinitionBuilder) AsStatusChangeNotification() interface {
-	StatusChangeNotificationBuilder
-	Done() ExtensionObjectDefinitionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		StatusChangeNotificationBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}); ok {
-		return cb
-	}
-	cb := NewStatusChangeNotificationBuilder().(*_StatusChangeNotificationBuilder)
-	cb.parentBuilder = b
-	b.childBuilder = cb
-	return cb
-}
-
-func (b *_ExtensionObjectDefinitionBuilder) AsUserIdentityToken() interface {
-	UserIdentityTokenBuilder
-	Done() ExtensionObjectDefinitionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		UserIdentityTokenBuilder
-		Done() ExtensionObjectDefinitionBuilder
-	}); ok {
-		return cb
-	}
-	cb := NewUserIdentityTokenBuilder().(*_UserIdentityTokenBuilder)
 	cb.parentBuilder = b
 	b.childBuilder = cb
 	return cb
