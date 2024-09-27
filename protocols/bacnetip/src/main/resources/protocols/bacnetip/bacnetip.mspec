@@ -2096,7 +2096,7 @@
             [simple   BACnetProgramRequestTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                                 programChange                   ]
         ]
-        ['5'  *ProgramChange(uint 8 peekedTagNumber)
+        ['5'  *ProgramState(uint 8 peekedTagNumber)
             [simple   BACnetProgramStateTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                                 programState                    ]
         ]
@@ -2120,7 +2120,7 @@
             [simple   BACnetEngineeringUnitsTagged('peekedTagNumber', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                                 units                           ]
         ]
-        ['11'  *ExtendedValue(uint 8 peekedTagNumber)
+        ['11'  *UnsignedValue(uint 8 peekedTagNumber)
             [simple   BACnetContextTagUnsignedInteger('peekedTagNumber', 'BACnetDataType.UNSIGNED_INTEGER')
                                 unsignedValue                   ]
         ]
@@ -5266,10 +5266,6 @@
         [*, 'TRACE_FLAG', '1'                           *TraceFlag
             [simple   BACnetApplicationTagBoolean                               traceFlag                               ]
             [virtual  BACnetApplicationTagBoolean                               actualValue 'traceFlag'                 ]
-        ]
-        ['LIGHTING_OUTPUT','TRACKING_VALUE', '4'        *LightingOutputTrackingValue
-            [simple   BACnetApplicationTagReal                                  trackingValue                           ]
-            [virtual  BACnetApplicationTagReal                                  actualValue 'trackingValue'             ]
         ]
         ['LIGHTING_OUTPUT','TRACKING_VALUE', '4'        *LightingOutputTrackingValue
             [simple   BACnetApplicationTagReal                                  trackingValue                           ]
