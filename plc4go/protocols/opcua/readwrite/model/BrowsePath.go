@@ -93,6 +93,8 @@ type BrowsePathBuilder interface {
 	WithStartingNodeBuilder(func(NodeIdBuilder) NodeIdBuilder) BrowsePathBuilder
 	// WithRelativePath adds RelativePath (property field)
 	WithRelativePath(ExtensionObjectDefinition) BrowsePathBuilder
+	// WithRelativePathBuilder adds RelativePath (property field) which is build by the builder
+	WithRelativePathBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowsePathBuilder
 	// Build builds the BrowsePath or returns an error if something is wrong
 	Build() (BrowsePath, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,75 +109,107 @@ func NewBrowsePathBuilder() BrowsePathBuilder {
 type _BrowsePathBuilder struct {
 	*_BrowsePath
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BrowsePathBuilder) = (*_BrowsePathBuilder)(nil)
 
-func (m *_BrowsePathBuilder) WithMandatoryFields(startingNode NodeId, relativePath ExtensionObjectDefinition) BrowsePathBuilder {
-	return m.WithStartingNode(startingNode).WithRelativePath(relativePath)
+func (b *_BrowsePathBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_BrowsePathBuilder) WithStartingNode(startingNode NodeId) BrowsePathBuilder {
-	m.StartingNode = startingNode
-	return m
+func (b *_BrowsePathBuilder) WithMandatoryFields(startingNode NodeId, relativePath ExtensionObjectDefinition) BrowsePathBuilder {
+	return b.WithStartingNode(startingNode).WithRelativePath(relativePath)
 }
 
-func (m *_BrowsePathBuilder) WithStartingNodeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) BrowsePathBuilder {
-	builder := builderSupplier(m.StartingNode.CreateNodeIdBuilder())
+func (b *_BrowsePathBuilder) WithStartingNode(startingNode NodeId) BrowsePathBuilder {
+	b.StartingNode = startingNode
+	return b
+}
+
+func (b *_BrowsePathBuilder) WithStartingNodeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) BrowsePathBuilder {
+	builder := builderSupplier(b.StartingNode.CreateNodeIdBuilder())
 	var err error
-	m.StartingNode, err = builder.Build()
+	b.StartingNode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BrowsePathBuilder) WithRelativePath(relativePath ExtensionObjectDefinition) BrowsePathBuilder {
-	m.RelativePath = relativePath
-	return m
+func (b *_BrowsePathBuilder) WithRelativePath(relativePath ExtensionObjectDefinition) BrowsePathBuilder {
+	b.RelativePath = relativePath
+	return b
 }
 
-func (m *_BrowsePathBuilder) Build() (BrowsePath, error) {
-	if m.StartingNode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BrowsePathBuilder) WithRelativePathBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowsePathBuilder {
+	builder := builderSupplier(b.RelativePath.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RelativePath, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'startingNode' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.RelativePath == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'relativePath' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BrowsePath.deepCopy(), nil
+	return b
 }
 
-func (m *_BrowsePathBuilder) MustBuild() BrowsePath {
-	build, err := m.Build()
+func (b *_BrowsePathBuilder) Build() (BrowsePath, error) {
+	if b.StartingNode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'startingNode' not set"))
+	}
+	if b.RelativePath == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'relativePath' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BrowsePath.deepCopy(), nil
+}
+
+func (b *_BrowsePathBuilder) MustBuild() BrowsePath {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BrowsePathBuilder) DeepCopy() any {
-	return m.CreateBrowsePathBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BrowsePathBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BrowsePathBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_BrowsePathBuilder) DeepCopy() any {
+	_copy := b.CreateBrowsePathBuilder().(*_BrowsePathBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBrowsePathBuilder creates a BrowsePathBuilder
-func (m *_BrowsePath) CreateBrowsePathBuilder() BrowsePathBuilder {
-	if m == nil {
+func (b *_BrowsePath) CreateBrowsePathBuilder() BrowsePathBuilder {
+	if b == nil {
 		return NewBrowsePathBuilder()
 	}
-	return &_BrowsePathBuilder{_BrowsePath: m.deepCopy()}
+	return &_BrowsePathBuilder{_BrowsePath: b.deepCopy()}
 }
 
 ///////////////////////

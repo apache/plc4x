@@ -153,184 +153,203 @@ func NewBACnetNotificationParametersUnsignedOutOfRangeBuilder() BACnetNotificati
 type _BACnetNotificationParametersUnsignedOutOfRangeBuilder struct {
 	*_BACnetNotificationParametersUnsignedOutOfRange
 
+	parentBuilder *_BACnetNotificationParametersBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersUnsignedOutOfRangeBuilder) = (*_BACnetNotificationParametersUnsignedOutOfRangeBuilder)(nil)
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagUnsignedInteger, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagUnsignedInteger, exceededLimit BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
-	return m.WithInnerOpeningTag(innerOpeningTag).WithExceedingValue(exceedingValue).WithStatusFlags(statusFlags).WithDeadband(deadband).WithExceededLimit(exceededLimit).WithInnerClosingTag(innerClosingTag)
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) setParent(contract BACnetNotificationParametersContract) {
+	b.BACnetNotificationParametersContract = contract
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
-	m.InnerOpeningTag = innerOpeningTag
-	return m
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagUnsignedInteger, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagUnsignedInteger, exceededLimit BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithExceedingValue(exceedingValue).WithStatusFlags(statusFlags).WithDeadband(deadband).WithExceededLimit(exceededLimit).WithInnerClosingTag(innerClosingTag)
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
-	builder := builderSupplier(m.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.InnerOpeningTag, err = builder.Build()
+	b.InnerOpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithExceedingValue(exceedingValue BACnetContextTagUnsignedInteger) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
-	m.ExceedingValue = exceedingValue
-	return m
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithExceedingValue(exceedingValue BACnetContextTagUnsignedInteger) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
+	b.ExceedingValue = exceedingValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithExceedingValueBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
-	builder := builderSupplier(m.ExceedingValue.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithExceedingValueBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
+	builder := builderSupplier(b.ExceedingValue.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.ExceedingValue, err = builder.Build()
+	b.ExceedingValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
-	m.StatusFlags = statusFlags
-	return m
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
+	b.StatusFlags = statusFlags
+	return b
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
-	builder := builderSupplier(m.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
+	builder := builderSupplier(b.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
 	var err error
-	m.StatusFlags, err = builder.Build()
+	b.StatusFlags, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithDeadband(deadband BACnetContextTagUnsignedInteger) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
-	m.Deadband = deadband
-	return m
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithDeadband(deadband BACnetContextTagUnsignedInteger) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
+	b.Deadband = deadband
+	return b
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithDeadbandBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
-	builder := builderSupplier(m.Deadband.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithDeadbandBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
+	builder := builderSupplier(b.Deadband.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.Deadband, err = builder.Build()
+	b.Deadband, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithExceededLimit(exceededLimit BACnetContextTagUnsignedInteger) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
-	m.ExceededLimit = exceededLimit
-	return m
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithExceededLimit(exceededLimit BACnetContextTagUnsignedInteger) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
+	b.ExceededLimit = exceededLimit
+	return b
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithExceededLimitBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
-	builder := builderSupplier(m.ExceededLimit.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithExceededLimitBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
+	builder := builderSupplier(b.ExceededLimit.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.ExceededLimit, err = builder.Build()
+	b.ExceededLimit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
-	m.InnerClosingTag = innerClosingTag
-	return m
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
-	builder := builderSupplier(m.InnerClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersUnsignedOutOfRangeBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.InnerClosingTag, err = builder.Build()
+	b.InnerClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) Build() (BACnetNotificationParametersUnsignedOutOfRange, error) {
-	if m.InnerOpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) Build() (BACnetNotificationParametersUnsignedOutOfRange, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
 	}
-	if m.ExceedingValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ExceedingValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'exceedingValue' not set"))
+		b.err.Append(errors.New("mandatory field 'exceedingValue' not set"))
 	}
-	if m.StatusFlags == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.StatusFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusFlags' not set"))
+		b.err.Append(errors.New("mandatory field 'statusFlags' not set"))
 	}
-	if m.Deadband == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Deadband == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'deadband' not set"))
+		b.err.Append(errors.New("mandatory field 'deadband' not set"))
 	}
-	if m.ExceededLimit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ExceededLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'exceededLimit' not set"))
+		b.err.Append(errors.New("mandatory field 'exceededLimit' not set"))
 	}
-	if m.InnerClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNotificationParametersUnsignedOutOfRange.deepCopy(), nil
+	return b._BACnetNotificationParametersUnsignedOutOfRange.deepCopy(), nil
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) MustBuild() BACnetNotificationParametersUnsignedOutOfRange {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) MustBuild() BACnetNotificationParametersUnsignedOutOfRange {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersUnsignedOutOfRangeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) Done() BACnetNotificationParametersBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) buildForBACnetNotificationParameters() (BACnetNotificationParameters, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersUnsignedOutOfRangeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersUnsignedOutOfRangeBuilder().(*_BACnetNotificationParametersUnsignedOutOfRangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersUnsignedOutOfRangeBuilder creates a BACnetNotificationParametersUnsignedOutOfRangeBuilder
-func (m *_BACnetNotificationParametersUnsignedOutOfRange) CreateBACnetNotificationParametersUnsignedOutOfRangeBuilder() BACnetNotificationParametersUnsignedOutOfRangeBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersUnsignedOutOfRange) CreateBACnetNotificationParametersUnsignedOutOfRangeBuilder() BACnetNotificationParametersUnsignedOutOfRangeBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersUnsignedOutOfRangeBuilder()
 	}
-	return &_BACnetNotificationParametersUnsignedOutOfRangeBuilder{_BACnetNotificationParametersUnsignedOutOfRange: m.deepCopy()}
+	return &_BACnetNotificationParametersUnsignedOutOfRangeBuilder{_BACnetNotificationParametersUnsignedOutOfRange: b.deepCopy()}
 }
 
 ///////////////////////

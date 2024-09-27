@@ -93,45 +93,64 @@ func NewS7ParameterWriteVarRequestBuilder() S7ParameterWriteVarRequestBuilder {
 type _S7ParameterWriteVarRequestBuilder struct {
 	*_S7ParameterWriteVarRequest
 
+	parentBuilder *_S7ParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7ParameterWriteVarRequestBuilder) = (*_S7ParameterWriteVarRequestBuilder)(nil)
 
-func (m *_S7ParameterWriteVarRequestBuilder) WithMandatoryFields(items []S7VarRequestParameterItem) S7ParameterWriteVarRequestBuilder {
-	return m.WithItems(items...)
+func (b *_S7ParameterWriteVarRequestBuilder) setParent(contract S7ParameterContract) {
+	b.S7ParameterContract = contract
 }
 
-func (m *_S7ParameterWriteVarRequestBuilder) WithItems(items ...S7VarRequestParameterItem) S7ParameterWriteVarRequestBuilder {
-	m.Items = items
-	return m
+func (b *_S7ParameterWriteVarRequestBuilder) WithMandatoryFields(items []S7VarRequestParameterItem) S7ParameterWriteVarRequestBuilder {
+	return b.WithItems(items...)
 }
 
-func (m *_S7ParameterWriteVarRequestBuilder) Build() (S7ParameterWriteVarRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7ParameterWriteVarRequestBuilder) WithItems(items ...S7VarRequestParameterItem) S7ParameterWriteVarRequestBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_S7ParameterWriteVarRequestBuilder) Build() (S7ParameterWriteVarRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7ParameterWriteVarRequest.deepCopy(), nil
+	return b._S7ParameterWriteVarRequest.deepCopy(), nil
 }
 
-func (m *_S7ParameterWriteVarRequestBuilder) MustBuild() S7ParameterWriteVarRequest {
-	build, err := m.Build()
+func (b *_S7ParameterWriteVarRequestBuilder) MustBuild() S7ParameterWriteVarRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7ParameterWriteVarRequestBuilder) DeepCopy() any {
-	return m.CreateS7ParameterWriteVarRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7ParameterWriteVarRequestBuilder) Done() S7ParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7ParameterWriteVarRequestBuilder) buildForS7Parameter() (S7Parameter, error) {
+	return b.Build()
+}
+
+func (b *_S7ParameterWriteVarRequestBuilder) DeepCopy() any {
+	_copy := b.CreateS7ParameterWriteVarRequestBuilder().(*_S7ParameterWriteVarRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7ParameterWriteVarRequestBuilder creates a S7ParameterWriteVarRequestBuilder
-func (m *_S7ParameterWriteVarRequest) CreateS7ParameterWriteVarRequestBuilder() S7ParameterWriteVarRequestBuilder {
-	if m == nil {
+func (b *_S7ParameterWriteVarRequest) CreateS7ParameterWriteVarRequestBuilder() S7ParameterWriteVarRequestBuilder {
+	if b == nil {
 		return NewS7ParameterWriteVarRequestBuilder()
 	}
-	return &_S7ParameterWriteVarRequestBuilder{_S7ParameterWriteVarRequest: m.deepCopy()}
+	return &_S7ParameterWriteVarRequestBuilder{_S7ParameterWriteVarRequest: b.deepCopy()}
 }
 
 ///////////////////////

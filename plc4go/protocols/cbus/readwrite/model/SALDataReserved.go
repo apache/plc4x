@@ -85,40 +85,59 @@ func NewSALDataReservedBuilder() SALDataReservedBuilder {
 type _SALDataReservedBuilder struct {
 	*_SALDataReserved
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataReservedBuilder) = (*_SALDataReservedBuilder)(nil)
 
-func (m *_SALDataReservedBuilder) WithMandatoryFields() SALDataReservedBuilder {
-	return m
+func (b *_SALDataReservedBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataReservedBuilder) Build() (SALDataReserved, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SALDataReservedBuilder) WithMandatoryFields() SALDataReservedBuilder {
+	return b
+}
+
+func (b *_SALDataReservedBuilder) Build() (SALDataReserved, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SALDataReserved.deepCopy(), nil
+	return b._SALDataReserved.deepCopy(), nil
 }
 
-func (m *_SALDataReservedBuilder) MustBuild() SALDataReserved {
-	build, err := m.Build()
+func (b *_SALDataReservedBuilder) MustBuild() SALDataReserved {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataReservedBuilder) DeepCopy() any {
-	return m.CreateSALDataReservedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataReservedBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataReservedBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataReservedBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataReservedBuilder().(*_SALDataReservedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataReservedBuilder creates a SALDataReservedBuilder
-func (m *_SALDataReserved) CreateSALDataReservedBuilder() SALDataReservedBuilder {
-	if m == nil {
+func (b *_SALDataReserved) CreateSALDataReservedBuilder() SALDataReservedBuilder {
+	if b == nil {
 		return NewSALDataReservedBuilder()
 	}
-	return &_SALDataReservedBuilder{_SALDataReserved: m.deepCopy()}
+	return &_SALDataReservedBuilder{_SALDataReserved: b.deepCopy()}
 }
 
 ///////////////////////

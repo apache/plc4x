@@ -145,152 +145,171 @@ func NewAirConditioningDataSetPlantHumidityLevelBuilder() AirConditioningDataSet
 type _AirConditioningDataSetPlantHumidityLevelBuilder struct {
 	*_AirConditioningDataSetPlantHumidityLevel
 
+	parentBuilder *_AirConditioningDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AirConditioningDataSetPlantHumidityLevelBuilder) = (*_AirConditioningDataSetPlantHumidityLevelBuilder)(nil)
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, humidityModeAndFlags HVACHumidityModeAndFlags, humidityType HVACHumidityType) AirConditioningDataSetPlantHumidityLevelBuilder {
-	return m.WithZoneGroup(zoneGroup).WithZoneList(zoneList).WithHumidityModeAndFlags(humidityModeAndFlags).WithHumidityType(humidityType)
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) setParent(contract AirConditioningDataContract) {
+	b.AirConditioningDataContract = contract
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataSetPlantHumidityLevelBuilder {
-	m.ZoneGroup = zoneGroup
-	return m
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, humidityModeAndFlags HVACHumidityModeAndFlags, humidityType HVACHumidityType) AirConditioningDataSetPlantHumidityLevelBuilder {
+	return b.WithZoneGroup(zoneGroup).WithZoneList(zoneList).WithHumidityModeAndFlags(humidityModeAndFlags).WithHumidityType(humidityType)
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) WithZoneList(zoneList HVACZoneList) AirConditioningDataSetPlantHumidityLevelBuilder {
-	m.ZoneList = zoneList
-	return m
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataSetPlantHumidityLevelBuilder {
+	b.ZoneGroup = zoneGroup
+	return b
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) WithZoneListBuilder(builderSupplier func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataSetPlantHumidityLevelBuilder {
-	builder := builderSupplier(m.ZoneList.CreateHVACZoneListBuilder())
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) WithZoneList(zoneList HVACZoneList) AirConditioningDataSetPlantHumidityLevelBuilder {
+	b.ZoneList = zoneList
+	return b
+}
+
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) WithZoneListBuilder(builderSupplier func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataSetPlantHumidityLevelBuilder {
+	builder := builderSupplier(b.ZoneList.CreateHVACZoneListBuilder())
 	var err error
-	m.ZoneList, err = builder.Build()
+	b.ZoneList, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) WithHumidityModeAndFlags(humidityModeAndFlags HVACHumidityModeAndFlags) AirConditioningDataSetPlantHumidityLevelBuilder {
-	m.HumidityModeAndFlags = humidityModeAndFlags
-	return m
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) WithHumidityModeAndFlags(humidityModeAndFlags HVACHumidityModeAndFlags) AirConditioningDataSetPlantHumidityLevelBuilder {
+	b.HumidityModeAndFlags = humidityModeAndFlags
+	return b
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) WithHumidityModeAndFlagsBuilder(builderSupplier func(HVACHumidityModeAndFlagsBuilder) HVACHumidityModeAndFlagsBuilder) AirConditioningDataSetPlantHumidityLevelBuilder {
-	builder := builderSupplier(m.HumidityModeAndFlags.CreateHVACHumidityModeAndFlagsBuilder())
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) WithHumidityModeAndFlagsBuilder(builderSupplier func(HVACHumidityModeAndFlagsBuilder) HVACHumidityModeAndFlagsBuilder) AirConditioningDataSetPlantHumidityLevelBuilder {
+	builder := builderSupplier(b.HumidityModeAndFlags.CreateHVACHumidityModeAndFlagsBuilder())
 	var err error
-	m.HumidityModeAndFlags, err = builder.Build()
+	b.HumidityModeAndFlags, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACHumidityModeAndFlagsBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACHumidityModeAndFlagsBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) WithHumidityType(humidityType HVACHumidityType) AirConditioningDataSetPlantHumidityLevelBuilder {
-	m.HumidityType = humidityType
-	return m
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) WithHumidityType(humidityType HVACHumidityType) AirConditioningDataSetPlantHumidityLevelBuilder {
+	b.HumidityType = humidityType
+	return b
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) WithOptionalLevel(level HVACHumidity) AirConditioningDataSetPlantHumidityLevelBuilder {
-	m.Level = level
-	return m
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) WithOptionalLevel(level HVACHumidity) AirConditioningDataSetPlantHumidityLevelBuilder {
+	b.Level = level
+	return b
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) WithOptionalLevelBuilder(builderSupplier func(HVACHumidityBuilder) HVACHumidityBuilder) AirConditioningDataSetPlantHumidityLevelBuilder {
-	builder := builderSupplier(m.Level.CreateHVACHumidityBuilder())
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) WithOptionalLevelBuilder(builderSupplier func(HVACHumidityBuilder) HVACHumidityBuilder) AirConditioningDataSetPlantHumidityLevelBuilder {
+	builder := builderSupplier(b.Level.CreateHVACHumidityBuilder())
 	var err error
-	m.Level, err = builder.Build()
+	b.Level, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACHumidityBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACHumidityBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) WithOptionalRawLevel(rawLevel HVACRawLevels) AirConditioningDataSetPlantHumidityLevelBuilder {
-	m.RawLevel = rawLevel
-	return m
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) WithOptionalRawLevel(rawLevel HVACRawLevels) AirConditioningDataSetPlantHumidityLevelBuilder {
+	b.RawLevel = rawLevel
+	return b
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) WithOptionalRawLevelBuilder(builderSupplier func(HVACRawLevelsBuilder) HVACRawLevelsBuilder) AirConditioningDataSetPlantHumidityLevelBuilder {
-	builder := builderSupplier(m.RawLevel.CreateHVACRawLevelsBuilder())
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) WithOptionalRawLevelBuilder(builderSupplier func(HVACRawLevelsBuilder) HVACRawLevelsBuilder) AirConditioningDataSetPlantHumidityLevelBuilder {
+	builder := builderSupplier(b.RawLevel.CreateHVACRawLevelsBuilder())
 	var err error
-	m.RawLevel, err = builder.Build()
+	b.RawLevel, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACRawLevelsBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACRawLevelsBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) WithOptionalAuxLevel(auxLevel HVACAuxiliaryLevel) AirConditioningDataSetPlantHumidityLevelBuilder {
-	m.AuxLevel = auxLevel
-	return m
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) WithOptionalAuxLevel(auxLevel HVACAuxiliaryLevel) AirConditioningDataSetPlantHumidityLevelBuilder {
+	b.AuxLevel = auxLevel
+	return b
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) WithOptionalAuxLevelBuilder(builderSupplier func(HVACAuxiliaryLevelBuilder) HVACAuxiliaryLevelBuilder) AirConditioningDataSetPlantHumidityLevelBuilder {
-	builder := builderSupplier(m.AuxLevel.CreateHVACAuxiliaryLevelBuilder())
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) WithOptionalAuxLevelBuilder(builderSupplier func(HVACAuxiliaryLevelBuilder) HVACAuxiliaryLevelBuilder) AirConditioningDataSetPlantHumidityLevelBuilder {
+	builder := builderSupplier(b.AuxLevel.CreateHVACAuxiliaryLevelBuilder())
 	var err error
-	m.AuxLevel, err = builder.Build()
+	b.AuxLevel, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACAuxiliaryLevelBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACAuxiliaryLevelBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) Build() (AirConditioningDataSetPlantHumidityLevel, error) {
-	if m.ZoneList == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) Build() (AirConditioningDataSetPlantHumidityLevel, error) {
+	if b.ZoneList == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'zoneList' not set"))
+		b.err.Append(errors.New("mandatory field 'zoneList' not set"))
 	}
-	if m.HumidityModeAndFlags == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.HumidityModeAndFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'humidityModeAndFlags' not set"))
+		b.err.Append(errors.New("mandatory field 'humidityModeAndFlags' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AirConditioningDataSetPlantHumidityLevel.deepCopy(), nil
+	return b._AirConditioningDataSetPlantHumidityLevel.deepCopy(), nil
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) MustBuild() AirConditioningDataSetPlantHumidityLevel {
-	build, err := m.Build()
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) MustBuild() AirConditioningDataSetPlantHumidityLevel {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevelBuilder) DeepCopy() any {
-	return m.CreateAirConditioningDataSetPlantHumidityLevelBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) Done() AirConditioningDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) buildForAirConditioningData() (AirConditioningData, error) {
+	return b.Build()
+}
+
+func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) DeepCopy() any {
+	_copy := b.CreateAirConditioningDataSetPlantHumidityLevelBuilder().(*_AirConditioningDataSetPlantHumidityLevelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAirConditioningDataSetPlantHumidityLevelBuilder creates a AirConditioningDataSetPlantHumidityLevelBuilder
-func (m *_AirConditioningDataSetPlantHumidityLevel) CreateAirConditioningDataSetPlantHumidityLevelBuilder() AirConditioningDataSetPlantHumidityLevelBuilder {
-	if m == nil {
+func (b *_AirConditioningDataSetPlantHumidityLevel) CreateAirConditioningDataSetPlantHumidityLevelBuilder() AirConditioningDataSetPlantHumidityLevelBuilder {
+	if b == nil {
 		return NewAirConditioningDataSetPlantHumidityLevelBuilder()
 	}
-	return &_AirConditioningDataSetPlantHumidityLevelBuilder{_AirConditioningDataSetPlantHumidityLevel: m.deepCopy()}
+	return &_AirConditioningDataSetPlantHumidityLevelBuilder{_AirConditioningDataSetPlantHumidityLevel: b.deepCopy()}
 }
 
 ///////////////////////

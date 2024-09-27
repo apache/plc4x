@@ -94,6 +94,8 @@ type LDataConBuilder interface {
 	WithAdditionalInformation(...CEMIAdditionalInformation) LDataConBuilder
 	// WithDataFrame adds DataFrame (property field)
 	WithDataFrame(LDataFrame) LDataConBuilder
+	// WithDataFrameBuilder adds DataFrame (property field) which is build by the builder
+	WithDataFrameBuilder(func(LDataFrameBuilder) LDataFrameBuilder) LDataConBuilder
 	// Build builds the LDataCon or returns an error if something is wrong
 	Build() (LDataCon, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,61 +110,93 @@ func NewLDataConBuilder() LDataConBuilder {
 type _LDataConBuilder struct {
 	*_LDataCon
 
+	parentBuilder *_CEMIBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LDataConBuilder) = (*_LDataConBuilder)(nil)
 
-func (m *_LDataConBuilder) WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LDataConBuilder {
-	return m.WithAdditionalInformationLength(additionalInformationLength).WithAdditionalInformation(additionalInformation...).WithDataFrame(dataFrame)
+func (b *_LDataConBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
 }
 
-func (m *_LDataConBuilder) WithAdditionalInformationLength(additionalInformationLength uint8) LDataConBuilder {
-	m.AdditionalInformationLength = additionalInformationLength
-	return m
+func (b *_LDataConBuilder) WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LDataConBuilder {
+	return b.WithAdditionalInformationLength(additionalInformationLength).WithAdditionalInformation(additionalInformation...).WithDataFrame(dataFrame)
 }
 
-func (m *_LDataConBuilder) WithAdditionalInformation(additionalInformation ...CEMIAdditionalInformation) LDataConBuilder {
-	m.AdditionalInformation = additionalInformation
-	return m
+func (b *_LDataConBuilder) WithAdditionalInformationLength(additionalInformationLength uint8) LDataConBuilder {
+	b.AdditionalInformationLength = additionalInformationLength
+	return b
 }
 
-func (m *_LDataConBuilder) WithDataFrame(dataFrame LDataFrame) LDataConBuilder {
-	m.DataFrame = dataFrame
-	return m
+func (b *_LDataConBuilder) WithAdditionalInformation(additionalInformation ...CEMIAdditionalInformation) LDataConBuilder {
+	b.AdditionalInformation = additionalInformation
+	return b
 }
 
-func (m *_LDataConBuilder) Build() (LDataCon, error) {
-	if m.DataFrame == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_LDataConBuilder) WithDataFrame(dataFrame LDataFrame) LDataConBuilder {
+	b.DataFrame = dataFrame
+	return b
+}
+
+func (b *_LDataConBuilder) WithDataFrameBuilder(builderSupplier func(LDataFrameBuilder) LDataFrameBuilder) LDataConBuilder {
+	builder := builderSupplier(b.DataFrame.CreateLDataFrameBuilder())
+	var err error
+	b.DataFrame, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'dataFrame' not set"))
+		b.err.Append(errors.Wrap(err, "LDataFrameBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._LDataCon.deepCopy(), nil
+	return b
 }
 
-func (m *_LDataConBuilder) MustBuild() LDataCon {
-	build, err := m.Build()
+func (b *_LDataConBuilder) Build() (LDataCon, error) {
+	if b.DataFrame == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataFrame' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LDataCon.deepCopy(), nil
+}
+
+func (b *_LDataConBuilder) MustBuild() LDataCon {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LDataConBuilder) DeepCopy() any {
-	return m.CreateLDataConBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LDataConBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LDataConBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_LDataConBuilder) DeepCopy() any {
+	_copy := b.CreateLDataConBuilder().(*_LDataConBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLDataConBuilder creates a LDataConBuilder
-func (m *_LDataCon) CreateLDataConBuilder() LDataConBuilder {
-	if m == nil {
+func (b *_LDataCon) CreateLDataConBuilder() LDataConBuilder {
+	if b == nil {
 		return NewLDataConBuilder()
 	}
-	return &_LDataConBuilder{_LDataCon: m.deepCopy()}
+	return &_LDataConBuilder{_LDataCon: b.deepCopy()}
 }
 
 ///////////////////////

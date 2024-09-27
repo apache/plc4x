@@ -90,6 +90,8 @@ type ModbusAsciiADUBuilder interface {
 	WithAddress(uint8) ModbusAsciiADUBuilder
 	// WithPdu adds Pdu (property field)
 	WithPdu(ModbusPDU) ModbusAsciiADUBuilder
+	// WithPduBuilder adds Pdu (property field) which is build by the builder
+	WithPduBuilder(func(ModbusPDUBuilder) ModbusPDUBuilder) ModbusAsciiADUBuilder
 	// Build builds the ModbusAsciiADU or returns an error if something is wrong
 	Build() (ModbusAsciiADU, error)
 	// MustBuild does the same as Build but panics on error
@@ -104,56 +106,88 @@ func NewModbusAsciiADUBuilder() ModbusAsciiADUBuilder {
 type _ModbusAsciiADUBuilder struct {
 	*_ModbusAsciiADU
 
+	parentBuilder *_ModbusADUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusAsciiADUBuilder) = (*_ModbusAsciiADUBuilder)(nil)
 
-func (m *_ModbusAsciiADUBuilder) WithMandatoryFields(address uint8, pdu ModbusPDU) ModbusAsciiADUBuilder {
-	return m.WithAddress(address).WithPdu(pdu)
+func (b *_ModbusAsciiADUBuilder) setParent(contract ModbusADUContract) {
+	b.ModbusADUContract = contract
 }
 
-func (m *_ModbusAsciiADUBuilder) WithAddress(address uint8) ModbusAsciiADUBuilder {
-	m.Address = address
-	return m
+func (b *_ModbusAsciiADUBuilder) WithMandatoryFields(address uint8, pdu ModbusPDU) ModbusAsciiADUBuilder {
+	return b.WithAddress(address).WithPdu(pdu)
 }
 
-func (m *_ModbusAsciiADUBuilder) WithPdu(pdu ModbusPDU) ModbusAsciiADUBuilder {
-	m.Pdu = pdu
-	return m
+func (b *_ModbusAsciiADUBuilder) WithAddress(address uint8) ModbusAsciiADUBuilder {
+	b.Address = address
+	return b
 }
 
-func (m *_ModbusAsciiADUBuilder) Build() (ModbusAsciiADU, error) {
-	if m.Pdu == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ModbusAsciiADUBuilder) WithPdu(pdu ModbusPDU) ModbusAsciiADUBuilder {
+	b.Pdu = pdu
+	return b
+}
+
+func (b *_ModbusAsciiADUBuilder) WithPduBuilder(builderSupplier func(ModbusPDUBuilder) ModbusPDUBuilder) ModbusAsciiADUBuilder {
+	builder := builderSupplier(b.Pdu.CreateModbusPDUBuilder())
+	var err error
+	b.Pdu, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'pdu' not set"))
+		b.err.Append(errors.Wrap(err, "ModbusPDUBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._ModbusAsciiADU.deepCopy(), nil
+	return b
 }
 
-func (m *_ModbusAsciiADUBuilder) MustBuild() ModbusAsciiADU {
-	build, err := m.Build()
+func (b *_ModbusAsciiADUBuilder) Build() (ModbusAsciiADU, error) {
+	if b.Pdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'pdu' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ModbusAsciiADU.deepCopy(), nil
+}
+
+func (b *_ModbusAsciiADUBuilder) MustBuild() ModbusAsciiADU {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusAsciiADUBuilder) DeepCopy() any {
-	return m.CreateModbusAsciiADUBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusAsciiADUBuilder) Done() ModbusADUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusAsciiADUBuilder) buildForModbusADU() (ModbusADU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusAsciiADUBuilder) DeepCopy() any {
+	_copy := b.CreateModbusAsciiADUBuilder().(*_ModbusAsciiADUBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusAsciiADUBuilder creates a ModbusAsciiADUBuilder
-func (m *_ModbusAsciiADU) CreateModbusAsciiADUBuilder() ModbusAsciiADUBuilder {
-	if m == nil {
+func (b *_ModbusAsciiADU) CreateModbusAsciiADUBuilder() ModbusAsciiADUBuilder {
+	if b == nil {
 		return NewModbusAsciiADUBuilder()
 	}
-	return &_ModbusAsciiADUBuilder{_ModbusAsciiADU: m.deepCopy()}
+	return &_ModbusAsciiADUBuilder{_ModbusAsciiADU: b.deepCopy()}
 }
 
 ///////////////////////

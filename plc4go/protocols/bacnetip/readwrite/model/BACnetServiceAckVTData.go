@@ -120,112 +120,131 @@ func NewBACnetServiceAckVTDataBuilder() BACnetServiceAckVTDataBuilder {
 type _BACnetServiceAckVTDataBuilder struct {
 	*_BACnetServiceAckVTData
 
+	parentBuilder *_BACnetServiceAckBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetServiceAckVTDataBuilder) = (*_BACnetServiceAckVTDataBuilder)(nil)
 
-func (m *_BACnetServiceAckVTDataBuilder) WithMandatoryFields(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTDataBuilder {
-	return m.WithVtSessionIdentifier(vtSessionIdentifier).WithVtNewData(vtNewData).WithVtDataFlag(vtDataFlag)
+func (b *_BACnetServiceAckVTDataBuilder) setParent(contract BACnetServiceAckContract) {
+	b.BACnetServiceAckContract = contract
 }
 
-func (m *_BACnetServiceAckVTDataBuilder) WithVtSessionIdentifier(vtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTDataBuilder {
-	m.VtSessionIdentifier = vtSessionIdentifier
-	return m
+func (b *_BACnetServiceAckVTDataBuilder) WithMandatoryFields(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTDataBuilder {
+	return b.WithVtSessionIdentifier(vtSessionIdentifier).WithVtNewData(vtNewData).WithVtDataFlag(vtDataFlag)
 }
 
-func (m *_BACnetServiceAckVTDataBuilder) WithVtSessionIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckVTDataBuilder {
-	builder := builderSupplier(m.VtSessionIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetServiceAckVTDataBuilder) WithVtSessionIdentifier(vtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTDataBuilder {
+	b.VtSessionIdentifier = vtSessionIdentifier
+	return b
+}
+
+func (b *_BACnetServiceAckVTDataBuilder) WithVtSessionIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckVTDataBuilder {
+	builder := builderSupplier(b.VtSessionIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.VtSessionIdentifier, err = builder.Build()
+	b.VtSessionIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckVTDataBuilder) WithVtNewData(vtNewData BACnetApplicationTagOctetString) BACnetServiceAckVTDataBuilder {
-	m.VtNewData = vtNewData
-	return m
+func (b *_BACnetServiceAckVTDataBuilder) WithVtNewData(vtNewData BACnetApplicationTagOctetString) BACnetServiceAckVTDataBuilder {
+	b.VtNewData = vtNewData
+	return b
 }
 
-func (m *_BACnetServiceAckVTDataBuilder) WithVtNewDataBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetServiceAckVTDataBuilder {
-	builder := builderSupplier(m.VtNewData.CreateBACnetApplicationTagOctetStringBuilder())
+func (b *_BACnetServiceAckVTDataBuilder) WithVtNewDataBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetServiceAckVTDataBuilder {
+	builder := builderSupplier(b.VtNewData.CreateBACnetApplicationTagOctetStringBuilder())
 	var err error
-	m.VtNewData, err = builder.Build()
+	b.VtNewData, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckVTDataBuilder) WithVtDataFlag(vtDataFlag BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTDataBuilder {
-	m.VtDataFlag = vtDataFlag
-	return m
+func (b *_BACnetServiceAckVTDataBuilder) WithVtDataFlag(vtDataFlag BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTDataBuilder {
+	b.VtDataFlag = vtDataFlag
+	return b
 }
 
-func (m *_BACnetServiceAckVTDataBuilder) WithVtDataFlagBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckVTDataBuilder {
-	builder := builderSupplier(m.VtDataFlag.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetServiceAckVTDataBuilder) WithVtDataFlagBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckVTDataBuilder {
+	builder := builderSupplier(b.VtDataFlag.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.VtDataFlag, err = builder.Build()
+	b.VtDataFlag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckVTDataBuilder) Build() (BACnetServiceAckVTData, error) {
-	if m.VtSessionIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetServiceAckVTDataBuilder) Build() (BACnetServiceAckVTData, error) {
+	if b.VtSessionIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'vtSessionIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'vtSessionIdentifier' not set"))
 	}
-	if m.VtNewData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.VtNewData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'vtNewData' not set"))
+		b.err.Append(errors.New("mandatory field 'vtNewData' not set"))
 	}
-	if m.VtDataFlag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.VtDataFlag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'vtDataFlag' not set"))
+		b.err.Append(errors.New("mandatory field 'vtDataFlag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetServiceAckVTData.deepCopy(), nil
+	return b._BACnetServiceAckVTData.deepCopy(), nil
 }
 
-func (m *_BACnetServiceAckVTDataBuilder) MustBuild() BACnetServiceAckVTData {
-	build, err := m.Build()
+func (b *_BACnetServiceAckVTDataBuilder) MustBuild() BACnetServiceAckVTData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetServiceAckVTDataBuilder) DeepCopy() any {
-	return m.CreateBACnetServiceAckVTDataBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetServiceAckVTDataBuilder) Done() BACnetServiceAckBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetServiceAckVTDataBuilder) buildForBACnetServiceAck() (BACnetServiceAck, error) {
+	return b.Build()
+}
+
+func (b *_BACnetServiceAckVTDataBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetServiceAckVTDataBuilder().(*_BACnetServiceAckVTDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetServiceAckVTDataBuilder creates a BACnetServiceAckVTDataBuilder
-func (m *_BACnetServiceAckVTData) CreateBACnetServiceAckVTDataBuilder() BACnetServiceAckVTDataBuilder {
-	if m == nil {
+func (b *_BACnetServiceAckVTData) CreateBACnetServiceAckVTDataBuilder() BACnetServiceAckVTDataBuilder {
+	if b == nil {
 		return NewBACnetServiceAckVTDataBuilder()
 	}
-	return &_BACnetServiceAckVTDataBuilder{_BACnetServiceAckVTData: m.deepCopy()}
+	return &_BACnetServiceAckVTDataBuilder{_BACnetServiceAckVTData: b.deepCopy()}
 }
 
 ///////////////////////

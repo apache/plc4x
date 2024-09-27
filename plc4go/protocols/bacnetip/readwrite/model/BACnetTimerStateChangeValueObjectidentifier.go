@@ -98,64 +98,83 @@ func NewBACnetTimerStateChangeValueObjectidentifierBuilder() BACnetTimerStateCha
 type _BACnetTimerStateChangeValueObjectidentifierBuilder struct {
 	*_BACnetTimerStateChangeValueObjectidentifier
 
+	parentBuilder *_BACnetTimerStateChangeValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetTimerStateChangeValueObjectidentifierBuilder) = (*_BACnetTimerStateChangeValueObjectidentifierBuilder)(nil)
 
-func (m *_BACnetTimerStateChangeValueObjectidentifierBuilder) WithMandatoryFields(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetTimerStateChangeValueObjectidentifierBuilder {
-	return m.WithObjectidentifierValue(objectidentifierValue)
+func (b *_BACnetTimerStateChangeValueObjectidentifierBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
+	b.BACnetTimerStateChangeValueContract = contract
 }
 
-func (m *_BACnetTimerStateChangeValueObjectidentifierBuilder) WithObjectidentifierValue(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetTimerStateChangeValueObjectidentifierBuilder {
-	m.ObjectidentifierValue = objectidentifierValue
-	return m
+func (b *_BACnetTimerStateChangeValueObjectidentifierBuilder) WithMandatoryFields(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetTimerStateChangeValueObjectidentifierBuilder {
+	return b.WithObjectidentifierValue(objectidentifierValue)
 }
 
-func (m *_BACnetTimerStateChangeValueObjectidentifierBuilder) WithObjectidentifierValueBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetTimerStateChangeValueObjectidentifierBuilder {
-	builder := builderSupplier(m.ObjectidentifierValue.CreateBACnetApplicationTagObjectIdentifierBuilder())
+func (b *_BACnetTimerStateChangeValueObjectidentifierBuilder) WithObjectidentifierValue(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetTimerStateChangeValueObjectidentifierBuilder {
+	b.ObjectidentifierValue = objectidentifierValue
+	return b
+}
+
+func (b *_BACnetTimerStateChangeValueObjectidentifierBuilder) WithObjectidentifierValueBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetTimerStateChangeValueObjectidentifierBuilder {
+	builder := builderSupplier(b.ObjectidentifierValue.CreateBACnetApplicationTagObjectIdentifierBuilder())
 	var err error
-	m.ObjectidentifierValue, err = builder.Build()
+	b.ObjectidentifierValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetTimerStateChangeValueObjectidentifierBuilder) Build() (BACnetTimerStateChangeValueObjectidentifier, error) {
-	if m.ObjectidentifierValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetTimerStateChangeValueObjectidentifierBuilder) Build() (BACnetTimerStateChangeValueObjectidentifier, error) {
+	if b.ObjectidentifierValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectidentifierValue' not set"))
+		b.err.Append(errors.New("mandatory field 'objectidentifierValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTimerStateChangeValueObjectidentifier.deepCopy(), nil
+	return b._BACnetTimerStateChangeValueObjectidentifier.deepCopy(), nil
 }
 
-func (m *_BACnetTimerStateChangeValueObjectidentifierBuilder) MustBuild() BACnetTimerStateChangeValueObjectidentifier {
-	build, err := m.Build()
+func (b *_BACnetTimerStateChangeValueObjectidentifierBuilder) MustBuild() BACnetTimerStateChangeValueObjectidentifier {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTimerStateChangeValueObjectidentifierBuilder) DeepCopy() any {
-	return m.CreateBACnetTimerStateChangeValueObjectidentifierBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetTimerStateChangeValueObjectidentifierBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetTimerStateChangeValueObjectidentifierBuilder) buildForBACnetTimerStateChangeValue() (BACnetTimerStateChangeValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetTimerStateChangeValueObjectidentifierBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimerStateChangeValueObjectidentifierBuilder().(*_BACnetTimerStateChangeValueObjectidentifierBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTimerStateChangeValueObjectidentifierBuilder creates a BACnetTimerStateChangeValueObjectidentifierBuilder
-func (m *_BACnetTimerStateChangeValueObjectidentifier) CreateBACnetTimerStateChangeValueObjectidentifierBuilder() BACnetTimerStateChangeValueObjectidentifierBuilder {
-	if m == nil {
+func (b *_BACnetTimerStateChangeValueObjectidentifier) CreateBACnetTimerStateChangeValueObjectidentifierBuilder() BACnetTimerStateChangeValueObjectidentifierBuilder {
+	if b == nil {
 		return NewBACnetTimerStateChangeValueObjectidentifierBuilder()
 	}
-	return &_BACnetTimerStateChangeValueObjectidentifierBuilder{_BACnetTimerStateChangeValueObjectidentifier: m.deepCopy()}
+	return &_BACnetTimerStateChangeValueObjectidentifierBuilder{_BACnetTimerStateChangeValueObjectidentifier: b.deepCopy()}
 }
 
 ///////////////////////

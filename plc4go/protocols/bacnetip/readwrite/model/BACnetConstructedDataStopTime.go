@@ -100,64 +100,83 @@ func NewBACnetConstructedDataStopTimeBuilder() BACnetConstructedDataStopTimeBuil
 type _BACnetConstructedDataStopTimeBuilder struct {
 	*_BACnetConstructedDataStopTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataStopTimeBuilder) = (*_BACnetConstructedDataStopTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataStopTimeBuilder) WithMandatoryFields(stopTime BACnetDateTime) BACnetConstructedDataStopTimeBuilder {
-	return m.WithStopTime(stopTime)
+func (b *_BACnetConstructedDataStopTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataStopTimeBuilder) WithStopTime(stopTime BACnetDateTime) BACnetConstructedDataStopTimeBuilder {
-	m.StopTime = stopTime
-	return m
+func (b *_BACnetConstructedDataStopTimeBuilder) WithMandatoryFields(stopTime BACnetDateTime) BACnetConstructedDataStopTimeBuilder {
+	return b.WithStopTime(stopTime)
 }
 
-func (m *_BACnetConstructedDataStopTimeBuilder) WithStopTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataStopTimeBuilder {
-	builder := builderSupplier(m.StopTime.CreateBACnetDateTimeBuilder())
+func (b *_BACnetConstructedDataStopTimeBuilder) WithStopTime(stopTime BACnetDateTime) BACnetConstructedDataStopTimeBuilder {
+	b.StopTime = stopTime
+	return b
+}
+
+func (b *_BACnetConstructedDataStopTimeBuilder) WithStopTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataStopTimeBuilder {
+	builder := builderSupplier(b.StopTime.CreateBACnetDateTimeBuilder())
 	var err error
-	m.StopTime, err = builder.Build()
+	b.StopTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataStopTimeBuilder) Build() (BACnetConstructedDataStopTime, error) {
-	if m.StopTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataStopTimeBuilder) Build() (BACnetConstructedDataStopTime, error) {
+	if b.StopTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'stopTime' not set"))
+		b.err.Append(errors.New("mandatory field 'stopTime' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataStopTime.deepCopy(), nil
+	return b._BACnetConstructedDataStopTime.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataStopTimeBuilder) MustBuild() BACnetConstructedDataStopTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataStopTimeBuilder) MustBuild() BACnetConstructedDataStopTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataStopTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataStopTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataStopTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataStopTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataStopTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataStopTimeBuilder().(*_BACnetConstructedDataStopTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataStopTimeBuilder creates a BACnetConstructedDataStopTimeBuilder
-func (m *_BACnetConstructedDataStopTime) CreateBACnetConstructedDataStopTimeBuilder() BACnetConstructedDataStopTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataStopTime) CreateBACnetConstructedDataStopTimeBuilder() BACnetConstructedDataStopTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataStopTimeBuilder()
 	}
-	return &_BACnetConstructedDataStopTimeBuilder{_BACnetConstructedDataStopTime: m.deepCopy()}
+	return &_BACnetConstructedDataStopTimeBuilder{_BACnetConstructedDataStopTime: b.deepCopy()}
 }
 
 ///////////////////////

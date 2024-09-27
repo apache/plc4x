@@ -118,107 +118,111 @@ type _BACnetAuthenticationFactorEnclosedBuilder struct {
 
 var _ (BACnetAuthenticationFactorEnclosedBuilder) = (*_BACnetAuthenticationFactorEnclosedBuilder)(nil)
 
-func (m *_BACnetAuthenticationFactorEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, authenticationFactor BACnetAuthenticationFactor, closingTag BACnetClosingTag) BACnetAuthenticationFactorEnclosedBuilder {
-	return m.WithOpeningTag(openingTag).WithAuthenticationFactor(authenticationFactor).WithClosingTag(closingTag)
+func (b *_BACnetAuthenticationFactorEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, authenticationFactor BACnetAuthenticationFactor, closingTag BACnetClosingTag) BACnetAuthenticationFactorEnclosedBuilder {
+	return b.WithOpeningTag(openingTag).WithAuthenticationFactor(authenticationFactor).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetAuthenticationFactorEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetAuthenticationFactorEnclosedBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetAuthenticationFactorEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetAuthenticationFactorEnclosedBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetAuthenticationFactorEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetAuthenticationFactorEnclosedBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetAuthenticationFactorEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetAuthenticationFactorEnclosedBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAuthenticationFactorEnclosedBuilder) WithAuthenticationFactor(authenticationFactor BACnetAuthenticationFactor) BACnetAuthenticationFactorEnclosedBuilder {
-	m.AuthenticationFactor = authenticationFactor
-	return m
+func (b *_BACnetAuthenticationFactorEnclosedBuilder) WithAuthenticationFactor(authenticationFactor BACnetAuthenticationFactor) BACnetAuthenticationFactorEnclosedBuilder {
+	b.AuthenticationFactor = authenticationFactor
+	return b
 }
 
-func (m *_BACnetAuthenticationFactorEnclosedBuilder) WithAuthenticationFactorBuilder(builderSupplier func(BACnetAuthenticationFactorBuilder) BACnetAuthenticationFactorBuilder) BACnetAuthenticationFactorEnclosedBuilder {
-	builder := builderSupplier(m.AuthenticationFactor.CreateBACnetAuthenticationFactorBuilder())
+func (b *_BACnetAuthenticationFactorEnclosedBuilder) WithAuthenticationFactorBuilder(builderSupplier func(BACnetAuthenticationFactorBuilder) BACnetAuthenticationFactorBuilder) BACnetAuthenticationFactorEnclosedBuilder {
+	builder := builderSupplier(b.AuthenticationFactor.CreateBACnetAuthenticationFactorBuilder())
 	var err error
-	m.AuthenticationFactor, err = builder.Build()
+	b.AuthenticationFactor, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAuthenticationFactorBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAuthenticationFactorBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAuthenticationFactorEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetAuthenticationFactorEnclosedBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetAuthenticationFactorEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetAuthenticationFactorEnclosedBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetAuthenticationFactorEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetAuthenticationFactorEnclosedBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetAuthenticationFactorEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetAuthenticationFactorEnclosedBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAuthenticationFactorEnclosedBuilder) Build() (BACnetAuthenticationFactorEnclosed, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAuthenticationFactorEnclosedBuilder) Build() (BACnetAuthenticationFactorEnclosed, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.AuthenticationFactor == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.AuthenticationFactor == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'authenticationFactor' not set"))
+		b.err.Append(errors.New("mandatory field 'authenticationFactor' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAuthenticationFactorEnclosed.deepCopy(), nil
+	return b._BACnetAuthenticationFactorEnclosed.deepCopy(), nil
 }
 
-func (m *_BACnetAuthenticationFactorEnclosedBuilder) MustBuild() BACnetAuthenticationFactorEnclosed {
-	build, err := m.Build()
+func (b *_BACnetAuthenticationFactorEnclosedBuilder) MustBuild() BACnetAuthenticationFactorEnclosed {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAuthenticationFactorEnclosedBuilder) DeepCopy() any {
-	return m.CreateBACnetAuthenticationFactorEnclosedBuilder()
+func (b *_BACnetAuthenticationFactorEnclosedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAuthenticationFactorEnclosedBuilder().(*_BACnetAuthenticationFactorEnclosedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAuthenticationFactorEnclosedBuilder creates a BACnetAuthenticationFactorEnclosedBuilder
-func (m *_BACnetAuthenticationFactorEnclosed) CreateBACnetAuthenticationFactorEnclosedBuilder() BACnetAuthenticationFactorEnclosedBuilder {
-	if m == nil {
+func (b *_BACnetAuthenticationFactorEnclosed) CreateBACnetAuthenticationFactorEnclosedBuilder() BACnetAuthenticationFactorEnclosedBuilder {
+	if b == nil {
 		return NewBACnetAuthenticationFactorEnclosedBuilder()
 	}
-	return &_BACnetAuthenticationFactorEnclosedBuilder{_BACnetAuthenticationFactorEnclosed: m.deepCopy()}
+	return &_BACnetAuthenticationFactorEnclosedBuilder{_BACnetAuthenticationFactorEnclosed: b.deepCopy()}
 }
 
 ///////////////////////

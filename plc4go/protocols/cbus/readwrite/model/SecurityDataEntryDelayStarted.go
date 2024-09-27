@@ -85,40 +85,59 @@ func NewSecurityDataEntryDelayStartedBuilder() SecurityDataEntryDelayStartedBuil
 type _SecurityDataEntryDelayStartedBuilder struct {
 	*_SecurityDataEntryDelayStarted
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataEntryDelayStartedBuilder) = (*_SecurityDataEntryDelayStartedBuilder)(nil)
 
-func (m *_SecurityDataEntryDelayStartedBuilder) WithMandatoryFields() SecurityDataEntryDelayStartedBuilder {
-	return m
+func (b *_SecurityDataEntryDelayStartedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataEntryDelayStartedBuilder) Build() (SecurityDataEntryDelayStarted, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataEntryDelayStartedBuilder) WithMandatoryFields() SecurityDataEntryDelayStartedBuilder {
+	return b
+}
+
+func (b *_SecurityDataEntryDelayStartedBuilder) Build() (SecurityDataEntryDelayStarted, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataEntryDelayStarted.deepCopy(), nil
+	return b._SecurityDataEntryDelayStarted.deepCopy(), nil
 }
 
-func (m *_SecurityDataEntryDelayStartedBuilder) MustBuild() SecurityDataEntryDelayStarted {
-	build, err := m.Build()
+func (b *_SecurityDataEntryDelayStartedBuilder) MustBuild() SecurityDataEntryDelayStarted {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataEntryDelayStartedBuilder) DeepCopy() any {
-	return m.CreateSecurityDataEntryDelayStartedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataEntryDelayStartedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataEntryDelayStartedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataEntryDelayStartedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataEntryDelayStartedBuilder().(*_SecurityDataEntryDelayStartedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataEntryDelayStartedBuilder creates a SecurityDataEntryDelayStartedBuilder
-func (m *_SecurityDataEntryDelayStarted) CreateSecurityDataEntryDelayStartedBuilder() SecurityDataEntryDelayStartedBuilder {
-	if m == nil {
+func (b *_SecurityDataEntryDelayStarted) CreateSecurityDataEntryDelayStartedBuilder() SecurityDataEntryDelayStartedBuilder {
+	if b == nil {
 		return NewSecurityDataEntryDelayStartedBuilder()
 	}
-	return &_SecurityDataEntryDelayStartedBuilder{_SecurityDataEntryDelayStarted: m.deepCopy()}
+	return &_SecurityDataEntryDelayStartedBuilder{_SecurityDataEntryDelayStarted: b.deepCopy()}
 }
 
 ///////////////////////

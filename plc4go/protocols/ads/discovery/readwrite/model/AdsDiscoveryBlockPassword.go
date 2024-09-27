@@ -98,64 +98,83 @@ func NewAdsDiscoveryBlockPasswordBuilder() AdsDiscoveryBlockPasswordBuilder {
 type _AdsDiscoveryBlockPasswordBuilder struct {
 	*_AdsDiscoveryBlockPassword
 
+	parentBuilder *_AdsDiscoveryBlockBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsDiscoveryBlockPasswordBuilder) = (*_AdsDiscoveryBlockPasswordBuilder)(nil)
 
-func (m *_AdsDiscoveryBlockPasswordBuilder) WithMandatoryFields(password AmsString) AdsDiscoveryBlockPasswordBuilder {
-	return m.WithPassword(password)
+func (b *_AdsDiscoveryBlockPasswordBuilder) setParent(contract AdsDiscoveryBlockContract) {
+	b.AdsDiscoveryBlockContract = contract
 }
 
-func (m *_AdsDiscoveryBlockPasswordBuilder) WithPassword(password AmsString) AdsDiscoveryBlockPasswordBuilder {
-	m.Password = password
-	return m
+func (b *_AdsDiscoveryBlockPasswordBuilder) WithMandatoryFields(password AmsString) AdsDiscoveryBlockPasswordBuilder {
+	return b.WithPassword(password)
 }
 
-func (m *_AdsDiscoveryBlockPasswordBuilder) WithPasswordBuilder(builderSupplier func(AmsStringBuilder) AmsStringBuilder) AdsDiscoveryBlockPasswordBuilder {
-	builder := builderSupplier(m.Password.CreateAmsStringBuilder())
+func (b *_AdsDiscoveryBlockPasswordBuilder) WithPassword(password AmsString) AdsDiscoveryBlockPasswordBuilder {
+	b.Password = password
+	return b
+}
+
+func (b *_AdsDiscoveryBlockPasswordBuilder) WithPasswordBuilder(builderSupplier func(AmsStringBuilder) AmsStringBuilder) AdsDiscoveryBlockPasswordBuilder {
+	builder := builderSupplier(b.Password.CreateAmsStringBuilder())
 	var err error
-	m.Password, err = builder.Build()
+	b.Password, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AmsStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AmsStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AdsDiscoveryBlockPasswordBuilder) Build() (AdsDiscoveryBlockPassword, error) {
-	if m.Password == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AdsDiscoveryBlockPasswordBuilder) Build() (AdsDiscoveryBlockPassword, error) {
+	if b.Password == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'password' not set"))
+		b.err.Append(errors.New("mandatory field 'password' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsDiscoveryBlockPassword.deepCopy(), nil
+	return b._AdsDiscoveryBlockPassword.deepCopy(), nil
 }
 
-func (m *_AdsDiscoveryBlockPasswordBuilder) MustBuild() AdsDiscoveryBlockPassword {
-	build, err := m.Build()
+func (b *_AdsDiscoveryBlockPasswordBuilder) MustBuild() AdsDiscoveryBlockPassword {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsDiscoveryBlockPasswordBuilder) DeepCopy() any {
-	return m.CreateAdsDiscoveryBlockPasswordBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsDiscoveryBlockPasswordBuilder) Done() AdsDiscoveryBlockBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsDiscoveryBlockPasswordBuilder) buildForAdsDiscoveryBlock() (AdsDiscoveryBlock, error) {
+	return b.Build()
+}
+
+func (b *_AdsDiscoveryBlockPasswordBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryBlockPasswordBuilder().(*_AdsDiscoveryBlockPasswordBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsDiscoveryBlockPasswordBuilder creates a AdsDiscoveryBlockPasswordBuilder
-func (m *_AdsDiscoveryBlockPassword) CreateAdsDiscoveryBlockPasswordBuilder() AdsDiscoveryBlockPasswordBuilder {
-	if m == nil {
+func (b *_AdsDiscoveryBlockPassword) CreateAdsDiscoveryBlockPasswordBuilder() AdsDiscoveryBlockPasswordBuilder {
+	if b == nil {
 		return NewAdsDiscoveryBlockPasswordBuilder()
 	}
-	return &_AdsDiscoveryBlockPasswordBuilder{_AdsDiscoveryBlockPassword: m.deepCopy()}
+	return &_AdsDiscoveryBlockPasswordBuilder{_AdsDiscoveryBlockPassword: b.deepCopy()}
 }
 
 ///////////////////////

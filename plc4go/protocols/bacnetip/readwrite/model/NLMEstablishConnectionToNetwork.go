@@ -99,50 +99,69 @@ func NewNLMEstablishConnectionToNetworkBuilder() NLMEstablishConnectionToNetwork
 type _NLMEstablishConnectionToNetworkBuilder struct {
 	*_NLMEstablishConnectionToNetwork
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMEstablishConnectionToNetworkBuilder) = (*_NLMEstablishConnectionToNetworkBuilder)(nil)
 
-func (m *_NLMEstablishConnectionToNetworkBuilder) WithMandatoryFields(destinationNetworkAddress uint16, terminationTime uint8) NLMEstablishConnectionToNetworkBuilder {
-	return m.WithDestinationNetworkAddress(destinationNetworkAddress).WithTerminationTime(terminationTime)
+func (b *_NLMEstablishConnectionToNetworkBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMEstablishConnectionToNetworkBuilder) WithDestinationNetworkAddress(destinationNetworkAddress uint16) NLMEstablishConnectionToNetworkBuilder {
-	m.DestinationNetworkAddress = destinationNetworkAddress
-	return m
+func (b *_NLMEstablishConnectionToNetworkBuilder) WithMandatoryFields(destinationNetworkAddress uint16, terminationTime uint8) NLMEstablishConnectionToNetworkBuilder {
+	return b.WithDestinationNetworkAddress(destinationNetworkAddress).WithTerminationTime(terminationTime)
 }
 
-func (m *_NLMEstablishConnectionToNetworkBuilder) WithTerminationTime(terminationTime uint8) NLMEstablishConnectionToNetworkBuilder {
-	m.TerminationTime = terminationTime
-	return m
+func (b *_NLMEstablishConnectionToNetworkBuilder) WithDestinationNetworkAddress(destinationNetworkAddress uint16) NLMEstablishConnectionToNetworkBuilder {
+	b.DestinationNetworkAddress = destinationNetworkAddress
+	return b
 }
 
-func (m *_NLMEstablishConnectionToNetworkBuilder) Build() (NLMEstablishConnectionToNetwork, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMEstablishConnectionToNetworkBuilder) WithTerminationTime(terminationTime uint8) NLMEstablishConnectionToNetworkBuilder {
+	b.TerminationTime = terminationTime
+	return b
+}
+
+func (b *_NLMEstablishConnectionToNetworkBuilder) Build() (NLMEstablishConnectionToNetwork, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMEstablishConnectionToNetwork.deepCopy(), nil
+	return b._NLMEstablishConnectionToNetwork.deepCopy(), nil
 }
 
-func (m *_NLMEstablishConnectionToNetworkBuilder) MustBuild() NLMEstablishConnectionToNetwork {
-	build, err := m.Build()
+func (b *_NLMEstablishConnectionToNetworkBuilder) MustBuild() NLMEstablishConnectionToNetwork {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMEstablishConnectionToNetworkBuilder) DeepCopy() any {
-	return m.CreateNLMEstablishConnectionToNetworkBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMEstablishConnectionToNetworkBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMEstablishConnectionToNetworkBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMEstablishConnectionToNetworkBuilder) DeepCopy() any {
+	_copy := b.CreateNLMEstablishConnectionToNetworkBuilder().(*_NLMEstablishConnectionToNetworkBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMEstablishConnectionToNetworkBuilder creates a NLMEstablishConnectionToNetworkBuilder
-func (m *_NLMEstablishConnectionToNetwork) CreateNLMEstablishConnectionToNetworkBuilder() NLMEstablishConnectionToNetworkBuilder {
-	if m == nil {
+func (b *_NLMEstablishConnectionToNetwork) CreateNLMEstablishConnectionToNetworkBuilder() NLMEstablishConnectionToNetworkBuilder {
+	if b == nil {
 		return NewNLMEstablishConnectionToNetworkBuilder()
 	}
-	return &_NLMEstablishConnectionToNetworkBuilder{_NLMEstablishConnectionToNetwork: m.deepCopy()}
+	return &_NLMEstablishConnectionToNetworkBuilder{_NLMEstablishConnectionToNetwork: b.deepCopy()}
 }
 
 ///////////////////////

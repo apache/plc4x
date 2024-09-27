@@ -83,35 +83,39 @@ type _NormalizedStringBuilder struct {
 
 var _ (NormalizedStringBuilder) = (*_NormalizedStringBuilder)(nil)
 
-func (m *_NormalizedStringBuilder) WithMandatoryFields() NormalizedStringBuilder {
-	return m
+func (b *_NormalizedStringBuilder) WithMandatoryFields() NormalizedStringBuilder {
+	return b
 }
 
-func (m *_NormalizedStringBuilder) Build() (NormalizedString, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NormalizedStringBuilder) Build() (NormalizedString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NormalizedString.deepCopy(), nil
+	return b._NormalizedString.deepCopy(), nil
 }
 
-func (m *_NormalizedStringBuilder) MustBuild() NormalizedString {
-	build, err := m.Build()
+func (b *_NormalizedStringBuilder) MustBuild() NormalizedString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NormalizedStringBuilder) DeepCopy() any {
-	return m.CreateNormalizedStringBuilder()
+func (b *_NormalizedStringBuilder) DeepCopy() any {
+	_copy := b.CreateNormalizedStringBuilder().(*_NormalizedStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNormalizedStringBuilder creates a NormalizedStringBuilder
-func (m *_NormalizedString) CreateNormalizedStringBuilder() NormalizedStringBuilder {
-	if m == nil {
+func (b *_NormalizedString) CreateNormalizedStringBuilder() NormalizedStringBuilder {
+	if b == nil {
 		return NewNormalizedStringBuilder()
 	}
-	return &_NormalizedStringBuilder{_NormalizedString: m.deepCopy()}
+	return &_NormalizedStringBuilder{_NormalizedString: b.deepCopy()}
 }
 
 ///////////////////////

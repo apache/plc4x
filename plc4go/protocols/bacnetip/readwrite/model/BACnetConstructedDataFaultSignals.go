@@ -93,45 +93,64 @@ func NewBACnetConstructedDataFaultSignalsBuilder() BACnetConstructedDataFaultSig
 type _BACnetConstructedDataFaultSignalsBuilder struct {
 	*_BACnetConstructedDataFaultSignals
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataFaultSignalsBuilder) = (*_BACnetConstructedDataFaultSignalsBuilder)(nil)
 
-func (m *_BACnetConstructedDataFaultSignalsBuilder) WithMandatoryFields(faultSignals []BACnetLiftFaultTagged) BACnetConstructedDataFaultSignalsBuilder {
-	return m.WithFaultSignals(faultSignals...)
+func (b *_BACnetConstructedDataFaultSignalsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataFaultSignalsBuilder) WithFaultSignals(faultSignals ...BACnetLiftFaultTagged) BACnetConstructedDataFaultSignalsBuilder {
-	m.FaultSignals = faultSignals
-	return m
+func (b *_BACnetConstructedDataFaultSignalsBuilder) WithMandatoryFields(faultSignals []BACnetLiftFaultTagged) BACnetConstructedDataFaultSignalsBuilder {
+	return b.WithFaultSignals(faultSignals...)
 }
 
-func (m *_BACnetConstructedDataFaultSignalsBuilder) Build() (BACnetConstructedDataFaultSignals, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataFaultSignalsBuilder) WithFaultSignals(faultSignals ...BACnetLiftFaultTagged) BACnetConstructedDataFaultSignalsBuilder {
+	b.FaultSignals = faultSignals
+	return b
+}
+
+func (b *_BACnetConstructedDataFaultSignalsBuilder) Build() (BACnetConstructedDataFaultSignals, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataFaultSignals.deepCopy(), nil
+	return b._BACnetConstructedDataFaultSignals.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataFaultSignalsBuilder) MustBuild() BACnetConstructedDataFaultSignals {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataFaultSignalsBuilder) MustBuild() BACnetConstructedDataFaultSignals {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataFaultSignalsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataFaultSignalsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFaultSignalsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFaultSignalsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFaultSignalsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFaultSignalsBuilder().(*_BACnetConstructedDataFaultSignalsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataFaultSignalsBuilder creates a BACnetConstructedDataFaultSignalsBuilder
-func (m *_BACnetConstructedDataFaultSignals) CreateBACnetConstructedDataFaultSignalsBuilder() BACnetConstructedDataFaultSignalsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataFaultSignals) CreateBACnetConstructedDataFaultSignalsBuilder() BACnetConstructedDataFaultSignalsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataFaultSignalsBuilder()
 	}
-	return &_BACnetConstructedDataFaultSignalsBuilder{_BACnetConstructedDataFaultSignals: m.deepCopy()}
+	return &_BACnetConstructedDataFaultSignalsBuilder{_BACnetConstructedDataFaultSignals: b.deepCopy()}
 }
 
 ///////////////////////

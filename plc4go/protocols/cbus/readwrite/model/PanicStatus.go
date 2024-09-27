@@ -96,40 +96,44 @@ type _PanicStatusBuilder struct {
 
 var _ (PanicStatusBuilder) = (*_PanicStatusBuilder)(nil)
 
-func (m *_PanicStatusBuilder) WithMandatoryFields(status uint8) PanicStatusBuilder {
-	return m.WithStatus(status)
+func (b *_PanicStatusBuilder) WithMandatoryFields(status uint8) PanicStatusBuilder {
+	return b.WithStatus(status)
 }
 
-func (m *_PanicStatusBuilder) WithStatus(status uint8) PanicStatusBuilder {
-	m.Status = status
-	return m
+func (b *_PanicStatusBuilder) WithStatus(status uint8) PanicStatusBuilder {
+	b.Status = status
+	return b
 }
 
-func (m *_PanicStatusBuilder) Build() (PanicStatus, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_PanicStatusBuilder) Build() (PanicStatus, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._PanicStatus.deepCopy(), nil
+	return b._PanicStatus.deepCopy(), nil
 }
 
-func (m *_PanicStatusBuilder) MustBuild() PanicStatus {
-	build, err := m.Build()
+func (b *_PanicStatusBuilder) MustBuild() PanicStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PanicStatusBuilder) DeepCopy() any {
-	return m.CreatePanicStatusBuilder()
+func (b *_PanicStatusBuilder) DeepCopy() any {
+	_copy := b.CreatePanicStatusBuilder().(*_PanicStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePanicStatusBuilder creates a PanicStatusBuilder
-func (m *_PanicStatus) CreatePanicStatusBuilder() PanicStatusBuilder {
-	if m == nil {
+func (b *_PanicStatus) CreatePanicStatusBuilder() PanicStatusBuilder {
+	if b == nil {
 		return NewPanicStatusBuilder()
 	}
-	return &_PanicStatusBuilder{_PanicStatus: m.deepCopy()}
+	return &_PanicStatusBuilder{_PanicStatus: b.deepCopy()}
 }
 
 ///////////////////////

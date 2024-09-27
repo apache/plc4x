@@ -104,64 +104,68 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuil
 
 var _ (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
-	return m.WithHeader(header).WithValue(value)
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) Build() (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) Build() (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) MustBuild() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) MustBuild() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder()
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder().(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder creates a BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder{_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder{_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged: b.deepCopy()}
 }
 
 ///////////////////////

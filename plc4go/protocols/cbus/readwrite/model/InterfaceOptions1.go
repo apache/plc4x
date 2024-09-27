@@ -118,65 +118,69 @@ type _InterfaceOptions1Builder struct {
 
 var _ (InterfaceOptions1Builder) = (*_InterfaceOptions1Builder)(nil)
 
-func (m *_InterfaceOptions1Builder) WithMandatoryFields(idmon bool, monitor bool, smart bool, srchk bool, xonXoff bool, connect bool) InterfaceOptions1Builder {
-	return m.WithIdmon(idmon).WithMonitor(monitor).WithSmart(smart).WithSrchk(srchk).WithXonXoff(xonXoff).WithConnect(connect)
+func (b *_InterfaceOptions1Builder) WithMandatoryFields(idmon bool, monitor bool, smart bool, srchk bool, xonXoff bool, connect bool) InterfaceOptions1Builder {
+	return b.WithIdmon(idmon).WithMonitor(monitor).WithSmart(smart).WithSrchk(srchk).WithXonXoff(xonXoff).WithConnect(connect)
 }
 
-func (m *_InterfaceOptions1Builder) WithIdmon(idmon bool) InterfaceOptions1Builder {
-	m.Idmon = idmon
-	return m
+func (b *_InterfaceOptions1Builder) WithIdmon(idmon bool) InterfaceOptions1Builder {
+	b.Idmon = idmon
+	return b
 }
 
-func (m *_InterfaceOptions1Builder) WithMonitor(monitor bool) InterfaceOptions1Builder {
-	m.Monitor = monitor
-	return m
+func (b *_InterfaceOptions1Builder) WithMonitor(monitor bool) InterfaceOptions1Builder {
+	b.Monitor = monitor
+	return b
 }
 
-func (m *_InterfaceOptions1Builder) WithSmart(smart bool) InterfaceOptions1Builder {
-	m.Smart = smart
-	return m
+func (b *_InterfaceOptions1Builder) WithSmart(smart bool) InterfaceOptions1Builder {
+	b.Smart = smart
+	return b
 }
 
-func (m *_InterfaceOptions1Builder) WithSrchk(srchk bool) InterfaceOptions1Builder {
-	m.Srchk = srchk
-	return m
+func (b *_InterfaceOptions1Builder) WithSrchk(srchk bool) InterfaceOptions1Builder {
+	b.Srchk = srchk
+	return b
 }
 
-func (m *_InterfaceOptions1Builder) WithXonXoff(xonXoff bool) InterfaceOptions1Builder {
-	m.XonXoff = xonXoff
-	return m
+func (b *_InterfaceOptions1Builder) WithXonXoff(xonXoff bool) InterfaceOptions1Builder {
+	b.XonXoff = xonXoff
+	return b
 }
 
-func (m *_InterfaceOptions1Builder) WithConnect(connect bool) InterfaceOptions1Builder {
-	m.Connect = connect
-	return m
+func (b *_InterfaceOptions1Builder) WithConnect(connect bool) InterfaceOptions1Builder {
+	b.Connect = connect
+	return b
 }
 
-func (m *_InterfaceOptions1Builder) Build() (InterfaceOptions1, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_InterfaceOptions1Builder) Build() (InterfaceOptions1, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._InterfaceOptions1.deepCopy(), nil
+	return b._InterfaceOptions1.deepCopy(), nil
 }
 
-func (m *_InterfaceOptions1Builder) MustBuild() InterfaceOptions1 {
-	build, err := m.Build()
+func (b *_InterfaceOptions1Builder) MustBuild() InterfaceOptions1 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_InterfaceOptions1Builder) DeepCopy() any {
-	return m.CreateInterfaceOptions1Builder()
+func (b *_InterfaceOptions1Builder) DeepCopy() any {
+	_copy := b.CreateInterfaceOptions1Builder().(*_InterfaceOptions1Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateInterfaceOptions1Builder creates a InterfaceOptions1Builder
-func (m *_InterfaceOptions1) CreateInterfaceOptions1Builder() InterfaceOptions1Builder {
-	if m == nil {
+func (b *_InterfaceOptions1) CreateInterfaceOptions1Builder() InterfaceOptions1Builder {
+	if b == nil {
 		return NewInterfaceOptions1Builder()
 	}
-	return &_InterfaceOptions1Builder{_InterfaceOptions1: m.deepCopy()}
+	return &_InterfaceOptions1Builder{_InterfaceOptions1: b.deepCopy()}
 }
 
 ///////////////////////

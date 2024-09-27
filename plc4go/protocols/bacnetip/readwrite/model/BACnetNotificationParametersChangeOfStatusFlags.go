@@ -107,6 +107,8 @@ type BACnetNotificationParametersChangeOfStatusFlagsBuilder interface {
 	WithInnerOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfStatusFlagsBuilder
 	// WithPresentValue adds PresentValue (property field)
 	WithPresentValue(BACnetConstructedData) BACnetNotificationParametersChangeOfStatusFlagsBuilder
+	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
+	WithPresentValueBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetNotificationParametersChangeOfStatusFlagsBuilder
 	// WithReferencedFlags adds ReferencedFlags (property field)
 	WithReferencedFlags(BACnetStatusFlagsTagged) BACnetNotificationParametersChangeOfStatusFlagsBuilder
 	// WithReferencedFlagsBuilder adds ReferencedFlags (property field) which is build by the builder
@@ -129,123 +131,155 @@ func NewBACnetNotificationParametersChangeOfStatusFlagsBuilder() BACnetNotificat
 type _BACnetNotificationParametersChangeOfStatusFlagsBuilder struct {
 	*_BACnetNotificationParametersChangeOfStatusFlags
 
+	parentBuilder *_BACnetNotificationParametersBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersChangeOfStatusFlagsBuilder) = (*_BACnetNotificationParametersChangeOfStatusFlagsBuilder)(nil)
 
-func (m *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, presentValue BACnetConstructedData, referencedFlags BACnetStatusFlagsTagged, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
-	return m.WithInnerOpeningTag(innerOpeningTag).WithPresentValue(presentValue).WithReferencedFlags(referencedFlags).WithInnerClosingTag(innerClosingTag)
+func (b *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) setParent(contract BACnetNotificationParametersContract) {
+	b.BACnetNotificationParametersContract = contract
 }
 
-func (m *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
-	m.InnerOpeningTag = innerOpeningTag
-	return m
+func (b *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, presentValue BACnetConstructedData, referencedFlags BACnetStatusFlagsTagged, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithPresentValue(presentValue).WithReferencedFlags(referencedFlags).WithInnerClosingTag(innerClosingTag)
 }
 
-func (m *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
-	builder := builderSupplier(m.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.InnerOpeningTag, err = builder.Build()
+	b.InnerOpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithPresentValue(presentValue BACnetConstructedData) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithPresentValue(presentValue BACnetConstructedData) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
+	b.PresentValue = presentValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithReferencedFlags(referencedFlags BACnetStatusFlagsTagged) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
-	m.ReferencedFlags = referencedFlags
-	return m
-}
-
-func (m *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithReferencedFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
-	builder := builderSupplier(m.ReferencedFlags.CreateBACnetStatusFlagsTaggedBuilder())
+func (b *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithPresentValueBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetConstructedDataBuilder())
 	var err error
-	m.ReferencedFlags, err = builder.Build()
+	b.PresentValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
-	m.InnerClosingTag = innerClosingTag
-	return m
+func (b *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithReferencedFlags(referencedFlags BACnetStatusFlagsTagged) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
+	b.ReferencedFlags = referencedFlags
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
-	builder := builderSupplier(m.InnerClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithReferencedFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
+	builder := builderSupplier(b.ReferencedFlags.CreateBACnetStatusFlagsTaggedBuilder())
 	var err error
-	m.InnerClosingTag, err = builder.Build()
+	b.ReferencedFlags, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) Build() (BACnetNotificationParametersChangeOfStatusFlags, error) {
-	if m.InnerOpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
-	}
-	if m.PresentValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
-	}
-	if m.ReferencedFlags == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'referencedFlags' not set"))
-	}
-	if m.InnerClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetNotificationParametersChangeOfStatusFlags.deepCopy(), nil
+func (b *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) MustBuild() BACnetNotificationParametersChangeOfStatusFlags {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfStatusFlagsBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.InnerClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) Build() (BACnetNotificationParametersChangeOfStatusFlags, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+	}
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
+	}
+	if b.ReferencedFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'referencedFlags' not set"))
+	}
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetNotificationParametersChangeOfStatusFlags.deepCopy(), nil
+}
+
+func (b *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) MustBuild() BACnetNotificationParametersChangeOfStatusFlags {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersChangeOfStatusFlagsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) Done() BACnetNotificationParametersBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) buildForBACnetNotificationParameters() (BACnetNotificationParameters, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersChangeOfStatusFlagsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersChangeOfStatusFlagsBuilder().(*_BACnetNotificationParametersChangeOfStatusFlagsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersChangeOfStatusFlagsBuilder creates a BACnetNotificationParametersChangeOfStatusFlagsBuilder
-func (m *_BACnetNotificationParametersChangeOfStatusFlags) CreateBACnetNotificationParametersChangeOfStatusFlagsBuilder() BACnetNotificationParametersChangeOfStatusFlagsBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersChangeOfStatusFlags) CreateBACnetNotificationParametersChangeOfStatusFlagsBuilder() BACnetNotificationParametersChangeOfStatusFlagsBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersChangeOfStatusFlagsBuilder()
 	}
-	return &_BACnetNotificationParametersChangeOfStatusFlagsBuilder{_BACnetNotificationParametersChangeOfStatusFlags: m.deepCopy()}
+	return &_BACnetNotificationParametersChangeOfStatusFlagsBuilder{_BACnetNotificationParametersChangeOfStatusFlags: b.deepCopy()}
 }
 
 ///////////////////////

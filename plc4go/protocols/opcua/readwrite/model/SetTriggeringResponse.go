@@ -114,6 +114,8 @@ type SetTriggeringResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfAddResults int32, addResults []StatusCode, noOfAddDiagnosticInfos int32, addDiagnosticInfos []DiagnosticInfo, noOfRemoveResults int32, removeResults []StatusCode, noOfRemoveDiagnosticInfos int32, removeDiagnosticInfos []DiagnosticInfo) SetTriggeringResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) SetTriggeringResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetTriggeringResponseBuilder
 	// WithNoOfAddResults adds NoOfAddResults (property field)
 	WithNoOfAddResults(int32) SetTriggeringResponseBuilder
 	// WithAddResults adds AddResults (property field)
@@ -144,91 +146,123 @@ func NewSetTriggeringResponseBuilder() SetTriggeringResponseBuilder {
 type _SetTriggeringResponseBuilder struct {
 	*_SetTriggeringResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SetTriggeringResponseBuilder) = (*_SetTriggeringResponseBuilder)(nil)
 
-func (m *_SetTriggeringResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfAddResults int32, addResults []StatusCode, noOfAddDiagnosticInfos int32, addDiagnosticInfos []DiagnosticInfo, noOfRemoveResults int32, removeResults []StatusCode, noOfRemoveDiagnosticInfos int32, removeDiagnosticInfos []DiagnosticInfo) SetTriggeringResponseBuilder {
-	return m.WithResponseHeader(responseHeader).WithNoOfAddResults(noOfAddResults).WithAddResults(addResults...).WithNoOfAddDiagnosticInfos(noOfAddDiagnosticInfos).WithAddDiagnosticInfos(addDiagnosticInfos...).WithNoOfRemoveResults(noOfRemoveResults).WithRemoveResults(removeResults...).WithNoOfRemoveDiagnosticInfos(noOfRemoveDiagnosticInfos).WithRemoveDiagnosticInfos(removeDiagnosticInfos...)
+func (b *_SetTriggeringResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_SetTriggeringResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) SetTriggeringResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_SetTriggeringResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfAddResults int32, addResults []StatusCode, noOfAddDiagnosticInfos int32, addDiagnosticInfos []DiagnosticInfo, noOfRemoveResults int32, removeResults []StatusCode, noOfRemoveDiagnosticInfos int32, removeDiagnosticInfos []DiagnosticInfo) SetTriggeringResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfAddResults(noOfAddResults).WithAddResults(addResults...).WithNoOfAddDiagnosticInfos(noOfAddDiagnosticInfos).WithAddDiagnosticInfos(addDiagnosticInfos...).WithNoOfRemoveResults(noOfRemoveResults).WithRemoveResults(removeResults...).WithNoOfRemoveDiagnosticInfos(noOfRemoveDiagnosticInfos).WithRemoveDiagnosticInfos(removeDiagnosticInfos...)
 }
 
-func (m *_SetTriggeringResponseBuilder) WithNoOfAddResults(noOfAddResults int32) SetTriggeringResponseBuilder {
-	m.NoOfAddResults = noOfAddResults
-	return m
+func (b *_SetTriggeringResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) SetTriggeringResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
 }
 
-func (m *_SetTriggeringResponseBuilder) WithAddResults(addResults ...StatusCode) SetTriggeringResponseBuilder {
-	m.AddResults = addResults
-	return m
-}
-
-func (m *_SetTriggeringResponseBuilder) WithNoOfAddDiagnosticInfos(noOfAddDiagnosticInfos int32) SetTriggeringResponseBuilder {
-	m.NoOfAddDiagnosticInfos = noOfAddDiagnosticInfos
-	return m
-}
-
-func (m *_SetTriggeringResponseBuilder) WithAddDiagnosticInfos(addDiagnosticInfos ...DiagnosticInfo) SetTriggeringResponseBuilder {
-	m.AddDiagnosticInfos = addDiagnosticInfos
-	return m
-}
-
-func (m *_SetTriggeringResponseBuilder) WithNoOfRemoveResults(noOfRemoveResults int32) SetTriggeringResponseBuilder {
-	m.NoOfRemoveResults = noOfRemoveResults
-	return m
-}
-
-func (m *_SetTriggeringResponseBuilder) WithRemoveResults(removeResults ...StatusCode) SetTriggeringResponseBuilder {
-	m.RemoveResults = removeResults
-	return m
-}
-
-func (m *_SetTriggeringResponseBuilder) WithNoOfRemoveDiagnosticInfos(noOfRemoveDiagnosticInfos int32) SetTriggeringResponseBuilder {
-	m.NoOfRemoveDiagnosticInfos = noOfRemoveDiagnosticInfos
-	return m
-}
-
-func (m *_SetTriggeringResponseBuilder) WithRemoveDiagnosticInfos(removeDiagnosticInfos ...DiagnosticInfo) SetTriggeringResponseBuilder {
-	m.RemoveDiagnosticInfos = removeDiagnosticInfos
-	return m
-}
-
-func (m *_SetTriggeringResponseBuilder) Build() (SetTriggeringResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SetTriggeringResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetTriggeringResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._SetTriggeringResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_SetTriggeringResponseBuilder) MustBuild() SetTriggeringResponse {
-	build, err := m.Build()
+func (b *_SetTriggeringResponseBuilder) WithNoOfAddResults(noOfAddResults int32) SetTriggeringResponseBuilder {
+	b.NoOfAddResults = noOfAddResults
+	return b
+}
+
+func (b *_SetTriggeringResponseBuilder) WithAddResults(addResults ...StatusCode) SetTriggeringResponseBuilder {
+	b.AddResults = addResults
+	return b
+}
+
+func (b *_SetTriggeringResponseBuilder) WithNoOfAddDiagnosticInfos(noOfAddDiagnosticInfos int32) SetTriggeringResponseBuilder {
+	b.NoOfAddDiagnosticInfos = noOfAddDiagnosticInfos
+	return b
+}
+
+func (b *_SetTriggeringResponseBuilder) WithAddDiagnosticInfos(addDiagnosticInfos ...DiagnosticInfo) SetTriggeringResponseBuilder {
+	b.AddDiagnosticInfos = addDiagnosticInfos
+	return b
+}
+
+func (b *_SetTriggeringResponseBuilder) WithNoOfRemoveResults(noOfRemoveResults int32) SetTriggeringResponseBuilder {
+	b.NoOfRemoveResults = noOfRemoveResults
+	return b
+}
+
+func (b *_SetTriggeringResponseBuilder) WithRemoveResults(removeResults ...StatusCode) SetTriggeringResponseBuilder {
+	b.RemoveResults = removeResults
+	return b
+}
+
+func (b *_SetTriggeringResponseBuilder) WithNoOfRemoveDiagnosticInfos(noOfRemoveDiagnosticInfos int32) SetTriggeringResponseBuilder {
+	b.NoOfRemoveDiagnosticInfos = noOfRemoveDiagnosticInfos
+	return b
+}
+
+func (b *_SetTriggeringResponseBuilder) WithRemoveDiagnosticInfos(removeDiagnosticInfos ...DiagnosticInfo) SetTriggeringResponseBuilder {
+	b.RemoveDiagnosticInfos = removeDiagnosticInfos
+	return b
+}
+
+func (b *_SetTriggeringResponseBuilder) Build() (SetTriggeringResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SetTriggeringResponse.deepCopy(), nil
+}
+
+func (b *_SetTriggeringResponseBuilder) MustBuild() SetTriggeringResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SetTriggeringResponseBuilder) DeepCopy() any {
-	return m.CreateSetTriggeringResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SetTriggeringResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SetTriggeringResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SetTriggeringResponseBuilder) DeepCopy() any {
+	_copy := b.CreateSetTriggeringResponseBuilder().(*_SetTriggeringResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSetTriggeringResponseBuilder creates a SetTriggeringResponseBuilder
-func (m *_SetTriggeringResponse) CreateSetTriggeringResponseBuilder() SetTriggeringResponseBuilder {
-	if m == nil {
+func (b *_SetTriggeringResponse) CreateSetTriggeringResponseBuilder() SetTriggeringResponseBuilder {
+	if b == nil {
 		return NewSetTriggeringResponseBuilder()
 	}
-	return &_SetTriggeringResponseBuilder{_SetTriggeringResponse: m.deepCopy()}
+	return &_SetTriggeringResponseBuilder{_SetTriggeringResponse: b.deepCopy()}
 }
 
 ///////////////////////

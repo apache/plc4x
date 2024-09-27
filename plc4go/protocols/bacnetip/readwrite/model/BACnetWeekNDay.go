@@ -83,35 +83,39 @@ type _BACnetWeekNDayBuilder struct {
 
 var _ (BACnetWeekNDayBuilder) = (*_BACnetWeekNDayBuilder)(nil)
 
-func (m *_BACnetWeekNDayBuilder) WithMandatoryFields() BACnetWeekNDayBuilder {
-	return m
+func (b *_BACnetWeekNDayBuilder) WithMandatoryFields() BACnetWeekNDayBuilder {
+	return b
 }
 
-func (m *_BACnetWeekNDayBuilder) Build() (BACnetWeekNDay, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetWeekNDayBuilder) Build() (BACnetWeekNDay, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetWeekNDay.deepCopy(), nil
+	return b._BACnetWeekNDay.deepCopy(), nil
 }
 
-func (m *_BACnetWeekNDayBuilder) MustBuild() BACnetWeekNDay {
-	build, err := m.Build()
+func (b *_BACnetWeekNDayBuilder) MustBuild() BACnetWeekNDay {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetWeekNDayBuilder) DeepCopy() any {
-	return m.CreateBACnetWeekNDayBuilder()
+func (b *_BACnetWeekNDayBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetWeekNDayBuilder().(*_BACnetWeekNDayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetWeekNDayBuilder creates a BACnetWeekNDayBuilder
-func (m *_BACnetWeekNDay) CreateBACnetWeekNDayBuilder() BACnetWeekNDayBuilder {
-	if m == nil {
+func (b *_BACnetWeekNDay) CreateBACnetWeekNDayBuilder() BACnetWeekNDayBuilder {
+	if b == nil {
 		return NewBACnetWeekNDayBuilder()
 	}
-	return &_BACnetWeekNDayBuilder{_BACnetWeekNDay: m.deepCopy()}
+	return &_BACnetWeekNDayBuilder{_BACnetWeekNDay: b.deepCopy()}
 }
 
 ///////////////////////

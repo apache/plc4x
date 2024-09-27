@@ -100,64 +100,83 @@ func NewBACnetConstructedDataModificationDateBuilder() BACnetConstructedDataModi
 type _BACnetConstructedDataModificationDateBuilder struct {
 	*_BACnetConstructedDataModificationDate
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataModificationDateBuilder) = (*_BACnetConstructedDataModificationDateBuilder)(nil)
 
-func (m *_BACnetConstructedDataModificationDateBuilder) WithMandatoryFields(modificationDate BACnetDateTime) BACnetConstructedDataModificationDateBuilder {
-	return m.WithModificationDate(modificationDate)
+func (b *_BACnetConstructedDataModificationDateBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataModificationDateBuilder) WithModificationDate(modificationDate BACnetDateTime) BACnetConstructedDataModificationDateBuilder {
-	m.ModificationDate = modificationDate
-	return m
+func (b *_BACnetConstructedDataModificationDateBuilder) WithMandatoryFields(modificationDate BACnetDateTime) BACnetConstructedDataModificationDateBuilder {
+	return b.WithModificationDate(modificationDate)
 }
 
-func (m *_BACnetConstructedDataModificationDateBuilder) WithModificationDateBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataModificationDateBuilder {
-	builder := builderSupplier(m.ModificationDate.CreateBACnetDateTimeBuilder())
+func (b *_BACnetConstructedDataModificationDateBuilder) WithModificationDate(modificationDate BACnetDateTime) BACnetConstructedDataModificationDateBuilder {
+	b.ModificationDate = modificationDate
+	return b
+}
+
+func (b *_BACnetConstructedDataModificationDateBuilder) WithModificationDateBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataModificationDateBuilder {
+	builder := builderSupplier(b.ModificationDate.CreateBACnetDateTimeBuilder())
 	var err error
-	m.ModificationDate, err = builder.Build()
+	b.ModificationDate, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataModificationDateBuilder) Build() (BACnetConstructedDataModificationDate, error) {
-	if m.ModificationDate == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataModificationDateBuilder) Build() (BACnetConstructedDataModificationDate, error) {
+	if b.ModificationDate == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'modificationDate' not set"))
+		b.err.Append(errors.New("mandatory field 'modificationDate' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataModificationDate.deepCopy(), nil
+	return b._BACnetConstructedDataModificationDate.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataModificationDateBuilder) MustBuild() BACnetConstructedDataModificationDate {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataModificationDateBuilder) MustBuild() BACnetConstructedDataModificationDate {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataModificationDateBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataModificationDateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataModificationDateBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataModificationDateBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataModificationDateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataModificationDateBuilder().(*_BACnetConstructedDataModificationDateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataModificationDateBuilder creates a BACnetConstructedDataModificationDateBuilder
-func (m *_BACnetConstructedDataModificationDate) CreateBACnetConstructedDataModificationDateBuilder() BACnetConstructedDataModificationDateBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataModificationDate) CreateBACnetConstructedDataModificationDateBuilder() BACnetConstructedDataModificationDateBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataModificationDateBuilder()
 	}
-	return &_BACnetConstructedDataModificationDateBuilder{_BACnetConstructedDataModificationDate: m.deepCopy()}
+	return &_BACnetConstructedDataModificationDateBuilder{_BACnetConstructedDataModificationDate: b.deepCopy()}
 }
 
 ///////////////////////

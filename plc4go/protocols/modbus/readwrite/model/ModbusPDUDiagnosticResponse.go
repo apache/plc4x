@@ -99,50 +99,69 @@ func NewModbusPDUDiagnosticResponseBuilder() ModbusPDUDiagnosticResponseBuilder 
 type _ModbusPDUDiagnosticResponseBuilder struct {
 	*_ModbusPDUDiagnosticResponse
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUDiagnosticResponseBuilder) = (*_ModbusPDUDiagnosticResponseBuilder)(nil)
 
-func (m *_ModbusPDUDiagnosticResponseBuilder) WithMandatoryFields(subFunction uint16, data uint16) ModbusPDUDiagnosticResponseBuilder {
-	return m.WithSubFunction(subFunction).WithData(data)
+func (b *_ModbusPDUDiagnosticResponseBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUDiagnosticResponseBuilder) WithSubFunction(subFunction uint16) ModbusPDUDiagnosticResponseBuilder {
-	m.SubFunction = subFunction
-	return m
+func (b *_ModbusPDUDiagnosticResponseBuilder) WithMandatoryFields(subFunction uint16, data uint16) ModbusPDUDiagnosticResponseBuilder {
+	return b.WithSubFunction(subFunction).WithData(data)
 }
 
-func (m *_ModbusPDUDiagnosticResponseBuilder) WithData(data uint16) ModbusPDUDiagnosticResponseBuilder {
-	m.Data = data
-	return m
+func (b *_ModbusPDUDiagnosticResponseBuilder) WithSubFunction(subFunction uint16) ModbusPDUDiagnosticResponseBuilder {
+	b.SubFunction = subFunction
+	return b
 }
 
-func (m *_ModbusPDUDiagnosticResponseBuilder) Build() (ModbusPDUDiagnosticResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUDiagnosticResponseBuilder) WithData(data uint16) ModbusPDUDiagnosticResponseBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ModbusPDUDiagnosticResponseBuilder) Build() (ModbusPDUDiagnosticResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUDiagnosticResponse.deepCopy(), nil
+	return b._ModbusPDUDiagnosticResponse.deepCopy(), nil
 }
 
-func (m *_ModbusPDUDiagnosticResponseBuilder) MustBuild() ModbusPDUDiagnosticResponse {
-	build, err := m.Build()
+func (b *_ModbusPDUDiagnosticResponseBuilder) MustBuild() ModbusPDUDiagnosticResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUDiagnosticResponseBuilder) DeepCopy() any {
-	return m.CreateModbusPDUDiagnosticResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUDiagnosticResponseBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUDiagnosticResponseBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUDiagnosticResponseBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUDiagnosticResponseBuilder().(*_ModbusPDUDiagnosticResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUDiagnosticResponseBuilder creates a ModbusPDUDiagnosticResponseBuilder
-func (m *_ModbusPDUDiagnosticResponse) CreateModbusPDUDiagnosticResponseBuilder() ModbusPDUDiagnosticResponseBuilder {
-	if m == nil {
+func (b *_ModbusPDUDiagnosticResponse) CreateModbusPDUDiagnosticResponseBuilder() ModbusPDUDiagnosticResponseBuilder {
+	if b == nil {
 		return NewModbusPDUDiagnosticResponseBuilder()
 	}
-	return &_ModbusPDUDiagnosticResponseBuilder{_ModbusPDUDiagnosticResponse: m.deepCopy()}
+	return &_ModbusPDUDiagnosticResponseBuilder{_ModbusPDUDiagnosticResponse: b.deepCopy()}
 }
 
 ///////////////////////

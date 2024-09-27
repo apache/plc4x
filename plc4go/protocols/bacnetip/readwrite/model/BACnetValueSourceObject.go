@@ -98,64 +98,83 @@ func NewBACnetValueSourceObjectBuilder() BACnetValueSourceObjectBuilder {
 type _BACnetValueSourceObjectBuilder struct {
 	*_BACnetValueSourceObject
 
+	parentBuilder *_BACnetValueSourceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetValueSourceObjectBuilder) = (*_BACnetValueSourceObjectBuilder)(nil)
 
-func (m *_BACnetValueSourceObjectBuilder) WithMandatoryFields(object BACnetDeviceObjectReferenceEnclosed) BACnetValueSourceObjectBuilder {
-	return m.WithObject(object)
+func (b *_BACnetValueSourceObjectBuilder) setParent(contract BACnetValueSourceContract) {
+	b.BACnetValueSourceContract = contract
 }
 
-func (m *_BACnetValueSourceObjectBuilder) WithObject(object BACnetDeviceObjectReferenceEnclosed) BACnetValueSourceObjectBuilder {
-	m.Object = object
-	return m
+func (b *_BACnetValueSourceObjectBuilder) WithMandatoryFields(object BACnetDeviceObjectReferenceEnclosed) BACnetValueSourceObjectBuilder {
+	return b.WithObject(object)
 }
 
-func (m *_BACnetValueSourceObjectBuilder) WithObjectBuilder(builderSupplier func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetValueSourceObjectBuilder {
-	builder := builderSupplier(m.Object.CreateBACnetDeviceObjectReferenceEnclosedBuilder())
+func (b *_BACnetValueSourceObjectBuilder) WithObject(object BACnetDeviceObjectReferenceEnclosed) BACnetValueSourceObjectBuilder {
+	b.Object = object
+	return b
+}
+
+func (b *_BACnetValueSourceObjectBuilder) WithObjectBuilder(builderSupplier func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetValueSourceObjectBuilder {
+	builder := builderSupplier(b.Object.CreateBACnetDeviceObjectReferenceEnclosedBuilder())
 	var err error
-	m.Object, err = builder.Build()
+	b.Object, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetValueSourceObjectBuilder) Build() (BACnetValueSourceObject, error) {
-	if m.Object == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetValueSourceObjectBuilder) Build() (BACnetValueSourceObject, error) {
+	if b.Object == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'object' not set"))
+		b.err.Append(errors.New("mandatory field 'object' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetValueSourceObject.deepCopy(), nil
+	return b._BACnetValueSourceObject.deepCopy(), nil
 }
 
-func (m *_BACnetValueSourceObjectBuilder) MustBuild() BACnetValueSourceObject {
-	build, err := m.Build()
+func (b *_BACnetValueSourceObjectBuilder) MustBuild() BACnetValueSourceObject {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetValueSourceObjectBuilder) DeepCopy() any {
-	return m.CreateBACnetValueSourceObjectBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetValueSourceObjectBuilder) Done() BACnetValueSourceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetValueSourceObjectBuilder) buildForBACnetValueSource() (BACnetValueSource, error) {
+	return b.Build()
+}
+
+func (b *_BACnetValueSourceObjectBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetValueSourceObjectBuilder().(*_BACnetValueSourceObjectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetValueSourceObjectBuilder creates a BACnetValueSourceObjectBuilder
-func (m *_BACnetValueSourceObject) CreateBACnetValueSourceObjectBuilder() BACnetValueSourceObjectBuilder {
-	if m == nil {
+func (b *_BACnetValueSourceObject) CreateBACnetValueSourceObjectBuilder() BACnetValueSourceObjectBuilder {
+	if b == nil {
 		return NewBACnetValueSourceObjectBuilder()
 	}
-	return &_BACnetValueSourceObjectBuilder{_BACnetValueSourceObject: m.deepCopy()}
+	return &_BACnetValueSourceObjectBuilder{_BACnetValueSourceObject: b.deepCopy()}
 }
 
 ///////////////////////

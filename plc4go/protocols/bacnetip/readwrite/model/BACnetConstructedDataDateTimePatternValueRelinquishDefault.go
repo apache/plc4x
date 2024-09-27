@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder() BACn
 type _BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder struct {
 	*_BACnetConstructedDataDateTimePatternValueRelinquishDefault
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) = (*_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder)(nil)
 
-func (m *_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetDateTime) BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder {
-	return m.WithRelinquishDefault(relinquishDefault)
+func (b *_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetDateTime) BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder {
-	m.RelinquishDefault = relinquishDefault
-	return m
+func (b *_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetDateTime) BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder {
+	return b.WithRelinquishDefault(relinquishDefault)
 }
 
-func (m *_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder {
-	builder := builderSupplier(m.RelinquishDefault.CreateBACnetDateTimeBuilder())
+func (b *_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetDateTime) BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder {
+	b.RelinquishDefault = relinquishDefault
+	return b
+}
+
+func (b *_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder {
+	builder := builderSupplier(b.RelinquishDefault.CreateBACnetDateTimeBuilder())
 	var err error
-	m.RelinquishDefault, err = builder.Build()
+	b.RelinquishDefault, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) Build() (BACnetConstructedDataDateTimePatternValueRelinquishDefault, error) {
-	if m.RelinquishDefault == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) Build() (BACnetConstructedDataDateTimePatternValueRelinquishDefault, error) {
+	if b.RelinquishDefault == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
+		b.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDateTimePatternValueRelinquishDefault.deepCopy(), nil
+	return b._BACnetConstructedDataDateTimePatternValueRelinquishDefault.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataDateTimePatternValueRelinquishDefault {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataDateTimePatternValueRelinquishDefault {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder().(*_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder creates a BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder
-func (m *_BACnetConstructedDataDateTimePatternValueRelinquishDefault) CreateBACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder() BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDateTimePatternValueRelinquishDefault) CreateBACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder() BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder()
 	}
-	return &_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder{_BACnetConstructedDataDateTimePatternValueRelinquishDefault: m.deepCopy()}
+	return &_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder{_BACnetConstructedDataDateTimePatternValueRelinquishDefault: b.deepCopy()}
 }
 
 ///////////////////////

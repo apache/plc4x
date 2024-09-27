@@ -93,45 +93,64 @@ func NewBACnetConstructedDataTrendLogLogBufferBuilder() BACnetConstructedDataTre
 type _BACnetConstructedDataTrendLogLogBufferBuilder struct {
 	*_BACnetConstructedDataTrendLogLogBuffer
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataTrendLogLogBufferBuilder) = (*_BACnetConstructedDataTrendLogLogBufferBuilder)(nil)
 
-func (m *_BACnetConstructedDataTrendLogLogBufferBuilder) WithMandatoryFields(floorText []BACnetLogRecord) BACnetConstructedDataTrendLogLogBufferBuilder {
-	return m.WithFloorText(floorText...)
+func (b *_BACnetConstructedDataTrendLogLogBufferBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataTrendLogLogBufferBuilder) WithFloorText(floorText ...BACnetLogRecord) BACnetConstructedDataTrendLogLogBufferBuilder {
-	m.FloorText = floorText
-	return m
+func (b *_BACnetConstructedDataTrendLogLogBufferBuilder) WithMandatoryFields(floorText []BACnetLogRecord) BACnetConstructedDataTrendLogLogBufferBuilder {
+	return b.WithFloorText(floorText...)
 }
 
-func (m *_BACnetConstructedDataTrendLogLogBufferBuilder) Build() (BACnetConstructedDataTrendLogLogBuffer, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataTrendLogLogBufferBuilder) WithFloorText(floorText ...BACnetLogRecord) BACnetConstructedDataTrendLogLogBufferBuilder {
+	b.FloorText = floorText
+	return b
+}
+
+func (b *_BACnetConstructedDataTrendLogLogBufferBuilder) Build() (BACnetConstructedDataTrendLogLogBuffer, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataTrendLogLogBuffer.deepCopy(), nil
+	return b._BACnetConstructedDataTrendLogLogBuffer.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataTrendLogLogBufferBuilder) MustBuild() BACnetConstructedDataTrendLogLogBuffer {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataTrendLogLogBufferBuilder) MustBuild() BACnetConstructedDataTrendLogLogBuffer {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataTrendLogLogBufferBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataTrendLogLogBufferBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTrendLogLogBufferBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTrendLogLogBufferBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTrendLogLogBufferBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTrendLogLogBufferBuilder().(*_BACnetConstructedDataTrendLogLogBufferBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataTrendLogLogBufferBuilder creates a BACnetConstructedDataTrendLogLogBufferBuilder
-func (m *_BACnetConstructedDataTrendLogLogBuffer) CreateBACnetConstructedDataTrendLogLogBufferBuilder() BACnetConstructedDataTrendLogLogBufferBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataTrendLogLogBuffer) CreateBACnetConstructedDataTrendLogLogBufferBuilder() BACnetConstructedDataTrendLogLogBufferBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataTrendLogLogBufferBuilder()
 	}
-	return &_BACnetConstructedDataTrendLogLogBufferBuilder{_BACnetConstructedDataTrendLogLogBuffer: m.deepCopy()}
+	return &_BACnetConstructedDataTrendLogLogBufferBuilder{_BACnetConstructedDataTrendLogLogBuffer: b.deepCopy()}
 }
 
 ///////////////////////

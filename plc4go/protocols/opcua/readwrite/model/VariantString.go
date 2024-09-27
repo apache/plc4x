@@ -99,50 +99,69 @@ func NewVariantStringBuilder() VariantStringBuilder {
 type _VariantStringBuilder struct {
 	*_VariantString
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantStringBuilder) = (*_VariantStringBuilder)(nil)
 
-func (m *_VariantStringBuilder) WithMandatoryFields(value []PascalString) VariantStringBuilder {
-	return m.WithValue(value...)
+func (b *_VariantStringBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantStringBuilder) WithOptionalArrayLength(arrayLength int32) VariantStringBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantStringBuilder) WithMandatoryFields(value []PascalString) VariantStringBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantStringBuilder) WithValue(value ...PascalString) VariantStringBuilder {
-	m.Value = value
-	return m
+func (b *_VariantStringBuilder) WithOptionalArrayLength(arrayLength int32) VariantStringBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantStringBuilder) Build() (VariantString, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantStringBuilder) WithValue(value ...PascalString) VariantStringBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantStringBuilder) Build() (VariantString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantString.deepCopy(), nil
+	return b._VariantString.deepCopy(), nil
 }
 
-func (m *_VariantStringBuilder) MustBuild() VariantString {
-	build, err := m.Build()
+func (b *_VariantStringBuilder) MustBuild() VariantString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantStringBuilder) DeepCopy() any {
-	return m.CreateVariantStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantStringBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantStringBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantStringBuilder) DeepCopy() any {
+	_copy := b.CreateVariantStringBuilder().(*_VariantStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantStringBuilder creates a VariantStringBuilder
-func (m *_VariantString) CreateVariantStringBuilder() VariantStringBuilder {
-	if m == nil {
+func (b *_VariantString) CreateVariantStringBuilder() VariantStringBuilder {
+	if b == nil {
 		return NewVariantStringBuilder()
 	}
-	return &_VariantStringBuilder{_VariantString: m.deepCopy()}
+	return &_VariantStringBuilder{_VariantString: b.deepCopy()}
 }
 
 ///////////////////////

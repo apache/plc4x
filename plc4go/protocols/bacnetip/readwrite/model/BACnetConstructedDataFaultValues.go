@@ -103,63 +103,82 @@ func NewBACnetConstructedDataFaultValuesBuilder() BACnetConstructedDataFaultValu
 type _BACnetConstructedDataFaultValuesBuilder struct {
 	*_BACnetConstructedDataFaultValues
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataFaultValuesBuilder) = (*_BACnetConstructedDataFaultValuesBuilder)(nil)
 
-func (m *_BACnetConstructedDataFaultValuesBuilder) WithMandatoryFields(faultValues []BACnetLifeSafetyStateTagged) BACnetConstructedDataFaultValuesBuilder {
-	return m.WithFaultValues(faultValues...)
+func (b *_BACnetConstructedDataFaultValuesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataFaultValuesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFaultValuesBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataFaultValuesBuilder) WithMandatoryFields(faultValues []BACnetLifeSafetyStateTagged) BACnetConstructedDataFaultValuesBuilder {
+	return b.WithFaultValues(faultValues...)
 }
 
-func (m *_BACnetConstructedDataFaultValuesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFaultValuesBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataFaultValuesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFaultValuesBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataFaultValuesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFaultValuesBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataFaultValuesBuilder) WithFaultValues(faultValues ...BACnetLifeSafetyStateTagged) BACnetConstructedDataFaultValuesBuilder {
-	m.FaultValues = faultValues
-	return m
+func (b *_BACnetConstructedDataFaultValuesBuilder) WithFaultValues(faultValues ...BACnetLifeSafetyStateTagged) BACnetConstructedDataFaultValuesBuilder {
+	b.FaultValues = faultValues
+	return b
 }
 
-func (m *_BACnetConstructedDataFaultValuesBuilder) Build() (BACnetConstructedDataFaultValues, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataFaultValuesBuilder) Build() (BACnetConstructedDataFaultValues, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataFaultValues.deepCopy(), nil
+	return b._BACnetConstructedDataFaultValues.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataFaultValuesBuilder) MustBuild() BACnetConstructedDataFaultValues {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataFaultValuesBuilder) MustBuild() BACnetConstructedDataFaultValues {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataFaultValuesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataFaultValuesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFaultValuesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFaultValuesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFaultValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFaultValuesBuilder().(*_BACnetConstructedDataFaultValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataFaultValuesBuilder creates a BACnetConstructedDataFaultValuesBuilder
-func (m *_BACnetConstructedDataFaultValues) CreateBACnetConstructedDataFaultValuesBuilder() BACnetConstructedDataFaultValuesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataFaultValues) CreateBACnetConstructedDataFaultValuesBuilder() BACnetConstructedDataFaultValuesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataFaultValuesBuilder()
 	}
-	return &_BACnetConstructedDataFaultValuesBuilder{_BACnetConstructedDataFaultValues: m.deepCopy()}
+	return &_BACnetConstructedDataFaultValuesBuilder{_BACnetConstructedDataFaultValues: b.deepCopy()}
 }
 
 ///////////////////////

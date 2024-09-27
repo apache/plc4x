@@ -83,35 +83,39 @@ type _StructureBuilder struct {
 
 var _ (StructureBuilder) = (*_StructureBuilder)(nil)
 
-func (m *_StructureBuilder) WithMandatoryFields() StructureBuilder {
-	return m
+func (b *_StructureBuilder) WithMandatoryFields() StructureBuilder {
+	return b
 }
 
-func (m *_StructureBuilder) Build() (Structure, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_StructureBuilder) Build() (Structure, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Structure.deepCopy(), nil
+	return b._Structure.deepCopy(), nil
 }
 
-func (m *_StructureBuilder) MustBuild() Structure {
-	build, err := m.Build()
+func (b *_StructureBuilder) MustBuild() Structure {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_StructureBuilder) DeepCopy() any {
-	return m.CreateStructureBuilder()
+func (b *_StructureBuilder) DeepCopy() any {
+	_copy := b.CreateStructureBuilder().(*_StructureBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateStructureBuilder creates a StructureBuilder
-func (m *_Structure) CreateStructureBuilder() StructureBuilder {
-	if m == nil {
+func (b *_Structure) CreateStructureBuilder() StructureBuilder {
+	if b == nil {
 		return NewStructureBuilder()
 	}
-	return &_StructureBuilder{_Structure: m.deepCopy()}
+	return &_StructureBuilder{_Structure: b.deepCopy()}
 }
 
 ///////////////////////

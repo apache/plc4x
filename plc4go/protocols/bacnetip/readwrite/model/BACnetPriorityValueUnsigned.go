@@ -98,64 +98,83 @@ func NewBACnetPriorityValueUnsignedBuilder() BACnetPriorityValueUnsignedBuilder 
 type _BACnetPriorityValueUnsignedBuilder struct {
 	*_BACnetPriorityValueUnsigned
 
+	parentBuilder *_BACnetPriorityValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPriorityValueUnsignedBuilder) = (*_BACnetPriorityValueUnsignedBuilder)(nil)
 
-func (m *_BACnetPriorityValueUnsignedBuilder) WithMandatoryFields(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetPriorityValueUnsignedBuilder {
-	return m.WithUnsignedValue(unsignedValue)
+func (b *_BACnetPriorityValueUnsignedBuilder) setParent(contract BACnetPriorityValueContract) {
+	b.BACnetPriorityValueContract = contract
 }
 
-func (m *_BACnetPriorityValueUnsignedBuilder) WithUnsignedValue(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetPriorityValueUnsignedBuilder {
-	m.UnsignedValue = unsignedValue
-	return m
+func (b *_BACnetPriorityValueUnsignedBuilder) WithMandatoryFields(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetPriorityValueUnsignedBuilder {
+	return b.WithUnsignedValue(unsignedValue)
 }
 
-func (m *_BACnetPriorityValueUnsignedBuilder) WithUnsignedValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetPriorityValueUnsignedBuilder {
-	builder := builderSupplier(m.UnsignedValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetPriorityValueUnsignedBuilder) WithUnsignedValue(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetPriorityValueUnsignedBuilder {
+	b.UnsignedValue = unsignedValue
+	return b
+}
+
+func (b *_BACnetPriorityValueUnsignedBuilder) WithUnsignedValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetPriorityValueUnsignedBuilder {
+	builder := builderSupplier(b.UnsignedValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.UnsignedValue, err = builder.Build()
+	b.UnsignedValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPriorityValueUnsignedBuilder) Build() (BACnetPriorityValueUnsigned, error) {
-	if m.UnsignedValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPriorityValueUnsignedBuilder) Build() (BACnetPriorityValueUnsigned, error) {
+	if b.UnsignedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'unsignedValue' not set"))
+		b.err.Append(errors.New("mandatory field 'unsignedValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPriorityValueUnsigned.deepCopy(), nil
+	return b._BACnetPriorityValueUnsigned.deepCopy(), nil
 }
 
-func (m *_BACnetPriorityValueUnsignedBuilder) MustBuild() BACnetPriorityValueUnsigned {
-	build, err := m.Build()
+func (b *_BACnetPriorityValueUnsignedBuilder) MustBuild() BACnetPriorityValueUnsigned {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPriorityValueUnsignedBuilder) DeepCopy() any {
-	return m.CreateBACnetPriorityValueUnsignedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPriorityValueUnsignedBuilder) Done() BACnetPriorityValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPriorityValueUnsignedBuilder) buildForBACnetPriorityValue() (BACnetPriorityValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPriorityValueUnsignedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityValueUnsignedBuilder().(*_BACnetPriorityValueUnsignedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPriorityValueUnsignedBuilder creates a BACnetPriorityValueUnsignedBuilder
-func (m *_BACnetPriorityValueUnsigned) CreateBACnetPriorityValueUnsignedBuilder() BACnetPriorityValueUnsignedBuilder {
-	if m == nil {
+func (b *_BACnetPriorityValueUnsigned) CreateBACnetPriorityValueUnsignedBuilder() BACnetPriorityValueUnsignedBuilder {
+	if b == nil {
 		return NewBACnetPriorityValueUnsignedBuilder()
 	}
-	return &_BACnetPriorityValueUnsignedBuilder{_BACnetPriorityValueUnsigned: m.deepCopy()}
+	return &_BACnetPriorityValueUnsignedBuilder{_BACnetPriorityValueUnsigned: b.deepCopy()}
 }
 
 ///////////////////////

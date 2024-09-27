@@ -85,6 +85,8 @@ type CBusPointToMultiPointCommandStatusBuilder interface {
 	WithMandatoryFields(statusRequest StatusRequest) CBusPointToMultiPointCommandStatusBuilder
 	// WithStatusRequest adds StatusRequest (property field)
 	WithStatusRequest(StatusRequest) CBusPointToMultiPointCommandStatusBuilder
+	// WithStatusRequestBuilder adds StatusRequest (property field) which is build by the builder
+	WithStatusRequestBuilder(func(StatusRequestBuilder) StatusRequestBuilder) CBusPointToMultiPointCommandStatusBuilder
 	// Build builds the CBusPointToMultiPointCommandStatus or returns an error if something is wrong
 	Build() (CBusPointToMultiPointCommandStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -99,51 +101,83 @@ func NewCBusPointToMultiPointCommandStatusBuilder() CBusPointToMultiPointCommand
 type _CBusPointToMultiPointCommandStatusBuilder struct {
 	*_CBusPointToMultiPointCommandStatus
 
+	parentBuilder *_CBusPointToMultiPointCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CBusPointToMultiPointCommandStatusBuilder) = (*_CBusPointToMultiPointCommandStatusBuilder)(nil)
 
-func (m *_CBusPointToMultiPointCommandStatusBuilder) WithMandatoryFields(statusRequest StatusRequest) CBusPointToMultiPointCommandStatusBuilder {
-	return m.WithStatusRequest(statusRequest)
+func (b *_CBusPointToMultiPointCommandStatusBuilder) setParent(contract CBusPointToMultiPointCommandContract) {
+	b.CBusPointToMultiPointCommandContract = contract
 }
 
-func (m *_CBusPointToMultiPointCommandStatusBuilder) WithStatusRequest(statusRequest StatusRequest) CBusPointToMultiPointCommandStatusBuilder {
-	m.StatusRequest = statusRequest
-	return m
+func (b *_CBusPointToMultiPointCommandStatusBuilder) WithMandatoryFields(statusRequest StatusRequest) CBusPointToMultiPointCommandStatusBuilder {
+	return b.WithStatusRequest(statusRequest)
 }
 
-func (m *_CBusPointToMultiPointCommandStatusBuilder) Build() (CBusPointToMultiPointCommandStatus, error) {
-	if m.StatusRequest == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CBusPointToMultiPointCommandStatusBuilder) WithStatusRequest(statusRequest StatusRequest) CBusPointToMultiPointCommandStatusBuilder {
+	b.StatusRequest = statusRequest
+	return b
+}
+
+func (b *_CBusPointToMultiPointCommandStatusBuilder) WithStatusRequestBuilder(builderSupplier func(StatusRequestBuilder) StatusRequestBuilder) CBusPointToMultiPointCommandStatusBuilder {
+	builder := builderSupplier(b.StatusRequest.CreateStatusRequestBuilder())
+	var err error
+	b.StatusRequest, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'statusRequest' not set"))
+		b.err.Append(errors.Wrap(err, "StatusRequestBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._CBusPointToMultiPointCommandStatus.deepCopy(), nil
+	return b
 }
 
-func (m *_CBusPointToMultiPointCommandStatusBuilder) MustBuild() CBusPointToMultiPointCommandStatus {
-	build, err := m.Build()
+func (b *_CBusPointToMultiPointCommandStatusBuilder) Build() (CBusPointToMultiPointCommandStatus, error) {
+	if b.StatusRequest == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'statusRequest' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CBusPointToMultiPointCommandStatus.deepCopy(), nil
+}
+
+func (b *_CBusPointToMultiPointCommandStatusBuilder) MustBuild() CBusPointToMultiPointCommandStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CBusPointToMultiPointCommandStatusBuilder) DeepCopy() any {
-	return m.CreateCBusPointToMultiPointCommandStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CBusPointToMultiPointCommandStatusBuilder) Done() CBusPointToMultiPointCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CBusPointToMultiPointCommandStatusBuilder) buildForCBusPointToMultiPointCommand() (CBusPointToMultiPointCommand, error) {
+	return b.Build()
+}
+
+func (b *_CBusPointToMultiPointCommandStatusBuilder) DeepCopy() any {
+	_copy := b.CreateCBusPointToMultiPointCommandStatusBuilder().(*_CBusPointToMultiPointCommandStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCBusPointToMultiPointCommandStatusBuilder creates a CBusPointToMultiPointCommandStatusBuilder
-func (m *_CBusPointToMultiPointCommandStatus) CreateCBusPointToMultiPointCommandStatusBuilder() CBusPointToMultiPointCommandStatusBuilder {
-	if m == nil {
+func (b *_CBusPointToMultiPointCommandStatus) CreateCBusPointToMultiPointCommandStatusBuilder() CBusPointToMultiPointCommandStatusBuilder {
+	if b == nil {
 		return NewCBusPointToMultiPointCommandStatusBuilder()
 	}
-	return &_CBusPointToMultiPointCommandStatusBuilder{_CBusPointToMultiPointCommandStatus: m.deepCopy()}
+	return &_CBusPointToMultiPointCommandStatusBuilder{_CBusPointToMultiPointCommandStatus: b.deepCopy()}
 }
 
 ///////////////////////

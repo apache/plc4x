@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDateTimePatternValuePresentValueBuilder() BACnetCon
 type _BACnetConstructedDataDateTimePatternValuePresentValueBuilder struct {
 	*_BACnetConstructedDataDateTimePatternValuePresentValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDateTimePatternValuePresentValueBuilder) = (*_BACnetConstructedDataDateTimePatternValuePresentValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataDateTimePatternValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetDateTime) BACnetConstructedDataDateTimePatternValuePresentValueBuilder {
-	return m.WithPresentValue(presentValue)
+func (b *_BACnetConstructedDataDateTimePatternValuePresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDateTimePatternValuePresentValueBuilder) WithPresentValue(presentValue BACnetDateTime) BACnetConstructedDataDateTimePatternValuePresentValueBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetConstructedDataDateTimePatternValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetDateTime) BACnetConstructedDataDateTimePatternValuePresentValueBuilder {
+	return b.WithPresentValue(presentValue)
 }
 
-func (m *_BACnetConstructedDataDateTimePatternValuePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataDateTimePatternValuePresentValueBuilder {
-	builder := builderSupplier(m.PresentValue.CreateBACnetDateTimeBuilder())
+func (b *_BACnetConstructedDataDateTimePatternValuePresentValueBuilder) WithPresentValue(presentValue BACnetDateTime) BACnetConstructedDataDateTimePatternValuePresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataDateTimePatternValuePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataDateTimePatternValuePresentValueBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetDateTimeBuilder())
 	var err error
-	m.PresentValue, err = builder.Build()
+	b.PresentValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDateTimePatternValuePresentValueBuilder) Build() (BACnetConstructedDataDateTimePatternValuePresentValue, error) {
-	if m.PresentValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDateTimePatternValuePresentValueBuilder) Build() (BACnetConstructedDataDateTimePatternValuePresentValue, error) {
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDateTimePatternValuePresentValue.deepCopy(), nil
+	return b._BACnetConstructedDataDateTimePatternValuePresentValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDateTimePatternValuePresentValueBuilder) MustBuild() BACnetConstructedDataDateTimePatternValuePresentValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDateTimePatternValuePresentValueBuilder) MustBuild() BACnetConstructedDataDateTimePatternValuePresentValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDateTimePatternValuePresentValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDateTimePatternValuePresentValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDateTimePatternValuePresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDateTimePatternValuePresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDateTimePatternValuePresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDateTimePatternValuePresentValueBuilder().(*_BACnetConstructedDataDateTimePatternValuePresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDateTimePatternValuePresentValueBuilder creates a BACnetConstructedDataDateTimePatternValuePresentValueBuilder
-func (m *_BACnetConstructedDataDateTimePatternValuePresentValue) CreateBACnetConstructedDataDateTimePatternValuePresentValueBuilder() BACnetConstructedDataDateTimePatternValuePresentValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDateTimePatternValuePresentValue) CreateBACnetConstructedDataDateTimePatternValuePresentValueBuilder() BACnetConstructedDataDateTimePatternValuePresentValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDateTimePatternValuePresentValueBuilder()
 	}
-	return &_BACnetConstructedDataDateTimePatternValuePresentValueBuilder{_BACnetConstructedDataDateTimePatternValuePresentValue: m.deepCopy()}
+	return &_BACnetConstructedDataDateTimePatternValuePresentValueBuilder{_BACnetConstructedDataDateTimePatternValuePresentValue: b.deepCopy()}
 }
 
 ///////////////////////

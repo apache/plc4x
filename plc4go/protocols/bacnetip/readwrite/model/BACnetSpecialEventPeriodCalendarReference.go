@@ -98,64 +98,83 @@ func NewBACnetSpecialEventPeriodCalendarReferenceBuilder() BACnetSpecialEventPer
 type _BACnetSpecialEventPeriodCalendarReferenceBuilder struct {
 	*_BACnetSpecialEventPeriodCalendarReference
 
+	parentBuilder *_BACnetSpecialEventPeriodBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetSpecialEventPeriodCalendarReferenceBuilder) = (*_BACnetSpecialEventPeriodCalendarReferenceBuilder)(nil)
 
-func (m *_BACnetSpecialEventPeriodCalendarReferenceBuilder) WithMandatoryFields(calendarReference BACnetContextTagObjectIdentifier) BACnetSpecialEventPeriodCalendarReferenceBuilder {
-	return m.WithCalendarReference(calendarReference)
+func (b *_BACnetSpecialEventPeriodCalendarReferenceBuilder) setParent(contract BACnetSpecialEventPeriodContract) {
+	b.BACnetSpecialEventPeriodContract = contract
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarReferenceBuilder) WithCalendarReference(calendarReference BACnetContextTagObjectIdentifier) BACnetSpecialEventPeriodCalendarReferenceBuilder {
-	m.CalendarReference = calendarReference
-	return m
+func (b *_BACnetSpecialEventPeriodCalendarReferenceBuilder) WithMandatoryFields(calendarReference BACnetContextTagObjectIdentifier) BACnetSpecialEventPeriodCalendarReferenceBuilder {
+	return b.WithCalendarReference(calendarReference)
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarReferenceBuilder) WithCalendarReferenceBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetSpecialEventPeriodCalendarReferenceBuilder {
-	builder := builderSupplier(m.CalendarReference.CreateBACnetContextTagObjectIdentifierBuilder())
+func (b *_BACnetSpecialEventPeriodCalendarReferenceBuilder) WithCalendarReference(calendarReference BACnetContextTagObjectIdentifier) BACnetSpecialEventPeriodCalendarReferenceBuilder {
+	b.CalendarReference = calendarReference
+	return b
+}
+
+func (b *_BACnetSpecialEventPeriodCalendarReferenceBuilder) WithCalendarReferenceBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetSpecialEventPeriodCalendarReferenceBuilder {
+	builder := builderSupplier(b.CalendarReference.CreateBACnetContextTagObjectIdentifierBuilder())
 	var err error
-	m.CalendarReference, err = builder.Build()
+	b.CalendarReference, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarReferenceBuilder) Build() (BACnetSpecialEventPeriodCalendarReference, error) {
-	if m.CalendarReference == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetSpecialEventPeriodCalendarReferenceBuilder) Build() (BACnetSpecialEventPeriodCalendarReference, error) {
+	if b.CalendarReference == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'calendarReference' not set"))
+		b.err.Append(errors.New("mandatory field 'calendarReference' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetSpecialEventPeriodCalendarReference.deepCopy(), nil
+	return b._BACnetSpecialEventPeriodCalendarReference.deepCopy(), nil
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarReferenceBuilder) MustBuild() BACnetSpecialEventPeriodCalendarReference {
-	build, err := m.Build()
+func (b *_BACnetSpecialEventPeriodCalendarReferenceBuilder) MustBuild() BACnetSpecialEventPeriodCalendarReference {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarReferenceBuilder) DeepCopy() any {
-	return m.CreateBACnetSpecialEventPeriodCalendarReferenceBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetSpecialEventPeriodCalendarReferenceBuilder) Done() BACnetSpecialEventPeriodBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetSpecialEventPeriodCalendarReferenceBuilder) buildForBACnetSpecialEventPeriod() (BACnetSpecialEventPeriod, error) {
+	return b.Build()
+}
+
+func (b *_BACnetSpecialEventPeriodCalendarReferenceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetSpecialEventPeriodCalendarReferenceBuilder().(*_BACnetSpecialEventPeriodCalendarReferenceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetSpecialEventPeriodCalendarReferenceBuilder creates a BACnetSpecialEventPeriodCalendarReferenceBuilder
-func (m *_BACnetSpecialEventPeriodCalendarReference) CreateBACnetSpecialEventPeriodCalendarReferenceBuilder() BACnetSpecialEventPeriodCalendarReferenceBuilder {
-	if m == nil {
+func (b *_BACnetSpecialEventPeriodCalendarReference) CreateBACnetSpecialEventPeriodCalendarReferenceBuilder() BACnetSpecialEventPeriodCalendarReferenceBuilder {
+	if b == nil {
 		return NewBACnetSpecialEventPeriodCalendarReferenceBuilder()
 	}
-	return &_BACnetSpecialEventPeriodCalendarReferenceBuilder{_BACnetSpecialEventPeriodCalendarReference: m.deepCopy()}
+	return &_BACnetSpecialEventPeriodCalendarReferenceBuilder{_BACnetSpecialEventPeriodCalendarReference: b.deepCopy()}
 }
 
 ///////////////////////

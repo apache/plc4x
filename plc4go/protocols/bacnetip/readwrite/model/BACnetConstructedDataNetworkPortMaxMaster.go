@@ -100,64 +100,83 @@ func NewBACnetConstructedDataNetworkPortMaxMasterBuilder() BACnetConstructedData
 type _BACnetConstructedDataNetworkPortMaxMasterBuilder struct {
 	*_BACnetConstructedDataNetworkPortMaxMaster
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataNetworkPortMaxMasterBuilder) = (*_BACnetConstructedDataNetworkPortMaxMasterBuilder)(nil)
 
-func (m *_BACnetConstructedDataNetworkPortMaxMasterBuilder) WithMandatoryFields(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkPortMaxMasterBuilder {
-	return m.WithMaxMaster(maxMaster)
+func (b *_BACnetConstructedDataNetworkPortMaxMasterBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataNetworkPortMaxMasterBuilder) WithMaxMaster(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkPortMaxMasterBuilder {
-	m.MaxMaster = maxMaster
-	return m
+func (b *_BACnetConstructedDataNetworkPortMaxMasterBuilder) WithMandatoryFields(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkPortMaxMasterBuilder {
+	return b.WithMaxMaster(maxMaster)
 }
 
-func (m *_BACnetConstructedDataNetworkPortMaxMasterBuilder) WithMaxMasterBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNetworkPortMaxMasterBuilder {
-	builder := builderSupplier(m.MaxMaster.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataNetworkPortMaxMasterBuilder) WithMaxMaster(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkPortMaxMasterBuilder {
+	b.MaxMaster = maxMaster
+	return b
+}
+
+func (b *_BACnetConstructedDataNetworkPortMaxMasterBuilder) WithMaxMasterBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNetworkPortMaxMasterBuilder {
+	builder := builderSupplier(b.MaxMaster.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.MaxMaster, err = builder.Build()
+	b.MaxMaster, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataNetworkPortMaxMasterBuilder) Build() (BACnetConstructedDataNetworkPortMaxMaster, error) {
-	if m.MaxMaster == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataNetworkPortMaxMasterBuilder) Build() (BACnetConstructedDataNetworkPortMaxMaster, error) {
+	if b.MaxMaster == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'maxMaster' not set"))
+		b.err.Append(errors.New("mandatory field 'maxMaster' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataNetworkPortMaxMaster.deepCopy(), nil
+	return b._BACnetConstructedDataNetworkPortMaxMaster.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataNetworkPortMaxMasterBuilder) MustBuild() BACnetConstructedDataNetworkPortMaxMaster {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataNetworkPortMaxMasterBuilder) MustBuild() BACnetConstructedDataNetworkPortMaxMaster {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataNetworkPortMaxMasterBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataNetworkPortMaxMasterBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNetworkPortMaxMasterBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNetworkPortMaxMasterBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNetworkPortMaxMasterBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNetworkPortMaxMasterBuilder().(*_BACnetConstructedDataNetworkPortMaxMasterBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataNetworkPortMaxMasterBuilder creates a BACnetConstructedDataNetworkPortMaxMasterBuilder
-func (m *_BACnetConstructedDataNetworkPortMaxMaster) CreateBACnetConstructedDataNetworkPortMaxMasterBuilder() BACnetConstructedDataNetworkPortMaxMasterBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataNetworkPortMaxMaster) CreateBACnetConstructedDataNetworkPortMaxMasterBuilder() BACnetConstructedDataNetworkPortMaxMasterBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataNetworkPortMaxMasterBuilder()
 	}
-	return &_BACnetConstructedDataNetworkPortMaxMasterBuilder{_BACnetConstructedDataNetworkPortMaxMaster: m.deepCopy()}
+	return &_BACnetConstructedDataNetworkPortMaxMasterBuilder{_BACnetConstructedDataNetworkPortMaxMaster: b.deepCopy()}
 }
 
 ///////////////////////

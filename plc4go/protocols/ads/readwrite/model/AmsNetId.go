@@ -115,65 +115,69 @@ type _AmsNetIdBuilder struct {
 
 var _ (AmsNetIdBuilder) = (*_AmsNetIdBuilder)(nil)
 
-func (m *_AmsNetIdBuilder) WithMandatoryFields(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 uint8, octet6 uint8) AmsNetIdBuilder {
-	return m.WithOctet1(octet1).WithOctet2(octet2).WithOctet3(octet3).WithOctet4(octet4).WithOctet5(octet5).WithOctet6(octet6)
+func (b *_AmsNetIdBuilder) WithMandatoryFields(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 uint8, octet6 uint8) AmsNetIdBuilder {
+	return b.WithOctet1(octet1).WithOctet2(octet2).WithOctet3(octet3).WithOctet4(octet4).WithOctet5(octet5).WithOctet6(octet6)
 }
 
-func (m *_AmsNetIdBuilder) WithOctet1(octet1 uint8) AmsNetIdBuilder {
-	m.Octet1 = octet1
-	return m
+func (b *_AmsNetIdBuilder) WithOctet1(octet1 uint8) AmsNetIdBuilder {
+	b.Octet1 = octet1
+	return b
 }
 
-func (m *_AmsNetIdBuilder) WithOctet2(octet2 uint8) AmsNetIdBuilder {
-	m.Octet2 = octet2
-	return m
+func (b *_AmsNetIdBuilder) WithOctet2(octet2 uint8) AmsNetIdBuilder {
+	b.Octet2 = octet2
+	return b
 }
 
-func (m *_AmsNetIdBuilder) WithOctet3(octet3 uint8) AmsNetIdBuilder {
-	m.Octet3 = octet3
-	return m
+func (b *_AmsNetIdBuilder) WithOctet3(octet3 uint8) AmsNetIdBuilder {
+	b.Octet3 = octet3
+	return b
 }
 
-func (m *_AmsNetIdBuilder) WithOctet4(octet4 uint8) AmsNetIdBuilder {
-	m.Octet4 = octet4
-	return m
+func (b *_AmsNetIdBuilder) WithOctet4(octet4 uint8) AmsNetIdBuilder {
+	b.Octet4 = octet4
+	return b
 }
 
-func (m *_AmsNetIdBuilder) WithOctet5(octet5 uint8) AmsNetIdBuilder {
-	m.Octet5 = octet5
-	return m
+func (b *_AmsNetIdBuilder) WithOctet5(octet5 uint8) AmsNetIdBuilder {
+	b.Octet5 = octet5
+	return b
 }
 
-func (m *_AmsNetIdBuilder) WithOctet6(octet6 uint8) AmsNetIdBuilder {
-	m.Octet6 = octet6
-	return m
+func (b *_AmsNetIdBuilder) WithOctet6(octet6 uint8) AmsNetIdBuilder {
+	b.Octet6 = octet6
+	return b
 }
 
-func (m *_AmsNetIdBuilder) Build() (AmsNetId, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AmsNetIdBuilder) Build() (AmsNetId, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AmsNetId.deepCopy(), nil
+	return b._AmsNetId.deepCopy(), nil
 }
 
-func (m *_AmsNetIdBuilder) MustBuild() AmsNetId {
-	build, err := m.Build()
+func (b *_AmsNetIdBuilder) MustBuild() AmsNetId {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AmsNetIdBuilder) DeepCopy() any {
-	return m.CreateAmsNetIdBuilder()
+func (b *_AmsNetIdBuilder) DeepCopy() any {
+	_copy := b.CreateAmsNetIdBuilder().(*_AmsNetIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAmsNetIdBuilder creates a AmsNetIdBuilder
-func (m *_AmsNetId) CreateAmsNetIdBuilder() AmsNetIdBuilder {
-	if m == nil {
+func (b *_AmsNetId) CreateAmsNetIdBuilder() AmsNetIdBuilder {
+	if b == nil {
 		return NewAmsNetIdBuilder()
 	}
-	return &_AmsNetIdBuilder{_AmsNetId: m.deepCopy()}
+	return &_AmsNetIdBuilder{_AmsNetId: b.deepCopy()}
 }
 
 ///////////////////////

@@ -93,45 +93,64 @@ func NewSysexCommandExtendedIdBuilder() SysexCommandExtendedIdBuilder {
 type _SysexCommandExtendedIdBuilder struct {
 	*_SysexCommandExtendedId
 
+	parentBuilder *_SysexCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SysexCommandExtendedIdBuilder) = (*_SysexCommandExtendedIdBuilder)(nil)
 
-func (m *_SysexCommandExtendedIdBuilder) WithMandatoryFields(id []int8) SysexCommandExtendedIdBuilder {
-	return m.WithId(id...)
+func (b *_SysexCommandExtendedIdBuilder) setParent(contract SysexCommandContract) {
+	b.SysexCommandContract = contract
 }
 
-func (m *_SysexCommandExtendedIdBuilder) WithId(id ...int8) SysexCommandExtendedIdBuilder {
-	m.Id = id
-	return m
+func (b *_SysexCommandExtendedIdBuilder) WithMandatoryFields(id []int8) SysexCommandExtendedIdBuilder {
+	return b.WithId(id...)
 }
 
-func (m *_SysexCommandExtendedIdBuilder) Build() (SysexCommandExtendedId, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SysexCommandExtendedIdBuilder) WithId(id ...int8) SysexCommandExtendedIdBuilder {
+	b.Id = id
+	return b
+}
+
+func (b *_SysexCommandExtendedIdBuilder) Build() (SysexCommandExtendedId, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SysexCommandExtendedId.deepCopy(), nil
+	return b._SysexCommandExtendedId.deepCopy(), nil
 }
 
-func (m *_SysexCommandExtendedIdBuilder) MustBuild() SysexCommandExtendedId {
-	build, err := m.Build()
+func (b *_SysexCommandExtendedIdBuilder) MustBuild() SysexCommandExtendedId {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SysexCommandExtendedIdBuilder) DeepCopy() any {
-	return m.CreateSysexCommandExtendedIdBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SysexCommandExtendedIdBuilder) Done() SysexCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SysexCommandExtendedIdBuilder) buildForSysexCommand() (SysexCommand, error) {
+	return b.Build()
+}
+
+func (b *_SysexCommandExtendedIdBuilder) DeepCopy() any {
+	_copy := b.CreateSysexCommandExtendedIdBuilder().(*_SysexCommandExtendedIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSysexCommandExtendedIdBuilder creates a SysexCommandExtendedIdBuilder
-func (m *_SysexCommandExtendedId) CreateSysexCommandExtendedIdBuilder() SysexCommandExtendedIdBuilder {
-	if m == nil {
+func (b *_SysexCommandExtendedId) CreateSysexCommandExtendedIdBuilder() SysexCommandExtendedIdBuilder {
+	if b == nil {
 		return NewSysexCommandExtendedIdBuilder()
 	}
-	return &_SysexCommandExtendedIdBuilder{_SysexCommandExtendedId: m.deepCopy()}
+	return &_SysexCommandExtendedIdBuilder{_SysexCommandExtendedId: b.deepCopy()}
 }
 
 ///////////////////////

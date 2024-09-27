@@ -92,10 +92,39 @@ type LightingDataBuilder interface {
 	WithMandatoryFields(commandTypeContainer LightingCommandTypeContainer) LightingDataBuilder
 	// WithCommandTypeContainer adds CommandTypeContainer (property field)
 	WithCommandTypeContainer(LightingCommandTypeContainer) LightingDataBuilder
+	// AsLightingDataOff converts this build to a subType of LightingData. It is always possible to return to current builder using Done()
+	AsLightingDataOff() interface {
+		LightingDataOffBuilder
+		Done() LightingDataBuilder
+	}
+	// AsLightingDataOn converts this build to a subType of LightingData. It is always possible to return to current builder using Done()
+	AsLightingDataOn() interface {
+		LightingDataOnBuilder
+		Done() LightingDataBuilder
+	}
+	// AsLightingDataRampToLevel converts this build to a subType of LightingData. It is always possible to return to current builder using Done()
+	AsLightingDataRampToLevel() interface {
+		LightingDataRampToLevelBuilder
+		Done() LightingDataBuilder
+	}
+	// AsLightingDataTerminateRamp converts this build to a subType of LightingData. It is always possible to return to current builder using Done()
+	AsLightingDataTerminateRamp() interface {
+		LightingDataTerminateRampBuilder
+		Done() LightingDataBuilder
+	}
+	// AsLightingDataLabel converts this build to a subType of LightingData. It is always possible to return to current builder using Done()
+	AsLightingDataLabel() interface {
+		LightingDataLabelBuilder
+		Done() LightingDataBuilder
+	}
 	// Build builds the LightingData or returns an error if something is wrong
-	Build() (LightingDataContract, error)
+	PartialBuild() (LightingDataContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() LightingDataContract
+	PartialMustBuild() LightingDataContract
+	// Build builds the LightingData or returns an error if something is wrong
+	Build() (LightingData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LightingData
 }
 
 // NewLightingDataBuilder() creates a LightingDataBuilder
@@ -103,48 +132,162 @@ func NewLightingDataBuilder() LightingDataBuilder {
 	return &_LightingDataBuilder{_LightingData: new(_LightingData)}
 }
 
+type _LightingDataChildBuilder interface {
+	utils.Copyable
+	setParent(LightingDataContract)
+	buildForLightingData() (LightingData, error)
+}
+
 type _LightingDataBuilder struct {
 	*_LightingData
+
+	childBuilder _LightingDataChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (LightingDataBuilder) = (*_LightingDataBuilder)(nil)
 
-func (m *_LightingDataBuilder) WithMandatoryFields(commandTypeContainer LightingCommandTypeContainer) LightingDataBuilder {
-	return m.WithCommandTypeContainer(commandTypeContainer)
+func (b *_LightingDataBuilder) WithMandatoryFields(commandTypeContainer LightingCommandTypeContainer) LightingDataBuilder {
+	return b.WithCommandTypeContainer(commandTypeContainer)
 }
 
-func (m *_LightingDataBuilder) WithCommandTypeContainer(commandTypeContainer LightingCommandTypeContainer) LightingDataBuilder {
-	m.CommandTypeContainer = commandTypeContainer
-	return m
+func (b *_LightingDataBuilder) WithCommandTypeContainer(commandTypeContainer LightingCommandTypeContainer) LightingDataBuilder {
+	b.CommandTypeContainer = commandTypeContainer
+	return b
 }
 
-func (m *_LightingDataBuilder) Build() (LightingDataContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_LightingDataBuilder) PartialBuild() (LightingDataContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LightingData.deepCopy(), nil
+	return b._LightingData.deepCopy(), nil
 }
 
-func (m *_LightingDataBuilder) MustBuild() LightingDataContract {
-	build, err := m.Build()
+func (b *_LightingDataBuilder) PartialMustBuild() LightingDataContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LightingDataBuilder) DeepCopy() any {
-	return m.CreateLightingDataBuilder()
+func (b *_LightingDataBuilder) AsLightingDataOff() interface {
+	LightingDataOffBuilder
+	Done() LightingDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LightingDataOffBuilder
+		Done() LightingDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLightingDataOffBuilder().(*_LightingDataOffBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LightingDataBuilder) AsLightingDataOn() interface {
+	LightingDataOnBuilder
+	Done() LightingDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LightingDataOnBuilder
+		Done() LightingDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLightingDataOnBuilder().(*_LightingDataOnBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LightingDataBuilder) AsLightingDataRampToLevel() interface {
+	LightingDataRampToLevelBuilder
+	Done() LightingDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LightingDataRampToLevelBuilder
+		Done() LightingDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLightingDataRampToLevelBuilder().(*_LightingDataRampToLevelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LightingDataBuilder) AsLightingDataTerminateRamp() interface {
+	LightingDataTerminateRampBuilder
+	Done() LightingDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LightingDataTerminateRampBuilder
+		Done() LightingDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLightingDataTerminateRampBuilder().(*_LightingDataTerminateRampBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LightingDataBuilder) AsLightingDataLabel() interface {
+	LightingDataLabelBuilder
+	Done() LightingDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LightingDataLabelBuilder
+		Done() LightingDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLightingDataLabelBuilder().(*_LightingDataLabelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LightingDataBuilder) Build() (LightingData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForLightingData()
+}
+
+func (b *_LightingDataBuilder) MustBuild() LightingData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_LightingDataBuilder) DeepCopy() any {
+	_copy := b.CreateLightingDataBuilder().(*_LightingDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_LightingDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLightingDataBuilder creates a LightingDataBuilder
-func (m *_LightingData) CreateLightingDataBuilder() LightingDataBuilder {
-	if m == nil {
+func (b *_LightingData) CreateLightingDataBuilder() LightingDataBuilder {
+	if b == nil {
 		return NewLightingDataBuilder()
 	}
-	return &_LightingDataBuilder{_LightingData: m.deepCopy()}
+	return &_LightingDataBuilder{_LightingData: b.deepCopy()}
 }
 
 ///////////////////////

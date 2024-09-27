@@ -98,6 +98,8 @@ type ModifyMonitoredItemsRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, timestampsToReturn TimestampsToReturn, noOfItemsToModify int32, itemsToModify []ExtensionObjectDefinition) ModifyMonitoredItemsRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) ModifyMonitoredItemsRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ModifyMonitoredItemsRequestBuilder
 	// WithSubscriptionId adds SubscriptionId (property field)
 	WithSubscriptionId(uint32) ModifyMonitoredItemsRequestBuilder
 	// WithTimestampsToReturn adds TimestampsToReturn (property field)
@@ -120,71 +122,103 @@ func NewModifyMonitoredItemsRequestBuilder() ModifyMonitoredItemsRequestBuilder 
 type _ModifyMonitoredItemsRequestBuilder struct {
 	*_ModifyMonitoredItemsRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModifyMonitoredItemsRequestBuilder) = (*_ModifyMonitoredItemsRequestBuilder)(nil)
 
-func (m *_ModifyMonitoredItemsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, timestampsToReturn TimestampsToReturn, noOfItemsToModify int32, itemsToModify []ExtensionObjectDefinition) ModifyMonitoredItemsRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithTimestampsToReturn(timestampsToReturn).WithNoOfItemsToModify(noOfItemsToModify).WithItemsToModify(itemsToModify...)
+func (b *_ModifyMonitoredItemsRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ModifyMonitoredItemsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) ModifyMonitoredItemsRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_ModifyMonitoredItemsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, timestampsToReturn TimestampsToReturn, noOfItemsToModify int32, itemsToModify []ExtensionObjectDefinition) ModifyMonitoredItemsRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithTimestampsToReturn(timestampsToReturn).WithNoOfItemsToModify(noOfItemsToModify).WithItemsToModify(itemsToModify...)
 }
 
-func (m *_ModifyMonitoredItemsRequestBuilder) WithSubscriptionId(subscriptionId uint32) ModifyMonitoredItemsRequestBuilder {
-	m.SubscriptionId = subscriptionId
-	return m
+func (b *_ModifyMonitoredItemsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) ModifyMonitoredItemsRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_ModifyMonitoredItemsRequestBuilder) WithTimestampsToReturn(timestampsToReturn TimestampsToReturn) ModifyMonitoredItemsRequestBuilder {
-	m.TimestampsToReturn = timestampsToReturn
-	return m
-}
-
-func (m *_ModifyMonitoredItemsRequestBuilder) WithNoOfItemsToModify(noOfItemsToModify int32) ModifyMonitoredItemsRequestBuilder {
-	m.NoOfItemsToModify = noOfItemsToModify
-	return m
-}
-
-func (m *_ModifyMonitoredItemsRequestBuilder) WithItemsToModify(itemsToModify ...ExtensionObjectDefinition) ModifyMonitoredItemsRequestBuilder {
-	m.ItemsToModify = itemsToModify
-	return m
-}
-
-func (m *_ModifyMonitoredItemsRequestBuilder) Build() (ModifyMonitoredItemsRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ModifyMonitoredItemsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ModifyMonitoredItemsRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._ModifyMonitoredItemsRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_ModifyMonitoredItemsRequestBuilder) MustBuild() ModifyMonitoredItemsRequest {
-	build, err := m.Build()
+func (b *_ModifyMonitoredItemsRequestBuilder) WithSubscriptionId(subscriptionId uint32) ModifyMonitoredItemsRequestBuilder {
+	b.SubscriptionId = subscriptionId
+	return b
+}
+
+func (b *_ModifyMonitoredItemsRequestBuilder) WithTimestampsToReturn(timestampsToReturn TimestampsToReturn) ModifyMonitoredItemsRequestBuilder {
+	b.TimestampsToReturn = timestampsToReturn
+	return b
+}
+
+func (b *_ModifyMonitoredItemsRequestBuilder) WithNoOfItemsToModify(noOfItemsToModify int32) ModifyMonitoredItemsRequestBuilder {
+	b.NoOfItemsToModify = noOfItemsToModify
+	return b
+}
+
+func (b *_ModifyMonitoredItemsRequestBuilder) WithItemsToModify(itemsToModify ...ExtensionObjectDefinition) ModifyMonitoredItemsRequestBuilder {
+	b.ItemsToModify = itemsToModify
+	return b
+}
+
+func (b *_ModifyMonitoredItemsRequestBuilder) Build() (ModifyMonitoredItemsRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ModifyMonitoredItemsRequest.deepCopy(), nil
+}
+
+func (b *_ModifyMonitoredItemsRequestBuilder) MustBuild() ModifyMonitoredItemsRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModifyMonitoredItemsRequestBuilder) DeepCopy() any {
-	return m.CreateModifyMonitoredItemsRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModifyMonitoredItemsRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModifyMonitoredItemsRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ModifyMonitoredItemsRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModifyMonitoredItemsRequestBuilder().(*_ModifyMonitoredItemsRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModifyMonitoredItemsRequestBuilder creates a ModifyMonitoredItemsRequestBuilder
-func (m *_ModifyMonitoredItemsRequest) CreateModifyMonitoredItemsRequestBuilder() ModifyMonitoredItemsRequestBuilder {
-	if m == nil {
+func (b *_ModifyMonitoredItemsRequest) CreateModifyMonitoredItemsRequestBuilder() ModifyMonitoredItemsRequestBuilder {
+	if b == nil {
 		return NewModifyMonitoredItemsRequestBuilder()
 	}
-	return &_ModifyMonitoredItemsRequestBuilder{_ModifyMonitoredItemsRequest: m.deepCopy()}
+	return &_ModifyMonitoredItemsRequestBuilder{_ModifyMonitoredItemsRequest: b.deepCopy()}
 }
 
 ///////////////////////

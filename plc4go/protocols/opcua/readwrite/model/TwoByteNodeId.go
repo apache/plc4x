@@ -90,40 +90,44 @@ type _TwoByteNodeIdBuilder struct {
 
 var _ (TwoByteNodeIdBuilder) = (*_TwoByteNodeIdBuilder)(nil)
 
-func (m *_TwoByteNodeIdBuilder) WithMandatoryFields(identifier uint8) TwoByteNodeIdBuilder {
-	return m.WithIdentifier(identifier)
+func (b *_TwoByteNodeIdBuilder) WithMandatoryFields(identifier uint8) TwoByteNodeIdBuilder {
+	return b.WithIdentifier(identifier)
 }
 
-func (m *_TwoByteNodeIdBuilder) WithIdentifier(identifier uint8) TwoByteNodeIdBuilder {
-	m.Identifier = identifier
-	return m
+func (b *_TwoByteNodeIdBuilder) WithIdentifier(identifier uint8) TwoByteNodeIdBuilder {
+	b.Identifier = identifier
+	return b
 }
 
-func (m *_TwoByteNodeIdBuilder) Build() (TwoByteNodeId, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TwoByteNodeIdBuilder) Build() (TwoByteNodeId, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TwoByteNodeId.deepCopy(), nil
+	return b._TwoByteNodeId.deepCopy(), nil
 }
 
-func (m *_TwoByteNodeIdBuilder) MustBuild() TwoByteNodeId {
-	build, err := m.Build()
+func (b *_TwoByteNodeIdBuilder) MustBuild() TwoByteNodeId {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TwoByteNodeIdBuilder) DeepCopy() any {
-	return m.CreateTwoByteNodeIdBuilder()
+func (b *_TwoByteNodeIdBuilder) DeepCopy() any {
+	_copy := b.CreateTwoByteNodeIdBuilder().(*_TwoByteNodeIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTwoByteNodeIdBuilder creates a TwoByteNodeIdBuilder
-func (m *_TwoByteNodeId) CreateTwoByteNodeIdBuilder() TwoByteNodeIdBuilder {
-	if m == nil {
+func (b *_TwoByteNodeId) CreateTwoByteNodeIdBuilder() TwoByteNodeIdBuilder {
+	if b == nil {
 		return NewTwoByteNodeIdBuilder()
 	}
-	return &_TwoByteNodeIdBuilder{_TwoByteNodeId: m.deepCopy()}
+	return &_TwoByteNodeIdBuilder{_TwoByteNodeId: b.deepCopy()}
 }
 
 ///////////////////////

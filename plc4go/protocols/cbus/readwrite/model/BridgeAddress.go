@@ -90,40 +90,44 @@ type _BridgeAddressBuilder struct {
 
 var _ (BridgeAddressBuilder) = (*_BridgeAddressBuilder)(nil)
 
-func (m *_BridgeAddressBuilder) WithMandatoryFields(address byte) BridgeAddressBuilder {
-	return m.WithAddress(address)
+func (b *_BridgeAddressBuilder) WithMandatoryFields(address byte) BridgeAddressBuilder {
+	return b.WithAddress(address)
 }
 
-func (m *_BridgeAddressBuilder) WithAddress(address byte) BridgeAddressBuilder {
-	m.Address = address
-	return m
+func (b *_BridgeAddressBuilder) WithAddress(address byte) BridgeAddressBuilder {
+	b.Address = address
+	return b
 }
 
-func (m *_BridgeAddressBuilder) Build() (BridgeAddress, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BridgeAddressBuilder) Build() (BridgeAddress, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BridgeAddress.deepCopy(), nil
+	return b._BridgeAddress.deepCopy(), nil
 }
 
-func (m *_BridgeAddressBuilder) MustBuild() BridgeAddress {
-	build, err := m.Build()
+func (b *_BridgeAddressBuilder) MustBuild() BridgeAddress {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BridgeAddressBuilder) DeepCopy() any {
-	return m.CreateBridgeAddressBuilder()
+func (b *_BridgeAddressBuilder) DeepCopy() any {
+	_copy := b.CreateBridgeAddressBuilder().(*_BridgeAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBridgeAddressBuilder creates a BridgeAddressBuilder
-func (m *_BridgeAddress) CreateBridgeAddressBuilder() BridgeAddressBuilder {
-	if m == nil {
+func (b *_BridgeAddress) CreateBridgeAddressBuilder() BridgeAddressBuilder {
+	if b == nil {
 		return NewBridgeAddressBuilder()
 	}
-	return &_BridgeAddressBuilder{_BridgeAddress: m.deepCopy()}
+	return &_BridgeAddressBuilder{_BridgeAddress: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetContextTagRealBuilder() BACnetContextTagRealBuilder {
 type _BACnetContextTagRealBuilder struct {
 	*_BACnetContextTagReal
 
+	parentBuilder *_BACnetContextTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetContextTagRealBuilder) = (*_BACnetContextTagRealBuilder)(nil)
 
-func (m *_BACnetContextTagRealBuilder) WithMandatoryFields(payload BACnetTagPayloadReal) BACnetContextTagRealBuilder {
-	return m.WithPayload(payload)
+func (b *_BACnetContextTagRealBuilder) setParent(contract BACnetContextTagContract) {
+	b.BACnetContextTagContract = contract
 }
 
-func (m *_BACnetContextTagRealBuilder) WithPayload(payload BACnetTagPayloadReal) BACnetContextTagRealBuilder {
-	m.Payload = payload
-	return m
+func (b *_BACnetContextTagRealBuilder) WithMandatoryFields(payload BACnetTagPayloadReal) BACnetContextTagRealBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_BACnetContextTagRealBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadRealBuilder) BACnetTagPayloadRealBuilder) BACnetContextTagRealBuilder {
-	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadRealBuilder())
+func (b *_BACnetContextTagRealBuilder) WithPayload(payload BACnetTagPayloadReal) BACnetContextTagRealBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetContextTagRealBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadRealBuilder) BACnetTagPayloadRealBuilder) BACnetContextTagRealBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadRealBuilder())
 	var err error
-	m.Payload, err = builder.Build()
+	b.Payload, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagPayloadRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetContextTagRealBuilder) Build() (BACnetContextTagReal, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetContextTagRealBuilder) Build() (BACnetContextTagReal, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetContextTagReal.deepCopy(), nil
+	return b._BACnetContextTagReal.deepCopy(), nil
 }
 
-func (m *_BACnetContextTagRealBuilder) MustBuild() BACnetContextTagReal {
-	build, err := m.Build()
+func (b *_BACnetContextTagRealBuilder) MustBuild() BACnetContextTagReal {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetContextTagRealBuilder) DeepCopy() any {
-	return m.CreateBACnetContextTagRealBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetContextTagRealBuilder) Done() BACnetContextTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetContextTagRealBuilder) buildForBACnetContextTag() (BACnetContextTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetContextTagRealBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetContextTagRealBuilder().(*_BACnetContextTagRealBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetContextTagRealBuilder creates a BACnetContextTagRealBuilder
-func (m *_BACnetContextTagReal) CreateBACnetContextTagRealBuilder() BACnetContextTagRealBuilder {
-	if m == nil {
+func (b *_BACnetContextTagReal) CreateBACnetContextTagRealBuilder() BACnetContextTagRealBuilder {
+	if b == nil {
 		return NewBACnetContextTagRealBuilder()
 	}
-	return &_BACnetContextTagRealBuilder{_BACnetContextTagReal: m.deepCopy()}
+	return &_BACnetContextTagRealBuilder{_BACnetContextTagReal: b.deepCopy()}
 }
 
 ///////////////////////

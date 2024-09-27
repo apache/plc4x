@@ -121,98 +121,117 @@ func NewQueryDataSetBuilder() QueryDataSetBuilder {
 type _QueryDataSetBuilder struct {
 	*_QueryDataSet
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (QueryDataSetBuilder) = (*_QueryDataSetBuilder)(nil)
 
-func (m *_QueryDataSetBuilder) WithMandatoryFields(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) QueryDataSetBuilder {
-	return m.WithNodeId(nodeId).WithTypeDefinitionNode(typeDefinitionNode).WithNoOfValues(noOfValues).WithValues(values...)
+func (b *_QueryDataSetBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_QueryDataSetBuilder) WithNodeId(nodeId ExpandedNodeId) QueryDataSetBuilder {
-	m.NodeId = nodeId
-	return m
+func (b *_QueryDataSetBuilder) WithMandatoryFields(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) QueryDataSetBuilder {
+	return b.WithNodeId(nodeId).WithTypeDefinitionNode(typeDefinitionNode).WithNoOfValues(noOfValues).WithValues(values...)
 }
 
-func (m *_QueryDataSetBuilder) WithNodeIdBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) QueryDataSetBuilder {
-	builder := builderSupplier(m.NodeId.CreateExpandedNodeIdBuilder())
+func (b *_QueryDataSetBuilder) WithNodeId(nodeId ExpandedNodeId) QueryDataSetBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_QueryDataSetBuilder) WithNodeIdBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) QueryDataSetBuilder {
+	builder := builderSupplier(b.NodeId.CreateExpandedNodeIdBuilder())
 	var err error
-	m.NodeId, err = builder.Build()
+	b.NodeId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_QueryDataSetBuilder) WithTypeDefinitionNode(typeDefinitionNode ExpandedNodeId) QueryDataSetBuilder {
-	m.TypeDefinitionNode = typeDefinitionNode
-	return m
+func (b *_QueryDataSetBuilder) WithTypeDefinitionNode(typeDefinitionNode ExpandedNodeId) QueryDataSetBuilder {
+	b.TypeDefinitionNode = typeDefinitionNode
+	return b
 }
 
-func (m *_QueryDataSetBuilder) WithTypeDefinitionNodeBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) QueryDataSetBuilder {
-	builder := builderSupplier(m.TypeDefinitionNode.CreateExpandedNodeIdBuilder())
+func (b *_QueryDataSetBuilder) WithTypeDefinitionNodeBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) QueryDataSetBuilder {
+	builder := builderSupplier(b.TypeDefinitionNode.CreateExpandedNodeIdBuilder())
 	var err error
-	m.TypeDefinitionNode, err = builder.Build()
+	b.TypeDefinitionNode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_QueryDataSetBuilder) WithNoOfValues(noOfValues int32) QueryDataSetBuilder {
-	m.NoOfValues = noOfValues
-	return m
+func (b *_QueryDataSetBuilder) WithNoOfValues(noOfValues int32) QueryDataSetBuilder {
+	b.NoOfValues = noOfValues
+	return b
 }
 
-func (m *_QueryDataSetBuilder) WithValues(values ...Variant) QueryDataSetBuilder {
-	m.Values = values
-	return m
+func (b *_QueryDataSetBuilder) WithValues(values ...Variant) QueryDataSetBuilder {
+	b.Values = values
+	return b
 }
 
-func (m *_QueryDataSetBuilder) Build() (QueryDataSet, error) {
-	if m.NodeId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_QueryDataSetBuilder) Build() (QueryDataSet, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nodeId' not set"))
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
 	}
-	if m.TypeDefinitionNode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TypeDefinitionNode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'typeDefinitionNode' not set"))
+		b.err.Append(errors.New("mandatory field 'typeDefinitionNode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._QueryDataSet.deepCopy(), nil
+	return b._QueryDataSet.deepCopy(), nil
 }
 
-func (m *_QueryDataSetBuilder) MustBuild() QueryDataSet {
-	build, err := m.Build()
+func (b *_QueryDataSetBuilder) MustBuild() QueryDataSet {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_QueryDataSetBuilder) DeepCopy() any {
-	return m.CreateQueryDataSetBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_QueryDataSetBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_QueryDataSetBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_QueryDataSetBuilder) DeepCopy() any {
+	_copy := b.CreateQueryDataSetBuilder().(*_QueryDataSetBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateQueryDataSetBuilder creates a QueryDataSetBuilder
-func (m *_QueryDataSet) CreateQueryDataSetBuilder() QueryDataSetBuilder {
-	if m == nil {
+func (b *_QueryDataSet) CreateQueryDataSetBuilder() QueryDataSetBuilder {
+	if b == nil {
 		return NewQueryDataSetBuilder()
 	}
-	return &_QueryDataSetBuilder{_QueryDataSet: m.deepCopy()}
+	return &_QueryDataSetBuilder{_QueryDataSet: b.deepCopy()}
 }
 
 ///////////////////////

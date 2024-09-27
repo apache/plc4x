@@ -98,64 +98,83 @@ func NewBACnetErrorGeneralBuilder() BACnetErrorGeneralBuilder {
 type _BACnetErrorGeneralBuilder struct {
 	*_BACnetErrorGeneral
 
+	parentBuilder *_BACnetErrorBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetErrorGeneralBuilder) = (*_BACnetErrorGeneralBuilder)(nil)
 
-func (m *_BACnetErrorGeneralBuilder) WithMandatoryFields(error Error) BACnetErrorGeneralBuilder {
-	return m.WithError(error)
+func (b *_BACnetErrorGeneralBuilder) setParent(contract BACnetErrorContract) {
+	b.BACnetErrorContract = contract
 }
 
-func (m *_BACnetErrorGeneralBuilder) WithError(error Error) BACnetErrorGeneralBuilder {
-	m.Error = error
-	return m
+func (b *_BACnetErrorGeneralBuilder) WithMandatoryFields(error Error) BACnetErrorGeneralBuilder {
+	return b.WithError(error)
 }
 
-func (m *_BACnetErrorGeneralBuilder) WithErrorBuilder(builderSupplier func(ErrorBuilder) ErrorBuilder) BACnetErrorGeneralBuilder {
-	builder := builderSupplier(m.Error.CreateErrorBuilder())
+func (b *_BACnetErrorGeneralBuilder) WithError(error Error) BACnetErrorGeneralBuilder {
+	b.Error = error
+	return b
+}
+
+func (b *_BACnetErrorGeneralBuilder) WithErrorBuilder(builderSupplier func(ErrorBuilder) ErrorBuilder) BACnetErrorGeneralBuilder {
+	builder := builderSupplier(b.Error.CreateErrorBuilder())
 	var err error
-	m.Error, err = builder.Build()
+	b.Error, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ErrorBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ErrorBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetErrorGeneralBuilder) Build() (BACnetErrorGeneral, error) {
-	if m.Error == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetErrorGeneralBuilder) Build() (BACnetErrorGeneral, error) {
+	if b.Error == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'error' not set"))
+		b.err.Append(errors.New("mandatory field 'error' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetErrorGeneral.deepCopy(), nil
+	return b._BACnetErrorGeneral.deepCopy(), nil
 }
 
-func (m *_BACnetErrorGeneralBuilder) MustBuild() BACnetErrorGeneral {
-	build, err := m.Build()
+func (b *_BACnetErrorGeneralBuilder) MustBuild() BACnetErrorGeneral {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetErrorGeneralBuilder) DeepCopy() any {
-	return m.CreateBACnetErrorGeneralBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetErrorGeneralBuilder) Done() BACnetErrorBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetErrorGeneralBuilder) buildForBACnetError() (BACnetError, error) {
+	return b.Build()
+}
+
+func (b *_BACnetErrorGeneralBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetErrorGeneralBuilder().(*_BACnetErrorGeneralBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetErrorGeneralBuilder creates a BACnetErrorGeneralBuilder
-func (m *_BACnetErrorGeneral) CreateBACnetErrorGeneralBuilder() BACnetErrorGeneralBuilder {
-	if m == nil {
+func (b *_BACnetErrorGeneral) CreateBACnetErrorGeneralBuilder() BACnetErrorGeneralBuilder {
+	if b == nil {
 		return NewBACnetErrorGeneralBuilder()
 	}
-	return &_BACnetErrorGeneralBuilder{_BACnetErrorGeneral: m.deepCopy()}
+	return &_BACnetErrorGeneralBuilder{_BACnetErrorGeneral: b.deepCopy()}
 }
 
 ///////////////////////

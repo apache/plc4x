@@ -85,40 +85,59 @@ func NewOrientationBuilder() OrientationBuilder {
 type _OrientationBuilder struct {
 	*_Orientation
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (OrientationBuilder) = (*_OrientationBuilder)(nil)
 
-func (m *_OrientationBuilder) WithMandatoryFields() OrientationBuilder {
-	return m
+func (b *_OrientationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_OrientationBuilder) Build() (Orientation, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_OrientationBuilder) WithMandatoryFields() OrientationBuilder {
+	return b
+}
+
+func (b *_OrientationBuilder) Build() (Orientation, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Orientation.deepCopy(), nil
+	return b._Orientation.deepCopy(), nil
 }
 
-func (m *_OrientationBuilder) MustBuild() Orientation {
-	build, err := m.Build()
+func (b *_OrientationBuilder) MustBuild() Orientation {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_OrientationBuilder) DeepCopy() any {
-	return m.CreateOrientationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OrientationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OrientationBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_OrientationBuilder) DeepCopy() any {
+	_copy := b.CreateOrientationBuilder().(*_OrientationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateOrientationBuilder creates a OrientationBuilder
-func (m *_Orientation) CreateOrientationBuilder() OrientationBuilder {
-	if m == nil {
+func (b *_Orientation) CreateOrientationBuilder() OrientationBuilder {
+	if b == nil {
 		return NewOrientationBuilder()
 	}
-	return &_OrientationBuilder{_Orientation: m.deepCopy()}
+	return &_OrientationBuilder{_Orientation: b.deepCopy()}
 }
 
 ///////////////////////

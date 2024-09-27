@@ -100,64 +100,83 @@ func NewBACnetConstructedDataIPAddressBuilder() BACnetConstructedDataIPAddressBu
 type _BACnetConstructedDataIPAddressBuilder struct {
 	*_BACnetConstructedDataIPAddress
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataIPAddressBuilder) = (*_BACnetConstructedDataIPAddressBuilder)(nil)
 
-func (m *_BACnetConstructedDataIPAddressBuilder) WithMandatoryFields(ipAddress BACnetApplicationTagOctetString) BACnetConstructedDataIPAddressBuilder {
-	return m.WithIpAddress(ipAddress)
+func (b *_BACnetConstructedDataIPAddressBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataIPAddressBuilder) WithIpAddress(ipAddress BACnetApplicationTagOctetString) BACnetConstructedDataIPAddressBuilder {
-	m.IpAddress = ipAddress
-	return m
+func (b *_BACnetConstructedDataIPAddressBuilder) WithMandatoryFields(ipAddress BACnetApplicationTagOctetString) BACnetConstructedDataIPAddressBuilder {
+	return b.WithIpAddress(ipAddress)
 }
 
-func (m *_BACnetConstructedDataIPAddressBuilder) WithIpAddressBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPAddressBuilder {
-	builder := builderSupplier(m.IpAddress.CreateBACnetApplicationTagOctetStringBuilder())
+func (b *_BACnetConstructedDataIPAddressBuilder) WithIpAddress(ipAddress BACnetApplicationTagOctetString) BACnetConstructedDataIPAddressBuilder {
+	b.IpAddress = ipAddress
+	return b
+}
+
+func (b *_BACnetConstructedDataIPAddressBuilder) WithIpAddressBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPAddressBuilder {
+	builder := builderSupplier(b.IpAddress.CreateBACnetApplicationTagOctetStringBuilder())
 	var err error
-	m.IpAddress, err = builder.Build()
+	b.IpAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataIPAddressBuilder) Build() (BACnetConstructedDataIPAddress, error) {
-	if m.IpAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataIPAddressBuilder) Build() (BACnetConstructedDataIPAddress, error) {
+	if b.IpAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'ipAddress' not set"))
+		b.err.Append(errors.New("mandatory field 'ipAddress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataIPAddress.deepCopy(), nil
+	return b._BACnetConstructedDataIPAddress.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataIPAddressBuilder) MustBuild() BACnetConstructedDataIPAddress {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataIPAddressBuilder) MustBuild() BACnetConstructedDataIPAddress {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataIPAddressBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataIPAddressBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPAddressBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPAddressBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPAddressBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPAddressBuilder().(*_BACnetConstructedDataIPAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataIPAddressBuilder creates a BACnetConstructedDataIPAddressBuilder
-func (m *_BACnetConstructedDataIPAddress) CreateBACnetConstructedDataIPAddressBuilder() BACnetConstructedDataIPAddressBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataIPAddress) CreateBACnetConstructedDataIPAddressBuilder() BACnetConstructedDataIPAddressBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataIPAddressBuilder()
 	}
-	return &_BACnetConstructedDataIPAddressBuilder{_BACnetConstructedDataIPAddress: m.deepCopy()}
+	return &_BACnetConstructedDataIPAddressBuilder{_BACnetConstructedDataIPAddress: b.deepCopy()}
 }
 
 ///////////////////////

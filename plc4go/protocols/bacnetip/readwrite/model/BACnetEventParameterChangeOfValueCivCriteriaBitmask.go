@@ -98,64 +98,83 @@ func NewBACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder() BACnetEvent
 type _BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder struct {
 	*_BACnetEventParameterChangeOfValueCivCriteriaBitmask
 
+	parentBuilder *_BACnetEventParameterChangeOfValueCivCriteriaBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) = (*_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder)(nil)
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) WithMandatoryFields(bitmask BACnetContextTagBitString) BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder {
-	return m.WithBitmask(bitmask)
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) setParent(contract BACnetEventParameterChangeOfValueCivCriteriaContract) {
+	b.BACnetEventParameterChangeOfValueCivCriteriaContract = contract
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) WithBitmask(bitmask BACnetContextTagBitString) BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder {
-	m.Bitmask = bitmask
-	return m
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) WithMandatoryFields(bitmask BACnetContextTagBitString) BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder {
+	return b.WithBitmask(bitmask)
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) WithBitmaskBuilder(builderSupplier func(BACnetContextTagBitStringBuilder) BACnetContextTagBitStringBuilder) BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder {
-	builder := builderSupplier(m.Bitmask.CreateBACnetContextTagBitStringBuilder())
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) WithBitmask(bitmask BACnetContextTagBitString) BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder {
+	b.Bitmask = bitmask
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) WithBitmaskBuilder(builderSupplier func(BACnetContextTagBitStringBuilder) BACnetContextTagBitStringBuilder) BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder {
+	builder := builderSupplier(b.Bitmask.CreateBACnetContextTagBitStringBuilder())
 	var err error
-	m.Bitmask, err = builder.Build()
+	b.Bitmask, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagBitStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBitStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) Build() (BACnetEventParameterChangeOfValueCivCriteriaBitmask, error) {
-	if m.Bitmask == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) Build() (BACnetEventParameterChangeOfValueCivCriteriaBitmask, error) {
+	if b.Bitmask == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'bitmask' not set"))
+		b.err.Append(errors.New("mandatory field 'bitmask' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetEventParameterChangeOfValueCivCriteriaBitmask.deepCopy(), nil
+	return b._BACnetEventParameterChangeOfValueCivCriteriaBitmask.deepCopy(), nil
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) MustBuild() BACnetEventParameterChangeOfValueCivCriteriaBitmask {
-	build, err := m.Build()
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) MustBuild() BACnetEventParameterChangeOfValueCivCriteriaBitmask {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) DeepCopy() any {
-	return m.CreateBACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) Done() BACnetEventParameterChangeOfValueCivCriteriaBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) buildForBACnetEventParameterChangeOfValueCivCriteria() (BACnetEventParameterChangeOfValueCivCriteria, error) {
+	return b.Build()
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder().(*_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder creates a BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder
-func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) CreateBACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder() BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder {
-	if m == nil {
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) CreateBACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder() BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder {
+	if b == nil {
 		return NewBACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder()
 	}
-	return &_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder{_BACnetEventParameterChangeOfValueCivCriteriaBitmask: m.deepCopy()}
+	return &_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder{_BACnetEventParameterChangeOfValueCivCriteriaBitmask: b.deepCopy()}
 }
 
 ///////////////////////

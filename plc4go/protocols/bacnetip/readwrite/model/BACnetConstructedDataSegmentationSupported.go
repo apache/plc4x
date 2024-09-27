@@ -100,64 +100,83 @@ func NewBACnetConstructedDataSegmentationSupportedBuilder() BACnetConstructedDat
 type _BACnetConstructedDataSegmentationSupportedBuilder struct {
 	*_BACnetConstructedDataSegmentationSupported
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSegmentationSupportedBuilder) = (*_BACnetConstructedDataSegmentationSupportedBuilder)(nil)
 
-func (m *_BACnetConstructedDataSegmentationSupportedBuilder) WithMandatoryFields(segmentationSupported BACnetSegmentationTagged) BACnetConstructedDataSegmentationSupportedBuilder {
-	return m.WithSegmentationSupported(segmentationSupported)
+func (b *_BACnetConstructedDataSegmentationSupportedBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSegmentationSupportedBuilder) WithSegmentationSupported(segmentationSupported BACnetSegmentationTagged) BACnetConstructedDataSegmentationSupportedBuilder {
-	m.SegmentationSupported = segmentationSupported
-	return m
+func (b *_BACnetConstructedDataSegmentationSupportedBuilder) WithMandatoryFields(segmentationSupported BACnetSegmentationTagged) BACnetConstructedDataSegmentationSupportedBuilder {
+	return b.WithSegmentationSupported(segmentationSupported)
 }
 
-func (m *_BACnetConstructedDataSegmentationSupportedBuilder) WithSegmentationSupportedBuilder(builderSupplier func(BACnetSegmentationTaggedBuilder) BACnetSegmentationTaggedBuilder) BACnetConstructedDataSegmentationSupportedBuilder {
-	builder := builderSupplier(m.SegmentationSupported.CreateBACnetSegmentationTaggedBuilder())
+func (b *_BACnetConstructedDataSegmentationSupportedBuilder) WithSegmentationSupported(segmentationSupported BACnetSegmentationTagged) BACnetConstructedDataSegmentationSupportedBuilder {
+	b.SegmentationSupported = segmentationSupported
+	return b
+}
+
+func (b *_BACnetConstructedDataSegmentationSupportedBuilder) WithSegmentationSupportedBuilder(builderSupplier func(BACnetSegmentationTaggedBuilder) BACnetSegmentationTaggedBuilder) BACnetConstructedDataSegmentationSupportedBuilder {
+	builder := builderSupplier(b.SegmentationSupported.CreateBACnetSegmentationTaggedBuilder())
 	var err error
-	m.SegmentationSupported, err = builder.Build()
+	b.SegmentationSupported, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetSegmentationTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetSegmentationTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataSegmentationSupportedBuilder) Build() (BACnetConstructedDataSegmentationSupported, error) {
-	if m.SegmentationSupported == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataSegmentationSupportedBuilder) Build() (BACnetConstructedDataSegmentationSupported, error) {
+	if b.SegmentationSupported == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'segmentationSupported' not set"))
+		b.err.Append(errors.New("mandatory field 'segmentationSupported' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSegmentationSupported.deepCopy(), nil
+	return b._BACnetConstructedDataSegmentationSupported.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSegmentationSupportedBuilder) MustBuild() BACnetConstructedDataSegmentationSupported {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSegmentationSupportedBuilder) MustBuild() BACnetConstructedDataSegmentationSupported {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSegmentationSupportedBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSegmentationSupportedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSegmentationSupportedBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSegmentationSupportedBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSegmentationSupportedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSegmentationSupportedBuilder().(*_BACnetConstructedDataSegmentationSupportedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSegmentationSupportedBuilder creates a BACnetConstructedDataSegmentationSupportedBuilder
-func (m *_BACnetConstructedDataSegmentationSupported) CreateBACnetConstructedDataSegmentationSupportedBuilder() BACnetConstructedDataSegmentationSupportedBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSegmentationSupported) CreateBACnetConstructedDataSegmentationSupportedBuilder() BACnetConstructedDataSegmentationSupportedBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSegmentationSupportedBuilder()
 	}
-	return &_BACnetConstructedDataSegmentationSupportedBuilder{_BACnetConstructedDataSegmentationSupported: m.deepCopy()}
+	return &_BACnetConstructedDataSegmentationSupportedBuilder{_BACnetConstructedDataSegmentationSupported: b.deepCopy()}
 }
 
 ///////////////////////

@@ -111,69 +111,73 @@ type _BACnetLifeSafetyOperationTaggedBuilder struct {
 
 var _ (BACnetLifeSafetyOperationTaggedBuilder) = (*_BACnetLifeSafetyOperationTaggedBuilder)(nil)
 
-func (m *_BACnetLifeSafetyOperationTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLifeSafetyOperation, proprietaryValue uint32) BACnetLifeSafetyOperationTaggedBuilder {
-	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetLifeSafetyOperationTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLifeSafetyOperation, proprietaryValue uint32) BACnetLifeSafetyOperationTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_BACnetLifeSafetyOperationTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLifeSafetyOperationTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetLifeSafetyOperationTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLifeSafetyOperationTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetLifeSafetyOperationTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLifeSafetyOperationTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetLifeSafetyOperationTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLifeSafetyOperationTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLifeSafetyOperationTaggedBuilder) WithValue(value BACnetLifeSafetyOperation) BACnetLifeSafetyOperationTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetLifeSafetyOperationTaggedBuilder) WithValue(value BACnetLifeSafetyOperation) BACnetLifeSafetyOperationTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetLifeSafetyOperationTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLifeSafetyOperationTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetLifeSafetyOperationTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLifeSafetyOperationTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetLifeSafetyOperationTaggedBuilder) Build() (BACnetLifeSafetyOperationTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLifeSafetyOperationTaggedBuilder) Build() (BACnetLifeSafetyOperationTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLifeSafetyOperationTagged.deepCopy(), nil
+	return b._BACnetLifeSafetyOperationTagged.deepCopy(), nil
 }
 
-func (m *_BACnetLifeSafetyOperationTaggedBuilder) MustBuild() BACnetLifeSafetyOperationTagged {
-	build, err := m.Build()
+func (b *_BACnetLifeSafetyOperationTaggedBuilder) MustBuild() BACnetLifeSafetyOperationTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLifeSafetyOperationTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetLifeSafetyOperationTaggedBuilder()
+func (b *_BACnetLifeSafetyOperationTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLifeSafetyOperationTaggedBuilder().(*_BACnetLifeSafetyOperationTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLifeSafetyOperationTaggedBuilder creates a BACnetLifeSafetyOperationTaggedBuilder
-func (m *_BACnetLifeSafetyOperationTagged) CreateBACnetLifeSafetyOperationTaggedBuilder() BACnetLifeSafetyOperationTaggedBuilder {
-	if m == nil {
+func (b *_BACnetLifeSafetyOperationTagged) CreateBACnetLifeSafetyOperationTaggedBuilder() BACnetLifeSafetyOperationTaggedBuilder {
+	if b == nil {
 		return NewBACnetLifeSafetyOperationTaggedBuilder()
 	}
-	return &_BACnetLifeSafetyOperationTaggedBuilder{_BACnetLifeSafetyOperationTagged: m.deepCopy()}
+	return &_BACnetLifeSafetyOperationTaggedBuilder{_BACnetLifeSafetyOperationTagged: b.deepCopy()}
 }
 
 ///////////////////////

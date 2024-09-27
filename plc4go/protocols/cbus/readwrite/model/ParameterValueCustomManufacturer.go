@@ -98,64 +98,83 @@ func NewParameterValueCustomManufacturerBuilder() ParameterValueCustomManufactur
 type _ParameterValueCustomManufacturerBuilder struct {
 	*_ParameterValueCustomManufacturer
 
+	parentBuilder *_ParameterValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ParameterValueCustomManufacturerBuilder) = (*_ParameterValueCustomManufacturerBuilder)(nil)
 
-func (m *_ParameterValueCustomManufacturerBuilder) WithMandatoryFields(value CustomManufacturer) ParameterValueCustomManufacturerBuilder {
-	return m.WithValue(value)
+func (b *_ParameterValueCustomManufacturerBuilder) setParent(contract ParameterValueContract) {
+	b.ParameterValueContract = contract
 }
 
-func (m *_ParameterValueCustomManufacturerBuilder) WithValue(value CustomManufacturer) ParameterValueCustomManufacturerBuilder {
-	m.Value = value
-	return m
+func (b *_ParameterValueCustomManufacturerBuilder) WithMandatoryFields(value CustomManufacturer) ParameterValueCustomManufacturerBuilder {
+	return b.WithValue(value)
 }
 
-func (m *_ParameterValueCustomManufacturerBuilder) WithValueBuilder(builderSupplier func(CustomManufacturerBuilder) CustomManufacturerBuilder) ParameterValueCustomManufacturerBuilder {
-	builder := builderSupplier(m.Value.CreateCustomManufacturerBuilder())
+func (b *_ParameterValueCustomManufacturerBuilder) WithValue(value CustomManufacturer) ParameterValueCustomManufacturerBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ParameterValueCustomManufacturerBuilder) WithValueBuilder(builderSupplier func(CustomManufacturerBuilder) CustomManufacturerBuilder) ParameterValueCustomManufacturerBuilder {
+	builder := builderSupplier(b.Value.CreateCustomManufacturerBuilder())
 	var err error
-	m.Value, err = builder.Build()
+	b.Value, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "CustomManufacturerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "CustomManufacturerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ParameterValueCustomManufacturerBuilder) Build() (ParameterValueCustomManufacturer, error) {
-	if m.Value == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ParameterValueCustomManufacturerBuilder) Build() (ParameterValueCustomManufacturer, error) {
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'value' not set"))
+		b.err.Append(errors.New("mandatory field 'value' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ParameterValueCustomManufacturer.deepCopy(), nil
+	return b._ParameterValueCustomManufacturer.deepCopy(), nil
 }
 
-func (m *_ParameterValueCustomManufacturerBuilder) MustBuild() ParameterValueCustomManufacturer {
-	build, err := m.Build()
+func (b *_ParameterValueCustomManufacturerBuilder) MustBuild() ParameterValueCustomManufacturer {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ParameterValueCustomManufacturerBuilder) DeepCopy() any {
-	return m.CreateParameterValueCustomManufacturerBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ParameterValueCustomManufacturerBuilder) Done() ParameterValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ParameterValueCustomManufacturerBuilder) buildForParameterValue() (ParameterValue, error) {
+	return b.Build()
+}
+
+func (b *_ParameterValueCustomManufacturerBuilder) DeepCopy() any {
+	_copy := b.CreateParameterValueCustomManufacturerBuilder().(*_ParameterValueCustomManufacturerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateParameterValueCustomManufacturerBuilder creates a ParameterValueCustomManufacturerBuilder
-func (m *_ParameterValueCustomManufacturer) CreateParameterValueCustomManufacturerBuilder() ParameterValueCustomManufacturerBuilder {
-	if m == nil {
+func (b *_ParameterValueCustomManufacturer) CreateParameterValueCustomManufacturerBuilder() ParameterValueCustomManufacturerBuilder {
+	if b == nil {
 		return NewParameterValueCustomManufacturerBuilder()
 	}
-	return &_ParameterValueCustomManufacturerBuilder{_ParameterValueCustomManufacturer: m.deepCopy()}
+	return &_ParameterValueCustomManufacturerBuilder{_ParameterValueCustomManufacturer: b.deepCopy()}
 }
 
 ///////////////////////

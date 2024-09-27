@@ -99,50 +99,69 @@ func NewMemberIDBuilder() MemberIDBuilder {
 type _MemberIDBuilder struct {
 	*_MemberID
 
+	parentBuilder *_LogicalSegmentTypeBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MemberIDBuilder) = (*_MemberIDBuilder)(nil)
 
-func (m *_MemberIDBuilder) WithMandatoryFields(format uint8, instance uint8) MemberIDBuilder {
-	return m.WithFormat(format).WithInstance(instance)
+func (b *_MemberIDBuilder) setParent(contract LogicalSegmentTypeContract) {
+	b.LogicalSegmentTypeContract = contract
 }
 
-func (m *_MemberIDBuilder) WithFormat(format uint8) MemberIDBuilder {
-	m.Format = format
-	return m
+func (b *_MemberIDBuilder) WithMandatoryFields(format uint8, instance uint8) MemberIDBuilder {
+	return b.WithFormat(format).WithInstance(instance)
 }
 
-func (m *_MemberIDBuilder) WithInstance(instance uint8) MemberIDBuilder {
-	m.Instance = instance
-	return m
+func (b *_MemberIDBuilder) WithFormat(format uint8) MemberIDBuilder {
+	b.Format = format
+	return b
 }
 
-func (m *_MemberIDBuilder) Build() (MemberID, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MemberIDBuilder) WithInstance(instance uint8) MemberIDBuilder {
+	b.Instance = instance
+	return b
+}
+
+func (b *_MemberIDBuilder) Build() (MemberID, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MemberID.deepCopy(), nil
+	return b._MemberID.deepCopy(), nil
 }
 
-func (m *_MemberIDBuilder) MustBuild() MemberID {
-	build, err := m.Build()
+func (b *_MemberIDBuilder) MustBuild() MemberID {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MemberIDBuilder) DeepCopy() any {
-	return m.CreateMemberIDBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MemberIDBuilder) Done() LogicalSegmentTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MemberIDBuilder) buildForLogicalSegmentType() (LogicalSegmentType, error) {
+	return b.Build()
+}
+
+func (b *_MemberIDBuilder) DeepCopy() any {
+	_copy := b.CreateMemberIDBuilder().(*_MemberIDBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMemberIDBuilder creates a MemberIDBuilder
-func (m *_MemberID) CreateMemberIDBuilder() MemberIDBuilder {
-	if m == nil {
+func (b *_MemberID) CreateMemberIDBuilder() MemberIDBuilder {
+	if b == nil {
 		return NewMemberIDBuilder()
 	}
-	return &_MemberIDBuilder{_MemberID: m.deepCopy()}
+	return &_MemberIDBuilder{_MemberID: b.deepCopy()}
 }
 
 ///////////////////////

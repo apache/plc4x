@@ -109,68 +109,87 @@ func NewCipConnectedResponseBuilder() CipConnectedResponseBuilder {
 type _CipConnectedResponseBuilder struct {
 	*_CipConnectedResponse
 
+	parentBuilder *_CipServiceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CipConnectedResponseBuilder) = (*_CipConnectedResponseBuilder)(nil)
 
-func (m *_CipConnectedResponseBuilder) WithMandatoryFields(status uint8, additionalStatusWords uint8) CipConnectedResponseBuilder {
-	return m.WithStatus(status).WithAdditionalStatusWords(additionalStatusWords)
+func (b *_CipConnectedResponseBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
 }
 
-func (m *_CipConnectedResponseBuilder) WithStatus(status uint8) CipConnectedResponseBuilder {
-	m.Status = status
-	return m
+func (b *_CipConnectedResponseBuilder) WithMandatoryFields(status uint8, additionalStatusWords uint8) CipConnectedResponseBuilder {
+	return b.WithStatus(status).WithAdditionalStatusWords(additionalStatusWords)
 }
 
-func (m *_CipConnectedResponseBuilder) WithAdditionalStatusWords(additionalStatusWords uint8) CipConnectedResponseBuilder {
-	m.AdditionalStatusWords = additionalStatusWords
-	return m
+func (b *_CipConnectedResponseBuilder) WithStatus(status uint8) CipConnectedResponseBuilder {
+	b.Status = status
+	return b
 }
 
-func (m *_CipConnectedResponseBuilder) WithOptionalData(data CIPDataConnected) CipConnectedResponseBuilder {
-	m.Data = data
-	return m
+func (b *_CipConnectedResponseBuilder) WithAdditionalStatusWords(additionalStatusWords uint8) CipConnectedResponseBuilder {
+	b.AdditionalStatusWords = additionalStatusWords
+	return b
 }
 
-func (m *_CipConnectedResponseBuilder) WithOptionalDataBuilder(builderSupplier func(CIPDataConnectedBuilder) CIPDataConnectedBuilder) CipConnectedResponseBuilder {
-	builder := builderSupplier(m.Data.CreateCIPDataConnectedBuilder())
+func (b *_CipConnectedResponseBuilder) WithOptionalData(data CIPDataConnected) CipConnectedResponseBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_CipConnectedResponseBuilder) WithOptionalDataBuilder(builderSupplier func(CIPDataConnectedBuilder) CIPDataConnectedBuilder) CipConnectedResponseBuilder {
+	builder := builderSupplier(b.Data.CreateCIPDataConnectedBuilder())
 	var err error
-	m.Data, err = builder.Build()
+	b.Data, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "CIPDataConnectedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "CIPDataConnectedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CipConnectedResponseBuilder) Build() (CipConnectedResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CipConnectedResponseBuilder) Build() (CipConnectedResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CipConnectedResponse.deepCopy(), nil
+	return b._CipConnectedResponse.deepCopy(), nil
 }
 
-func (m *_CipConnectedResponseBuilder) MustBuild() CipConnectedResponse {
-	build, err := m.Build()
+func (b *_CipConnectedResponseBuilder) MustBuild() CipConnectedResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CipConnectedResponseBuilder) DeepCopy() any {
-	return m.CreateCipConnectedResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipConnectedResponseBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipConnectedResponseBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_CipConnectedResponseBuilder) DeepCopy() any {
+	_copy := b.CreateCipConnectedResponseBuilder().(*_CipConnectedResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCipConnectedResponseBuilder creates a CipConnectedResponseBuilder
-func (m *_CipConnectedResponse) CreateCipConnectedResponseBuilder() CipConnectedResponseBuilder {
-	if m == nil {
+func (b *_CipConnectedResponse) CreateCipConnectedResponseBuilder() CipConnectedResponseBuilder {
+	if b == nil {
 		return NewCipConnectedResponseBuilder()
 	}
-	return &_CipConnectedResponseBuilder{_CipConnectedResponse: m.deepCopy()}
+	return &_CipConnectedResponseBuilder{_CipConnectedResponse: b.deepCopy()}
 }
 
 ///////////////////////

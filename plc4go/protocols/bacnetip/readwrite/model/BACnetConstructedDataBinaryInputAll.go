@@ -85,40 +85,59 @@ func NewBACnetConstructedDataBinaryInputAllBuilder() BACnetConstructedDataBinary
 type _BACnetConstructedDataBinaryInputAllBuilder struct {
 	*_BACnetConstructedDataBinaryInputAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBinaryInputAllBuilder) = (*_BACnetConstructedDataBinaryInputAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataBinaryInputAllBuilder) WithMandatoryFields() BACnetConstructedDataBinaryInputAllBuilder {
-	return m
+func (b *_BACnetConstructedDataBinaryInputAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBinaryInputAllBuilder) Build() (BACnetConstructedDataBinaryInputAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataBinaryInputAllBuilder) WithMandatoryFields() BACnetConstructedDataBinaryInputAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataBinaryInputAllBuilder) Build() (BACnetConstructedDataBinaryInputAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBinaryInputAll.deepCopy(), nil
+	return b._BACnetConstructedDataBinaryInputAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBinaryInputAllBuilder) MustBuild() BACnetConstructedDataBinaryInputAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBinaryInputAllBuilder) MustBuild() BACnetConstructedDataBinaryInputAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBinaryInputAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBinaryInputAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBinaryInputAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBinaryInputAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBinaryInputAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBinaryInputAllBuilder().(*_BACnetConstructedDataBinaryInputAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBinaryInputAllBuilder creates a BACnetConstructedDataBinaryInputAllBuilder
-func (m *_BACnetConstructedDataBinaryInputAll) CreateBACnetConstructedDataBinaryInputAllBuilder() BACnetConstructedDataBinaryInputAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBinaryInputAll) CreateBACnetConstructedDataBinaryInputAllBuilder() BACnetConstructedDataBinaryInputAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBinaryInputAllBuilder()
 	}
-	return &_BACnetConstructedDataBinaryInputAllBuilder{_BACnetConstructedDataBinaryInputAll: m.deepCopy()}
+	return &_BACnetConstructedDataBinaryInputAllBuilder{_BACnetConstructedDataBinaryInputAll: b.deepCopy()}
 }
 
 ///////////////////////

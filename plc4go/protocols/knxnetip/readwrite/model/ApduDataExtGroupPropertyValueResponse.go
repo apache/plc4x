@@ -85,40 +85,59 @@ func NewApduDataExtGroupPropertyValueResponseBuilder() ApduDataExtGroupPropertyV
 type _ApduDataExtGroupPropertyValueResponseBuilder struct {
 	*_ApduDataExtGroupPropertyValueResponse
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtGroupPropertyValueResponseBuilder) = (*_ApduDataExtGroupPropertyValueResponseBuilder)(nil)
 
-func (m *_ApduDataExtGroupPropertyValueResponseBuilder) WithMandatoryFields() ApduDataExtGroupPropertyValueResponseBuilder {
-	return m
+func (b *_ApduDataExtGroupPropertyValueResponseBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtGroupPropertyValueResponseBuilder) Build() (ApduDataExtGroupPropertyValueResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtGroupPropertyValueResponseBuilder) WithMandatoryFields() ApduDataExtGroupPropertyValueResponseBuilder {
+	return b
+}
+
+func (b *_ApduDataExtGroupPropertyValueResponseBuilder) Build() (ApduDataExtGroupPropertyValueResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtGroupPropertyValueResponse.deepCopy(), nil
+	return b._ApduDataExtGroupPropertyValueResponse.deepCopy(), nil
 }
 
-func (m *_ApduDataExtGroupPropertyValueResponseBuilder) MustBuild() ApduDataExtGroupPropertyValueResponse {
-	build, err := m.Build()
+func (b *_ApduDataExtGroupPropertyValueResponseBuilder) MustBuild() ApduDataExtGroupPropertyValueResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtGroupPropertyValueResponseBuilder) DeepCopy() any {
-	return m.CreateApduDataExtGroupPropertyValueResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtGroupPropertyValueResponseBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtGroupPropertyValueResponseBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtGroupPropertyValueResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtGroupPropertyValueResponseBuilder().(*_ApduDataExtGroupPropertyValueResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtGroupPropertyValueResponseBuilder creates a ApduDataExtGroupPropertyValueResponseBuilder
-func (m *_ApduDataExtGroupPropertyValueResponse) CreateApduDataExtGroupPropertyValueResponseBuilder() ApduDataExtGroupPropertyValueResponseBuilder {
-	if m == nil {
+func (b *_ApduDataExtGroupPropertyValueResponse) CreateApduDataExtGroupPropertyValueResponseBuilder() ApduDataExtGroupPropertyValueResponseBuilder {
+	if b == nil {
 		return NewApduDataExtGroupPropertyValueResponseBuilder()
 	}
-	return &_ApduDataExtGroupPropertyValueResponseBuilder{_ApduDataExtGroupPropertyValueResponse: m.deepCopy()}
+	return &_ApduDataExtGroupPropertyValueResponseBuilder{_ApduDataExtGroupPropertyValueResponse: b.deepCopy()}
 }
 
 ///////////////////////

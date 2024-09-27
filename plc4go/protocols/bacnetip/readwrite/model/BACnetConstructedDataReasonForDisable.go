@@ -93,45 +93,64 @@ func NewBACnetConstructedDataReasonForDisableBuilder() BACnetConstructedDataReas
 type _BACnetConstructedDataReasonForDisableBuilder struct {
 	*_BACnetConstructedDataReasonForDisable
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataReasonForDisableBuilder) = (*_BACnetConstructedDataReasonForDisableBuilder)(nil)
 
-func (m *_BACnetConstructedDataReasonForDisableBuilder) WithMandatoryFields(reasonForDisable []BACnetAccessCredentialDisableReasonTagged) BACnetConstructedDataReasonForDisableBuilder {
-	return m.WithReasonForDisable(reasonForDisable...)
+func (b *_BACnetConstructedDataReasonForDisableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataReasonForDisableBuilder) WithReasonForDisable(reasonForDisable ...BACnetAccessCredentialDisableReasonTagged) BACnetConstructedDataReasonForDisableBuilder {
-	m.ReasonForDisable = reasonForDisable
-	return m
+func (b *_BACnetConstructedDataReasonForDisableBuilder) WithMandatoryFields(reasonForDisable []BACnetAccessCredentialDisableReasonTagged) BACnetConstructedDataReasonForDisableBuilder {
+	return b.WithReasonForDisable(reasonForDisable...)
 }
 
-func (m *_BACnetConstructedDataReasonForDisableBuilder) Build() (BACnetConstructedDataReasonForDisable, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataReasonForDisableBuilder) WithReasonForDisable(reasonForDisable ...BACnetAccessCredentialDisableReasonTagged) BACnetConstructedDataReasonForDisableBuilder {
+	b.ReasonForDisable = reasonForDisable
+	return b
+}
+
+func (b *_BACnetConstructedDataReasonForDisableBuilder) Build() (BACnetConstructedDataReasonForDisable, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataReasonForDisable.deepCopy(), nil
+	return b._BACnetConstructedDataReasonForDisable.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataReasonForDisableBuilder) MustBuild() BACnetConstructedDataReasonForDisable {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataReasonForDisableBuilder) MustBuild() BACnetConstructedDataReasonForDisable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataReasonForDisableBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataReasonForDisableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataReasonForDisableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataReasonForDisableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataReasonForDisableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataReasonForDisableBuilder().(*_BACnetConstructedDataReasonForDisableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataReasonForDisableBuilder creates a BACnetConstructedDataReasonForDisableBuilder
-func (m *_BACnetConstructedDataReasonForDisable) CreateBACnetConstructedDataReasonForDisableBuilder() BACnetConstructedDataReasonForDisableBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataReasonForDisable) CreateBACnetConstructedDataReasonForDisableBuilder() BACnetConstructedDataReasonForDisableBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataReasonForDisableBuilder()
 	}
-	return &_BACnetConstructedDataReasonForDisableBuilder{_BACnetConstructedDataReasonForDisable: m.deepCopy()}
+	return &_BACnetConstructedDataReasonForDisableBuilder{_BACnetConstructedDataReasonForDisable: b.deepCopy()}
 }
 
 ///////////////////////

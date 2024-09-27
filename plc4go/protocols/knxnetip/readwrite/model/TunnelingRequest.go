@@ -98,6 +98,8 @@ type TunnelingRequestBuilder interface {
 	WithTunnelingRequestDataBlockBuilder(func(TunnelingRequestDataBlockBuilder) TunnelingRequestDataBlockBuilder) TunnelingRequestBuilder
 	// WithCemi adds Cemi (property field)
 	WithCemi(CEMI) TunnelingRequestBuilder
+	// WithCemiBuilder adds Cemi (property field) which is build by the builder
+	WithCemiBuilder(func(CEMIBuilder) CEMIBuilder) TunnelingRequestBuilder
 	// Build builds the TunnelingRequest or returns an error if something is wrong
 	Build() (TunnelingRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,75 +114,107 @@ func NewTunnelingRequestBuilder() TunnelingRequestBuilder {
 type _TunnelingRequestBuilder struct {
 	*_TunnelingRequest
 
+	parentBuilder *_KnxNetIpMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TunnelingRequestBuilder) = (*_TunnelingRequestBuilder)(nil)
 
-func (m *_TunnelingRequestBuilder) WithMandatoryFields(tunnelingRequestDataBlock TunnelingRequestDataBlock, cemi CEMI) TunnelingRequestBuilder {
-	return m.WithTunnelingRequestDataBlock(tunnelingRequestDataBlock).WithCemi(cemi)
+func (b *_TunnelingRequestBuilder) setParent(contract KnxNetIpMessageContract) {
+	b.KnxNetIpMessageContract = contract
 }
 
-func (m *_TunnelingRequestBuilder) WithTunnelingRequestDataBlock(tunnelingRequestDataBlock TunnelingRequestDataBlock) TunnelingRequestBuilder {
-	m.TunnelingRequestDataBlock = tunnelingRequestDataBlock
-	return m
+func (b *_TunnelingRequestBuilder) WithMandatoryFields(tunnelingRequestDataBlock TunnelingRequestDataBlock, cemi CEMI) TunnelingRequestBuilder {
+	return b.WithTunnelingRequestDataBlock(tunnelingRequestDataBlock).WithCemi(cemi)
 }
 
-func (m *_TunnelingRequestBuilder) WithTunnelingRequestDataBlockBuilder(builderSupplier func(TunnelingRequestDataBlockBuilder) TunnelingRequestDataBlockBuilder) TunnelingRequestBuilder {
-	builder := builderSupplier(m.TunnelingRequestDataBlock.CreateTunnelingRequestDataBlockBuilder())
+func (b *_TunnelingRequestBuilder) WithTunnelingRequestDataBlock(tunnelingRequestDataBlock TunnelingRequestDataBlock) TunnelingRequestBuilder {
+	b.TunnelingRequestDataBlock = tunnelingRequestDataBlock
+	return b
+}
+
+func (b *_TunnelingRequestBuilder) WithTunnelingRequestDataBlockBuilder(builderSupplier func(TunnelingRequestDataBlockBuilder) TunnelingRequestDataBlockBuilder) TunnelingRequestBuilder {
+	builder := builderSupplier(b.TunnelingRequestDataBlock.CreateTunnelingRequestDataBlockBuilder())
 	var err error
-	m.TunnelingRequestDataBlock, err = builder.Build()
+	b.TunnelingRequestDataBlock, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "TunnelingRequestDataBlockBuilder failed"))
+		b.err.Append(errors.Wrap(err, "TunnelingRequestDataBlockBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_TunnelingRequestBuilder) WithCemi(cemi CEMI) TunnelingRequestBuilder {
-	m.Cemi = cemi
-	return m
+func (b *_TunnelingRequestBuilder) WithCemi(cemi CEMI) TunnelingRequestBuilder {
+	b.Cemi = cemi
+	return b
 }
 
-func (m *_TunnelingRequestBuilder) Build() (TunnelingRequest, error) {
-	if m.TunnelingRequestDataBlock == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_TunnelingRequestBuilder) WithCemiBuilder(builderSupplier func(CEMIBuilder) CEMIBuilder) TunnelingRequestBuilder {
+	builder := builderSupplier(b.Cemi.CreateCEMIBuilder())
+	var err error
+	b.Cemi, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'tunnelingRequestDataBlock' not set"))
+		b.err.Append(errors.Wrap(err, "CEMIBuilder failed"))
 	}
-	if m.Cemi == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'cemi' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._TunnelingRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_TunnelingRequestBuilder) MustBuild() TunnelingRequest {
-	build, err := m.Build()
+func (b *_TunnelingRequestBuilder) Build() (TunnelingRequest, error) {
+	if b.TunnelingRequestDataBlock == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'tunnelingRequestDataBlock' not set"))
+	}
+	if b.Cemi == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'cemi' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TunnelingRequest.deepCopy(), nil
+}
+
+func (b *_TunnelingRequestBuilder) MustBuild() TunnelingRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TunnelingRequestBuilder) DeepCopy() any {
-	return m.CreateTunnelingRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TunnelingRequestBuilder) Done() KnxNetIpMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TunnelingRequestBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, error) {
+	return b.Build()
+}
+
+func (b *_TunnelingRequestBuilder) DeepCopy() any {
+	_copy := b.CreateTunnelingRequestBuilder().(*_TunnelingRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTunnelingRequestBuilder creates a TunnelingRequestBuilder
-func (m *_TunnelingRequest) CreateTunnelingRequestBuilder() TunnelingRequestBuilder {
-	if m == nil {
+func (b *_TunnelingRequest) CreateTunnelingRequestBuilder() TunnelingRequestBuilder {
+	if b == nil {
 		return NewTunnelingRequestBuilder()
 	}
-	return &_TunnelingRequestBuilder{_TunnelingRequest: m.deepCopy()}
+	return &_TunnelingRequestBuilder{_TunnelingRequest: b.deepCopy()}
 }
 
 ///////////////////////

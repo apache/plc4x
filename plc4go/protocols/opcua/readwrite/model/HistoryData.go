@@ -99,50 +99,69 @@ func NewHistoryDataBuilder() HistoryDataBuilder {
 type _HistoryDataBuilder struct {
 	*_HistoryData
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (HistoryDataBuilder) = (*_HistoryDataBuilder)(nil)
 
-func (m *_HistoryDataBuilder) WithMandatoryFields(noOfDataValues int32, dataValues []DataValue) HistoryDataBuilder {
-	return m.WithNoOfDataValues(noOfDataValues).WithDataValues(dataValues...)
+func (b *_HistoryDataBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_HistoryDataBuilder) WithNoOfDataValues(noOfDataValues int32) HistoryDataBuilder {
-	m.NoOfDataValues = noOfDataValues
-	return m
+func (b *_HistoryDataBuilder) WithMandatoryFields(noOfDataValues int32, dataValues []DataValue) HistoryDataBuilder {
+	return b.WithNoOfDataValues(noOfDataValues).WithDataValues(dataValues...)
 }
 
-func (m *_HistoryDataBuilder) WithDataValues(dataValues ...DataValue) HistoryDataBuilder {
-	m.DataValues = dataValues
-	return m
+func (b *_HistoryDataBuilder) WithNoOfDataValues(noOfDataValues int32) HistoryDataBuilder {
+	b.NoOfDataValues = noOfDataValues
+	return b
 }
 
-func (m *_HistoryDataBuilder) Build() (HistoryData, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_HistoryDataBuilder) WithDataValues(dataValues ...DataValue) HistoryDataBuilder {
+	b.DataValues = dataValues
+	return b
+}
+
+func (b *_HistoryDataBuilder) Build() (HistoryData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HistoryData.deepCopy(), nil
+	return b._HistoryData.deepCopy(), nil
 }
 
-func (m *_HistoryDataBuilder) MustBuild() HistoryData {
-	build, err := m.Build()
+func (b *_HistoryDataBuilder) MustBuild() HistoryData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HistoryDataBuilder) DeepCopy() any {
-	return m.CreateHistoryDataBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryDataBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryDataBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryDataBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryDataBuilder().(*_HistoryDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHistoryDataBuilder creates a HistoryDataBuilder
-func (m *_HistoryData) CreateHistoryDataBuilder() HistoryDataBuilder {
-	if m == nil {
+func (b *_HistoryData) CreateHistoryDataBuilder() HistoryDataBuilder {
+	if b == nil {
 		return NewHistoryDataBuilder()
 	}
-	return &_HistoryDataBuilder{_HistoryData: m.deepCopy()}
+	return &_HistoryDataBuilder{_HistoryData: b.deepCopy()}
 }
 
 ///////////////////////

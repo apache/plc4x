@@ -90,6 +90,8 @@ type RegisterNodesResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) RegisterNodesResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) RegisterNodesResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterNodesResponseBuilder
 	// WithNoOfRegisteredNodeIds adds NoOfRegisteredNodeIds (property field)
 	WithNoOfRegisteredNodeIds(int32) RegisterNodesResponseBuilder
 	// WithRegisteredNodeIds adds RegisteredNodeIds (property field)
@@ -108,61 +110,93 @@ func NewRegisterNodesResponseBuilder() RegisterNodesResponseBuilder {
 type _RegisterNodesResponseBuilder struct {
 	*_RegisterNodesResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RegisterNodesResponseBuilder) = (*_RegisterNodesResponseBuilder)(nil)
 
-func (m *_RegisterNodesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) RegisterNodesResponseBuilder {
-	return m.WithResponseHeader(responseHeader).WithNoOfRegisteredNodeIds(noOfRegisteredNodeIds).WithRegisteredNodeIds(registeredNodeIds...)
+func (b *_RegisterNodesResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_RegisterNodesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) RegisterNodesResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_RegisterNodesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) RegisterNodesResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfRegisteredNodeIds(noOfRegisteredNodeIds).WithRegisteredNodeIds(registeredNodeIds...)
 }
 
-func (m *_RegisterNodesResponseBuilder) WithNoOfRegisteredNodeIds(noOfRegisteredNodeIds int32) RegisterNodesResponseBuilder {
-	m.NoOfRegisteredNodeIds = noOfRegisteredNodeIds
-	return m
+func (b *_RegisterNodesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) RegisterNodesResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
 }
 
-func (m *_RegisterNodesResponseBuilder) WithRegisteredNodeIds(registeredNodeIds ...NodeId) RegisterNodesResponseBuilder {
-	m.RegisteredNodeIds = registeredNodeIds
-	return m
-}
-
-func (m *_RegisterNodesResponseBuilder) Build() (RegisterNodesResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_RegisterNodesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterNodesResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._RegisterNodesResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_RegisterNodesResponseBuilder) MustBuild() RegisterNodesResponse {
-	build, err := m.Build()
+func (b *_RegisterNodesResponseBuilder) WithNoOfRegisteredNodeIds(noOfRegisteredNodeIds int32) RegisterNodesResponseBuilder {
+	b.NoOfRegisteredNodeIds = noOfRegisteredNodeIds
+	return b
+}
+
+func (b *_RegisterNodesResponseBuilder) WithRegisteredNodeIds(registeredNodeIds ...NodeId) RegisterNodesResponseBuilder {
+	b.RegisteredNodeIds = registeredNodeIds
+	return b
+}
+
+func (b *_RegisterNodesResponseBuilder) Build() (RegisterNodesResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RegisterNodesResponse.deepCopy(), nil
+}
+
+func (b *_RegisterNodesResponseBuilder) MustBuild() RegisterNodesResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RegisterNodesResponseBuilder) DeepCopy() any {
-	return m.CreateRegisterNodesResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RegisterNodesResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RegisterNodesResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_RegisterNodesResponseBuilder) DeepCopy() any {
+	_copy := b.CreateRegisterNodesResponseBuilder().(*_RegisterNodesResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRegisterNodesResponseBuilder creates a RegisterNodesResponseBuilder
-func (m *_RegisterNodesResponse) CreateRegisterNodesResponseBuilder() RegisterNodesResponseBuilder {
-	if m == nil {
+func (b *_RegisterNodesResponse) CreateRegisterNodesResponseBuilder() RegisterNodesResponseBuilder {
+	if b == nil {
 		return NewRegisterNodesResponseBuilder()
 	}
-	return &_RegisterNodesResponseBuilder{_RegisterNodesResponse: m.deepCopy()}
+	return &_RegisterNodesResponseBuilder{_RegisterNodesResponse: b.deepCopy()}
 }
 
 ///////////////////////

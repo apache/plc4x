@@ -85,40 +85,59 @@ func NewNullListServicesResponseBuilder() NullListServicesResponseBuilder {
 type _NullListServicesResponseBuilder struct {
 	*_NullListServicesResponse
 
+	parentBuilder *_EipPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NullListServicesResponseBuilder) = (*_NullListServicesResponseBuilder)(nil)
 
-func (m *_NullListServicesResponseBuilder) WithMandatoryFields() NullListServicesResponseBuilder {
-	return m
+func (b *_NullListServicesResponseBuilder) setParent(contract EipPacketContract) {
+	b.EipPacketContract = contract
 }
 
-func (m *_NullListServicesResponseBuilder) Build() (NullListServicesResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NullListServicesResponseBuilder) WithMandatoryFields() NullListServicesResponseBuilder {
+	return b
+}
+
+func (b *_NullListServicesResponseBuilder) Build() (NullListServicesResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NullListServicesResponse.deepCopy(), nil
+	return b._NullListServicesResponse.deepCopy(), nil
 }
 
-func (m *_NullListServicesResponseBuilder) MustBuild() NullListServicesResponse {
-	build, err := m.Build()
+func (b *_NullListServicesResponseBuilder) MustBuild() NullListServicesResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NullListServicesResponseBuilder) DeepCopy() any {
-	return m.CreateNullListServicesResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NullListServicesResponseBuilder) Done() EipPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NullListServicesResponseBuilder) buildForEipPacket() (EipPacket, error) {
+	return b.Build()
+}
+
+func (b *_NullListServicesResponseBuilder) DeepCopy() any {
+	_copy := b.CreateNullListServicesResponseBuilder().(*_NullListServicesResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNullListServicesResponseBuilder creates a NullListServicesResponseBuilder
-func (m *_NullListServicesResponse) CreateNullListServicesResponseBuilder() NullListServicesResponseBuilder {
-	if m == nil {
+func (b *_NullListServicesResponse) CreateNullListServicesResponseBuilder() NullListServicesResponseBuilder {
+	if b == nil {
 		return NewNullListServicesResponseBuilder()
 	}
-	return &_NullListServicesResponseBuilder{_NullListServicesResponse: m.deepCopy()}
+	return &_NullListServicesResponseBuilder{_NullListServicesResponse: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataReliabilityBuilder() BACnetConstructedDataReliabili
 type _BACnetConstructedDataReliabilityBuilder struct {
 	*_BACnetConstructedDataReliability
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataReliabilityBuilder) = (*_BACnetConstructedDataReliabilityBuilder)(nil)
 
-func (m *_BACnetConstructedDataReliabilityBuilder) WithMandatoryFields(reliability BACnetReliabilityTagged) BACnetConstructedDataReliabilityBuilder {
-	return m.WithReliability(reliability)
+func (b *_BACnetConstructedDataReliabilityBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataReliabilityBuilder) WithReliability(reliability BACnetReliabilityTagged) BACnetConstructedDataReliabilityBuilder {
-	m.Reliability = reliability
-	return m
+func (b *_BACnetConstructedDataReliabilityBuilder) WithMandatoryFields(reliability BACnetReliabilityTagged) BACnetConstructedDataReliabilityBuilder {
+	return b.WithReliability(reliability)
 }
 
-func (m *_BACnetConstructedDataReliabilityBuilder) WithReliabilityBuilder(builderSupplier func(BACnetReliabilityTaggedBuilder) BACnetReliabilityTaggedBuilder) BACnetConstructedDataReliabilityBuilder {
-	builder := builderSupplier(m.Reliability.CreateBACnetReliabilityTaggedBuilder())
+func (b *_BACnetConstructedDataReliabilityBuilder) WithReliability(reliability BACnetReliabilityTagged) BACnetConstructedDataReliabilityBuilder {
+	b.Reliability = reliability
+	return b
+}
+
+func (b *_BACnetConstructedDataReliabilityBuilder) WithReliabilityBuilder(builderSupplier func(BACnetReliabilityTaggedBuilder) BACnetReliabilityTaggedBuilder) BACnetConstructedDataReliabilityBuilder {
+	builder := builderSupplier(b.Reliability.CreateBACnetReliabilityTaggedBuilder())
 	var err error
-	m.Reliability, err = builder.Build()
+	b.Reliability, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetReliabilityTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetReliabilityTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataReliabilityBuilder) Build() (BACnetConstructedDataReliability, error) {
-	if m.Reliability == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataReliabilityBuilder) Build() (BACnetConstructedDataReliability, error) {
+	if b.Reliability == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'reliability' not set"))
+		b.err.Append(errors.New("mandatory field 'reliability' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataReliability.deepCopy(), nil
+	return b._BACnetConstructedDataReliability.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataReliabilityBuilder) MustBuild() BACnetConstructedDataReliability {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataReliabilityBuilder) MustBuild() BACnetConstructedDataReliability {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataReliabilityBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataReliabilityBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataReliabilityBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataReliabilityBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataReliabilityBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataReliabilityBuilder().(*_BACnetConstructedDataReliabilityBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataReliabilityBuilder creates a BACnetConstructedDataReliabilityBuilder
-func (m *_BACnetConstructedDataReliability) CreateBACnetConstructedDataReliabilityBuilder() BACnetConstructedDataReliabilityBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataReliability) CreateBACnetConstructedDataReliabilityBuilder() BACnetConstructedDataReliabilityBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataReliabilityBuilder()
 	}
-	return &_BACnetConstructedDataReliabilityBuilder{_BACnetConstructedDataReliability: m.deepCopy()}
+	return &_BACnetConstructedDataReliabilityBuilder{_BACnetConstructedDataReliability: b.deepCopy()}
 }
 
 ///////////////////////

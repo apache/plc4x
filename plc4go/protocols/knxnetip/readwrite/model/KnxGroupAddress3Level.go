@@ -105,55 +105,74 @@ func NewKnxGroupAddress3LevelBuilder() KnxGroupAddress3LevelBuilder {
 type _KnxGroupAddress3LevelBuilder struct {
 	*_KnxGroupAddress3Level
 
+	parentBuilder *_KnxGroupAddressBuilder
+
 	err *utils.MultiError
 }
 
 var _ (KnxGroupAddress3LevelBuilder) = (*_KnxGroupAddress3LevelBuilder)(nil)
 
-func (m *_KnxGroupAddress3LevelBuilder) WithMandatoryFields(mainGroup uint8, middleGroup uint8, subGroup uint8) KnxGroupAddress3LevelBuilder {
-	return m.WithMainGroup(mainGroup).WithMiddleGroup(middleGroup).WithSubGroup(subGroup)
+func (b *_KnxGroupAddress3LevelBuilder) setParent(contract KnxGroupAddressContract) {
+	b.KnxGroupAddressContract = contract
 }
 
-func (m *_KnxGroupAddress3LevelBuilder) WithMainGroup(mainGroup uint8) KnxGroupAddress3LevelBuilder {
-	m.MainGroup = mainGroup
-	return m
+func (b *_KnxGroupAddress3LevelBuilder) WithMandatoryFields(mainGroup uint8, middleGroup uint8, subGroup uint8) KnxGroupAddress3LevelBuilder {
+	return b.WithMainGroup(mainGroup).WithMiddleGroup(middleGroup).WithSubGroup(subGroup)
 }
 
-func (m *_KnxGroupAddress3LevelBuilder) WithMiddleGroup(middleGroup uint8) KnxGroupAddress3LevelBuilder {
-	m.MiddleGroup = middleGroup
-	return m
+func (b *_KnxGroupAddress3LevelBuilder) WithMainGroup(mainGroup uint8) KnxGroupAddress3LevelBuilder {
+	b.MainGroup = mainGroup
+	return b
 }
 
-func (m *_KnxGroupAddress3LevelBuilder) WithSubGroup(subGroup uint8) KnxGroupAddress3LevelBuilder {
-	m.SubGroup = subGroup
-	return m
+func (b *_KnxGroupAddress3LevelBuilder) WithMiddleGroup(middleGroup uint8) KnxGroupAddress3LevelBuilder {
+	b.MiddleGroup = middleGroup
+	return b
 }
 
-func (m *_KnxGroupAddress3LevelBuilder) Build() (KnxGroupAddress3Level, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_KnxGroupAddress3LevelBuilder) WithSubGroup(subGroup uint8) KnxGroupAddress3LevelBuilder {
+	b.SubGroup = subGroup
+	return b
+}
+
+func (b *_KnxGroupAddress3LevelBuilder) Build() (KnxGroupAddress3Level, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._KnxGroupAddress3Level.deepCopy(), nil
+	return b._KnxGroupAddress3Level.deepCopy(), nil
 }
 
-func (m *_KnxGroupAddress3LevelBuilder) MustBuild() KnxGroupAddress3Level {
-	build, err := m.Build()
+func (b *_KnxGroupAddress3LevelBuilder) MustBuild() KnxGroupAddress3Level {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_KnxGroupAddress3LevelBuilder) DeepCopy() any {
-	return m.CreateKnxGroupAddress3LevelBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_KnxGroupAddress3LevelBuilder) Done() KnxGroupAddressBuilder {
+	return b.parentBuilder
+}
+
+func (b *_KnxGroupAddress3LevelBuilder) buildForKnxGroupAddress() (KnxGroupAddress, error) {
+	return b.Build()
+}
+
+func (b *_KnxGroupAddress3LevelBuilder) DeepCopy() any {
+	_copy := b.CreateKnxGroupAddress3LevelBuilder().(*_KnxGroupAddress3LevelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateKnxGroupAddress3LevelBuilder creates a KnxGroupAddress3LevelBuilder
-func (m *_KnxGroupAddress3Level) CreateKnxGroupAddress3LevelBuilder() KnxGroupAddress3LevelBuilder {
-	if m == nil {
+func (b *_KnxGroupAddress3Level) CreateKnxGroupAddress3LevelBuilder() KnxGroupAddress3LevelBuilder {
+	if b == nil {
 		return NewKnxGroupAddress3LevelBuilder()
 	}
-	return &_KnxGroupAddress3LevelBuilder{_KnxGroupAddress3Level: m.deepCopy()}
+	return &_KnxGroupAddress3LevelBuilder{_KnxGroupAddress3Level: b.deepCopy()}
 }
 
 ///////////////////////

@@ -93,45 +93,64 @@ func NewIdentifyReplyCommandMinimumLevelsBuilder() IdentifyReplyCommandMinimumLe
 type _IdentifyReplyCommandMinimumLevelsBuilder struct {
 	*_IdentifyReplyCommandMinimumLevels
 
+	parentBuilder *_IdentifyReplyCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (IdentifyReplyCommandMinimumLevelsBuilder) = (*_IdentifyReplyCommandMinimumLevelsBuilder)(nil)
 
-func (m *_IdentifyReplyCommandMinimumLevelsBuilder) WithMandatoryFields(minimumLevels []byte) IdentifyReplyCommandMinimumLevelsBuilder {
-	return m.WithMinimumLevels(minimumLevels...)
+func (b *_IdentifyReplyCommandMinimumLevelsBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
 }
 
-func (m *_IdentifyReplyCommandMinimumLevelsBuilder) WithMinimumLevels(minimumLevels ...byte) IdentifyReplyCommandMinimumLevelsBuilder {
-	m.MinimumLevels = minimumLevels
-	return m
+func (b *_IdentifyReplyCommandMinimumLevelsBuilder) WithMandatoryFields(minimumLevels []byte) IdentifyReplyCommandMinimumLevelsBuilder {
+	return b.WithMinimumLevels(minimumLevels...)
 }
 
-func (m *_IdentifyReplyCommandMinimumLevelsBuilder) Build() (IdentifyReplyCommandMinimumLevels, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IdentifyReplyCommandMinimumLevelsBuilder) WithMinimumLevels(minimumLevels ...byte) IdentifyReplyCommandMinimumLevelsBuilder {
+	b.MinimumLevels = minimumLevels
+	return b
+}
+
+func (b *_IdentifyReplyCommandMinimumLevelsBuilder) Build() (IdentifyReplyCommandMinimumLevels, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommandMinimumLevels.deepCopy(), nil
+	return b._IdentifyReplyCommandMinimumLevels.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandMinimumLevelsBuilder) MustBuild() IdentifyReplyCommandMinimumLevels {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandMinimumLevelsBuilder) MustBuild() IdentifyReplyCommandMinimumLevels {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandMinimumLevelsBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandMinimumLevelsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandMinimumLevelsBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandMinimumLevelsBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandMinimumLevelsBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandMinimumLevelsBuilder().(*_IdentifyReplyCommandMinimumLevelsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandMinimumLevelsBuilder creates a IdentifyReplyCommandMinimumLevelsBuilder
-func (m *_IdentifyReplyCommandMinimumLevels) CreateIdentifyReplyCommandMinimumLevelsBuilder() IdentifyReplyCommandMinimumLevelsBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommandMinimumLevels) CreateIdentifyReplyCommandMinimumLevelsBuilder() IdentifyReplyCommandMinimumLevelsBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandMinimumLevelsBuilder()
 	}
-	return &_IdentifyReplyCommandMinimumLevelsBuilder{_IdentifyReplyCommandMinimumLevels: m.deepCopy()}
+	return &_IdentifyReplyCommandMinimumLevelsBuilder{_IdentifyReplyCommandMinimumLevels: b.deepCopy()}
 }
 
 ///////////////////////

@@ -85,40 +85,59 @@ func NewBACnetConstructedDataOptionalBuilder() BACnetConstructedDataOptionalBuil
 type _BACnetConstructedDataOptionalBuilder struct {
 	*_BACnetConstructedDataOptional
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataOptionalBuilder) = (*_BACnetConstructedDataOptionalBuilder)(nil)
 
-func (m *_BACnetConstructedDataOptionalBuilder) WithMandatoryFields() BACnetConstructedDataOptionalBuilder {
-	return m
+func (b *_BACnetConstructedDataOptionalBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataOptionalBuilder) Build() (BACnetConstructedDataOptional, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataOptionalBuilder) WithMandatoryFields() BACnetConstructedDataOptionalBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataOptionalBuilder) Build() (BACnetConstructedDataOptional, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataOptional.deepCopy(), nil
+	return b._BACnetConstructedDataOptional.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataOptionalBuilder) MustBuild() BACnetConstructedDataOptional {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataOptionalBuilder) MustBuild() BACnetConstructedDataOptional {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataOptionalBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataOptionalBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataOptionalBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataOptionalBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataOptionalBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataOptionalBuilder().(*_BACnetConstructedDataOptionalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataOptionalBuilder creates a BACnetConstructedDataOptionalBuilder
-func (m *_BACnetConstructedDataOptional) CreateBACnetConstructedDataOptionalBuilder() BACnetConstructedDataOptionalBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataOptional) CreateBACnetConstructedDataOptionalBuilder() BACnetConstructedDataOptionalBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataOptionalBuilder()
 	}
-	return &_BACnetConstructedDataOptionalBuilder{_BACnetConstructedDataOptional: m.deepCopy()}
+	return &_BACnetConstructedDataOptionalBuilder{_BACnetConstructedDataOptional: b.deepCopy()}
 }
 
 ///////////////////////

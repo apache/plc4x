@@ -98,64 +98,83 @@ func NewBACnetCalendarEntryDateBuilder() BACnetCalendarEntryDateBuilder {
 type _BACnetCalendarEntryDateBuilder struct {
 	*_BACnetCalendarEntryDate
 
+	parentBuilder *_BACnetCalendarEntryBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetCalendarEntryDateBuilder) = (*_BACnetCalendarEntryDateBuilder)(nil)
 
-func (m *_BACnetCalendarEntryDateBuilder) WithMandatoryFields(dateValue BACnetContextTagDate) BACnetCalendarEntryDateBuilder {
-	return m.WithDateValue(dateValue)
+func (b *_BACnetCalendarEntryDateBuilder) setParent(contract BACnetCalendarEntryContract) {
+	b.BACnetCalendarEntryContract = contract
 }
 
-func (m *_BACnetCalendarEntryDateBuilder) WithDateValue(dateValue BACnetContextTagDate) BACnetCalendarEntryDateBuilder {
-	m.DateValue = dateValue
-	return m
+func (b *_BACnetCalendarEntryDateBuilder) WithMandatoryFields(dateValue BACnetContextTagDate) BACnetCalendarEntryDateBuilder {
+	return b.WithDateValue(dateValue)
 }
 
-func (m *_BACnetCalendarEntryDateBuilder) WithDateValueBuilder(builderSupplier func(BACnetContextTagDateBuilder) BACnetContextTagDateBuilder) BACnetCalendarEntryDateBuilder {
-	builder := builderSupplier(m.DateValue.CreateBACnetContextTagDateBuilder())
+func (b *_BACnetCalendarEntryDateBuilder) WithDateValue(dateValue BACnetContextTagDate) BACnetCalendarEntryDateBuilder {
+	b.DateValue = dateValue
+	return b
+}
+
+func (b *_BACnetCalendarEntryDateBuilder) WithDateValueBuilder(builderSupplier func(BACnetContextTagDateBuilder) BACnetContextTagDateBuilder) BACnetCalendarEntryDateBuilder {
+	builder := builderSupplier(b.DateValue.CreateBACnetContextTagDateBuilder())
 	var err error
-	m.DateValue, err = builder.Build()
+	b.DateValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagDateBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagDateBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetCalendarEntryDateBuilder) Build() (BACnetCalendarEntryDate, error) {
-	if m.DateValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetCalendarEntryDateBuilder) Build() (BACnetCalendarEntryDate, error) {
+	if b.DateValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dateValue' not set"))
+		b.err.Append(errors.New("mandatory field 'dateValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetCalendarEntryDate.deepCopy(), nil
+	return b._BACnetCalendarEntryDate.deepCopy(), nil
 }
 
-func (m *_BACnetCalendarEntryDateBuilder) MustBuild() BACnetCalendarEntryDate {
-	build, err := m.Build()
+func (b *_BACnetCalendarEntryDateBuilder) MustBuild() BACnetCalendarEntryDate {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetCalendarEntryDateBuilder) DeepCopy() any {
-	return m.CreateBACnetCalendarEntryDateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetCalendarEntryDateBuilder) Done() BACnetCalendarEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetCalendarEntryDateBuilder) buildForBACnetCalendarEntry() (BACnetCalendarEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetCalendarEntryDateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetCalendarEntryDateBuilder().(*_BACnetCalendarEntryDateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetCalendarEntryDateBuilder creates a BACnetCalendarEntryDateBuilder
-func (m *_BACnetCalendarEntryDate) CreateBACnetCalendarEntryDateBuilder() BACnetCalendarEntryDateBuilder {
-	if m == nil {
+func (b *_BACnetCalendarEntryDate) CreateBACnetCalendarEntryDateBuilder() BACnetCalendarEntryDateBuilder {
+	if b == nil {
 		return NewBACnetCalendarEntryDateBuilder()
 	}
-	return &_BACnetCalendarEntryDateBuilder{_BACnetCalendarEntryDate: m.deepCopy()}
+	return &_BACnetCalendarEntryDateBuilder{_BACnetCalendarEntryDate: b.deepCopy()}
 }
 
 ///////////////////////

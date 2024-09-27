@@ -83,35 +83,39 @@ type _UtcTimeBuilder struct {
 
 var _ (UtcTimeBuilder) = (*_UtcTimeBuilder)(nil)
 
-func (m *_UtcTimeBuilder) WithMandatoryFields() UtcTimeBuilder {
-	return m
+func (b *_UtcTimeBuilder) WithMandatoryFields() UtcTimeBuilder {
+	return b
 }
 
-func (m *_UtcTimeBuilder) Build() (UtcTime, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_UtcTimeBuilder) Build() (UtcTime, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._UtcTime.deepCopy(), nil
+	return b._UtcTime.deepCopy(), nil
 }
 
-func (m *_UtcTimeBuilder) MustBuild() UtcTime {
-	build, err := m.Build()
+func (b *_UtcTimeBuilder) MustBuild() UtcTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_UtcTimeBuilder) DeepCopy() any {
-	return m.CreateUtcTimeBuilder()
+func (b *_UtcTimeBuilder) DeepCopy() any {
+	_copy := b.CreateUtcTimeBuilder().(*_UtcTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateUtcTimeBuilder creates a UtcTimeBuilder
-func (m *_UtcTime) CreateUtcTimeBuilder() UtcTimeBuilder {
-	if m == nil {
+func (b *_UtcTime) CreateUtcTimeBuilder() UtcTimeBuilder {
+	if b == nil {
 		return NewUtcTimeBuilder()
 	}
-	return &_UtcTimeBuilder{_UtcTime: m.deepCopy()}
+	return &_UtcTimeBuilder{_UtcTime: b.deepCopy()}
 }
 
 ///////////////////////

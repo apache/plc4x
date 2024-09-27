@@ -100,64 +100,83 @@ func NewBACnetConstructedDataCOVPeriodBuilder() BACnetConstructedDataCOVPeriodBu
 type _BACnetConstructedDataCOVPeriodBuilder struct {
 	*_BACnetConstructedDataCOVPeriod
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCOVPeriodBuilder) = (*_BACnetConstructedDataCOVPeriodBuilder)(nil)
 
-func (m *_BACnetConstructedDataCOVPeriodBuilder) WithMandatoryFields(covPeriod BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCOVPeriodBuilder {
-	return m.WithCovPeriod(covPeriod)
+func (b *_BACnetConstructedDataCOVPeriodBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCOVPeriodBuilder) WithCovPeriod(covPeriod BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCOVPeriodBuilder {
-	m.CovPeriod = covPeriod
-	return m
+func (b *_BACnetConstructedDataCOVPeriodBuilder) WithMandatoryFields(covPeriod BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCOVPeriodBuilder {
+	return b.WithCovPeriod(covPeriod)
 }
 
-func (m *_BACnetConstructedDataCOVPeriodBuilder) WithCovPeriodBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCOVPeriodBuilder {
-	builder := builderSupplier(m.CovPeriod.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataCOVPeriodBuilder) WithCovPeriod(covPeriod BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCOVPeriodBuilder {
+	b.CovPeriod = covPeriod
+	return b
+}
+
+func (b *_BACnetConstructedDataCOVPeriodBuilder) WithCovPeriodBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCOVPeriodBuilder {
+	builder := builderSupplier(b.CovPeriod.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.CovPeriod, err = builder.Build()
+	b.CovPeriod, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataCOVPeriodBuilder) Build() (BACnetConstructedDataCOVPeriod, error) {
-	if m.CovPeriod == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataCOVPeriodBuilder) Build() (BACnetConstructedDataCOVPeriod, error) {
+	if b.CovPeriod == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'covPeriod' not set"))
+		b.err.Append(errors.New("mandatory field 'covPeriod' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCOVPeriod.deepCopy(), nil
+	return b._BACnetConstructedDataCOVPeriod.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCOVPeriodBuilder) MustBuild() BACnetConstructedDataCOVPeriod {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCOVPeriodBuilder) MustBuild() BACnetConstructedDataCOVPeriod {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCOVPeriodBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCOVPeriodBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCOVPeriodBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCOVPeriodBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCOVPeriodBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCOVPeriodBuilder().(*_BACnetConstructedDataCOVPeriodBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCOVPeriodBuilder creates a BACnetConstructedDataCOVPeriodBuilder
-func (m *_BACnetConstructedDataCOVPeriod) CreateBACnetConstructedDataCOVPeriodBuilder() BACnetConstructedDataCOVPeriodBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCOVPeriod) CreateBACnetConstructedDataCOVPeriodBuilder() BACnetConstructedDataCOVPeriodBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCOVPeriodBuilder()
 	}
-	return &_BACnetConstructedDataCOVPeriodBuilder{_BACnetConstructedDataCOVPeriod: m.deepCopy()}
+	return &_BACnetConstructedDataCOVPeriodBuilder{_BACnetConstructedDataCOVPeriod: b.deepCopy()}
 }
 
 ///////////////////////

@@ -133,8 +133,12 @@ type NPDUBuilder interface {
 	WithOptionalHopCount(uint8) NPDUBuilder
 	// WithNlm adds Nlm (property field)
 	WithOptionalNlm(NLM) NPDUBuilder
+	// WithOptionalNlmBuilder adds Nlm (property field) which is build by the builder
+	WithOptionalNlmBuilder(func(NLMBuilder) NLMBuilder) NPDUBuilder
 	// WithApdu adds Apdu (property field)
 	WithOptionalApdu(APDU) NPDUBuilder
+	// WithOptionalApduBuilder adds Apdu (property field) which is build by the builder
+	WithOptionalApduBuilder(func(APDUBuilder) APDUBuilder) NPDUBuilder
 	// Build builds the NPDU or returns an error if something is wrong
 	Build() (NPDU, error)
 	// MustBuild does the same as Build but panics on error
@@ -154,109 +158,139 @@ type _NPDUBuilder struct {
 
 var _ (NPDUBuilder) = (*_NPDUBuilder)(nil)
 
-func (m *_NPDUBuilder) WithMandatoryFields(protocolVersionNumber uint8, control NPDUControl, destinationAddress []uint8, sourceAddress []uint8) NPDUBuilder {
-	return m.WithProtocolVersionNumber(protocolVersionNumber).WithControl(control).WithDestinationAddress(destinationAddress...).WithSourceAddress(sourceAddress...)
+func (b *_NPDUBuilder) WithMandatoryFields(protocolVersionNumber uint8, control NPDUControl, destinationAddress []uint8, sourceAddress []uint8) NPDUBuilder {
+	return b.WithProtocolVersionNumber(protocolVersionNumber).WithControl(control).WithDestinationAddress(destinationAddress...).WithSourceAddress(sourceAddress...)
 }
 
-func (m *_NPDUBuilder) WithProtocolVersionNumber(protocolVersionNumber uint8) NPDUBuilder {
-	m.ProtocolVersionNumber = protocolVersionNumber
-	return m
+func (b *_NPDUBuilder) WithProtocolVersionNumber(protocolVersionNumber uint8) NPDUBuilder {
+	b.ProtocolVersionNumber = protocolVersionNumber
+	return b
 }
 
-func (m *_NPDUBuilder) WithControl(control NPDUControl) NPDUBuilder {
-	m.Control = control
-	return m
+func (b *_NPDUBuilder) WithControl(control NPDUControl) NPDUBuilder {
+	b.Control = control
+	return b
 }
 
-func (m *_NPDUBuilder) WithControlBuilder(builderSupplier func(NPDUControlBuilder) NPDUControlBuilder) NPDUBuilder {
-	builder := builderSupplier(m.Control.CreateNPDUControlBuilder())
+func (b *_NPDUBuilder) WithControlBuilder(builderSupplier func(NPDUControlBuilder) NPDUControlBuilder) NPDUBuilder {
+	builder := builderSupplier(b.Control.CreateNPDUControlBuilder())
 	var err error
-	m.Control, err = builder.Build()
+	b.Control, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NPDUControlBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NPDUControlBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_NPDUBuilder) WithOptionalDestinationNetworkAddress(destinationNetworkAddress uint16) NPDUBuilder {
-	m.DestinationNetworkAddress = &destinationNetworkAddress
-	return m
+func (b *_NPDUBuilder) WithOptionalDestinationNetworkAddress(destinationNetworkAddress uint16) NPDUBuilder {
+	b.DestinationNetworkAddress = &destinationNetworkAddress
+	return b
 }
 
-func (m *_NPDUBuilder) WithOptionalDestinationLength(destinationLength uint8) NPDUBuilder {
-	m.DestinationLength = &destinationLength
-	return m
+func (b *_NPDUBuilder) WithOptionalDestinationLength(destinationLength uint8) NPDUBuilder {
+	b.DestinationLength = &destinationLength
+	return b
 }
 
-func (m *_NPDUBuilder) WithDestinationAddress(destinationAddress ...uint8) NPDUBuilder {
-	m.DestinationAddress = destinationAddress
-	return m
+func (b *_NPDUBuilder) WithDestinationAddress(destinationAddress ...uint8) NPDUBuilder {
+	b.DestinationAddress = destinationAddress
+	return b
 }
 
-func (m *_NPDUBuilder) WithOptionalSourceNetworkAddress(sourceNetworkAddress uint16) NPDUBuilder {
-	m.SourceNetworkAddress = &sourceNetworkAddress
-	return m
+func (b *_NPDUBuilder) WithOptionalSourceNetworkAddress(sourceNetworkAddress uint16) NPDUBuilder {
+	b.SourceNetworkAddress = &sourceNetworkAddress
+	return b
 }
 
-func (m *_NPDUBuilder) WithOptionalSourceLength(sourceLength uint8) NPDUBuilder {
-	m.SourceLength = &sourceLength
-	return m
+func (b *_NPDUBuilder) WithOptionalSourceLength(sourceLength uint8) NPDUBuilder {
+	b.SourceLength = &sourceLength
+	return b
 }
 
-func (m *_NPDUBuilder) WithSourceAddress(sourceAddress ...uint8) NPDUBuilder {
-	m.SourceAddress = sourceAddress
-	return m
+func (b *_NPDUBuilder) WithSourceAddress(sourceAddress ...uint8) NPDUBuilder {
+	b.SourceAddress = sourceAddress
+	return b
 }
 
-func (m *_NPDUBuilder) WithOptionalHopCount(hopCount uint8) NPDUBuilder {
-	m.HopCount = &hopCount
-	return m
+func (b *_NPDUBuilder) WithOptionalHopCount(hopCount uint8) NPDUBuilder {
+	b.HopCount = &hopCount
+	return b
 }
 
-func (m *_NPDUBuilder) WithOptionalNlm(nlm NLM) NPDUBuilder {
-	m.Nlm = nlm
-	return m
+func (b *_NPDUBuilder) WithOptionalNlm(nlm NLM) NPDUBuilder {
+	b.Nlm = nlm
+	return b
 }
 
-func (m *_NPDUBuilder) WithOptionalApdu(apdu APDU) NPDUBuilder {
-	m.Apdu = apdu
-	return m
-}
-
-func (m *_NPDUBuilder) Build() (NPDU, error) {
-	if m.Control == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_NPDUBuilder) WithOptionalNlmBuilder(builderSupplier func(NLMBuilder) NLMBuilder) NPDUBuilder {
+	builder := builderSupplier(b.Nlm.CreateNLMBuilder())
+	var err error
+	b.Nlm, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'control' not set"))
+		b.err.Append(errors.Wrap(err, "NLMBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._NPDU.deepCopy(), nil
+	return b
 }
 
-func (m *_NPDUBuilder) MustBuild() NPDU {
-	build, err := m.Build()
+func (b *_NPDUBuilder) WithOptionalApdu(apdu APDU) NPDUBuilder {
+	b.Apdu = apdu
+	return b
+}
+
+func (b *_NPDUBuilder) WithOptionalApduBuilder(builderSupplier func(APDUBuilder) APDUBuilder) NPDUBuilder {
+	builder := builderSupplier(b.Apdu.CreateAPDUBuilder())
+	var err error
+	b.Apdu, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "APDUBuilder failed"))
+	}
+	return b
+}
+
+func (b *_NPDUBuilder) Build() (NPDU, error) {
+	if b.Control == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'control' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NPDU.deepCopy(), nil
+}
+
+func (b *_NPDUBuilder) MustBuild() NPDU {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NPDUBuilder) DeepCopy() any {
-	return m.CreateNPDUBuilder()
+func (b *_NPDUBuilder) DeepCopy() any {
+	_copy := b.CreateNPDUBuilder().(*_NPDUBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNPDUBuilder creates a NPDUBuilder
-func (m *_NPDU) CreateNPDUBuilder() NPDUBuilder {
-	if m == nil {
+func (b *_NPDU) CreateNPDUBuilder() NPDUBuilder {
+	if b == nil {
 		return NewNPDUBuilder()
 	}
-	return &_NPDUBuilder{_NPDU: m.deepCopy()}
+	return &_NPDUBuilder{_NPDU: b.deepCopy()}
 }
 
 ///////////////////////

@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesLockStatusBuilder() BACnetPropertyStatesLockStatusBu
 type _BACnetPropertyStatesLockStatusBuilder struct {
 	*_BACnetPropertyStatesLockStatus
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesLockStatusBuilder) = (*_BACnetPropertyStatesLockStatusBuilder)(nil)
 
-func (m *_BACnetPropertyStatesLockStatusBuilder) WithMandatoryFields(lockStatus BACnetLockStatusTagged) BACnetPropertyStatesLockStatusBuilder {
-	return m.WithLockStatus(lockStatus)
+func (b *_BACnetPropertyStatesLockStatusBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesLockStatusBuilder) WithLockStatus(lockStatus BACnetLockStatusTagged) BACnetPropertyStatesLockStatusBuilder {
-	m.LockStatus = lockStatus
-	return m
+func (b *_BACnetPropertyStatesLockStatusBuilder) WithMandatoryFields(lockStatus BACnetLockStatusTagged) BACnetPropertyStatesLockStatusBuilder {
+	return b.WithLockStatus(lockStatus)
 }
 
-func (m *_BACnetPropertyStatesLockStatusBuilder) WithLockStatusBuilder(builderSupplier func(BACnetLockStatusTaggedBuilder) BACnetLockStatusTaggedBuilder) BACnetPropertyStatesLockStatusBuilder {
-	builder := builderSupplier(m.LockStatus.CreateBACnetLockStatusTaggedBuilder())
+func (b *_BACnetPropertyStatesLockStatusBuilder) WithLockStatus(lockStatus BACnetLockStatusTagged) BACnetPropertyStatesLockStatusBuilder {
+	b.LockStatus = lockStatus
+	return b
+}
+
+func (b *_BACnetPropertyStatesLockStatusBuilder) WithLockStatusBuilder(builderSupplier func(BACnetLockStatusTaggedBuilder) BACnetLockStatusTaggedBuilder) BACnetPropertyStatesLockStatusBuilder {
+	builder := builderSupplier(b.LockStatus.CreateBACnetLockStatusTaggedBuilder())
 	var err error
-	m.LockStatus, err = builder.Build()
+	b.LockStatus, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLockStatusTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLockStatusTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesLockStatusBuilder) Build() (BACnetPropertyStatesLockStatus, error) {
-	if m.LockStatus == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesLockStatusBuilder) Build() (BACnetPropertyStatesLockStatus, error) {
+	if b.LockStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lockStatus' not set"))
+		b.err.Append(errors.New("mandatory field 'lockStatus' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesLockStatus.deepCopy(), nil
+	return b._BACnetPropertyStatesLockStatus.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesLockStatusBuilder) MustBuild() BACnetPropertyStatesLockStatus {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesLockStatusBuilder) MustBuild() BACnetPropertyStatesLockStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesLockStatusBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesLockStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesLockStatusBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesLockStatusBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesLockStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesLockStatusBuilder().(*_BACnetPropertyStatesLockStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesLockStatusBuilder creates a BACnetPropertyStatesLockStatusBuilder
-func (m *_BACnetPropertyStatesLockStatus) CreateBACnetPropertyStatesLockStatusBuilder() BACnetPropertyStatesLockStatusBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesLockStatus) CreateBACnetPropertyStatesLockStatusBuilder() BACnetPropertyStatesLockStatusBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesLockStatusBuilder()
 	}
-	return &_BACnetPropertyStatesLockStatusBuilder{_BACnetPropertyStatesLockStatus: m.deepCopy()}
+	return &_BACnetPropertyStatesLockStatusBuilder{_BACnetPropertyStatesLockStatus: b.deepCopy()}
 }
 
 ///////////////////////

@@ -93,45 +93,64 @@ func NewKnxNetIpRoutingBuilder() KnxNetIpRoutingBuilder {
 type _KnxNetIpRoutingBuilder struct {
 	*_KnxNetIpRouting
 
+	parentBuilder *_ServiceIdBuilder
+
 	err *utils.MultiError
 }
 
 var _ (KnxNetIpRoutingBuilder) = (*_KnxNetIpRoutingBuilder)(nil)
 
-func (m *_KnxNetIpRoutingBuilder) WithMandatoryFields(version uint8) KnxNetIpRoutingBuilder {
-	return m.WithVersion(version)
+func (b *_KnxNetIpRoutingBuilder) setParent(contract ServiceIdContract) {
+	b.ServiceIdContract = contract
 }
 
-func (m *_KnxNetIpRoutingBuilder) WithVersion(version uint8) KnxNetIpRoutingBuilder {
-	m.Version = version
-	return m
+func (b *_KnxNetIpRoutingBuilder) WithMandatoryFields(version uint8) KnxNetIpRoutingBuilder {
+	return b.WithVersion(version)
 }
 
-func (m *_KnxNetIpRoutingBuilder) Build() (KnxNetIpRouting, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_KnxNetIpRoutingBuilder) WithVersion(version uint8) KnxNetIpRoutingBuilder {
+	b.Version = version
+	return b
+}
+
+func (b *_KnxNetIpRoutingBuilder) Build() (KnxNetIpRouting, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._KnxNetIpRouting.deepCopy(), nil
+	return b._KnxNetIpRouting.deepCopy(), nil
 }
 
-func (m *_KnxNetIpRoutingBuilder) MustBuild() KnxNetIpRouting {
-	build, err := m.Build()
+func (b *_KnxNetIpRoutingBuilder) MustBuild() KnxNetIpRouting {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_KnxNetIpRoutingBuilder) DeepCopy() any {
-	return m.CreateKnxNetIpRoutingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_KnxNetIpRoutingBuilder) Done() ServiceIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_KnxNetIpRoutingBuilder) buildForServiceId() (ServiceId, error) {
+	return b.Build()
+}
+
+func (b *_KnxNetIpRoutingBuilder) DeepCopy() any {
+	_copy := b.CreateKnxNetIpRoutingBuilder().(*_KnxNetIpRoutingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateKnxNetIpRoutingBuilder creates a KnxNetIpRoutingBuilder
-func (m *_KnxNetIpRouting) CreateKnxNetIpRoutingBuilder() KnxNetIpRoutingBuilder {
-	if m == nil {
+func (b *_KnxNetIpRouting) CreateKnxNetIpRoutingBuilder() KnxNetIpRoutingBuilder {
+	if b == nil {
 		return NewKnxNetIpRoutingBuilder()
 	}
-	return &_KnxNetIpRoutingBuilder{_KnxNetIpRouting: m.deepCopy()}
+	return &_KnxNetIpRoutingBuilder{_KnxNetIpRouting: b.deepCopy()}
 }
 
 ///////////////////////

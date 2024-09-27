@@ -98,64 +98,83 @@ func NewS7PayloadAlarmSCBuilder() S7PayloadAlarmSCBuilder {
 type _S7PayloadAlarmSCBuilder struct {
 	*_S7PayloadAlarmSC
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadAlarmSCBuilder) = (*_S7PayloadAlarmSCBuilder)(nil)
 
-func (m *_S7PayloadAlarmSCBuilder) WithMandatoryFields(alarmMessage AlarmMessagePushType) S7PayloadAlarmSCBuilder {
-	return m.WithAlarmMessage(alarmMessage)
+func (b *_S7PayloadAlarmSCBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadAlarmSCBuilder) WithAlarmMessage(alarmMessage AlarmMessagePushType) S7PayloadAlarmSCBuilder {
-	m.AlarmMessage = alarmMessage
-	return m
+func (b *_S7PayloadAlarmSCBuilder) WithMandatoryFields(alarmMessage AlarmMessagePushType) S7PayloadAlarmSCBuilder {
+	return b.WithAlarmMessage(alarmMessage)
 }
 
-func (m *_S7PayloadAlarmSCBuilder) WithAlarmMessageBuilder(builderSupplier func(AlarmMessagePushTypeBuilder) AlarmMessagePushTypeBuilder) S7PayloadAlarmSCBuilder {
-	builder := builderSupplier(m.AlarmMessage.CreateAlarmMessagePushTypeBuilder())
+func (b *_S7PayloadAlarmSCBuilder) WithAlarmMessage(alarmMessage AlarmMessagePushType) S7PayloadAlarmSCBuilder {
+	b.AlarmMessage = alarmMessage
+	return b
+}
+
+func (b *_S7PayloadAlarmSCBuilder) WithAlarmMessageBuilder(builderSupplier func(AlarmMessagePushTypeBuilder) AlarmMessagePushTypeBuilder) S7PayloadAlarmSCBuilder {
+	builder := builderSupplier(b.AlarmMessage.CreateAlarmMessagePushTypeBuilder())
 	var err error
-	m.AlarmMessage, err = builder.Build()
+	b.AlarmMessage, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AlarmMessagePushTypeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AlarmMessagePushTypeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_S7PayloadAlarmSCBuilder) Build() (S7PayloadAlarmSC, error) {
-	if m.AlarmMessage == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_S7PayloadAlarmSCBuilder) Build() (S7PayloadAlarmSC, error) {
+	if b.AlarmMessage == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'alarmMessage' not set"))
+		b.err.Append(errors.New("mandatory field 'alarmMessage' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadAlarmSC.deepCopy(), nil
+	return b._S7PayloadAlarmSC.deepCopy(), nil
 }
 
-func (m *_S7PayloadAlarmSCBuilder) MustBuild() S7PayloadAlarmSC {
-	build, err := m.Build()
+func (b *_S7PayloadAlarmSCBuilder) MustBuild() S7PayloadAlarmSC {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadAlarmSCBuilder) DeepCopy() any {
-	return m.CreateS7PayloadAlarmSCBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadAlarmSCBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadAlarmSCBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadAlarmSCBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadAlarmSCBuilder().(*_S7PayloadAlarmSCBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadAlarmSCBuilder creates a S7PayloadAlarmSCBuilder
-func (m *_S7PayloadAlarmSC) CreateS7PayloadAlarmSCBuilder() S7PayloadAlarmSCBuilder {
-	if m == nil {
+func (b *_S7PayloadAlarmSC) CreateS7PayloadAlarmSCBuilder() S7PayloadAlarmSCBuilder {
+	if b == nil {
 		return NewS7PayloadAlarmSCBuilder()
 	}
-	return &_S7PayloadAlarmSCBuilder{_S7PayloadAlarmSC: m.deepCopy()}
+	return &_S7PayloadAlarmSCBuilder{_S7PayloadAlarmSC: b.deepCopy()}
 }
 
 ///////////////////////

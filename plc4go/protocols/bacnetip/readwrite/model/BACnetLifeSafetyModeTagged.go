@@ -111,69 +111,73 @@ type _BACnetLifeSafetyModeTaggedBuilder struct {
 
 var _ (BACnetLifeSafetyModeTaggedBuilder) = (*_BACnetLifeSafetyModeTaggedBuilder)(nil)
 
-func (m *_BACnetLifeSafetyModeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLifeSafetyMode, proprietaryValue uint32) BACnetLifeSafetyModeTaggedBuilder {
-	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetLifeSafetyModeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLifeSafetyMode, proprietaryValue uint32) BACnetLifeSafetyModeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_BACnetLifeSafetyModeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLifeSafetyModeTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetLifeSafetyModeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLifeSafetyModeTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetLifeSafetyModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLifeSafetyModeTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetLifeSafetyModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLifeSafetyModeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLifeSafetyModeTaggedBuilder) WithValue(value BACnetLifeSafetyMode) BACnetLifeSafetyModeTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetLifeSafetyModeTaggedBuilder) WithValue(value BACnetLifeSafetyMode) BACnetLifeSafetyModeTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetLifeSafetyModeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLifeSafetyModeTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetLifeSafetyModeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLifeSafetyModeTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetLifeSafetyModeTaggedBuilder) Build() (BACnetLifeSafetyModeTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLifeSafetyModeTaggedBuilder) Build() (BACnetLifeSafetyModeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLifeSafetyModeTagged.deepCopy(), nil
+	return b._BACnetLifeSafetyModeTagged.deepCopy(), nil
 }
 
-func (m *_BACnetLifeSafetyModeTaggedBuilder) MustBuild() BACnetLifeSafetyModeTagged {
-	build, err := m.Build()
+func (b *_BACnetLifeSafetyModeTaggedBuilder) MustBuild() BACnetLifeSafetyModeTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLifeSafetyModeTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetLifeSafetyModeTaggedBuilder()
+func (b *_BACnetLifeSafetyModeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLifeSafetyModeTaggedBuilder().(*_BACnetLifeSafetyModeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLifeSafetyModeTaggedBuilder creates a BACnetLifeSafetyModeTaggedBuilder
-func (m *_BACnetLifeSafetyModeTagged) CreateBACnetLifeSafetyModeTaggedBuilder() BACnetLifeSafetyModeTaggedBuilder {
-	if m == nil {
+func (b *_BACnetLifeSafetyModeTagged) CreateBACnetLifeSafetyModeTaggedBuilder() BACnetLifeSafetyModeTaggedBuilder {
+	if b == nil {
 		return NewBACnetLifeSafetyModeTaggedBuilder()
 	}
-	return &_BACnetLifeSafetyModeTaggedBuilder{_BACnetLifeSafetyModeTagged: m.deepCopy()}
+	return &_BACnetLifeSafetyModeTaggedBuilder{_BACnetLifeSafetyModeTagged: b.deepCopy()}
 }
 
 ///////////////////////

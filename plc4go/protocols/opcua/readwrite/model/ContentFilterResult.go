@@ -111,60 +111,79 @@ func NewContentFilterResultBuilder() ContentFilterResultBuilder {
 type _ContentFilterResultBuilder struct {
 	*_ContentFilterResult
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ContentFilterResultBuilder) = (*_ContentFilterResultBuilder)(nil)
 
-func (m *_ContentFilterResultBuilder) WithMandatoryFields(noOfElementResults int32, elementResults []ExtensionObjectDefinition, noOfElementDiagnosticInfos int32, elementDiagnosticInfos []DiagnosticInfo) ContentFilterResultBuilder {
-	return m.WithNoOfElementResults(noOfElementResults).WithElementResults(elementResults...).WithNoOfElementDiagnosticInfos(noOfElementDiagnosticInfos).WithElementDiagnosticInfos(elementDiagnosticInfos...)
+func (b *_ContentFilterResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ContentFilterResultBuilder) WithNoOfElementResults(noOfElementResults int32) ContentFilterResultBuilder {
-	m.NoOfElementResults = noOfElementResults
-	return m
+func (b *_ContentFilterResultBuilder) WithMandatoryFields(noOfElementResults int32, elementResults []ExtensionObjectDefinition, noOfElementDiagnosticInfos int32, elementDiagnosticInfos []DiagnosticInfo) ContentFilterResultBuilder {
+	return b.WithNoOfElementResults(noOfElementResults).WithElementResults(elementResults...).WithNoOfElementDiagnosticInfos(noOfElementDiagnosticInfos).WithElementDiagnosticInfos(elementDiagnosticInfos...)
 }
 
-func (m *_ContentFilterResultBuilder) WithElementResults(elementResults ...ExtensionObjectDefinition) ContentFilterResultBuilder {
-	m.ElementResults = elementResults
-	return m
+func (b *_ContentFilterResultBuilder) WithNoOfElementResults(noOfElementResults int32) ContentFilterResultBuilder {
+	b.NoOfElementResults = noOfElementResults
+	return b
 }
 
-func (m *_ContentFilterResultBuilder) WithNoOfElementDiagnosticInfos(noOfElementDiagnosticInfos int32) ContentFilterResultBuilder {
-	m.NoOfElementDiagnosticInfos = noOfElementDiagnosticInfos
-	return m
+func (b *_ContentFilterResultBuilder) WithElementResults(elementResults ...ExtensionObjectDefinition) ContentFilterResultBuilder {
+	b.ElementResults = elementResults
+	return b
 }
 
-func (m *_ContentFilterResultBuilder) WithElementDiagnosticInfos(elementDiagnosticInfos ...DiagnosticInfo) ContentFilterResultBuilder {
-	m.ElementDiagnosticInfos = elementDiagnosticInfos
-	return m
+func (b *_ContentFilterResultBuilder) WithNoOfElementDiagnosticInfos(noOfElementDiagnosticInfos int32) ContentFilterResultBuilder {
+	b.NoOfElementDiagnosticInfos = noOfElementDiagnosticInfos
+	return b
 }
 
-func (m *_ContentFilterResultBuilder) Build() (ContentFilterResult, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ContentFilterResultBuilder) WithElementDiagnosticInfos(elementDiagnosticInfos ...DiagnosticInfo) ContentFilterResultBuilder {
+	b.ElementDiagnosticInfos = elementDiagnosticInfos
+	return b
+}
+
+func (b *_ContentFilterResultBuilder) Build() (ContentFilterResult, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ContentFilterResult.deepCopy(), nil
+	return b._ContentFilterResult.deepCopy(), nil
 }
 
-func (m *_ContentFilterResultBuilder) MustBuild() ContentFilterResult {
-	build, err := m.Build()
+func (b *_ContentFilterResultBuilder) MustBuild() ContentFilterResult {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ContentFilterResultBuilder) DeepCopy() any {
-	return m.CreateContentFilterResultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ContentFilterResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ContentFilterResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ContentFilterResultBuilder) DeepCopy() any {
+	_copy := b.CreateContentFilterResultBuilder().(*_ContentFilterResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateContentFilterResultBuilder creates a ContentFilterResultBuilder
-func (m *_ContentFilterResult) CreateContentFilterResultBuilder() ContentFilterResultBuilder {
-	if m == nil {
+func (b *_ContentFilterResult) CreateContentFilterResultBuilder() ContentFilterResultBuilder {
+	if b == nil {
 		return NewContentFilterResultBuilder()
 	}
-	return &_ContentFilterResultBuilder{_ContentFilterResult: m.deepCopy()}
+	return &_ContentFilterResultBuilder{_ContentFilterResult: b.deepCopy()}
 }
 
 ///////////////////////

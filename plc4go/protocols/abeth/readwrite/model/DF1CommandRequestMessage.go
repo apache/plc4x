@@ -82,6 +82,8 @@ type DF1CommandRequestMessageBuilder interface {
 	WithMandatoryFields(command DF1RequestCommand) DF1CommandRequestMessageBuilder
 	// WithCommand adds Command (property field)
 	WithCommand(DF1RequestCommand) DF1CommandRequestMessageBuilder
+	// WithCommandBuilder adds Command (property field) which is build by the builder
+	WithCommandBuilder(func(DF1RequestCommandBuilder) DF1RequestCommandBuilder) DF1CommandRequestMessageBuilder
 	// Build builds the DF1CommandRequestMessage or returns an error if something is wrong
 	Build() (DF1CommandRequestMessage, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewDF1CommandRequestMessageBuilder() DF1CommandRequestMessageBuilder {
 type _DF1CommandRequestMessageBuilder struct {
 	*_DF1CommandRequestMessage
 
+	parentBuilder *_DF1RequestMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DF1CommandRequestMessageBuilder) = (*_DF1CommandRequestMessageBuilder)(nil)
 
-func (m *_DF1CommandRequestMessageBuilder) WithMandatoryFields(command DF1RequestCommand) DF1CommandRequestMessageBuilder {
-	return m.WithCommand(command)
+func (b *_DF1CommandRequestMessageBuilder) setParent(contract DF1RequestMessageContract) {
+	b.DF1RequestMessageContract = contract
 }
 
-func (m *_DF1CommandRequestMessageBuilder) WithCommand(command DF1RequestCommand) DF1CommandRequestMessageBuilder {
-	m.Command = command
-	return m
+func (b *_DF1CommandRequestMessageBuilder) WithMandatoryFields(command DF1RequestCommand) DF1CommandRequestMessageBuilder {
+	return b.WithCommand(command)
 }
 
-func (m *_DF1CommandRequestMessageBuilder) Build() (DF1CommandRequestMessage, error) {
-	if m.Command == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_DF1CommandRequestMessageBuilder) WithCommand(command DF1RequestCommand) DF1CommandRequestMessageBuilder {
+	b.Command = command
+	return b
+}
+
+func (b *_DF1CommandRequestMessageBuilder) WithCommandBuilder(builderSupplier func(DF1RequestCommandBuilder) DF1RequestCommandBuilder) DF1CommandRequestMessageBuilder {
+	builder := builderSupplier(b.Command.CreateDF1RequestCommandBuilder())
+	var err error
+	b.Command, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'command' not set"))
+		b.err.Append(errors.Wrap(err, "DF1RequestCommandBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._DF1CommandRequestMessage.deepCopy(), nil
+	return b
 }
 
-func (m *_DF1CommandRequestMessageBuilder) MustBuild() DF1CommandRequestMessage {
-	build, err := m.Build()
+func (b *_DF1CommandRequestMessageBuilder) Build() (DF1CommandRequestMessage, error) {
+	if b.Command == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'command' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DF1CommandRequestMessage.deepCopy(), nil
+}
+
+func (b *_DF1CommandRequestMessageBuilder) MustBuild() DF1CommandRequestMessage {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DF1CommandRequestMessageBuilder) DeepCopy() any {
-	return m.CreateDF1CommandRequestMessageBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DF1CommandRequestMessageBuilder) Done() DF1RequestMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DF1CommandRequestMessageBuilder) buildForDF1RequestMessage() (DF1RequestMessage, error) {
+	return b.Build()
+}
+
+func (b *_DF1CommandRequestMessageBuilder) DeepCopy() any {
+	_copy := b.CreateDF1CommandRequestMessageBuilder().(*_DF1CommandRequestMessageBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDF1CommandRequestMessageBuilder creates a DF1CommandRequestMessageBuilder
-func (m *_DF1CommandRequestMessage) CreateDF1CommandRequestMessageBuilder() DF1CommandRequestMessageBuilder {
-	if m == nil {
+func (b *_DF1CommandRequestMessage) CreateDF1CommandRequestMessageBuilder() DF1CommandRequestMessageBuilder {
+	if b == nil {
 		return NewDF1CommandRequestMessageBuilder()
 	}
-	return &_DF1CommandRequestMessageBuilder{_DF1CommandRequestMessage: m.deepCopy()}
+	return &_DF1CommandRequestMessageBuilder{_DF1CommandRequestMessage: b.deepCopy()}
 }
 
 ///////////////////////

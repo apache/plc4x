@@ -95,45 +95,49 @@ type _DIBSuppSvcFamiliesBuilder struct {
 
 var _ (DIBSuppSvcFamiliesBuilder) = (*_DIBSuppSvcFamiliesBuilder)(nil)
 
-func (m *_DIBSuppSvcFamiliesBuilder) WithMandatoryFields(descriptionType uint8, serviceIds []ServiceId) DIBSuppSvcFamiliesBuilder {
-	return m.WithDescriptionType(descriptionType).WithServiceIds(serviceIds...)
+func (b *_DIBSuppSvcFamiliesBuilder) WithMandatoryFields(descriptionType uint8, serviceIds []ServiceId) DIBSuppSvcFamiliesBuilder {
+	return b.WithDescriptionType(descriptionType).WithServiceIds(serviceIds...)
 }
 
-func (m *_DIBSuppSvcFamiliesBuilder) WithDescriptionType(descriptionType uint8) DIBSuppSvcFamiliesBuilder {
-	m.DescriptionType = descriptionType
-	return m
+func (b *_DIBSuppSvcFamiliesBuilder) WithDescriptionType(descriptionType uint8) DIBSuppSvcFamiliesBuilder {
+	b.DescriptionType = descriptionType
+	return b
 }
 
-func (m *_DIBSuppSvcFamiliesBuilder) WithServiceIds(serviceIds ...ServiceId) DIBSuppSvcFamiliesBuilder {
-	m.ServiceIds = serviceIds
-	return m
+func (b *_DIBSuppSvcFamiliesBuilder) WithServiceIds(serviceIds ...ServiceId) DIBSuppSvcFamiliesBuilder {
+	b.ServiceIds = serviceIds
+	return b
 }
 
-func (m *_DIBSuppSvcFamiliesBuilder) Build() (DIBSuppSvcFamilies, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DIBSuppSvcFamiliesBuilder) Build() (DIBSuppSvcFamilies, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DIBSuppSvcFamilies.deepCopy(), nil
+	return b._DIBSuppSvcFamilies.deepCopy(), nil
 }
 
-func (m *_DIBSuppSvcFamiliesBuilder) MustBuild() DIBSuppSvcFamilies {
-	build, err := m.Build()
+func (b *_DIBSuppSvcFamiliesBuilder) MustBuild() DIBSuppSvcFamilies {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DIBSuppSvcFamiliesBuilder) DeepCopy() any {
-	return m.CreateDIBSuppSvcFamiliesBuilder()
+func (b *_DIBSuppSvcFamiliesBuilder) DeepCopy() any {
+	_copy := b.CreateDIBSuppSvcFamiliesBuilder().(*_DIBSuppSvcFamiliesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDIBSuppSvcFamiliesBuilder creates a DIBSuppSvcFamiliesBuilder
-func (m *_DIBSuppSvcFamilies) CreateDIBSuppSvcFamiliesBuilder() DIBSuppSvcFamiliesBuilder {
-	if m == nil {
+func (b *_DIBSuppSvcFamilies) CreateDIBSuppSvcFamiliesBuilder() DIBSuppSvcFamiliesBuilder {
+	if b == nil {
 		return NewDIBSuppSvcFamiliesBuilder()
 	}
-	return &_DIBSuppSvcFamiliesBuilder{_DIBSuppSvcFamilies: m.deepCopy()}
+	return &_DIBSuppSvcFamiliesBuilder{_DIBSuppSvcFamilies: b.deepCopy()}
 }
 
 ///////////////////////

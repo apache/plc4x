@@ -85,40 +85,59 @@ func NewApduDataMemoryWriteBuilder() ApduDataMemoryWriteBuilder {
 type _ApduDataMemoryWriteBuilder struct {
 	*_ApduDataMemoryWrite
 
+	parentBuilder *_ApduDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataMemoryWriteBuilder) = (*_ApduDataMemoryWriteBuilder)(nil)
 
-func (m *_ApduDataMemoryWriteBuilder) WithMandatoryFields() ApduDataMemoryWriteBuilder {
-	return m
+func (b *_ApduDataMemoryWriteBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
 }
 
-func (m *_ApduDataMemoryWriteBuilder) Build() (ApduDataMemoryWrite, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataMemoryWriteBuilder) WithMandatoryFields() ApduDataMemoryWriteBuilder {
+	return b
+}
+
+func (b *_ApduDataMemoryWriteBuilder) Build() (ApduDataMemoryWrite, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataMemoryWrite.deepCopy(), nil
+	return b._ApduDataMemoryWrite.deepCopy(), nil
 }
 
-func (m *_ApduDataMemoryWriteBuilder) MustBuild() ApduDataMemoryWrite {
-	build, err := m.Build()
+func (b *_ApduDataMemoryWriteBuilder) MustBuild() ApduDataMemoryWrite {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataMemoryWriteBuilder) DeepCopy() any {
-	return m.CreateApduDataMemoryWriteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataMemoryWriteBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataMemoryWriteBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataMemoryWriteBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataMemoryWriteBuilder().(*_ApduDataMemoryWriteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataMemoryWriteBuilder creates a ApduDataMemoryWriteBuilder
-func (m *_ApduDataMemoryWrite) CreateApduDataMemoryWriteBuilder() ApduDataMemoryWriteBuilder {
-	if m == nil {
+func (b *_ApduDataMemoryWrite) CreateApduDataMemoryWriteBuilder() ApduDataMemoryWriteBuilder {
+	if b == nil {
 		return NewApduDataMemoryWriteBuilder()
 	}
-	return &_ApduDataMemoryWriteBuilder{_ApduDataMemoryWrite: m.deepCopy()}
+	return &_ApduDataMemoryWriteBuilder{_ApduDataMemoryWrite: b.deepCopy()}
 }
 
 ///////////////////////

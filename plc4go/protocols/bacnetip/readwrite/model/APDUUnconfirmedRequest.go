@@ -84,6 +84,8 @@ type APDUUnconfirmedRequestBuilder interface {
 	WithMandatoryFields(serviceRequest BACnetUnconfirmedServiceRequest) APDUUnconfirmedRequestBuilder
 	// WithServiceRequest adds ServiceRequest (property field)
 	WithServiceRequest(BACnetUnconfirmedServiceRequest) APDUUnconfirmedRequestBuilder
+	// WithServiceRequestBuilder adds ServiceRequest (property field) which is build by the builder
+	WithServiceRequestBuilder(func(BACnetUnconfirmedServiceRequestBuilder) BACnetUnconfirmedServiceRequestBuilder) APDUUnconfirmedRequestBuilder
 	// Build builds the APDUUnconfirmedRequest or returns an error if something is wrong
 	Build() (APDUUnconfirmedRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewAPDUUnconfirmedRequestBuilder() APDUUnconfirmedRequestBuilder {
 type _APDUUnconfirmedRequestBuilder struct {
 	*_APDUUnconfirmedRequest
 
+	parentBuilder *_APDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (APDUUnconfirmedRequestBuilder) = (*_APDUUnconfirmedRequestBuilder)(nil)
 
-func (m *_APDUUnconfirmedRequestBuilder) WithMandatoryFields(serviceRequest BACnetUnconfirmedServiceRequest) APDUUnconfirmedRequestBuilder {
-	return m.WithServiceRequest(serviceRequest)
+func (b *_APDUUnconfirmedRequestBuilder) setParent(contract APDUContract) {
+	b.APDUContract = contract
 }
 
-func (m *_APDUUnconfirmedRequestBuilder) WithServiceRequest(serviceRequest BACnetUnconfirmedServiceRequest) APDUUnconfirmedRequestBuilder {
-	m.ServiceRequest = serviceRequest
-	return m
+func (b *_APDUUnconfirmedRequestBuilder) WithMandatoryFields(serviceRequest BACnetUnconfirmedServiceRequest) APDUUnconfirmedRequestBuilder {
+	return b.WithServiceRequest(serviceRequest)
 }
 
-func (m *_APDUUnconfirmedRequestBuilder) Build() (APDUUnconfirmedRequest, error) {
-	if m.ServiceRequest == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_APDUUnconfirmedRequestBuilder) WithServiceRequest(serviceRequest BACnetUnconfirmedServiceRequest) APDUUnconfirmedRequestBuilder {
+	b.ServiceRequest = serviceRequest
+	return b
+}
+
+func (b *_APDUUnconfirmedRequestBuilder) WithServiceRequestBuilder(builderSupplier func(BACnetUnconfirmedServiceRequestBuilder) BACnetUnconfirmedServiceRequestBuilder) APDUUnconfirmedRequestBuilder {
+	builder := builderSupplier(b.ServiceRequest.CreateBACnetUnconfirmedServiceRequestBuilder())
+	var err error
+	b.ServiceRequest, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'serviceRequest' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetUnconfirmedServiceRequestBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._APDUUnconfirmedRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_APDUUnconfirmedRequestBuilder) MustBuild() APDUUnconfirmedRequest {
-	build, err := m.Build()
+func (b *_APDUUnconfirmedRequestBuilder) Build() (APDUUnconfirmedRequest, error) {
+	if b.ServiceRequest == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'serviceRequest' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._APDUUnconfirmedRequest.deepCopy(), nil
+}
+
+func (b *_APDUUnconfirmedRequestBuilder) MustBuild() APDUUnconfirmedRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_APDUUnconfirmedRequestBuilder) DeepCopy() any {
-	return m.CreateAPDUUnconfirmedRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_APDUUnconfirmedRequestBuilder) Done() APDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_APDUUnconfirmedRequestBuilder) buildForAPDU() (APDU, error) {
+	return b.Build()
+}
+
+func (b *_APDUUnconfirmedRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAPDUUnconfirmedRequestBuilder().(*_APDUUnconfirmedRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAPDUUnconfirmedRequestBuilder creates a APDUUnconfirmedRequestBuilder
-func (m *_APDUUnconfirmedRequest) CreateAPDUUnconfirmedRequestBuilder() APDUUnconfirmedRequestBuilder {
-	if m == nil {
+func (b *_APDUUnconfirmedRequest) CreateAPDUUnconfirmedRequestBuilder() APDUUnconfirmedRequestBuilder {
+	if b == nil {
 		return NewAPDUUnconfirmedRequestBuilder()
 	}
-	return &_APDUUnconfirmedRequestBuilder{_APDUUnconfirmedRequest: m.deepCopy()}
+	return &_APDUUnconfirmedRequestBuilder{_APDUUnconfirmedRequest: b.deepCopy()}
 }
 
 ///////////////////////

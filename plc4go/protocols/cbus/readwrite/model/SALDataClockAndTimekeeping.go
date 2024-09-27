@@ -82,6 +82,8 @@ type SALDataClockAndTimekeepingBuilder interface {
 	WithMandatoryFields(clockAndTimekeepingData ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder
 	// WithClockAndTimekeepingData adds ClockAndTimekeepingData (property field)
 	WithClockAndTimekeepingData(ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder
+	// WithClockAndTimekeepingDataBuilder adds ClockAndTimekeepingData (property field) which is build by the builder
+	WithClockAndTimekeepingDataBuilder(func(ClockAndTimekeepingDataBuilder) ClockAndTimekeepingDataBuilder) SALDataClockAndTimekeepingBuilder
 	// Build builds the SALDataClockAndTimekeeping or returns an error if something is wrong
 	Build() (SALDataClockAndTimekeeping, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewSALDataClockAndTimekeepingBuilder() SALDataClockAndTimekeepingBuilder {
 type _SALDataClockAndTimekeepingBuilder struct {
 	*_SALDataClockAndTimekeeping
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataClockAndTimekeepingBuilder) = (*_SALDataClockAndTimekeepingBuilder)(nil)
 
-func (m *_SALDataClockAndTimekeepingBuilder) WithMandatoryFields(clockAndTimekeepingData ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder {
-	return m.WithClockAndTimekeepingData(clockAndTimekeepingData)
+func (b *_SALDataClockAndTimekeepingBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataClockAndTimekeepingBuilder) WithClockAndTimekeepingData(clockAndTimekeepingData ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder {
-	m.ClockAndTimekeepingData = clockAndTimekeepingData
-	return m
+func (b *_SALDataClockAndTimekeepingBuilder) WithMandatoryFields(clockAndTimekeepingData ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder {
+	return b.WithClockAndTimekeepingData(clockAndTimekeepingData)
 }
 
-func (m *_SALDataClockAndTimekeepingBuilder) Build() (SALDataClockAndTimekeeping, error) {
-	if m.ClockAndTimekeepingData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SALDataClockAndTimekeepingBuilder) WithClockAndTimekeepingData(clockAndTimekeepingData ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder {
+	b.ClockAndTimekeepingData = clockAndTimekeepingData
+	return b
+}
+
+func (b *_SALDataClockAndTimekeepingBuilder) WithClockAndTimekeepingDataBuilder(builderSupplier func(ClockAndTimekeepingDataBuilder) ClockAndTimekeepingDataBuilder) SALDataClockAndTimekeepingBuilder {
+	builder := builderSupplier(b.ClockAndTimekeepingData.CreateClockAndTimekeepingDataBuilder())
+	var err error
+	b.ClockAndTimekeepingData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'clockAndTimekeepingData' not set"))
+		b.err.Append(errors.Wrap(err, "ClockAndTimekeepingDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._SALDataClockAndTimekeeping.deepCopy(), nil
+	return b
 }
 
-func (m *_SALDataClockAndTimekeepingBuilder) MustBuild() SALDataClockAndTimekeeping {
-	build, err := m.Build()
+func (b *_SALDataClockAndTimekeepingBuilder) Build() (SALDataClockAndTimekeeping, error) {
+	if b.ClockAndTimekeepingData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'clockAndTimekeepingData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataClockAndTimekeeping.deepCopy(), nil
+}
+
+func (b *_SALDataClockAndTimekeepingBuilder) MustBuild() SALDataClockAndTimekeeping {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataClockAndTimekeepingBuilder) DeepCopy() any {
-	return m.CreateSALDataClockAndTimekeepingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataClockAndTimekeepingBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataClockAndTimekeepingBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataClockAndTimekeepingBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataClockAndTimekeepingBuilder().(*_SALDataClockAndTimekeepingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataClockAndTimekeepingBuilder creates a SALDataClockAndTimekeepingBuilder
-func (m *_SALDataClockAndTimekeeping) CreateSALDataClockAndTimekeepingBuilder() SALDataClockAndTimekeepingBuilder {
-	if m == nil {
+func (b *_SALDataClockAndTimekeeping) CreateSALDataClockAndTimekeepingBuilder() SALDataClockAndTimekeepingBuilder {
+	if b == nil {
 		return NewSALDataClockAndTimekeepingBuilder()
 	}
-	return &_SALDataClockAndTimekeepingBuilder{_SALDataClockAndTimekeeping: m.deepCopy()}
+	return &_SALDataClockAndTimekeepingBuilder{_SALDataClockAndTimekeeping: b.deepCopy()}
 }
 
 ///////////////////////

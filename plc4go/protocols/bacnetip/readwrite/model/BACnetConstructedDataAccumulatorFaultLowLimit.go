@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAccumulatorFaultLowLimitBuilder() BACnetConstructed
 type _BACnetConstructedDataAccumulatorFaultLowLimitBuilder struct {
 	*_BACnetConstructedDataAccumulatorFaultLowLimit
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccumulatorFaultLowLimitBuilder) = (*_BACnetConstructedDataAccumulatorFaultLowLimitBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccumulatorFaultLowLimitBuilder) WithMandatoryFields(faultLowLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorFaultLowLimitBuilder {
-	return m.WithFaultLowLimit(faultLowLimit)
+func (b *_BACnetConstructedDataAccumulatorFaultLowLimitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccumulatorFaultLowLimitBuilder) WithFaultLowLimit(faultLowLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorFaultLowLimitBuilder {
-	m.FaultLowLimit = faultLowLimit
-	return m
+func (b *_BACnetConstructedDataAccumulatorFaultLowLimitBuilder) WithMandatoryFields(faultLowLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorFaultLowLimitBuilder {
+	return b.WithFaultLowLimit(faultLowLimit)
 }
 
-func (m *_BACnetConstructedDataAccumulatorFaultLowLimitBuilder) WithFaultLowLimitBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccumulatorFaultLowLimitBuilder {
-	builder := builderSupplier(m.FaultLowLimit.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataAccumulatorFaultLowLimitBuilder) WithFaultLowLimit(faultLowLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorFaultLowLimitBuilder {
+	b.FaultLowLimit = faultLowLimit
+	return b
+}
+
+func (b *_BACnetConstructedDataAccumulatorFaultLowLimitBuilder) WithFaultLowLimitBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccumulatorFaultLowLimitBuilder {
+	builder := builderSupplier(b.FaultLowLimit.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.FaultLowLimit, err = builder.Build()
+	b.FaultLowLimit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAccumulatorFaultLowLimitBuilder) Build() (BACnetConstructedDataAccumulatorFaultLowLimit, error) {
-	if m.FaultLowLimit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAccumulatorFaultLowLimitBuilder) Build() (BACnetConstructedDataAccumulatorFaultLowLimit, error) {
+	if b.FaultLowLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'faultLowLimit' not set"))
+		b.err.Append(errors.New("mandatory field 'faultLowLimit' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAccumulatorFaultLowLimit.deepCopy(), nil
+	return b._BACnetConstructedDataAccumulatorFaultLowLimit.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAccumulatorFaultLowLimitBuilder) MustBuild() BACnetConstructedDataAccumulatorFaultLowLimit {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccumulatorFaultLowLimitBuilder) MustBuild() BACnetConstructedDataAccumulatorFaultLowLimit {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccumulatorFaultLowLimitBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccumulatorFaultLowLimitBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccumulatorFaultLowLimitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccumulatorFaultLowLimitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccumulatorFaultLowLimitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccumulatorFaultLowLimitBuilder().(*_BACnetConstructedDataAccumulatorFaultLowLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccumulatorFaultLowLimitBuilder creates a BACnetConstructedDataAccumulatorFaultLowLimitBuilder
-func (m *_BACnetConstructedDataAccumulatorFaultLowLimit) CreateBACnetConstructedDataAccumulatorFaultLowLimitBuilder() BACnetConstructedDataAccumulatorFaultLowLimitBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccumulatorFaultLowLimit) CreateBACnetConstructedDataAccumulatorFaultLowLimitBuilder() BACnetConstructedDataAccumulatorFaultLowLimitBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccumulatorFaultLowLimitBuilder()
 	}
-	return &_BACnetConstructedDataAccumulatorFaultLowLimitBuilder{_BACnetConstructedDataAccumulatorFaultLowLimit: m.deepCopy()}
+	return &_BACnetConstructedDataAccumulatorFaultLowLimitBuilder{_BACnetConstructedDataAccumulatorFaultLowLimit: b.deepCopy()}
 }
 
 ///////////////////////

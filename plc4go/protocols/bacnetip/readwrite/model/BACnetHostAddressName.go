@@ -98,64 +98,83 @@ func NewBACnetHostAddressNameBuilder() BACnetHostAddressNameBuilder {
 type _BACnetHostAddressNameBuilder struct {
 	*_BACnetHostAddressName
 
+	parentBuilder *_BACnetHostAddressBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetHostAddressNameBuilder) = (*_BACnetHostAddressNameBuilder)(nil)
 
-func (m *_BACnetHostAddressNameBuilder) WithMandatoryFields(name BACnetContextTagCharacterString) BACnetHostAddressNameBuilder {
-	return m.WithName(name)
+func (b *_BACnetHostAddressNameBuilder) setParent(contract BACnetHostAddressContract) {
+	b.BACnetHostAddressContract = contract
 }
 
-func (m *_BACnetHostAddressNameBuilder) WithName(name BACnetContextTagCharacterString) BACnetHostAddressNameBuilder {
-	m.Name = name
-	return m
+func (b *_BACnetHostAddressNameBuilder) WithMandatoryFields(name BACnetContextTagCharacterString) BACnetHostAddressNameBuilder {
+	return b.WithName(name)
 }
 
-func (m *_BACnetHostAddressNameBuilder) WithNameBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetHostAddressNameBuilder {
-	builder := builderSupplier(m.Name.CreateBACnetContextTagCharacterStringBuilder())
+func (b *_BACnetHostAddressNameBuilder) WithName(name BACnetContextTagCharacterString) BACnetHostAddressNameBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_BACnetHostAddressNameBuilder) WithNameBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetHostAddressNameBuilder {
+	builder := builderSupplier(b.Name.CreateBACnetContextTagCharacterStringBuilder())
 	var err error
-	m.Name, err = builder.Build()
+	b.Name, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetHostAddressNameBuilder) Build() (BACnetHostAddressName, error) {
-	if m.Name == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetHostAddressNameBuilder) Build() (BACnetHostAddressName, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'name' not set"))
+		b.err.Append(errors.New("mandatory field 'name' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetHostAddressName.deepCopy(), nil
+	return b._BACnetHostAddressName.deepCopy(), nil
 }
 
-func (m *_BACnetHostAddressNameBuilder) MustBuild() BACnetHostAddressName {
-	build, err := m.Build()
+func (b *_BACnetHostAddressNameBuilder) MustBuild() BACnetHostAddressName {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetHostAddressNameBuilder) DeepCopy() any {
-	return m.CreateBACnetHostAddressNameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetHostAddressNameBuilder) Done() BACnetHostAddressBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetHostAddressNameBuilder) buildForBACnetHostAddress() (BACnetHostAddress, error) {
+	return b.Build()
+}
+
+func (b *_BACnetHostAddressNameBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetHostAddressNameBuilder().(*_BACnetHostAddressNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetHostAddressNameBuilder creates a BACnetHostAddressNameBuilder
-func (m *_BACnetHostAddressName) CreateBACnetHostAddressNameBuilder() BACnetHostAddressNameBuilder {
-	if m == nil {
+func (b *_BACnetHostAddressName) CreateBACnetHostAddressNameBuilder() BACnetHostAddressNameBuilder {
+	if b == nil {
 		return NewBACnetHostAddressNameBuilder()
 	}
-	return &_BACnetHostAddressNameBuilder{_BACnetHostAddressName: m.deepCopy()}
+	return &_BACnetHostAddressNameBuilder{_BACnetHostAddressName: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDoorUnlockDelayTimeBuilder() BACnetConstructedDataD
 type _BACnetConstructedDataDoorUnlockDelayTimeBuilder struct {
 	*_BACnetConstructedDataDoorUnlockDelayTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDoorUnlockDelayTimeBuilder) = (*_BACnetConstructedDataDoorUnlockDelayTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) WithMandatoryFields(doorUnlockDelayTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorUnlockDelayTimeBuilder {
-	return m.WithDoorUnlockDelayTime(doorUnlockDelayTime)
+func (b *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) WithDoorUnlockDelayTime(doorUnlockDelayTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorUnlockDelayTimeBuilder {
-	m.DoorUnlockDelayTime = doorUnlockDelayTime
-	return m
+func (b *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) WithMandatoryFields(doorUnlockDelayTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorUnlockDelayTimeBuilder {
+	return b.WithDoorUnlockDelayTime(doorUnlockDelayTime)
 }
 
-func (m *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) WithDoorUnlockDelayTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDoorUnlockDelayTimeBuilder {
-	builder := builderSupplier(m.DoorUnlockDelayTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) WithDoorUnlockDelayTime(doorUnlockDelayTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorUnlockDelayTimeBuilder {
+	b.DoorUnlockDelayTime = doorUnlockDelayTime
+	return b
+}
+
+func (b *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) WithDoorUnlockDelayTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDoorUnlockDelayTimeBuilder {
+	builder := builderSupplier(b.DoorUnlockDelayTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.DoorUnlockDelayTime, err = builder.Build()
+	b.DoorUnlockDelayTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) Build() (BACnetConstructedDataDoorUnlockDelayTime, error) {
-	if m.DoorUnlockDelayTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) Build() (BACnetConstructedDataDoorUnlockDelayTime, error) {
+	if b.DoorUnlockDelayTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'doorUnlockDelayTime' not set"))
+		b.err.Append(errors.New("mandatory field 'doorUnlockDelayTime' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDoorUnlockDelayTime.deepCopy(), nil
+	return b._BACnetConstructedDataDoorUnlockDelayTime.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) MustBuild() BACnetConstructedDataDoorUnlockDelayTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) MustBuild() BACnetConstructedDataDoorUnlockDelayTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDoorUnlockDelayTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDoorUnlockDelayTimeBuilder().(*_BACnetConstructedDataDoorUnlockDelayTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDoorUnlockDelayTimeBuilder creates a BACnetConstructedDataDoorUnlockDelayTimeBuilder
-func (m *_BACnetConstructedDataDoorUnlockDelayTime) CreateBACnetConstructedDataDoorUnlockDelayTimeBuilder() BACnetConstructedDataDoorUnlockDelayTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDoorUnlockDelayTime) CreateBACnetConstructedDataDoorUnlockDelayTimeBuilder() BACnetConstructedDataDoorUnlockDelayTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDoorUnlockDelayTimeBuilder()
 	}
-	return &_BACnetConstructedDataDoorUnlockDelayTimeBuilder{_BACnetConstructedDataDoorUnlockDelayTime: m.deepCopy()}
+	return &_BACnetConstructedDataDoorUnlockDelayTimeBuilder{_BACnetConstructedDataDoorUnlockDelayTime: b.deepCopy()}
 }
 
 ///////////////////////

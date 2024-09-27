@@ -99,50 +99,69 @@ func NewS7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder() S7PayloadUs
 type _S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder struct {
 	*_S7PayloadUserDataItemCyclicServicesChangeDrivenPush
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) = (*_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder)(nil)
 
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) WithMandatoryFields(itemsCount uint16, items []AssociatedQueryValueType) S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder {
-	return m.WithItemsCount(itemsCount).WithItems(items...)
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) WithItemsCount(itemsCount uint16) S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder {
-	m.ItemsCount = itemsCount
-	return m
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) WithMandatoryFields(itemsCount uint16, items []AssociatedQueryValueType) S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder {
+	return b.WithItemsCount(itemsCount).WithItems(items...)
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) WithItems(items ...AssociatedQueryValueType) S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder {
-	m.Items = items
-	return m
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) WithItemsCount(itemsCount uint16) S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder {
+	b.ItemsCount = itemsCount
+	return b
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) Build() (S7PayloadUserDataItemCyclicServicesChangeDrivenPush, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) WithItems(items ...AssociatedQueryValueType) S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) Build() (S7PayloadUserDataItemCyclicServicesChangeDrivenPush, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadUserDataItemCyclicServicesChangeDrivenPush.deepCopy(), nil
+	return b._S7PayloadUserDataItemCyclicServicesChangeDrivenPush.deepCopy(), nil
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesChangeDrivenPush {
-	build, err := m.Build()
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesChangeDrivenPush {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) DeepCopy() any {
-	return m.CreateS7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder().(*_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder creates a S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPush) CreateS7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder() S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder {
-	if m == nil {
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenPush) CreateS7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder() S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder {
+	if b == nil {
 		return NewS7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder()
 	}
-	return &_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder{_S7PayloadUserDataItemCyclicServicesChangeDrivenPush: m.deepCopy()}
+	return &_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder{_S7PayloadUserDataItemCyclicServicesChangeDrivenPush: b.deepCopy()}
 }
 
 ///////////////////////

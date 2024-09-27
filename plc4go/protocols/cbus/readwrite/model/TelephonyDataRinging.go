@@ -95,45 +95,64 @@ func NewTelephonyDataRingingBuilder() TelephonyDataRingingBuilder {
 type _TelephonyDataRingingBuilder struct {
 	*_TelephonyDataRinging
 
+	parentBuilder *_TelephonyDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TelephonyDataRingingBuilder) = (*_TelephonyDataRingingBuilder)(nil)
 
-func (m *_TelephonyDataRingingBuilder) WithMandatoryFields(number string) TelephonyDataRingingBuilder {
-	return m.WithNumber(number)
+func (b *_TelephonyDataRingingBuilder) setParent(contract TelephonyDataContract) {
+	b.TelephonyDataContract = contract
 }
 
-func (m *_TelephonyDataRingingBuilder) WithNumber(number string) TelephonyDataRingingBuilder {
-	m.Number = number
-	return m
+func (b *_TelephonyDataRingingBuilder) WithMandatoryFields(number string) TelephonyDataRingingBuilder {
+	return b.WithNumber(number)
 }
 
-func (m *_TelephonyDataRingingBuilder) Build() (TelephonyDataRinging, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TelephonyDataRingingBuilder) WithNumber(number string) TelephonyDataRingingBuilder {
+	b.Number = number
+	return b
+}
+
+func (b *_TelephonyDataRingingBuilder) Build() (TelephonyDataRinging, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TelephonyDataRinging.deepCopy(), nil
+	return b._TelephonyDataRinging.deepCopy(), nil
 }
 
-func (m *_TelephonyDataRingingBuilder) MustBuild() TelephonyDataRinging {
-	build, err := m.Build()
+func (b *_TelephonyDataRingingBuilder) MustBuild() TelephonyDataRinging {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TelephonyDataRingingBuilder) DeepCopy() any {
-	return m.CreateTelephonyDataRingingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TelephonyDataRingingBuilder) Done() TelephonyDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TelephonyDataRingingBuilder) buildForTelephonyData() (TelephonyData, error) {
+	return b.Build()
+}
+
+func (b *_TelephonyDataRingingBuilder) DeepCopy() any {
+	_copy := b.CreateTelephonyDataRingingBuilder().(*_TelephonyDataRingingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTelephonyDataRingingBuilder creates a TelephonyDataRingingBuilder
-func (m *_TelephonyDataRinging) CreateTelephonyDataRingingBuilder() TelephonyDataRingingBuilder {
-	if m == nil {
+func (b *_TelephonyDataRinging) CreateTelephonyDataRingingBuilder() TelephonyDataRingingBuilder {
+	if b == nil {
 		return NewTelephonyDataRingingBuilder()
 	}
-	return &_TelephonyDataRingingBuilder{_TelephonyDataRinging: m.deepCopy()}
+	return &_TelephonyDataRingingBuilder{_TelephonyDataRinging: b.deepCopy()}
 }
 
 ///////////////////////

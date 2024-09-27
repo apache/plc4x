@@ -110,88 +110,92 @@ type _BACnetDailyScheduleBuilder struct {
 
 var _ (BACnetDailyScheduleBuilder) = (*_BACnetDailyScheduleBuilder)(nil)
 
-func (m *_BACnetDailyScheduleBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, daySchedule []BACnetTimeValue, closingTag BACnetClosingTag) BACnetDailyScheduleBuilder {
-	return m.WithOpeningTag(openingTag).WithDaySchedule(daySchedule...).WithClosingTag(closingTag)
+func (b *_BACnetDailyScheduleBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, daySchedule []BACnetTimeValue, closingTag BACnetClosingTag) BACnetDailyScheduleBuilder {
+	return b.WithOpeningTag(openingTag).WithDaySchedule(daySchedule...).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetDailyScheduleBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetDailyScheduleBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetDailyScheduleBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetDailyScheduleBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetDailyScheduleBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetDailyScheduleBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetDailyScheduleBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetDailyScheduleBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetDailyScheduleBuilder) WithDaySchedule(daySchedule ...BACnetTimeValue) BACnetDailyScheduleBuilder {
-	m.DaySchedule = daySchedule
-	return m
+func (b *_BACnetDailyScheduleBuilder) WithDaySchedule(daySchedule ...BACnetTimeValue) BACnetDailyScheduleBuilder {
+	b.DaySchedule = daySchedule
+	return b
 }
 
-func (m *_BACnetDailyScheduleBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetDailyScheduleBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetDailyScheduleBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetDailyScheduleBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetDailyScheduleBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetDailyScheduleBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetDailyScheduleBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetDailyScheduleBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetDailyScheduleBuilder) Build() (BACnetDailySchedule, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetDailyScheduleBuilder) Build() (BACnetDailySchedule, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetDailySchedule.deepCopy(), nil
+	return b._BACnetDailySchedule.deepCopy(), nil
 }
 
-func (m *_BACnetDailyScheduleBuilder) MustBuild() BACnetDailySchedule {
-	build, err := m.Build()
+func (b *_BACnetDailyScheduleBuilder) MustBuild() BACnetDailySchedule {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetDailyScheduleBuilder) DeepCopy() any {
-	return m.CreateBACnetDailyScheduleBuilder()
+func (b *_BACnetDailyScheduleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetDailyScheduleBuilder().(*_BACnetDailyScheduleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetDailyScheduleBuilder creates a BACnetDailyScheduleBuilder
-func (m *_BACnetDailySchedule) CreateBACnetDailyScheduleBuilder() BACnetDailyScheduleBuilder {
-	if m == nil {
+func (b *_BACnetDailySchedule) CreateBACnetDailyScheduleBuilder() BACnetDailyScheduleBuilder {
+	if b == nil {
 		return NewBACnetDailyScheduleBuilder()
 	}
-	return &_BACnetDailyScheduleBuilder{_BACnetDailySchedule: m.deepCopy()}
+	return &_BACnetDailyScheduleBuilder{_BACnetDailySchedule: b.deepCopy()}
 }
 
 ///////////////////////

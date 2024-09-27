@@ -93,45 +93,64 @@ func NewBACnetConstructedDataDeviceAddressBindingBuilder() BACnetConstructedData
 type _BACnetConstructedDataDeviceAddressBindingBuilder struct {
 	*_BACnetConstructedDataDeviceAddressBinding
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDeviceAddressBindingBuilder) = (*_BACnetConstructedDataDeviceAddressBindingBuilder)(nil)
 
-func (m *_BACnetConstructedDataDeviceAddressBindingBuilder) WithMandatoryFields(deviceAddressBinding []BACnetAddressBinding) BACnetConstructedDataDeviceAddressBindingBuilder {
-	return m.WithDeviceAddressBinding(deviceAddressBinding...)
+func (b *_BACnetConstructedDataDeviceAddressBindingBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDeviceAddressBindingBuilder) WithDeviceAddressBinding(deviceAddressBinding ...BACnetAddressBinding) BACnetConstructedDataDeviceAddressBindingBuilder {
-	m.DeviceAddressBinding = deviceAddressBinding
-	return m
+func (b *_BACnetConstructedDataDeviceAddressBindingBuilder) WithMandatoryFields(deviceAddressBinding []BACnetAddressBinding) BACnetConstructedDataDeviceAddressBindingBuilder {
+	return b.WithDeviceAddressBinding(deviceAddressBinding...)
 }
 
-func (m *_BACnetConstructedDataDeviceAddressBindingBuilder) Build() (BACnetConstructedDataDeviceAddressBinding, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataDeviceAddressBindingBuilder) WithDeviceAddressBinding(deviceAddressBinding ...BACnetAddressBinding) BACnetConstructedDataDeviceAddressBindingBuilder {
+	b.DeviceAddressBinding = deviceAddressBinding
+	return b
+}
+
+func (b *_BACnetConstructedDataDeviceAddressBindingBuilder) Build() (BACnetConstructedDataDeviceAddressBinding, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDeviceAddressBinding.deepCopy(), nil
+	return b._BACnetConstructedDataDeviceAddressBinding.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDeviceAddressBindingBuilder) MustBuild() BACnetConstructedDataDeviceAddressBinding {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDeviceAddressBindingBuilder) MustBuild() BACnetConstructedDataDeviceAddressBinding {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDeviceAddressBindingBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDeviceAddressBindingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDeviceAddressBindingBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDeviceAddressBindingBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDeviceAddressBindingBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDeviceAddressBindingBuilder().(*_BACnetConstructedDataDeviceAddressBindingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDeviceAddressBindingBuilder creates a BACnetConstructedDataDeviceAddressBindingBuilder
-func (m *_BACnetConstructedDataDeviceAddressBinding) CreateBACnetConstructedDataDeviceAddressBindingBuilder() BACnetConstructedDataDeviceAddressBindingBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDeviceAddressBinding) CreateBACnetConstructedDataDeviceAddressBindingBuilder() BACnetConstructedDataDeviceAddressBindingBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDeviceAddressBindingBuilder()
 	}
-	return &_BACnetConstructedDataDeviceAddressBindingBuilder{_BACnetConstructedDataDeviceAddressBinding: m.deepCopy()}
+	return &_BACnetConstructedDataDeviceAddressBindingBuilder{_BACnetConstructedDataDeviceAddressBinding: b.deepCopy()}
 }
 
 ///////////////////////

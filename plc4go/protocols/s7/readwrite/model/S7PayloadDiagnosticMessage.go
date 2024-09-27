@@ -134,94 +134,113 @@ func NewS7PayloadDiagnosticMessageBuilder() S7PayloadDiagnosticMessageBuilder {
 type _S7PayloadDiagnosticMessageBuilder struct {
 	*_S7PayloadDiagnosticMessage
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadDiagnosticMessageBuilder) = (*_S7PayloadDiagnosticMessageBuilder)(nil)
 
-func (m *_S7PayloadDiagnosticMessageBuilder) WithMandatoryFields(eventId uint16, priorityClass uint8, obNumber uint8, datId uint16, info1 uint16, info2 uint32, timeStamp DateAndTime) S7PayloadDiagnosticMessageBuilder {
-	return m.WithEventId(eventId).WithPriorityClass(priorityClass).WithObNumber(obNumber).WithDatId(datId).WithInfo1(info1).WithInfo2(info2).WithTimeStamp(timeStamp)
+func (b *_S7PayloadDiagnosticMessageBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadDiagnosticMessageBuilder) WithEventId(eventId uint16) S7PayloadDiagnosticMessageBuilder {
-	m.EventId = eventId
-	return m
+func (b *_S7PayloadDiagnosticMessageBuilder) WithMandatoryFields(eventId uint16, priorityClass uint8, obNumber uint8, datId uint16, info1 uint16, info2 uint32, timeStamp DateAndTime) S7PayloadDiagnosticMessageBuilder {
+	return b.WithEventId(eventId).WithPriorityClass(priorityClass).WithObNumber(obNumber).WithDatId(datId).WithInfo1(info1).WithInfo2(info2).WithTimeStamp(timeStamp)
 }
 
-func (m *_S7PayloadDiagnosticMessageBuilder) WithPriorityClass(priorityClass uint8) S7PayloadDiagnosticMessageBuilder {
-	m.PriorityClass = priorityClass
-	return m
+func (b *_S7PayloadDiagnosticMessageBuilder) WithEventId(eventId uint16) S7PayloadDiagnosticMessageBuilder {
+	b.EventId = eventId
+	return b
 }
 
-func (m *_S7PayloadDiagnosticMessageBuilder) WithObNumber(obNumber uint8) S7PayloadDiagnosticMessageBuilder {
-	m.ObNumber = obNumber
-	return m
+func (b *_S7PayloadDiagnosticMessageBuilder) WithPriorityClass(priorityClass uint8) S7PayloadDiagnosticMessageBuilder {
+	b.PriorityClass = priorityClass
+	return b
 }
 
-func (m *_S7PayloadDiagnosticMessageBuilder) WithDatId(datId uint16) S7PayloadDiagnosticMessageBuilder {
-	m.DatId = datId
-	return m
+func (b *_S7PayloadDiagnosticMessageBuilder) WithObNumber(obNumber uint8) S7PayloadDiagnosticMessageBuilder {
+	b.ObNumber = obNumber
+	return b
 }
 
-func (m *_S7PayloadDiagnosticMessageBuilder) WithInfo1(info1 uint16) S7PayloadDiagnosticMessageBuilder {
-	m.Info1 = info1
-	return m
+func (b *_S7PayloadDiagnosticMessageBuilder) WithDatId(datId uint16) S7PayloadDiagnosticMessageBuilder {
+	b.DatId = datId
+	return b
 }
 
-func (m *_S7PayloadDiagnosticMessageBuilder) WithInfo2(info2 uint32) S7PayloadDiagnosticMessageBuilder {
-	m.Info2 = info2
-	return m
+func (b *_S7PayloadDiagnosticMessageBuilder) WithInfo1(info1 uint16) S7PayloadDiagnosticMessageBuilder {
+	b.Info1 = info1
+	return b
 }
 
-func (m *_S7PayloadDiagnosticMessageBuilder) WithTimeStamp(timeStamp DateAndTime) S7PayloadDiagnosticMessageBuilder {
-	m.TimeStamp = timeStamp
-	return m
+func (b *_S7PayloadDiagnosticMessageBuilder) WithInfo2(info2 uint32) S7PayloadDiagnosticMessageBuilder {
+	b.Info2 = info2
+	return b
 }
 
-func (m *_S7PayloadDiagnosticMessageBuilder) WithTimeStampBuilder(builderSupplier func(DateAndTimeBuilder) DateAndTimeBuilder) S7PayloadDiagnosticMessageBuilder {
-	builder := builderSupplier(m.TimeStamp.CreateDateAndTimeBuilder())
+func (b *_S7PayloadDiagnosticMessageBuilder) WithTimeStamp(timeStamp DateAndTime) S7PayloadDiagnosticMessageBuilder {
+	b.TimeStamp = timeStamp
+	return b
+}
+
+func (b *_S7PayloadDiagnosticMessageBuilder) WithTimeStampBuilder(builderSupplier func(DateAndTimeBuilder) DateAndTimeBuilder) S7PayloadDiagnosticMessageBuilder {
+	builder := builderSupplier(b.TimeStamp.CreateDateAndTimeBuilder())
 	var err error
-	m.TimeStamp, err = builder.Build()
+	b.TimeStamp, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_S7PayloadDiagnosticMessageBuilder) Build() (S7PayloadDiagnosticMessage, error) {
-	if m.TimeStamp == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_S7PayloadDiagnosticMessageBuilder) Build() (S7PayloadDiagnosticMessage, error) {
+	if b.TimeStamp == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeStamp' not set"))
+		b.err.Append(errors.New("mandatory field 'timeStamp' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadDiagnosticMessage.deepCopy(), nil
+	return b._S7PayloadDiagnosticMessage.deepCopy(), nil
 }
 
-func (m *_S7PayloadDiagnosticMessageBuilder) MustBuild() S7PayloadDiagnosticMessage {
-	build, err := m.Build()
+func (b *_S7PayloadDiagnosticMessageBuilder) MustBuild() S7PayloadDiagnosticMessage {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadDiagnosticMessageBuilder) DeepCopy() any {
-	return m.CreateS7PayloadDiagnosticMessageBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadDiagnosticMessageBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadDiagnosticMessageBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadDiagnosticMessageBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadDiagnosticMessageBuilder().(*_S7PayloadDiagnosticMessageBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadDiagnosticMessageBuilder creates a S7PayloadDiagnosticMessageBuilder
-func (m *_S7PayloadDiagnosticMessage) CreateS7PayloadDiagnosticMessageBuilder() S7PayloadDiagnosticMessageBuilder {
-	if m == nil {
+func (b *_S7PayloadDiagnosticMessage) CreateS7PayloadDiagnosticMessageBuilder() S7PayloadDiagnosticMessageBuilder {
+	if b == nil {
 		return NewS7PayloadDiagnosticMessageBuilder()
 	}
-	return &_S7PayloadDiagnosticMessageBuilder{_S7PayloadDiagnosticMessage: m.deepCopy()}
+	return &_S7PayloadDiagnosticMessageBuilder{_S7PayloadDiagnosticMessage: b.deepCopy()}
 }
 
 ///////////////////////

@@ -105,55 +105,74 @@ func NewCALDataStatusBuilder() CALDataStatusBuilder {
 type _CALDataStatusBuilder struct {
 	*_CALDataStatus
 
+	parentBuilder *_CALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CALDataStatusBuilder) = (*_CALDataStatusBuilder)(nil)
 
-func (m *_CALDataStatusBuilder) WithMandatoryFields(application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte) CALDataStatusBuilder {
-	return m.WithApplication(application).WithBlockStart(blockStart).WithStatusBytes(statusBytes...)
+func (b *_CALDataStatusBuilder) setParent(contract CALDataContract) {
+	b.CALDataContract = contract
 }
 
-func (m *_CALDataStatusBuilder) WithApplication(application ApplicationIdContainer) CALDataStatusBuilder {
-	m.Application = application
-	return m
+func (b *_CALDataStatusBuilder) WithMandatoryFields(application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte) CALDataStatusBuilder {
+	return b.WithApplication(application).WithBlockStart(blockStart).WithStatusBytes(statusBytes...)
 }
 
-func (m *_CALDataStatusBuilder) WithBlockStart(blockStart uint8) CALDataStatusBuilder {
-	m.BlockStart = blockStart
-	return m
+func (b *_CALDataStatusBuilder) WithApplication(application ApplicationIdContainer) CALDataStatusBuilder {
+	b.Application = application
+	return b
 }
 
-func (m *_CALDataStatusBuilder) WithStatusBytes(statusBytes ...StatusByte) CALDataStatusBuilder {
-	m.StatusBytes = statusBytes
-	return m
+func (b *_CALDataStatusBuilder) WithBlockStart(blockStart uint8) CALDataStatusBuilder {
+	b.BlockStart = blockStart
+	return b
 }
 
-func (m *_CALDataStatusBuilder) Build() (CALDataStatus, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CALDataStatusBuilder) WithStatusBytes(statusBytes ...StatusByte) CALDataStatusBuilder {
+	b.StatusBytes = statusBytes
+	return b
+}
+
+func (b *_CALDataStatusBuilder) Build() (CALDataStatus, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CALDataStatus.deepCopy(), nil
+	return b._CALDataStatus.deepCopy(), nil
 }
 
-func (m *_CALDataStatusBuilder) MustBuild() CALDataStatus {
-	build, err := m.Build()
+func (b *_CALDataStatusBuilder) MustBuild() CALDataStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CALDataStatusBuilder) DeepCopy() any {
-	return m.CreateCALDataStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CALDataStatusBuilder) Done() CALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CALDataStatusBuilder) buildForCALData() (CALData, error) {
+	return b.Build()
+}
+
+func (b *_CALDataStatusBuilder) DeepCopy() any {
+	_copy := b.CreateCALDataStatusBuilder().(*_CALDataStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCALDataStatusBuilder creates a CALDataStatusBuilder
-func (m *_CALDataStatus) CreateCALDataStatusBuilder() CALDataStatusBuilder {
-	if m == nil {
+func (b *_CALDataStatus) CreateCALDataStatusBuilder() CALDataStatusBuilder {
+	if b == nil {
 		return NewCALDataStatusBuilder()
 	}
-	return &_CALDataStatusBuilder{_CALDataStatus: m.deepCopy()}
+	return &_CALDataStatusBuilder{_CALDataStatus: b.deepCopy()}
 }
 
 ///////////////////////

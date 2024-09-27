@@ -111,69 +111,73 @@ type _BACnetNetworkPortCommandTaggedBuilder struct {
 
 var _ (BACnetNetworkPortCommandTaggedBuilder) = (*_BACnetNetworkPortCommandTaggedBuilder)(nil)
 
-func (m *_BACnetNetworkPortCommandTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetNetworkPortCommand, proprietaryValue uint32) BACnetNetworkPortCommandTaggedBuilder {
-	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetNetworkPortCommandTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetNetworkPortCommand, proprietaryValue uint32) BACnetNetworkPortCommandTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_BACnetNetworkPortCommandTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetNetworkPortCommandTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetNetworkPortCommandTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetNetworkPortCommandTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetNetworkPortCommandTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNetworkPortCommandTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetNetworkPortCommandTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNetworkPortCommandTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNetworkPortCommandTaggedBuilder) WithValue(value BACnetNetworkPortCommand) BACnetNetworkPortCommandTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetNetworkPortCommandTaggedBuilder) WithValue(value BACnetNetworkPortCommand) BACnetNetworkPortCommandTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetNetworkPortCommandTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetNetworkPortCommandTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetNetworkPortCommandTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetNetworkPortCommandTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetNetworkPortCommandTaggedBuilder) Build() (BACnetNetworkPortCommandTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNetworkPortCommandTaggedBuilder) Build() (BACnetNetworkPortCommandTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNetworkPortCommandTagged.deepCopy(), nil
+	return b._BACnetNetworkPortCommandTagged.deepCopy(), nil
 }
 
-func (m *_BACnetNetworkPortCommandTaggedBuilder) MustBuild() BACnetNetworkPortCommandTagged {
-	build, err := m.Build()
+func (b *_BACnetNetworkPortCommandTaggedBuilder) MustBuild() BACnetNetworkPortCommandTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNetworkPortCommandTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetNetworkPortCommandTaggedBuilder()
+func (b *_BACnetNetworkPortCommandTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNetworkPortCommandTaggedBuilder().(*_BACnetNetworkPortCommandTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNetworkPortCommandTaggedBuilder creates a BACnetNetworkPortCommandTaggedBuilder
-func (m *_BACnetNetworkPortCommandTagged) CreateBACnetNetworkPortCommandTaggedBuilder() BACnetNetworkPortCommandTaggedBuilder {
-	if m == nil {
+func (b *_BACnetNetworkPortCommandTagged) CreateBACnetNetworkPortCommandTaggedBuilder() BACnetNetworkPortCommandTaggedBuilder {
+	if b == nil {
 		return NewBACnetNetworkPortCommandTaggedBuilder()
 	}
-	return &_BACnetNetworkPortCommandTaggedBuilder{_BACnetNetworkPortCommandTagged: m.deepCopy()}
+	return &_BACnetNetworkPortCommandTaggedBuilder{_BACnetNetworkPortCommandTagged: b.deepCopy()}
 }
 
 ///////////////////////

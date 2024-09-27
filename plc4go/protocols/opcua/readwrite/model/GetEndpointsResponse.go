@@ -90,6 +90,8 @@ type GetEndpointsResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfEndpoints int32, endpoints []ExtensionObjectDefinition) GetEndpointsResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) GetEndpointsResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) GetEndpointsResponseBuilder
 	// WithNoOfEndpoints adds NoOfEndpoints (property field)
 	WithNoOfEndpoints(int32) GetEndpointsResponseBuilder
 	// WithEndpoints adds Endpoints (property field)
@@ -108,61 +110,93 @@ func NewGetEndpointsResponseBuilder() GetEndpointsResponseBuilder {
 type _GetEndpointsResponseBuilder struct {
 	*_GetEndpointsResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (GetEndpointsResponseBuilder) = (*_GetEndpointsResponseBuilder)(nil)
 
-func (m *_GetEndpointsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfEndpoints int32, endpoints []ExtensionObjectDefinition) GetEndpointsResponseBuilder {
-	return m.WithResponseHeader(responseHeader).WithNoOfEndpoints(noOfEndpoints).WithEndpoints(endpoints...)
+func (b *_GetEndpointsResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_GetEndpointsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) GetEndpointsResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_GetEndpointsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfEndpoints int32, endpoints []ExtensionObjectDefinition) GetEndpointsResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfEndpoints(noOfEndpoints).WithEndpoints(endpoints...)
 }
 
-func (m *_GetEndpointsResponseBuilder) WithNoOfEndpoints(noOfEndpoints int32) GetEndpointsResponseBuilder {
-	m.NoOfEndpoints = noOfEndpoints
-	return m
+func (b *_GetEndpointsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) GetEndpointsResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
 }
 
-func (m *_GetEndpointsResponseBuilder) WithEndpoints(endpoints ...ExtensionObjectDefinition) GetEndpointsResponseBuilder {
-	m.Endpoints = endpoints
-	return m
-}
-
-func (m *_GetEndpointsResponseBuilder) Build() (GetEndpointsResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_GetEndpointsResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) GetEndpointsResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._GetEndpointsResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_GetEndpointsResponseBuilder) MustBuild() GetEndpointsResponse {
-	build, err := m.Build()
+func (b *_GetEndpointsResponseBuilder) WithNoOfEndpoints(noOfEndpoints int32) GetEndpointsResponseBuilder {
+	b.NoOfEndpoints = noOfEndpoints
+	return b
+}
+
+func (b *_GetEndpointsResponseBuilder) WithEndpoints(endpoints ...ExtensionObjectDefinition) GetEndpointsResponseBuilder {
+	b.Endpoints = endpoints
+	return b
+}
+
+func (b *_GetEndpointsResponseBuilder) Build() (GetEndpointsResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._GetEndpointsResponse.deepCopy(), nil
+}
+
+func (b *_GetEndpointsResponseBuilder) MustBuild() GetEndpointsResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_GetEndpointsResponseBuilder) DeepCopy() any {
-	return m.CreateGetEndpointsResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_GetEndpointsResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_GetEndpointsResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_GetEndpointsResponseBuilder) DeepCopy() any {
+	_copy := b.CreateGetEndpointsResponseBuilder().(*_GetEndpointsResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateGetEndpointsResponseBuilder creates a GetEndpointsResponseBuilder
-func (m *_GetEndpointsResponse) CreateGetEndpointsResponseBuilder() GetEndpointsResponseBuilder {
-	if m == nil {
+func (b *_GetEndpointsResponse) CreateGetEndpointsResponseBuilder() GetEndpointsResponseBuilder {
+	if b == nil {
 		return NewGetEndpointsResponseBuilder()
 	}
-	return &_GetEndpointsResponseBuilder{_GetEndpointsResponse: m.deepCopy()}
+	return &_GetEndpointsResponseBuilder{_GetEndpointsResponse: b.deepCopy()}
 }
 
 ///////////////////////

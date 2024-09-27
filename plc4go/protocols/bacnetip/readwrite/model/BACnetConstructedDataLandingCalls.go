@@ -93,45 +93,64 @@ func NewBACnetConstructedDataLandingCallsBuilder() BACnetConstructedDataLandingC
 type _BACnetConstructedDataLandingCallsBuilder struct {
 	*_BACnetConstructedDataLandingCalls
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLandingCallsBuilder) = (*_BACnetConstructedDataLandingCallsBuilder)(nil)
 
-func (m *_BACnetConstructedDataLandingCallsBuilder) WithMandatoryFields(landingCallStatus []BACnetLandingCallStatus) BACnetConstructedDataLandingCallsBuilder {
-	return m.WithLandingCallStatus(landingCallStatus...)
+func (b *_BACnetConstructedDataLandingCallsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLandingCallsBuilder) WithLandingCallStatus(landingCallStatus ...BACnetLandingCallStatus) BACnetConstructedDataLandingCallsBuilder {
-	m.LandingCallStatus = landingCallStatus
-	return m
+func (b *_BACnetConstructedDataLandingCallsBuilder) WithMandatoryFields(landingCallStatus []BACnetLandingCallStatus) BACnetConstructedDataLandingCallsBuilder {
+	return b.WithLandingCallStatus(landingCallStatus...)
 }
 
-func (m *_BACnetConstructedDataLandingCallsBuilder) Build() (BACnetConstructedDataLandingCalls, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataLandingCallsBuilder) WithLandingCallStatus(landingCallStatus ...BACnetLandingCallStatus) BACnetConstructedDataLandingCallsBuilder {
+	b.LandingCallStatus = landingCallStatus
+	return b
+}
+
+func (b *_BACnetConstructedDataLandingCallsBuilder) Build() (BACnetConstructedDataLandingCalls, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLandingCalls.deepCopy(), nil
+	return b._BACnetConstructedDataLandingCalls.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLandingCallsBuilder) MustBuild() BACnetConstructedDataLandingCalls {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLandingCallsBuilder) MustBuild() BACnetConstructedDataLandingCalls {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLandingCallsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLandingCallsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLandingCallsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLandingCallsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLandingCallsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLandingCallsBuilder().(*_BACnetConstructedDataLandingCallsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLandingCallsBuilder creates a BACnetConstructedDataLandingCallsBuilder
-func (m *_BACnetConstructedDataLandingCalls) CreateBACnetConstructedDataLandingCallsBuilder() BACnetConstructedDataLandingCallsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLandingCalls) CreateBACnetConstructedDataLandingCallsBuilder() BACnetConstructedDataLandingCallsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLandingCallsBuilder()
 	}
-	return &_BACnetConstructedDataLandingCallsBuilder{_BACnetConstructedDataLandingCalls: m.deepCopy()}
+	return &_BACnetConstructedDataLandingCallsBuilder{_BACnetConstructedDataLandingCalls: b.deepCopy()}
 }
 
 ///////////////////////

@@ -99,50 +99,69 @@ func NewModbusPDUWriteSingleRegisterRequestBuilder() ModbusPDUWriteSingleRegiste
 type _ModbusPDUWriteSingleRegisterRequestBuilder struct {
 	*_ModbusPDUWriteSingleRegisterRequest
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUWriteSingleRegisterRequestBuilder) = (*_ModbusPDUWriteSingleRegisterRequestBuilder)(nil)
 
-func (m *_ModbusPDUWriteSingleRegisterRequestBuilder) WithMandatoryFields(address uint16, value uint16) ModbusPDUWriteSingleRegisterRequestBuilder {
-	return m.WithAddress(address).WithValue(value)
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUWriteSingleRegisterRequestBuilder) WithAddress(address uint16) ModbusPDUWriteSingleRegisterRequestBuilder {
-	m.Address = address
-	return m
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) WithMandatoryFields(address uint16, value uint16) ModbusPDUWriteSingleRegisterRequestBuilder {
+	return b.WithAddress(address).WithValue(value)
 }
 
-func (m *_ModbusPDUWriteSingleRegisterRequestBuilder) WithValue(value uint16) ModbusPDUWriteSingleRegisterRequestBuilder {
-	m.Value = value
-	return m
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) WithAddress(address uint16) ModbusPDUWriteSingleRegisterRequestBuilder {
+	b.Address = address
+	return b
 }
 
-func (m *_ModbusPDUWriteSingleRegisterRequestBuilder) Build() (ModbusPDUWriteSingleRegisterRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) WithValue(value uint16) ModbusPDUWriteSingleRegisterRequestBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) Build() (ModbusPDUWriteSingleRegisterRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUWriteSingleRegisterRequest.deepCopy(), nil
+	return b._ModbusPDUWriteSingleRegisterRequest.deepCopy(), nil
 }
 
-func (m *_ModbusPDUWriteSingleRegisterRequestBuilder) MustBuild() ModbusPDUWriteSingleRegisterRequest {
-	build, err := m.Build()
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) MustBuild() ModbusPDUWriteSingleRegisterRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUWriteSingleRegisterRequestBuilder) DeepCopy() any {
-	return m.CreateModbusPDUWriteSingleRegisterRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUWriteSingleRegisterRequestBuilder().(*_ModbusPDUWriteSingleRegisterRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUWriteSingleRegisterRequestBuilder creates a ModbusPDUWriteSingleRegisterRequestBuilder
-func (m *_ModbusPDUWriteSingleRegisterRequest) CreateModbusPDUWriteSingleRegisterRequestBuilder() ModbusPDUWriteSingleRegisterRequestBuilder {
-	if m == nil {
+func (b *_ModbusPDUWriteSingleRegisterRequest) CreateModbusPDUWriteSingleRegisterRequestBuilder() ModbusPDUWriteSingleRegisterRequestBuilder {
+	if b == nil {
 		return NewModbusPDUWriteSingleRegisterRequestBuilder()
 	}
-	return &_ModbusPDUWriteSingleRegisterRequestBuilder{_ModbusPDUWriteSingleRegisterRequest: m.deepCopy()}
+	return &_ModbusPDUWriteSingleRegisterRequestBuilder{_ModbusPDUWriteSingleRegisterRequest: b.deepCopy()}
 }
 
 ///////////////////////

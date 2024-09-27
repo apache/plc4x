@@ -165,208 +165,212 @@ type _AlarmMessageObjectQueryTypeBuilder struct {
 
 var _ (AlarmMessageObjectQueryTypeBuilder) = (*_AlarmMessageObjectQueryTypeBuilder)(nil)
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithMandatoryFields(lengthDataset uint8, eventState State, ackStateGoing State, ackStateComing State, timeComing DateAndTime, valueComing AssociatedValueType, timeGoing DateAndTime, valueGoing AssociatedValueType) AlarmMessageObjectQueryTypeBuilder {
-	return m.WithLengthDataset(lengthDataset).WithEventState(eventState).WithAckStateGoing(ackStateGoing).WithAckStateComing(ackStateComing).WithTimeComing(timeComing).WithValueComing(valueComing).WithTimeGoing(timeGoing).WithValueGoing(valueGoing)
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithMandatoryFields(lengthDataset uint8, eventState State, ackStateGoing State, ackStateComing State, timeComing DateAndTime, valueComing AssociatedValueType, timeGoing DateAndTime, valueGoing AssociatedValueType) AlarmMessageObjectQueryTypeBuilder {
+	return b.WithLengthDataset(lengthDataset).WithEventState(eventState).WithAckStateGoing(ackStateGoing).WithAckStateComing(ackStateComing).WithTimeComing(timeComing).WithValueComing(valueComing).WithTimeGoing(timeGoing).WithValueGoing(valueGoing)
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithLengthDataset(lengthDataset uint8) AlarmMessageObjectQueryTypeBuilder {
-	m.LengthDataset = lengthDataset
-	return m
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithLengthDataset(lengthDataset uint8) AlarmMessageObjectQueryTypeBuilder {
+	b.LengthDataset = lengthDataset
+	return b
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithEventState(eventState State) AlarmMessageObjectQueryTypeBuilder {
-	m.EventState = eventState
-	return m
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithEventState(eventState State) AlarmMessageObjectQueryTypeBuilder {
+	b.EventState = eventState
+	return b
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithEventStateBuilder(builderSupplier func(StateBuilder) StateBuilder) AlarmMessageObjectQueryTypeBuilder {
-	builder := builderSupplier(m.EventState.CreateStateBuilder())
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithEventStateBuilder(builderSupplier func(StateBuilder) StateBuilder) AlarmMessageObjectQueryTypeBuilder {
+	builder := builderSupplier(b.EventState.CreateStateBuilder())
 	var err error
-	m.EventState, err = builder.Build()
+	b.EventState, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StateBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StateBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithAckStateGoing(ackStateGoing State) AlarmMessageObjectQueryTypeBuilder {
-	m.AckStateGoing = ackStateGoing
-	return m
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithAckStateGoing(ackStateGoing State) AlarmMessageObjectQueryTypeBuilder {
+	b.AckStateGoing = ackStateGoing
+	return b
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithAckStateGoingBuilder(builderSupplier func(StateBuilder) StateBuilder) AlarmMessageObjectQueryTypeBuilder {
-	builder := builderSupplier(m.AckStateGoing.CreateStateBuilder())
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithAckStateGoingBuilder(builderSupplier func(StateBuilder) StateBuilder) AlarmMessageObjectQueryTypeBuilder {
+	builder := builderSupplier(b.AckStateGoing.CreateStateBuilder())
 	var err error
-	m.AckStateGoing, err = builder.Build()
+	b.AckStateGoing, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StateBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StateBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithAckStateComing(ackStateComing State) AlarmMessageObjectQueryTypeBuilder {
-	m.AckStateComing = ackStateComing
-	return m
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithAckStateComing(ackStateComing State) AlarmMessageObjectQueryTypeBuilder {
+	b.AckStateComing = ackStateComing
+	return b
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithAckStateComingBuilder(builderSupplier func(StateBuilder) StateBuilder) AlarmMessageObjectQueryTypeBuilder {
-	builder := builderSupplier(m.AckStateComing.CreateStateBuilder())
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithAckStateComingBuilder(builderSupplier func(StateBuilder) StateBuilder) AlarmMessageObjectQueryTypeBuilder {
+	builder := builderSupplier(b.AckStateComing.CreateStateBuilder())
 	var err error
-	m.AckStateComing, err = builder.Build()
+	b.AckStateComing, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StateBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StateBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithTimeComing(timeComing DateAndTime) AlarmMessageObjectQueryTypeBuilder {
-	m.TimeComing = timeComing
-	return m
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithTimeComing(timeComing DateAndTime) AlarmMessageObjectQueryTypeBuilder {
+	b.TimeComing = timeComing
+	return b
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithTimeComingBuilder(builderSupplier func(DateAndTimeBuilder) DateAndTimeBuilder) AlarmMessageObjectQueryTypeBuilder {
-	builder := builderSupplier(m.TimeComing.CreateDateAndTimeBuilder())
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithTimeComingBuilder(builderSupplier func(DateAndTimeBuilder) DateAndTimeBuilder) AlarmMessageObjectQueryTypeBuilder {
+	builder := builderSupplier(b.TimeComing.CreateDateAndTimeBuilder())
 	var err error
-	m.TimeComing, err = builder.Build()
+	b.TimeComing, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithValueComing(valueComing AssociatedValueType) AlarmMessageObjectQueryTypeBuilder {
-	m.ValueComing = valueComing
-	return m
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithValueComing(valueComing AssociatedValueType) AlarmMessageObjectQueryTypeBuilder {
+	b.ValueComing = valueComing
+	return b
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithValueComingBuilder(builderSupplier func(AssociatedValueTypeBuilder) AssociatedValueTypeBuilder) AlarmMessageObjectQueryTypeBuilder {
-	builder := builderSupplier(m.ValueComing.CreateAssociatedValueTypeBuilder())
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithValueComingBuilder(builderSupplier func(AssociatedValueTypeBuilder) AssociatedValueTypeBuilder) AlarmMessageObjectQueryTypeBuilder {
+	builder := builderSupplier(b.ValueComing.CreateAssociatedValueTypeBuilder())
 	var err error
-	m.ValueComing, err = builder.Build()
+	b.ValueComing, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AssociatedValueTypeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AssociatedValueTypeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithTimeGoing(timeGoing DateAndTime) AlarmMessageObjectQueryTypeBuilder {
-	m.TimeGoing = timeGoing
-	return m
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithTimeGoing(timeGoing DateAndTime) AlarmMessageObjectQueryTypeBuilder {
+	b.TimeGoing = timeGoing
+	return b
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithTimeGoingBuilder(builderSupplier func(DateAndTimeBuilder) DateAndTimeBuilder) AlarmMessageObjectQueryTypeBuilder {
-	builder := builderSupplier(m.TimeGoing.CreateDateAndTimeBuilder())
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithTimeGoingBuilder(builderSupplier func(DateAndTimeBuilder) DateAndTimeBuilder) AlarmMessageObjectQueryTypeBuilder {
+	builder := builderSupplier(b.TimeGoing.CreateDateAndTimeBuilder())
 	var err error
-	m.TimeGoing, err = builder.Build()
+	b.TimeGoing, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithValueGoing(valueGoing AssociatedValueType) AlarmMessageObjectQueryTypeBuilder {
-	m.ValueGoing = valueGoing
-	return m
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithValueGoing(valueGoing AssociatedValueType) AlarmMessageObjectQueryTypeBuilder {
+	b.ValueGoing = valueGoing
+	return b
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) WithValueGoingBuilder(builderSupplier func(AssociatedValueTypeBuilder) AssociatedValueTypeBuilder) AlarmMessageObjectQueryTypeBuilder {
-	builder := builderSupplier(m.ValueGoing.CreateAssociatedValueTypeBuilder())
+func (b *_AlarmMessageObjectQueryTypeBuilder) WithValueGoingBuilder(builderSupplier func(AssociatedValueTypeBuilder) AssociatedValueTypeBuilder) AlarmMessageObjectQueryTypeBuilder {
+	builder := builderSupplier(b.ValueGoing.CreateAssociatedValueTypeBuilder())
 	var err error
-	m.ValueGoing, err = builder.Build()
+	b.ValueGoing, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AssociatedValueTypeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AssociatedValueTypeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) Build() (AlarmMessageObjectQueryType, error) {
-	if m.EventState == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AlarmMessageObjectQueryTypeBuilder) Build() (AlarmMessageObjectQueryType, error) {
+	if b.EventState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'eventState' not set"))
+		b.err.Append(errors.New("mandatory field 'eventState' not set"))
 	}
-	if m.AckStateGoing == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.AckStateGoing == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'ackStateGoing' not set"))
+		b.err.Append(errors.New("mandatory field 'ackStateGoing' not set"))
 	}
-	if m.AckStateComing == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.AckStateComing == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'ackStateComing' not set"))
+		b.err.Append(errors.New("mandatory field 'ackStateComing' not set"))
 	}
-	if m.TimeComing == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TimeComing == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeComing' not set"))
+		b.err.Append(errors.New("mandatory field 'timeComing' not set"))
 	}
-	if m.ValueComing == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ValueComing == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'valueComing' not set"))
+		b.err.Append(errors.New("mandatory field 'valueComing' not set"))
 	}
-	if m.TimeGoing == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TimeGoing == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeGoing' not set"))
+		b.err.Append(errors.New("mandatory field 'timeGoing' not set"))
 	}
-	if m.ValueGoing == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ValueGoing == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'valueGoing' not set"))
+		b.err.Append(errors.New("mandatory field 'valueGoing' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AlarmMessageObjectQueryType.deepCopy(), nil
+	return b._AlarmMessageObjectQueryType.deepCopy(), nil
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) MustBuild() AlarmMessageObjectQueryType {
-	build, err := m.Build()
+func (b *_AlarmMessageObjectQueryTypeBuilder) MustBuild() AlarmMessageObjectQueryType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AlarmMessageObjectQueryTypeBuilder) DeepCopy() any {
-	return m.CreateAlarmMessageObjectQueryTypeBuilder()
+func (b *_AlarmMessageObjectQueryTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAlarmMessageObjectQueryTypeBuilder().(*_AlarmMessageObjectQueryTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAlarmMessageObjectQueryTypeBuilder creates a AlarmMessageObjectQueryTypeBuilder
-func (m *_AlarmMessageObjectQueryType) CreateAlarmMessageObjectQueryTypeBuilder() AlarmMessageObjectQueryTypeBuilder {
-	if m == nil {
+func (b *_AlarmMessageObjectQueryType) CreateAlarmMessageObjectQueryTypeBuilder() AlarmMessageObjectQueryTypeBuilder {
+	if b == nil {
 		return NewAlarmMessageObjectQueryTypeBuilder()
 	}
-	return &_AlarmMessageObjectQueryTypeBuilder{_AlarmMessageObjectQueryType: m.deepCopy()}
+	return &_AlarmMessageObjectQueryTypeBuilder{_AlarmMessageObjectQueryType: b.deepCopy()}
 }
 
 ///////////////////////

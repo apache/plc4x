@@ -100,64 +100,83 @@ func NewBACnetConstructedDataCarAssignedDirectionBuilder() BACnetConstructedData
 type _BACnetConstructedDataCarAssignedDirectionBuilder struct {
 	*_BACnetConstructedDataCarAssignedDirection
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCarAssignedDirectionBuilder) = (*_BACnetConstructedDataCarAssignedDirectionBuilder)(nil)
 
-func (m *_BACnetConstructedDataCarAssignedDirectionBuilder) WithMandatoryFields(assignedDirection BACnetLiftCarDirectionTagged) BACnetConstructedDataCarAssignedDirectionBuilder {
-	return m.WithAssignedDirection(assignedDirection)
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCarAssignedDirectionBuilder) WithAssignedDirection(assignedDirection BACnetLiftCarDirectionTagged) BACnetConstructedDataCarAssignedDirectionBuilder {
-	m.AssignedDirection = assignedDirection
-	return m
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) WithMandatoryFields(assignedDirection BACnetLiftCarDirectionTagged) BACnetConstructedDataCarAssignedDirectionBuilder {
+	return b.WithAssignedDirection(assignedDirection)
 }
 
-func (m *_BACnetConstructedDataCarAssignedDirectionBuilder) WithAssignedDirectionBuilder(builderSupplier func(BACnetLiftCarDirectionTaggedBuilder) BACnetLiftCarDirectionTaggedBuilder) BACnetConstructedDataCarAssignedDirectionBuilder {
-	builder := builderSupplier(m.AssignedDirection.CreateBACnetLiftCarDirectionTaggedBuilder())
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) WithAssignedDirection(assignedDirection BACnetLiftCarDirectionTagged) BACnetConstructedDataCarAssignedDirectionBuilder {
+	b.AssignedDirection = assignedDirection
+	return b
+}
+
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) WithAssignedDirectionBuilder(builderSupplier func(BACnetLiftCarDirectionTaggedBuilder) BACnetLiftCarDirectionTaggedBuilder) BACnetConstructedDataCarAssignedDirectionBuilder {
+	builder := builderSupplier(b.AssignedDirection.CreateBACnetLiftCarDirectionTaggedBuilder())
 	var err error
-	m.AssignedDirection, err = builder.Build()
+	b.AssignedDirection, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLiftCarDirectionTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLiftCarDirectionTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataCarAssignedDirectionBuilder) Build() (BACnetConstructedDataCarAssignedDirection, error) {
-	if m.AssignedDirection == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) Build() (BACnetConstructedDataCarAssignedDirection, error) {
+	if b.AssignedDirection == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'assignedDirection' not set"))
+		b.err.Append(errors.New("mandatory field 'assignedDirection' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCarAssignedDirection.deepCopy(), nil
+	return b._BACnetConstructedDataCarAssignedDirection.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCarAssignedDirectionBuilder) MustBuild() BACnetConstructedDataCarAssignedDirection {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) MustBuild() BACnetConstructedDataCarAssignedDirection {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCarAssignedDirectionBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCarAssignedDirectionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCarAssignedDirectionBuilder().(*_BACnetConstructedDataCarAssignedDirectionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCarAssignedDirectionBuilder creates a BACnetConstructedDataCarAssignedDirectionBuilder
-func (m *_BACnetConstructedDataCarAssignedDirection) CreateBACnetConstructedDataCarAssignedDirectionBuilder() BACnetConstructedDataCarAssignedDirectionBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCarAssignedDirection) CreateBACnetConstructedDataCarAssignedDirectionBuilder() BACnetConstructedDataCarAssignedDirectionBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCarAssignedDirectionBuilder()
 	}
-	return &_BACnetConstructedDataCarAssignedDirectionBuilder{_BACnetConstructedDataCarAssignedDirection: m.deepCopy()}
+	return &_BACnetConstructedDataCarAssignedDirectionBuilder{_BACnetConstructedDataCarAssignedDirection: b.deepCopy()}
 }
 
 ///////////////////////

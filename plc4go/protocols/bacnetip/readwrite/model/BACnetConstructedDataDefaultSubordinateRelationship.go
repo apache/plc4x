@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDefaultSubordinateRelationshipBuilder() BACnetConst
 type _BACnetConstructedDataDefaultSubordinateRelationshipBuilder struct {
 	*_BACnetConstructedDataDefaultSubordinateRelationship
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDefaultSubordinateRelationshipBuilder) = (*_BACnetConstructedDataDefaultSubordinateRelationshipBuilder)(nil)
 
-func (m *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) WithMandatoryFields(defaultSubordinateRelationship BACnetRelationshipTagged) BACnetConstructedDataDefaultSubordinateRelationshipBuilder {
-	return m.WithDefaultSubordinateRelationship(defaultSubordinateRelationship)
+func (b *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) WithDefaultSubordinateRelationship(defaultSubordinateRelationship BACnetRelationshipTagged) BACnetConstructedDataDefaultSubordinateRelationshipBuilder {
-	m.DefaultSubordinateRelationship = defaultSubordinateRelationship
-	return m
+func (b *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) WithMandatoryFields(defaultSubordinateRelationship BACnetRelationshipTagged) BACnetConstructedDataDefaultSubordinateRelationshipBuilder {
+	return b.WithDefaultSubordinateRelationship(defaultSubordinateRelationship)
 }
 
-func (m *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) WithDefaultSubordinateRelationshipBuilder(builderSupplier func(BACnetRelationshipTaggedBuilder) BACnetRelationshipTaggedBuilder) BACnetConstructedDataDefaultSubordinateRelationshipBuilder {
-	builder := builderSupplier(m.DefaultSubordinateRelationship.CreateBACnetRelationshipTaggedBuilder())
+func (b *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) WithDefaultSubordinateRelationship(defaultSubordinateRelationship BACnetRelationshipTagged) BACnetConstructedDataDefaultSubordinateRelationshipBuilder {
+	b.DefaultSubordinateRelationship = defaultSubordinateRelationship
+	return b
+}
+
+func (b *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) WithDefaultSubordinateRelationshipBuilder(builderSupplier func(BACnetRelationshipTaggedBuilder) BACnetRelationshipTaggedBuilder) BACnetConstructedDataDefaultSubordinateRelationshipBuilder {
+	builder := builderSupplier(b.DefaultSubordinateRelationship.CreateBACnetRelationshipTaggedBuilder())
 	var err error
-	m.DefaultSubordinateRelationship, err = builder.Build()
+	b.DefaultSubordinateRelationship, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetRelationshipTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetRelationshipTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) Build() (BACnetConstructedDataDefaultSubordinateRelationship, error) {
-	if m.DefaultSubordinateRelationship == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) Build() (BACnetConstructedDataDefaultSubordinateRelationship, error) {
+	if b.DefaultSubordinateRelationship == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'defaultSubordinateRelationship' not set"))
+		b.err.Append(errors.New("mandatory field 'defaultSubordinateRelationship' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDefaultSubordinateRelationship.deepCopy(), nil
+	return b._BACnetConstructedDataDefaultSubordinateRelationship.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) MustBuild() BACnetConstructedDataDefaultSubordinateRelationship {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) MustBuild() BACnetConstructedDataDefaultSubordinateRelationship {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDefaultSubordinateRelationshipBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDefaultSubordinateRelationshipBuilder().(*_BACnetConstructedDataDefaultSubordinateRelationshipBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDefaultSubordinateRelationshipBuilder creates a BACnetConstructedDataDefaultSubordinateRelationshipBuilder
-func (m *_BACnetConstructedDataDefaultSubordinateRelationship) CreateBACnetConstructedDataDefaultSubordinateRelationshipBuilder() BACnetConstructedDataDefaultSubordinateRelationshipBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDefaultSubordinateRelationship) CreateBACnetConstructedDataDefaultSubordinateRelationshipBuilder() BACnetConstructedDataDefaultSubordinateRelationshipBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDefaultSubordinateRelationshipBuilder()
 	}
-	return &_BACnetConstructedDataDefaultSubordinateRelationshipBuilder{_BACnetConstructedDataDefaultSubordinateRelationship: m.deepCopy()}
+	return &_BACnetConstructedDataDefaultSubordinateRelationshipBuilder{_BACnetConstructedDataDefaultSubordinateRelationship: b.deepCopy()}
 }
 
 ///////////////////////

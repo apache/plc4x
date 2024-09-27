@@ -111,69 +111,73 @@ type _BACnetLiftCarDirectionTaggedBuilder struct {
 
 var _ (BACnetLiftCarDirectionTaggedBuilder) = (*_BACnetLiftCarDirectionTaggedBuilder)(nil)
 
-func (m *_BACnetLiftCarDirectionTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLiftCarDirection, proprietaryValue uint32) BACnetLiftCarDirectionTaggedBuilder {
-	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetLiftCarDirectionTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLiftCarDirection, proprietaryValue uint32) BACnetLiftCarDirectionTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_BACnetLiftCarDirectionTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLiftCarDirectionTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetLiftCarDirectionTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLiftCarDirectionTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetLiftCarDirectionTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftCarDirectionTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetLiftCarDirectionTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftCarDirectionTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLiftCarDirectionTaggedBuilder) WithValue(value BACnetLiftCarDirection) BACnetLiftCarDirectionTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetLiftCarDirectionTaggedBuilder) WithValue(value BACnetLiftCarDirection) BACnetLiftCarDirectionTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetLiftCarDirectionTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLiftCarDirectionTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetLiftCarDirectionTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLiftCarDirectionTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetLiftCarDirectionTaggedBuilder) Build() (BACnetLiftCarDirectionTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLiftCarDirectionTaggedBuilder) Build() (BACnetLiftCarDirectionTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLiftCarDirectionTagged.deepCopy(), nil
+	return b._BACnetLiftCarDirectionTagged.deepCopy(), nil
 }
 
-func (m *_BACnetLiftCarDirectionTaggedBuilder) MustBuild() BACnetLiftCarDirectionTagged {
-	build, err := m.Build()
+func (b *_BACnetLiftCarDirectionTaggedBuilder) MustBuild() BACnetLiftCarDirectionTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLiftCarDirectionTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetLiftCarDirectionTaggedBuilder()
+func (b *_BACnetLiftCarDirectionTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLiftCarDirectionTaggedBuilder().(*_BACnetLiftCarDirectionTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLiftCarDirectionTaggedBuilder creates a BACnetLiftCarDirectionTaggedBuilder
-func (m *_BACnetLiftCarDirectionTagged) CreateBACnetLiftCarDirectionTaggedBuilder() BACnetLiftCarDirectionTaggedBuilder {
-	if m == nil {
+func (b *_BACnetLiftCarDirectionTagged) CreateBACnetLiftCarDirectionTaggedBuilder() BACnetLiftCarDirectionTaggedBuilder {
+	if b == nil {
 		return NewBACnetLiftCarDirectionTaggedBuilder()
 	}
-	return &_BACnetLiftCarDirectionTaggedBuilder{_BACnetLiftCarDirectionTagged: m.deepCopy()}
+	return &_BACnetLiftCarDirectionTaggedBuilder{_BACnetLiftCarDirectionTagged: b.deepCopy()}
 }
 
 ///////////////////////

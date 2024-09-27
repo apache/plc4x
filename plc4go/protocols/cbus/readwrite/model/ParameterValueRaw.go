@@ -93,45 +93,64 @@ func NewParameterValueRawBuilder() ParameterValueRawBuilder {
 type _ParameterValueRawBuilder struct {
 	*_ParameterValueRaw
 
+	parentBuilder *_ParameterValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ParameterValueRawBuilder) = (*_ParameterValueRawBuilder)(nil)
 
-func (m *_ParameterValueRawBuilder) WithMandatoryFields(data []byte) ParameterValueRawBuilder {
-	return m.WithData(data...)
+func (b *_ParameterValueRawBuilder) setParent(contract ParameterValueContract) {
+	b.ParameterValueContract = contract
 }
 
-func (m *_ParameterValueRawBuilder) WithData(data ...byte) ParameterValueRawBuilder {
-	m.Data = data
-	return m
+func (b *_ParameterValueRawBuilder) WithMandatoryFields(data []byte) ParameterValueRawBuilder {
+	return b.WithData(data...)
 }
 
-func (m *_ParameterValueRawBuilder) Build() (ParameterValueRaw, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ParameterValueRawBuilder) WithData(data ...byte) ParameterValueRawBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ParameterValueRawBuilder) Build() (ParameterValueRaw, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ParameterValueRaw.deepCopy(), nil
+	return b._ParameterValueRaw.deepCopy(), nil
 }
 
-func (m *_ParameterValueRawBuilder) MustBuild() ParameterValueRaw {
-	build, err := m.Build()
+func (b *_ParameterValueRawBuilder) MustBuild() ParameterValueRaw {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ParameterValueRawBuilder) DeepCopy() any {
-	return m.CreateParameterValueRawBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ParameterValueRawBuilder) Done() ParameterValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ParameterValueRawBuilder) buildForParameterValue() (ParameterValue, error) {
+	return b.Build()
+}
+
+func (b *_ParameterValueRawBuilder) DeepCopy() any {
+	_copy := b.CreateParameterValueRawBuilder().(*_ParameterValueRawBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateParameterValueRawBuilder creates a ParameterValueRawBuilder
-func (m *_ParameterValueRaw) CreateParameterValueRawBuilder() ParameterValueRawBuilder {
-	if m == nil {
+func (b *_ParameterValueRaw) CreateParameterValueRawBuilder() ParameterValueRawBuilder {
+	if b == nil {
 		return NewParameterValueRawBuilder()
 	}
-	return &_ParameterValueRawBuilder{_ParameterValueRaw: m.deepCopy()}
+	return &_ParameterValueRawBuilder{_ParameterValueRaw: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataProcessIdentifierBuilder() BACnetConstructedDataPro
 type _BACnetConstructedDataProcessIdentifierBuilder struct {
 	*_BACnetConstructedDataProcessIdentifier
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataProcessIdentifierBuilder) = (*_BACnetConstructedDataProcessIdentifierBuilder)(nil)
 
-func (m *_BACnetConstructedDataProcessIdentifierBuilder) WithMandatoryFields(processIdentifier BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProcessIdentifierBuilder {
-	return m.WithProcessIdentifier(processIdentifier)
+func (b *_BACnetConstructedDataProcessIdentifierBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataProcessIdentifierBuilder) WithProcessIdentifier(processIdentifier BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProcessIdentifierBuilder {
-	m.ProcessIdentifier = processIdentifier
-	return m
+func (b *_BACnetConstructedDataProcessIdentifierBuilder) WithMandatoryFields(processIdentifier BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProcessIdentifierBuilder {
+	return b.WithProcessIdentifier(processIdentifier)
 }
 
-func (m *_BACnetConstructedDataProcessIdentifierBuilder) WithProcessIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataProcessIdentifierBuilder {
-	builder := builderSupplier(m.ProcessIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataProcessIdentifierBuilder) WithProcessIdentifier(processIdentifier BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProcessIdentifierBuilder {
+	b.ProcessIdentifier = processIdentifier
+	return b
+}
+
+func (b *_BACnetConstructedDataProcessIdentifierBuilder) WithProcessIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataProcessIdentifierBuilder {
+	builder := builderSupplier(b.ProcessIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.ProcessIdentifier, err = builder.Build()
+	b.ProcessIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataProcessIdentifierBuilder) Build() (BACnetConstructedDataProcessIdentifier, error) {
-	if m.ProcessIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataProcessIdentifierBuilder) Build() (BACnetConstructedDataProcessIdentifier, error) {
+	if b.ProcessIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'processIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'processIdentifier' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataProcessIdentifier.deepCopy(), nil
+	return b._BACnetConstructedDataProcessIdentifier.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataProcessIdentifierBuilder) MustBuild() BACnetConstructedDataProcessIdentifier {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataProcessIdentifierBuilder) MustBuild() BACnetConstructedDataProcessIdentifier {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataProcessIdentifierBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataProcessIdentifierBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataProcessIdentifierBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataProcessIdentifierBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataProcessIdentifierBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataProcessIdentifierBuilder().(*_BACnetConstructedDataProcessIdentifierBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataProcessIdentifierBuilder creates a BACnetConstructedDataProcessIdentifierBuilder
-func (m *_BACnetConstructedDataProcessIdentifier) CreateBACnetConstructedDataProcessIdentifierBuilder() BACnetConstructedDataProcessIdentifierBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataProcessIdentifier) CreateBACnetConstructedDataProcessIdentifierBuilder() BACnetConstructedDataProcessIdentifierBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataProcessIdentifierBuilder()
 	}
-	return &_BACnetConstructedDataProcessIdentifierBuilder{_BACnetConstructedDataProcessIdentifier: m.deepCopy()}
+	return &_BACnetConstructedDataProcessIdentifierBuilder{_BACnetConstructedDataProcessIdentifier: b.deepCopy()}
 }
 
 ///////////////////////

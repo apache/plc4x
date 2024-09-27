@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLockStatusBuilder() BACnetConstructedDataLockStatus
 type _BACnetConstructedDataLockStatusBuilder struct {
 	*_BACnetConstructedDataLockStatus
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLockStatusBuilder) = (*_BACnetConstructedDataLockStatusBuilder)(nil)
 
-func (m *_BACnetConstructedDataLockStatusBuilder) WithMandatoryFields(lockStatus BACnetLockStatusTagged) BACnetConstructedDataLockStatusBuilder {
-	return m.WithLockStatus(lockStatus)
+func (b *_BACnetConstructedDataLockStatusBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLockStatusBuilder) WithLockStatus(lockStatus BACnetLockStatusTagged) BACnetConstructedDataLockStatusBuilder {
-	m.LockStatus = lockStatus
-	return m
+func (b *_BACnetConstructedDataLockStatusBuilder) WithMandatoryFields(lockStatus BACnetLockStatusTagged) BACnetConstructedDataLockStatusBuilder {
+	return b.WithLockStatus(lockStatus)
 }
 
-func (m *_BACnetConstructedDataLockStatusBuilder) WithLockStatusBuilder(builderSupplier func(BACnetLockStatusTaggedBuilder) BACnetLockStatusTaggedBuilder) BACnetConstructedDataLockStatusBuilder {
-	builder := builderSupplier(m.LockStatus.CreateBACnetLockStatusTaggedBuilder())
+func (b *_BACnetConstructedDataLockStatusBuilder) WithLockStatus(lockStatus BACnetLockStatusTagged) BACnetConstructedDataLockStatusBuilder {
+	b.LockStatus = lockStatus
+	return b
+}
+
+func (b *_BACnetConstructedDataLockStatusBuilder) WithLockStatusBuilder(builderSupplier func(BACnetLockStatusTaggedBuilder) BACnetLockStatusTaggedBuilder) BACnetConstructedDataLockStatusBuilder {
+	builder := builderSupplier(b.LockStatus.CreateBACnetLockStatusTaggedBuilder())
 	var err error
-	m.LockStatus, err = builder.Build()
+	b.LockStatus, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLockStatusTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLockStatusTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLockStatusBuilder) Build() (BACnetConstructedDataLockStatus, error) {
-	if m.LockStatus == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLockStatusBuilder) Build() (BACnetConstructedDataLockStatus, error) {
+	if b.LockStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lockStatus' not set"))
+		b.err.Append(errors.New("mandatory field 'lockStatus' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLockStatus.deepCopy(), nil
+	return b._BACnetConstructedDataLockStatus.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLockStatusBuilder) MustBuild() BACnetConstructedDataLockStatus {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLockStatusBuilder) MustBuild() BACnetConstructedDataLockStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLockStatusBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLockStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLockStatusBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLockStatusBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLockStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLockStatusBuilder().(*_BACnetConstructedDataLockStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLockStatusBuilder creates a BACnetConstructedDataLockStatusBuilder
-func (m *_BACnetConstructedDataLockStatus) CreateBACnetConstructedDataLockStatusBuilder() BACnetConstructedDataLockStatusBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLockStatus) CreateBACnetConstructedDataLockStatusBuilder() BACnetConstructedDataLockStatusBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLockStatusBuilder()
 	}
-	return &_BACnetConstructedDataLockStatusBuilder{_BACnetConstructedDataLockStatus: m.deepCopy()}
+	return &_BACnetConstructedDataLockStatusBuilder{_BACnetConstructedDataLockStatus: b.deepCopy()}
 }
 
 ///////////////////////

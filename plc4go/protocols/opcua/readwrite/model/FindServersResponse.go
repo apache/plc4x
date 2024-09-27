@@ -90,6 +90,8 @@ type FindServersResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfServers int32, servers []ExtensionObjectDefinition) FindServersResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) FindServersResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) FindServersResponseBuilder
 	// WithNoOfServers adds NoOfServers (property field)
 	WithNoOfServers(int32) FindServersResponseBuilder
 	// WithServers adds Servers (property field)
@@ -108,61 +110,93 @@ func NewFindServersResponseBuilder() FindServersResponseBuilder {
 type _FindServersResponseBuilder struct {
 	*_FindServersResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (FindServersResponseBuilder) = (*_FindServersResponseBuilder)(nil)
 
-func (m *_FindServersResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfServers int32, servers []ExtensionObjectDefinition) FindServersResponseBuilder {
-	return m.WithResponseHeader(responseHeader).WithNoOfServers(noOfServers).WithServers(servers...)
+func (b *_FindServersResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_FindServersResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) FindServersResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_FindServersResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfServers int32, servers []ExtensionObjectDefinition) FindServersResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfServers(noOfServers).WithServers(servers...)
 }
 
-func (m *_FindServersResponseBuilder) WithNoOfServers(noOfServers int32) FindServersResponseBuilder {
-	m.NoOfServers = noOfServers
-	return m
+func (b *_FindServersResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) FindServersResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
 }
 
-func (m *_FindServersResponseBuilder) WithServers(servers ...ExtensionObjectDefinition) FindServersResponseBuilder {
-	m.Servers = servers
-	return m
-}
-
-func (m *_FindServersResponseBuilder) Build() (FindServersResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_FindServersResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) FindServersResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._FindServersResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_FindServersResponseBuilder) MustBuild() FindServersResponse {
-	build, err := m.Build()
+func (b *_FindServersResponseBuilder) WithNoOfServers(noOfServers int32) FindServersResponseBuilder {
+	b.NoOfServers = noOfServers
+	return b
+}
+
+func (b *_FindServersResponseBuilder) WithServers(servers ...ExtensionObjectDefinition) FindServersResponseBuilder {
+	b.Servers = servers
+	return b
+}
+
+func (b *_FindServersResponseBuilder) Build() (FindServersResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._FindServersResponse.deepCopy(), nil
+}
+
+func (b *_FindServersResponseBuilder) MustBuild() FindServersResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FindServersResponseBuilder) DeepCopy() any {
-	return m.CreateFindServersResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FindServersResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FindServersResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_FindServersResponseBuilder) DeepCopy() any {
+	_copy := b.CreateFindServersResponseBuilder().(*_FindServersResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFindServersResponseBuilder creates a FindServersResponseBuilder
-func (m *_FindServersResponse) CreateFindServersResponseBuilder() FindServersResponseBuilder {
-	if m == nil {
+func (b *_FindServersResponse) CreateFindServersResponseBuilder() FindServersResponseBuilder {
+	if b == nil {
 		return NewFindServersResponseBuilder()
 	}
-	return &_FindServersResponseBuilder{_FindServersResponse: m.deepCopy()}
+	return &_FindServersResponseBuilder{_FindServersResponse: b.deepCopy()}
 }
 
 ///////////////////////

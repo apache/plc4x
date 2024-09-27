@@ -93,45 +93,64 @@ func NewBACnetConstructedDataVTClassesSupportedBuilder() BACnetConstructedDataVT
 type _BACnetConstructedDataVTClassesSupportedBuilder struct {
 	*_BACnetConstructedDataVTClassesSupported
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataVTClassesSupportedBuilder) = (*_BACnetConstructedDataVTClassesSupportedBuilder)(nil)
 
-func (m *_BACnetConstructedDataVTClassesSupportedBuilder) WithMandatoryFields(vtClassesSupported []BACnetVTClassTagged) BACnetConstructedDataVTClassesSupportedBuilder {
-	return m.WithVtClassesSupported(vtClassesSupported...)
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataVTClassesSupportedBuilder) WithVtClassesSupported(vtClassesSupported ...BACnetVTClassTagged) BACnetConstructedDataVTClassesSupportedBuilder {
-	m.VtClassesSupported = vtClassesSupported
-	return m
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) WithMandatoryFields(vtClassesSupported []BACnetVTClassTagged) BACnetConstructedDataVTClassesSupportedBuilder {
+	return b.WithVtClassesSupported(vtClassesSupported...)
 }
 
-func (m *_BACnetConstructedDataVTClassesSupportedBuilder) Build() (BACnetConstructedDataVTClassesSupported, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) WithVtClassesSupported(vtClassesSupported ...BACnetVTClassTagged) BACnetConstructedDataVTClassesSupportedBuilder {
+	b.VtClassesSupported = vtClassesSupported
+	return b
+}
+
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) Build() (BACnetConstructedDataVTClassesSupported, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataVTClassesSupported.deepCopy(), nil
+	return b._BACnetConstructedDataVTClassesSupported.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataVTClassesSupportedBuilder) MustBuild() BACnetConstructedDataVTClassesSupported {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) MustBuild() BACnetConstructedDataVTClassesSupported {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataVTClassesSupportedBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataVTClassesSupportedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataVTClassesSupportedBuilder().(*_BACnetConstructedDataVTClassesSupportedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataVTClassesSupportedBuilder creates a BACnetConstructedDataVTClassesSupportedBuilder
-func (m *_BACnetConstructedDataVTClassesSupported) CreateBACnetConstructedDataVTClassesSupportedBuilder() BACnetConstructedDataVTClassesSupportedBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataVTClassesSupported) CreateBACnetConstructedDataVTClassesSupportedBuilder() BACnetConstructedDataVTClassesSupportedBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataVTClassesSupportedBuilder()
 	}
-	return &_BACnetConstructedDataVTClassesSupportedBuilder{_BACnetConstructedDataVTClassesSupported: m.deepCopy()}
+	return &_BACnetConstructedDataVTClassesSupportedBuilder{_BACnetConstructedDataVTClassesSupported: b.deepCopy()}
 }
 
 ///////////////////////

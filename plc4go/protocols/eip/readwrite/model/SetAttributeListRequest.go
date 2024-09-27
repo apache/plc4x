@@ -85,40 +85,59 @@ func NewSetAttributeListRequestBuilder() SetAttributeListRequestBuilder {
 type _SetAttributeListRequestBuilder struct {
 	*_SetAttributeListRequest
 
+	parentBuilder *_CipServiceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SetAttributeListRequestBuilder) = (*_SetAttributeListRequestBuilder)(nil)
 
-func (m *_SetAttributeListRequestBuilder) WithMandatoryFields() SetAttributeListRequestBuilder {
-	return m
+func (b *_SetAttributeListRequestBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
 }
 
-func (m *_SetAttributeListRequestBuilder) Build() (SetAttributeListRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SetAttributeListRequestBuilder) WithMandatoryFields() SetAttributeListRequestBuilder {
+	return b
+}
+
+func (b *_SetAttributeListRequestBuilder) Build() (SetAttributeListRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SetAttributeListRequest.deepCopy(), nil
+	return b._SetAttributeListRequest.deepCopy(), nil
 }
 
-func (m *_SetAttributeListRequestBuilder) MustBuild() SetAttributeListRequest {
-	build, err := m.Build()
+func (b *_SetAttributeListRequestBuilder) MustBuild() SetAttributeListRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SetAttributeListRequestBuilder) DeepCopy() any {
-	return m.CreateSetAttributeListRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SetAttributeListRequestBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SetAttributeListRequestBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_SetAttributeListRequestBuilder) DeepCopy() any {
+	_copy := b.CreateSetAttributeListRequestBuilder().(*_SetAttributeListRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSetAttributeListRequestBuilder creates a SetAttributeListRequestBuilder
-func (m *_SetAttributeListRequest) CreateSetAttributeListRequestBuilder() SetAttributeListRequestBuilder {
-	if m == nil {
+func (b *_SetAttributeListRequest) CreateSetAttributeListRequestBuilder() SetAttributeListRequestBuilder {
+	if b == nil {
 		return NewSetAttributeListRequestBuilder()
 	}
-	return &_SetAttributeListRequestBuilder{_SetAttributeListRequest: m.deepCopy()}
+	return &_SetAttributeListRequestBuilder{_SetAttributeListRequest: b.deepCopy()}
 }
 
 ///////////////////////

@@ -85,40 +85,59 @@ func NewApduDataUserMessageBuilder() ApduDataUserMessageBuilder {
 type _ApduDataUserMessageBuilder struct {
 	*_ApduDataUserMessage
 
+	parentBuilder *_ApduDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataUserMessageBuilder) = (*_ApduDataUserMessageBuilder)(nil)
 
-func (m *_ApduDataUserMessageBuilder) WithMandatoryFields() ApduDataUserMessageBuilder {
-	return m
+func (b *_ApduDataUserMessageBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
 }
 
-func (m *_ApduDataUserMessageBuilder) Build() (ApduDataUserMessage, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataUserMessageBuilder) WithMandatoryFields() ApduDataUserMessageBuilder {
+	return b
+}
+
+func (b *_ApduDataUserMessageBuilder) Build() (ApduDataUserMessage, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataUserMessage.deepCopy(), nil
+	return b._ApduDataUserMessage.deepCopy(), nil
 }
 
-func (m *_ApduDataUserMessageBuilder) MustBuild() ApduDataUserMessage {
-	build, err := m.Build()
+func (b *_ApduDataUserMessageBuilder) MustBuild() ApduDataUserMessage {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataUserMessageBuilder) DeepCopy() any {
-	return m.CreateApduDataUserMessageBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataUserMessageBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataUserMessageBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataUserMessageBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataUserMessageBuilder().(*_ApduDataUserMessageBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataUserMessageBuilder creates a ApduDataUserMessageBuilder
-func (m *_ApduDataUserMessage) CreateApduDataUserMessageBuilder() ApduDataUserMessageBuilder {
-	if m == nil {
+func (b *_ApduDataUserMessage) CreateApduDataUserMessageBuilder() ApduDataUserMessageBuilder {
+	if b == nil {
 		return NewApduDataUserMessageBuilder()
 	}
-	return &_ApduDataUserMessageBuilder{_ApduDataUserMessage: m.deepCopy()}
+	return &_ApduDataUserMessageBuilder{_ApduDataUserMessage: b.deepCopy()}
 }
 
 ///////////////////////

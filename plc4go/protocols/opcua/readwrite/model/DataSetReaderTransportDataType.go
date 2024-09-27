@@ -85,40 +85,59 @@ func NewDataSetReaderTransportDataTypeBuilder() DataSetReaderTransportDataTypeBu
 type _DataSetReaderTransportDataTypeBuilder struct {
 	*_DataSetReaderTransportDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DataSetReaderTransportDataTypeBuilder) = (*_DataSetReaderTransportDataTypeBuilder)(nil)
 
-func (m *_DataSetReaderTransportDataTypeBuilder) WithMandatoryFields() DataSetReaderTransportDataTypeBuilder {
-	return m
+func (b *_DataSetReaderTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_DataSetReaderTransportDataTypeBuilder) Build() (DataSetReaderTransportDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DataSetReaderTransportDataTypeBuilder) WithMandatoryFields() DataSetReaderTransportDataTypeBuilder {
+	return b
+}
+
+func (b *_DataSetReaderTransportDataTypeBuilder) Build() (DataSetReaderTransportDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DataSetReaderTransportDataType.deepCopy(), nil
+	return b._DataSetReaderTransportDataType.deepCopy(), nil
 }
 
-func (m *_DataSetReaderTransportDataTypeBuilder) MustBuild() DataSetReaderTransportDataType {
-	build, err := m.Build()
+func (b *_DataSetReaderTransportDataTypeBuilder) MustBuild() DataSetReaderTransportDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DataSetReaderTransportDataTypeBuilder) DeepCopy() any {
-	return m.CreateDataSetReaderTransportDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DataSetReaderTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DataSetReaderTransportDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DataSetReaderTransportDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateDataSetReaderTransportDataTypeBuilder().(*_DataSetReaderTransportDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDataSetReaderTransportDataTypeBuilder creates a DataSetReaderTransportDataTypeBuilder
-func (m *_DataSetReaderTransportDataType) CreateDataSetReaderTransportDataTypeBuilder() DataSetReaderTransportDataTypeBuilder {
-	if m == nil {
+func (b *_DataSetReaderTransportDataType) CreateDataSetReaderTransportDataTypeBuilder() DataSetReaderTransportDataTypeBuilder {
+	if b == nil {
 		return NewDataSetReaderTransportDataTypeBuilder()
 	}
-	return &_DataSetReaderTransportDataTypeBuilder{_DataSetReaderTransportDataType: m.deepCopy()}
+	return &_DataSetReaderTransportDataTypeBuilder{_DataSetReaderTransportDataType: b.deepCopy()}
 }
 
 ///////////////////////

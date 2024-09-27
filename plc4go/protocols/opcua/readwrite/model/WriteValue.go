@@ -126,117 +126,136 @@ func NewWriteValueBuilder() WriteValueBuilder {
 type _WriteValueBuilder struct {
 	*_WriteValue
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (WriteValueBuilder) = (*_WriteValueBuilder)(nil)
 
-func (m *_WriteValueBuilder) WithMandatoryFields(nodeId NodeId, attributeId uint32, indexRange PascalString, value DataValue) WriteValueBuilder {
-	return m.WithNodeId(nodeId).WithAttributeId(attributeId).WithIndexRange(indexRange).WithValue(value)
+func (b *_WriteValueBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_WriteValueBuilder) WithNodeId(nodeId NodeId) WriteValueBuilder {
-	m.NodeId = nodeId
-	return m
+func (b *_WriteValueBuilder) WithMandatoryFields(nodeId NodeId, attributeId uint32, indexRange PascalString, value DataValue) WriteValueBuilder {
+	return b.WithNodeId(nodeId).WithAttributeId(attributeId).WithIndexRange(indexRange).WithValue(value)
 }
 
-func (m *_WriteValueBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) WriteValueBuilder {
-	builder := builderSupplier(m.NodeId.CreateNodeIdBuilder())
+func (b *_WriteValueBuilder) WithNodeId(nodeId NodeId) WriteValueBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_WriteValueBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) WriteValueBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdBuilder())
 	var err error
-	m.NodeId, err = builder.Build()
+	b.NodeId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_WriteValueBuilder) WithAttributeId(attributeId uint32) WriteValueBuilder {
-	m.AttributeId = attributeId
-	return m
+func (b *_WriteValueBuilder) WithAttributeId(attributeId uint32) WriteValueBuilder {
+	b.AttributeId = attributeId
+	return b
 }
 
-func (m *_WriteValueBuilder) WithIndexRange(indexRange PascalString) WriteValueBuilder {
-	m.IndexRange = indexRange
-	return m
+func (b *_WriteValueBuilder) WithIndexRange(indexRange PascalString) WriteValueBuilder {
+	b.IndexRange = indexRange
+	return b
 }
 
-func (m *_WriteValueBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) WriteValueBuilder {
-	builder := builderSupplier(m.IndexRange.CreatePascalStringBuilder())
+func (b *_WriteValueBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) WriteValueBuilder {
+	builder := builderSupplier(b.IndexRange.CreatePascalStringBuilder())
 	var err error
-	m.IndexRange, err = builder.Build()
+	b.IndexRange, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_WriteValueBuilder) WithValue(value DataValue) WriteValueBuilder {
-	m.Value = value
-	return m
+func (b *_WriteValueBuilder) WithValue(value DataValue) WriteValueBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_WriteValueBuilder) WithValueBuilder(builderSupplier func(DataValueBuilder) DataValueBuilder) WriteValueBuilder {
-	builder := builderSupplier(m.Value.CreateDataValueBuilder())
+func (b *_WriteValueBuilder) WithValueBuilder(builderSupplier func(DataValueBuilder) DataValueBuilder) WriteValueBuilder {
+	builder := builderSupplier(b.Value.CreateDataValueBuilder())
 	var err error
-	m.Value, err = builder.Build()
+	b.Value, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "DataValueBuilder failed"))
+		b.err.Append(errors.Wrap(err, "DataValueBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_WriteValueBuilder) Build() (WriteValue, error) {
-	if m.NodeId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_WriteValueBuilder) Build() (WriteValue, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nodeId' not set"))
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
 	}
-	if m.IndexRange == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.IndexRange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'indexRange' not set"))
+		b.err.Append(errors.New("mandatory field 'indexRange' not set"))
 	}
-	if m.Value == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'value' not set"))
+		b.err.Append(errors.New("mandatory field 'value' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._WriteValue.deepCopy(), nil
+	return b._WriteValue.deepCopy(), nil
 }
 
-func (m *_WriteValueBuilder) MustBuild() WriteValue {
-	build, err := m.Build()
+func (b *_WriteValueBuilder) MustBuild() WriteValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_WriteValueBuilder) DeepCopy() any {
-	return m.CreateWriteValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_WriteValueBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_WriteValueBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_WriteValueBuilder) DeepCopy() any {
+	_copy := b.CreateWriteValueBuilder().(*_WriteValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateWriteValueBuilder creates a WriteValueBuilder
-func (m *_WriteValue) CreateWriteValueBuilder() WriteValueBuilder {
-	if m == nil {
+func (b *_WriteValue) CreateWriteValueBuilder() WriteValueBuilder {
+	if b == nil {
 		return NewWriteValueBuilder()
 	}
-	return &_WriteValueBuilder{_WriteValue: m.deepCopy()}
+	return &_WriteValueBuilder{_WriteValue: b.deepCopy()}
 }
 
 ///////////////////////

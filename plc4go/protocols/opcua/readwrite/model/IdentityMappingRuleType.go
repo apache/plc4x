@@ -104,69 +104,88 @@ func NewIdentityMappingRuleTypeBuilder() IdentityMappingRuleTypeBuilder {
 type _IdentityMappingRuleTypeBuilder struct {
 	*_IdentityMappingRuleType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (IdentityMappingRuleTypeBuilder) = (*_IdentityMappingRuleTypeBuilder)(nil)
 
-func (m *_IdentityMappingRuleTypeBuilder) WithMandatoryFields(criteriaType IdentityCriteriaType, criteria PascalString) IdentityMappingRuleTypeBuilder {
-	return m.WithCriteriaType(criteriaType).WithCriteria(criteria)
+func (b *_IdentityMappingRuleTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_IdentityMappingRuleTypeBuilder) WithCriteriaType(criteriaType IdentityCriteriaType) IdentityMappingRuleTypeBuilder {
-	m.CriteriaType = criteriaType
-	return m
+func (b *_IdentityMappingRuleTypeBuilder) WithMandatoryFields(criteriaType IdentityCriteriaType, criteria PascalString) IdentityMappingRuleTypeBuilder {
+	return b.WithCriteriaType(criteriaType).WithCriteria(criteria)
 }
 
-func (m *_IdentityMappingRuleTypeBuilder) WithCriteria(criteria PascalString) IdentityMappingRuleTypeBuilder {
-	m.Criteria = criteria
-	return m
+func (b *_IdentityMappingRuleTypeBuilder) WithCriteriaType(criteriaType IdentityCriteriaType) IdentityMappingRuleTypeBuilder {
+	b.CriteriaType = criteriaType
+	return b
 }
 
-func (m *_IdentityMappingRuleTypeBuilder) WithCriteriaBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) IdentityMappingRuleTypeBuilder {
-	builder := builderSupplier(m.Criteria.CreatePascalStringBuilder())
+func (b *_IdentityMappingRuleTypeBuilder) WithCriteria(criteria PascalString) IdentityMappingRuleTypeBuilder {
+	b.Criteria = criteria
+	return b
+}
+
+func (b *_IdentityMappingRuleTypeBuilder) WithCriteriaBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) IdentityMappingRuleTypeBuilder {
+	builder := builderSupplier(b.Criteria.CreatePascalStringBuilder())
 	var err error
-	m.Criteria, err = builder.Build()
+	b.Criteria, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_IdentityMappingRuleTypeBuilder) Build() (IdentityMappingRuleType, error) {
-	if m.Criteria == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_IdentityMappingRuleTypeBuilder) Build() (IdentityMappingRuleType, error) {
+	if b.Criteria == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'criteria' not set"))
+		b.err.Append(errors.New("mandatory field 'criteria' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentityMappingRuleType.deepCopy(), nil
+	return b._IdentityMappingRuleType.deepCopy(), nil
 }
 
-func (m *_IdentityMappingRuleTypeBuilder) MustBuild() IdentityMappingRuleType {
-	build, err := m.Build()
+func (b *_IdentityMappingRuleTypeBuilder) MustBuild() IdentityMappingRuleType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentityMappingRuleTypeBuilder) DeepCopy() any {
-	return m.CreateIdentityMappingRuleTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentityMappingRuleTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentityMappingRuleTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_IdentityMappingRuleTypeBuilder) DeepCopy() any {
+	_copy := b.CreateIdentityMappingRuleTypeBuilder().(*_IdentityMappingRuleTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentityMappingRuleTypeBuilder creates a IdentityMappingRuleTypeBuilder
-func (m *_IdentityMappingRuleType) CreateIdentityMappingRuleTypeBuilder() IdentityMappingRuleTypeBuilder {
-	if m == nil {
+func (b *_IdentityMappingRuleType) CreateIdentityMappingRuleTypeBuilder() IdentityMappingRuleTypeBuilder {
+	if b == nil {
 		return NewIdentityMappingRuleTypeBuilder()
 	}
-	return &_IdentityMappingRuleTypeBuilder{_IdentityMappingRuleType: m.deepCopy()}
+	return &_IdentityMappingRuleTypeBuilder{_IdentityMappingRuleType: b.deepCopy()}
 }
 
 ///////////////////////

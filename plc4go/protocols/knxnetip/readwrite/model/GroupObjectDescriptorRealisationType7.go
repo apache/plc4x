@@ -130,80 +130,84 @@ type _GroupObjectDescriptorRealisationType7Builder struct {
 
 var _ (GroupObjectDescriptorRealisationType7Builder) = (*_GroupObjectDescriptorRealisationType7Builder)(nil)
 
-func (m *_GroupObjectDescriptorRealisationType7Builder) WithMandatoryFields(dataAddress uint16, updateEnable bool, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) GroupObjectDescriptorRealisationType7Builder {
-	return m.WithDataAddress(dataAddress).WithUpdateEnable(updateEnable).WithTransmitEnable(transmitEnable).WithSegmentSelectorEnable(segmentSelectorEnable).WithWriteEnable(writeEnable).WithReadEnable(readEnable).WithCommunicationEnable(communicationEnable).WithPriority(priority).WithValueType(valueType)
+func (b *_GroupObjectDescriptorRealisationType7Builder) WithMandatoryFields(dataAddress uint16, updateEnable bool, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) GroupObjectDescriptorRealisationType7Builder {
+	return b.WithDataAddress(dataAddress).WithUpdateEnable(updateEnable).WithTransmitEnable(transmitEnable).WithSegmentSelectorEnable(segmentSelectorEnable).WithWriteEnable(writeEnable).WithReadEnable(readEnable).WithCommunicationEnable(communicationEnable).WithPriority(priority).WithValueType(valueType)
 }
 
-func (m *_GroupObjectDescriptorRealisationType7Builder) WithDataAddress(dataAddress uint16) GroupObjectDescriptorRealisationType7Builder {
-	m.DataAddress = dataAddress
-	return m
+func (b *_GroupObjectDescriptorRealisationType7Builder) WithDataAddress(dataAddress uint16) GroupObjectDescriptorRealisationType7Builder {
+	b.DataAddress = dataAddress
+	return b
 }
 
-func (m *_GroupObjectDescriptorRealisationType7Builder) WithUpdateEnable(updateEnable bool) GroupObjectDescriptorRealisationType7Builder {
-	m.UpdateEnable = updateEnable
-	return m
+func (b *_GroupObjectDescriptorRealisationType7Builder) WithUpdateEnable(updateEnable bool) GroupObjectDescriptorRealisationType7Builder {
+	b.UpdateEnable = updateEnable
+	return b
 }
 
-func (m *_GroupObjectDescriptorRealisationType7Builder) WithTransmitEnable(transmitEnable bool) GroupObjectDescriptorRealisationType7Builder {
-	m.TransmitEnable = transmitEnable
-	return m
+func (b *_GroupObjectDescriptorRealisationType7Builder) WithTransmitEnable(transmitEnable bool) GroupObjectDescriptorRealisationType7Builder {
+	b.TransmitEnable = transmitEnable
+	return b
 }
 
-func (m *_GroupObjectDescriptorRealisationType7Builder) WithSegmentSelectorEnable(segmentSelectorEnable bool) GroupObjectDescriptorRealisationType7Builder {
-	m.SegmentSelectorEnable = segmentSelectorEnable
-	return m
+func (b *_GroupObjectDescriptorRealisationType7Builder) WithSegmentSelectorEnable(segmentSelectorEnable bool) GroupObjectDescriptorRealisationType7Builder {
+	b.SegmentSelectorEnable = segmentSelectorEnable
+	return b
 }
 
-func (m *_GroupObjectDescriptorRealisationType7Builder) WithWriteEnable(writeEnable bool) GroupObjectDescriptorRealisationType7Builder {
-	m.WriteEnable = writeEnable
-	return m
+func (b *_GroupObjectDescriptorRealisationType7Builder) WithWriteEnable(writeEnable bool) GroupObjectDescriptorRealisationType7Builder {
+	b.WriteEnable = writeEnable
+	return b
 }
 
-func (m *_GroupObjectDescriptorRealisationType7Builder) WithReadEnable(readEnable bool) GroupObjectDescriptorRealisationType7Builder {
-	m.ReadEnable = readEnable
-	return m
+func (b *_GroupObjectDescriptorRealisationType7Builder) WithReadEnable(readEnable bool) GroupObjectDescriptorRealisationType7Builder {
+	b.ReadEnable = readEnable
+	return b
 }
 
-func (m *_GroupObjectDescriptorRealisationType7Builder) WithCommunicationEnable(communicationEnable bool) GroupObjectDescriptorRealisationType7Builder {
-	m.CommunicationEnable = communicationEnable
-	return m
+func (b *_GroupObjectDescriptorRealisationType7Builder) WithCommunicationEnable(communicationEnable bool) GroupObjectDescriptorRealisationType7Builder {
+	b.CommunicationEnable = communicationEnable
+	return b
 }
 
-func (m *_GroupObjectDescriptorRealisationType7Builder) WithPriority(priority CEMIPriority) GroupObjectDescriptorRealisationType7Builder {
-	m.Priority = priority
-	return m
+func (b *_GroupObjectDescriptorRealisationType7Builder) WithPriority(priority CEMIPriority) GroupObjectDescriptorRealisationType7Builder {
+	b.Priority = priority
+	return b
 }
 
-func (m *_GroupObjectDescriptorRealisationType7Builder) WithValueType(valueType ComObjectValueType) GroupObjectDescriptorRealisationType7Builder {
-	m.ValueType = valueType
-	return m
+func (b *_GroupObjectDescriptorRealisationType7Builder) WithValueType(valueType ComObjectValueType) GroupObjectDescriptorRealisationType7Builder {
+	b.ValueType = valueType
+	return b
 }
 
-func (m *_GroupObjectDescriptorRealisationType7Builder) Build() (GroupObjectDescriptorRealisationType7, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_GroupObjectDescriptorRealisationType7Builder) Build() (GroupObjectDescriptorRealisationType7, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._GroupObjectDescriptorRealisationType7.deepCopy(), nil
+	return b._GroupObjectDescriptorRealisationType7.deepCopy(), nil
 }
 
-func (m *_GroupObjectDescriptorRealisationType7Builder) MustBuild() GroupObjectDescriptorRealisationType7 {
-	build, err := m.Build()
+func (b *_GroupObjectDescriptorRealisationType7Builder) MustBuild() GroupObjectDescriptorRealisationType7 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_GroupObjectDescriptorRealisationType7Builder) DeepCopy() any {
-	return m.CreateGroupObjectDescriptorRealisationType7Builder()
+func (b *_GroupObjectDescriptorRealisationType7Builder) DeepCopy() any {
+	_copy := b.CreateGroupObjectDescriptorRealisationType7Builder().(*_GroupObjectDescriptorRealisationType7Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateGroupObjectDescriptorRealisationType7Builder creates a GroupObjectDescriptorRealisationType7Builder
-func (m *_GroupObjectDescriptorRealisationType7) CreateGroupObjectDescriptorRealisationType7Builder() GroupObjectDescriptorRealisationType7Builder {
-	if m == nil {
+func (b *_GroupObjectDescriptorRealisationType7) CreateGroupObjectDescriptorRealisationType7Builder() GroupObjectDescriptorRealisationType7Builder {
+	if b == nil {
 		return NewGroupObjectDescriptorRealisationType7Builder()
 	}
-	return &_GroupObjectDescriptorRealisationType7Builder{_GroupObjectDescriptorRealisationType7: m.deepCopy()}
+	return &_GroupObjectDescriptorRealisationType7Builder{_GroupObjectDescriptorRealisationType7: b.deepCopy()}
 }
 
 ///////////////////////

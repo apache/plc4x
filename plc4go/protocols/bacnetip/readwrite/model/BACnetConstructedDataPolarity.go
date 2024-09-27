@@ -100,64 +100,83 @@ func NewBACnetConstructedDataPolarityBuilder() BACnetConstructedDataPolarityBuil
 type _BACnetConstructedDataPolarityBuilder struct {
 	*_BACnetConstructedDataPolarity
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataPolarityBuilder) = (*_BACnetConstructedDataPolarityBuilder)(nil)
 
-func (m *_BACnetConstructedDataPolarityBuilder) WithMandatoryFields(polarity BACnetPolarityTagged) BACnetConstructedDataPolarityBuilder {
-	return m.WithPolarity(polarity)
+func (b *_BACnetConstructedDataPolarityBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataPolarityBuilder) WithPolarity(polarity BACnetPolarityTagged) BACnetConstructedDataPolarityBuilder {
-	m.Polarity = polarity
-	return m
+func (b *_BACnetConstructedDataPolarityBuilder) WithMandatoryFields(polarity BACnetPolarityTagged) BACnetConstructedDataPolarityBuilder {
+	return b.WithPolarity(polarity)
 }
 
-func (m *_BACnetConstructedDataPolarityBuilder) WithPolarityBuilder(builderSupplier func(BACnetPolarityTaggedBuilder) BACnetPolarityTaggedBuilder) BACnetConstructedDataPolarityBuilder {
-	builder := builderSupplier(m.Polarity.CreateBACnetPolarityTaggedBuilder())
+func (b *_BACnetConstructedDataPolarityBuilder) WithPolarity(polarity BACnetPolarityTagged) BACnetConstructedDataPolarityBuilder {
+	b.Polarity = polarity
+	return b
+}
+
+func (b *_BACnetConstructedDataPolarityBuilder) WithPolarityBuilder(builderSupplier func(BACnetPolarityTaggedBuilder) BACnetPolarityTaggedBuilder) BACnetConstructedDataPolarityBuilder {
+	builder := builderSupplier(b.Polarity.CreateBACnetPolarityTaggedBuilder())
 	var err error
-	m.Polarity, err = builder.Build()
+	b.Polarity, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetPolarityTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetPolarityTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataPolarityBuilder) Build() (BACnetConstructedDataPolarity, error) {
-	if m.Polarity == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataPolarityBuilder) Build() (BACnetConstructedDataPolarity, error) {
+	if b.Polarity == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'polarity' not set"))
+		b.err.Append(errors.New("mandatory field 'polarity' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataPolarity.deepCopy(), nil
+	return b._BACnetConstructedDataPolarity.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataPolarityBuilder) MustBuild() BACnetConstructedDataPolarity {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataPolarityBuilder) MustBuild() BACnetConstructedDataPolarity {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataPolarityBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataPolarityBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPolarityBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPolarityBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPolarityBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPolarityBuilder().(*_BACnetConstructedDataPolarityBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataPolarityBuilder creates a BACnetConstructedDataPolarityBuilder
-func (m *_BACnetConstructedDataPolarity) CreateBACnetConstructedDataPolarityBuilder() BACnetConstructedDataPolarityBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataPolarity) CreateBACnetConstructedDataPolarityBuilder() BACnetConstructedDataPolarityBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataPolarityBuilder()
 	}
-	return &_BACnetConstructedDataPolarityBuilder{_BACnetConstructedDataPolarity: m.deepCopy()}
+	return &_BACnetConstructedDataPolarityBuilder{_BACnetConstructedDataPolarity: b.deepCopy()}
 }
 
 ///////////////////////

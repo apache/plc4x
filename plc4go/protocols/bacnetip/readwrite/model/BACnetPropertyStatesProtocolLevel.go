@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesProtocolLevelBuilder() BACnetPropertyStatesProtocolL
 type _BACnetPropertyStatesProtocolLevelBuilder struct {
 	*_BACnetPropertyStatesProtocolLevel
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesProtocolLevelBuilder) = (*_BACnetPropertyStatesProtocolLevelBuilder)(nil)
 
-func (m *_BACnetPropertyStatesProtocolLevelBuilder) WithMandatoryFields(protocolLevel BACnetProtocolLevelTagged) BACnetPropertyStatesProtocolLevelBuilder {
-	return m.WithProtocolLevel(protocolLevel)
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesProtocolLevelBuilder) WithProtocolLevel(protocolLevel BACnetProtocolLevelTagged) BACnetPropertyStatesProtocolLevelBuilder {
-	m.ProtocolLevel = protocolLevel
-	return m
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) WithMandatoryFields(protocolLevel BACnetProtocolLevelTagged) BACnetPropertyStatesProtocolLevelBuilder {
+	return b.WithProtocolLevel(protocolLevel)
 }
 
-func (m *_BACnetPropertyStatesProtocolLevelBuilder) WithProtocolLevelBuilder(builderSupplier func(BACnetProtocolLevelTaggedBuilder) BACnetProtocolLevelTaggedBuilder) BACnetPropertyStatesProtocolLevelBuilder {
-	builder := builderSupplier(m.ProtocolLevel.CreateBACnetProtocolLevelTaggedBuilder())
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) WithProtocolLevel(protocolLevel BACnetProtocolLevelTagged) BACnetPropertyStatesProtocolLevelBuilder {
+	b.ProtocolLevel = protocolLevel
+	return b
+}
+
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) WithProtocolLevelBuilder(builderSupplier func(BACnetProtocolLevelTaggedBuilder) BACnetProtocolLevelTaggedBuilder) BACnetPropertyStatesProtocolLevelBuilder {
+	builder := builderSupplier(b.ProtocolLevel.CreateBACnetProtocolLevelTaggedBuilder())
 	var err error
-	m.ProtocolLevel, err = builder.Build()
+	b.ProtocolLevel, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetProtocolLevelTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetProtocolLevelTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesProtocolLevelBuilder) Build() (BACnetPropertyStatesProtocolLevel, error) {
-	if m.ProtocolLevel == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) Build() (BACnetPropertyStatesProtocolLevel, error) {
+	if b.ProtocolLevel == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'protocolLevel' not set"))
+		b.err.Append(errors.New("mandatory field 'protocolLevel' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesProtocolLevel.deepCopy(), nil
+	return b._BACnetPropertyStatesProtocolLevel.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesProtocolLevelBuilder) MustBuild() BACnetPropertyStatesProtocolLevel {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) MustBuild() BACnetPropertyStatesProtocolLevel {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesProtocolLevelBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesProtocolLevelBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesProtocolLevelBuilder().(*_BACnetPropertyStatesProtocolLevelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesProtocolLevelBuilder creates a BACnetPropertyStatesProtocolLevelBuilder
-func (m *_BACnetPropertyStatesProtocolLevel) CreateBACnetPropertyStatesProtocolLevelBuilder() BACnetPropertyStatesProtocolLevelBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesProtocolLevel) CreateBACnetPropertyStatesProtocolLevelBuilder() BACnetPropertyStatesProtocolLevelBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesProtocolLevelBuilder()
 	}
-	return &_BACnetPropertyStatesProtocolLevelBuilder{_BACnetPropertyStatesProtocolLevel: m.deepCopy()}
+	return &_BACnetPropertyStatesProtocolLevelBuilder{_BACnetPropertyStatesProtocolLevel: b.deepCopy()}
 }
 
 ///////////////////////

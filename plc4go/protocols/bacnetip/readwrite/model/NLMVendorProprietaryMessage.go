@@ -99,50 +99,69 @@ func NewNLMVendorProprietaryMessageBuilder() NLMVendorProprietaryMessageBuilder 
 type _NLMVendorProprietaryMessageBuilder struct {
 	*_NLMVendorProprietaryMessage
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMVendorProprietaryMessageBuilder) = (*_NLMVendorProprietaryMessageBuilder)(nil)
 
-func (m *_NLMVendorProprietaryMessageBuilder) WithMandatoryFields(vendorId BACnetVendorId, proprietaryMessage []byte) NLMVendorProprietaryMessageBuilder {
-	return m.WithVendorId(vendorId).WithProprietaryMessage(proprietaryMessage...)
+func (b *_NLMVendorProprietaryMessageBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMVendorProprietaryMessageBuilder) WithVendorId(vendorId BACnetVendorId) NLMVendorProprietaryMessageBuilder {
-	m.VendorId = vendorId
-	return m
+func (b *_NLMVendorProprietaryMessageBuilder) WithMandatoryFields(vendorId BACnetVendorId, proprietaryMessage []byte) NLMVendorProprietaryMessageBuilder {
+	return b.WithVendorId(vendorId).WithProprietaryMessage(proprietaryMessage...)
 }
 
-func (m *_NLMVendorProprietaryMessageBuilder) WithProprietaryMessage(proprietaryMessage ...byte) NLMVendorProprietaryMessageBuilder {
-	m.ProprietaryMessage = proprietaryMessage
-	return m
+func (b *_NLMVendorProprietaryMessageBuilder) WithVendorId(vendorId BACnetVendorId) NLMVendorProprietaryMessageBuilder {
+	b.VendorId = vendorId
+	return b
 }
 
-func (m *_NLMVendorProprietaryMessageBuilder) Build() (NLMVendorProprietaryMessage, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMVendorProprietaryMessageBuilder) WithProprietaryMessage(proprietaryMessage ...byte) NLMVendorProprietaryMessageBuilder {
+	b.ProprietaryMessage = proprietaryMessage
+	return b
+}
+
+func (b *_NLMVendorProprietaryMessageBuilder) Build() (NLMVendorProprietaryMessage, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMVendorProprietaryMessage.deepCopy(), nil
+	return b._NLMVendorProprietaryMessage.deepCopy(), nil
 }
 
-func (m *_NLMVendorProprietaryMessageBuilder) MustBuild() NLMVendorProprietaryMessage {
-	build, err := m.Build()
+func (b *_NLMVendorProprietaryMessageBuilder) MustBuild() NLMVendorProprietaryMessage {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMVendorProprietaryMessageBuilder) DeepCopy() any {
-	return m.CreateNLMVendorProprietaryMessageBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMVendorProprietaryMessageBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMVendorProprietaryMessageBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMVendorProprietaryMessageBuilder) DeepCopy() any {
+	_copy := b.CreateNLMVendorProprietaryMessageBuilder().(*_NLMVendorProprietaryMessageBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMVendorProprietaryMessageBuilder creates a NLMVendorProprietaryMessageBuilder
-func (m *_NLMVendorProprietaryMessage) CreateNLMVendorProprietaryMessageBuilder() NLMVendorProprietaryMessageBuilder {
-	if m == nil {
+func (b *_NLMVendorProprietaryMessage) CreateNLMVendorProprietaryMessageBuilder() NLMVendorProprietaryMessageBuilder {
+	if b == nil {
 		return NewNLMVendorProprietaryMessageBuilder()
 	}
-	return &_NLMVendorProprietaryMessageBuilder{_NLMVendorProprietaryMessage: m.deepCopy()}
+	return &_NLMVendorProprietaryMessageBuilder{_NLMVendorProprietaryMessage: b.deepCopy()}
 }
 
 ///////////////////////

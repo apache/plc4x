@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesTimerStateBuilder() BACnetPropertyStatesTimerStateBu
 type _BACnetPropertyStatesTimerStateBuilder struct {
 	*_BACnetPropertyStatesTimerState
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesTimerStateBuilder) = (*_BACnetPropertyStatesTimerStateBuilder)(nil)
 
-func (m *_BACnetPropertyStatesTimerStateBuilder) WithMandatoryFields(timerState BACnetTimerStateTagged) BACnetPropertyStatesTimerStateBuilder {
-	return m.WithTimerState(timerState)
+func (b *_BACnetPropertyStatesTimerStateBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesTimerStateBuilder) WithTimerState(timerState BACnetTimerStateTagged) BACnetPropertyStatesTimerStateBuilder {
-	m.TimerState = timerState
-	return m
+func (b *_BACnetPropertyStatesTimerStateBuilder) WithMandatoryFields(timerState BACnetTimerStateTagged) BACnetPropertyStatesTimerStateBuilder {
+	return b.WithTimerState(timerState)
 }
 
-func (m *_BACnetPropertyStatesTimerStateBuilder) WithTimerStateBuilder(builderSupplier func(BACnetTimerStateTaggedBuilder) BACnetTimerStateTaggedBuilder) BACnetPropertyStatesTimerStateBuilder {
-	builder := builderSupplier(m.TimerState.CreateBACnetTimerStateTaggedBuilder())
+func (b *_BACnetPropertyStatesTimerStateBuilder) WithTimerState(timerState BACnetTimerStateTagged) BACnetPropertyStatesTimerStateBuilder {
+	b.TimerState = timerState
+	return b
+}
+
+func (b *_BACnetPropertyStatesTimerStateBuilder) WithTimerStateBuilder(builderSupplier func(BACnetTimerStateTaggedBuilder) BACnetTimerStateTaggedBuilder) BACnetPropertyStatesTimerStateBuilder {
+	builder := builderSupplier(b.TimerState.CreateBACnetTimerStateTaggedBuilder())
 	var err error
-	m.TimerState, err = builder.Build()
+	b.TimerState, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTimerStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTimerStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesTimerStateBuilder) Build() (BACnetPropertyStatesTimerState, error) {
-	if m.TimerState == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesTimerStateBuilder) Build() (BACnetPropertyStatesTimerState, error) {
+	if b.TimerState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timerState' not set"))
+		b.err.Append(errors.New("mandatory field 'timerState' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesTimerState.deepCopy(), nil
+	return b._BACnetPropertyStatesTimerState.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesTimerStateBuilder) MustBuild() BACnetPropertyStatesTimerState {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesTimerStateBuilder) MustBuild() BACnetPropertyStatesTimerState {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesTimerStateBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesTimerStateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesTimerStateBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesTimerStateBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesTimerStateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesTimerStateBuilder().(*_BACnetPropertyStatesTimerStateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesTimerStateBuilder creates a BACnetPropertyStatesTimerStateBuilder
-func (m *_BACnetPropertyStatesTimerState) CreateBACnetPropertyStatesTimerStateBuilder() BACnetPropertyStatesTimerStateBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesTimerState) CreateBACnetPropertyStatesTimerStateBuilder() BACnetPropertyStatesTimerStateBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesTimerStateBuilder()
 	}
-	return &_BACnetPropertyStatesTimerStateBuilder{_BACnetPropertyStatesTimerState: m.deepCopy()}
+	return &_BACnetPropertyStatesTimerStateBuilder{_BACnetPropertyStatesTimerState: b.deepCopy()}
 }
 
 ///////////////////////

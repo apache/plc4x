@@ -98,45 +98,64 @@ func NewBVLCReadBroadcastDistributionTableAckBuilder() BVLCReadBroadcastDistribu
 type _BVLCReadBroadcastDistributionTableAckBuilder struct {
 	*_BVLCReadBroadcastDistributionTableAck
 
+	parentBuilder *_BVLCBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BVLCReadBroadcastDistributionTableAckBuilder) = (*_BVLCReadBroadcastDistributionTableAckBuilder)(nil)
 
-func (m *_BVLCReadBroadcastDistributionTableAckBuilder) WithMandatoryFields(table []BVLCBroadcastDistributionTableEntry) BVLCReadBroadcastDistributionTableAckBuilder {
-	return m.WithTable(table...)
+func (b *_BVLCReadBroadcastDistributionTableAckBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
 }
 
-func (m *_BVLCReadBroadcastDistributionTableAckBuilder) WithTable(table ...BVLCBroadcastDistributionTableEntry) BVLCReadBroadcastDistributionTableAckBuilder {
-	m.Table = table
-	return m
+func (b *_BVLCReadBroadcastDistributionTableAckBuilder) WithMandatoryFields(table []BVLCBroadcastDistributionTableEntry) BVLCReadBroadcastDistributionTableAckBuilder {
+	return b.WithTable(table...)
 }
 
-func (m *_BVLCReadBroadcastDistributionTableAckBuilder) Build() (BVLCReadBroadcastDistributionTableAck, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BVLCReadBroadcastDistributionTableAckBuilder) WithTable(table ...BVLCBroadcastDistributionTableEntry) BVLCReadBroadcastDistributionTableAckBuilder {
+	b.Table = table
+	return b
+}
+
+func (b *_BVLCReadBroadcastDistributionTableAckBuilder) Build() (BVLCReadBroadcastDistributionTableAck, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BVLCReadBroadcastDistributionTableAck.deepCopy(), nil
+	return b._BVLCReadBroadcastDistributionTableAck.deepCopy(), nil
 }
 
-func (m *_BVLCReadBroadcastDistributionTableAckBuilder) MustBuild() BVLCReadBroadcastDistributionTableAck {
-	build, err := m.Build()
+func (b *_BVLCReadBroadcastDistributionTableAckBuilder) MustBuild() BVLCReadBroadcastDistributionTableAck {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BVLCReadBroadcastDistributionTableAckBuilder) DeepCopy() any {
-	return m.CreateBVLCReadBroadcastDistributionTableAckBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCReadBroadcastDistributionTableAckBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCReadBroadcastDistributionTableAckBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCReadBroadcastDistributionTableAckBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCReadBroadcastDistributionTableAckBuilder().(*_BVLCReadBroadcastDistributionTableAckBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBVLCReadBroadcastDistributionTableAckBuilder creates a BVLCReadBroadcastDistributionTableAckBuilder
-func (m *_BVLCReadBroadcastDistributionTableAck) CreateBVLCReadBroadcastDistributionTableAckBuilder() BVLCReadBroadcastDistributionTableAckBuilder {
-	if m == nil {
+func (b *_BVLCReadBroadcastDistributionTableAck) CreateBVLCReadBroadcastDistributionTableAckBuilder() BVLCReadBroadcastDistributionTableAckBuilder {
+	if b == nil {
 		return NewBVLCReadBroadcastDistributionTableAckBuilder()
 	}
-	return &_BVLCReadBroadcastDistributionTableAckBuilder{_BVLCReadBroadcastDistributionTableAck: m.deepCopy()}
+	return &_BVLCReadBroadcastDistributionTableAckBuilder{_BVLCReadBroadcastDistributionTableAck: b.deepCopy()}
 }
 
 ///////////////////////

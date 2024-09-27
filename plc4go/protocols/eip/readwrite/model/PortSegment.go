@@ -82,6 +82,8 @@ type PortSegmentBuilder interface {
 	WithMandatoryFields(segmentType PortSegmentType) PortSegmentBuilder
 	// WithSegmentType adds SegmentType (property field)
 	WithSegmentType(PortSegmentType) PortSegmentBuilder
+	// WithSegmentTypeBuilder adds SegmentType (property field) which is build by the builder
+	WithSegmentTypeBuilder(func(PortSegmentTypeBuilder) PortSegmentTypeBuilder) PortSegmentBuilder
 	// Build builds the PortSegment or returns an error if something is wrong
 	Build() (PortSegment, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewPortSegmentBuilder() PortSegmentBuilder {
 type _PortSegmentBuilder struct {
 	*_PortSegment
 
+	parentBuilder *_PathSegmentBuilder
+
 	err *utils.MultiError
 }
 
 var _ (PortSegmentBuilder) = (*_PortSegmentBuilder)(nil)
 
-func (m *_PortSegmentBuilder) WithMandatoryFields(segmentType PortSegmentType) PortSegmentBuilder {
-	return m.WithSegmentType(segmentType)
+func (b *_PortSegmentBuilder) setParent(contract PathSegmentContract) {
+	b.PathSegmentContract = contract
 }
 
-func (m *_PortSegmentBuilder) WithSegmentType(segmentType PortSegmentType) PortSegmentBuilder {
-	m.SegmentType = segmentType
-	return m
+func (b *_PortSegmentBuilder) WithMandatoryFields(segmentType PortSegmentType) PortSegmentBuilder {
+	return b.WithSegmentType(segmentType)
 }
 
-func (m *_PortSegmentBuilder) Build() (PortSegment, error) {
-	if m.SegmentType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_PortSegmentBuilder) WithSegmentType(segmentType PortSegmentType) PortSegmentBuilder {
+	b.SegmentType = segmentType
+	return b
+}
+
+func (b *_PortSegmentBuilder) WithSegmentTypeBuilder(builderSupplier func(PortSegmentTypeBuilder) PortSegmentTypeBuilder) PortSegmentBuilder {
+	builder := builderSupplier(b.SegmentType.CreatePortSegmentTypeBuilder())
+	var err error
+	b.SegmentType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'segmentType' not set"))
+		b.err.Append(errors.Wrap(err, "PortSegmentTypeBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._PortSegment.deepCopy(), nil
+	return b
 }
 
-func (m *_PortSegmentBuilder) MustBuild() PortSegment {
-	build, err := m.Build()
+func (b *_PortSegmentBuilder) Build() (PortSegment, error) {
+	if b.SegmentType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'segmentType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PortSegment.deepCopy(), nil
+}
+
+func (b *_PortSegmentBuilder) MustBuild() PortSegment {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PortSegmentBuilder) DeepCopy() any {
-	return m.CreatePortSegmentBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PortSegmentBuilder) Done() PathSegmentBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PortSegmentBuilder) buildForPathSegment() (PathSegment, error) {
+	return b.Build()
+}
+
+func (b *_PortSegmentBuilder) DeepCopy() any {
+	_copy := b.CreatePortSegmentBuilder().(*_PortSegmentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePortSegmentBuilder creates a PortSegmentBuilder
-func (m *_PortSegment) CreatePortSegmentBuilder() PortSegmentBuilder {
-	if m == nil {
+func (b *_PortSegment) CreatePortSegmentBuilder() PortSegmentBuilder {
+	if b == nil {
 		return NewPortSegmentBuilder()
 	}
-	return &_PortSegmentBuilder{_PortSegment: m.deepCopy()}
+	return &_PortSegmentBuilder{_PortSegment: b.deepCopy()}
 }
 
 ///////////////////////

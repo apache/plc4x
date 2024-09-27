@@ -98,64 +98,83 @@ func NewS7PayloadAlarmSBuilder() S7PayloadAlarmSBuilder {
 type _S7PayloadAlarmSBuilder struct {
 	*_S7PayloadAlarmS
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadAlarmSBuilder) = (*_S7PayloadAlarmSBuilder)(nil)
 
-func (m *_S7PayloadAlarmSBuilder) WithMandatoryFields(alarmMessage AlarmMessagePushType) S7PayloadAlarmSBuilder {
-	return m.WithAlarmMessage(alarmMessage)
+func (b *_S7PayloadAlarmSBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadAlarmSBuilder) WithAlarmMessage(alarmMessage AlarmMessagePushType) S7PayloadAlarmSBuilder {
-	m.AlarmMessage = alarmMessage
-	return m
+func (b *_S7PayloadAlarmSBuilder) WithMandatoryFields(alarmMessage AlarmMessagePushType) S7PayloadAlarmSBuilder {
+	return b.WithAlarmMessage(alarmMessage)
 }
 
-func (m *_S7PayloadAlarmSBuilder) WithAlarmMessageBuilder(builderSupplier func(AlarmMessagePushTypeBuilder) AlarmMessagePushTypeBuilder) S7PayloadAlarmSBuilder {
-	builder := builderSupplier(m.AlarmMessage.CreateAlarmMessagePushTypeBuilder())
+func (b *_S7PayloadAlarmSBuilder) WithAlarmMessage(alarmMessage AlarmMessagePushType) S7PayloadAlarmSBuilder {
+	b.AlarmMessage = alarmMessage
+	return b
+}
+
+func (b *_S7PayloadAlarmSBuilder) WithAlarmMessageBuilder(builderSupplier func(AlarmMessagePushTypeBuilder) AlarmMessagePushTypeBuilder) S7PayloadAlarmSBuilder {
+	builder := builderSupplier(b.AlarmMessage.CreateAlarmMessagePushTypeBuilder())
 	var err error
-	m.AlarmMessage, err = builder.Build()
+	b.AlarmMessage, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AlarmMessagePushTypeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AlarmMessagePushTypeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_S7PayloadAlarmSBuilder) Build() (S7PayloadAlarmS, error) {
-	if m.AlarmMessage == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_S7PayloadAlarmSBuilder) Build() (S7PayloadAlarmS, error) {
+	if b.AlarmMessage == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'alarmMessage' not set"))
+		b.err.Append(errors.New("mandatory field 'alarmMessage' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadAlarmS.deepCopy(), nil
+	return b._S7PayloadAlarmS.deepCopy(), nil
 }
 
-func (m *_S7PayloadAlarmSBuilder) MustBuild() S7PayloadAlarmS {
-	build, err := m.Build()
+func (b *_S7PayloadAlarmSBuilder) MustBuild() S7PayloadAlarmS {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadAlarmSBuilder) DeepCopy() any {
-	return m.CreateS7PayloadAlarmSBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadAlarmSBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadAlarmSBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadAlarmSBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadAlarmSBuilder().(*_S7PayloadAlarmSBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadAlarmSBuilder creates a S7PayloadAlarmSBuilder
-func (m *_S7PayloadAlarmS) CreateS7PayloadAlarmSBuilder() S7PayloadAlarmSBuilder {
-	if m == nil {
+func (b *_S7PayloadAlarmS) CreateS7PayloadAlarmSBuilder() S7PayloadAlarmSBuilder {
+	if b == nil {
 		return NewS7PayloadAlarmSBuilder()
 	}
-	return &_S7PayloadAlarmSBuilder{_S7PayloadAlarmS: m.deepCopy()}
+	return &_S7PayloadAlarmSBuilder{_S7PayloadAlarmS: b.deepCopy()}
 }
 
 ///////////////////////

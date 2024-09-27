@@ -132,8 +132,12 @@ type CreateSessionRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, clientDescription ExtensionObjectDefinition, serverUri PascalString, endpointUrl PascalString, sessionName PascalString, clientNonce PascalByteString, clientCertificate PascalByteString, requestedSessionTimeout float64, maxResponseMessageSize uint32) CreateSessionRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) CreateSessionRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionRequestBuilder
 	// WithClientDescription adds ClientDescription (property field)
 	WithClientDescription(ExtensionObjectDefinition) CreateSessionRequestBuilder
+	// WithClientDescriptionBuilder adds ClientDescription (property field) which is build by the builder
+	WithClientDescriptionBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionRequestBuilder
 	// WithServerUri adds ServerUri (property field)
 	WithServerUri(PascalString) CreateSessionRequestBuilder
 	// WithServerUriBuilder adds ServerUri (property field) which is build by the builder
@@ -172,192 +176,237 @@ func NewCreateSessionRequestBuilder() CreateSessionRequestBuilder {
 type _CreateSessionRequestBuilder struct {
 	*_CreateSessionRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CreateSessionRequestBuilder) = (*_CreateSessionRequestBuilder)(nil)
 
-func (m *_CreateSessionRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, clientDescription ExtensionObjectDefinition, serverUri PascalString, endpointUrl PascalString, sessionName PascalString, clientNonce PascalByteString, clientCertificate PascalByteString, requestedSessionTimeout float64, maxResponseMessageSize uint32) CreateSessionRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithClientDescription(clientDescription).WithServerUri(serverUri).WithEndpointUrl(endpointUrl).WithSessionName(sessionName).WithClientNonce(clientNonce).WithClientCertificate(clientCertificate).WithRequestedSessionTimeout(requestedSessionTimeout).WithMaxResponseMessageSize(maxResponseMessageSize)
+func (b *_CreateSessionRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_CreateSessionRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CreateSessionRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_CreateSessionRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, clientDescription ExtensionObjectDefinition, serverUri PascalString, endpointUrl PascalString, sessionName PascalString, clientNonce PascalByteString, clientCertificate PascalByteString, requestedSessionTimeout float64, maxResponseMessageSize uint32) CreateSessionRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithClientDescription(clientDescription).WithServerUri(serverUri).WithEndpointUrl(endpointUrl).WithSessionName(sessionName).WithClientNonce(clientNonce).WithClientCertificate(clientCertificate).WithRequestedSessionTimeout(requestedSessionTimeout).WithMaxResponseMessageSize(maxResponseMessageSize)
 }
 
-func (m *_CreateSessionRequestBuilder) WithClientDescription(clientDescription ExtensionObjectDefinition) CreateSessionRequestBuilder {
-	m.ClientDescription = clientDescription
-	return m
+func (b *_CreateSessionRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CreateSessionRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_CreateSessionRequestBuilder) WithServerUri(serverUri PascalString) CreateSessionRequestBuilder {
-	m.ServerUri = serverUri
-	return m
-}
-
-func (m *_CreateSessionRequestBuilder) WithServerUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) CreateSessionRequestBuilder {
-	builder := builderSupplier(m.ServerUri.CreatePascalStringBuilder())
+func (b *_CreateSessionRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
 	var err error
-	m.ServerUri, err = builder.Build()
+	b.RequestHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CreateSessionRequestBuilder) WithEndpointUrl(endpointUrl PascalString) CreateSessionRequestBuilder {
-	m.EndpointUrl = endpointUrl
-	return m
+func (b *_CreateSessionRequestBuilder) WithClientDescription(clientDescription ExtensionObjectDefinition) CreateSessionRequestBuilder {
+	b.ClientDescription = clientDescription
+	return b
 }
 
-func (m *_CreateSessionRequestBuilder) WithEndpointUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) CreateSessionRequestBuilder {
-	builder := builderSupplier(m.EndpointUrl.CreatePascalStringBuilder())
+func (b *_CreateSessionRequestBuilder) WithClientDescriptionBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionRequestBuilder {
+	builder := builderSupplier(b.ClientDescription.CreateExtensionObjectDefinitionBuilder())
 	var err error
-	m.EndpointUrl, err = builder.Build()
+	b.ClientDescription, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CreateSessionRequestBuilder) WithSessionName(sessionName PascalString) CreateSessionRequestBuilder {
-	m.SessionName = sessionName
-	return m
+func (b *_CreateSessionRequestBuilder) WithServerUri(serverUri PascalString) CreateSessionRequestBuilder {
+	b.ServerUri = serverUri
+	return b
 }
 
-func (m *_CreateSessionRequestBuilder) WithSessionNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) CreateSessionRequestBuilder {
-	builder := builderSupplier(m.SessionName.CreatePascalStringBuilder())
+func (b *_CreateSessionRequestBuilder) WithServerUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) CreateSessionRequestBuilder {
+	builder := builderSupplier(b.ServerUri.CreatePascalStringBuilder())
 	var err error
-	m.SessionName, err = builder.Build()
+	b.ServerUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CreateSessionRequestBuilder) WithClientNonce(clientNonce PascalByteString) CreateSessionRequestBuilder {
-	m.ClientNonce = clientNonce
-	return m
+func (b *_CreateSessionRequestBuilder) WithEndpointUrl(endpointUrl PascalString) CreateSessionRequestBuilder {
+	b.EndpointUrl = endpointUrl
+	return b
 }
 
-func (m *_CreateSessionRequestBuilder) WithClientNonceBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) CreateSessionRequestBuilder {
-	builder := builderSupplier(m.ClientNonce.CreatePascalByteStringBuilder())
+func (b *_CreateSessionRequestBuilder) WithEndpointUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) CreateSessionRequestBuilder {
+	builder := builderSupplier(b.EndpointUrl.CreatePascalStringBuilder())
 	var err error
-	m.ClientNonce, err = builder.Build()
+	b.EndpointUrl, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CreateSessionRequestBuilder) WithClientCertificate(clientCertificate PascalByteString) CreateSessionRequestBuilder {
-	m.ClientCertificate = clientCertificate
-	return m
+func (b *_CreateSessionRequestBuilder) WithSessionName(sessionName PascalString) CreateSessionRequestBuilder {
+	b.SessionName = sessionName
+	return b
 }
 
-func (m *_CreateSessionRequestBuilder) WithClientCertificateBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) CreateSessionRequestBuilder {
-	builder := builderSupplier(m.ClientCertificate.CreatePascalByteStringBuilder())
+func (b *_CreateSessionRequestBuilder) WithSessionNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) CreateSessionRequestBuilder {
+	builder := builderSupplier(b.SessionName.CreatePascalStringBuilder())
 	var err error
-	m.ClientCertificate, err = builder.Build()
+	b.SessionName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CreateSessionRequestBuilder) WithRequestedSessionTimeout(requestedSessionTimeout float64) CreateSessionRequestBuilder {
-	m.RequestedSessionTimeout = requestedSessionTimeout
-	return m
+func (b *_CreateSessionRequestBuilder) WithClientNonce(clientNonce PascalByteString) CreateSessionRequestBuilder {
+	b.ClientNonce = clientNonce
+	return b
 }
 
-func (m *_CreateSessionRequestBuilder) WithMaxResponseMessageSize(maxResponseMessageSize uint32) CreateSessionRequestBuilder {
-	m.MaxResponseMessageSize = maxResponseMessageSize
-	return m
+func (b *_CreateSessionRequestBuilder) WithClientNonceBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) CreateSessionRequestBuilder {
+	builder := builderSupplier(b.ClientNonce.CreatePascalByteStringBuilder())
+	var err error
+	b.ClientNonce, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return b
 }
 
-func (m *_CreateSessionRequestBuilder) Build() (CreateSessionRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
-	}
-	if m.ClientDescription == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'clientDescription' not set"))
-	}
-	if m.ServerUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'serverUri' not set"))
-	}
-	if m.EndpointUrl == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
-	}
-	if m.SessionName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'sessionName' not set"))
-	}
-	if m.ClientNonce == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'clientNonce' not set"))
-	}
-	if m.ClientCertificate == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'clientCertificate' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._CreateSessionRequest.deepCopy(), nil
+func (b *_CreateSessionRequestBuilder) WithClientCertificate(clientCertificate PascalByteString) CreateSessionRequestBuilder {
+	b.ClientCertificate = clientCertificate
+	return b
 }
 
-func (m *_CreateSessionRequestBuilder) MustBuild() CreateSessionRequest {
-	build, err := m.Build()
+func (b *_CreateSessionRequestBuilder) WithClientCertificateBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) CreateSessionRequestBuilder {
+	builder := builderSupplier(b.ClientCertificate.CreatePascalByteStringBuilder())
+	var err error
+	b.ClientCertificate, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CreateSessionRequestBuilder) WithRequestedSessionTimeout(requestedSessionTimeout float64) CreateSessionRequestBuilder {
+	b.RequestedSessionTimeout = requestedSessionTimeout
+	return b
+}
+
+func (b *_CreateSessionRequestBuilder) WithMaxResponseMessageSize(maxResponseMessageSize uint32) CreateSessionRequestBuilder {
+	b.MaxResponseMessageSize = maxResponseMessageSize
+	return b
+}
+
+func (b *_CreateSessionRequestBuilder) Build() (CreateSessionRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.ClientDescription == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'clientDescription' not set"))
+	}
+	if b.ServerUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'serverUri' not set"))
+	}
+	if b.EndpointUrl == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
+	}
+	if b.SessionName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'sessionName' not set"))
+	}
+	if b.ClientNonce == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'clientNonce' not set"))
+	}
+	if b.ClientCertificate == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'clientCertificate' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CreateSessionRequest.deepCopy(), nil
+}
+
+func (b *_CreateSessionRequestBuilder) MustBuild() CreateSessionRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CreateSessionRequestBuilder) DeepCopy() any {
-	return m.CreateCreateSessionRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CreateSessionRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CreateSessionRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_CreateSessionRequestBuilder) DeepCopy() any {
+	_copy := b.CreateCreateSessionRequestBuilder().(*_CreateSessionRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCreateSessionRequestBuilder creates a CreateSessionRequestBuilder
-func (m *_CreateSessionRequest) CreateCreateSessionRequestBuilder() CreateSessionRequestBuilder {
-	if m == nil {
+func (b *_CreateSessionRequest) CreateCreateSessionRequestBuilder() CreateSessionRequestBuilder {
+	if b == nil {
 		return NewCreateSessionRequestBuilder()
 	}
-	return &_CreateSessionRequestBuilder{_CreateSessionRequest: m.deepCopy()}
+	return &_CreateSessionRequestBuilder{_CreateSessionRequest: b.deepCopy()}
 }
 
 ///////////////////////

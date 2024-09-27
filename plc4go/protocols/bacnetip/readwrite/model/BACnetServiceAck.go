@@ -92,10 +92,89 @@ type BACnetServiceAckBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetServiceAckBuilder
+	// AsBACnetServiceAckGetAlarmSummary converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckGetAlarmSummary() interface {
+		BACnetServiceAckGetAlarmSummaryBuilder
+		Done() BACnetServiceAckBuilder
+	}
+	// AsBACnetServiceAckGetEnrollmentSummary converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckGetEnrollmentSummary() interface {
+		BACnetServiceAckGetEnrollmentSummaryBuilder
+		Done() BACnetServiceAckBuilder
+	}
+	// AsBACnetServiceAckGetEventInformation converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckGetEventInformation() interface {
+		BACnetServiceAckGetEventInformationBuilder
+		Done() BACnetServiceAckBuilder
+	}
+	// AsBACnetServiceAckAtomicReadFile converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckAtomicReadFile() interface {
+		BACnetServiceAckAtomicReadFileBuilder
+		Done() BACnetServiceAckBuilder
+	}
+	// AsBACnetServiceAckAtomicWriteFile converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckAtomicWriteFile() interface {
+		BACnetServiceAckAtomicWriteFileBuilder
+		Done() BACnetServiceAckBuilder
+	}
+	// AsBACnetServiceAckCreateObject converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckCreateObject() interface {
+		BACnetServiceAckCreateObjectBuilder
+		Done() BACnetServiceAckBuilder
+	}
+	// AsBACnetServiceAckReadProperty converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckReadProperty() interface {
+		BACnetServiceAckReadPropertyBuilder
+		Done() BACnetServiceAckBuilder
+	}
+	// AsBACnetServiceAckReadPropertyMultiple converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckReadPropertyMultiple() interface {
+		BACnetServiceAckReadPropertyMultipleBuilder
+		Done() BACnetServiceAckBuilder
+	}
+	// AsBACnetServiceAckReadRange converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckReadRange() interface {
+		BACnetServiceAckReadRangeBuilder
+		Done() BACnetServiceAckBuilder
+	}
+	// AsBACnetServiceAckConfirmedPrivateTransfer converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckConfirmedPrivateTransfer() interface {
+		BACnetServiceAckConfirmedPrivateTransferBuilder
+		Done() BACnetServiceAckBuilder
+	}
+	// AsBACnetServiceAckVTOpen converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckVTOpen() interface {
+		BACnetServiceAckVTOpenBuilder
+		Done() BACnetServiceAckBuilder
+	}
+	// AsBACnetServiceAckVTData converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckVTData() interface {
+		BACnetServiceAckVTDataBuilder
+		Done() BACnetServiceAckBuilder
+	}
+	// AsBACnetServiceAckAuthenticate converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckAuthenticate() interface {
+		BACnetServiceAckAuthenticateBuilder
+		Done() BACnetServiceAckBuilder
+	}
+	// AsBACnetServiceAckRequestKey converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckRequestKey() interface {
+		BACnetServiceAckRequestKeyBuilder
+		Done() BACnetServiceAckBuilder
+	}
+	// AsBACnetServiceAckReadPropertyConditional converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckReadPropertyConditional() interface {
+		BACnetServiceAckReadPropertyConditionalBuilder
+		Done() BACnetServiceAckBuilder
+	}
 	// Build builds the BACnetServiceAck or returns an error if something is wrong
-	Build() (BACnetServiceAckContract, error)
+	PartialBuild() (BACnetServiceAckContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetServiceAckContract
+	PartialMustBuild() BACnetServiceAckContract
+	// Build builds the BACnetServiceAck or returns an error if something is wrong
+	Build() (BACnetServiceAck, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetServiceAck
 }
 
 // NewBACnetServiceAckBuilder() creates a BACnetServiceAckBuilder
@@ -103,43 +182,317 @@ func NewBACnetServiceAckBuilder() BACnetServiceAckBuilder {
 	return &_BACnetServiceAckBuilder{_BACnetServiceAck: new(_BACnetServiceAck)}
 }
 
+type _BACnetServiceAckChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetServiceAckContract)
+	buildForBACnetServiceAck() (BACnetServiceAck, error)
+}
+
 type _BACnetServiceAckBuilder struct {
 	*_BACnetServiceAck
+
+	childBuilder _BACnetServiceAckChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetServiceAckBuilder) = (*_BACnetServiceAckBuilder)(nil)
 
-func (m *_BACnetServiceAckBuilder) WithMandatoryFields() BACnetServiceAckBuilder {
-	return m
+func (b *_BACnetServiceAckBuilder) WithMandatoryFields() BACnetServiceAckBuilder {
+	return b
 }
 
-func (m *_BACnetServiceAckBuilder) Build() (BACnetServiceAckContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetServiceAckBuilder) PartialBuild() (BACnetServiceAckContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetServiceAck.deepCopy(), nil
+	return b._BACnetServiceAck.deepCopy(), nil
 }
 
-func (m *_BACnetServiceAckBuilder) MustBuild() BACnetServiceAckContract {
-	build, err := m.Build()
+func (b *_BACnetServiceAckBuilder) PartialMustBuild() BACnetServiceAckContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetServiceAckBuilder) DeepCopy() any {
-	return m.CreateBACnetServiceAckBuilder()
+func (b *_BACnetServiceAckBuilder) AsBACnetServiceAckGetAlarmSummary() interface {
+	BACnetServiceAckGetAlarmSummaryBuilder
+	Done() BACnetServiceAckBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckGetAlarmSummaryBuilder
+		Done() BACnetServiceAckBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckGetAlarmSummaryBuilder().(*_BACnetServiceAckGetAlarmSummaryBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckBuilder) AsBACnetServiceAckGetEnrollmentSummary() interface {
+	BACnetServiceAckGetEnrollmentSummaryBuilder
+	Done() BACnetServiceAckBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckGetEnrollmentSummaryBuilder
+		Done() BACnetServiceAckBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckGetEnrollmentSummaryBuilder().(*_BACnetServiceAckGetEnrollmentSummaryBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckBuilder) AsBACnetServiceAckGetEventInformation() interface {
+	BACnetServiceAckGetEventInformationBuilder
+	Done() BACnetServiceAckBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckGetEventInformationBuilder
+		Done() BACnetServiceAckBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckGetEventInformationBuilder().(*_BACnetServiceAckGetEventInformationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckBuilder) AsBACnetServiceAckAtomicReadFile() interface {
+	BACnetServiceAckAtomicReadFileBuilder
+	Done() BACnetServiceAckBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckAtomicReadFileBuilder
+		Done() BACnetServiceAckBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckAtomicReadFileBuilder().(*_BACnetServiceAckAtomicReadFileBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckBuilder) AsBACnetServiceAckAtomicWriteFile() interface {
+	BACnetServiceAckAtomicWriteFileBuilder
+	Done() BACnetServiceAckBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckAtomicWriteFileBuilder
+		Done() BACnetServiceAckBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckAtomicWriteFileBuilder().(*_BACnetServiceAckAtomicWriteFileBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckBuilder) AsBACnetServiceAckCreateObject() interface {
+	BACnetServiceAckCreateObjectBuilder
+	Done() BACnetServiceAckBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckCreateObjectBuilder
+		Done() BACnetServiceAckBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckCreateObjectBuilder().(*_BACnetServiceAckCreateObjectBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckBuilder) AsBACnetServiceAckReadProperty() interface {
+	BACnetServiceAckReadPropertyBuilder
+	Done() BACnetServiceAckBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckReadPropertyBuilder
+		Done() BACnetServiceAckBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckReadPropertyBuilder().(*_BACnetServiceAckReadPropertyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckBuilder) AsBACnetServiceAckReadPropertyMultiple() interface {
+	BACnetServiceAckReadPropertyMultipleBuilder
+	Done() BACnetServiceAckBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckReadPropertyMultipleBuilder
+		Done() BACnetServiceAckBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckReadPropertyMultipleBuilder().(*_BACnetServiceAckReadPropertyMultipleBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckBuilder) AsBACnetServiceAckReadRange() interface {
+	BACnetServiceAckReadRangeBuilder
+	Done() BACnetServiceAckBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckReadRangeBuilder
+		Done() BACnetServiceAckBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckReadRangeBuilder().(*_BACnetServiceAckReadRangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckBuilder) AsBACnetServiceAckConfirmedPrivateTransfer() interface {
+	BACnetServiceAckConfirmedPrivateTransferBuilder
+	Done() BACnetServiceAckBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckConfirmedPrivateTransferBuilder
+		Done() BACnetServiceAckBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckConfirmedPrivateTransferBuilder().(*_BACnetServiceAckConfirmedPrivateTransferBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckBuilder) AsBACnetServiceAckVTOpen() interface {
+	BACnetServiceAckVTOpenBuilder
+	Done() BACnetServiceAckBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckVTOpenBuilder
+		Done() BACnetServiceAckBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckVTOpenBuilder().(*_BACnetServiceAckVTOpenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckBuilder) AsBACnetServiceAckVTData() interface {
+	BACnetServiceAckVTDataBuilder
+	Done() BACnetServiceAckBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckVTDataBuilder
+		Done() BACnetServiceAckBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckVTDataBuilder().(*_BACnetServiceAckVTDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckBuilder) AsBACnetServiceAckAuthenticate() interface {
+	BACnetServiceAckAuthenticateBuilder
+	Done() BACnetServiceAckBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckAuthenticateBuilder
+		Done() BACnetServiceAckBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckAuthenticateBuilder().(*_BACnetServiceAckAuthenticateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckBuilder) AsBACnetServiceAckRequestKey() interface {
+	BACnetServiceAckRequestKeyBuilder
+	Done() BACnetServiceAckBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckRequestKeyBuilder
+		Done() BACnetServiceAckBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckRequestKeyBuilder().(*_BACnetServiceAckRequestKeyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckBuilder) AsBACnetServiceAckReadPropertyConditional() interface {
+	BACnetServiceAckReadPropertyConditionalBuilder
+	Done() BACnetServiceAckBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckReadPropertyConditionalBuilder
+		Done() BACnetServiceAckBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckReadPropertyConditionalBuilder().(*_BACnetServiceAckReadPropertyConditionalBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckBuilder) Build() (BACnetServiceAck, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetServiceAck()
+}
+
+func (b *_BACnetServiceAckBuilder) MustBuild() BACnetServiceAck {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetServiceAckBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetServiceAckBuilder().(*_BACnetServiceAckBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetServiceAckChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetServiceAckBuilder creates a BACnetServiceAckBuilder
-func (m *_BACnetServiceAck) CreateBACnetServiceAckBuilder() BACnetServiceAckBuilder {
-	if m == nil {
+func (b *_BACnetServiceAck) CreateBACnetServiceAckBuilder() BACnetServiceAckBuilder {
+	if b == nil {
 		return NewBACnetServiceAckBuilder()
 	}
-	return &_BACnetServiceAckBuilder{_BACnetServiceAck: m.deepCopy()}
+	return &_BACnetServiceAckBuilder{_BACnetServiceAck: b.deepCopy()}
 }
 
 ///////////////////////

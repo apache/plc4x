@@ -108,55 +108,59 @@ type _CIPAttributesBuilder struct {
 
 var _ (CIPAttributesBuilder) = (*_CIPAttributesBuilder)(nil)
 
-func (m *_CIPAttributesBuilder) WithMandatoryFields(classId []uint16, data []byte) CIPAttributesBuilder {
-	return m.WithClassId(classId...).WithData(data...)
+func (b *_CIPAttributesBuilder) WithMandatoryFields(classId []uint16, data []byte) CIPAttributesBuilder {
+	return b.WithClassId(classId...).WithData(data...)
 }
 
-func (m *_CIPAttributesBuilder) WithClassId(classId ...uint16) CIPAttributesBuilder {
-	m.ClassId = classId
-	return m
+func (b *_CIPAttributesBuilder) WithClassId(classId ...uint16) CIPAttributesBuilder {
+	b.ClassId = classId
+	return b
 }
 
-func (m *_CIPAttributesBuilder) WithOptionalNumberAvailable(numberAvailable uint16) CIPAttributesBuilder {
-	m.NumberAvailable = &numberAvailable
-	return m
+func (b *_CIPAttributesBuilder) WithOptionalNumberAvailable(numberAvailable uint16) CIPAttributesBuilder {
+	b.NumberAvailable = &numberAvailable
+	return b
 }
 
-func (m *_CIPAttributesBuilder) WithOptionalNumberActive(numberActive uint16) CIPAttributesBuilder {
-	m.NumberActive = &numberActive
-	return m
+func (b *_CIPAttributesBuilder) WithOptionalNumberActive(numberActive uint16) CIPAttributesBuilder {
+	b.NumberActive = &numberActive
+	return b
 }
 
-func (m *_CIPAttributesBuilder) WithData(data ...byte) CIPAttributesBuilder {
-	m.Data = data
-	return m
+func (b *_CIPAttributesBuilder) WithData(data ...byte) CIPAttributesBuilder {
+	b.Data = data
+	return b
 }
 
-func (m *_CIPAttributesBuilder) Build() (CIPAttributes, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CIPAttributesBuilder) Build() (CIPAttributes, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CIPAttributes.deepCopy(), nil
+	return b._CIPAttributes.deepCopy(), nil
 }
 
-func (m *_CIPAttributesBuilder) MustBuild() CIPAttributes {
-	build, err := m.Build()
+func (b *_CIPAttributesBuilder) MustBuild() CIPAttributes {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CIPAttributesBuilder) DeepCopy() any {
-	return m.CreateCIPAttributesBuilder()
+func (b *_CIPAttributesBuilder) DeepCopy() any {
+	_copy := b.CreateCIPAttributesBuilder().(*_CIPAttributesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCIPAttributesBuilder creates a CIPAttributesBuilder
-func (m *_CIPAttributes) CreateCIPAttributesBuilder() CIPAttributesBuilder {
-	if m == nil {
+func (b *_CIPAttributes) CreateCIPAttributesBuilder() CIPAttributesBuilder {
+	if b == nil {
 		return NewCIPAttributesBuilder()
 	}
-	return &_CIPAttributesBuilder{_CIPAttributes: m.deepCopy()}
+	return &_CIPAttributesBuilder{_CIPAttributes: b.deepCopy()}
 }
 
 ///////////////////////

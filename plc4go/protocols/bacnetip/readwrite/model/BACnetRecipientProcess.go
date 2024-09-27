@@ -102,77 +102,81 @@ type _BACnetRecipientProcessBuilder struct {
 
 var _ (BACnetRecipientProcessBuilder) = (*_BACnetRecipientProcessBuilder)(nil)
 
-func (m *_BACnetRecipientProcessBuilder) WithMandatoryFields(recipient BACnetRecipientEnclosed) BACnetRecipientProcessBuilder {
-	return m.WithRecipient(recipient)
+func (b *_BACnetRecipientProcessBuilder) WithMandatoryFields(recipient BACnetRecipientEnclosed) BACnetRecipientProcessBuilder {
+	return b.WithRecipient(recipient)
 }
 
-func (m *_BACnetRecipientProcessBuilder) WithRecipient(recipient BACnetRecipientEnclosed) BACnetRecipientProcessBuilder {
-	m.Recipient = recipient
-	return m
+func (b *_BACnetRecipientProcessBuilder) WithRecipient(recipient BACnetRecipientEnclosed) BACnetRecipientProcessBuilder {
+	b.Recipient = recipient
+	return b
 }
 
-func (m *_BACnetRecipientProcessBuilder) WithRecipientBuilder(builderSupplier func(BACnetRecipientEnclosedBuilder) BACnetRecipientEnclosedBuilder) BACnetRecipientProcessBuilder {
-	builder := builderSupplier(m.Recipient.CreateBACnetRecipientEnclosedBuilder())
+func (b *_BACnetRecipientProcessBuilder) WithRecipientBuilder(builderSupplier func(BACnetRecipientEnclosedBuilder) BACnetRecipientEnclosedBuilder) BACnetRecipientProcessBuilder {
+	builder := builderSupplier(b.Recipient.CreateBACnetRecipientEnclosedBuilder())
 	var err error
-	m.Recipient, err = builder.Build()
+	b.Recipient, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetRecipientEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetRecipientEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetRecipientProcessBuilder) WithOptionalProcessIdentifier(processIdentifier BACnetContextTagUnsignedInteger) BACnetRecipientProcessBuilder {
-	m.ProcessIdentifier = processIdentifier
-	return m
+func (b *_BACnetRecipientProcessBuilder) WithOptionalProcessIdentifier(processIdentifier BACnetContextTagUnsignedInteger) BACnetRecipientProcessBuilder {
+	b.ProcessIdentifier = processIdentifier
+	return b
 }
 
-func (m *_BACnetRecipientProcessBuilder) WithOptionalProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetRecipientProcessBuilder {
-	builder := builderSupplier(m.ProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetRecipientProcessBuilder) WithOptionalProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetRecipientProcessBuilder {
+	builder := builderSupplier(b.ProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.ProcessIdentifier, err = builder.Build()
+	b.ProcessIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetRecipientProcessBuilder) Build() (BACnetRecipientProcess, error) {
-	if m.Recipient == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetRecipientProcessBuilder) Build() (BACnetRecipientProcess, error) {
+	if b.Recipient == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'recipient' not set"))
+		b.err.Append(errors.New("mandatory field 'recipient' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetRecipientProcess.deepCopy(), nil
+	return b._BACnetRecipientProcess.deepCopy(), nil
 }
 
-func (m *_BACnetRecipientProcessBuilder) MustBuild() BACnetRecipientProcess {
-	build, err := m.Build()
+func (b *_BACnetRecipientProcessBuilder) MustBuild() BACnetRecipientProcess {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetRecipientProcessBuilder) DeepCopy() any {
-	return m.CreateBACnetRecipientProcessBuilder()
+func (b *_BACnetRecipientProcessBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetRecipientProcessBuilder().(*_BACnetRecipientProcessBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetRecipientProcessBuilder creates a BACnetRecipientProcessBuilder
-func (m *_BACnetRecipientProcess) CreateBACnetRecipientProcessBuilder() BACnetRecipientProcessBuilder {
-	if m == nil {
+func (b *_BACnetRecipientProcess) CreateBACnetRecipientProcessBuilder() BACnetRecipientProcessBuilder {
+	if b == nil {
 		return NewBACnetRecipientProcessBuilder()
 	}
-	return &_BACnetRecipientProcessBuilder{_BACnetRecipientProcess: m.deepCopy()}
+	return &_BACnetRecipientProcessBuilder{_BACnetRecipientProcess: b.deepCopy()}
 }
 
 ///////////////////////

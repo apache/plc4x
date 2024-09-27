@@ -110,74 +110,93 @@ func NewRedundantServerDataTypeBuilder() RedundantServerDataTypeBuilder {
 type _RedundantServerDataTypeBuilder struct {
 	*_RedundantServerDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RedundantServerDataTypeBuilder) = (*_RedundantServerDataTypeBuilder)(nil)
 
-func (m *_RedundantServerDataTypeBuilder) WithMandatoryFields(serverId PascalString, serviceLevel uint8, serverState ServerState) RedundantServerDataTypeBuilder {
-	return m.WithServerId(serverId).WithServiceLevel(serviceLevel).WithServerState(serverState)
+func (b *_RedundantServerDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_RedundantServerDataTypeBuilder) WithServerId(serverId PascalString) RedundantServerDataTypeBuilder {
-	m.ServerId = serverId
-	return m
+func (b *_RedundantServerDataTypeBuilder) WithMandatoryFields(serverId PascalString, serviceLevel uint8, serverState ServerState) RedundantServerDataTypeBuilder {
+	return b.WithServerId(serverId).WithServiceLevel(serviceLevel).WithServerState(serverState)
 }
 
-func (m *_RedundantServerDataTypeBuilder) WithServerIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) RedundantServerDataTypeBuilder {
-	builder := builderSupplier(m.ServerId.CreatePascalStringBuilder())
+func (b *_RedundantServerDataTypeBuilder) WithServerId(serverId PascalString) RedundantServerDataTypeBuilder {
+	b.ServerId = serverId
+	return b
+}
+
+func (b *_RedundantServerDataTypeBuilder) WithServerIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) RedundantServerDataTypeBuilder {
+	builder := builderSupplier(b.ServerId.CreatePascalStringBuilder())
 	var err error
-	m.ServerId, err = builder.Build()
+	b.ServerId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RedundantServerDataTypeBuilder) WithServiceLevel(serviceLevel uint8) RedundantServerDataTypeBuilder {
-	m.ServiceLevel = serviceLevel
-	return m
+func (b *_RedundantServerDataTypeBuilder) WithServiceLevel(serviceLevel uint8) RedundantServerDataTypeBuilder {
+	b.ServiceLevel = serviceLevel
+	return b
 }
 
-func (m *_RedundantServerDataTypeBuilder) WithServerState(serverState ServerState) RedundantServerDataTypeBuilder {
-	m.ServerState = serverState
-	return m
+func (b *_RedundantServerDataTypeBuilder) WithServerState(serverState ServerState) RedundantServerDataTypeBuilder {
+	b.ServerState = serverState
+	return b
 }
 
-func (m *_RedundantServerDataTypeBuilder) Build() (RedundantServerDataType, error) {
-	if m.ServerId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_RedundantServerDataTypeBuilder) Build() (RedundantServerDataType, error) {
+	if b.ServerId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'serverId' not set"))
+		b.err.Append(errors.New("mandatory field 'serverId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._RedundantServerDataType.deepCopy(), nil
+	return b._RedundantServerDataType.deepCopy(), nil
 }
 
-func (m *_RedundantServerDataTypeBuilder) MustBuild() RedundantServerDataType {
-	build, err := m.Build()
+func (b *_RedundantServerDataTypeBuilder) MustBuild() RedundantServerDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RedundantServerDataTypeBuilder) DeepCopy() any {
-	return m.CreateRedundantServerDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RedundantServerDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RedundantServerDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_RedundantServerDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateRedundantServerDataTypeBuilder().(*_RedundantServerDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRedundantServerDataTypeBuilder creates a RedundantServerDataTypeBuilder
-func (m *_RedundantServerDataType) CreateRedundantServerDataTypeBuilder() RedundantServerDataTypeBuilder {
-	if m == nil {
+func (b *_RedundantServerDataType) CreateRedundantServerDataTypeBuilder() RedundantServerDataTypeBuilder {
+	if b == nil {
 		return NewRedundantServerDataTypeBuilder()
 	}
-	return &_RedundantServerDataTypeBuilder{_RedundantServerDataType: m.deepCopy()}
+	return &_RedundantServerDataTypeBuilder{_RedundantServerDataType: b.deepCopy()}
 }
 
 ///////////////////////

@@ -92,10 +92,39 @@ type FirmataMessageBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() FirmataMessageBuilder
+	// AsFirmataMessageAnalogIO converts this build to a subType of FirmataMessage. It is always possible to return to current builder using Done()
+	AsFirmataMessageAnalogIO() interface {
+		FirmataMessageAnalogIOBuilder
+		Done() FirmataMessageBuilder
+	}
+	// AsFirmataMessageDigitalIO converts this build to a subType of FirmataMessage. It is always possible to return to current builder using Done()
+	AsFirmataMessageDigitalIO() interface {
+		FirmataMessageDigitalIOBuilder
+		Done() FirmataMessageBuilder
+	}
+	// AsFirmataMessageSubscribeAnalogPinValue converts this build to a subType of FirmataMessage. It is always possible to return to current builder using Done()
+	AsFirmataMessageSubscribeAnalogPinValue() interface {
+		FirmataMessageSubscribeAnalogPinValueBuilder
+		Done() FirmataMessageBuilder
+	}
+	// AsFirmataMessageSubscribeDigitalPinValue converts this build to a subType of FirmataMessage. It is always possible to return to current builder using Done()
+	AsFirmataMessageSubscribeDigitalPinValue() interface {
+		FirmataMessageSubscribeDigitalPinValueBuilder
+		Done() FirmataMessageBuilder
+	}
+	// AsFirmataMessageCommand converts this build to a subType of FirmataMessage. It is always possible to return to current builder using Done()
+	AsFirmataMessageCommand() interface {
+		FirmataMessageCommandBuilder
+		Done() FirmataMessageBuilder
+	}
 	// Build builds the FirmataMessage or returns an error if something is wrong
-	Build() (FirmataMessageContract, error)
+	PartialBuild() (FirmataMessageContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() FirmataMessageContract
+	PartialMustBuild() FirmataMessageContract
+	// Build builds the FirmataMessage or returns an error if something is wrong
+	Build() (FirmataMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() FirmataMessage
 }
 
 // NewFirmataMessageBuilder() creates a FirmataMessageBuilder
@@ -103,43 +132,157 @@ func NewFirmataMessageBuilder() FirmataMessageBuilder {
 	return &_FirmataMessageBuilder{_FirmataMessage: new(_FirmataMessage)}
 }
 
+type _FirmataMessageChildBuilder interface {
+	utils.Copyable
+	setParent(FirmataMessageContract)
+	buildForFirmataMessage() (FirmataMessage, error)
+}
+
 type _FirmataMessageBuilder struct {
 	*_FirmataMessage
+
+	childBuilder _FirmataMessageChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (FirmataMessageBuilder) = (*_FirmataMessageBuilder)(nil)
 
-func (m *_FirmataMessageBuilder) WithMandatoryFields() FirmataMessageBuilder {
-	return m
+func (b *_FirmataMessageBuilder) WithMandatoryFields() FirmataMessageBuilder {
+	return b
 }
 
-func (m *_FirmataMessageBuilder) Build() (FirmataMessageContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_FirmataMessageBuilder) PartialBuild() (FirmataMessageContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._FirmataMessage.deepCopy(), nil
+	return b._FirmataMessage.deepCopy(), nil
 }
 
-func (m *_FirmataMessageBuilder) MustBuild() FirmataMessageContract {
-	build, err := m.Build()
+func (b *_FirmataMessageBuilder) PartialMustBuild() FirmataMessageContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FirmataMessageBuilder) DeepCopy() any {
-	return m.CreateFirmataMessageBuilder()
+func (b *_FirmataMessageBuilder) AsFirmataMessageAnalogIO() interface {
+	FirmataMessageAnalogIOBuilder
+	Done() FirmataMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		FirmataMessageAnalogIOBuilder
+		Done() FirmataMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewFirmataMessageAnalogIOBuilder().(*_FirmataMessageAnalogIOBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_FirmataMessageBuilder) AsFirmataMessageDigitalIO() interface {
+	FirmataMessageDigitalIOBuilder
+	Done() FirmataMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		FirmataMessageDigitalIOBuilder
+		Done() FirmataMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewFirmataMessageDigitalIOBuilder().(*_FirmataMessageDigitalIOBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_FirmataMessageBuilder) AsFirmataMessageSubscribeAnalogPinValue() interface {
+	FirmataMessageSubscribeAnalogPinValueBuilder
+	Done() FirmataMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		FirmataMessageSubscribeAnalogPinValueBuilder
+		Done() FirmataMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewFirmataMessageSubscribeAnalogPinValueBuilder().(*_FirmataMessageSubscribeAnalogPinValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_FirmataMessageBuilder) AsFirmataMessageSubscribeDigitalPinValue() interface {
+	FirmataMessageSubscribeDigitalPinValueBuilder
+	Done() FirmataMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		FirmataMessageSubscribeDigitalPinValueBuilder
+		Done() FirmataMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewFirmataMessageSubscribeDigitalPinValueBuilder().(*_FirmataMessageSubscribeDigitalPinValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_FirmataMessageBuilder) AsFirmataMessageCommand() interface {
+	FirmataMessageCommandBuilder
+	Done() FirmataMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		FirmataMessageCommandBuilder
+		Done() FirmataMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewFirmataMessageCommandBuilder().(*_FirmataMessageCommandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_FirmataMessageBuilder) Build() (FirmataMessage, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForFirmataMessage()
+}
+
+func (b *_FirmataMessageBuilder) MustBuild() FirmataMessage {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_FirmataMessageBuilder) DeepCopy() any {
+	_copy := b.CreateFirmataMessageBuilder().(*_FirmataMessageBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_FirmataMessageChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFirmataMessageBuilder creates a FirmataMessageBuilder
-func (m *_FirmataMessage) CreateFirmataMessageBuilder() FirmataMessageBuilder {
-	if m == nil {
+func (b *_FirmataMessage) CreateFirmataMessageBuilder() FirmataMessageBuilder {
+	if b == nil {
 		return NewFirmataMessageBuilder()
 	}
-	return &_FirmataMessageBuilder{_FirmataMessage: m.deepCopy()}
+	return &_FirmataMessageBuilder{_FirmataMessage: b.deepCopy()}
 }
 
 ///////////////////////

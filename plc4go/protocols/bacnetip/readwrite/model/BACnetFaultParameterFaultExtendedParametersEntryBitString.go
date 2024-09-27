@@ -98,64 +98,83 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder() BACne
 type _BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntryBitString
 
+	parentBuilder *_BACnetFaultParameterFaultExtendedParametersEntryBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder)(nil)
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) WithMandatoryFields(bitStringValue BACnetApplicationTagBitString) BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder {
-	return m.WithBitStringValue(bitStringValue)
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) setParent(contract BACnetFaultParameterFaultExtendedParametersEntryContract) {
+	b.BACnetFaultParameterFaultExtendedParametersEntryContract = contract
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) WithBitStringValue(bitStringValue BACnetApplicationTagBitString) BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder {
-	m.BitStringValue = bitStringValue
-	return m
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) WithMandatoryFields(bitStringValue BACnetApplicationTagBitString) BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder {
+	return b.WithBitStringValue(bitStringValue)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) WithBitStringValueBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder {
-	builder := builderSupplier(m.BitStringValue.CreateBACnetApplicationTagBitStringBuilder())
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) WithBitStringValue(bitStringValue BACnetApplicationTagBitString) BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder {
+	b.BitStringValue = bitStringValue
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) WithBitStringValueBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder {
+	builder := builderSupplier(b.BitStringValue.CreateBACnetApplicationTagBitStringBuilder())
 	var err error
-	m.BitStringValue, err = builder.Build()
+	b.BitStringValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryBitString, error) {
-	if m.BitStringValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryBitString, error) {
+	if b.BitStringValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'bitStringValue' not set"))
+		b.err.Append(errors.New("mandatory field 'bitStringValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetFaultParameterFaultExtendedParametersEntryBitString.deepCopy(), nil
+	return b._BACnetFaultParameterFaultExtendedParametersEntryBitString.deepCopy(), nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryBitString {
-	build, err := m.Build()
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryBitString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) DeepCopy() any {
-	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) buildForBACnetFaultParameterFaultExtendedParametersEntry() (BACnetFaultParameterFaultExtendedParametersEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) CreateBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder() BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder {
-	if m == nil {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBitString) CreateBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder() BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder {
+	if b == nil {
 		return NewBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder()
 	}
-	return &_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder{_BACnetFaultParameterFaultExtendedParametersEntryBitString: m.deepCopy()}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder{_BACnetFaultParameterFaultExtendedParametersEntryBitString: b.deepCopy()}
 }
 
 ///////////////////////

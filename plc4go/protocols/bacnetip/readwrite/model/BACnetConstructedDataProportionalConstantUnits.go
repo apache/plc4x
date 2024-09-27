@@ -100,64 +100,83 @@ func NewBACnetConstructedDataProportionalConstantUnitsBuilder() BACnetConstructe
 type _BACnetConstructedDataProportionalConstantUnitsBuilder struct {
 	*_BACnetConstructedDataProportionalConstantUnits
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataProportionalConstantUnitsBuilder) = (*_BACnetConstructedDataProportionalConstantUnitsBuilder)(nil)
 
-func (m *_BACnetConstructedDataProportionalConstantUnitsBuilder) WithMandatoryFields(units BACnetEngineeringUnitsTagged) BACnetConstructedDataProportionalConstantUnitsBuilder {
-	return m.WithUnits(units)
+func (b *_BACnetConstructedDataProportionalConstantUnitsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataProportionalConstantUnitsBuilder) WithUnits(units BACnetEngineeringUnitsTagged) BACnetConstructedDataProportionalConstantUnitsBuilder {
-	m.Units = units
-	return m
+func (b *_BACnetConstructedDataProportionalConstantUnitsBuilder) WithMandatoryFields(units BACnetEngineeringUnitsTagged) BACnetConstructedDataProportionalConstantUnitsBuilder {
+	return b.WithUnits(units)
 }
 
-func (m *_BACnetConstructedDataProportionalConstantUnitsBuilder) WithUnitsBuilder(builderSupplier func(BACnetEngineeringUnitsTaggedBuilder) BACnetEngineeringUnitsTaggedBuilder) BACnetConstructedDataProportionalConstantUnitsBuilder {
-	builder := builderSupplier(m.Units.CreateBACnetEngineeringUnitsTaggedBuilder())
+func (b *_BACnetConstructedDataProportionalConstantUnitsBuilder) WithUnits(units BACnetEngineeringUnitsTagged) BACnetConstructedDataProportionalConstantUnitsBuilder {
+	b.Units = units
+	return b
+}
+
+func (b *_BACnetConstructedDataProportionalConstantUnitsBuilder) WithUnitsBuilder(builderSupplier func(BACnetEngineeringUnitsTaggedBuilder) BACnetEngineeringUnitsTaggedBuilder) BACnetConstructedDataProportionalConstantUnitsBuilder {
+	builder := builderSupplier(b.Units.CreateBACnetEngineeringUnitsTaggedBuilder())
 	var err error
-	m.Units, err = builder.Build()
+	b.Units, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEngineeringUnitsTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEngineeringUnitsTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataProportionalConstantUnitsBuilder) Build() (BACnetConstructedDataProportionalConstantUnits, error) {
-	if m.Units == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataProportionalConstantUnitsBuilder) Build() (BACnetConstructedDataProportionalConstantUnits, error) {
+	if b.Units == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'units' not set"))
+		b.err.Append(errors.New("mandatory field 'units' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataProportionalConstantUnits.deepCopy(), nil
+	return b._BACnetConstructedDataProportionalConstantUnits.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataProportionalConstantUnitsBuilder) MustBuild() BACnetConstructedDataProportionalConstantUnits {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataProportionalConstantUnitsBuilder) MustBuild() BACnetConstructedDataProportionalConstantUnits {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataProportionalConstantUnitsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataProportionalConstantUnitsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataProportionalConstantUnitsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataProportionalConstantUnitsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataProportionalConstantUnitsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataProportionalConstantUnitsBuilder().(*_BACnetConstructedDataProportionalConstantUnitsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataProportionalConstantUnitsBuilder creates a BACnetConstructedDataProportionalConstantUnitsBuilder
-func (m *_BACnetConstructedDataProportionalConstantUnits) CreateBACnetConstructedDataProportionalConstantUnitsBuilder() BACnetConstructedDataProportionalConstantUnitsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataProportionalConstantUnits) CreateBACnetConstructedDataProportionalConstantUnitsBuilder() BACnetConstructedDataProportionalConstantUnitsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataProportionalConstantUnitsBuilder()
 	}
-	return &_BACnetConstructedDataProportionalConstantUnitsBuilder{_BACnetConstructedDataProportionalConstantUnits: m.deepCopy()}
+	return &_BACnetConstructedDataProportionalConstantUnitsBuilder{_BACnetConstructedDataProportionalConstantUnits: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataBACnetIPNATTraversalBuilder() BACnetConstructedData
 type _BACnetConstructedDataBACnetIPNATTraversalBuilder struct {
 	*_BACnetConstructedDataBACnetIPNATTraversal
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBACnetIPNATTraversalBuilder) = (*_BACnetConstructedDataBACnetIPNATTraversalBuilder)(nil)
 
-func (m *_BACnetConstructedDataBACnetIPNATTraversalBuilder) WithMandatoryFields(bacnetIPNATTraversal BACnetApplicationTagBoolean) BACnetConstructedDataBACnetIPNATTraversalBuilder {
-	return m.WithBacnetIPNATTraversal(bacnetIPNATTraversal)
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBACnetIPNATTraversalBuilder) WithBacnetIPNATTraversal(bacnetIPNATTraversal BACnetApplicationTagBoolean) BACnetConstructedDataBACnetIPNATTraversalBuilder {
-	m.BacnetIPNATTraversal = bacnetIPNATTraversal
-	return m
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) WithMandatoryFields(bacnetIPNATTraversal BACnetApplicationTagBoolean) BACnetConstructedDataBACnetIPNATTraversalBuilder {
+	return b.WithBacnetIPNATTraversal(bacnetIPNATTraversal)
 }
 
-func (m *_BACnetConstructedDataBACnetIPNATTraversalBuilder) WithBacnetIPNATTraversalBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataBACnetIPNATTraversalBuilder {
-	builder := builderSupplier(m.BacnetIPNATTraversal.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) WithBacnetIPNATTraversal(bacnetIPNATTraversal BACnetApplicationTagBoolean) BACnetConstructedDataBACnetIPNATTraversalBuilder {
+	b.BacnetIPNATTraversal = bacnetIPNATTraversal
+	return b
+}
+
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) WithBacnetIPNATTraversalBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataBACnetIPNATTraversalBuilder {
+	builder := builderSupplier(b.BacnetIPNATTraversal.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.BacnetIPNATTraversal, err = builder.Build()
+	b.BacnetIPNATTraversal, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBACnetIPNATTraversalBuilder) Build() (BACnetConstructedDataBACnetIPNATTraversal, error) {
-	if m.BacnetIPNATTraversal == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) Build() (BACnetConstructedDataBACnetIPNATTraversal, error) {
+	if b.BacnetIPNATTraversal == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'bacnetIPNATTraversal' not set"))
+		b.err.Append(errors.New("mandatory field 'bacnetIPNATTraversal' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBACnetIPNATTraversal.deepCopy(), nil
+	return b._BACnetConstructedDataBACnetIPNATTraversal.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPNATTraversalBuilder) MustBuild() BACnetConstructedDataBACnetIPNATTraversal {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) MustBuild() BACnetConstructedDataBACnetIPNATTraversal {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBACnetIPNATTraversalBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBACnetIPNATTraversalBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBACnetIPNATTraversalBuilder().(*_BACnetConstructedDataBACnetIPNATTraversalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBACnetIPNATTraversalBuilder creates a BACnetConstructedDataBACnetIPNATTraversalBuilder
-func (m *_BACnetConstructedDataBACnetIPNATTraversal) CreateBACnetConstructedDataBACnetIPNATTraversalBuilder() BACnetConstructedDataBACnetIPNATTraversalBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBACnetIPNATTraversal) CreateBACnetConstructedDataBACnetIPNATTraversalBuilder() BACnetConstructedDataBACnetIPNATTraversalBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBACnetIPNATTraversalBuilder()
 	}
-	return &_BACnetConstructedDataBACnetIPNATTraversalBuilder{_BACnetConstructedDataBACnetIPNATTraversal: m.deepCopy()}
+	return &_BACnetConstructedDataBACnetIPNATTraversalBuilder{_BACnetConstructedDataBACnetIPNATTraversal: b.deepCopy()}
 }
 
 ///////////////////////

@@ -99,50 +99,69 @@ func NewAccessControlDataInvalidAccessRequestBuilder() AccessControlDataInvalidA
 type _AccessControlDataInvalidAccessRequestBuilder struct {
 	*_AccessControlDataInvalidAccessRequest
 
+	parentBuilder *_AccessControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AccessControlDataInvalidAccessRequestBuilder) = (*_AccessControlDataInvalidAccessRequestBuilder)(nil)
 
-func (m *_AccessControlDataInvalidAccessRequestBuilder) WithMandatoryFields(accessControlDirection AccessControlDirection, data []byte) AccessControlDataInvalidAccessRequestBuilder {
-	return m.WithAccessControlDirection(accessControlDirection).WithData(data...)
+func (b *_AccessControlDataInvalidAccessRequestBuilder) setParent(contract AccessControlDataContract) {
+	b.AccessControlDataContract = contract
 }
 
-func (m *_AccessControlDataInvalidAccessRequestBuilder) WithAccessControlDirection(accessControlDirection AccessControlDirection) AccessControlDataInvalidAccessRequestBuilder {
-	m.AccessControlDirection = accessControlDirection
-	return m
+func (b *_AccessControlDataInvalidAccessRequestBuilder) WithMandatoryFields(accessControlDirection AccessControlDirection, data []byte) AccessControlDataInvalidAccessRequestBuilder {
+	return b.WithAccessControlDirection(accessControlDirection).WithData(data...)
 }
 
-func (m *_AccessControlDataInvalidAccessRequestBuilder) WithData(data ...byte) AccessControlDataInvalidAccessRequestBuilder {
-	m.Data = data
-	return m
+func (b *_AccessControlDataInvalidAccessRequestBuilder) WithAccessControlDirection(accessControlDirection AccessControlDirection) AccessControlDataInvalidAccessRequestBuilder {
+	b.AccessControlDirection = accessControlDirection
+	return b
 }
 
-func (m *_AccessControlDataInvalidAccessRequestBuilder) Build() (AccessControlDataInvalidAccessRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AccessControlDataInvalidAccessRequestBuilder) WithData(data ...byte) AccessControlDataInvalidAccessRequestBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_AccessControlDataInvalidAccessRequestBuilder) Build() (AccessControlDataInvalidAccessRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AccessControlDataInvalidAccessRequest.deepCopy(), nil
+	return b._AccessControlDataInvalidAccessRequest.deepCopy(), nil
 }
 
-func (m *_AccessControlDataInvalidAccessRequestBuilder) MustBuild() AccessControlDataInvalidAccessRequest {
-	build, err := m.Build()
+func (b *_AccessControlDataInvalidAccessRequestBuilder) MustBuild() AccessControlDataInvalidAccessRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AccessControlDataInvalidAccessRequestBuilder) DeepCopy() any {
-	return m.CreateAccessControlDataInvalidAccessRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AccessControlDataInvalidAccessRequestBuilder) Done() AccessControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AccessControlDataInvalidAccessRequestBuilder) buildForAccessControlData() (AccessControlData, error) {
+	return b.Build()
+}
+
+func (b *_AccessControlDataInvalidAccessRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAccessControlDataInvalidAccessRequestBuilder().(*_AccessControlDataInvalidAccessRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAccessControlDataInvalidAccessRequestBuilder creates a AccessControlDataInvalidAccessRequestBuilder
-func (m *_AccessControlDataInvalidAccessRequest) CreateAccessControlDataInvalidAccessRequestBuilder() AccessControlDataInvalidAccessRequestBuilder {
-	if m == nil {
+func (b *_AccessControlDataInvalidAccessRequest) CreateAccessControlDataInvalidAccessRequestBuilder() AccessControlDataInvalidAccessRequestBuilder {
+	if b == nil {
 		return NewAccessControlDataInvalidAccessRequestBuilder()
 	}
-	return &_AccessControlDataInvalidAccessRequestBuilder{_AccessControlDataInvalidAccessRequest: m.deepCopy()}
+	return &_AccessControlDataInvalidAccessRequestBuilder{_AccessControlDataInvalidAccessRequest: b.deepCopy()}
 }
 
 ///////////////////////

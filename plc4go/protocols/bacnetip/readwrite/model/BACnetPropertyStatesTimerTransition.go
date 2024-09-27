@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesTimerTransitionBuilder() BACnetPropertyStatesTimerTr
 type _BACnetPropertyStatesTimerTransitionBuilder struct {
 	*_BACnetPropertyStatesTimerTransition
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesTimerTransitionBuilder) = (*_BACnetPropertyStatesTimerTransitionBuilder)(nil)
 
-func (m *_BACnetPropertyStatesTimerTransitionBuilder) WithMandatoryFields(timerTransition BACnetTimerTransitionTagged) BACnetPropertyStatesTimerTransitionBuilder {
-	return m.WithTimerTransition(timerTransition)
+func (b *_BACnetPropertyStatesTimerTransitionBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesTimerTransitionBuilder) WithTimerTransition(timerTransition BACnetTimerTransitionTagged) BACnetPropertyStatesTimerTransitionBuilder {
-	m.TimerTransition = timerTransition
-	return m
+func (b *_BACnetPropertyStatesTimerTransitionBuilder) WithMandatoryFields(timerTransition BACnetTimerTransitionTagged) BACnetPropertyStatesTimerTransitionBuilder {
+	return b.WithTimerTransition(timerTransition)
 }
 
-func (m *_BACnetPropertyStatesTimerTransitionBuilder) WithTimerTransitionBuilder(builderSupplier func(BACnetTimerTransitionTaggedBuilder) BACnetTimerTransitionTaggedBuilder) BACnetPropertyStatesTimerTransitionBuilder {
-	builder := builderSupplier(m.TimerTransition.CreateBACnetTimerTransitionTaggedBuilder())
+func (b *_BACnetPropertyStatesTimerTransitionBuilder) WithTimerTransition(timerTransition BACnetTimerTransitionTagged) BACnetPropertyStatesTimerTransitionBuilder {
+	b.TimerTransition = timerTransition
+	return b
+}
+
+func (b *_BACnetPropertyStatesTimerTransitionBuilder) WithTimerTransitionBuilder(builderSupplier func(BACnetTimerTransitionTaggedBuilder) BACnetTimerTransitionTaggedBuilder) BACnetPropertyStatesTimerTransitionBuilder {
+	builder := builderSupplier(b.TimerTransition.CreateBACnetTimerTransitionTaggedBuilder())
 	var err error
-	m.TimerTransition, err = builder.Build()
+	b.TimerTransition, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTimerTransitionTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTimerTransitionTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesTimerTransitionBuilder) Build() (BACnetPropertyStatesTimerTransition, error) {
-	if m.TimerTransition == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesTimerTransitionBuilder) Build() (BACnetPropertyStatesTimerTransition, error) {
+	if b.TimerTransition == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timerTransition' not set"))
+		b.err.Append(errors.New("mandatory field 'timerTransition' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesTimerTransition.deepCopy(), nil
+	return b._BACnetPropertyStatesTimerTransition.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesTimerTransitionBuilder) MustBuild() BACnetPropertyStatesTimerTransition {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesTimerTransitionBuilder) MustBuild() BACnetPropertyStatesTimerTransition {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesTimerTransitionBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesTimerTransitionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesTimerTransitionBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesTimerTransitionBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesTimerTransitionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesTimerTransitionBuilder().(*_BACnetPropertyStatesTimerTransitionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesTimerTransitionBuilder creates a BACnetPropertyStatesTimerTransitionBuilder
-func (m *_BACnetPropertyStatesTimerTransition) CreateBACnetPropertyStatesTimerTransitionBuilder() BACnetPropertyStatesTimerTransitionBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesTimerTransition) CreateBACnetPropertyStatesTimerTransitionBuilder() BACnetPropertyStatesTimerTransitionBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesTimerTransitionBuilder()
 	}
-	return &_BACnetPropertyStatesTimerTransitionBuilder{_BACnetPropertyStatesTimerTransition: m.deepCopy()}
+	return &_BACnetPropertyStatesTimerTransitionBuilder{_BACnetPropertyStatesTimerTransition: b.deepCopy()}
 }
 
 ///////////////////////

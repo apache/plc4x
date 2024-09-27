@@ -85,40 +85,59 @@ func NewBACnetConstructedDataAccessUserAllBuilder() BACnetConstructedDataAccessU
 type _BACnetConstructedDataAccessUserAllBuilder struct {
 	*_BACnetConstructedDataAccessUserAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccessUserAllBuilder) = (*_BACnetConstructedDataAccessUserAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccessUserAllBuilder) WithMandatoryFields() BACnetConstructedDataAccessUserAllBuilder {
-	return m
+func (b *_BACnetConstructedDataAccessUserAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccessUserAllBuilder) Build() (BACnetConstructedDataAccessUserAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataAccessUserAllBuilder) WithMandatoryFields() BACnetConstructedDataAccessUserAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataAccessUserAllBuilder) Build() (BACnetConstructedDataAccessUserAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAccessUserAll.deepCopy(), nil
+	return b._BACnetConstructedDataAccessUserAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAccessUserAllBuilder) MustBuild() BACnetConstructedDataAccessUserAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccessUserAllBuilder) MustBuild() BACnetConstructedDataAccessUserAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccessUserAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccessUserAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccessUserAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccessUserAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccessUserAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccessUserAllBuilder().(*_BACnetConstructedDataAccessUserAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccessUserAllBuilder creates a BACnetConstructedDataAccessUserAllBuilder
-func (m *_BACnetConstructedDataAccessUserAll) CreateBACnetConstructedDataAccessUserAllBuilder() BACnetConstructedDataAccessUserAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccessUserAll) CreateBACnetConstructedDataAccessUserAllBuilder() BACnetConstructedDataAccessUserAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccessUserAllBuilder()
 	}
-	return &_BACnetConstructedDataAccessUserAllBuilder{_BACnetConstructedDataAccessUserAll: m.deepCopy()}
+	return &_BACnetConstructedDataAccessUserAllBuilder{_BACnetConstructedDataAccessUserAll: b.deepCopy()}
 }
 
 ///////////////////////

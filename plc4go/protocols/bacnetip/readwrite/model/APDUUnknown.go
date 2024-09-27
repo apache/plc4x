@@ -99,50 +99,69 @@ func NewAPDUUnknownBuilder() APDUUnknownBuilder {
 type _APDUUnknownBuilder struct {
 	*_APDUUnknown
 
+	parentBuilder *_APDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (APDUUnknownBuilder) = (*_APDUUnknownBuilder)(nil)
 
-func (m *_APDUUnknownBuilder) WithMandatoryFields(unknownTypeRest uint8, unknownBytes []byte) APDUUnknownBuilder {
-	return m.WithUnknownTypeRest(unknownTypeRest).WithUnknownBytes(unknownBytes...)
+func (b *_APDUUnknownBuilder) setParent(contract APDUContract) {
+	b.APDUContract = contract
 }
 
-func (m *_APDUUnknownBuilder) WithUnknownTypeRest(unknownTypeRest uint8) APDUUnknownBuilder {
-	m.UnknownTypeRest = unknownTypeRest
-	return m
+func (b *_APDUUnknownBuilder) WithMandatoryFields(unknownTypeRest uint8, unknownBytes []byte) APDUUnknownBuilder {
+	return b.WithUnknownTypeRest(unknownTypeRest).WithUnknownBytes(unknownBytes...)
 }
 
-func (m *_APDUUnknownBuilder) WithUnknownBytes(unknownBytes ...byte) APDUUnknownBuilder {
-	m.UnknownBytes = unknownBytes
-	return m
+func (b *_APDUUnknownBuilder) WithUnknownTypeRest(unknownTypeRest uint8) APDUUnknownBuilder {
+	b.UnknownTypeRest = unknownTypeRest
+	return b
 }
 
-func (m *_APDUUnknownBuilder) Build() (APDUUnknown, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_APDUUnknownBuilder) WithUnknownBytes(unknownBytes ...byte) APDUUnknownBuilder {
+	b.UnknownBytes = unknownBytes
+	return b
+}
+
+func (b *_APDUUnknownBuilder) Build() (APDUUnknown, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._APDUUnknown.deepCopy(), nil
+	return b._APDUUnknown.deepCopy(), nil
 }
 
-func (m *_APDUUnknownBuilder) MustBuild() APDUUnknown {
-	build, err := m.Build()
+func (b *_APDUUnknownBuilder) MustBuild() APDUUnknown {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_APDUUnknownBuilder) DeepCopy() any {
-	return m.CreateAPDUUnknownBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_APDUUnknownBuilder) Done() APDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_APDUUnknownBuilder) buildForAPDU() (APDU, error) {
+	return b.Build()
+}
+
+func (b *_APDUUnknownBuilder) DeepCopy() any {
+	_copy := b.CreateAPDUUnknownBuilder().(*_APDUUnknownBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAPDUUnknownBuilder creates a APDUUnknownBuilder
-func (m *_APDUUnknown) CreateAPDUUnknownBuilder() APDUUnknownBuilder {
-	if m == nil {
+func (b *_APDUUnknown) CreateAPDUUnknownBuilder() APDUUnknownBuilder {
+	if b == nil {
 		return NewAPDUUnknownBuilder()
 	}
-	return &_APDUUnknownBuilder{_APDUUnknown: m.deepCopy()}
+	return &_APDUUnknownBuilder{_APDUUnknown: b.deepCopy()}
 }
 
 ///////////////////////

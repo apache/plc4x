@@ -83,35 +83,39 @@ type _GroupObjectDescriptorRealisationType6Builder struct {
 
 var _ (GroupObjectDescriptorRealisationType6Builder) = (*_GroupObjectDescriptorRealisationType6Builder)(nil)
 
-func (m *_GroupObjectDescriptorRealisationType6Builder) WithMandatoryFields() GroupObjectDescriptorRealisationType6Builder {
-	return m
+func (b *_GroupObjectDescriptorRealisationType6Builder) WithMandatoryFields() GroupObjectDescriptorRealisationType6Builder {
+	return b
 }
 
-func (m *_GroupObjectDescriptorRealisationType6Builder) Build() (GroupObjectDescriptorRealisationType6, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_GroupObjectDescriptorRealisationType6Builder) Build() (GroupObjectDescriptorRealisationType6, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._GroupObjectDescriptorRealisationType6.deepCopy(), nil
+	return b._GroupObjectDescriptorRealisationType6.deepCopy(), nil
 }
 
-func (m *_GroupObjectDescriptorRealisationType6Builder) MustBuild() GroupObjectDescriptorRealisationType6 {
-	build, err := m.Build()
+func (b *_GroupObjectDescriptorRealisationType6Builder) MustBuild() GroupObjectDescriptorRealisationType6 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_GroupObjectDescriptorRealisationType6Builder) DeepCopy() any {
-	return m.CreateGroupObjectDescriptorRealisationType6Builder()
+func (b *_GroupObjectDescriptorRealisationType6Builder) DeepCopy() any {
+	_copy := b.CreateGroupObjectDescriptorRealisationType6Builder().(*_GroupObjectDescriptorRealisationType6Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateGroupObjectDescriptorRealisationType6Builder creates a GroupObjectDescriptorRealisationType6Builder
-func (m *_GroupObjectDescriptorRealisationType6) CreateGroupObjectDescriptorRealisationType6Builder() GroupObjectDescriptorRealisationType6Builder {
-	if m == nil {
+func (b *_GroupObjectDescriptorRealisationType6) CreateGroupObjectDescriptorRealisationType6Builder() GroupObjectDescriptorRealisationType6Builder {
+	if b == nil {
 		return NewGroupObjectDescriptorRealisationType6Builder()
 	}
-	return &_GroupObjectDescriptorRealisationType6Builder{_GroupObjectDescriptorRealisationType6: m.deepCopy()}
+	return &_GroupObjectDescriptorRealisationType6Builder{_GroupObjectDescriptorRealisationType6: b.deepCopy()}
 }
 
 ///////////////////////

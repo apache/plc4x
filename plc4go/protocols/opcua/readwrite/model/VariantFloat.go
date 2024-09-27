@@ -99,50 +99,69 @@ func NewVariantFloatBuilder() VariantFloatBuilder {
 type _VariantFloatBuilder struct {
 	*_VariantFloat
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantFloatBuilder) = (*_VariantFloatBuilder)(nil)
 
-func (m *_VariantFloatBuilder) WithMandatoryFields(value []float32) VariantFloatBuilder {
-	return m.WithValue(value...)
+func (b *_VariantFloatBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantFloatBuilder) WithOptionalArrayLength(arrayLength int32) VariantFloatBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantFloatBuilder) WithMandatoryFields(value []float32) VariantFloatBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantFloatBuilder) WithValue(value ...float32) VariantFloatBuilder {
-	m.Value = value
-	return m
+func (b *_VariantFloatBuilder) WithOptionalArrayLength(arrayLength int32) VariantFloatBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantFloatBuilder) Build() (VariantFloat, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantFloatBuilder) WithValue(value ...float32) VariantFloatBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantFloatBuilder) Build() (VariantFloat, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantFloat.deepCopy(), nil
+	return b._VariantFloat.deepCopy(), nil
 }
 
-func (m *_VariantFloatBuilder) MustBuild() VariantFloat {
-	build, err := m.Build()
+func (b *_VariantFloatBuilder) MustBuild() VariantFloat {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantFloatBuilder) DeepCopy() any {
-	return m.CreateVariantFloatBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantFloatBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantFloatBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantFloatBuilder) DeepCopy() any {
+	_copy := b.CreateVariantFloatBuilder().(*_VariantFloatBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantFloatBuilder creates a VariantFloatBuilder
-func (m *_VariantFloat) CreateVariantFloatBuilder() VariantFloatBuilder {
-	if m == nil {
+func (b *_VariantFloat) CreateVariantFloatBuilder() VariantFloatBuilder {
+	if b == nil {
 		return NewVariantFloatBuilder()
 	}
-	return &_VariantFloatBuilder{_VariantFloat: m.deepCopy()}
+	return &_VariantFloatBuilder{_VariantFloat: b.deepCopy()}
 }
 
 ///////////////////////

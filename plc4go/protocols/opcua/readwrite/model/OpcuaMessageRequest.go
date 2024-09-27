@@ -96,6 +96,8 @@ type OpcuaMessageRequestBuilder interface {
 	WithSecurityHeaderBuilder(func(SecurityHeaderBuilder) SecurityHeaderBuilder) OpcuaMessageRequestBuilder
 	// WithMessage adds Message (property field)
 	WithMessage(Payload) OpcuaMessageRequestBuilder
+	// WithMessageBuilder adds Message (property field) which is build by the builder
+	WithMessageBuilder(func(PayloadBuilder) PayloadBuilder) OpcuaMessageRequestBuilder
 	// Build builds the OpcuaMessageRequest or returns an error if something is wrong
 	Build() (OpcuaMessageRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,75 +112,107 @@ func NewOpcuaMessageRequestBuilder() OpcuaMessageRequestBuilder {
 type _OpcuaMessageRequestBuilder struct {
 	*_OpcuaMessageRequest
 
+	parentBuilder *_MessagePDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (OpcuaMessageRequestBuilder) = (*_OpcuaMessageRequestBuilder)(nil)
 
-func (m *_OpcuaMessageRequestBuilder) WithMandatoryFields(securityHeader SecurityHeader, message Payload) OpcuaMessageRequestBuilder {
-	return m.WithSecurityHeader(securityHeader).WithMessage(message)
+func (b *_OpcuaMessageRequestBuilder) setParent(contract MessagePDUContract) {
+	b.MessagePDUContract = contract
 }
 
-func (m *_OpcuaMessageRequestBuilder) WithSecurityHeader(securityHeader SecurityHeader) OpcuaMessageRequestBuilder {
-	m.SecurityHeader = securityHeader
-	return m
+func (b *_OpcuaMessageRequestBuilder) WithMandatoryFields(securityHeader SecurityHeader, message Payload) OpcuaMessageRequestBuilder {
+	return b.WithSecurityHeader(securityHeader).WithMessage(message)
 }
 
-func (m *_OpcuaMessageRequestBuilder) WithSecurityHeaderBuilder(builderSupplier func(SecurityHeaderBuilder) SecurityHeaderBuilder) OpcuaMessageRequestBuilder {
-	builder := builderSupplier(m.SecurityHeader.CreateSecurityHeaderBuilder())
+func (b *_OpcuaMessageRequestBuilder) WithSecurityHeader(securityHeader SecurityHeader) OpcuaMessageRequestBuilder {
+	b.SecurityHeader = securityHeader
+	return b
+}
+
+func (b *_OpcuaMessageRequestBuilder) WithSecurityHeaderBuilder(builderSupplier func(SecurityHeaderBuilder) SecurityHeaderBuilder) OpcuaMessageRequestBuilder {
+	builder := builderSupplier(b.SecurityHeader.CreateSecurityHeaderBuilder())
 	var err error
-	m.SecurityHeader, err = builder.Build()
+	b.SecurityHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "SecurityHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "SecurityHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_OpcuaMessageRequestBuilder) WithMessage(message Payload) OpcuaMessageRequestBuilder {
-	m.Message = message
-	return m
+func (b *_OpcuaMessageRequestBuilder) WithMessage(message Payload) OpcuaMessageRequestBuilder {
+	b.Message = message
+	return b
 }
 
-func (m *_OpcuaMessageRequestBuilder) Build() (OpcuaMessageRequest, error) {
-	if m.SecurityHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_OpcuaMessageRequestBuilder) WithMessageBuilder(builderSupplier func(PayloadBuilder) PayloadBuilder) OpcuaMessageRequestBuilder {
+	builder := builderSupplier(b.Message.CreatePayloadBuilder())
+	var err error
+	b.Message, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'securityHeader' not set"))
+		b.err.Append(errors.Wrap(err, "PayloadBuilder failed"))
 	}
-	if m.Message == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'message' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._OpcuaMessageRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_OpcuaMessageRequestBuilder) MustBuild() OpcuaMessageRequest {
-	build, err := m.Build()
+func (b *_OpcuaMessageRequestBuilder) Build() (OpcuaMessageRequest, error) {
+	if b.SecurityHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'securityHeader' not set"))
+	}
+	if b.Message == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'message' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._OpcuaMessageRequest.deepCopy(), nil
+}
+
+func (b *_OpcuaMessageRequestBuilder) MustBuild() OpcuaMessageRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_OpcuaMessageRequestBuilder) DeepCopy() any {
-	return m.CreateOpcuaMessageRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OpcuaMessageRequestBuilder) Done() MessagePDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OpcuaMessageRequestBuilder) buildForMessagePDU() (MessagePDU, error) {
+	return b.Build()
+}
+
+func (b *_OpcuaMessageRequestBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaMessageRequestBuilder().(*_OpcuaMessageRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateOpcuaMessageRequestBuilder creates a OpcuaMessageRequestBuilder
-func (m *_OpcuaMessageRequest) CreateOpcuaMessageRequestBuilder() OpcuaMessageRequestBuilder {
-	if m == nil {
+func (b *_OpcuaMessageRequest) CreateOpcuaMessageRequestBuilder() OpcuaMessageRequestBuilder {
+	if b == nil {
 		return NewOpcuaMessageRequestBuilder()
 	}
-	return &_OpcuaMessageRequestBuilder{_OpcuaMessageRequest: m.deepCopy()}
+	return &_OpcuaMessageRequestBuilder{_OpcuaMessageRequest: b.deepCopy()}
 }
 
 ///////////////////////

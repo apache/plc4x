@@ -85,40 +85,59 @@ func NewSecurityDataMainsFailureBuilder() SecurityDataMainsFailureBuilder {
 type _SecurityDataMainsFailureBuilder struct {
 	*_SecurityDataMainsFailure
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataMainsFailureBuilder) = (*_SecurityDataMainsFailureBuilder)(nil)
 
-func (m *_SecurityDataMainsFailureBuilder) WithMandatoryFields() SecurityDataMainsFailureBuilder {
-	return m
+func (b *_SecurityDataMainsFailureBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataMainsFailureBuilder) Build() (SecurityDataMainsFailure, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataMainsFailureBuilder) WithMandatoryFields() SecurityDataMainsFailureBuilder {
+	return b
+}
+
+func (b *_SecurityDataMainsFailureBuilder) Build() (SecurityDataMainsFailure, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataMainsFailure.deepCopy(), nil
+	return b._SecurityDataMainsFailure.deepCopy(), nil
 }
 
-func (m *_SecurityDataMainsFailureBuilder) MustBuild() SecurityDataMainsFailure {
-	build, err := m.Build()
+func (b *_SecurityDataMainsFailureBuilder) MustBuild() SecurityDataMainsFailure {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataMainsFailureBuilder) DeepCopy() any {
-	return m.CreateSecurityDataMainsFailureBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataMainsFailureBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataMainsFailureBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataMainsFailureBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataMainsFailureBuilder().(*_SecurityDataMainsFailureBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataMainsFailureBuilder creates a SecurityDataMainsFailureBuilder
-func (m *_SecurityDataMainsFailure) CreateSecurityDataMainsFailureBuilder() SecurityDataMainsFailureBuilder {
-	if m == nil {
+func (b *_SecurityDataMainsFailure) CreateSecurityDataMainsFailureBuilder() SecurityDataMainsFailureBuilder {
+	if b == nil {
 		return NewSecurityDataMainsFailureBuilder()
 	}
-	return &_SecurityDataMainsFailureBuilder{_SecurityDataMainsFailure: m.deepCopy()}
+	return &_SecurityDataMainsFailureBuilder{_SecurityDataMainsFailure: b.deepCopy()}
 }
 
 ///////////////////////

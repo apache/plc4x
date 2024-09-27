@@ -111,69 +111,73 @@ type _ErrorCodeTaggedBuilder struct {
 
 var _ (ErrorCodeTaggedBuilder) = (*_ErrorCodeTaggedBuilder)(nil)
 
-func (m *_ErrorCodeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value ErrorCode, proprietaryValue uint32) ErrorCodeTaggedBuilder {
-	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_ErrorCodeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value ErrorCode, proprietaryValue uint32) ErrorCodeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_ErrorCodeTaggedBuilder) WithHeader(header BACnetTagHeader) ErrorCodeTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_ErrorCodeTaggedBuilder) WithHeader(header BACnetTagHeader) ErrorCodeTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_ErrorCodeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) ErrorCodeTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_ErrorCodeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) ErrorCodeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ErrorCodeTaggedBuilder) WithValue(value ErrorCode) ErrorCodeTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_ErrorCodeTaggedBuilder) WithValue(value ErrorCode) ErrorCodeTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_ErrorCodeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) ErrorCodeTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_ErrorCodeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) ErrorCodeTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_ErrorCodeTaggedBuilder) Build() (ErrorCodeTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ErrorCodeTaggedBuilder) Build() (ErrorCodeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ErrorCodeTagged.deepCopy(), nil
+	return b._ErrorCodeTagged.deepCopy(), nil
 }
 
-func (m *_ErrorCodeTaggedBuilder) MustBuild() ErrorCodeTagged {
-	build, err := m.Build()
+func (b *_ErrorCodeTaggedBuilder) MustBuild() ErrorCodeTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ErrorCodeTaggedBuilder) DeepCopy() any {
-	return m.CreateErrorCodeTaggedBuilder()
+func (b *_ErrorCodeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateErrorCodeTaggedBuilder().(*_ErrorCodeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateErrorCodeTaggedBuilder creates a ErrorCodeTaggedBuilder
-func (m *_ErrorCodeTagged) CreateErrorCodeTaggedBuilder() ErrorCodeTaggedBuilder {
-	if m == nil {
+func (b *_ErrorCodeTagged) CreateErrorCodeTaggedBuilder() ErrorCodeTaggedBuilder {
+	if b == nil {
 		return NewErrorCodeTaggedBuilder()
 	}
-	return &_ErrorCodeTaggedBuilder{_ErrorCodeTagged: m.deepCopy()}
+	return &_ErrorCodeTaggedBuilder{_ErrorCodeTagged: b.deepCopy()}
 }
 
 ///////////////////////

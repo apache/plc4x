@@ -85,40 +85,59 @@ func NewApduDataExtDomainAddressWriteBuilder() ApduDataExtDomainAddressWriteBuil
 type _ApduDataExtDomainAddressWriteBuilder struct {
 	*_ApduDataExtDomainAddressWrite
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtDomainAddressWriteBuilder) = (*_ApduDataExtDomainAddressWriteBuilder)(nil)
 
-func (m *_ApduDataExtDomainAddressWriteBuilder) WithMandatoryFields() ApduDataExtDomainAddressWriteBuilder {
-	return m
+func (b *_ApduDataExtDomainAddressWriteBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtDomainAddressWriteBuilder) Build() (ApduDataExtDomainAddressWrite, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtDomainAddressWriteBuilder) WithMandatoryFields() ApduDataExtDomainAddressWriteBuilder {
+	return b
+}
+
+func (b *_ApduDataExtDomainAddressWriteBuilder) Build() (ApduDataExtDomainAddressWrite, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtDomainAddressWrite.deepCopy(), nil
+	return b._ApduDataExtDomainAddressWrite.deepCopy(), nil
 }
 
-func (m *_ApduDataExtDomainAddressWriteBuilder) MustBuild() ApduDataExtDomainAddressWrite {
-	build, err := m.Build()
+func (b *_ApduDataExtDomainAddressWriteBuilder) MustBuild() ApduDataExtDomainAddressWrite {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtDomainAddressWriteBuilder) DeepCopy() any {
-	return m.CreateApduDataExtDomainAddressWriteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtDomainAddressWriteBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtDomainAddressWriteBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtDomainAddressWriteBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtDomainAddressWriteBuilder().(*_ApduDataExtDomainAddressWriteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtDomainAddressWriteBuilder creates a ApduDataExtDomainAddressWriteBuilder
-func (m *_ApduDataExtDomainAddressWrite) CreateApduDataExtDomainAddressWriteBuilder() ApduDataExtDomainAddressWriteBuilder {
-	if m == nil {
+func (b *_ApduDataExtDomainAddressWrite) CreateApduDataExtDomainAddressWriteBuilder() ApduDataExtDomainAddressWriteBuilder {
+	if b == nil {
 		return NewApduDataExtDomainAddressWriteBuilder()
 	}
-	return &_ApduDataExtDomainAddressWriteBuilder{_ApduDataExtDomainAddressWrite: m.deepCopy()}
+	return &_ApduDataExtDomainAddressWriteBuilder{_ApduDataExtDomainAddressWrite: b.deepCopy()}
 }
 
 ///////////////////////

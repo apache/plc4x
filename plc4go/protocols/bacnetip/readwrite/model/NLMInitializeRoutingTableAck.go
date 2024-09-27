@@ -99,50 +99,69 @@ func NewNLMInitializeRoutingTableAckBuilder() NLMInitializeRoutingTableAckBuilde
 type _NLMInitializeRoutingTableAckBuilder struct {
 	*_NLMInitializeRoutingTableAck
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMInitializeRoutingTableAckBuilder) = (*_NLMInitializeRoutingTableAckBuilder)(nil)
 
-func (m *_NLMInitializeRoutingTableAckBuilder) WithMandatoryFields(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableAckBuilder {
-	return m.WithNumberOfPorts(numberOfPorts).WithPortMappings(portMappings...)
+func (b *_NLMInitializeRoutingTableAckBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMInitializeRoutingTableAckBuilder) WithNumberOfPorts(numberOfPorts uint8) NLMInitializeRoutingTableAckBuilder {
-	m.NumberOfPorts = numberOfPorts
-	return m
+func (b *_NLMInitializeRoutingTableAckBuilder) WithMandatoryFields(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableAckBuilder {
+	return b.WithNumberOfPorts(numberOfPorts).WithPortMappings(portMappings...)
 }
 
-func (m *_NLMInitializeRoutingTableAckBuilder) WithPortMappings(portMappings ...NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableAckBuilder {
-	m.PortMappings = portMappings
-	return m
+func (b *_NLMInitializeRoutingTableAckBuilder) WithNumberOfPorts(numberOfPorts uint8) NLMInitializeRoutingTableAckBuilder {
+	b.NumberOfPorts = numberOfPorts
+	return b
 }
 
-func (m *_NLMInitializeRoutingTableAckBuilder) Build() (NLMInitializeRoutingTableAck, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMInitializeRoutingTableAckBuilder) WithPortMappings(portMappings ...NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableAckBuilder {
+	b.PortMappings = portMappings
+	return b
+}
+
+func (b *_NLMInitializeRoutingTableAckBuilder) Build() (NLMInitializeRoutingTableAck, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMInitializeRoutingTableAck.deepCopy(), nil
+	return b._NLMInitializeRoutingTableAck.deepCopy(), nil
 }
 
-func (m *_NLMInitializeRoutingTableAckBuilder) MustBuild() NLMInitializeRoutingTableAck {
-	build, err := m.Build()
+func (b *_NLMInitializeRoutingTableAckBuilder) MustBuild() NLMInitializeRoutingTableAck {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMInitializeRoutingTableAckBuilder) DeepCopy() any {
-	return m.CreateNLMInitializeRoutingTableAckBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMInitializeRoutingTableAckBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMInitializeRoutingTableAckBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMInitializeRoutingTableAckBuilder) DeepCopy() any {
+	_copy := b.CreateNLMInitializeRoutingTableAckBuilder().(*_NLMInitializeRoutingTableAckBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMInitializeRoutingTableAckBuilder creates a NLMInitializeRoutingTableAckBuilder
-func (m *_NLMInitializeRoutingTableAck) CreateNLMInitializeRoutingTableAckBuilder() NLMInitializeRoutingTableAckBuilder {
-	if m == nil {
+func (b *_NLMInitializeRoutingTableAck) CreateNLMInitializeRoutingTableAckBuilder() NLMInitializeRoutingTableAckBuilder {
+	if b == nil {
 		return NewNLMInitializeRoutingTableAckBuilder()
 	}
-	return &_NLMInitializeRoutingTableAckBuilder{_NLMInitializeRoutingTableAck: m.deepCopy()}
+	return &_NLMInitializeRoutingTableAckBuilder{_NLMInitializeRoutingTableAck: b.deepCopy()}
 }
 
 ///////////////////////

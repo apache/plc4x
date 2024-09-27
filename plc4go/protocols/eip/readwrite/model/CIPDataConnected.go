@@ -95,45 +95,49 @@ type _CIPDataConnectedBuilder struct {
 
 var _ (CIPDataConnectedBuilder) = (*_CIPDataConnectedBuilder)(nil)
 
-func (m *_CIPDataConnectedBuilder) WithMandatoryFields(value uint32, tagStatus uint16) CIPDataConnectedBuilder {
-	return m.WithValue(value).WithTagStatus(tagStatus)
+func (b *_CIPDataConnectedBuilder) WithMandatoryFields(value uint32, tagStatus uint16) CIPDataConnectedBuilder {
+	return b.WithValue(value).WithTagStatus(tagStatus)
 }
 
-func (m *_CIPDataConnectedBuilder) WithValue(value uint32) CIPDataConnectedBuilder {
-	m.Value = value
-	return m
+func (b *_CIPDataConnectedBuilder) WithValue(value uint32) CIPDataConnectedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_CIPDataConnectedBuilder) WithTagStatus(tagStatus uint16) CIPDataConnectedBuilder {
-	m.TagStatus = tagStatus
-	return m
+func (b *_CIPDataConnectedBuilder) WithTagStatus(tagStatus uint16) CIPDataConnectedBuilder {
+	b.TagStatus = tagStatus
+	return b
 }
 
-func (m *_CIPDataConnectedBuilder) Build() (CIPDataConnected, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CIPDataConnectedBuilder) Build() (CIPDataConnected, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CIPDataConnected.deepCopy(), nil
+	return b._CIPDataConnected.deepCopy(), nil
 }
 
-func (m *_CIPDataConnectedBuilder) MustBuild() CIPDataConnected {
-	build, err := m.Build()
+func (b *_CIPDataConnectedBuilder) MustBuild() CIPDataConnected {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CIPDataConnectedBuilder) DeepCopy() any {
-	return m.CreateCIPDataConnectedBuilder()
+func (b *_CIPDataConnectedBuilder) DeepCopy() any {
+	_copy := b.CreateCIPDataConnectedBuilder().(*_CIPDataConnectedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCIPDataConnectedBuilder creates a CIPDataConnectedBuilder
-func (m *_CIPDataConnected) CreateCIPDataConnectedBuilder() CIPDataConnectedBuilder {
-	if m == nil {
+func (b *_CIPDataConnected) CreateCIPDataConnectedBuilder() CIPDataConnectedBuilder {
+	if b == nil {
 		return NewCIPDataConnectedBuilder()
 	}
-	return &_CIPDataConnectedBuilder{_CIPDataConnected: m.deepCopy()}
+	return &_CIPDataConnectedBuilder{_CIPDataConnected: b.deepCopy()}
 }
 
 ///////////////////////

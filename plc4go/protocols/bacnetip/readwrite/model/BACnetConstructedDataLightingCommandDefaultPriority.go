@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLightingCommandDefaultPriorityBuilder() BACnetConst
 type _BACnetConstructedDataLightingCommandDefaultPriorityBuilder struct {
 	*_BACnetConstructedDataLightingCommandDefaultPriority
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLightingCommandDefaultPriorityBuilder) = (*_BACnetConstructedDataLightingCommandDefaultPriorityBuilder)(nil)
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) WithMandatoryFields(lightingCommandDefaultPriority BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLightingCommandDefaultPriorityBuilder {
-	return m.WithLightingCommandDefaultPriority(lightingCommandDefaultPriority)
+func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) WithLightingCommandDefaultPriority(lightingCommandDefaultPriority BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLightingCommandDefaultPriorityBuilder {
-	m.LightingCommandDefaultPriority = lightingCommandDefaultPriority
-	return m
+func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) WithMandatoryFields(lightingCommandDefaultPriority BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLightingCommandDefaultPriorityBuilder {
+	return b.WithLightingCommandDefaultPriority(lightingCommandDefaultPriority)
 }
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) WithLightingCommandDefaultPriorityBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLightingCommandDefaultPriorityBuilder {
-	builder := builderSupplier(m.LightingCommandDefaultPriority.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) WithLightingCommandDefaultPriority(lightingCommandDefaultPriority BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLightingCommandDefaultPriorityBuilder {
+	b.LightingCommandDefaultPriority = lightingCommandDefaultPriority
+	return b
+}
+
+func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) WithLightingCommandDefaultPriorityBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLightingCommandDefaultPriorityBuilder {
+	builder := builderSupplier(b.LightingCommandDefaultPriority.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.LightingCommandDefaultPriority, err = builder.Build()
+	b.LightingCommandDefaultPriority, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) Build() (BACnetConstructedDataLightingCommandDefaultPriority, error) {
-	if m.LightingCommandDefaultPriority == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) Build() (BACnetConstructedDataLightingCommandDefaultPriority, error) {
+	if b.LightingCommandDefaultPriority == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lightingCommandDefaultPriority' not set"))
+		b.err.Append(errors.New("mandatory field 'lightingCommandDefaultPriority' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLightingCommandDefaultPriority.deepCopy(), nil
+	return b._BACnetConstructedDataLightingCommandDefaultPriority.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) MustBuild() BACnetConstructedDataLightingCommandDefaultPriority {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) MustBuild() BACnetConstructedDataLightingCommandDefaultPriority {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLightingCommandDefaultPriorityBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLightingCommandDefaultPriorityBuilder().(*_BACnetConstructedDataLightingCommandDefaultPriorityBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLightingCommandDefaultPriorityBuilder creates a BACnetConstructedDataLightingCommandDefaultPriorityBuilder
-func (m *_BACnetConstructedDataLightingCommandDefaultPriority) CreateBACnetConstructedDataLightingCommandDefaultPriorityBuilder() BACnetConstructedDataLightingCommandDefaultPriorityBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLightingCommandDefaultPriority) CreateBACnetConstructedDataLightingCommandDefaultPriorityBuilder() BACnetConstructedDataLightingCommandDefaultPriorityBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLightingCommandDefaultPriorityBuilder()
 	}
-	return &_BACnetConstructedDataLightingCommandDefaultPriorityBuilder{_BACnetConstructedDataLightingCommandDefaultPriority: m.deepCopy()}
+	return &_BACnetConstructedDataLightingCommandDefaultPriorityBuilder{_BACnetConstructedDataLightingCommandDefaultPriority: b.deepCopy()}
 }
 
 ///////////////////////

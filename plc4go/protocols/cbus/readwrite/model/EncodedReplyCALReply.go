@@ -82,6 +82,8 @@ type EncodedReplyCALReplyBuilder interface {
 	WithMandatoryFields(calReply CALReply) EncodedReplyCALReplyBuilder
 	// WithCalReply adds CalReply (property field)
 	WithCalReply(CALReply) EncodedReplyCALReplyBuilder
+	// WithCalReplyBuilder adds CalReply (property field) which is build by the builder
+	WithCalReplyBuilder(func(CALReplyBuilder) CALReplyBuilder) EncodedReplyCALReplyBuilder
 	// Build builds the EncodedReplyCALReply or returns an error if something is wrong
 	Build() (EncodedReplyCALReply, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewEncodedReplyCALReplyBuilder() EncodedReplyCALReplyBuilder {
 type _EncodedReplyCALReplyBuilder struct {
 	*_EncodedReplyCALReply
 
+	parentBuilder *_EncodedReplyBuilder
+
 	err *utils.MultiError
 }
 
 var _ (EncodedReplyCALReplyBuilder) = (*_EncodedReplyCALReplyBuilder)(nil)
 
-func (m *_EncodedReplyCALReplyBuilder) WithMandatoryFields(calReply CALReply) EncodedReplyCALReplyBuilder {
-	return m.WithCalReply(calReply)
+func (b *_EncodedReplyCALReplyBuilder) setParent(contract EncodedReplyContract) {
+	b.EncodedReplyContract = contract
 }
 
-func (m *_EncodedReplyCALReplyBuilder) WithCalReply(calReply CALReply) EncodedReplyCALReplyBuilder {
-	m.CalReply = calReply
-	return m
+func (b *_EncodedReplyCALReplyBuilder) WithMandatoryFields(calReply CALReply) EncodedReplyCALReplyBuilder {
+	return b.WithCalReply(calReply)
 }
 
-func (m *_EncodedReplyCALReplyBuilder) Build() (EncodedReplyCALReply, error) {
-	if m.CalReply == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_EncodedReplyCALReplyBuilder) WithCalReply(calReply CALReply) EncodedReplyCALReplyBuilder {
+	b.CalReply = calReply
+	return b
+}
+
+func (b *_EncodedReplyCALReplyBuilder) WithCalReplyBuilder(builderSupplier func(CALReplyBuilder) CALReplyBuilder) EncodedReplyCALReplyBuilder {
+	builder := builderSupplier(b.CalReply.CreateCALReplyBuilder())
+	var err error
+	b.CalReply, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'calReply' not set"))
+		b.err.Append(errors.Wrap(err, "CALReplyBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._EncodedReplyCALReply.deepCopy(), nil
+	return b
 }
 
-func (m *_EncodedReplyCALReplyBuilder) MustBuild() EncodedReplyCALReply {
-	build, err := m.Build()
+func (b *_EncodedReplyCALReplyBuilder) Build() (EncodedReplyCALReply, error) {
+	if b.CalReply == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'calReply' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._EncodedReplyCALReply.deepCopy(), nil
+}
+
+func (b *_EncodedReplyCALReplyBuilder) MustBuild() EncodedReplyCALReply {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EncodedReplyCALReplyBuilder) DeepCopy() any {
-	return m.CreateEncodedReplyCALReplyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EncodedReplyCALReplyBuilder) Done() EncodedReplyBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EncodedReplyCALReplyBuilder) buildForEncodedReply() (EncodedReply, error) {
+	return b.Build()
+}
+
+func (b *_EncodedReplyCALReplyBuilder) DeepCopy() any {
+	_copy := b.CreateEncodedReplyCALReplyBuilder().(*_EncodedReplyCALReplyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEncodedReplyCALReplyBuilder creates a EncodedReplyCALReplyBuilder
-func (m *_EncodedReplyCALReply) CreateEncodedReplyCALReplyBuilder() EncodedReplyCALReplyBuilder {
-	if m == nil {
+func (b *_EncodedReplyCALReply) CreateEncodedReplyCALReplyBuilder() EncodedReplyCALReplyBuilder {
+	if b == nil {
 		return NewEncodedReplyCALReplyBuilder()
 	}
-	return &_EncodedReplyCALReplyBuilder{_EncodedReplyCALReply: m.deepCopy()}
+	return &_EncodedReplyCALReplyBuilder{_EncodedReplyCALReply: b.deepCopy()}
 }
 
 ///////////////////////

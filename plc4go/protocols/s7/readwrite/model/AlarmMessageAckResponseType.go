@@ -100,50 +100,54 @@ type _AlarmMessageAckResponseTypeBuilder struct {
 
 var _ (AlarmMessageAckResponseTypeBuilder) = (*_AlarmMessageAckResponseTypeBuilder)(nil)
 
-func (m *_AlarmMessageAckResponseTypeBuilder) WithMandatoryFields(functionId uint8, numberOfObjects uint8, messageObjects []uint8) AlarmMessageAckResponseTypeBuilder {
-	return m.WithFunctionId(functionId).WithNumberOfObjects(numberOfObjects).WithMessageObjects(messageObjects...)
+func (b *_AlarmMessageAckResponseTypeBuilder) WithMandatoryFields(functionId uint8, numberOfObjects uint8, messageObjects []uint8) AlarmMessageAckResponseTypeBuilder {
+	return b.WithFunctionId(functionId).WithNumberOfObjects(numberOfObjects).WithMessageObjects(messageObjects...)
 }
 
-func (m *_AlarmMessageAckResponseTypeBuilder) WithFunctionId(functionId uint8) AlarmMessageAckResponseTypeBuilder {
-	m.FunctionId = functionId
-	return m
+func (b *_AlarmMessageAckResponseTypeBuilder) WithFunctionId(functionId uint8) AlarmMessageAckResponseTypeBuilder {
+	b.FunctionId = functionId
+	return b
 }
 
-func (m *_AlarmMessageAckResponseTypeBuilder) WithNumberOfObjects(numberOfObjects uint8) AlarmMessageAckResponseTypeBuilder {
-	m.NumberOfObjects = numberOfObjects
-	return m
+func (b *_AlarmMessageAckResponseTypeBuilder) WithNumberOfObjects(numberOfObjects uint8) AlarmMessageAckResponseTypeBuilder {
+	b.NumberOfObjects = numberOfObjects
+	return b
 }
 
-func (m *_AlarmMessageAckResponseTypeBuilder) WithMessageObjects(messageObjects ...uint8) AlarmMessageAckResponseTypeBuilder {
-	m.MessageObjects = messageObjects
-	return m
+func (b *_AlarmMessageAckResponseTypeBuilder) WithMessageObjects(messageObjects ...uint8) AlarmMessageAckResponseTypeBuilder {
+	b.MessageObjects = messageObjects
+	return b
 }
 
-func (m *_AlarmMessageAckResponseTypeBuilder) Build() (AlarmMessageAckResponseType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AlarmMessageAckResponseTypeBuilder) Build() (AlarmMessageAckResponseType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AlarmMessageAckResponseType.deepCopy(), nil
+	return b._AlarmMessageAckResponseType.deepCopy(), nil
 }
 
-func (m *_AlarmMessageAckResponseTypeBuilder) MustBuild() AlarmMessageAckResponseType {
-	build, err := m.Build()
+func (b *_AlarmMessageAckResponseTypeBuilder) MustBuild() AlarmMessageAckResponseType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AlarmMessageAckResponseTypeBuilder) DeepCopy() any {
-	return m.CreateAlarmMessageAckResponseTypeBuilder()
+func (b *_AlarmMessageAckResponseTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAlarmMessageAckResponseTypeBuilder().(*_AlarmMessageAckResponseTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAlarmMessageAckResponseTypeBuilder creates a AlarmMessageAckResponseTypeBuilder
-func (m *_AlarmMessageAckResponseType) CreateAlarmMessageAckResponseTypeBuilder() AlarmMessageAckResponseTypeBuilder {
-	if m == nil {
+func (b *_AlarmMessageAckResponseType) CreateAlarmMessageAckResponseTypeBuilder() AlarmMessageAckResponseTypeBuilder {
+	if b == nil {
 		return NewAlarmMessageAckResponseTypeBuilder()
 	}
-	return &_AlarmMessageAckResponseTypeBuilder{_AlarmMessageAckResponseType: m.deepCopy()}
+	return &_AlarmMessageAckResponseTypeBuilder{_AlarmMessageAckResponseType: b.deepCopy()}
 }
 
 ///////////////////////

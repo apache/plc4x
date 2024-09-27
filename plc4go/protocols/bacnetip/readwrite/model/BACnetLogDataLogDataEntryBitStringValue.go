@@ -98,64 +98,83 @@ func NewBACnetLogDataLogDataEntryBitStringValueBuilder() BACnetLogDataLogDataEnt
 type _BACnetLogDataLogDataEntryBitStringValueBuilder struct {
 	*_BACnetLogDataLogDataEntryBitStringValue
 
+	parentBuilder *_BACnetLogDataLogDataEntryBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetLogDataLogDataEntryBitStringValueBuilder) = (*_BACnetLogDataLogDataEntryBitStringValueBuilder)(nil)
 
-func (m *_BACnetLogDataLogDataEntryBitStringValueBuilder) WithMandatoryFields(bitStringValue BACnetContextTagBitString) BACnetLogDataLogDataEntryBitStringValueBuilder {
-	return m.WithBitStringValue(bitStringValue)
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) setParent(contract BACnetLogDataLogDataEntryContract) {
+	b.BACnetLogDataLogDataEntryContract = contract
 }
 
-func (m *_BACnetLogDataLogDataEntryBitStringValueBuilder) WithBitStringValue(bitStringValue BACnetContextTagBitString) BACnetLogDataLogDataEntryBitStringValueBuilder {
-	m.BitStringValue = bitStringValue
-	return m
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) WithMandatoryFields(bitStringValue BACnetContextTagBitString) BACnetLogDataLogDataEntryBitStringValueBuilder {
+	return b.WithBitStringValue(bitStringValue)
 }
 
-func (m *_BACnetLogDataLogDataEntryBitStringValueBuilder) WithBitStringValueBuilder(builderSupplier func(BACnetContextTagBitStringBuilder) BACnetContextTagBitStringBuilder) BACnetLogDataLogDataEntryBitStringValueBuilder {
-	builder := builderSupplier(m.BitStringValue.CreateBACnetContextTagBitStringBuilder())
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) WithBitStringValue(bitStringValue BACnetContextTagBitString) BACnetLogDataLogDataEntryBitStringValueBuilder {
+	b.BitStringValue = bitStringValue
+	return b
+}
+
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) WithBitStringValueBuilder(builderSupplier func(BACnetContextTagBitStringBuilder) BACnetContextTagBitStringBuilder) BACnetLogDataLogDataEntryBitStringValueBuilder {
+	builder := builderSupplier(b.BitStringValue.CreateBACnetContextTagBitStringBuilder())
 	var err error
-	m.BitStringValue, err = builder.Build()
+	b.BitStringValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagBitStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBitStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogDataLogDataEntryBitStringValueBuilder) Build() (BACnetLogDataLogDataEntryBitStringValue, error) {
-	if m.BitStringValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) Build() (BACnetLogDataLogDataEntryBitStringValue, error) {
+	if b.BitStringValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'bitStringValue' not set"))
+		b.err.Append(errors.New("mandatory field 'bitStringValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLogDataLogDataEntryBitStringValue.deepCopy(), nil
+	return b._BACnetLogDataLogDataEntryBitStringValue.deepCopy(), nil
 }
 
-func (m *_BACnetLogDataLogDataEntryBitStringValueBuilder) MustBuild() BACnetLogDataLogDataEntryBitStringValue {
-	build, err := m.Build()
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) MustBuild() BACnetLogDataLogDataEntryBitStringValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLogDataLogDataEntryBitStringValueBuilder) DeepCopy() any {
-	return m.CreateBACnetLogDataLogDataEntryBitStringValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) Done() BACnetLogDataLogDataEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) buildForBACnetLogDataLogDataEntry() (BACnetLogDataLogDataEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogDataLogDataEntryBitStringValueBuilder().(*_BACnetLogDataLogDataEntryBitStringValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLogDataLogDataEntryBitStringValueBuilder creates a BACnetLogDataLogDataEntryBitStringValueBuilder
-func (m *_BACnetLogDataLogDataEntryBitStringValue) CreateBACnetLogDataLogDataEntryBitStringValueBuilder() BACnetLogDataLogDataEntryBitStringValueBuilder {
-	if m == nil {
+func (b *_BACnetLogDataLogDataEntryBitStringValue) CreateBACnetLogDataLogDataEntryBitStringValueBuilder() BACnetLogDataLogDataEntryBitStringValueBuilder {
+	if b == nil {
 		return NewBACnetLogDataLogDataEntryBitStringValueBuilder()
 	}
-	return &_BACnetLogDataLogDataEntryBitStringValueBuilder{_BACnetLogDataLogDataEntryBitStringValue: m.deepCopy()}
+	return &_BACnetLogDataLogDataEntryBitStringValueBuilder{_BACnetLogDataLogDataEntryBitStringValue: b.deepCopy()}
 }
 
 ///////////////////////

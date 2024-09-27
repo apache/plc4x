@@ -121,98 +121,117 @@ func NewCurrencyUnitTypeBuilder() CurrencyUnitTypeBuilder {
 type _CurrencyUnitTypeBuilder struct {
 	*_CurrencyUnitType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CurrencyUnitTypeBuilder) = (*_CurrencyUnitTypeBuilder)(nil)
 
-func (m *_CurrencyUnitTypeBuilder) WithMandatoryFields(numericCode int16, exponent int8, alphabeticCode PascalString, currency LocalizedText) CurrencyUnitTypeBuilder {
-	return m.WithNumericCode(numericCode).WithExponent(exponent).WithAlphabeticCode(alphabeticCode).WithCurrency(currency)
+func (b *_CurrencyUnitTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_CurrencyUnitTypeBuilder) WithNumericCode(numericCode int16) CurrencyUnitTypeBuilder {
-	m.NumericCode = numericCode
-	return m
+func (b *_CurrencyUnitTypeBuilder) WithMandatoryFields(numericCode int16, exponent int8, alphabeticCode PascalString, currency LocalizedText) CurrencyUnitTypeBuilder {
+	return b.WithNumericCode(numericCode).WithExponent(exponent).WithAlphabeticCode(alphabeticCode).WithCurrency(currency)
 }
 
-func (m *_CurrencyUnitTypeBuilder) WithExponent(exponent int8) CurrencyUnitTypeBuilder {
-	m.Exponent = exponent
-	return m
+func (b *_CurrencyUnitTypeBuilder) WithNumericCode(numericCode int16) CurrencyUnitTypeBuilder {
+	b.NumericCode = numericCode
+	return b
 }
 
-func (m *_CurrencyUnitTypeBuilder) WithAlphabeticCode(alphabeticCode PascalString) CurrencyUnitTypeBuilder {
-	m.AlphabeticCode = alphabeticCode
-	return m
+func (b *_CurrencyUnitTypeBuilder) WithExponent(exponent int8) CurrencyUnitTypeBuilder {
+	b.Exponent = exponent
+	return b
 }
 
-func (m *_CurrencyUnitTypeBuilder) WithAlphabeticCodeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) CurrencyUnitTypeBuilder {
-	builder := builderSupplier(m.AlphabeticCode.CreatePascalStringBuilder())
+func (b *_CurrencyUnitTypeBuilder) WithAlphabeticCode(alphabeticCode PascalString) CurrencyUnitTypeBuilder {
+	b.AlphabeticCode = alphabeticCode
+	return b
+}
+
+func (b *_CurrencyUnitTypeBuilder) WithAlphabeticCodeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) CurrencyUnitTypeBuilder {
+	builder := builderSupplier(b.AlphabeticCode.CreatePascalStringBuilder())
 	var err error
-	m.AlphabeticCode, err = builder.Build()
+	b.AlphabeticCode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CurrencyUnitTypeBuilder) WithCurrency(currency LocalizedText) CurrencyUnitTypeBuilder {
-	m.Currency = currency
-	return m
+func (b *_CurrencyUnitTypeBuilder) WithCurrency(currency LocalizedText) CurrencyUnitTypeBuilder {
+	b.Currency = currency
+	return b
 }
 
-func (m *_CurrencyUnitTypeBuilder) WithCurrencyBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) CurrencyUnitTypeBuilder {
-	builder := builderSupplier(m.Currency.CreateLocalizedTextBuilder())
+func (b *_CurrencyUnitTypeBuilder) WithCurrencyBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) CurrencyUnitTypeBuilder {
+	builder := builderSupplier(b.Currency.CreateLocalizedTextBuilder())
 	var err error
-	m.Currency, err = builder.Build()
+	b.Currency, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CurrencyUnitTypeBuilder) Build() (CurrencyUnitType, error) {
-	if m.AlphabeticCode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CurrencyUnitTypeBuilder) Build() (CurrencyUnitType, error) {
+	if b.AlphabeticCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'alphabeticCode' not set"))
+		b.err.Append(errors.New("mandatory field 'alphabeticCode' not set"))
 	}
-	if m.Currency == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Currency == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'currency' not set"))
+		b.err.Append(errors.New("mandatory field 'currency' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CurrencyUnitType.deepCopy(), nil
+	return b._CurrencyUnitType.deepCopy(), nil
 }
 
-func (m *_CurrencyUnitTypeBuilder) MustBuild() CurrencyUnitType {
-	build, err := m.Build()
+func (b *_CurrencyUnitTypeBuilder) MustBuild() CurrencyUnitType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CurrencyUnitTypeBuilder) DeepCopy() any {
-	return m.CreateCurrencyUnitTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CurrencyUnitTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CurrencyUnitTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_CurrencyUnitTypeBuilder) DeepCopy() any {
+	_copy := b.CreateCurrencyUnitTypeBuilder().(*_CurrencyUnitTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCurrencyUnitTypeBuilder creates a CurrencyUnitTypeBuilder
-func (m *_CurrencyUnitType) CreateCurrencyUnitTypeBuilder() CurrencyUnitTypeBuilder {
-	if m == nil {
+func (b *_CurrencyUnitType) CreateCurrencyUnitTypeBuilder() CurrencyUnitTypeBuilder {
+	if b == nil {
 		return NewCurrencyUnitTypeBuilder()
 	}
-	return &_CurrencyUnitTypeBuilder{_CurrencyUnitType: m.deepCopy()}
+	return &_CurrencyUnitTypeBuilder{_CurrencyUnitType: b.deepCopy()}
 }
 
 ///////////////////////

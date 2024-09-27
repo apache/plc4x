@@ -146,75 +146,79 @@ type _BACnetTagPayloadUnsignedIntegerBuilder struct {
 
 var _ (BACnetTagPayloadUnsignedIntegerBuilder) = (*_BACnetTagPayloadUnsignedIntegerBuilder)(nil)
 
-func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithMandatoryFields() BACnetTagPayloadUnsignedIntegerBuilder {
-	return m
+func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithMandatoryFields() BACnetTagPayloadUnsignedIntegerBuilder {
+	return b
 }
 
-func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint8(valueUint8 uint8) BACnetTagPayloadUnsignedIntegerBuilder {
-	m.ValueUint8 = &valueUint8
-	return m
+func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint8(valueUint8 uint8) BACnetTagPayloadUnsignedIntegerBuilder {
+	b.ValueUint8 = &valueUint8
+	return b
 }
 
-func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint16(valueUint16 uint16) BACnetTagPayloadUnsignedIntegerBuilder {
-	m.ValueUint16 = &valueUint16
-	return m
+func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint16(valueUint16 uint16) BACnetTagPayloadUnsignedIntegerBuilder {
+	b.ValueUint16 = &valueUint16
+	return b
 }
 
-func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint24(valueUint24 uint32) BACnetTagPayloadUnsignedIntegerBuilder {
-	m.ValueUint24 = &valueUint24
-	return m
+func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint24(valueUint24 uint32) BACnetTagPayloadUnsignedIntegerBuilder {
+	b.ValueUint24 = &valueUint24
+	return b
 }
 
-func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint32(valueUint32 uint32) BACnetTagPayloadUnsignedIntegerBuilder {
-	m.ValueUint32 = &valueUint32
-	return m
+func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint32(valueUint32 uint32) BACnetTagPayloadUnsignedIntegerBuilder {
+	b.ValueUint32 = &valueUint32
+	return b
 }
 
-func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint40(valueUint40 uint64) BACnetTagPayloadUnsignedIntegerBuilder {
-	m.ValueUint40 = &valueUint40
-	return m
+func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint40(valueUint40 uint64) BACnetTagPayloadUnsignedIntegerBuilder {
+	b.ValueUint40 = &valueUint40
+	return b
 }
 
-func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint48(valueUint48 uint64) BACnetTagPayloadUnsignedIntegerBuilder {
-	m.ValueUint48 = &valueUint48
-	return m
+func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint48(valueUint48 uint64) BACnetTagPayloadUnsignedIntegerBuilder {
+	b.ValueUint48 = &valueUint48
+	return b
 }
 
-func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint56(valueUint56 uint64) BACnetTagPayloadUnsignedIntegerBuilder {
-	m.ValueUint56 = &valueUint56
-	return m
+func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint56(valueUint56 uint64) BACnetTagPayloadUnsignedIntegerBuilder {
+	b.ValueUint56 = &valueUint56
+	return b
 }
 
-func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint64(valueUint64 uint64) BACnetTagPayloadUnsignedIntegerBuilder {
-	m.ValueUint64 = &valueUint64
-	return m
+func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint64(valueUint64 uint64) BACnetTagPayloadUnsignedIntegerBuilder {
+	b.ValueUint64 = &valueUint64
+	return b
 }
 
-func (m *_BACnetTagPayloadUnsignedIntegerBuilder) Build() (BACnetTagPayloadUnsignedInteger, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetTagPayloadUnsignedIntegerBuilder) Build() (BACnetTagPayloadUnsignedInteger, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTagPayloadUnsignedInteger.deepCopy(), nil
+	return b._BACnetTagPayloadUnsignedInteger.deepCopy(), nil
 }
 
-func (m *_BACnetTagPayloadUnsignedIntegerBuilder) MustBuild() BACnetTagPayloadUnsignedInteger {
-	build, err := m.Build()
+func (b *_BACnetTagPayloadUnsignedIntegerBuilder) MustBuild() BACnetTagPayloadUnsignedInteger {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTagPayloadUnsignedIntegerBuilder) DeepCopy() any {
-	return m.CreateBACnetTagPayloadUnsignedIntegerBuilder()
+func (b *_BACnetTagPayloadUnsignedIntegerBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadUnsignedIntegerBuilder().(*_BACnetTagPayloadUnsignedIntegerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTagPayloadUnsignedIntegerBuilder creates a BACnetTagPayloadUnsignedIntegerBuilder
-func (m *_BACnetTagPayloadUnsignedInteger) CreateBACnetTagPayloadUnsignedIntegerBuilder() BACnetTagPayloadUnsignedIntegerBuilder {
-	if m == nil {
+func (b *_BACnetTagPayloadUnsignedInteger) CreateBACnetTagPayloadUnsignedIntegerBuilder() BACnetTagPayloadUnsignedIntegerBuilder {
+	if b == nil {
 		return NewBACnetTagPayloadUnsignedIntegerBuilder()
 	}
-	return &_BACnetTagPayloadUnsignedIntegerBuilder{_BACnetTagPayloadUnsignedInteger: m.deepCopy()}
+	return &_BACnetTagPayloadUnsignedIntegerBuilder{_BACnetTagPayloadUnsignedInteger: b.deepCopy()}
 }
 
 ///////////////////////

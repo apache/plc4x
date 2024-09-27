@@ -110,74 +110,93 @@ func NewS7PayloadUserDataItemClkFResponseBuilder() S7PayloadUserDataItemClkFResp
 type _S7PayloadUserDataItemClkFResponseBuilder struct {
 	*_S7PayloadUserDataItemClkFResponse
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadUserDataItemClkFResponseBuilder) = (*_S7PayloadUserDataItemClkFResponseBuilder)(nil)
 
-func (m *_S7PayloadUserDataItemClkFResponseBuilder) WithMandatoryFields(res uint8, year1 uint8, timeStamp DateAndTime) S7PayloadUserDataItemClkFResponseBuilder {
-	return m.WithRes(res).WithYear1(year1).WithTimeStamp(timeStamp)
+func (b *_S7PayloadUserDataItemClkFResponseBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadUserDataItemClkFResponseBuilder) WithRes(res uint8) S7PayloadUserDataItemClkFResponseBuilder {
-	m.Res = res
-	return m
+func (b *_S7PayloadUserDataItemClkFResponseBuilder) WithMandatoryFields(res uint8, year1 uint8, timeStamp DateAndTime) S7PayloadUserDataItemClkFResponseBuilder {
+	return b.WithRes(res).WithYear1(year1).WithTimeStamp(timeStamp)
 }
 
-func (m *_S7PayloadUserDataItemClkFResponseBuilder) WithYear1(year1 uint8) S7PayloadUserDataItemClkFResponseBuilder {
-	m.Year1 = year1
-	return m
+func (b *_S7PayloadUserDataItemClkFResponseBuilder) WithRes(res uint8) S7PayloadUserDataItemClkFResponseBuilder {
+	b.Res = res
+	return b
 }
 
-func (m *_S7PayloadUserDataItemClkFResponseBuilder) WithTimeStamp(timeStamp DateAndTime) S7PayloadUserDataItemClkFResponseBuilder {
-	m.TimeStamp = timeStamp
-	return m
+func (b *_S7PayloadUserDataItemClkFResponseBuilder) WithYear1(year1 uint8) S7PayloadUserDataItemClkFResponseBuilder {
+	b.Year1 = year1
+	return b
 }
 
-func (m *_S7PayloadUserDataItemClkFResponseBuilder) WithTimeStampBuilder(builderSupplier func(DateAndTimeBuilder) DateAndTimeBuilder) S7PayloadUserDataItemClkFResponseBuilder {
-	builder := builderSupplier(m.TimeStamp.CreateDateAndTimeBuilder())
+func (b *_S7PayloadUserDataItemClkFResponseBuilder) WithTimeStamp(timeStamp DateAndTime) S7PayloadUserDataItemClkFResponseBuilder {
+	b.TimeStamp = timeStamp
+	return b
+}
+
+func (b *_S7PayloadUserDataItemClkFResponseBuilder) WithTimeStampBuilder(builderSupplier func(DateAndTimeBuilder) DateAndTimeBuilder) S7PayloadUserDataItemClkFResponseBuilder {
+	builder := builderSupplier(b.TimeStamp.CreateDateAndTimeBuilder())
 	var err error
-	m.TimeStamp, err = builder.Build()
+	b.TimeStamp, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_S7PayloadUserDataItemClkFResponseBuilder) Build() (S7PayloadUserDataItemClkFResponse, error) {
-	if m.TimeStamp == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_S7PayloadUserDataItemClkFResponseBuilder) Build() (S7PayloadUserDataItemClkFResponse, error) {
+	if b.TimeStamp == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeStamp' not set"))
+		b.err.Append(errors.New("mandatory field 'timeStamp' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadUserDataItemClkFResponse.deepCopy(), nil
+	return b._S7PayloadUserDataItemClkFResponse.deepCopy(), nil
 }
 
-func (m *_S7PayloadUserDataItemClkFResponseBuilder) MustBuild() S7PayloadUserDataItemClkFResponse {
-	build, err := m.Build()
+func (b *_S7PayloadUserDataItemClkFResponseBuilder) MustBuild() S7PayloadUserDataItemClkFResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadUserDataItemClkFResponseBuilder) DeepCopy() any {
-	return m.CreateS7PayloadUserDataItemClkFResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemClkFResponseBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemClkFResponseBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemClkFResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemClkFResponseBuilder().(*_S7PayloadUserDataItemClkFResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadUserDataItemClkFResponseBuilder creates a S7PayloadUserDataItemClkFResponseBuilder
-func (m *_S7PayloadUserDataItemClkFResponse) CreateS7PayloadUserDataItemClkFResponseBuilder() S7PayloadUserDataItemClkFResponseBuilder {
-	if m == nil {
+func (b *_S7PayloadUserDataItemClkFResponse) CreateS7PayloadUserDataItemClkFResponseBuilder() S7PayloadUserDataItemClkFResponseBuilder {
+	if b == nil {
 		return NewS7PayloadUserDataItemClkFResponseBuilder()
 	}
-	return &_S7PayloadUserDataItemClkFResponseBuilder{_S7PayloadUserDataItemClkFResponse: m.deepCopy()}
+	return &_S7PayloadUserDataItemClkFResponseBuilder{_S7PayloadUserDataItemClkFResponse: b.deepCopy()}
 }
 
 ///////////////////////

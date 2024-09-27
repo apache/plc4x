@@ -93,45 +93,64 @@ func NewModbusPDUReadExceptionStatusResponseBuilder() ModbusPDUReadExceptionStat
 type _ModbusPDUReadExceptionStatusResponseBuilder struct {
 	*_ModbusPDUReadExceptionStatusResponse
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUReadExceptionStatusResponseBuilder) = (*_ModbusPDUReadExceptionStatusResponseBuilder)(nil)
 
-func (m *_ModbusPDUReadExceptionStatusResponseBuilder) WithMandatoryFields(value uint8) ModbusPDUReadExceptionStatusResponseBuilder {
-	return m.WithValue(value)
+func (b *_ModbusPDUReadExceptionStatusResponseBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUReadExceptionStatusResponseBuilder) WithValue(value uint8) ModbusPDUReadExceptionStatusResponseBuilder {
-	m.Value = value
-	return m
+func (b *_ModbusPDUReadExceptionStatusResponseBuilder) WithMandatoryFields(value uint8) ModbusPDUReadExceptionStatusResponseBuilder {
+	return b.WithValue(value)
 }
 
-func (m *_ModbusPDUReadExceptionStatusResponseBuilder) Build() (ModbusPDUReadExceptionStatusResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUReadExceptionStatusResponseBuilder) WithValue(value uint8) ModbusPDUReadExceptionStatusResponseBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ModbusPDUReadExceptionStatusResponseBuilder) Build() (ModbusPDUReadExceptionStatusResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUReadExceptionStatusResponse.deepCopy(), nil
+	return b._ModbusPDUReadExceptionStatusResponse.deepCopy(), nil
 }
 
-func (m *_ModbusPDUReadExceptionStatusResponseBuilder) MustBuild() ModbusPDUReadExceptionStatusResponse {
-	build, err := m.Build()
+func (b *_ModbusPDUReadExceptionStatusResponseBuilder) MustBuild() ModbusPDUReadExceptionStatusResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUReadExceptionStatusResponseBuilder) DeepCopy() any {
-	return m.CreateModbusPDUReadExceptionStatusResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUReadExceptionStatusResponseBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUReadExceptionStatusResponseBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUReadExceptionStatusResponseBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUReadExceptionStatusResponseBuilder().(*_ModbusPDUReadExceptionStatusResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUReadExceptionStatusResponseBuilder creates a ModbusPDUReadExceptionStatusResponseBuilder
-func (m *_ModbusPDUReadExceptionStatusResponse) CreateModbusPDUReadExceptionStatusResponseBuilder() ModbusPDUReadExceptionStatusResponseBuilder {
-	if m == nil {
+func (b *_ModbusPDUReadExceptionStatusResponse) CreateModbusPDUReadExceptionStatusResponseBuilder() ModbusPDUReadExceptionStatusResponseBuilder {
+	if b == nil {
 		return NewModbusPDUReadExceptionStatusResponseBuilder()
 	}
-	return &_ModbusPDUReadExceptionStatusResponseBuilder{_ModbusPDUReadExceptionStatusResponse: m.deepCopy()}
+	return &_ModbusPDUReadExceptionStatusResponseBuilder{_ModbusPDUReadExceptionStatusResponse: b.deepCopy()}
 }
 
 ///////////////////////

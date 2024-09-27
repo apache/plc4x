@@ -83,35 +83,39 @@ type _AudioDataTypeBuilder struct {
 
 var _ (AudioDataTypeBuilder) = (*_AudioDataTypeBuilder)(nil)
 
-func (m *_AudioDataTypeBuilder) WithMandatoryFields() AudioDataTypeBuilder {
-	return m
+func (b *_AudioDataTypeBuilder) WithMandatoryFields() AudioDataTypeBuilder {
+	return b
 }
 
-func (m *_AudioDataTypeBuilder) Build() (AudioDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AudioDataTypeBuilder) Build() (AudioDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AudioDataType.deepCopy(), nil
+	return b._AudioDataType.deepCopy(), nil
 }
 
-func (m *_AudioDataTypeBuilder) MustBuild() AudioDataType {
-	build, err := m.Build()
+func (b *_AudioDataTypeBuilder) MustBuild() AudioDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AudioDataTypeBuilder) DeepCopy() any {
-	return m.CreateAudioDataTypeBuilder()
+func (b *_AudioDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAudioDataTypeBuilder().(*_AudioDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAudioDataTypeBuilder creates a AudioDataTypeBuilder
-func (m *_AudioDataType) CreateAudioDataTypeBuilder() AudioDataTypeBuilder {
-	if m == nil {
+func (b *_AudioDataType) CreateAudioDataTypeBuilder() AudioDataTypeBuilder {
+	if b == nil {
 		return NewAudioDataTypeBuilder()
 	}
-	return &_AudioDataTypeBuilder{_AudioDataType: m.deepCopy()}
+	return &_AudioDataTypeBuilder{_AudioDataType: b.deepCopy()}
 }
 
 ///////////////////////

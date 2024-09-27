@@ -85,10 +85,24 @@ type CEMIAdditionalInformationBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CEMIAdditionalInformationBuilder
+	// AsCEMIAdditionalInformationBusmonitorInfo converts this build to a subType of CEMIAdditionalInformation. It is always possible to return to current builder using Done()
+	AsCEMIAdditionalInformationBusmonitorInfo() interface {
+		CEMIAdditionalInformationBusmonitorInfoBuilder
+		Done() CEMIAdditionalInformationBuilder
+	}
+	// AsCEMIAdditionalInformationRelativeTimestamp converts this build to a subType of CEMIAdditionalInformation. It is always possible to return to current builder using Done()
+	AsCEMIAdditionalInformationRelativeTimestamp() interface {
+		CEMIAdditionalInformationRelativeTimestampBuilder
+		Done() CEMIAdditionalInformationBuilder
+	}
 	// Build builds the CEMIAdditionalInformation or returns an error if something is wrong
-	Build() (CEMIAdditionalInformationContract, error)
+	PartialBuild() (CEMIAdditionalInformationContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() CEMIAdditionalInformationContract
+	PartialMustBuild() CEMIAdditionalInformationContract
+	// Build builds the CEMIAdditionalInformation or returns an error if something is wrong
+	Build() (CEMIAdditionalInformation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CEMIAdditionalInformation
 }
 
 // NewCEMIAdditionalInformationBuilder() creates a CEMIAdditionalInformationBuilder
@@ -96,43 +110,109 @@ func NewCEMIAdditionalInformationBuilder() CEMIAdditionalInformationBuilder {
 	return &_CEMIAdditionalInformationBuilder{_CEMIAdditionalInformation: new(_CEMIAdditionalInformation)}
 }
 
+type _CEMIAdditionalInformationChildBuilder interface {
+	utils.Copyable
+	setParent(CEMIAdditionalInformationContract)
+	buildForCEMIAdditionalInformation() (CEMIAdditionalInformation, error)
+}
+
 type _CEMIAdditionalInformationBuilder struct {
 	*_CEMIAdditionalInformation
+
+	childBuilder _CEMIAdditionalInformationChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (CEMIAdditionalInformationBuilder) = (*_CEMIAdditionalInformationBuilder)(nil)
 
-func (m *_CEMIAdditionalInformationBuilder) WithMandatoryFields() CEMIAdditionalInformationBuilder {
-	return m
+func (b *_CEMIAdditionalInformationBuilder) WithMandatoryFields() CEMIAdditionalInformationBuilder {
+	return b
 }
 
-func (m *_CEMIAdditionalInformationBuilder) Build() (CEMIAdditionalInformationContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CEMIAdditionalInformationBuilder) PartialBuild() (CEMIAdditionalInformationContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CEMIAdditionalInformation.deepCopy(), nil
+	return b._CEMIAdditionalInformation.deepCopy(), nil
 }
 
-func (m *_CEMIAdditionalInformationBuilder) MustBuild() CEMIAdditionalInformationContract {
-	build, err := m.Build()
+func (b *_CEMIAdditionalInformationBuilder) PartialMustBuild() CEMIAdditionalInformationContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CEMIAdditionalInformationBuilder) DeepCopy() any {
-	return m.CreateCEMIAdditionalInformationBuilder()
+func (b *_CEMIAdditionalInformationBuilder) AsCEMIAdditionalInformationBusmonitorInfo() interface {
+	CEMIAdditionalInformationBusmonitorInfoBuilder
+	Done() CEMIAdditionalInformationBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CEMIAdditionalInformationBusmonitorInfoBuilder
+		Done() CEMIAdditionalInformationBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCEMIAdditionalInformationBusmonitorInfoBuilder().(*_CEMIAdditionalInformationBusmonitorInfoBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CEMIAdditionalInformationBuilder) AsCEMIAdditionalInformationRelativeTimestamp() interface {
+	CEMIAdditionalInformationRelativeTimestampBuilder
+	Done() CEMIAdditionalInformationBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CEMIAdditionalInformationRelativeTimestampBuilder
+		Done() CEMIAdditionalInformationBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCEMIAdditionalInformationRelativeTimestampBuilder().(*_CEMIAdditionalInformationRelativeTimestampBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CEMIAdditionalInformationBuilder) Build() (CEMIAdditionalInformation, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForCEMIAdditionalInformation()
+}
+
+func (b *_CEMIAdditionalInformationBuilder) MustBuild() CEMIAdditionalInformation {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CEMIAdditionalInformationBuilder) DeepCopy() any {
+	_copy := b.CreateCEMIAdditionalInformationBuilder().(*_CEMIAdditionalInformationBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_CEMIAdditionalInformationChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCEMIAdditionalInformationBuilder creates a CEMIAdditionalInformationBuilder
-func (m *_CEMIAdditionalInformation) CreateCEMIAdditionalInformationBuilder() CEMIAdditionalInformationBuilder {
-	if m == nil {
+func (b *_CEMIAdditionalInformation) CreateCEMIAdditionalInformationBuilder() CEMIAdditionalInformationBuilder {
+	if b == nil {
 		return NewCEMIAdditionalInformationBuilder()
 	}
-	return &_CEMIAdditionalInformationBuilder{_CEMIAdditionalInformation: m.deepCopy()}
+	return &_CEMIAdditionalInformationBuilder{_CEMIAdditionalInformation: b.deepCopy()}
 }
 
 ///////////////////////

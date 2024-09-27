@@ -93,45 +93,64 @@ func NewIdentifyReplyCommandGAVValuesCurrentBuilder() IdentifyReplyCommandGAVVal
 type _IdentifyReplyCommandGAVValuesCurrentBuilder struct {
 	*_IdentifyReplyCommandGAVValuesCurrent
 
+	parentBuilder *_IdentifyReplyCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (IdentifyReplyCommandGAVValuesCurrentBuilder) = (*_IdentifyReplyCommandGAVValuesCurrentBuilder)(nil)
 
-func (m *_IdentifyReplyCommandGAVValuesCurrentBuilder) WithMandatoryFields(values []byte) IdentifyReplyCommandGAVValuesCurrentBuilder {
-	return m.WithValues(values...)
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
 }
 
-func (m *_IdentifyReplyCommandGAVValuesCurrentBuilder) WithValues(values ...byte) IdentifyReplyCommandGAVValuesCurrentBuilder {
-	m.Values = values
-	return m
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) WithMandatoryFields(values []byte) IdentifyReplyCommandGAVValuesCurrentBuilder {
+	return b.WithValues(values...)
 }
 
-func (m *_IdentifyReplyCommandGAVValuesCurrentBuilder) Build() (IdentifyReplyCommandGAVValuesCurrent, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) WithValues(values ...byte) IdentifyReplyCommandGAVValuesCurrentBuilder {
+	b.Values = values
+	return b
+}
+
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) Build() (IdentifyReplyCommandGAVValuesCurrent, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommandGAVValuesCurrent.deepCopy(), nil
+	return b._IdentifyReplyCommandGAVValuesCurrent.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandGAVValuesCurrentBuilder) MustBuild() IdentifyReplyCommandGAVValuesCurrent {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) MustBuild() IdentifyReplyCommandGAVValuesCurrent {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandGAVValuesCurrentBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandGAVValuesCurrentBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandGAVValuesCurrentBuilder().(*_IdentifyReplyCommandGAVValuesCurrentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandGAVValuesCurrentBuilder creates a IdentifyReplyCommandGAVValuesCurrentBuilder
-func (m *_IdentifyReplyCommandGAVValuesCurrent) CreateIdentifyReplyCommandGAVValuesCurrentBuilder() IdentifyReplyCommandGAVValuesCurrentBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommandGAVValuesCurrent) CreateIdentifyReplyCommandGAVValuesCurrentBuilder() IdentifyReplyCommandGAVValuesCurrentBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandGAVValuesCurrentBuilder()
 	}
-	return &_IdentifyReplyCommandGAVValuesCurrentBuilder{_IdentifyReplyCommandGAVValuesCurrent: m.deepCopy()}
+	return &_IdentifyReplyCommandGAVValuesCurrentBuilder{_IdentifyReplyCommandGAVValuesCurrent: b.deepCopy()}
 }
 
 ///////////////////////

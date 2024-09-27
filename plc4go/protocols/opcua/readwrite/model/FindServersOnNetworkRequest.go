@@ -98,6 +98,8 @@ type FindServersOnNetworkRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, startingRecordId uint32, maxRecordsToReturn uint32, noOfServerCapabilityFilter int32, serverCapabilityFilter []PascalString) FindServersOnNetworkRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) FindServersOnNetworkRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) FindServersOnNetworkRequestBuilder
 	// WithStartingRecordId adds StartingRecordId (property field)
 	WithStartingRecordId(uint32) FindServersOnNetworkRequestBuilder
 	// WithMaxRecordsToReturn adds MaxRecordsToReturn (property field)
@@ -120,71 +122,103 @@ func NewFindServersOnNetworkRequestBuilder() FindServersOnNetworkRequestBuilder 
 type _FindServersOnNetworkRequestBuilder struct {
 	*_FindServersOnNetworkRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (FindServersOnNetworkRequestBuilder) = (*_FindServersOnNetworkRequestBuilder)(nil)
 
-func (m *_FindServersOnNetworkRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, startingRecordId uint32, maxRecordsToReturn uint32, noOfServerCapabilityFilter int32, serverCapabilityFilter []PascalString) FindServersOnNetworkRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithStartingRecordId(startingRecordId).WithMaxRecordsToReturn(maxRecordsToReturn).WithNoOfServerCapabilityFilter(noOfServerCapabilityFilter).WithServerCapabilityFilter(serverCapabilityFilter...)
+func (b *_FindServersOnNetworkRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_FindServersOnNetworkRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) FindServersOnNetworkRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_FindServersOnNetworkRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, startingRecordId uint32, maxRecordsToReturn uint32, noOfServerCapabilityFilter int32, serverCapabilityFilter []PascalString) FindServersOnNetworkRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithStartingRecordId(startingRecordId).WithMaxRecordsToReturn(maxRecordsToReturn).WithNoOfServerCapabilityFilter(noOfServerCapabilityFilter).WithServerCapabilityFilter(serverCapabilityFilter...)
 }
 
-func (m *_FindServersOnNetworkRequestBuilder) WithStartingRecordId(startingRecordId uint32) FindServersOnNetworkRequestBuilder {
-	m.StartingRecordId = startingRecordId
-	return m
+func (b *_FindServersOnNetworkRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) FindServersOnNetworkRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_FindServersOnNetworkRequestBuilder) WithMaxRecordsToReturn(maxRecordsToReturn uint32) FindServersOnNetworkRequestBuilder {
-	m.MaxRecordsToReturn = maxRecordsToReturn
-	return m
-}
-
-func (m *_FindServersOnNetworkRequestBuilder) WithNoOfServerCapabilityFilter(noOfServerCapabilityFilter int32) FindServersOnNetworkRequestBuilder {
-	m.NoOfServerCapabilityFilter = noOfServerCapabilityFilter
-	return m
-}
-
-func (m *_FindServersOnNetworkRequestBuilder) WithServerCapabilityFilter(serverCapabilityFilter ...PascalString) FindServersOnNetworkRequestBuilder {
-	m.ServerCapabilityFilter = serverCapabilityFilter
-	return m
-}
-
-func (m *_FindServersOnNetworkRequestBuilder) Build() (FindServersOnNetworkRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_FindServersOnNetworkRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) FindServersOnNetworkRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._FindServersOnNetworkRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_FindServersOnNetworkRequestBuilder) MustBuild() FindServersOnNetworkRequest {
-	build, err := m.Build()
+func (b *_FindServersOnNetworkRequestBuilder) WithStartingRecordId(startingRecordId uint32) FindServersOnNetworkRequestBuilder {
+	b.StartingRecordId = startingRecordId
+	return b
+}
+
+func (b *_FindServersOnNetworkRequestBuilder) WithMaxRecordsToReturn(maxRecordsToReturn uint32) FindServersOnNetworkRequestBuilder {
+	b.MaxRecordsToReturn = maxRecordsToReturn
+	return b
+}
+
+func (b *_FindServersOnNetworkRequestBuilder) WithNoOfServerCapabilityFilter(noOfServerCapabilityFilter int32) FindServersOnNetworkRequestBuilder {
+	b.NoOfServerCapabilityFilter = noOfServerCapabilityFilter
+	return b
+}
+
+func (b *_FindServersOnNetworkRequestBuilder) WithServerCapabilityFilter(serverCapabilityFilter ...PascalString) FindServersOnNetworkRequestBuilder {
+	b.ServerCapabilityFilter = serverCapabilityFilter
+	return b
+}
+
+func (b *_FindServersOnNetworkRequestBuilder) Build() (FindServersOnNetworkRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._FindServersOnNetworkRequest.deepCopy(), nil
+}
+
+func (b *_FindServersOnNetworkRequestBuilder) MustBuild() FindServersOnNetworkRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FindServersOnNetworkRequestBuilder) DeepCopy() any {
-	return m.CreateFindServersOnNetworkRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FindServersOnNetworkRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FindServersOnNetworkRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_FindServersOnNetworkRequestBuilder) DeepCopy() any {
+	_copy := b.CreateFindServersOnNetworkRequestBuilder().(*_FindServersOnNetworkRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFindServersOnNetworkRequestBuilder creates a FindServersOnNetworkRequestBuilder
-func (m *_FindServersOnNetworkRequest) CreateFindServersOnNetworkRequestBuilder() FindServersOnNetworkRequestBuilder {
-	if m == nil {
+func (b *_FindServersOnNetworkRequest) CreateFindServersOnNetworkRequestBuilder() FindServersOnNetworkRequestBuilder {
+	if b == nil {
 		return NewFindServersOnNetworkRequestBuilder()
 	}
-	return &_FindServersOnNetworkRequestBuilder{_FindServersOnNetworkRequest: m.deepCopy()}
+	return &_FindServersOnNetworkRequestBuilder{_FindServersOnNetworkRequest: b.deepCopy()}
 }
 
 ///////////////////////

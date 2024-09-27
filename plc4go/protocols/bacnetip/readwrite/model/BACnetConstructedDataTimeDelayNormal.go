@@ -100,64 +100,83 @@ func NewBACnetConstructedDataTimeDelayNormalBuilder() BACnetConstructedDataTimeD
 type _BACnetConstructedDataTimeDelayNormalBuilder struct {
 	*_BACnetConstructedDataTimeDelayNormal
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataTimeDelayNormalBuilder) = (*_BACnetConstructedDataTimeDelayNormalBuilder)(nil)
 
-func (m *_BACnetConstructedDataTimeDelayNormalBuilder) WithMandatoryFields(timeDelayNormal BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeDelayNormalBuilder {
-	return m.WithTimeDelayNormal(timeDelayNormal)
+func (b *_BACnetConstructedDataTimeDelayNormalBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataTimeDelayNormalBuilder) WithTimeDelayNormal(timeDelayNormal BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeDelayNormalBuilder {
-	m.TimeDelayNormal = timeDelayNormal
-	return m
+func (b *_BACnetConstructedDataTimeDelayNormalBuilder) WithMandatoryFields(timeDelayNormal BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeDelayNormalBuilder {
+	return b.WithTimeDelayNormal(timeDelayNormal)
 }
 
-func (m *_BACnetConstructedDataTimeDelayNormalBuilder) WithTimeDelayNormalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimeDelayNormalBuilder {
-	builder := builderSupplier(m.TimeDelayNormal.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataTimeDelayNormalBuilder) WithTimeDelayNormal(timeDelayNormal BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeDelayNormalBuilder {
+	b.TimeDelayNormal = timeDelayNormal
+	return b
+}
+
+func (b *_BACnetConstructedDataTimeDelayNormalBuilder) WithTimeDelayNormalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimeDelayNormalBuilder {
+	builder := builderSupplier(b.TimeDelayNormal.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.TimeDelayNormal, err = builder.Build()
+	b.TimeDelayNormal, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataTimeDelayNormalBuilder) Build() (BACnetConstructedDataTimeDelayNormal, error) {
-	if m.TimeDelayNormal == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataTimeDelayNormalBuilder) Build() (BACnetConstructedDataTimeDelayNormal, error) {
+	if b.TimeDelayNormal == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeDelayNormal' not set"))
+		b.err.Append(errors.New("mandatory field 'timeDelayNormal' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataTimeDelayNormal.deepCopy(), nil
+	return b._BACnetConstructedDataTimeDelayNormal.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataTimeDelayNormalBuilder) MustBuild() BACnetConstructedDataTimeDelayNormal {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataTimeDelayNormalBuilder) MustBuild() BACnetConstructedDataTimeDelayNormal {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataTimeDelayNormalBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataTimeDelayNormalBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTimeDelayNormalBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTimeDelayNormalBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTimeDelayNormalBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTimeDelayNormalBuilder().(*_BACnetConstructedDataTimeDelayNormalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataTimeDelayNormalBuilder creates a BACnetConstructedDataTimeDelayNormalBuilder
-func (m *_BACnetConstructedDataTimeDelayNormal) CreateBACnetConstructedDataTimeDelayNormalBuilder() BACnetConstructedDataTimeDelayNormalBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataTimeDelayNormal) CreateBACnetConstructedDataTimeDelayNormalBuilder() BACnetConstructedDataTimeDelayNormalBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataTimeDelayNormalBuilder()
 	}
-	return &_BACnetConstructedDataTimeDelayNormalBuilder{_BACnetConstructedDataTimeDelayNormal: m.deepCopy()}
+	return &_BACnetConstructedDataTimeDelayNormalBuilder{_BACnetConstructedDataTimeDelayNormal: b.deepCopy()}
 }
 
 ///////////////////////

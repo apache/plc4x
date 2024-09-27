@@ -122,6 +122,8 @@ type BACnetDestinationBuilder interface {
 	WithToTimeBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetDestinationBuilder
 	// WithRecipient adds Recipient (property field)
 	WithRecipient(BACnetRecipient) BACnetDestinationBuilder
+	// WithRecipientBuilder adds Recipient (property field) which is build by the builder
+	WithRecipientBuilder(func(BACnetRecipientBuilder) BACnetRecipientBuilder) BACnetDestinationBuilder
 	// WithProcessIdentifier adds ProcessIdentifier (property field)
 	WithProcessIdentifier(BACnetApplicationTagUnsignedInteger) BACnetDestinationBuilder
 	// WithProcessIdentifierBuilder adds ProcessIdentifier (property field) which is build by the builder
@@ -153,190 +155,207 @@ type _BACnetDestinationBuilder struct {
 
 var _ (BACnetDestinationBuilder) = (*_BACnetDestinationBuilder)(nil)
 
-func (m *_BACnetDestinationBuilder) WithMandatoryFields(validDays BACnetDaysOfWeekTagged, fromTime BACnetApplicationTagTime, toTime BACnetApplicationTagTime, recipient BACnetRecipient, processIdentifier BACnetApplicationTagUnsignedInteger, issueConfirmedNotifications BACnetApplicationTagBoolean, transitions BACnetEventTransitionBitsTagged) BACnetDestinationBuilder {
-	return m.WithValidDays(validDays).WithFromTime(fromTime).WithToTime(toTime).WithRecipient(recipient).WithProcessIdentifier(processIdentifier).WithIssueConfirmedNotifications(issueConfirmedNotifications).WithTransitions(transitions)
+func (b *_BACnetDestinationBuilder) WithMandatoryFields(validDays BACnetDaysOfWeekTagged, fromTime BACnetApplicationTagTime, toTime BACnetApplicationTagTime, recipient BACnetRecipient, processIdentifier BACnetApplicationTagUnsignedInteger, issueConfirmedNotifications BACnetApplicationTagBoolean, transitions BACnetEventTransitionBitsTagged) BACnetDestinationBuilder {
+	return b.WithValidDays(validDays).WithFromTime(fromTime).WithToTime(toTime).WithRecipient(recipient).WithProcessIdentifier(processIdentifier).WithIssueConfirmedNotifications(issueConfirmedNotifications).WithTransitions(transitions)
 }
 
-func (m *_BACnetDestinationBuilder) WithValidDays(validDays BACnetDaysOfWeekTagged) BACnetDestinationBuilder {
-	m.ValidDays = validDays
-	return m
+func (b *_BACnetDestinationBuilder) WithValidDays(validDays BACnetDaysOfWeekTagged) BACnetDestinationBuilder {
+	b.ValidDays = validDays
+	return b
 }
 
-func (m *_BACnetDestinationBuilder) WithValidDaysBuilder(builderSupplier func(BACnetDaysOfWeekTaggedBuilder) BACnetDaysOfWeekTaggedBuilder) BACnetDestinationBuilder {
-	builder := builderSupplier(m.ValidDays.CreateBACnetDaysOfWeekTaggedBuilder())
+func (b *_BACnetDestinationBuilder) WithValidDaysBuilder(builderSupplier func(BACnetDaysOfWeekTaggedBuilder) BACnetDaysOfWeekTaggedBuilder) BACnetDestinationBuilder {
+	builder := builderSupplier(b.ValidDays.CreateBACnetDaysOfWeekTaggedBuilder())
 	var err error
-	m.ValidDays, err = builder.Build()
+	b.ValidDays, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDaysOfWeekTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDaysOfWeekTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetDestinationBuilder) WithFromTime(fromTime BACnetApplicationTagTime) BACnetDestinationBuilder {
-	m.FromTime = fromTime
-	return m
+func (b *_BACnetDestinationBuilder) WithFromTime(fromTime BACnetApplicationTagTime) BACnetDestinationBuilder {
+	b.FromTime = fromTime
+	return b
 }
 
-func (m *_BACnetDestinationBuilder) WithFromTimeBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetDestinationBuilder {
-	builder := builderSupplier(m.FromTime.CreateBACnetApplicationTagTimeBuilder())
+func (b *_BACnetDestinationBuilder) WithFromTimeBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetDestinationBuilder {
+	builder := builderSupplier(b.FromTime.CreateBACnetApplicationTagTimeBuilder())
 	var err error
-	m.FromTime, err = builder.Build()
+	b.FromTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetDestinationBuilder) WithToTime(toTime BACnetApplicationTagTime) BACnetDestinationBuilder {
-	m.ToTime = toTime
-	return m
+func (b *_BACnetDestinationBuilder) WithToTime(toTime BACnetApplicationTagTime) BACnetDestinationBuilder {
+	b.ToTime = toTime
+	return b
 }
 
-func (m *_BACnetDestinationBuilder) WithToTimeBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetDestinationBuilder {
-	builder := builderSupplier(m.ToTime.CreateBACnetApplicationTagTimeBuilder())
+func (b *_BACnetDestinationBuilder) WithToTimeBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetDestinationBuilder {
+	builder := builderSupplier(b.ToTime.CreateBACnetApplicationTagTimeBuilder())
 	var err error
-	m.ToTime, err = builder.Build()
+	b.ToTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetDestinationBuilder) WithRecipient(recipient BACnetRecipient) BACnetDestinationBuilder {
-	m.Recipient = recipient
-	return m
+func (b *_BACnetDestinationBuilder) WithRecipient(recipient BACnetRecipient) BACnetDestinationBuilder {
+	b.Recipient = recipient
+	return b
 }
 
-func (m *_BACnetDestinationBuilder) WithProcessIdentifier(processIdentifier BACnetApplicationTagUnsignedInteger) BACnetDestinationBuilder {
-	m.ProcessIdentifier = processIdentifier
-	return m
-}
-
-func (m *_BACnetDestinationBuilder) WithProcessIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetDestinationBuilder {
-	builder := builderSupplier(m.ProcessIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetDestinationBuilder) WithRecipientBuilder(builderSupplier func(BACnetRecipientBuilder) BACnetRecipientBuilder) BACnetDestinationBuilder {
+	builder := builderSupplier(b.Recipient.CreateBACnetRecipientBuilder())
 	var err error
-	m.ProcessIdentifier, err = builder.Build()
+	b.Recipient, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetRecipientBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetDestinationBuilder) WithIssueConfirmedNotifications(issueConfirmedNotifications BACnetApplicationTagBoolean) BACnetDestinationBuilder {
-	m.IssueConfirmedNotifications = issueConfirmedNotifications
-	return m
+func (b *_BACnetDestinationBuilder) WithProcessIdentifier(processIdentifier BACnetApplicationTagUnsignedInteger) BACnetDestinationBuilder {
+	b.ProcessIdentifier = processIdentifier
+	return b
 }
 
-func (m *_BACnetDestinationBuilder) WithIssueConfirmedNotificationsBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetDestinationBuilder {
-	builder := builderSupplier(m.IssueConfirmedNotifications.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetDestinationBuilder) WithProcessIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetDestinationBuilder {
+	builder := builderSupplier(b.ProcessIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.IssueConfirmedNotifications, err = builder.Build()
+	b.ProcessIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetDestinationBuilder) WithTransitions(transitions BACnetEventTransitionBitsTagged) BACnetDestinationBuilder {
-	m.Transitions = transitions
-	return m
+func (b *_BACnetDestinationBuilder) WithIssueConfirmedNotifications(issueConfirmedNotifications BACnetApplicationTagBoolean) BACnetDestinationBuilder {
+	b.IssueConfirmedNotifications = issueConfirmedNotifications
+	return b
 }
 
-func (m *_BACnetDestinationBuilder) WithTransitionsBuilder(builderSupplier func(BACnetEventTransitionBitsTaggedBuilder) BACnetEventTransitionBitsTaggedBuilder) BACnetDestinationBuilder {
-	builder := builderSupplier(m.Transitions.CreateBACnetEventTransitionBitsTaggedBuilder())
+func (b *_BACnetDestinationBuilder) WithIssueConfirmedNotificationsBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetDestinationBuilder {
+	builder := builderSupplier(b.IssueConfirmedNotifications.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.Transitions, err = builder.Build()
+	b.IssueConfirmedNotifications, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventTransitionBitsTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetDestinationBuilder) Build() (BACnetDestination, error) {
-	if m.ValidDays == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'validDays' not set"))
-	}
-	if m.FromTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'fromTime' not set"))
-	}
-	if m.ToTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'toTime' not set"))
-	}
-	if m.Recipient == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'recipient' not set"))
-	}
-	if m.ProcessIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'processIdentifier' not set"))
-	}
-	if m.IssueConfirmedNotifications == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'issueConfirmedNotifications' not set"))
-	}
-	if m.Transitions == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'transitions' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetDestination.deepCopy(), nil
+func (b *_BACnetDestinationBuilder) WithTransitions(transitions BACnetEventTransitionBitsTagged) BACnetDestinationBuilder {
+	b.Transitions = transitions
+	return b
 }
 
-func (m *_BACnetDestinationBuilder) MustBuild() BACnetDestination {
-	build, err := m.Build()
+func (b *_BACnetDestinationBuilder) WithTransitionsBuilder(builderSupplier func(BACnetEventTransitionBitsTaggedBuilder) BACnetEventTransitionBitsTaggedBuilder) BACnetDestinationBuilder {
+	builder := builderSupplier(b.Transitions.CreateBACnetEventTransitionBitsTaggedBuilder())
+	var err error
+	b.Transitions, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetEventTransitionBitsTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDestinationBuilder) Build() (BACnetDestination, error) {
+	if b.ValidDays == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'validDays' not set"))
+	}
+	if b.FromTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'fromTime' not set"))
+	}
+	if b.ToTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'toTime' not set"))
+	}
+	if b.Recipient == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'recipient' not set"))
+	}
+	if b.ProcessIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'processIdentifier' not set"))
+	}
+	if b.IssueConfirmedNotifications == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'issueConfirmedNotifications' not set"))
+	}
+	if b.Transitions == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'transitions' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetDestination.deepCopy(), nil
+}
+
+func (b *_BACnetDestinationBuilder) MustBuild() BACnetDestination {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetDestinationBuilder) DeepCopy() any {
-	return m.CreateBACnetDestinationBuilder()
+func (b *_BACnetDestinationBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetDestinationBuilder().(*_BACnetDestinationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetDestinationBuilder creates a BACnetDestinationBuilder
-func (m *_BACnetDestination) CreateBACnetDestinationBuilder() BACnetDestinationBuilder {
-	if m == nil {
+func (b *_BACnetDestination) CreateBACnetDestinationBuilder() BACnetDestinationBuilder {
+	if b == nil {
 		return NewBACnetDestinationBuilder()
 	}
-	return &_BACnetDestinationBuilder{_BACnetDestination: m.deepCopy()}
+	return &_BACnetDestinationBuilder{_BACnetDestination: b.deepCopy()}
 }
 
 ///////////////////////

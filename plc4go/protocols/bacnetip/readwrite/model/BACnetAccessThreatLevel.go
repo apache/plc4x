@@ -95,59 +95,63 @@ type _BACnetAccessThreatLevelBuilder struct {
 
 var _ (BACnetAccessThreatLevelBuilder) = (*_BACnetAccessThreatLevelBuilder)(nil)
 
-func (m *_BACnetAccessThreatLevelBuilder) WithMandatoryFields(threatLevel BACnetApplicationTagUnsignedInteger) BACnetAccessThreatLevelBuilder {
-	return m.WithThreatLevel(threatLevel)
+func (b *_BACnetAccessThreatLevelBuilder) WithMandatoryFields(threatLevel BACnetApplicationTagUnsignedInteger) BACnetAccessThreatLevelBuilder {
+	return b.WithThreatLevel(threatLevel)
 }
 
-func (m *_BACnetAccessThreatLevelBuilder) WithThreatLevel(threatLevel BACnetApplicationTagUnsignedInteger) BACnetAccessThreatLevelBuilder {
-	m.ThreatLevel = threatLevel
-	return m
+func (b *_BACnetAccessThreatLevelBuilder) WithThreatLevel(threatLevel BACnetApplicationTagUnsignedInteger) BACnetAccessThreatLevelBuilder {
+	b.ThreatLevel = threatLevel
+	return b
 }
 
-func (m *_BACnetAccessThreatLevelBuilder) WithThreatLevelBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetAccessThreatLevelBuilder {
-	builder := builderSupplier(m.ThreatLevel.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetAccessThreatLevelBuilder) WithThreatLevelBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetAccessThreatLevelBuilder {
+	builder := builderSupplier(b.ThreatLevel.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.ThreatLevel, err = builder.Build()
+	b.ThreatLevel, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAccessThreatLevelBuilder) Build() (BACnetAccessThreatLevel, error) {
-	if m.ThreatLevel == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAccessThreatLevelBuilder) Build() (BACnetAccessThreatLevel, error) {
+	if b.ThreatLevel == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'threatLevel' not set"))
+		b.err.Append(errors.New("mandatory field 'threatLevel' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAccessThreatLevel.deepCopy(), nil
+	return b._BACnetAccessThreatLevel.deepCopy(), nil
 }
 
-func (m *_BACnetAccessThreatLevelBuilder) MustBuild() BACnetAccessThreatLevel {
-	build, err := m.Build()
+func (b *_BACnetAccessThreatLevelBuilder) MustBuild() BACnetAccessThreatLevel {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAccessThreatLevelBuilder) DeepCopy() any {
-	return m.CreateBACnetAccessThreatLevelBuilder()
+func (b *_BACnetAccessThreatLevelBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAccessThreatLevelBuilder().(*_BACnetAccessThreatLevelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAccessThreatLevelBuilder creates a BACnetAccessThreatLevelBuilder
-func (m *_BACnetAccessThreatLevel) CreateBACnetAccessThreatLevelBuilder() BACnetAccessThreatLevelBuilder {
-	if m == nil {
+func (b *_BACnetAccessThreatLevel) CreateBACnetAccessThreatLevelBuilder() BACnetAccessThreatLevelBuilder {
+	if b == nil {
 		return NewBACnetAccessThreatLevelBuilder()
 	}
-	return &_BACnetAccessThreatLevelBuilder{_BACnetAccessThreatLevel: m.deepCopy()}
+	return &_BACnetAccessThreatLevelBuilder{_BACnetAccessThreatLevel: b.deepCopy()}
 }
 
 ///////////////////////

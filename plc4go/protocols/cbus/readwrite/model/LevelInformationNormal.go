@@ -103,50 +103,69 @@ func NewLevelInformationNormalBuilder() LevelInformationNormalBuilder {
 type _LevelInformationNormalBuilder struct {
 	*_LevelInformationNormal
 
+	parentBuilder *_LevelInformationBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LevelInformationNormalBuilder) = (*_LevelInformationNormalBuilder)(nil)
 
-func (m *_LevelInformationNormalBuilder) WithMandatoryFields(pair1 LevelInformationNibblePair, pair2 LevelInformationNibblePair) LevelInformationNormalBuilder {
-	return m.WithPair1(pair1).WithPair2(pair2)
+func (b *_LevelInformationNormalBuilder) setParent(contract LevelInformationContract) {
+	b.LevelInformationContract = contract
 }
 
-func (m *_LevelInformationNormalBuilder) WithPair1(pair1 LevelInformationNibblePair) LevelInformationNormalBuilder {
-	m.Pair1 = pair1
-	return m
+func (b *_LevelInformationNormalBuilder) WithMandatoryFields(pair1 LevelInformationNibblePair, pair2 LevelInformationNibblePair) LevelInformationNormalBuilder {
+	return b.WithPair1(pair1).WithPair2(pair2)
 }
 
-func (m *_LevelInformationNormalBuilder) WithPair2(pair2 LevelInformationNibblePair) LevelInformationNormalBuilder {
-	m.Pair2 = pair2
-	return m
+func (b *_LevelInformationNormalBuilder) WithPair1(pair1 LevelInformationNibblePair) LevelInformationNormalBuilder {
+	b.Pair1 = pair1
+	return b
 }
 
-func (m *_LevelInformationNormalBuilder) Build() (LevelInformationNormal, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_LevelInformationNormalBuilder) WithPair2(pair2 LevelInformationNibblePair) LevelInformationNormalBuilder {
+	b.Pair2 = pair2
+	return b
+}
+
+func (b *_LevelInformationNormalBuilder) Build() (LevelInformationNormal, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LevelInformationNormal.deepCopy(), nil
+	return b._LevelInformationNormal.deepCopy(), nil
 }
 
-func (m *_LevelInformationNormalBuilder) MustBuild() LevelInformationNormal {
-	build, err := m.Build()
+func (b *_LevelInformationNormalBuilder) MustBuild() LevelInformationNormal {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LevelInformationNormalBuilder) DeepCopy() any {
-	return m.CreateLevelInformationNormalBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LevelInformationNormalBuilder) Done() LevelInformationBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LevelInformationNormalBuilder) buildForLevelInformation() (LevelInformation, error) {
+	return b.Build()
+}
+
+func (b *_LevelInformationNormalBuilder) DeepCopy() any {
+	_copy := b.CreateLevelInformationNormalBuilder().(*_LevelInformationNormalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLevelInformationNormalBuilder creates a LevelInformationNormalBuilder
-func (m *_LevelInformationNormal) CreateLevelInformationNormalBuilder() LevelInformationNormalBuilder {
-	if m == nil {
+func (b *_LevelInformationNormal) CreateLevelInformationNormalBuilder() LevelInformationNormalBuilder {
+	if b == nil {
 		return NewLevelInformationNormalBuilder()
 	}
-	return &_LevelInformationNormalBuilder{_LevelInformationNormal: m.deepCopy()}
+	return &_LevelInformationNormalBuilder{_LevelInformationNormal: b.deepCopy()}
 }
 
 ///////////////////////

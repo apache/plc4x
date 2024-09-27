@@ -85,40 +85,59 @@ func NewBACnetConstructedDataLiftAllBuilder() BACnetConstructedDataLiftAllBuilde
 type _BACnetConstructedDataLiftAllBuilder struct {
 	*_BACnetConstructedDataLiftAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLiftAllBuilder) = (*_BACnetConstructedDataLiftAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataLiftAllBuilder) WithMandatoryFields() BACnetConstructedDataLiftAllBuilder {
-	return m
+func (b *_BACnetConstructedDataLiftAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLiftAllBuilder) Build() (BACnetConstructedDataLiftAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataLiftAllBuilder) WithMandatoryFields() BACnetConstructedDataLiftAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataLiftAllBuilder) Build() (BACnetConstructedDataLiftAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLiftAll.deepCopy(), nil
+	return b._BACnetConstructedDataLiftAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLiftAllBuilder) MustBuild() BACnetConstructedDataLiftAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLiftAllBuilder) MustBuild() BACnetConstructedDataLiftAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLiftAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLiftAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLiftAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLiftAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLiftAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLiftAllBuilder().(*_BACnetConstructedDataLiftAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLiftAllBuilder creates a BACnetConstructedDataLiftAllBuilder
-func (m *_BACnetConstructedDataLiftAll) CreateBACnetConstructedDataLiftAllBuilder() BACnetConstructedDataLiftAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLiftAll) CreateBACnetConstructedDataLiftAllBuilder() BACnetConstructedDataLiftAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLiftAllBuilder()
 	}
-	return &_BACnetConstructedDataLiftAllBuilder{_BACnetConstructedDataLiftAll: m.deepCopy()}
+	return &_BACnetConstructedDataLiftAllBuilder{_BACnetConstructedDataLiftAll: b.deepCopy()}
 }
 
 ///////////////////////

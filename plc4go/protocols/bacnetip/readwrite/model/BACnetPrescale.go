@@ -105,83 +105,87 @@ type _BACnetPrescaleBuilder struct {
 
 var _ (BACnetPrescaleBuilder) = (*_BACnetPrescaleBuilder)(nil)
 
-func (m *_BACnetPrescaleBuilder) WithMandatoryFields(multiplier BACnetContextTagUnsignedInteger, moduloDivide BACnetContextTagUnsignedInteger) BACnetPrescaleBuilder {
-	return m.WithMultiplier(multiplier).WithModuloDivide(moduloDivide)
+func (b *_BACnetPrescaleBuilder) WithMandatoryFields(multiplier BACnetContextTagUnsignedInteger, moduloDivide BACnetContextTagUnsignedInteger) BACnetPrescaleBuilder {
+	return b.WithMultiplier(multiplier).WithModuloDivide(moduloDivide)
 }
 
-func (m *_BACnetPrescaleBuilder) WithMultiplier(multiplier BACnetContextTagUnsignedInteger) BACnetPrescaleBuilder {
-	m.Multiplier = multiplier
-	return m
+func (b *_BACnetPrescaleBuilder) WithMultiplier(multiplier BACnetContextTagUnsignedInteger) BACnetPrescaleBuilder {
+	b.Multiplier = multiplier
+	return b
 }
 
-func (m *_BACnetPrescaleBuilder) WithMultiplierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPrescaleBuilder {
-	builder := builderSupplier(m.Multiplier.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetPrescaleBuilder) WithMultiplierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPrescaleBuilder {
+	builder := builderSupplier(b.Multiplier.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.Multiplier, err = builder.Build()
+	b.Multiplier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPrescaleBuilder) WithModuloDivide(moduloDivide BACnetContextTagUnsignedInteger) BACnetPrescaleBuilder {
-	m.ModuloDivide = moduloDivide
-	return m
+func (b *_BACnetPrescaleBuilder) WithModuloDivide(moduloDivide BACnetContextTagUnsignedInteger) BACnetPrescaleBuilder {
+	b.ModuloDivide = moduloDivide
+	return b
 }
 
-func (m *_BACnetPrescaleBuilder) WithModuloDivideBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPrescaleBuilder {
-	builder := builderSupplier(m.ModuloDivide.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetPrescaleBuilder) WithModuloDivideBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPrescaleBuilder {
+	builder := builderSupplier(b.ModuloDivide.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.ModuloDivide, err = builder.Build()
+	b.ModuloDivide, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPrescaleBuilder) Build() (BACnetPrescale, error) {
-	if m.Multiplier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPrescaleBuilder) Build() (BACnetPrescale, error) {
+	if b.Multiplier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'multiplier' not set"))
+		b.err.Append(errors.New("mandatory field 'multiplier' not set"))
 	}
-	if m.ModuloDivide == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ModuloDivide == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'moduloDivide' not set"))
+		b.err.Append(errors.New("mandatory field 'moduloDivide' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPrescale.deepCopy(), nil
+	return b._BACnetPrescale.deepCopy(), nil
 }
 
-func (m *_BACnetPrescaleBuilder) MustBuild() BACnetPrescale {
-	build, err := m.Build()
+func (b *_BACnetPrescaleBuilder) MustBuild() BACnetPrescale {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPrescaleBuilder) DeepCopy() any {
-	return m.CreateBACnetPrescaleBuilder()
+func (b *_BACnetPrescaleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPrescaleBuilder().(*_BACnetPrescaleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPrescaleBuilder creates a BACnetPrescaleBuilder
-func (m *_BACnetPrescale) CreateBACnetPrescaleBuilder() BACnetPrescaleBuilder {
-	if m == nil {
+func (b *_BACnetPrescale) CreateBACnetPrescaleBuilder() BACnetPrescaleBuilder {
+	if b == nil {
 		return NewBACnetPrescaleBuilder()
 	}
-	return &_BACnetPrescaleBuilder{_BACnetPrescale: m.deepCopy()}
+	return &_BACnetPrescaleBuilder{_BACnetPrescale: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,50 +100,54 @@ type _SzlIdBuilder struct {
 
 var _ (SzlIdBuilder) = (*_SzlIdBuilder)(nil)
 
-func (m *_SzlIdBuilder) WithMandatoryFields(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) SzlIdBuilder {
-	return m.WithTypeClass(typeClass).WithSublistExtract(sublistExtract).WithSublistList(sublistList)
+func (b *_SzlIdBuilder) WithMandatoryFields(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) SzlIdBuilder {
+	return b.WithTypeClass(typeClass).WithSublistExtract(sublistExtract).WithSublistList(sublistList)
 }
 
-func (m *_SzlIdBuilder) WithTypeClass(typeClass SzlModuleTypeClass) SzlIdBuilder {
-	m.TypeClass = typeClass
-	return m
+func (b *_SzlIdBuilder) WithTypeClass(typeClass SzlModuleTypeClass) SzlIdBuilder {
+	b.TypeClass = typeClass
+	return b
 }
 
-func (m *_SzlIdBuilder) WithSublistExtract(sublistExtract uint8) SzlIdBuilder {
-	m.SublistExtract = sublistExtract
-	return m
+func (b *_SzlIdBuilder) WithSublistExtract(sublistExtract uint8) SzlIdBuilder {
+	b.SublistExtract = sublistExtract
+	return b
 }
 
-func (m *_SzlIdBuilder) WithSublistList(sublistList SzlSublist) SzlIdBuilder {
-	m.SublistList = sublistList
-	return m
+func (b *_SzlIdBuilder) WithSublistList(sublistList SzlSublist) SzlIdBuilder {
+	b.SublistList = sublistList
+	return b
 }
 
-func (m *_SzlIdBuilder) Build() (SzlId, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SzlIdBuilder) Build() (SzlId, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SzlId.deepCopy(), nil
+	return b._SzlId.deepCopy(), nil
 }
 
-func (m *_SzlIdBuilder) MustBuild() SzlId {
-	build, err := m.Build()
+func (b *_SzlIdBuilder) MustBuild() SzlId {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SzlIdBuilder) DeepCopy() any {
-	return m.CreateSzlIdBuilder()
+func (b *_SzlIdBuilder) DeepCopy() any {
+	_copy := b.CreateSzlIdBuilder().(*_SzlIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSzlIdBuilder creates a SzlIdBuilder
-func (m *_SzlId) CreateSzlIdBuilder() SzlIdBuilder {
-	if m == nil {
+func (b *_SzlId) CreateSzlIdBuilder() SzlIdBuilder {
+	if b == nil {
 		return NewSzlIdBuilder()
 	}
-	return &_SzlIdBuilder{_SzlId: m.deepCopy()}
+	return &_SzlIdBuilder{_SzlId: b.deepCopy()}
 }
 
 ///////////////////////

@@ -105,6 +105,8 @@ type FindServersRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfServerUris int32, serverUris []PascalString) FindServersRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) FindServersRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) FindServersRequestBuilder
 	// WithEndpointUrl adds EndpointUrl (property field)
 	WithEndpointUrl(PascalString) FindServersRequestBuilder
 	// WithEndpointUrlBuilder adds EndpointUrl (property field) which is build by the builder
@@ -131,95 +133,127 @@ func NewFindServersRequestBuilder() FindServersRequestBuilder {
 type _FindServersRequestBuilder struct {
 	*_FindServersRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (FindServersRequestBuilder) = (*_FindServersRequestBuilder)(nil)
 
-func (m *_FindServersRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfServerUris int32, serverUris []PascalString) FindServersRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithEndpointUrl(endpointUrl).WithNoOfLocaleIds(noOfLocaleIds).WithLocaleIds(localeIds...).WithNoOfServerUris(noOfServerUris).WithServerUris(serverUris...)
+func (b *_FindServersRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_FindServersRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) FindServersRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_FindServersRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfServerUris int32, serverUris []PascalString) FindServersRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithEndpointUrl(endpointUrl).WithNoOfLocaleIds(noOfLocaleIds).WithLocaleIds(localeIds...).WithNoOfServerUris(noOfServerUris).WithServerUris(serverUris...)
 }
 
-func (m *_FindServersRequestBuilder) WithEndpointUrl(endpointUrl PascalString) FindServersRequestBuilder {
-	m.EndpointUrl = endpointUrl
-	return m
+func (b *_FindServersRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) FindServersRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_FindServersRequestBuilder) WithEndpointUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) FindServersRequestBuilder {
-	builder := builderSupplier(m.EndpointUrl.CreatePascalStringBuilder())
+func (b *_FindServersRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) FindServersRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
 	var err error
-	m.EndpointUrl, err = builder.Build()
+	b.RequestHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_FindServersRequestBuilder) WithNoOfLocaleIds(noOfLocaleIds int32) FindServersRequestBuilder {
-	m.NoOfLocaleIds = noOfLocaleIds
-	return m
+func (b *_FindServersRequestBuilder) WithEndpointUrl(endpointUrl PascalString) FindServersRequestBuilder {
+	b.EndpointUrl = endpointUrl
+	return b
 }
 
-func (m *_FindServersRequestBuilder) WithLocaleIds(localeIds ...PascalString) FindServersRequestBuilder {
-	m.LocaleIds = localeIds
-	return m
-}
-
-func (m *_FindServersRequestBuilder) WithNoOfServerUris(noOfServerUris int32) FindServersRequestBuilder {
-	m.NoOfServerUris = noOfServerUris
-	return m
-}
-
-func (m *_FindServersRequestBuilder) WithServerUris(serverUris ...PascalString) FindServersRequestBuilder {
-	m.ServerUris = serverUris
-	return m
-}
-
-func (m *_FindServersRequestBuilder) Build() (FindServersRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_FindServersRequestBuilder) WithEndpointUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) FindServersRequestBuilder {
+	builder := builderSupplier(b.EndpointUrl.CreatePascalStringBuilder())
+	var err error
+	b.EndpointUrl, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	if m.EndpointUrl == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._FindServersRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_FindServersRequestBuilder) MustBuild() FindServersRequest {
-	build, err := m.Build()
+func (b *_FindServersRequestBuilder) WithNoOfLocaleIds(noOfLocaleIds int32) FindServersRequestBuilder {
+	b.NoOfLocaleIds = noOfLocaleIds
+	return b
+}
+
+func (b *_FindServersRequestBuilder) WithLocaleIds(localeIds ...PascalString) FindServersRequestBuilder {
+	b.LocaleIds = localeIds
+	return b
+}
+
+func (b *_FindServersRequestBuilder) WithNoOfServerUris(noOfServerUris int32) FindServersRequestBuilder {
+	b.NoOfServerUris = noOfServerUris
+	return b
+}
+
+func (b *_FindServersRequestBuilder) WithServerUris(serverUris ...PascalString) FindServersRequestBuilder {
+	b.ServerUris = serverUris
+	return b
+}
+
+func (b *_FindServersRequestBuilder) Build() (FindServersRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.EndpointUrl == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._FindServersRequest.deepCopy(), nil
+}
+
+func (b *_FindServersRequestBuilder) MustBuild() FindServersRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FindServersRequestBuilder) DeepCopy() any {
-	return m.CreateFindServersRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FindServersRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FindServersRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_FindServersRequestBuilder) DeepCopy() any {
+	_copy := b.CreateFindServersRequestBuilder().(*_FindServersRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFindServersRequestBuilder creates a FindServersRequestBuilder
-func (m *_FindServersRequest) CreateFindServersRequestBuilder() FindServersRequestBuilder {
-	if m == nil {
+func (b *_FindServersRequest) CreateFindServersRequestBuilder() FindServersRequestBuilder {
+	if b == nil {
 		return NewFindServersRequestBuilder()
 	}
-	return &_FindServersRequestBuilder{_FindServersRequest: m.deepCopy()}
+	return &_FindServersRequestBuilder{_FindServersRequest: b.deepCopy()}
 }
 
 ///////////////////////

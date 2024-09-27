@@ -103,63 +103,82 @@ func NewBACnetConstructedDataSubordinateListBuilder() BACnetConstructedDataSubor
 type _BACnetConstructedDataSubordinateListBuilder struct {
 	*_BACnetConstructedDataSubordinateList
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSubordinateListBuilder) = (*_BACnetConstructedDataSubordinateListBuilder)(nil)
 
-func (m *_BACnetConstructedDataSubordinateListBuilder) WithMandatoryFields(subordinateList []BACnetDeviceObjectReference) BACnetConstructedDataSubordinateListBuilder {
-	return m.WithSubordinateList(subordinateList...)
+func (b *_BACnetConstructedDataSubordinateListBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSubordinateListBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSubordinateListBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataSubordinateListBuilder) WithMandatoryFields(subordinateList []BACnetDeviceObjectReference) BACnetConstructedDataSubordinateListBuilder {
+	return b.WithSubordinateList(subordinateList...)
 }
 
-func (m *_BACnetConstructedDataSubordinateListBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSubordinateListBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataSubordinateListBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSubordinateListBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataSubordinateListBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSubordinateListBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataSubordinateListBuilder) WithSubordinateList(subordinateList ...BACnetDeviceObjectReference) BACnetConstructedDataSubordinateListBuilder {
-	m.SubordinateList = subordinateList
-	return m
+func (b *_BACnetConstructedDataSubordinateListBuilder) WithSubordinateList(subordinateList ...BACnetDeviceObjectReference) BACnetConstructedDataSubordinateListBuilder {
+	b.SubordinateList = subordinateList
+	return b
 }
 
-func (m *_BACnetConstructedDataSubordinateListBuilder) Build() (BACnetConstructedDataSubordinateList, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataSubordinateListBuilder) Build() (BACnetConstructedDataSubordinateList, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSubordinateList.deepCopy(), nil
+	return b._BACnetConstructedDataSubordinateList.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSubordinateListBuilder) MustBuild() BACnetConstructedDataSubordinateList {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSubordinateListBuilder) MustBuild() BACnetConstructedDataSubordinateList {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSubordinateListBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSubordinateListBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSubordinateListBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSubordinateListBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSubordinateListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSubordinateListBuilder().(*_BACnetConstructedDataSubordinateListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSubordinateListBuilder creates a BACnetConstructedDataSubordinateListBuilder
-func (m *_BACnetConstructedDataSubordinateList) CreateBACnetConstructedDataSubordinateListBuilder() BACnetConstructedDataSubordinateListBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSubordinateList) CreateBACnetConstructedDataSubordinateListBuilder() BACnetConstructedDataSubordinateListBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSubordinateListBuilder()
 	}
-	return &_BACnetConstructedDataSubordinateListBuilder{_BACnetConstructedDataSubordinateList: m.deepCopy()}
+	return &_BACnetConstructedDataSubordinateListBuilder{_BACnetConstructedDataSubordinateList: b.deepCopy()}
 }
 
 ///////////////////////

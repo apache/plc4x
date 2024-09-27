@@ -109,88 +109,107 @@ func NewSubscribeCOVPropertyMultipleErrorBuilder() SubscribeCOVPropertyMultipleE
 type _SubscribeCOVPropertyMultipleErrorBuilder struct {
 	*_SubscribeCOVPropertyMultipleError
 
+	parentBuilder *_BACnetErrorBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SubscribeCOVPropertyMultipleErrorBuilder) = (*_SubscribeCOVPropertyMultipleErrorBuilder)(nil)
 
-func (m *_SubscribeCOVPropertyMultipleErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, firstFailedSubscription SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) SubscribeCOVPropertyMultipleErrorBuilder {
-	return m.WithErrorType(errorType).WithFirstFailedSubscription(firstFailedSubscription)
+func (b *_SubscribeCOVPropertyMultipleErrorBuilder) setParent(contract BACnetErrorContract) {
+	b.BACnetErrorContract = contract
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorBuilder) WithErrorType(errorType ErrorEnclosed) SubscribeCOVPropertyMultipleErrorBuilder {
-	m.ErrorType = errorType
-	return m
+func (b *_SubscribeCOVPropertyMultipleErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, firstFailedSubscription SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) SubscribeCOVPropertyMultipleErrorBuilder {
+	return b.WithErrorType(errorType).WithFirstFailedSubscription(firstFailedSubscription)
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) SubscribeCOVPropertyMultipleErrorBuilder {
-	builder := builderSupplier(m.ErrorType.CreateErrorEnclosedBuilder())
+func (b *_SubscribeCOVPropertyMultipleErrorBuilder) WithErrorType(errorType ErrorEnclosed) SubscribeCOVPropertyMultipleErrorBuilder {
+	b.ErrorType = errorType
+	return b
+}
+
+func (b *_SubscribeCOVPropertyMultipleErrorBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) SubscribeCOVPropertyMultipleErrorBuilder {
+	builder := builderSupplier(b.ErrorType.CreateErrorEnclosedBuilder())
 	var err error
-	m.ErrorType, err = builder.Build()
+	b.ErrorType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorBuilder) WithFirstFailedSubscription(firstFailedSubscription SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) SubscribeCOVPropertyMultipleErrorBuilder {
-	m.FirstFailedSubscription = firstFailedSubscription
-	return m
+func (b *_SubscribeCOVPropertyMultipleErrorBuilder) WithFirstFailedSubscription(firstFailedSubscription SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) SubscribeCOVPropertyMultipleErrorBuilder {
+	b.FirstFailedSubscription = firstFailedSubscription
+	return b
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorBuilder) WithFirstFailedSubscriptionBuilder(builderSupplier func(SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) SubscribeCOVPropertyMultipleErrorBuilder {
-	builder := builderSupplier(m.FirstFailedSubscription.CreateSubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder())
+func (b *_SubscribeCOVPropertyMultipleErrorBuilder) WithFirstFailedSubscriptionBuilder(builderSupplier func(SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) SubscribeCOVPropertyMultipleErrorBuilder {
+	builder := builderSupplier(b.FirstFailedSubscription.CreateSubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder())
 	var err error
-	m.FirstFailedSubscription, err = builder.Build()
+	b.FirstFailedSubscription, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorBuilder) Build() (SubscribeCOVPropertyMultipleError, error) {
-	if m.ErrorType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SubscribeCOVPropertyMultipleErrorBuilder) Build() (SubscribeCOVPropertyMultipleError, error) {
+	if b.ErrorType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'errorType' not set"))
+		b.err.Append(errors.New("mandatory field 'errorType' not set"))
 	}
-	if m.FirstFailedSubscription == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.FirstFailedSubscription == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'firstFailedSubscription' not set"))
+		b.err.Append(errors.New("mandatory field 'firstFailedSubscription' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SubscribeCOVPropertyMultipleError.deepCopy(), nil
+	return b._SubscribeCOVPropertyMultipleError.deepCopy(), nil
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorBuilder) MustBuild() SubscribeCOVPropertyMultipleError {
-	build, err := m.Build()
+func (b *_SubscribeCOVPropertyMultipleErrorBuilder) MustBuild() SubscribeCOVPropertyMultipleError {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorBuilder) DeepCopy() any {
-	return m.CreateSubscribeCOVPropertyMultipleErrorBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SubscribeCOVPropertyMultipleErrorBuilder) Done() BACnetErrorBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SubscribeCOVPropertyMultipleErrorBuilder) buildForBACnetError() (BACnetError, error) {
+	return b.Build()
+}
+
+func (b *_SubscribeCOVPropertyMultipleErrorBuilder) DeepCopy() any {
+	_copy := b.CreateSubscribeCOVPropertyMultipleErrorBuilder().(*_SubscribeCOVPropertyMultipleErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSubscribeCOVPropertyMultipleErrorBuilder creates a SubscribeCOVPropertyMultipleErrorBuilder
-func (m *_SubscribeCOVPropertyMultipleError) CreateSubscribeCOVPropertyMultipleErrorBuilder() SubscribeCOVPropertyMultipleErrorBuilder {
-	if m == nil {
+func (b *_SubscribeCOVPropertyMultipleError) CreateSubscribeCOVPropertyMultipleErrorBuilder() SubscribeCOVPropertyMultipleErrorBuilder {
+	if b == nil {
 		return NewSubscribeCOVPropertyMultipleErrorBuilder()
 	}
-	return &_SubscribeCOVPropertyMultipleErrorBuilder{_SubscribeCOVPropertyMultipleError: m.deepCopy()}
+	return &_SubscribeCOVPropertyMultipleErrorBuilder{_SubscribeCOVPropertyMultipleError: b.deepCopy()}
 }
 
 ///////////////////////

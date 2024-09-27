@@ -85,40 +85,59 @@ func NewBACnetConstructedDataBinaryValueAllBuilder() BACnetConstructedDataBinary
 type _BACnetConstructedDataBinaryValueAllBuilder struct {
 	*_BACnetConstructedDataBinaryValueAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBinaryValueAllBuilder) = (*_BACnetConstructedDataBinaryValueAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataBinaryValueAllBuilder) WithMandatoryFields() BACnetConstructedDataBinaryValueAllBuilder {
-	return m
+func (b *_BACnetConstructedDataBinaryValueAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBinaryValueAllBuilder) Build() (BACnetConstructedDataBinaryValueAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataBinaryValueAllBuilder) WithMandatoryFields() BACnetConstructedDataBinaryValueAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataBinaryValueAllBuilder) Build() (BACnetConstructedDataBinaryValueAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBinaryValueAll.deepCopy(), nil
+	return b._BACnetConstructedDataBinaryValueAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBinaryValueAllBuilder) MustBuild() BACnetConstructedDataBinaryValueAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBinaryValueAllBuilder) MustBuild() BACnetConstructedDataBinaryValueAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBinaryValueAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBinaryValueAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBinaryValueAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBinaryValueAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBinaryValueAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBinaryValueAllBuilder().(*_BACnetConstructedDataBinaryValueAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBinaryValueAllBuilder creates a BACnetConstructedDataBinaryValueAllBuilder
-func (m *_BACnetConstructedDataBinaryValueAll) CreateBACnetConstructedDataBinaryValueAllBuilder() BACnetConstructedDataBinaryValueAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBinaryValueAll) CreateBACnetConstructedDataBinaryValueAllBuilder() BACnetConstructedDataBinaryValueAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBinaryValueAllBuilder()
 	}
-	return &_BACnetConstructedDataBinaryValueAllBuilder{_BACnetConstructedDataBinaryValueAll: m.deepCopy()}
+	return &_BACnetConstructedDataBinaryValueAllBuilder{_BACnetConstructedDataBinaryValueAll: b.deepCopy()}
 }
 
 ///////////////////////

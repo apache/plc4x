@@ -98,64 +98,83 @@ func NewBACnetChannelValueNullBuilder() BACnetChannelValueNullBuilder {
 type _BACnetChannelValueNullBuilder struct {
 	*_BACnetChannelValueNull
 
+	parentBuilder *_BACnetChannelValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetChannelValueNullBuilder) = (*_BACnetChannelValueNullBuilder)(nil)
 
-func (m *_BACnetChannelValueNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetChannelValueNullBuilder {
-	return m.WithNullValue(nullValue)
+func (b *_BACnetChannelValueNullBuilder) setParent(contract BACnetChannelValueContract) {
+	b.BACnetChannelValueContract = contract
 }
 
-func (m *_BACnetChannelValueNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetChannelValueNullBuilder {
-	m.NullValue = nullValue
-	return m
+func (b *_BACnetChannelValueNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetChannelValueNullBuilder {
+	return b.WithNullValue(nullValue)
 }
 
-func (m *_BACnetChannelValueNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetChannelValueNullBuilder {
-	builder := builderSupplier(m.NullValue.CreateBACnetApplicationTagNullBuilder())
+func (b *_BACnetChannelValueNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetChannelValueNullBuilder {
+	b.NullValue = nullValue
+	return b
+}
+
+func (b *_BACnetChannelValueNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetChannelValueNullBuilder {
+	builder := builderSupplier(b.NullValue.CreateBACnetApplicationTagNullBuilder())
 	var err error
-	m.NullValue, err = builder.Build()
+	b.NullValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetChannelValueNullBuilder) Build() (BACnetChannelValueNull, error) {
-	if m.NullValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetChannelValueNullBuilder) Build() (BACnetChannelValueNull, error) {
+	if b.NullValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nullValue' not set"))
+		b.err.Append(errors.New("mandatory field 'nullValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetChannelValueNull.deepCopy(), nil
+	return b._BACnetChannelValueNull.deepCopy(), nil
 }
 
-func (m *_BACnetChannelValueNullBuilder) MustBuild() BACnetChannelValueNull {
-	build, err := m.Build()
+func (b *_BACnetChannelValueNullBuilder) MustBuild() BACnetChannelValueNull {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetChannelValueNullBuilder) DeepCopy() any {
-	return m.CreateBACnetChannelValueNullBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetChannelValueNullBuilder) Done() BACnetChannelValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetChannelValueNullBuilder) buildForBACnetChannelValue() (BACnetChannelValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetChannelValueNullBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetChannelValueNullBuilder().(*_BACnetChannelValueNullBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetChannelValueNullBuilder creates a BACnetChannelValueNullBuilder
-func (m *_BACnetChannelValueNull) CreateBACnetChannelValueNullBuilder() BACnetChannelValueNullBuilder {
-	if m == nil {
+func (b *_BACnetChannelValueNull) CreateBACnetChannelValueNullBuilder() BACnetChannelValueNullBuilder {
+	if b == nil {
 		return NewBACnetChannelValueNullBuilder()
 	}
-	return &_BACnetChannelValueNullBuilder{_BACnetChannelValueNull: m.deepCopy()}
+	return &_BACnetChannelValueNullBuilder{_BACnetChannelValueNull: b.deepCopy()}
 }
 
 ///////////////////////

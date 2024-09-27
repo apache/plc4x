@@ -85,40 +85,59 @@ func NewEipListIdentityRequestBuilder() EipListIdentityRequestBuilder {
 type _EipListIdentityRequestBuilder struct {
 	*_EipListIdentityRequest
 
+	parentBuilder *_EipPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (EipListIdentityRequestBuilder) = (*_EipListIdentityRequestBuilder)(nil)
 
-func (m *_EipListIdentityRequestBuilder) WithMandatoryFields() EipListIdentityRequestBuilder {
-	return m
+func (b *_EipListIdentityRequestBuilder) setParent(contract EipPacketContract) {
+	b.EipPacketContract = contract
 }
 
-func (m *_EipListIdentityRequestBuilder) Build() (EipListIdentityRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_EipListIdentityRequestBuilder) WithMandatoryFields() EipListIdentityRequestBuilder {
+	return b
+}
+
+func (b *_EipListIdentityRequestBuilder) Build() (EipListIdentityRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EipListIdentityRequest.deepCopy(), nil
+	return b._EipListIdentityRequest.deepCopy(), nil
 }
 
-func (m *_EipListIdentityRequestBuilder) MustBuild() EipListIdentityRequest {
-	build, err := m.Build()
+func (b *_EipListIdentityRequestBuilder) MustBuild() EipListIdentityRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EipListIdentityRequestBuilder) DeepCopy() any {
-	return m.CreateEipListIdentityRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EipListIdentityRequestBuilder) Done() EipPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EipListIdentityRequestBuilder) buildForEipPacket() (EipPacket, error) {
+	return b.Build()
+}
+
+func (b *_EipListIdentityRequestBuilder) DeepCopy() any {
+	_copy := b.CreateEipListIdentityRequestBuilder().(*_EipListIdentityRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEipListIdentityRequestBuilder creates a EipListIdentityRequestBuilder
-func (m *_EipListIdentityRequest) CreateEipListIdentityRequestBuilder() EipListIdentityRequestBuilder {
-	if m == nil {
+func (b *_EipListIdentityRequest) CreateEipListIdentityRequestBuilder() EipListIdentityRequestBuilder {
+	if b == nil {
 		return NewEipListIdentityRequestBuilder()
 	}
-	return &_EipListIdentityRequestBuilder{_EipListIdentityRequest: m.deepCopy()}
+	return &_EipListIdentityRequestBuilder{_EipListIdentityRequest: b.deepCopy()}
 }
 
 ///////////////////////

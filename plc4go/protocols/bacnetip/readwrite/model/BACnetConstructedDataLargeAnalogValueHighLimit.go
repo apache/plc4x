@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLargeAnalogValueHighLimitBuilder() BACnetConstructe
 type _BACnetConstructedDataLargeAnalogValueHighLimitBuilder struct {
 	*_BACnetConstructedDataLargeAnalogValueHighLimit
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLargeAnalogValueHighLimitBuilder) = (*_BACnetConstructedDataLargeAnalogValueHighLimitBuilder)(nil)
 
-func (m *_BACnetConstructedDataLargeAnalogValueHighLimitBuilder) WithMandatoryFields(highLimit BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueHighLimitBuilder {
-	return m.WithHighLimit(highLimit)
+func (b *_BACnetConstructedDataLargeAnalogValueHighLimitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueHighLimitBuilder) WithHighLimit(highLimit BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueHighLimitBuilder {
-	m.HighLimit = highLimit
-	return m
+func (b *_BACnetConstructedDataLargeAnalogValueHighLimitBuilder) WithMandatoryFields(highLimit BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueHighLimitBuilder {
+	return b.WithHighLimit(highLimit)
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueHighLimitBuilder) WithHighLimitBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueHighLimitBuilder {
-	builder := builderSupplier(m.HighLimit.CreateBACnetApplicationTagDoubleBuilder())
+func (b *_BACnetConstructedDataLargeAnalogValueHighLimitBuilder) WithHighLimit(highLimit BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueHighLimitBuilder {
+	b.HighLimit = highLimit
+	return b
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueHighLimitBuilder) WithHighLimitBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueHighLimitBuilder {
+	builder := builderSupplier(b.HighLimit.CreateBACnetApplicationTagDoubleBuilder())
 	var err error
-	m.HighLimit, err = builder.Build()
+	b.HighLimit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueHighLimitBuilder) Build() (BACnetConstructedDataLargeAnalogValueHighLimit, error) {
-	if m.HighLimit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLargeAnalogValueHighLimitBuilder) Build() (BACnetConstructedDataLargeAnalogValueHighLimit, error) {
+	if b.HighLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'highLimit' not set"))
+		b.err.Append(errors.New("mandatory field 'highLimit' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLargeAnalogValueHighLimit.deepCopy(), nil
+	return b._BACnetConstructedDataLargeAnalogValueHighLimit.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueHighLimitBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueHighLimit {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLargeAnalogValueHighLimitBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueHighLimit {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueHighLimitBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLargeAnalogValueHighLimitBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLargeAnalogValueHighLimitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueHighLimitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueHighLimitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLargeAnalogValueHighLimitBuilder().(*_BACnetConstructedDataLargeAnalogValueHighLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLargeAnalogValueHighLimitBuilder creates a BACnetConstructedDataLargeAnalogValueHighLimitBuilder
-func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) CreateBACnetConstructedDataLargeAnalogValueHighLimitBuilder() BACnetConstructedDataLargeAnalogValueHighLimitBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLargeAnalogValueHighLimit) CreateBACnetConstructedDataLargeAnalogValueHighLimitBuilder() BACnetConstructedDataLargeAnalogValueHighLimitBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLargeAnalogValueHighLimitBuilder()
 	}
-	return &_BACnetConstructedDataLargeAnalogValueHighLimitBuilder{_BACnetConstructedDataLargeAnalogValueHighLimit: m.deepCopy()}
+	return &_BACnetConstructedDataLargeAnalogValueHighLimitBuilder{_BACnetConstructedDataLargeAnalogValueHighLimit: b.deepCopy()}
 }
 
 ///////////////////////

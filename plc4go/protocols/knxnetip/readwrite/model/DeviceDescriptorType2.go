@@ -155,161 +155,165 @@ type _DeviceDescriptorType2Builder struct {
 
 var _ (DeviceDescriptorType2Builder) = (*_DeviceDescriptorType2Builder)(nil)
 
-func (m *_DeviceDescriptorType2Builder) WithMandatoryFields(manufacturerId uint16, deviceType uint16, version uint8, readSupported bool, writeSupported bool, logicalTagBase uint8, channelInfo1 ChannelInformation, channelInfo2 ChannelInformation, channelInfo3 ChannelInformation, channelInfo4 ChannelInformation) DeviceDescriptorType2Builder {
-	return m.WithManufacturerId(manufacturerId).WithDeviceType(deviceType).WithVersion(version).WithReadSupported(readSupported).WithWriteSupported(writeSupported).WithLogicalTagBase(logicalTagBase).WithChannelInfo1(channelInfo1).WithChannelInfo2(channelInfo2).WithChannelInfo3(channelInfo3).WithChannelInfo4(channelInfo4)
+func (b *_DeviceDescriptorType2Builder) WithMandatoryFields(manufacturerId uint16, deviceType uint16, version uint8, readSupported bool, writeSupported bool, logicalTagBase uint8, channelInfo1 ChannelInformation, channelInfo2 ChannelInformation, channelInfo3 ChannelInformation, channelInfo4 ChannelInformation) DeviceDescriptorType2Builder {
+	return b.WithManufacturerId(manufacturerId).WithDeviceType(deviceType).WithVersion(version).WithReadSupported(readSupported).WithWriteSupported(writeSupported).WithLogicalTagBase(logicalTagBase).WithChannelInfo1(channelInfo1).WithChannelInfo2(channelInfo2).WithChannelInfo3(channelInfo3).WithChannelInfo4(channelInfo4)
 }
 
-func (m *_DeviceDescriptorType2Builder) WithManufacturerId(manufacturerId uint16) DeviceDescriptorType2Builder {
-	m.ManufacturerId = manufacturerId
-	return m
+func (b *_DeviceDescriptorType2Builder) WithManufacturerId(manufacturerId uint16) DeviceDescriptorType2Builder {
+	b.ManufacturerId = manufacturerId
+	return b
 }
 
-func (m *_DeviceDescriptorType2Builder) WithDeviceType(deviceType uint16) DeviceDescriptorType2Builder {
-	m.DeviceType = deviceType
-	return m
+func (b *_DeviceDescriptorType2Builder) WithDeviceType(deviceType uint16) DeviceDescriptorType2Builder {
+	b.DeviceType = deviceType
+	return b
 }
 
-func (m *_DeviceDescriptorType2Builder) WithVersion(version uint8) DeviceDescriptorType2Builder {
-	m.Version = version
-	return m
+func (b *_DeviceDescriptorType2Builder) WithVersion(version uint8) DeviceDescriptorType2Builder {
+	b.Version = version
+	return b
 }
 
-func (m *_DeviceDescriptorType2Builder) WithReadSupported(readSupported bool) DeviceDescriptorType2Builder {
-	m.ReadSupported = readSupported
-	return m
+func (b *_DeviceDescriptorType2Builder) WithReadSupported(readSupported bool) DeviceDescriptorType2Builder {
+	b.ReadSupported = readSupported
+	return b
 }
 
-func (m *_DeviceDescriptorType2Builder) WithWriteSupported(writeSupported bool) DeviceDescriptorType2Builder {
-	m.WriteSupported = writeSupported
-	return m
+func (b *_DeviceDescriptorType2Builder) WithWriteSupported(writeSupported bool) DeviceDescriptorType2Builder {
+	b.WriteSupported = writeSupported
+	return b
 }
 
-func (m *_DeviceDescriptorType2Builder) WithLogicalTagBase(logicalTagBase uint8) DeviceDescriptorType2Builder {
-	m.LogicalTagBase = logicalTagBase
-	return m
+func (b *_DeviceDescriptorType2Builder) WithLogicalTagBase(logicalTagBase uint8) DeviceDescriptorType2Builder {
+	b.LogicalTagBase = logicalTagBase
+	return b
 }
 
-func (m *_DeviceDescriptorType2Builder) WithChannelInfo1(channelInfo1 ChannelInformation) DeviceDescriptorType2Builder {
-	m.ChannelInfo1 = channelInfo1
-	return m
+func (b *_DeviceDescriptorType2Builder) WithChannelInfo1(channelInfo1 ChannelInformation) DeviceDescriptorType2Builder {
+	b.ChannelInfo1 = channelInfo1
+	return b
 }
 
-func (m *_DeviceDescriptorType2Builder) WithChannelInfo1Builder(builderSupplier func(ChannelInformationBuilder) ChannelInformationBuilder) DeviceDescriptorType2Builder {
-	builder := builderSupplier(m.ChannelInfo1.CreateChannelInformationBuilder())
+func (b *_DeviceDescriptorType2Builder) WithChannelInfo1Builder(builderSupplier func(ChannelInformationBuilder) ChannelInformationBuilder) DeviceDescriptorType2Builder {
+	builder := builderSupplier(b.ChannelInfo1.CreateChannelInformationBuilder())
 	var err error
-	m.ChannelInfo1, err = builder.Build()
+	b.ChannelInfo1, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ChannelInformationBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ChannelInformationBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_DeviceDescriptorType2Builder) WithChannelInfo2(channelInfo2 ChannelInformation) DeviceDescriptorType2Builder {
-	m.ChannelInfo2 = channelInfo2
-	return m
+func (b *_DeviceDescriptorType2Builder) WithChannelInfo2(channelInfo2 ChannelInformation) DeviceDescriptorType2Builder {
+	b.ChannelInfo2 = channelInfo2
+	return b
 }
 
-func (m *_DeviceDescriptorType2Builder) WithChannelInfo2Builder(builderSupplier func(ChannelInformationBuilder) ChannelInformationBuilder) DeviceDescriptorType2Builder {
-	builder := builderSupplier(m.ChannelInfo2.CreateChannelInformationBuilder())
+func (b *_DeviceDescriptorType2Builder) WithChannelInfo2Builder(builderSupplier func(ChannelInformationBuilder) ChannelInformationBuilder) DeviceDescriptorType2Builder {
+	builder := builderSupplier(b.ChannelInfo2.CreateChannelInformationBuilder())
 	var err error
-	m.ChannelInfo2, err = builder.Build()
+	b.ChannelInfo2, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ChannelInformationBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ChannelInformationBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_DeviceDescriptorType2Builder) WithChannelInfo3(channelInfo3 ChannelInformation) DeviceDescriptorType2Builder {
-	m.ChannelInfo3 = channelInfo3
-	return m
+func (b *_DeviceDescriptorType2Builder) WithChannelInfo3(channelInfo3 ChannelInformation) DeviceDescriptorType2Builder {
+	b.ChannelInfo3 = channelInfo3
+	return b
 }
 
-func (m *_DeviceDescriptorType2Builder) WithChannelInfo3Builder(builderSupplier func(ChannelInformationBuilder) ChannelInformationBuilder) DeviceDescriptorType2Builder {
-	builder := builderSupplier(m.ChannelInfo3.CreateChannelInformationBuilder())
+func (b *_DeviceDescriptorType2Builder) WithChannelInfo3Builder(builderSupplier func(ChannelInformationBuilder) ChannelInformationBuilder) DeviceDescriptorType2Builder {
+	builder := builderSupplier(b.ChannelInfo3.CreateChannelInformationBuilder())
 	var err error
-	m.ChannelInfo3, err = builder.Build()
+	b.ChannelInfo3, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ChannelInformationBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ChannelInformationBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_DeviceDescriptorType2Builder) WithChannelInfo4(channelInfo4 ChannelInformation) DeviceDescriptorType2Builder {
-	m.ChannelInfo4 = channelInfo4
-	return m
+func (b *_DeviceDescriptorType2Builder) WithChannelInfo4(channelInfo4 ChannelInformation) DeviceDescriptorType2Builder {
+	b.ChannelInfo4 = channelInfo4
+	return b
 }
 
-func (m *_DeviceDescriptorType2Builder) WithChannelInfo4Builder(builderSupplier func(ChannelInformationBuilder) ChannelInformationBuilder) DeviceDescriptorType2Builder {
-	builder := builderSupplier(m.ChannelInfo4.CreateChannelInformationBuilder())
+func (b *_DeviceDescriptorType2Builder) WithChannelInfo4Builder(builderSupplier func(ChannelInformationBuilder) ChannelInformationBuilder) DeviceDescriptorType2Builder {
+	builder := builderSupplier(b.ChannelInfo4.CreateChannelInformationBuilder())
 	var err error
-	m.ChannelInfo4, err = builder.Build()
+	b.ChannelInfo4, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ChannelInformationBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ChannelInformationBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_DeviceDescriptorType2Builder) Build() (DeviceDescriptorType2, error) {
-	if m.ChannelInfo1 == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_DeviceDescriptorType2Builder) Build() (DeviceDescriptorType2, error) {
+	if b.ChannelInfo1 == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'channelInfo1' not set"))
+		b.err.Append(errors.New("mandatory field 'channelInfo1' not set"))
 	}
-	if m.ChannelInfo2 == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ChannelInfo2 == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'channelInfo2' not set"))
+		b.err.Append(errors.New("mandatory field 'channelInfo2' not set"))
 	}
-	if m.ChannelInfo3 == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ChannelInfo3 == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'channelInfo3' not set"))
+		b.err.Append(errors.New("mandatory field 'channelInfo3' not set"))
 	}
-	if m.ChannelInfo4 == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ChannelInfo4 == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'channelInfo4' not set"))
+		b.err.Append(errors.New("mandatory field 'channelInfo4' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DeviceDescriptorType2.deepCopy(), nil
+	return b._DeviceDescriptorType2.deepCopy(), nil
 }
 
-func (m *_DeviceDescriptorType2Builder) MustBuild() DeviceDescriptorType2 {
-	build, err := m.Build()
+func (b *_DeviceDescriptorType2Builder) MustBuild() DeviceDescriptorType2 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DeviceDescriptorType2Builder) DeepCopy() any {
-	return m.CreateDeviceDescriptorType2Builder()
+func (b *_DeviceDescriptorType2Builder) DeepCopy() any {
+	_copy := b.CreateDeviceDescriptorType2Builder().(*_DeviceDescriptorType2Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDeviceDescriptorType2Builder creates a DeviceDescriptorType2Builder
-func (m *_DeviceDescriptorType2) CreateDeviceDescriptorType2Builder() DeviceDescriptorType2Builder {
-	if m == nil {
+func (b *_DeviceDescriptorType2) CreateDeviceDescriptorType2Builder() DeviceDescriptorType2Builder {
+	if b == nil {
 		return NewDeviceDescriptorType2Builder()
 	}
-	return &_DeviceDescriptorType2Builder{_DeviceDescriptorType2: m.deepCopy()}
+	return &_DeviceDescriptorType2Builder{_DeviceDescriptorType2: b.deepCopy()}
 }
 
 ///////////////////////

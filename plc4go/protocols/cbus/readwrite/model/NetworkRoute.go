@@ -100,64 +100,68 @@ type _NetworkRouteBuilder struct {
 
 var _ (NetworkRouteBuilder) = (*_NetworkRouteBuilder)(nil)
 
-func (m *_NetworkRouteBuilder) WithMandatoryFields(networkPCI NetworkProtocolControlInformation, additionalBridgeAddresses []BridgeAddress) NetworkRouteBuilder {
-	return m.WithNetworkPCI(networkPCI).WithAdditionalBridgeAddresses(additionalBridgeAddresses...)
+func (b *_NetworkRouteBuilder) WithMandatoryFields(networkPCI NetworkProtocolControlInformation, additionalBridgeAddresses []BridgeAddress) NetworkRouteBuilder {
+	return b.WithNetworkPCI(networkPCI).WithAdditionalBridgeAddresses(additionalBridgeAddresses...)
 }
 
-func (m *_NetworkRouteBuilder) WithNetworkPCI(networkPCI NetworkProtocolControlInformation) NetworkRouteBuilder {
-	m.NetworkPCI = networkPCI
-	return m
+func (b *_NetworkRouteBuilder) WithNetworkPCI(networkPCI NetworkProtocolControlInformation) NetworkRouteBuilder {
+	b.NetworkPCI = networkPCI
+	return b
 }
 
-func (m *_NetworkRouteBuilder) WithNetworkPCIBuilder(builderSupplier func(NetworkProtocolControlInformationBuilder) NetworkProtocolControlInformationBuilder) NetworkRouteBuilder {
-	builder := builderSupplier(m.NetworkPCI.CreateNetworkProtocolControlInformationBuilder())
+func (b *_NetworkRouteBuilder) WithNetworkPCIBuilder(builderSupplier func(NetworkProtocolControlInformationBuilder) NetworkProtocolControlInformationBuilder) NetworkRouteBuilder {
+	builder := builderSupplier(b.NetworkPCI.CreateNetworkProtocolControlInformationBuilder())
 	var err error
-	m.NetworkPCI, err = builder.Build()
+	b.NetworkPCI, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NetworkProtocolControlInformationBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NetworkProtocolControlInformationBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_NetworkRouteBuilder) WithAdditionalBridgeAddresses(additionalBridgeAddresses ...BridgeAddress) NetworkRouteBuilder {
-	m.AdditionalBridgeAddresses = additionalBridgeAddresses
-	return m
+func (b *_NetworkRouteBuilder) WithAdditionalBridgeAddresses(additionalBridgeAddresses ...BridgeAddress) NetworkRouteBuilder {
+	b.AdditionalBridgeAddresses = additionalBridgeAddresses
+	return b
 }
 
-func (m *_NetworkRouteBuilder) Build() (NetworkRoute, error) {
-	if m.NetworkPCI == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_NetworkRouteBuilder) Build() (NetworkRoute, error) {
+	if b.NetworkPCI == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'networkPCI' not set"))
+		b.err.Append(errors.New("mandatory field 'networkPCI' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NetworkRoute.deepCopy(), nil
+	return b._NetworkRoute.deepCopy(), nil
 }
 
-func (m *_NetworkRouteBuilder) MustBuild() NetworkRoute {
-	build, err := m.Build()
+func (b *_NetworkRouteBuilder) MustBuild() NetworkRoute {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NetworkRouteBuilder) DeepCopy() any {
-	return m.CreateNetworkRouteBuilder()
+func (b *_NetworkRouteBuilder) DeepCopy() any {
+	_copy := b.CreateNetworkRouteBuilder().(*_NetworkRouteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNetworkRouteBuilder creates a NetworkRouteBuilder
-func (m *_NetworkRoute) CreateNetworkRouteBuilder() NetworkRouteBuilder {
-	if m == nil {
+func (b *_NetworkRoute) CreateNetworkRouteBuilder() NetworkRouteBuilder {
+	if b == nil {
 		return NewNetworkRouteBuilder()
 	}
-	return &_NetworkRouteBuilder{_NetworkRoute: m.deepCopy()}
+	return &_NetworkRouteBuilder{_NetworkRoute: b.deepCopy()}
 }
 
 ///////////////////////

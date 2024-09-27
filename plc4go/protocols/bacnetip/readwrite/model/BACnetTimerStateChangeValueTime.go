@@ -98,64 +98,83 @@ func NewBACnetTimerStateChangeValueTimeBuilder() BACnetTimerStateChangeValueTime
 type _BACnetTimerStateChangeValueTimeBuilder struct {
 	*_BACnetTimerStateChangeValueTime
 
+	parentBuilder *_BACnetTimerStateChangeValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetTimerStateChangeValueTimeBuilder) = (*_BACnetTimerStateChangeValueTimeBuilder)(nil)
 
-func (m *_BACnetTimerStateChangeValueTimeBuilder) WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetTimerStateChangeValueTimeBuilder {
-	return m.WithTimeValue(timeValue)
+func (b *_BACnetTimerStateChangeValueTimeBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
+	b.BACnetTimerStateChangeValueContract = contract
 }
 
-func (m *_BACnetTimerStateChangeValueTimeBuilder) WithTimeValue(timeValue BACnetApplicationTagTime) BACnetTimerStateChangeValueTimeBuilder {
-	m.TimeValue = timeValue
-	return m
+func (b *_BACnetTimerStateChangeValueTimeBuilder) WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetTimerStateChangeValueTimeBuilder {
+	return b.WithTimeValue(timeValue)
 }
 
-func (m *_BACnetTimerStateChangeValueTimeBuilder) WithTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetTimerStateChangeValueTimeBuilder {
-	builder := builderSupplier(m.TimeValue.CreateBACnetApplicationTagTimeBuilder())
+func (b *_BACnetTimerStateChangeValueTimeBuilder) WithTimeValue(timeValue BACnetApplicationTagTime) BACnetTimerStateChangeValueTimeBuilder {
+	b.TimeValue = timeValue
+	return b
+}
+
+func (b *_BACnetTimerStateChangeValueTimeBuilder) WithTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetTimerStateChangeValueTimeBuilder {
+	builder := builderSupplier(b.TimeValue.CreateBACnetApplicationTagTimeBuilder())
 	var err error
-	m.TimeValue, err = builder.Build()
+	b.TimeValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetTimerStateChangeValueTimeBuilder) Build() (BACnetTimerStateChangeValueTime, error) {
-	if m.TimeValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetTimerStateChangeValueTimeBuilder) Build() (BACnetTimerStateChangeValueTime, error) {
+	if b.TimeValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeValue' not set"))
+		b.err.Append(errors.New("mandatory field 'timeValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTimerStateChangeValueTime.deepCopy(), nil
+	return b._BACnetTimerStateChangeValueTime.deepCopy(), nil
 }
 
-func (m *_BACnetTimerStateChangeValueTimeBuilder) MustBuild() BACnetTimerStateChangeValueTime {
-	build, err := m.Build()
+func (b *_BACnetTimerStateChangeValueTimeBuilder) MustBuild() BACnetTimerStateChangeValueTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTimerStateChangeValueTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetTimerStateChangeValueTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetTimerStateChangeValueTimeBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetTimerStateChangeValueTimeBuilder) buildForBACnetTimerStateChangeValue() (BACnetTimerStateChangeValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetTimerStateChangeValueTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimerStateChangeValueTimeBuilder().(*_BACnetTimerStateChangeValueTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTimerStateChangeValueTimeBuilder creates a BACnetTimerStateChangeValueTimeBuilder
-func (m *_BACnetTimerStateChangeValueTime) CreateBACnetTimerStateChangeValueTimeBuilder() BACnetTimerStateChangeValueTimeBuilder {
-	if m == nil {
+func (b *_BACnetTimerStateChangeValueTime) CreateBACnetTimerStateChangeValueTimeBuilder() BACnetTimerStateChangeValueTimeBuilder {
+	if b == nil {
 		return NewBACnetTimerStateChangeValueTimeBuilder()
 	}
-	return &_BACnetTimerStateChangeValueTimeBuilder{_BACnetTimerStateChangeValueTime: m.deepCopy()}
+	return &_BACnetTimerStateChangeValueTimeBuilder{_BACnetTimerStateChangeValueTime: b.deepCopy()}
 }
 
 ///////////////////////

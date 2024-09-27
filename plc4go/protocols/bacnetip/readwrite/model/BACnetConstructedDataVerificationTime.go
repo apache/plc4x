@@ -100,64 +100,83 @@ func NewBACnetConstructedDataVerificationTimeBuilder() BACnetConstructedDataVeri
 type _BACnetConstructedDataVerificationTimeBuilder struct {
 	*_BACnetConstructedDataVerificationTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataVerificationTimeBuilder) = (*_BACnetConstructedDataVerificationTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataVerificationTimeBuilder) WithMandatoryFields(verificationTime BACnetApplicationTagSignedInteger) BACnetConstructedDataVerificationTimeBuilder {
-	return m.WithVerificationTime(verificationTime)
+func (b *_BACnetConstructedDataVerificationTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataVerificationTimeBuilder) WithVerificationTime(verificationTime BACnetApplicationTagSignedInteger) BACnetConstructedDataVerificationTimeBuilder {
-	m.VerificationTime = verificationTime
-	return m
+func (b *_BACnetConstructedDataVerificationTimeBuilder) WithMandatoryFields(verificationTime BACnetApplicationTagSignedInteger) BACnetConstructedDataVerificationTimeBuilder {
+	return b.WithVerificationTime(verificationTime)
 }
 
-func (m *_BACnetConstructedDataVerificationTimeBuilder) WithVerificationTimeBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataVerificationTimeBuilder {
-	builder := builderSupplier(m.VerificationTime.CreateBACnetApplicationTagSignedIntegerBuilder())
+func (b *_BACnetConstructedDataVerificationTimeBuilder) WithVerificationTime(verificationTime BACnetApplicationTagSignedInteger) BACnetConstructedDataVerificationTimeBuilder {
+	b.VerificationTime = verificationTime
+	return b
+}
+
+func (b *_BACnetConstructedDataVerificationTimeBuilder) WithVerificationTimeBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataVerificationTimeBuilder {
+	builder := builderSupplier(b.VerificationTime.CreateBACnetApplicationTagSignedIntegerBuilder())
 	var err error
-	m.VerificationTime, err = builder.Build()
+	b.VerificationTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataVerificationTimeBuilder) Build() (BACnetConstructedDataVerificationTime, error) {
-	if m.VerificationTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataVerificationTimeBuilder) Build() (BACnetConstructedDataVerificationTime, error) {
+	if b.VerificationTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'verificationTime' not set"))
+		b.err.Append(errors.New("mandatory field 'verificationTime' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataVerificationTime.deepCopy(), nil
+	return b._BACnetConstructedDataVerificationTime.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataVerificationTimeBuilder) MustBuild() BACnetConstructedDataVerificationTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataVerificationTimeBuilder) MustBuild() BACnetConstructedDataVerificationTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataVerificationTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataVerificationTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataVerificationTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataVerificationTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataVerificationTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataVerificationTimeBuilder().(*_BACnetConstructedDataVerificationTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataVerificationTimeBuilder creates a BACnetConstructedDataVerificationTimeBuilder
-func (m *_BACnetConstructedDataVerificationTime) CreateBACnetConstructedDataVerificationTimeBuilder() BACnetConstructedDataVerificationTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataVerificationTime) CreateBACnetConstructedDataVerificationTimeBuilder() BACnetConstructedDataVerificationTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataVerificationTimeBuilder()
 	}
-	return &_BACnetConstructedDataVerificationTimeBuilder{_BACnetConstructedDataVerificationTime: m.deepCopy()}
+	return &_BACnetConstructedDataVerificationTimeBuilder{_BACnetConstructedDataVerificationTime: b.deepCopy()}
 }
 
 ///////////////////////

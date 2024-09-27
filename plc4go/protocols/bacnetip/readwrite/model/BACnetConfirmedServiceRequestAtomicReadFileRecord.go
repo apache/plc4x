@@ -109,88 +109,107 @@ func NewBACnetConfirmedServiceRequestAtomicReadFileRecordBuilder() BACnetConfirm
 type _BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder struct {
 	*_BACnetConfirmedServiceRequestAtomicReadFileRecord
 
+	parentBuilder *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) = (*_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) WithMandatoryFields(fileStartRecord BACnetApplicationTagSignedInteger, requestRecordCount BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder {
-	return m.WithFileStartRecord(fileStartRecord).WithRequestRecordCount(requestRecordCount)
+func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) setParent(contract BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract) {
+	b.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) WithFileStartRecord(fileStartRecord BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder {
-	m.FileStartRecord = fileStartRecord
-	return m
+func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) WithMandatoryFields(fileStartRecord BACnetApplicationTagSignedInteger, requestRecordCount BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder {
+	return b.WithFileStartRecord(fileStartRecord).WithRequestRecordCount(requestRecordCount)
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) WithFileStartRecordBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder {
-	builder := builderSupplier(m.FileStartRecord.CreateBACnetApplicationTagSignedIntegerBuilder())
+func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) WithFileStartRecord(fileStartRecord BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder {
+	b.FileStartRecord = fileStartRecord
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) WithFileStartRecordBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder {
+	builder := builderSupplier(b.FileStartRecord.CreateBACnetApplicationTagSignedIntegerBuilder())
 	var err error
-	m.FileStartRecord, err = builder.Build()
+	b.FileStartRecord, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) WithRequestRecordCount(requestRecordCount BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder {
-	m.RequestRecordCount = requestRecordCount
-	return m
+func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) WithRequestRecordCount(requestRecordCount BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder {
+	b.RequestRecordCount = requestRecordCount
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) WithRequestRecordCountBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder {
-	builder := builderSupplier(m.RequestRecordCount.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) WithRequestRecordCountBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder {
+	builder := builderSupplier(b.RequestRecordCount.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.RequestRecordCount, err = builder.Build()
+	b.RequestRecordCount, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) Build() (BACnetConfirmedServiceRequestAtomicReadFileRecord, error) {
-	if m.FileStartRecord == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) Build() (BACnetConfirmedServiceRequestAtomicReadFileRecord, error) {
+	if b.FileStartRecord == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'fileStartRecord' not set"))
+		b.err.Append(errors.New("mandatory field 'fileStartRecord' not set"))
 	}
-	if m.RequestRecordCount == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.RequestRecordCount == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'requestRecordCount' not set"))
+		b.err.Append(errors.New("mandatory field 'requestRecordCount' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestAtomicReadFileRecord.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestAtomicReadFileRecord.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) MustBuild() BACnetConfirmedServiceRequestAtomicReadFileRecord {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) MustBuild() BACnetConfirmedServiceRequestAtomicReadFileRecord {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestAtomicReadFileRecordBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) Done() BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) buildForBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord() (BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestAtomicReadFileRecordBuilder().(*_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestAtomicReadFileRecordBuilder creates a BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecord) CreateBACnetConfirmedServiceRequestAtomicReadFileRecordBuilder() BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecord) CreateBACnetConfirmedServiceRequestAtomicReadFileRecordBuilder() BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestAtomicReadFileRecordBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder{_BACnetConfirmedServiceRequestAtomicReadFileRecord: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder{_BACnetConfirmedServiceRequestAtomicReadFileRecord: b.deepCopy()}
 }
 
 ///////////////////////

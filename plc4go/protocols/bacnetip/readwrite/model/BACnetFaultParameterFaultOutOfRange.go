@@ -107,8 +107,12 @@ type BACnetFaultParameterFaultOutOfRangeBuilder interface {
 	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetFaultParameterFaultOutOfRangeBuilder
 	// WithMinNormalValue adds MinNormalValue (property field)
 	WithMinNormalValue(BACnetFaultParameterFaultOutOfRangeMinNormalValue) BACnetFaultParameterFaultOutOfRangeBuilder
+	// WithMinNormalValueBuilder adds MinNormalValue (property field) which is build by the builder
+	WithMinNormalValueBuilder(func(BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) BACnetFaultParameterFaultOutOfRangeBuilder
 	// WithMaxNormalValue adds MaxNormalValue (property field)
 	WithMaxNormalValue(BACnetFaultParameterFaultOutOfRangeMaxNormalValue) BACnetFaultParameterFaultOutOfRangeBuilder
+	// WithMaxNormalValueBuilder adds MaxNormalValue (property field) which is build by the builder
+	WithMaxNormalValueBuilder(func(BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder) BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder) BACnetFaultParameterFaultOutOfRangeBuilder
 	// WithClosingTag adds ClosingTag (property field)
 	WithClosingTag(BACnetClosingTag) BACnetFaultParameterFaultOutOfRangeBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
@@ -127,110 +131,155 @@ func NewBACnetFaultParameterFaultOutOfRangeBuilder() BACnetFaultParameterFaultOu
 type _BACnetFaultParameterFaultOutOfRangeBuilder struct {
 	*_BACnetFaultParameterFaultOutOfRange
 
+	parentBuilder *_BACnetFaultParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetFaultParameterFaultOutOfRangeBuilder) = (*_BACnetFaultParameterFaultOutOfRangeBuilder)(nil)
 
-func (m *_BACnetFaultParameterFaultOutOfRangeBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, minNormalValue BACnetFaultParameterFaultOutOfRangeMinNormalValue, maxNormalValue BACnetFaultParameterFaultOutOfRangeMaxNormalValue, closingTag BACnetClosingTag) BACnetFaultParameterFaultOutOfRangeBuilder {
-	return m.WithOpeningTag(openingTag).WithMinNormalValue(minNormalValue).WithMaxNormalValue(maxNormalValue).WithClosingTag(closingTag)
+func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) setParent(contract BACnetFaultParameterContract) {
+	b.BACnetFaultParameterContract = contract
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetFaultParameterFaultOutOfRangeBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, minNormalValue BACnetFaultParameterFaultOutOfRangeMinNormalValue, maxNormalValue BACnetFaultParameterFaultOutOfRangeMaxNormalValue, closingTag BACnetClosingTag) BACnetFaultParameterFaultOutOfRangeBuilder {
+	return b.WithOpeningTag(openingTag).WithMinNormalValue(minNormalValue).WithMaxNormalValue(maxNormalValue).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetFaultParameterFaultOutOfRangeBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetFaultParameterFaultOutOfRangeBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetFaultParameterFaultOutOfRangeBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeBuilder) WithMinNormalValue(minNormalValue BACnetFaultParameterFaultOutOfRangeMinNormalValue) BACnetFaultParameterFaultOutOfRangeBuilder {
-	m.MinNormalValue = minNormalValue
-	return m
+func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) WithMinNormalValue(minNormalValue BACnetFaultParameterFaultOutOfRangeMinNormalValue) BACnetFaultParameterFaultOutOfRangeBuilder {
+	b.MinNormalValue = minNormalValue
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeBuilder) WithMaxNormalValue(maxNormalValue BACnetFaultParameterFaultOutOfRangeMaxNormalValue) BACnetFaultParameterFaultOutOfRangeBuilder {
-	m.MaxNormalValue = maxNormalValue
-	return m
-}
-
-func (m *_BACnetFaultParameterFaultOutOfRangeBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetFaultParameterFaultOutOfRangeBuilder {
-	m.ClosingTag = closingTag
-	return m
-}
-
-func (m *_BACnetFaultParameterFaultOutOfRangeBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultOutOfRangeBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) WithMinNormalValueBuilder(builderSupplier func(BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) BACnetFaultParameterFaultOutOfRangeBuilder {
+	builder := builderSupplier(b.MinNormalValue.CreateBACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.MinNormalValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeBuilder) Build() (BACnetFaultParameterFaultOutOfRange, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
-	}
-	if m.MinNormalValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'minNormalValue' not set"))
-	}
-	if m.MaxNormalValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'maxNormalValue' not set"))
-	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetFaultParameterFaultOutOfRange.deepCopy(), nil
+func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) WithMaxNormalValue(maxNormalValue BACnetFaultParameterFaultOutOfRangeMaxNormalValue) BACnetFaultParameterFaultOutOfRangeBuilder {
+	b.MaxNormalValue = maxNormalValue
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeBuilder) MustBuild() BACnetFaultParameterFaultOutOfRange {
-	build, err := m.Build()
+func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) WithMaxNormalValueBuilder(builderSupplier func(BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder) BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder) BACnetFaultParameterFaultOutOfRangeBuilder {
+	builder := builderSupplier(b.MaxNormalValue.CreateBACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder())
+	var err error
+	b.MaxNormalValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetFaultParameterFaultOutOfRangeBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultOutOfRangeBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) Build() (BACnetFaultParameterFaultOutOfRange, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.MinNormalValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'minNormalValue' not set"))
+	}
+	if b.MaxNormalValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'maxNormalValue' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetFaultParameterFaultOutOfRange.deepCopy(), nil
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) MustBuild() BACnetFaultParameterFaultOutOfRange {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeBuilder) DeepCopy() any {
-	return m.CreateBACnetFaultParameterFaultOutOfRangeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) Done() BACnetFaultParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) buildForBACnetFaultParameter() (BACnetFaultParameter, error) {
+	return b.Build()
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultParameterFaultOutOfRangeBuilder().(*_BACnetFaultParameterFaultOutOfRangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetFaultParameterFaultOutOfRangeBuilder creates a BACnetFaultParameterFaultOutOfRangeBuilder
-func (m *_BACnetFaultParameterFaultOutOfRange) CreateBACnetFaultParameterFaultOutOfRangeBuilder() BACnetFaultParameterFaultOutOfRangeBuilder {
-	if m == nil {
+func (b *_BACnetFaultParameterFaultOutOfRange) CreateBACnetFaultParameterFaultOutOfRangeBuilder() BACnetFaultParameterFaultOutOfRangeBuilder {
+	if b == nil {
 		return NewBACnetFaultParameterFaultOutOfRangeBuilder()
 	}
-	return &_BACnetFaultParameterFaultOutOfRangeBuilder{_BACnetFaultParameterFaultOutOfRange: m.deepCopy()}
+	return &_BACnetFaultParameterFaultOutOfRangeBuilder{_BACnetFaultParameterFaultOutOfRange: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataBackupFailureTimeoutBuilder() BACnetConstructedData
 type _BACnetConstructedDataBackupFailureTimeoutBuilder struct {
 	*_BACnetConstructedDataBackupFailureTimeout
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBackupFailureTimeoutBuilder) = (*_BACnetConstructedDataBackupFailureTimeoutBuilder)(nil)
 
-func (m *_BACnetConstructedDataBackupFailureTimeoutBuilder) WithMandatoryFields(backupFailureTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBackupFailureTimeoutBuilder {
-	return m.WithBackupFailureTimeout(backupFailureTimeout)
+func (b *_BACnetConstructedDataBackupFailureTimeoutBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBackupFailureTimeoutBuilder) WithBackupFailureTimeout(backupFailureTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBackupFailureTimeoutBuilder {
-	m.BackupFailureTimeout = backupFailureTimeout
-	return m
+func (b *_BACnetConstructedDataBackupFailureTimeoutBuilder) WithMandatoryFields(backupFailureTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBackupFailureTimeoutBuilder {
+	return b.WithBackupFailureTimeout(backupFailureTimeout)
 }
 
-func (m *_BACnetConstructedDataBackupFailureTimeoutBuilder) WithBackupFailureTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBackupFailureTimeoutBuilder {
-	builder := builderSupplier(m.BackupFailureTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataBackupFailureTimeoutBuilder) WithBackupFailureTimeout(backupFailureTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBackupFailureTimeoutBuilder {
+	b.BackupFailureTimeout = backupFailureTimeout
+	return b
+}
+
+func (b *_BACnetConstructedDataBackupFailureTimeoutBuilder) WithBackupFailureTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBackupFailureTimeoutBuilder {
+	builder := builderSupplier(b.BackupFailureTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.BackupFailureTimeout, err = builder.Build()
+	b.BackupFailureTimeout, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBackupFailureTimeoutBuilder) Build() (BACnetConstructedDataBackupFailureTimeout, error) {
-	if m.BackupFailureTimeout == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBackupFailureTimeoutBuilder) Build() (BACnetConstructedDataBackupFailureTimeout, error) {
+	if b.BackupFailureTimeout == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'backupFailureTimeout' not set"))
+		b.err.Append(errors.New("mandatory field 'backupFailureTimeout' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBackupFailureTimeout.deepCopy(), nil
+	return b._BACnetConstructedDataBackupFailureTimeout.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBackupFailureTimeoutBuilder) MustBuild() BACnetConstructedDataBackupFailureTimeout {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBackupFailureTimeoutBuilder) MustBuild() BACnetConstructedDataBackupFailureTimeout {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBackupFailureTimeoutBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBackupFailureTimeoutBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBackupFailureTimeoutBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBackupFailureTimeoutBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBackupFailureTimeoutBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBackupFailureTimeoutBuilder().(*_BACnetConstructedDataBackupFailureTimeoutBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBackupFailureTimeoutBuilder creates a BACnetConstructedDataBackupFailureTimeoutBuilder
-func (m *_BACnetConstructedDataBackupFailureTimeout) CreateBACnetConstructedDataBackupFailureTimeoutBuilder() BACnetConstructedDataBackupFailureTimeoutBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBackupFailureTimeout) CreateBACnetConstructedDataBackupFailureTimeoutBuilder() BACnetConstructedDataBackupFailureTimeoutBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBackupFailureTimeoutBuilder()
 	}
-	return &_BACnetConstructedDataBackupFailureTimeoutBuilder{_BACnetConstructedDataBackupFailureTimeout: m.deepCopy()}
+	return &_BACnetConstructedDataBackupFailureTimeoutBuilder{_BACnetConstructedDataBackupFailureTimeout: b.deepCopy()}
 }
 
 ///////////////////////

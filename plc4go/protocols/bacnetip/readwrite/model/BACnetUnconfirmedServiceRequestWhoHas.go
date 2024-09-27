@@ -98,6 +98,8 @@ type BACnetUnconfirmedServiceRequestWhoHasBuilder interface {
 	WithOptionalDeviceInstanceRangeHighLimitBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestWhoHasBuilder
 	// WithObject adds Object (property field)
 	WithObject(BACnetUnconfirmedServiceRequestWhoHasObject) BACnetUnconfirmedServiceRequestWhoHasBuilder
+	// WithObjectBuilder adds Object (property field) which is build by the builder
+	WithObjectBuilder(func(BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) BACnetUnconfirmedServiceRequestWhoHasBuilder
 	// Build builds the BACnetUnconfirmedServiceRequestWhoHas or returns an error if something is wrong
 	Build() (BACnetUnconfirmedServiceRequestWhoHas, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,87 +114,119 @@ func NewBACnetUnconfirmedServiceRequestWhoHasBuilder() BACnetUnconfirmedServiceR
 type _BACnetUnconfirmedServiceRequestWhoHasBuilder struct {
 	*_BACnetUnconfirmedServiceRequestWhoHas
 
+	parentBuilder *_BACnetUnconfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetUnconfirmedServiceRequestWhoHasBuilder) = (*_BACnetUnconfirmedServiceRequestWhoHasBuilder)(nil)
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithMandatoryFields(object BACnetUnconfirmedServiceRequestWhoHasObject) BACnetUnconfirmedServiceRequestWhoHasBuilder {
-	return m.WithObject(object)
+func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) setParent(contract BACnetUnconfirmedServiceRequestContract) {
+	b.BACnetUnconfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithOptionalDeviceInstanceRangeLowLimit(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestWhoHasBuilder {
-	m.DeviceInstanceRangeLowLimit = deviceInstanceRangeLowLimit
-	return m
+func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithMandatoryFields(object BACnetUnconfirmedServiceRequestWhoHasObject) BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	return b.WithObject(object)
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithOptionalDeviceInstanceRangeLowLimitBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestWhoHasBuilder {
-	builder := builderSupplier(m.DeviceInstanceRangeLowLimit.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithOptionalDeviceInstanceRangeLowLimit(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	b.DeviceInstanceRangeLowLimit = deviceInstanceRangeLowLimit
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithOptionalDeviceInstanceRangeLowLimitBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	builder := builderSupplier(b.DeviceInstanceRangeLowLimit.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.DeviceInstanceRangeLowLimit, err = builder.Build()
+	b.DeviceInstanceRangeLowLimit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithOptionalDeviceInstanceRangeHighLimit(deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestWhoHasBuilder {
-	m.DeviceInstanceRangeHighLimit = deviceInstanceRangeHighLimit
-	return m
+func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithOptionalDeviceInstanceRangeHighLimit(deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	b.DeviceInstanceRangeHighLimit = deviceInstanceRangeHighLimit
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithOptionalDeviceInstanceRangeHighLimitBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestWhoHasBuilder {
-	builder := builderSupplier(m.DeviceInstanceRangeHighLimit.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithOptionalDeviceInstanceRangeHighLimitBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	builder := builderSupplier(b.DeviceInstanceRangeHighLimit.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.DeviceInstanceRangeHighLimit, err = builder.Build()
+	b.DeviceInstanceRangeHighLimit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithObject(object BACnetUnconfirmedServiceRequestWhoHasObject) BACnetUnconfirmedServiceRequestWhoHasBuilder {
-	m.Object = object
-	return m
+func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithObject(object BACnetUnconfirmedServiceRequestWhoHasObject) BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	b.Object = object
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) Build() (BACnetUnconfirmedServiceRequestWhoHas, error) {
-	if m.Object == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithObjectBuilder(builderSupplier func(BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	builder := builderSupplier(b.Object.CreateBACnetUnconfirmedServiceRequestWhoHasObjectBuilder())
+	var err error
+	b.Object, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'object' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetUnconfirmedServiceRequestWhoHasObjectBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetUnconfirmedServiceRequestWhoHas.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) MustBuild() BACnetUnconfirmedServiceRequestWhoHas {
-	build, err := m.Build()
+func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) Build() (BACnetUnconfirmedServiceRequestWhoHas, error) {
+	if b.Object == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'object' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetUnconfirmedServiceRequestWhoHas.deepCopy(), nil
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) MustBuild() BACnetUnconfirmedServiceRequestWhoHas {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) DeepCopy() any {
-	return m.CreateBACnetUnconfirmedServiceRequestWhoHasBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) Done() BACnetUnconfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) buildForBACnetUnconfirmedServiceRequest() (BACnetUnconfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetUnconfirmedServiceRequestWhoHasBuilder().(*_BACnetUnconfirmedServiceRequestWhoHasBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetUnconfirmedServiceRequestWhoHasBuilder creates a BACnetUnconfirmedServiceRequestWhoHasBuilder
-func (m *_BACnetUnconfirmedServiceRequestWhoHas) CreateBACnetUnconfirmedServiceRequestWhoHasBuilder() BACnetUnconfirmedServiceRequestWhoHasBuilder {
-	if m == nil {
+func (b *_BACnetUnconfirmedServiceRequestWhoHas) CreateBACnetUnconfirmedServiceRequestWhoHasBuilder() BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	if b == nil {
 		return NewBACnetUnconfirmedServiceRequestWhoHasBuilder()
 	}
-	return &_BACnetUnconfirmedServiceRequestWhoHasBuilder{_BACnetUnconfirmedServiceRequestWhoHas: m.deepCopy()}
+	return &_BACnetUnconfirmedServiceRequestWhoHasBuilder{_BACnetUnconfirmedServiceRequestWhoHas: b.deepCopy()}
 }
 
 ///////////////////////

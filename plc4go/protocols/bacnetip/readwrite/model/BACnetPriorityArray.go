@@ -140,58 +140,62 @@ type _BACnetPriorityArrayBuilder struct {
 
 var _ (BACnetPriorityArrayBuilder) = (*_BACnetPriorityArrayBuilder)(nil)
 
-func (m *_BACnetPriorityArrayBuilder) WithMandatoryFields(data []BACnetPriorityValue) BACnetPriorityArrayBuilder {
-	return m.WithData(data...)
+func (b *_BACnetPriorityArrayBuilder) WithMandatoryFields(data []BACnetPriorityValue) BACnetPriorityArrayBuilder {
+	return b.WithData(data...)
 }
 
-func (m *_BACnetPriorityArrayBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetPriorityArrayBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetPriorityArrayBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetPriorityArrayBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
 }
 
-func (m *_BACnetPriorityArrayBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetPriorityArrayBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetPriorityArrayBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetPriorityArrayBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPriorityArrayBuilder) WithData(data ...BACnetPriorityValue) BACnetPriorityArrayBuilder {
-	m.Data = data
-	return m
+func (b *_BACnetPriorityArrayBuilder) WithData(data ...BACnetPriorityValue) BACnetPriorityArrayBuilder {
+	b.Data = data
+	return b
 }
 
-func (m *_BACnetPriorityArrayBuilder) Build() (BACnetPriorityArray, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetPriorityArrayBuilder) Build() (BACnetPriorityArray, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPriorityArray.deepCopy(), nil
+	return b._BACnetPriorityArray.deepCopy(), nil
 }
 
-func (m *_BACnetPriorityArrayBuilder) MustBuild() BACnetPriorityArray {
-	build, err := m.Build()
+func (b *_BACnetPriorityArrayBuilder) MustBuild() BACnetPriorityArray {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPriorityArrayBuilder) DeepCopy() any {
-	return m.CreateBACnetPriorityArrayBuilder()
+func (b *_BACnetPriorityArrayBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityArrayBuilder().(*_BACnetPriorityArrayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPriorityArrayBuilder creates a BACnetPriorityArrayBuilder
-func (m *_BACnetPriorityArray) CreateBACnetPriorityArrayBuilder() BACnetPriorityArrayBuilder {
-	if m == nil {
+func (b *_BACnetPriorityArray) CreateBACnetPriorityArrayBuilder() BACnetPriorityArrayBuilder {
+	if b == nil {
 		return NewBACnetPriorityArrayBuilder()
 	}
-	return &_BACnetPriorityArrayBuilder{_BACnetPriorityArray: m.deepCopy()}
+	return &_BACnetPriorityArrayBuilder{_BACnetPriorityArray: b.deepCopy()}
 }
 
 ///////////////////////

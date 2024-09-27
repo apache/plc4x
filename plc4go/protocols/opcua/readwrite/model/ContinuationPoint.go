@@ -83,35 +83,39 @@ type _ContinuationPointBuilder struct {
 
 var _ (ContinuationPointBuilder) = (*_ContinuationPointBuilder)(nil)
 
-func (m *_ContinuationPointBuilder) WithMandatoryFields() ContinuationPointBuilder {
-	return m
+func (b *_ContinuationPointBuilder) WithMandatoryFields() ContinuationPointBuilder {
+	return b
 }
 
-func (m *_ContinuationPointBuilder) Build() (ContinuationPoint, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ContinuationPointBuilder) Build() (ContinuationPoint, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ContinuationPoint.deepCopy(), nil
+	return b._ContinuationPoint.deepCopy(), nil
 }
 
-func (m *_ContinuationPointBuilder) MustBuild() ContinuationPoint {
-	build, err := m.Build()
+func (b *_ContinuationPointBuilder) MustBuild() ContinuationPoint {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ContinuationPointBuilder) DeepCopy() any {
-	return m.CreateContinuationPointBuilder()
+func (b *_ContinuationPointBuilder) DeepCopy() any {
+	_copy := b.CreateContinuationPointBuilder().(*_ContinuationPointBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateContinuationPointBuilder creates a ContinuationPointBuilder
-func (m *_ContinuationPoint) CreateContinuationPointBuilder() ContinuationPointBuilder {
-	if m == nil {
+func (b *_ContinuationPoint) CreateContinuationPointBuilder() ContinuationPointBuilder {
+	if b == nil {
 		return NewContinuationPointBuilder()
 	}
-	return &_ContinuationPointBuilder{_ContinuationPoint: m.deepCopy()}
+	return &_ContinuationPointBuilder{_ContinuationPoint: b.deepCopy()}
 }
 
 ///////////////////////

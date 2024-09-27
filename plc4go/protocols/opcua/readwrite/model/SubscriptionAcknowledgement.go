@@ -99,50 +99,69 @@ func NewSubscriptionAcknowledgementBuilder() SubscriptionAcknowledgementBuilder 
 type _SubscriptionAcknowledgementBuilder struct {
 	*_SubscriptionAcknowledgement
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SubscriptionAcknowledgementBuilder) = (*_SubscriptionAcknowledgementBuilder)(nil)
 
-func (m *_SubscriptionAcknowledgementBuilder) WithMandatoryFields(subscriptionId uint32, sequenceNumber uint32) SubscriptionAcknowledgementBuilder {
-	return m.WithSubscriptionId(subscriptionId).WithSequenceNumber(sequenceNumber)
+func (b *_SubscriptionAcknowledgementBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_SubscriptionAcknowledgementBuilder) WithSubscriptionId(subscriptionId uint32) SubscriptionAcknowledgementBuilder {
-	m.SubscriptionId = subscriptionId
-	return m
+func (b *_SubscriptionAcknowledgementBuilder) WithMandatoryFields(subscriptionId uint32, sequenceNumber uint32) SubscriptionAcknowledgementBuilder {
+	return b.WithSubscriptionId(subscriptionId).WithSequenceNumber(sequenceNumber)
 }
 
-func (m *_SubscriptionAcknowledgementBuilder) WithSequenceNumber(sequenceNumber uint32) SubscriptionAcknowledgementBuilder {
-	m.SequenceNumber = sequenceNumber
-	return m
+func (b *_SubscriptionAcknowledgementBuilder) WithSubscriptionId(subscriptionId uint32) SubscriptionAcknowledgementBuilder {
+	b.SubscriptionId = subscriptionId
+	return b
 }
 
-func (m *_SubscriptionAcknowledgementBuilder) Build() (SubscriptionAcknowledgement, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SubscriptionAcknowledgementBuilder) WithSequenceNumber(sequenceNumber uint32) SubscriptionAcknowledgementBuilder {
+	b.SequenceNumber = sequenceNumber
+	return b
+}
+
+func (b *_SubscriptionAcknowledgementBuilder) Build() (SubscriptionAcknowledgement, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SubscriptionAcknowledgement.deepCopy(), nil
+	return b._SubscriptionAcknowledgement.deepCopy(), nil
 }
 
-func (m *_SubscriptionAcknowledgementBuilder) MustBuild() SubscriptionAcknowledgement {
-	build, err := m.Build()
+func (b *_SubscriptionAcknowledgementBuilder) MustBuild() SubscriptionAcknowledgement {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SubscriptionAcknowledgementBuilder) DeepCopy() any {
-	return m.CreateSubscriptionAcknowledgementBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SubscriptionAcknowledgementBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SubscriptionAcknowledgementBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SubscriptionAcknowledgementBuilder) DeepCopy() any {
+	_copy := b.CreateSubscriptionAcknowledgementBuilder().(*_SubscriptionAcknowledgementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSubscriptionAcknowledgementBuilder creates a SubscriptionAcknowledgementBuilder
-func (m *_SubscriptionAcknowledgement) CreateSubscriptionAcknowledgementBuilder() SubscriptionAcknowledgementBuilder {
-	if m == nil {
+func (b *_SubscriptionAcknowledgement) CreateSubscriptionAcknowledgementBuilder() SubscriptionAcknowledgementBuilder {
+	if b == nil {
 		return NewSubscriptionAcknowledgementBuilder()
 	}
-	return &_SubscriptionAcknowledgementBuilder{_SubscriptionAcknowledgement: m.deepCopy()}
+	return &_SubscriptionAcknowledgementBuilder{_SubscriptionAcknowledgement: b.deepCopy()}
 }
 
 ///////////////////////

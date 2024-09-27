@@ -98,64 +98,83 @@ func NewBACnetLogRecordLogDatumLogStatusBuilder() BACnetLogRecordLogDatumLogStat
 type _BACnetLogRecordLogDatumLogStatusBuilder struct {
 	*_BACnetLogRecordLogDatumLogStatus
 
+	parentBuilder *_BACnetLogRecordLogDatumBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetLogRecordLogDatumLogStatusBuilder) = (*_BACnetLogRecordLogDatumLogStatusBuilder)(nil)
 
-func (m *_BACnetLogRecordLogDatumLogStatusBuilder) WithMandatoryFields(logStatus BACnetLogStatusTagged) BACnetLogRecordLogDatumLogStatusBuilder {
-	return m.WithLogStatus(logStatus)
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
+	b.BACnetLogRecordLogDatumContract = contract
 }
 
-func (m *_BACnetLogRecordLogDatumLogStatusBuilder) WithLogStatus(logStatus BACnetLogStatusTagged) BACnetLogRecordLogDatumLogStatusBuilder {
-	m.LogStatus = logStatus
-	return m
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) WithMandatoryFields(logStatus BACnetLogStatusTagged) BACnetLogRecordLogDatumLogStatusBuilder {
+	return b.WithLogStatus(logStatus)
 }
 
-func (m *_BACnetLogRecordLogDatumLogStatusBuilder) WithLogStatusBuilder(builderSupplier func(BACnetLogStatusTaggedBuilder) BACnetLogStatusTaggedBuilder) BACnetLogRecordLogDatumLogStatusBuilder {
-	builder := builderSupplier(m.LogStatus.CreateBACnetLogStatusTaggedBuilder())
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) WithLogStatus(logStatus BACnetLogStatusTagged) BACnetLogRecordLogDatumLogStatusBuilder {
+	b.LogStatus = logStatus
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) WithLogStatusBuilder(builderSupplier func(BACnetLogStatusTaggedBuilder) BACnetLogStatusTaggedBuilder) BACnetLogRecordLogDatumLogStatusBuilder {
+	builder := builderSupplier(b.LogStatus.CreateBACnetLogStatusTaggedBuilder())
 	var err error
-	m.LogStatus, err = builder.Build()
+	b.LogStatus, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLogStatusTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLogStatusTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogRecordLogDatumLogStatusBuilder) Build() (BACnetLogRecordLogDatumLogStatus, error) {
-	if m.LogStatus == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) Build() (BACnetLogRecordLogDatumLogStatus, error) {
+	if b.LogStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'logStatus' not set"))
+		b.err.Append(errors.New("mandatory field 'logStatus' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLogRecordLogDatumLogStatus.deepCopy(), nil
+	return b._BACnetLogRecordLogDatumLogStatus.deepCopy(), nil
 }
 
-func (m *_BACnetLogRecordLogDatumLogStatusBuilder) MustBuild() BACnetLogRecordLogDatumLogStatus {
-	build, err := m.Build()
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) MustBuild() BACnetLogRecordLogDatumLogStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLogRecordLogDatumLogStatusBuilder) DeepCopy() any {
-	return m.CreateBACnetLogRecordLogDatumLogStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) buildForBACnetLogRecordLogDatum() (BACnetLogRecordLogDatum, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogRecordLogDatumLogStatusBuilder().(*_BACnetLogRecordLogDatumLogStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLogRecordLogDatumLogStatusBuilder creates a BACnetLogRecordLogDatumLogStatusBuilder
-func (m *_BACnetLogRecordLogDatumLogStatus) CreateBACnetLogRecordLogDatumLogStatusBuilder() BACnetLogRecordLogDatumLogStatusBuilder {
-	if m == nil {
+func (b *_BACnetLogRecordLogDatumLogStatus) CreateBACnetLogRecordLogDatumLogStatusBuilder() BACnetLogRecordLogDatumLogStatusBuilder {
+	if b == nil {
 		return NewBACnetLogRecordLogDatumLogStatusBuilder()
 	}
-	return &_BACnetLogRecordLogDatumLogStatusBuilder{_BACnetLogRecordLogDatumLogStatus: m.deepCopy()}
+	return &_BACnetLogRecordLogDatumLogStatusBuilder{_BACnetLogRecordLogDatumLogStatus: b.deepCopy()}
 }
 
 ///////////////////////

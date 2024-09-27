@@ -100,64 +100,83 @@ func NewBACnetConstructedDataNetworkNumberBuilder() BACnetConstructedDataNetwork
 type _BACnetConstructedDataNetworkNumberBuilder struct {
 	*_BACnetConstructedDataNetworkNumber
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataNetworkNumberBuilder) = (*_BACnetConstructedDataNetworkNumberBuilder)(nil)
 
-func (m *_BACnetConstructedDataNetworkNumberBuilder) WithMandatoryFields(networkNumber BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkNumberBuilder {
-	return m.WithNetworkNumber(networkNumber)
+func (b *_BACnetConstructedDataNetworkNumberBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataNetworkNumberBuilder) WithNetworkNumber(networkNumber BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkNumberBuilder {
-	m.NetworkNumber = networkNumber
-	return m
+func (b *_BACnetConstructedDataNetworkNumberBuilder) WithMandatoryFields(networkNumber BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkNumberBuilder {
+	return b.WithNetworkNumber(networkNumber)
 }
 
-func (m *_BACnetConstructedDataNetworkNumberBuilder) WithNetworkNumberBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNetworkNumberBuilder {
-	builder := builderSupplier(m.NetworkNumber.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataNetworkNumberBuilder) WithNetworkNumber(networkNumber BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkNumberBuilder {
+	b.NetworkNumber = networkNumber
+	return b
+}
+
+func (b *_BACnetConstructedDataNetworkNumberBuilder) WithNetworkNumberBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNetworkNumberBuilder {
+	builder := builderSupplier(b.NetworkNumber.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NetworkNumber, err = builder.Build()
+	b.NetworkNumber, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataNetworkNumberBuilder) Build() (BACnetConstructedDataNetworkNumber, error) {
-	if m.NetworkNumber == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataNetworkNumberBuilder) Build() (BACnetConstructedDataNetworkNumber, error) {
+	if b.NetworkNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'networkNumber' not set"))
+		b.err.Append(errors.New("mandatory field 'networkNumber' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataNetworkNumber.deepCopy(), nil
+	return b._BACnetConstructedDataNetworkNumber.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataNetworkNumberBuilder) MustBuild() BACnetConstructedDataNetworkNumber {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataNetworkNumberBuilder) MustBuild() BACnetConstructedDataNetworkNumber {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataNetworkNumberBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataNetworkNumberBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNetworkNumberBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNetworkNumberBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNetworkNumberBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNetworkNumberBuilder().(*_BACnetConstructedDataNetworkNumberBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataNetworkNumberBuilder creates a BACnetConstructedDataNetworkNumberBuilder
-func (m *_BACnetConstructedDataNetworkNumber) CreateBACnetConstructedDataNetworkNumberBuilder() BACnetConstructedDataNetworkNumberBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataNetworkNumber) CreateBACnetConstructedDataNetworkNumberBuilder() BACnetConstructedDataNetworkNumberBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataNetworkNumberBuilder()
 	}
-	return &_BACnetConstructedDataNetworkNumberBuilder{_BACnetConstructedDataNetworkNumber: m.deepCopy()}
+	return &_BACnetConstructedDataNetworkNumberBuilder{_BACnetConstructedDataNetworkNumber: b.deepCopy()}
 }
 
 ///////////////////////

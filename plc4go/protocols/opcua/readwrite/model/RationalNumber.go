@@ -99,50 +99,69 @@ func NewRationalNumberBuilder() RationalNumberBuilder {
 type _RationalNumberBuilder struct {
 	*_RationalNumber
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RationalNumberBuilder) = (*_RationalNumberBuilder)(nil)
 
-func (m *_RationalNumberBuilder) WithMandatoryFields(numerator int32, denominator uint32) RationalNumberBuilder {
-	return m.WithNumerator(numerator).WithDenominator(denominator)
+func (b *_RationalNumberBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_RationalNumberBuilder) WithNumerator(numerator int32) RationalNumberBuilder {
-	m.Numerator = numerator
-	return m
+func (b *_RationalNumberBuilder) WithMandatoryFields(numerator int32, denominator uint32) RationalNumberBuilder {
+	return b.WithNumerator(numerator).WithDenominator(denominator)
 }
 
-func (m *_RationalNumberBuilder) WithDenominator(denominator uint32) RationalNumberBuilder {
-	m.Denominator = denominator
-	return m
+func (b *_RationalNumberBuilder) WithNumerator(numerator int32) RationalNumberBuilder {
+	b.Numerator = numerator
+	return b
 }
 
-func (m *_RationalNumberBuilder) Build() (RationalNumber, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_RationalNumberBuilder) WithDenominator(denominator uint32) RationalNumberBuilder {
+	b.Denominator = denominator
+	return b
+}
+
+func (b *_RationalNumberBuilder) Build() (RationalNumber, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._RationalNumber.deepCopy(), nil
+	return b._RationalNumber.deepCopy(), nil
 }
 
-func (m *_RationalNumberBuilder) MustBuild() RationalNumber {
-	build, err := m.Build()
+func (b *_RationalNumberBuilder) MustBuild() RationalNumber {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RationalNumberBuilder) DeepCopy() any {
-	return m.CreateRationalNumberBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RationalNumberBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RationalNumberBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_RationalNumberBuilder) DeepCopy() any {
+	_copy := b.CreateRationalNumberBuilder().(*_RationalNumberBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRationalNumberBuilder creates a RationalNumberBuilder
-func (m *_RationalNumber) CreateRationalNumberBuilder() RationalNumberBuilder {
-	if m == nil {
+func (b *_RationalNumber) CreateRationalNumberBuilder() RationalNumberBuilder {
+	if b == nil {
 		return NewRationalNumberBuilder()
 	}
-	return &_RationalNumberBuilder{_RationalNumber: m.deepCopy()}
+	return &_RationalNumberBuilder{_RationalNumber: b.deepCopy()}
 }
 
 ///////////////////////

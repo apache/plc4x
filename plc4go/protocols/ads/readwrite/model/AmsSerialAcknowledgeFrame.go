@@ -115,65 +115,69 @@ type _AmsSerialAcknowledgeFrameBuilder struct {
 
 var _ (AmsSerialAcknowledgeFrameBuilder) = (*_AmsSerialAcknowledgeFrameBuilder)(nil)
 
-func (m *_AmsSerialAcknowledgeFrameBuilder) WithMandatoryFields(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) AmsSerialAcknowledgeFrameBuilder {
-	return m.WithMagicCookie(magicCookie).WithTransmitterAddress(transmitterAddress).WithReceiverAddress(receiverAddress).WithFragmentNumber(fragmentNumber).WithLength(length).WithCrc(crc)
+func (b *_AmsSerialAcknowledgeFrameBuilder) WithMandatoryFields(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) AmsSerialAcknowledgeFrameBuilder {
+	return b.WithMagicCookie(magicCookie).WithTransmitterAddress(transmitterAddress).WithReceiverAddress(receiverAddress).WithFragmentNumber(fragmentNumber).WithLength(length).WithCrc(crc)
 }
 
-func (m *_AmsSerialAcknowledgeFrameBuilder) WithMagicCookie(magicCookie uint16) AmsSerialAcknowledgeFrameBuilder {
-	m.MagicCookie = magicCookie
-	return m
+func (b *_AmsSerialAcknowledgeFrameBuilder) WithMagicCookie(magicCookie uint16) AmsSerialAcknowledgeFrameBuilder {
+	b.MagicCookie = magicCookie
+	return b
 }
 
-func (m *_AmsSerialAcknowledgeFrameBuilder) WithTransmitterAddress(transmitterAddress int8) AmsSerialAcknowledgeFrameBuilder {
-	m.TransmitterAddress = transmitterAddress
-	return m
+func (b *_AmsSerialAcknowledgeFrameBuilder) WithTransmitterAddress(transmitterAddress int8) AmsSerialAcknowledgeFrameBuilder {
+	b.TransmitterAddress = transmitterAddress
+	return b
 }
 
-func (m *_AmsSerialAcknowledgeFrameBuilder) WithReceiverAddress(receiverAddress int8) AmsSerialAcknowledgeFrameBuilder {
-	m.ReceiverAddress = receiverAddress
-	return m
+func (b *_AmsSerialAcknowledgeFrameBuilder) WithReceiverAddress(receiverAddress int8) AmsSerialAcknowledgeFrameBuilder {
+	b.ReceiverAddress = receiverAddress
+	return b
 }
 
-func (m *_AmsSerialAcknowledgeFrameBuilder) WithFragmentNumber(fragmentNumber int8) AmsSerialAcknowledgeFrameBuilder {
-	m.FragmentNumber = fragmentNumber
-	return m
+func (b *_AmsSerialAcknowledgeFrameBuilder) WithFragmentNumber(fragmentNumber int8) AmsSerialAcknowledgeFrameBuilder {
+	b.FragmentNumber = fragmentNumber
+	return b
 }
 
-func (m *_AmsSerialAcknowledgeFrameBuilder) WithLength(length int8) AmsSerialAcknowledgeFrameBuilder {
-	m.Length = length
-	return m
+func (b *_AmsSerialAcknowledgeFrameBuilder) WithLength(length int8) AmsSerialAcknowledgeFrameBuilder {
+	b.Length = length
+	return b
 }
 
-func (m *_AmsSerialAcknowledgeFrameBuilder) WithCrc(crc uint16) AmsSerialAcknowledgeFrameBuilder {
-	m.Crc = crc
-	return m
+func (b *_AmsSerialAcknowledgeFrameBuilder) WithCrc(crc uint16) AmsSerialAcknowledgeFrameBuilder {
+	b.Crc = crc
+	return b
 }
 
-func (m *_AmsSerialAcknowledgeFrameBuilder) Build() (AmsSerialAcknowledgeFrame, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AmsSerialAcknowledgeFrameBuilder) Build() (AmsSerialAcknowledgeFrame, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AmsSerialAcknowledgeFrame.deepCopy(), nil
+	return b._AmsSerialAcknowledgeFrame.deepCopy(), nil
 }
 
-func (m *_AmsSerialAcknowledgeFrameBuilder) MustBuild() AmsSerialAcknowledgeFrame {
-	build, err := m.Build()
+func (b *_AmsSerialAcknowledgeFrameBuilder) MustBuild() AmsSerialAcknowledgeFrame {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AmsSerialAcknowledgeFrameBuilder) DeepCopy() any {
-	return m.CreateAmsSerialAcknowledgeFrameBuilder()
+func (b *_AmsSerialAcknowledgeFrameBuilder) DeepCopy() any {
+	_copy := b.CreateAmsSerialAcknowledgeFrameBuilder().(*_AmsSerialAcknowledgeFrameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAmsSerialAcknowledgeFrameBuilder creates a AmsSerialAcknowledgeFrameBuilder
-func (m *_AmsSerialAcknowledgeFrame) CreateAmsSerialAcknowledgeFrameBuilder() AmsSerialAcknowledgeFrameBuilder {
-	if m == nil {
+func (b *_AmsSerialAcknowledgeFrame) CreateAmsSerialAcknowledgeFrameBuilder() AmsSerialAcknowledgeFrameBuilder {
+	if b == nil {
 		return NewAmsSerialAcknowledgeFrameBuilder()
 	}
-	return &_AmsSerialAcknowledgeFrameBuilder{_AmsSerialAcknowledgeFrame: m.deepCopy()}
+	return &_AmsSerialAcknowledgeFrameBuilder{_AmsSerialAcknowledgeFrame: b.deepCopy()}
 }
 
 ///////////////////////

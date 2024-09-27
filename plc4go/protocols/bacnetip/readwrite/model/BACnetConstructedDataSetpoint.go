@@ -100,64 +100,83 @@ func NewBACnetConstructedDataSetpointBuilder() BACnetConstructedDataSetpointBuil
 type _BACnetConstructedDataSetpointBuilder struct {
 	*_BACnetConstructedDataSetpoint
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSetpointBuilder) = (*_BACnetConstructedDataSetpointBuilder)(nil)
 
-func (m *_BACnetConstructedDataSetpointBuilder) WithMandatoryFields(setpoint BACnetApplicationTagReal) BACnetConstructedDataSetpointBuilder {
-	return m.WithSetpoint(setpoint)
+func (b *_BACnetConstructedDataSetpointBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSetpointBuilder) WithSetpoint(setpoint BACnetApplicationTagReal) BACnetConstructedDataSetpointBuilder {
-	m.Setpoint = setpoint
-	return m
+func (b *_BACnetConstructedDataSetpointBuilder) WithMandatoryFields(setpoint BACnetApplicationTagReal) BACnetConstructedDataSetpointBuilder {
+	return b.WithSetpoint(setpoint)
 }
 
-func (m *_BACnetConstructedDataSetpointBuilder) WithSetpointBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataSetpointBuilder {
-	builder := builderSupplier(m.Setpoint.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataSetpointBuilder) WithSetpoint(setpoint BACnetApplicationTagReal) BACnetConstructedDataSetpointBuilder {
+	b.Setpoint = setpoint
+	return b
+}
+
+func (b *_BACnetConstructedDataSetpointBuilder) WithSetpointBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataSetpointBuilder {
+	builder := builderSupplier(b.Setpoint.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.Setpoint, err = builder.Build()
+	b.Setpoint, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataSetpointBuilder) Build() (BACnetConstructedDataSetpoint, error) {
-	if m.Setpoint == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataSetpointBuilder) Build() (BACnetConstructedDataSetpoint, error) {
+	if b.Setpoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'setpoint' not set"))
+		b.err.Append(errors.New("mandatory field 'setpoint' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSetpoint.deepCopy(), nil
+	return b._BACnetConstructedDataSetpoint.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSetpointBuilder) MustBuild() BACnetConstructedDataSetpoint {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSetpointBuilder) MustBuild() BACnetConstructedDataSetpoint {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSetpointBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSetpointBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSetpointBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSetpointBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSetpointBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSetpointBuilder().(*_BACnetConstructedDataSetpointBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSetpointBuilder creates a BACnetConstructedDataSetpointBuilder
-func (m *_BACnetConstructedDataSetpoint) CreateBACnetConstructedDataSetpointBuilder() BACnetConstructedDataSetpointBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSetpoint) CreateBACnetConstructedDataSetpointBuilder() BACnetConstructedDataSetpointBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSetpointBuilder()
 	}
-	return &_BACnetConstructedDataSetpointBuilder{_BACnetConstructedDataSetpoint: m.deepCopy()}
+	return &_BACnetConstructedDataSetpointBuilder{_BACnetConstructedDataSetpoint: b.deepCopy()}
 }
 
 ///////////////////////

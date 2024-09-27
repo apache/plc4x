@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLargeAnalogValueMaxPresValueBuilder() BACnetConstru
 type _BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder struct {
 	*_BACnetConstructedDataLargeAnalogValueMaxPresValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) = (*_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) WithMandatoryFields(maxPresValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder {
-	return m.WithMaxPresValue(maxPresValue)
+func (b *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) WithMaxPresValue(maxPresValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder {
-	m.MaxPresValue = maxPresValue
-	return m
+func (b *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) WithMandatoryFields(maxPresValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder {
+	return b.WithMaxPresValue(maxPresValue)
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) WithMaxPresValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder {
-	builder := builderSupplier(m.MaxPresValue.CreateBACnetApplicationTagDoubleBuilder())
+func (b *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) WithMaxPresValue(maxPresValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder {
+	b.MaxPresValue = maxPresValue
+	return b
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) WithMaxPresValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder {
+	builder := builderSupplier(b.MaxPresValue.CreateBACnetApplicationTagDoubleBuilder())
 	var err error
-	m.MaxPresValue, err = builder.Build()
+	b.MaxPresValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) Build() (BACnetConstructedDataLargeAnalogValueMaxPresValue, error) {
-	if m.MaxPresValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) Build() (BACnetConstructedDataLargeAnalogValueMaxPresValue, error) {
+	if b.MaxPresValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'maxPresValue' not set"))
+		b.err.Append(errors.New("mandatory field 'maxPresValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLargeAnalogValueMaxPresValue.deepCopy(), nil
+	return b._BACnetConstructedDataLargeAnalogValueMaxPresValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueMaxPresValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueMaxPresValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLargeAnalogValueMaxPresValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLargeAnalogValueMaxPresValueBuilder().(*_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLargeAnalogValueMaxPresValueBuilder creates a BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder
-func (m *_BACnetConstructedDataLargeAnalogValueMaxPresValue) CreateBACnetConstructedDataLargeAnalogValueMaxPresValueBuilder() BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLargeAnalogValueMaxPresValue) CreateBACnetConstructedDataLargeAnalogValueMaxPresValueBuilder() BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLargeAnalogValueMaxPresValueBuilder()
 	}
-	return &_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder{_BACnetConstructedDataLargeAnalogValueMaxPresValue: m.deepCopy()}
+	return &_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder{_BACnetConstructedDataLargeAnalogValueMaxPresValue: b.deepCopy()}
 }
 
 ///////////////////////

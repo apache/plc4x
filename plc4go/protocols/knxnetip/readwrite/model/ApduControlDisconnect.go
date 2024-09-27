@@ -85,40 +85,59 @@ func NewApduControlDisconnectBuilder() ApduControlDisconnectBuilder {
 type _ApduControlDisconnectBuilder struct {
 	*_ApduControlDisconnect
 
+	parentBuilder *_ApduControlBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduControlDisconnectBuilder) = (*_ApduControlDisconnectBuilder)(nil)
 
-func (m *_ApduControlDisconnectBuilder) WithMandatoryFields() ApduControlDisconnectBuilder {
-	return m
+func (b *_ApduControlDisconnectBuilder) setParent(contract ApduControlContract) {
+	b.ApduControlContract = contract
 }
 
-func (m *_ApduControlDisconnectBuilder) Build() (ApduControlDisconnect, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduControlDisconnectBuilder) WithMandatoryFields() ApduControlDisconnectBuilder {
+	return b
+}
+
+func (b *_ApduControlDisconnectBuilder) Build() (ApduControlDisconnect, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduControlDisconnect.deepCopy(), nil
+	return b._ApduControlDisconnect.deepCopy(), nil
 }
 
-func (m *_ApduControlDisconnectBuilder) MustBuild() ApduControlDisconnect {
-	build, err := m.Build()
+func (b *_ApduControlDisconnectBuilder) MustBuild() ApduControlDisconnect {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduControlDisconnectBuilder) DeepCopy() any {
-	return m.CreateApduControlDisconnectBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduControlDisconnectBuilder) Done() ApduControlBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduControlDisconnectBuilder) buildForApduControl() (ApduControl, error) {
+	return b.Build()
+}
+
+func (b *_ApduControlDisconnectBuilder) DeepCopy() any {
+	_copy := b.CreateApduControlDisconnectBuilder().(*_ApduControlDisconnectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduControlDisconnectBuilder creates a ApduControlDisconnectBuilder
-func (m *_ApduControlDisconnect) CreateApduControlDisconnectBuilder() ApduControlDisconnectBuilder {
-	if m == nil {
+func (b *_ApduControlDisconnect) CreateApduControlDisconnectBuilder() ApduControlDisconnectBuilder {
+	if b == nil {
 		return NewApduControlDisconnectBuilder()
 	}
-	return &_ApduControlDisconnectBuilder{_ApduControlDisconnect: m.deepCopy()}
+	return &_ApduControlDisconnectBuilder{_ApduControlDisconnect: b.deepCopy()}
 }
 
 ///////////////////////

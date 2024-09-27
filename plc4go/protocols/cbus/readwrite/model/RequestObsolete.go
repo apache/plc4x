@@ -85,6 +85,8 @@ type RequestObsoleteBuilder interface {
 	WithMandatoryFields(calData CALData) RequestObsoleteBuilder
 	// WithCalData adds CalData (property field)
 	WithCalData(CALData) RequestObsoleteBuilder
+	// WithCalDataBuilder adds CalData (property field) which is build by the builder
+	WithCalDataBuilder(func(CALDataBuilder) CALDataBuilder) RequestObsoleteBuilder
 	// WithAlpha adds Alpha (property field)
 	WithOptionalAlpha(Alpha) RequestObsoleteBuilder
 	// WithOptionalAlphaBuilder adds Alpha (property field) which is build by the builder
@@ -103,69 +105,101 @@ func NewRequestObsoleteBuilder() RequestObsoleteBuilder {
 type _RequestObsoleteBuilder struct {
 	*_RequestObsolete
 
+	parentBuilder *_RequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RequestObsoleteBuilder) = (*_RequestObsoleteBuilder)(nil)
 
-func (m *_RequestObsoleteBuilder) WithMandatoryFields(calData CALData) RequestObsoleteBuilder {
-	return m.WithCalData(calData)
+func (b *_RequestObsoleteBuilder) setParent(contract RequestContract) {
+	b.RequestContract = contract
 }
 
-func (m *_RequestObsoleteBuilder) WithCalData(calData CALData) RequestObsoleteBuilder {
-	m.CalData = calData
-	return m
+func (b *_RequestObsoleteBuilder) WithMandatoryFields(calData CALData) RequestObsoleteBuilder {
+	return b.WithCalData(calData)
 }
 
-func (m *_RequestObsoleteBuilder) WithOptionalAlpha(alpha Alpha) RequestObsoleteBuilder {
-	m.Alpha = alpha
-	return m
+func (b *_RequestObsoleteBuilder) WithCalData(calData CALData) RequestObsoleteBuilder {
+	b.CalData = calData
+	return b
 }
 
-func (m *_RequestObsoleteBuilder) WithOptionalAlphaBuilder(builderSupplier func(AlphaBuilder) AlphaBuilder) RequestObsoleteBuilder {
-	builder := builderSupplier(m.Alpha.CreateAlphaBuilder())
+func (b *_RequestObsoleteBuilder) WithCalDataBuilder(builderSupplier func(CALDataBuilder) CALDataBuilder) RequestObsoleteBuilder {
+	builder := builderSupplier(b.CalData.CreateCALDataBuilder())
 	var err error
-	m.Alpha, err = builder.Build()
+	b.CalData, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
+		b.err.Append(errors.Wrap(err, "CALDataBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RequestObsoleteBuilder) Build() (RequestObsolete, error) {
-	if m.CalData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'calData' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._RequestObsolete.deepCopy(), nil
+func (b *_RequestObsoleteBuilder) WithOptionalAlpha(alpha Alpha) RequestObsoleteBuilder {
+	b.Alpha = alpha
+	return b
 }
 
-func (m *_RequestObsoleteBuilder) MustBuild() RequestObsolete {
-	build, err := m.Build()
+func (b *_RequestObsoleteBuilder) WithOptionalAlphaBuilder(builderSupplier func(AlphaBuilder) AlphaBuilder) RequestObsoleteBuilder {
+	builder := builderSupplier(b.Alpha.CreateAlphaBuilder())
+	var err error
+	b.Alpha, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
+	}
+	return b
+}
+
+func (b *_RequestObsoleteBuilder) Build() (RequestObsolete, error) {
+	if b.CalData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'calData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RequestObsolete.deepCopy(), nil
+}
+
+func (b *_RequestObsoleteBuilder) MustBuild() RequestObsolete {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RequestObsoleteBuilder) DeepCopy() any {
-	return m.CreateRequestObsoleteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RequestObsoleteBuilder) Done() RequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RequestObsoleteBuilder) buildForRequest() (Request, error) {
+	return b.Build()
+}
+
+func (b *_RequestObsoleteBuilder) DeepCopy() any {
+	_copy := b.CreateRequestObsoleteBuilder().(*_RequestObsoleteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRequestObsoleteBuilder creates a RequestObsoleteBuilder
-func (m *_RequestObsolete) CreateRequestObsoleteBuilder() RequestObsoleteBuilder {
-	if m == nil {
+func (b *_RequestObsolete) CreateRequestObsoleteBuilder() RequestObsoleteBuilder {
+	if b == nil {
 		return NewRequestObsoleteBuilder()
 	}
-	return &_RequestObsoleteBuilder{_RequestObsolete: m.deepCopy()}
+	return &_RequestObsoleteBuilder{_RequestObsolete: b.deepCopy()}
 }
 
 ///////////////////////

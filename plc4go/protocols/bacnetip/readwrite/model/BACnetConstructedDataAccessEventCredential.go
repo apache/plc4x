@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAccessEventCredentialBuilder() BACnetConstructedDat
 type _BACnetConstructedDataAccessEventCredentialBuilder struct {
 	*_BACnetConstructedDataAccessEventCredential
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccessEventCredentialBuilder) = (*_BACnetConstructedDataAccessEventCredentialBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccessEventCredentialBuilder) WithMandatoryFields(accessEventCredential BACnetDeviceObjectReference) BACnetConstructedDataAccessEventCredentialBuilder {
-	return m.WithAccessEventCredential(accessEventCredential)
+func (b *_BACnetConstructedDataAccessEventCredentialBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccessEventCredentialBuilder) WithAccessEventCredential(accessEventCredential BACnetDeviceObjectReference) BACnetConstructedDataAccessEventCredentialBuilder {
-	m.AccessEventCredential = accessEventCredential
-	return m
+func (b *_BACnetConstructedDataAccessEventCredentialBuilder) WithMandatoryFields(accessEventCredential BACnetDeviceObjectReference) BACnetConstructedDataAccessEventCredentialBuilder {
+	return b.WithAccessEventCredential(accessEventCredential)
 }
 
-func (m *_BACnetConstructedDataAccessEventCredentialBuilder) WithAccessEventCredentialBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataAccessEventCredentialBuilder {
-	builder := builderSupplier(m.AccessEventCredential.CreateBACnetDeviceObjectReferenceBuilder())
+func (b *_BACnetConstructedDataAccessEventCredentialBuilder) WithAccessEventCredential(accessEventCredential BACnetDeviceObjectReference) BACnetConstructedDataAccessEventCredentialBuilder {
+	b.AccessEventCredential = accessEventCredential
+	return b
+}
+
+func (b *_BACnetConstructedDataAccessEventCredentialBuilder) WithAccessEventCredentialBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataAccessEventCredentialBuilder {
+	builder := builderSupplier(b.AccessEventCredential.CreateBACnetDeviceObjectReferenceBuilder())
 	var err error
-	m.AccessEventCredential, err = builder.Build()
+	b.AccessEventCredential, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAccessEventCredentialBuilder) Build() (BACnetConstructedDataAccessEventCredential, error) {
-	if m.AccessEventCredential == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAccessEventCredentialBuilder) Build() (BACnetConstructedDataAccessEventCredential, error) {
+	if b.AccessEventCredential == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'accessEventCredential' not set"))
+		b.err.Append(errors.New("mandatory field 'accessEventCredential' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAccessEventCredential.deepCopy(), nil
+	return b._BACnetConstructedDataAccessEventCredential.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAccessEventCredentialBuilder) MustBuild() BACnetConstructedDataAccessEventCredential {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccessEventCredentialBuilder) MustBuild() BACnetConstructedDataAccessEventCredential {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccessEventCredentialBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccessEventCredentialBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccessEventCredentialBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccessEventCredentialBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccessEventCredentialBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccessEventCredentialBuilder().(*_BACnetConstructedDataAccessEventCredentialBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccessEventCredentialBuilder creates a BACnetConstructedDataAccessEventCredentialBuilder
-func (m *_BACnetConstructedDataAccessEventCredential) CreateBACnetConstructedDataAccessEventCredentialBuilder() BACnetConstructedDataAccessEventCredentialBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccessEventCredential) CreateBACnetConstructedDataAccessEventCredentialBuilder() BACnetConstructedDataAccessEventCredentialBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccessEventCredentialBuilder()
 	}
-	return &_BACnetConstructedDataAccessEventCredentialBuilder{_BACnetConstructedDataAccessEventCredential: m.deepCopy()}
+	return &_BACnetConstructedDataAccessEventCredentialBuilder{_BACnetConstructedDataAccessEventCredential: b.deepCopy()}
 }
 
 ///////////////////////

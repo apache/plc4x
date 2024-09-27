@@ -111,69 +111,73 @@ type _BACnetAccessZoneOccupancyStateTaggedBuilder struct {
 
 var _ (BACnetAccessZoneOccupancyStateTaggedBuilder) = (*_BACnetAccessZoneOccupancyStateTaggedBuilder)(nil)
 
-func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAccessZoneOccupancyState, proprietaryValue uint32) BACnetAccessZoneOccupancyStateTaggedBuilder {
-	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAccessZoneOccupancyState, proprietaryValue uint32) BACnetAccessZoneOccupancyStateTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAccessZoneOccupancyStateTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAccessZoneOccupancyStateTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessZoneOccupancyStateTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessZoneOccupancyStateTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithValue(value BACnetAccessZoneOccupancyState) BACnetAccessZoneOccupancyStateTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithValue(value BACnetAccessZoneOccupancyState) BACnetAccessZoneOccupancyStateTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessZoneOccupancyStateTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessZoneOccupancyStateTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) Build() (BACnetAccessZoneOccupancyStateTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) Build() (BACnetAccessZoneOccupancyStateTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAccessZoneOccupancyStateTagged.deepCopy(), nil
+	return b._BACnetAccessZoneOccupancyStateTagged.deepCopy(), nil
 }
 
-func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) MustBuild() BACnetAccessZoneOccupancyStateTagged {
-	build, err := m.Build()
+func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) MustBuild() BACnetAccessZoneOccupancyStateTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetAccessZoneOccupancyStateTaggedBuilder()
+func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAccessZoneOccupancyStateTaggedBuilder().(*_BACnetAccessZoneOccupancyStateTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAccessZoneOccupancyStateTaggedBuilder creates a BACnetAccessZoneOccupancyStateTaggedBuilder
-func (m *_BACnetAccessZoneOccupancyStateTagged) CreateBACnetAccessZoneOccupancyStateTaggedBuilder() BACnetAccessZoneOccupancyStateTaggedBuilder {
-	if m == nil {
+func (b *_BACnetAccessZoneOccupancyStateTagged) CreateBACnetAccessZoneOccupancyStateTaggedBuilder() BACnetAccessZoneOccupancyStateTaggedBuilder {
+	if b == nil {
 		return NewBACnetAccessZoneOccupancyStateTaggedBuilder()
 	}
-	return &_BACnetAccessZoneOccupancyStateTaggedBuilder{_BACnetAccessZoneOccupancyStateTagged: m.deepCopy()}
+	return &_BACnetAccessZoneOccupancyStateTaggedBuilder{_BACnetAccessZoneOccupancyStateTagged: b.deepCopy()}
 }
 
 ///////////////////////

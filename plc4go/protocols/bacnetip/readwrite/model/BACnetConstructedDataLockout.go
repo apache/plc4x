@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLockoutBuilder() BACnetConstructedDataLockoutBuilde
 type _BACnetConstructedDataLockoutBuilder struct {
 	*_BACnetConstructedDataLockout
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLockoutBuilder) = (*_BACnetConstructedDataLockoutBuilder)(nil)
 
-func (m *_BACnetConstructedDataLockoutBuilder) WithMandatoryFields(lockout BACnetApplicationTagBoolean) BACnetConstructedDataLockoutBuilder {
-	return m.WithLockout(lockout)
+func (b *_BACnetConstructedDataLockoutBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLockoutBuilder) WithLockout(lockout BACnetApplicationTagBoolean) BACnetConstructedDataLockoutBuilder {
-	m.Lockout = lockout
-	return m
+func (b *_BACnetConstructedDataLockoutBuilder) WithMandatoryFields(lockout BACnetApplicationTagBoolean) BACnetConstructedDataLockoutBuilder {
+	return b.WithLockout(lockout)
 }
 
-func (m *_BACnetConstructedDataLockoutBuilder) WithLockoutBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataLockoutBuilder {
-	builder := builderSupplier(m.Lockout.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataLockoutBuilder) WithLockout(lockout BACnetApplicationTagBoolean) BACnetConstructedDataLockoutBuilder {
+	b.Lockout = lockout
+	return b
+}
+
+func (b *_BACnetConstructedDataLockoutBuilder) WithLockoutBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataLockoutBuilder {
+	builder := builderSupplier(b.Lockout.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.Lockout, err = builder.Build()
+	b.Lockout, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLockoutBuilder) Build() (BACnetConstructedDataLockout, error) {
-	if m.Lockout == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLockoutBuilder) Build() (BACnetConstructedDataLockout, error) {
+	if b.Lockout == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lockout' not set"))
+		b.err.Append(errors.New("mandatory field 'lockout' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLockout.deepCopy(), nil
+	return b._BACnetConstructedDataLockout.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLockoutBuilder) MustBuild() BACnetConstructedDataLockout {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLockoutBuilder) MustBuild() BACnetConstructedDataLockout {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLockoutBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLockoutBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLockoutBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLockoutBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLockoutBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLockoutBuilder().(*_BACnetConstructedDataLockoutBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLockoutBuilder creates a BACnetConstructedDataLockoutBuilder
-func (m *_BACnetConstructedDataLockout) CreateBACnetConstructedDataLockoutBuilder() BACnetConstructedDataLockoutBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLockout) CreateBACnetConstructedDataLockoutBuilder() BACnetConstructedDataLockoutBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLockoutBuilder()
 	}
-	return &_BACnetConstructedDataLockoutBuilder{_BACnetConstructedDataLockout: m.deepCopy()}
+	return &_BACnetConstructedDataLockoutBuilder{_BACnetConstructedDataLockout: b.deepCopy()}
 }
 
 ///////////////////////

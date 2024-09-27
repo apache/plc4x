@@ -89,35 +89,39 @@ type _EipConstantsBuilder struct {
 
 var _ (EipConstantsBuilder) = (*_EipConstantsBuilder)(nil)
 
-func (m *_EipConstantsBuilder) WithMandatoryFields() EipConstantsBuilder {
-	return m
+func (b *_EipConstantsBuilder) WithMandatoryFields() EipConstantsBuilder {
+	return b
 }
 
-func (m *_EipConstantsBuilder) Build() (EipConstants, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_EipConstantsBuilder) Build() (EipConstants, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EipConstants.deepCopy(), nil
+	return b._EipConstants.deepCopy(), nil
 }
 
-func (m *_EipConstantsBuilder) MustBuild() EipConstants {
-	build, err := m.Build()
+func (b *_EipConstantsBuilder) MustBuild() EipConstants {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EipConstantsBuilder) DeepCopy() any {
-	return m.CreateEipConstantsBuilder()
+func (b *_EipConstantsBuilder) DeepCopy() any {
+	_copy := b.CreateEipConstantsBuilder().(*_EipConstantsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEipConstantsBuilder creates a EipConstantsBuilder
-func (m *_EipConstants) CreateEipConstantsBuilder() EipConstantsBuilder {
-	if m == nil {
+func (b *_EipConstants) CreateEipConstantsBuilder() EipConstantsBuilder {
+	if b == nil {
 		return NewEipConstantsBuilder()
 	}
-	return &_EipConstantsBuilder{_EipConstants: m.deepCopy()}
+	return &_EipConstantsBuilder{_EipConstants: b.deepCopy()}
 }
 
 ///////////////////////

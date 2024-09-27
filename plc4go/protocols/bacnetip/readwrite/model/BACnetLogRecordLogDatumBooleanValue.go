@@ -98,64 +98,83 @@ func NewBACnetLogRecordLogDatumBooleanValueBuilder() BACnetLogRecordLogDatumBool
 type _BACnetLogRecordLogDatumBooleanValueBuilder struct {
 	*_BACnetLogRecordLogDatumBooleanValue
 
+	parentBuilder *_BACnetLogRecordLogDatumBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetLogRecordLogDatumBooleanValueBuilder) = (*_BACnetLogRecordLogDatumBooleanValueBuilder)(nil)
 
-func (m *_BACnetLogRecordLogDatumBooleanValueBuilder) WithMandatoryFields(booleanValue BACnetContextTagBoolean) BACnetLogRecordLogDatumBooleanValueBuilder {
-	return m.WithBooleanValue(booleanValue)
+func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
+	b.BACnetLogRecordLogDatumContract = contract
 }
 
-func (m *_BACnetLogRecordLogDatumBooleanValueBuilder) WithBooleanValue(booleanValue BACnetContextTagBoolean) BACnetLogRecordLogDatumBooleanValueBuilder {
-	m.BooleanValue = booleanValue
-	return m
+func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) WithMandatoryFields(booleanValue BACnetContextTagBoolean) BACnetLogRecordLogDatumBooleanValueBuilder {
+	return b.WithBooleanValue(booleanValue)
 }
 
-func (m *_BACnetLogRecordLogDatumBooleanValueBuilder) WithBooleanValueBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetLogRecordLogDatumBooleanValueBuilder {
-	builder := builderSupplier(m.BooleanValue.CreateBACnetContextTagBooleanBuilder())
+func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) WithBooleanValue(booleanValue BACnetContextTagBoolean) BACnetLogRecordLogDatumBooleanValueBuilder {
+	b.BooleanValue = booleanValue
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) WithBooleanValueBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetLogRecordLogDatumBooleanValueBuilder {
+	builder := builderSupplier(b.BooleanValue.CreateBACnetContextTagBooleanBuilder())
 	var err error
-	m.BooleanValue, err = builder.Build()
+	b.BooleanValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogRecordLogDatumBooleanValueBuilder) Build() (BACnetLogRecordLogDatumBooleanValue, error) {
-	if m.BooleanValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) Build() (BACnetLogRecordLogDatumBooleanValue, error) {
+	if b.BooleanValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'booleanValue' not set"))
+		b.err.Append(errors.New("mandatory field 'booleanValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLogRecordLogDatumBooleanValue.deepCopy(), nil
+	return b._BACnetLogRecordLogDatumBooleanValue.deepCopy(), nil
 }
 
-func (m *_BACnetLogRecordLogDatumBooleanValueBuilder) MustBuild() BACnetLogRecordLogDatumBooleanValue {
-	build, err := m.Build()
+func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) MustBuild() BACnetLogRecordLogDatumBooleanValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLogRecordLogDatumBooleanValueBuilder) DeepCopy() any {
-	return m.CreateBACnetLogRecordLogDatumBooleanValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) buildForBACnetLogRecordLogDatum() (BACnetLogRecordLogDatum, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogRecordLogDatumBooleanValueBuilder().(*_BACnetLogRecordLogDatumBooleanValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLogRecordLogDatumBooleanValueBuilder creates a BACnetLogRecordLogDatumBooleanValueBuilder
-func (m *_BACnetLogRecordLogDatumBooleanValue) CreateBACnetLogRecordLogDatumBooleanValueBuilder() BACnetLogRecordLogDatumBooleanValueBuilder {
-	if m == nil {
+func (b *_BACnetLogRecordLogDatumBooleanValue) CreateBACnetLogRecordLogDatumBooleanValueBuilder() BACnetLogRecordLogDatumBooleanValueBuilder {
+	if b == nil {
 		return NewBACnetLogRecordLogDatumBooleanValueBuilder()
 	}
-	return &_BACnetLogRecordLogDatumBooleanValueBuilder{_BACnetLogRecordLogDatumBooleanValue: m.deepCopy()}
+	return &_BACnetLogRecordLogDatumBooleanValueBuilder{_BACnetLogRecordLogDatumBooleanValue: b.deepCopy()}
 }
 
 ///////////////////////

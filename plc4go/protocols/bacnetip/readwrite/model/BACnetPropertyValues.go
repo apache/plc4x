@@ -114,88 +114,92 @@ type _BACnetPropertyValuesBuilder struct {
 
 var _ (BACnetPropertyValuesBuilder) = (*_BACnetPropertyValuesBuilder)(nil)
 
-func (m *_BACnetPropertyValuesBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, data []BACnetPropertyValue, innerClosingTag BACnetClosingTag) BACnetPropertyValuesBuilder {
-	return m.WithInnerOpeningTag(innerOpeningTag).WithData(data...).WithInnerClosingTag(innerClosingTag)
+func (b *_BACnetPropertyValuesBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, data []BACnetPropertyValue, innerClosingTag BACnetClosingTag) BACnetPropertyValuesBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithData(data...).WithInnerClosingTag(innerClosingTag)
 }
 
-func (m *_BACnetPropertyValuesBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetPropertyValuesBuilder {
-	m.InnerOpeningTag = innerOpeningTag
-	return m
+func (b *_BACnetPropertyValuesBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetPropertyValuesBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
 }
 
-func (m *_BACnetPropertyValuesBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetPropertyValuesBuilder {
-	builder := builderSupplier(m.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetPropertyValuesBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetPropertyValuesBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.InnerOpeningTag, err = builder.Build()
+	b.InnerOpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyValuesBuilder) WithData(data ...BACnetPropertyValue) BACnetPropertyValuesBuilder {
-	m.Data = data
-	return m
+func (b *_BACnetPropertyValuesBuilder) WithData(data ...BACnetPropertyValue) BACnetPropertyValuesBuilder {
+	b.Data = data
+	return b
 }
 
-func (m *_BACnetPropertyValuesBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetPropertyValuesBuilder {
-	m.InnerClosingTag = innerClosingTag
-	return m
+func (b *_BACnetPropertyValuesBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetPropertyValuesBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
 }
 
-func (m *_BACnetPropertyValuesBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetPropertyValuesBuilder {
-	builder := builderSupplier(m.InnerClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetPropertyValuesBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetPropertyValuesBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.InnerClosingTag, err = builder.Build()
+	b.InnerClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyValuesBuilder) Build() (BACnetPropertyValues, error) {
-	if m.InnerOpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyValuesBuilder) Build() (BACnetPropertyValues, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
 	}
-	if m.InnerClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyValues.deepCopy(), nil
+	return b._BACnetPropertyValues.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyValuesBuilder) MustBuild() BACnetPropertyValues {
-	build, err := m.Build()
+func (b *_BACnetPropertyValuesBuilder) MustBuild() BACnetPropertyValues {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyValuesBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyValuesBuilder()
+func (b *_BACnetPropertyValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyValuesBuilder().(*_BACnetPropertyValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyValuesBuilder creates a BACnetPropertyValuesBuilder
-func (m *_BACnetPropertyValues) CreateBACnetPropertyValuesBuilder() BACnetPropertyValuesBuilder {
-	if m == nil {
+func (b *_BACnetPropertyValues) CreateBACnetPropertyValuesBuilder() BACnetPropertyValuesBuilder {
+	if b == nil {
 		return NewBACnetPropertyValuesBuilder()
 	}
-	return &_BACnetPropertyValuesBuilder{_BACnetPropertyValues: m.deepCopy()}
+	return &_BACnetPropertyValuesBuilder{_BACnetPropertyValues: b.deepCopy()}
 }
 
 ///////////////////////

@@ -93,45 +93,64 @@ func NewBACnetConstructedDataActiveVTSessionsBuilder() BACnetConstructedDataActi
 type _BACnetConstructedDataActiveVTSessionsBuilder struct {
 	*_BACnetConstructedDataActiveVTSessions
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataActiveVTSessionsBuilder) = (*_BACnetConstructedDataActiveVTSessionsBuilder)(nil)
 
-func (m *_BACnetConstructedDataActiveVTSessionsBuilder) WithMandatoryFields(activeVTSession []BACnetVTSession) BACnetConstructedDataActiveVTSessionsBuilder {
-	return m.WithActiveVTSession(activeVTSession...)
+func (b *_BACnetConstructedDataActiveVTSessionsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataActiveVTSessionsBuilder) WithActiveVTSession(activeVTSession ...BACnetVTSession) BACnetConstructedDataActiveVTSessionsBuilder {
-	m.ActiveVTSession = activeVTSession
-	return m
+func (b *_BACnetConstructedDataActiveVTSessionsBuilder) WithMandatoryFields(activeVTSession []BACnetVTSession) BACnetConstructedDataActiveVTSessionsBuilder {
+	return b.WithActiveVTSession(activeVTSession...)
 }
 
-func (m *_BACnetConstructedDataActiveVTSessionsBuilder) Build() (BACnetConstructedDataActiveVTSessions, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataActiveVTSessionsBuilder) WithActiveVTSession(activeVTSession ...BACnetVTSession) BACnetConstructedDataActiveVTSessionsBuilder {
+	b.ActiveVTSession = activeVTSession
+	return b
+}
+
+func (b *_BACnetConstructedDataActiveVTSessionsBuilder) Build() (BACnetConstructedDataActiveVTSessions, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataActiveVTSessions.deepCopy(), nil
+	return b._BACnetConstructedDataActiveVTSessions.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataActiveVTSessionsBuilder) MustBuild() BACnetConstructedDataActiveVTSessions {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataActiveVTSessionsBuilder) MustBuild() BACnetConstructedDataActiveVTSessions {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataActiveVTSessionsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataActiveVTSessionsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataActiveVTSessionsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataActiveVTSessionsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataActiveVTSessionsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataActiveVTSessionsBuilder().(*_BACnetConstructedDataActiveVTSessionsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataActiveVTSessionsBuilder creates a BACnetConstructedDataActiveVTSessionsBuilder
-func (m *_BACnetConstructedDataActiveVTSessions) CreateBACnetConstructedDataActiveVTSessionsBuilder() BACnetConstructedDataActiveVTSessionsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataActiveVTSessions) CreateBACnetConstructedDataActiveVTSessionsBuilder() BACnetConstructedDataActiveVTSessionsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataActiveVTSessionsBuilder()
 	}
-	return &_BACnetConstructedDataActiveVTSessionsBuilder{_BACnetConstructedDataActiveVTSessions: m.deepCopy()}
+	return &_BACnetConstructedDataActiveVTSessionsBuilder{_BACnetConstructedDataActiveVTSessions: b.deepCopy()}
 }
 
 ///////////////////////

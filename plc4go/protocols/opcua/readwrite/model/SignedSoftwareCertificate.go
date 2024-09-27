@@ -109,88 +109,107 @@ func NewSignedSoftwareCertificateBuilder() SignedSoftwareCertificateBuilder {
 type _SignedSoftwareCertificateBuilder struct {
 	*_SignedSoftwareCertificate
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SignedSoftwareCertificateBuilder) = (*_SignedSoftwareCertificateBuilder)(nil)
 
-func (m *_SignedSoftwareCertificateBuilder) WithMandatoryFields(certificateData PascalByteString, signature PascalByteString) SignedSoftwareCertificateBuilder {
-	return m.WithCertificateData(certificateData).WithSignature(signature)
+func (b *_SignedSoftwareCertificateBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_SignedSoftwareCertificateBuilder) WithCertificateData(certificateData PascalByteString) SignedSoftwareCertificateBuilder {
-	m.CertificateData = certificateData
-	return m
+func (b *_SignedSoftwareCertificateBuilder) WithMandatoryFields(certificateData PascalByteString, signature PascalByteString) SignedSoftwareCertificateBuilder {
+	return b.WithCertificateData(certificateData).WithSignature(signature)
 }
 
-func (m *_SignedSoftwareCertificateBuilder) WithCertificateDataBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) SignedSoftwareCertificateBuilder {
-	builder := builderSupplier(m.CertificateData.CreatePascalByteStringBuilder())
+func (b *_SignedSoftwareCertificateBuilder) WithCertificateData(certificateData PascalByteString) SignedSoftwareCertificateBuilder {
+	b.CertificateData = certificateData
+	return b
+}
+
+func (b *_SignedSoftwareCertificateBuilder) WithCertificateDataBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) SignedSoftwareCertificateBuilder {
+	builder := builderSupplier(b.CertificateData.CreatePascalByteStringBuilder())
 	var err error
-	m.CertificateData, err = builder.Build()
+	b.CertificateData, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SignedSoftwareCertificateBuilder) WithSignature(signature PascalByteString) SignedSoftwareCertificateBuilder {
-	m.Signature = signature
-	return m
+func (b *_SignedSoftwareCertificateBuilder) WithSignature(signature PascalByteString) SignedSoftwareCertificateBuilder {
+	b.Signature = signature
+	return b
 }
 
-func (m *_SignedSoftwareCertificateBuilder) WithSignatureBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) SignedSoftwareCertificateBuilder {
-	builder := builderSupplier(m.Signature.CreatePascalByteStringBuilder())
+func (b *_SignedSoftwareCertificateBuilder) WithSignatureBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) SignedSoftwareCertificateBuilder {
+	builder := builderSupplier(b.Signature.CreatePascalByteStringBuilder())
 	var err error
-	m.Signature, err = builder.Build()
+	b.Signature, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SignedSoftwareCertificateBuilder) Build() (SignedSoftwareCertificate, error) {
-	if m.CertificateData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SignedSoftwareCertificateBuilder) Build() (SignedSoftwareCertificate, error) {
+	if b.CertificateData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'certificateData' not set"))
+		b.err.Append(errors.New("mandatory field 'certificateData' not set"))
 	}
-	if m.Signature == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Signature == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'signature' not set"))
+		b.err.Append(errors.New("mandatory field 'signature' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SignedSoftwareCertificate.deepCopy(), nil
+	return b._SignedSoftwareCertificate.deepCopy(), nil
 }
 
-func (m *_SignedSoftwareCertificateBuilder) MustBuild() SignedSoftwareCertificate {
-	build, err := m.Build()
+func (b *_SignedSoftwareCertificateBuilder) MustBuild() SignedSoftwareCertificate {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SignedSoftwareCertificateBuilder) DeepCopy() any {
-	return m.CreateSignedSoftwareCertificateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SignedSoftwareCertificateBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SignedSoftwareCertificateBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SignedSoftwareCertificateBuilder) DeepCopy() any {
+	_copy := b.CreateSignedSoftwareCertificateBuilder().(*_SignedSoftwareCertificateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSignedSoftwareCertificateBuilder creates a SignedSoftwareCertificateBuilder
-func (m *_SignedSoftwareCertificate) CreateSignedSoftwareCertificateBuilder() SignedSoftwareCertificateBuilder {
-	if m == nil {
+func (b *_SignedSoftwareCertificate) CreateSignedSoftwareCertificateBuilder() SignedSoftwareCertificateBuilder {
+	if b == nil {
 		return NewSignedSoftwareCertificateBuilder()
 	}
-	return &_SignedSoftwareCertificateBuilder{_SignedSoftwareCertificate: m.deepCopy()}
+	return &_SignedSoftwareCertificateBuilder{_SignedSoftwareCertificate: b.deepCopy()}
 }
 
 ///////////////////////

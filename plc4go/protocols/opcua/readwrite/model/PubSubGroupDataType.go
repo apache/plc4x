@@ -153,123 +153,142 @@ func NewPubSubGroupDataTypeBuilder() PubSubGroupDataTypeBuilder {
 type _PubSubGroupDataTypeBuilder struct {
 	*_PubSubGroupDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (PubSubGroupDataTypeBuilder) = (*_PubSubGroupDataTypeBuilder)(nil)
 
-func (m *_PubSubGroupDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, securityMode MessageSecurityMode, securityGroupId PascalString, noOfSecurityKeyServices int32, securityKeyServices []ExtensionObjectDefinition, maxNetworkMessageSize uint32, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) PubSubGroupDataTypeBuilder {
-	return m.WithName(name).WithEnabled(enabled).WithSecurityMode(securityMode).WithSecurityGroupId(securityGroupId).WithNoOfSecurityKeyServices(noOfSecurityKeyServices).WithSecurityKeyServices(securityKeyServices...).WithMaxNetworkMessageSize(maxNetworkMessageSize).WithNoOfGroupProperties(noOfGroupProperties).WithGroupProperties(groupProperties...)
+func (b *_PubSubGroupDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_PubSubGroupDataTypeBuilder) WithName(name PascalString) PubSubGroupDataTypeBuilder {
-	m.Name = name
-	return m
+func (b *_PubSubGroupDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, securityMode MessageSecurityMode, securityGroupId PascalString, noOfSecurityKeyServices int32, securityKeyServices []ExtensionObjectDefinition, maxNetworkMessageSize uint32, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) PubSubGroupDataTypeBuilder {
+	return b.WithName(name).WithEnabled(enabled).WithSecurityMode(securityMode).WithSecurityGroupId(securityGroupId).WithNoOfSecurityKeyServices(noOfSecurityKeyServices).WithSecurityKeyServices(securityKeyServices...).WithMaxNetworkMessageSize(maxNetworkMessageSize).WithNoOfGroupProperties(noOfGroupProperties).WithGroupProperties(groupProperties...)
 }
 
-func (m *_PubSubGroupDataTypeBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PubSubGroupDataTypeBuilder {
-	builder := builderSupplier(m.Name.CreatePascalStringBuilder())
+func (b *_PubSubGroupDataTypeBuilder) WithName(name PascalString) PubSubGroupDataTypeBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_PubSubGroupDataTypeBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PubSubGroupDataTypeBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
 	var err error
-	m.Name, err = builder.Build()
+	b.Name, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PubSubGroupDataTypeBuilder) WithEnabled(enabled bool) PubSubGroupDataTypeBuilder {
-	m.Enabled = enabled
-	return m
+func (b *_PubSubGroupDataTypeBuilder) WithEnabled(enabled bool) PubSubGroupDataTypeBuilder {
+	b.Enabled = enabled
+	return b
 }
 
-func (m *_PubSubGroupDataTypeBuilder) WithSecurityMode(securityMode MessageSecurityMode) PubSubGroupDataTypeBuilder {
-	m.SecurityMode = securityMode
-	return m
+func (b *_PubSubGroupDataTypeBuilder) WithSecurityMode(securityMode MessageSecurityMode) PubSubGroupDataTypeBuilder {
+	b.SecurityMode = securityMode
+	return b
 }
 
-func (m *_PubSubGroupDataTypeBuilder) WithSecurityGroupId(securityGroupId PascalString) PubSubGroupDataTypeBuilder {
-	m.SecurityGroupId = securityGroupId
-	return m
+func (b *_PubSubGroupDataTypeBuilder) WithSecurityGroupId(securityGroupId PascalString) PubSubGroupDataTypeBuilder {
+	b.SecurityGroupId = securityGroupId
+	return b
 }
 
-func (m *_PubSubGroupDataTypeBuilder) WithSecurityGroupIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PubSubGroupDataTypeBuilder {
-	builder := builderSupplier(m.SecurityGroupId.CreatePascalStringBuilder())
+func (b *_PubSubGroupDataTypeBuilder) WithSecurityGroupIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PubSubGroupDataTypeBuilder {
+	builder := builderSupplier(b.SecurityGroupId.CreatePascalStringBuilder())
 	var err error
-	m.SecurityGroupId, err = builder.Build()
+	b.SecurityGroupId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PubSubGroupDataTypeBuilder) WithNoOfSecurityKeyServices(noOfSecurityKeyServices int32) PubSubGroupDataTypeBuilder {
-	m.NoOfSecurityKeyServices = noOfSecurityKeyServices
-	return m
+func (b *_PubSubGroupDataTypeBuilder) WithNoOfSecurityKeyServices(noOfSecurityKeyServices int32) PubSubGroupDataTypeBuilder {
+	b.NoOfSecurityKeyServices = noOfSecurityKeyServices
+	return b
 }
 
-func (m *_PubSubGroupDataTypeBuilder) WithSecurityKeyServices(securityKeyServices ...ExtensionObjectDefinition) PubSubGroupDataTypeBuilder {
-	m.SecurityKeyServices = securityKeyServices
-	return m
+func (b *_PubSubGroupDataTypeBuilder) WithSecurityKeyServices(securityKeyServices ...ExtensionObjectDefinition) PubSubGroupDataTypeBuilder {
+	b.SecurityKeyServices = securityKeyServices
+	return b
 }
 
-func (m *_PubSubGroupDataTypeBuilder) WithMaxNetworkMessageSize(maxNetworkMessageSize uint32) PubSubGroupDataTypeBuilder {
-	m.MaxNetworkMessageSize = maxNetworkMessageSize
-	return m
+func (b *_PubSubGroupDataTypeBuilder) WithMaxNetworkMessageSize(maxNetworkMessageSize uint32) PubSubGroupDataTypeBuilder {
+	b.MaxNetworkMessageSize = maxNetworkMessageSize
+	return b
 }
 
-func (m *_PubSubGroupDataTypeBuilder) WithNoOfGroupProperties(noOfGroupProperties int32) PubSubGroupDataTypeBuilder {
-	m.NoOfGroupProperties = noOfGroupProperties
-	return m
+func (b *_PubSubGroupDataTypeBuilder) WithNoOfGroupProperties(noOfGroupProperties int32) PubSubGroupDataTypeBuilder {
+	b.NoOfGroupProperties = noOfGroupProperties
+	return b
 }
 
-func (m *_PubSubGroupDataTypeBuilder) WithGroupProperties(groupProperties ...ExtensionObjectDefinition) PubSubGroupDataTypeBuilder {
-	m.GroupProperties = groupProperties
-	return m
+func (b *_PubSubGroupDataTypeBuilder) WithGroupProperties(groupProperties ...ExtensionObjectDefinition) PubSubGroupDataTypeBuilder {
+	b.GroupProperties = groupProperties
+	return b
 }
 
-func (m *_PubSubGroupDataTypeBuilder) Build() (PubSubGroupDataType, error) {
-	if m.Name == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_PubSubGroupDataTypeBuilder) Build() (PubSubGroupDataType, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'name' not set"))
+		b.err.Append(errors.New("mandatory field 'name' not set"))
 	}
-	if m.SecurityGroupId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.SecurityGroupId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'securityGroupId' not set"))
+		b.err.Append(errors.New("mandatory field 'securityGroupId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._PubSubGroupDataType.deepCopy(), nil
+	return b._PubSubGroupDataType.deepCopy(), nil
 }
 
-func (m *_PubSubGroupDataTypeBuilder) MustBuild() PubSubGroupDataType {
-	build, err := m.Build()
+func (b *_PubSubGroupDataTypeBuilder) MustBuild() PubSubGroupDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PubSubGroupDataTypeBuilder) DeepCopy() any {
-	return m.CreatePubSubGroupDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PubSubGroupDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PubSubGroupDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PubSubGroupDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreatePubSubGroupDataTypeBuilder().(*_PubSubGroupDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePubSubGroupDataTypeBuilder creates a PubSubGroupDataTypeBuilder
-func (m *_PubSubGroupDataType) CreatePubSubGroupDataTypeBuilder() PubSubGroupDataTypeBuilder {
-	if m == nil {
+func (b *_PubSubGroupDataType) CreatePubSubGroupDataTypeBuilder() PubSubGroupDataTypeBuilder {
+	if b == nil {
 		return NewPubSubGroupDataTypeBuilder()
 	}
-	return &_PubSubGroupDataTypeBuilder{_PubSubGroupDataType: m.deepCopy()}
+	return &_PubSubGroupDataTypeBuilder{_PubSubGroupDataType: b.deepCopy()}
 }
 
 ///////////////////////

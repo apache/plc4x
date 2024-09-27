@@ -100,64 +100,83 @@ func NewBACnetConstructedDataEscalatorModeBuilder() BACnetConstructedDataEscalat
 type _BACnetConstructedDataEscalatorModeBuilder struct {
 	*_BACnetConstructedDataEscalatorMode
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataEscalatorModeBuilder) = (*_BACnetConstructedDataEscalatorModeBuilder)(nil)
 
-func (m *_BACnetConstructedDataEscalatorModeBuilder) WithMandatoryFields(escalatorMode BACnetEscalatorModeTagged) BACnetConstructedDataEscalatorModeBuilder {
-	return m.WithEscalatorMode(escalatorMode)
+func (b *_BACnetConstructedDataEscalatorModeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataEscalatorModeBuilder) WithEscalatorMode(escalatorMode BACnetEscalatorModeTagged) BACnetConstructedDataEscalatorModeBuilder {
-	m.EscalatorMode = escalatorMode
-	return m
+func (b *_BACnetConstructedDataEscalatorModeBuilder) WithMandatoryFields(escalatorMode BACnetEscalatorModeTagged) BACnetConstructedDataEscalatorModeBuilder {
+	return b.WithEscalatorMode(escalatorMode)
 }
 
-func (m *_BACnetConstructedDataEscalatorModeBuilder) WithEscalatorModeBuilder(builderSupplier func(BACnetEscalatorModeTaggedBuilder) BACnetEscalatorModeTaggedBuilder) BACnetConstructedDataEscalatorModeBuilder {
-	builder := builderSupplier(m.EscalatorMode.CreateBACnetEscalatorModeTaggedBuilder())
+func (b *_BACnetConstructedDataEscalatorModeBuilder) WithEscalatorMode(escalatorMode BACnetEscalatorModeTagged) BACnetConstructedDataEscalatorModeBuilder {
+	b.EscalatorMode = escalatorMode
+	return b
+}
+
+func (b *_BACnetConstructedDataEscalatorModeBuilder) WithEscalatorModeBuilder(builderSupplier func(BACnetEscalatorModeTaggedBuilder) BACnetEscalatorModeTaggedBuilder) BACnetConstructedDataEscalatorModeBuilder {
+	builder := builderSupplier(b.EscalatorMode.CreateBACnetEscalatorModeTaggedBuilder())
 	var err error
-	m.EscalatorMode, err = builder.Build()
+	b.EscalatorMode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEscalatorModeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEscalatorModeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataEscalatorModeBuilder) Build() (BACnetConstructedDataEscalatorMode, error) {
-	if m.EscalatorMode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataEscalatorModeBuilder) Build() (BACnetConstructedDataEscalatorMode, error) {
+	if b.EscalatorMode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'escalatorMode' not set"))
+		b.err.Append(errors.New("mandatory field 'escalatorMode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataEscalatorMode.deepCopy(), nil
+	return b._BACnetConstructedDataEscalatorMode.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataEscalatorModeBuilder) MustBuild() BACnetConstructedDataEscalatorMode {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataEscalatorModeBuilder) MustBuild() BACnetConstructedDataEscalatorMode {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataEscalatorModeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataEscalatorModeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEscalatorModeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEscalatorModeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEscalatorModeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEscalatorModeBuilder().(*_BACnetConstructedDataEscalatorModeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataEscalatorModeBuilder creates a BACnetConstructedDataEscalatorModeBuilder
-func (m *_BACnetConstructedDataEscalatorMode) CreateBACnetConstructedDataEscalatorModeBuilder() BACnetConstructedDataEscalatorModeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataEscalatorMode) CreateBACnetConstructedDataEscalatorModeBuilder() BACnetConstructedDataEscalatorModeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataEscalatorModeBuilder()
 	}
-	return &_BACnetConstructedDataEscalatorModeBuilder{_BACnetConstructedDataEscalatorMode: m.deepCopy()}
+	return &_BACnetConstructedDataEscalatorModeBuilder{_BACnetConstructedDataEscalatorMode: b.deepCopy()}
 }
 
 ///////////////////////

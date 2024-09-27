@@ -85,40 +85,59 @@ func NewRequestEmptyBuilder() RequestEmptyBuilder {
 type _RequestEmptyBuilder struct {
 	*_RequestEmpty
 
+	parentBuilder *_RequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RequestEmptyBuilder) = (*_RequestEmptyBuilder)(nil)
 
-func (m *_RequestEmptyBuilder) WithMandatoryFields() RequestEmptyBuilder {
-	return m
+func (b *_RequestEmptyBuilder) setParent(contract RequestContract) {
+	b.RequestContract = contract
 }
 
-func (m *_RequestEmptyBuilder) Build() (RequestEmpty, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_RequestEmptyBuilder) WithMandatoryFields() RequestEmptyBuilder {
+	return b
+}
+
+func (b *_RequestEmptyBuilder) Build() (RequestEmpty, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._RequestEmpty.deepCopy(), nil
+	return b._RequestEmpty.deepCopy(), nil
 }
 
-func (m *_RequestEmptyBuilder) MustBuild() RequestEmpty {
-	build, err := m.Build()
+func (b *_RequestEmptyBuilder) MustBuild() RequestEmpty {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RequestEmptyBuilder) DeepCopy() any {
-	return m.CreateRequestEmptyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RequestEmptyBuilder) Done() RequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RequestEmptyBuilder) buildForRequest() (Request, error) {
+	return b.Build()
+}
+
+func (b *_RequestEmptyBuilder) DeepCopy() any {
+	_copy := b.CreateRequestEmptyBuilder().(*_RequestEmptyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRequestEmptyBuilder creates a RequestEmptyBuilder
-func (m *_RequestEmpty) CreateRequestEmptyBuilder() RequestEmptyBuilder {
-	if m == nil {
+func (b *_RequestEmpty) CreateRequestEmptyBuilder() RequestEmptyBuilder {
+	if b == nil {
 		return NewRequestEmptyBuilder()
 	}
-	return &_RequestEmptyBuilder{_RequestEmpty: m.deepCopy()}
+	return &_RequestEmptyBuilder{_RequestEmpty: b.deepCopy()}
 }
 
 ///////////////////////

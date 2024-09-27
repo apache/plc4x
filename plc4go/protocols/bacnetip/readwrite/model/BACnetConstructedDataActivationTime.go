@@ -100,64 +100,83 @@ func NewBACnetConstructedDataActivationTimeBuilder() BACnetConstructedDataActiva
 type _BACnetConstructedDataActivationTimeBuilder struct {
 	*_BACnetConstructedDataActivationTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataActivationTimeBuilder) = (*_BACnetConstructedDataActivationTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataActivationTimeBuilder) WithMandatoryFields(activationTime BACnetDateTime) BACnetConstructedDataActivationTimeBuilder {
-	return m.WithActivationTime(activationTime)
+func (b *_BACnetConstructedDataActivationTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataActivationTimeBuilder) WithActivationTime(activationTime BACnetDateTime) BACnetConstructedDataActivationTimeBuilder {
-	m.ActivationTime = activationTime
-	return m
+func (b *_BACnetConstructedDataActivationTimeBuilder) WithMandatoryFields(activationTime BACnetDateTime) BACnetConstructedDataActivationTimeBuilder {
+	return b.WithActivationTime(activationTime)
 }
 
-func (m *_BACnetConstructedDataActivationTimeBuilder) WithActivationTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataActivationTimeBuilder {
-	builder := builderSupplier(m.ActivationTime.CreateBACnetDateTimeBuilder())
+func (b *_BACnetConstructedDataActivationTimeBuilder) WithActivationTime(activationTime BACnetDateTime) BACnetConstructedDataActivationTimeBuilder {
+	b.ActivationTime = activationTime
+	return b
+}
+
+func (b *_BACnetConstructedDataActivationTimeBuilder) WithActivationTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataActivationTimeBuilder {
+	builder := builderSupplier(b.ActivationTime.CreateBACnetDateTimeBuilder())
 	var err error
-	m.ActivationTime, err = builder.Build()
+	b.ActivationTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataActivationTimeBuilder) Build() (BACnetConstructedDataActivationTime, error) {
-	if m.ActivationTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataActivationTimeBuilder) Build() (BACnetConstructedDataActivationTime, error) {
+	if b.ActivationTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'activationTime' not set"))
+		b.err.Append(errors.New("mandatory field 'activationTime' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataActivationTime.deepCopy(), nil
+	return b._BACnetConstructedDataActivationTime.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataActivationTimeBuilder) MustBuild() BACnetConstructedDataActivationTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataActivationTimeBuilder) MustBuild() BACnetConstructedDataActivationTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataActivationTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataActivationTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataActivationTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataActivationTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataActivationTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataActivationTimeBuilder().(*_BACnetConstructedDataActivationTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataActivationTimeBuilder creates a BACnetConstructedDataActivationTimeBuilder
-func (m *_BACnetConstructedDataActivationTime) CreateBACnetConstructedDataActivationTimeBuilder() BACnetConstructedDataActivationTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataActivationTime) CreateBACnetConstructedDataActivationTimeBuilder() BACnetConstructedDataActivationTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataActivationTimeBuilder()
 	}
-	return &_BACnetConstructedDataActivationTimeBuilder{_BACnetConstructedDataActivationTime: m.deepCopy()}
+	return &_BACnetConstructedDataActivationTimeBuilder{_BACnetConstructedDataActivationTime: b.deepCopy()}
 }
 
 ///////////////////////

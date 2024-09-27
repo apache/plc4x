@@ -103,63 +103,82 @@ func NewBACnetConstructedDataCommandTimeArrayBuilder() BACnetConstructedDataComm
 type _BACnetConstructedDataCommandTimeArrayBuilder struct {
 	*_BACnetConstructedDataCommandTimeArray
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCommandTimeArrayBuilder) = (*_BACnetConstructedDataCommandTimeArrayBuilder)(nil)
 
-func (m *_BACnetConstructedDataCommandTimeArrayBuilder) WithMandatoryFields(commandTimeArray []BACnetTimeStamp) BACnetConstructedDataCommandTimeArrayBuilder {
-	return m.WithCommandTimeArray(commandTimeArray...)
+func (b *_BACnetConstructedDataCommandTimeArrayBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCommandTimeArrayBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCommandTimeArrayBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataCommandTimeArrayBuilder) WithMandatoryFields(commandTimeArray []BACnetTimeStamp) BACnetConstructedDataCommandTimeArrayBuilder {
+	return b.WithCommandTimeArray(commandTimeArray...)
 }
 
-func (m *_BACnetConstructedDataCommandTimeArrayBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCommandTimeArrayBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataCommandTimeArrayBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCommandTimeArrayBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataCommandTimeArrayBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCommandTimeArrayBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataCommandTimeArrayBuilder) WithCommandTimeArray(commandTimeArray ...BACnetTimeStamp) BACnetConstructedDataCommandTimeArrayBuilder {
-	m.CommandTimeArray = commandTimeArray
-	return m
+func (b *_BACnetConstructedDataCommandTimeArrayBuilder) WithCommandTimeArray(commandTimeArray ...BACnetTimeStamp) BACnetConstructedDataCommandTimeArrayBuilder {
+	b.CommandTimeArray = commandTimeArray
+	return b
 }
 
-func (m *_BACnetConstructedDataCommandTimeArrayBuilder) Build() (BACnetConstructedDataCommandTimeArray, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataCommandTimeArrayBuilder) Build() (BACnetConstructedDataCommandTimeArray, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCommandTimeArray.deepCopy(), nil
+	return b._BACnetConstructedDataCommandTimeArray.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCommandTimeArrayBuilder) MustBuild() BACnetConstructedDataCommandTimeArray {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCommandTimeArrayBuilder) MustBuild() BACnetConstructedDataCommandTimeArray {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCommandTimeArrayBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCommandTimeArrayBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCommandTimeArrayBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCommandTimeArrayBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCommandTimeArrayBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCommandTimeArrayBuilder().(*_BACnetConstructedDataCommandTimeArrayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCommandTimeArrayBuilder creates a BACnetConstructedDataCommandTimeArrayBuilder
-func (m *_BACnetConstructedDataCommandTimeArray) CreateBACnetConstructedDataCommandTimeArrayBuilder() BACnetConstructedDataCommandTimeArrayBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCommandTimeArray) CreateBACnetConstructedDataCommandTimeArrayBuilder() BACnetConstructedDataCommandTimeArrayBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCommandTimeArrayBuilder()
 	}
-	return &_BACnetConstructedDataCommandTimeArrayBuilder{_BACnetConstructedDataCommandTimeArray: m.deepCopy()}
+	return &_BACnetConstructedDataCommandTimeArrayBuilder{_BACnetConstructedDataCommandTimeArray: b.deepCopy()}
 }
 
 ///////////////////////

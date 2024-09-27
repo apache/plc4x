@@ -85,40 +85,59 @@ func NewAccessControlDataRequestToExitBuilder() AccessControlDataRequestToExitBu
 type _AccessControlDataRequestToExitBuilder struct {
 	*_AccessControlDataRequestToExit
 
+	parentBuilder *_AccessControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AccessControlDataRequestToExitBuilder) = (*_AccessControlDataRequestToExitBuilder)(nil)
 
-func (m *_AccessControlDataRequestToExitBuilder) WithMandatoryFields() AccessControlDataRequestToExitBuilder {
-	return m
+func (b *_AccessControlDataRequestToExitBuilder) setParent(contract AccessControlDataContract) {
+	b.AccessControlDataContract = contract
 }
 
-func (m *_AccessControlDataRequestToExitBuilder) Build() (AccessControlDataRequestToExit, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AccessControlDataRequestToExitBuilder) WithMandatoryFields() AccessControlDataRequestToExitBuilder {
+	return b
+}
+
+func (b *_AccessControlDataRequestToExitBuilder) Build() (AccessControlDataRequestToExit, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AccessControlDataRequestToExit.deepCopy(), nil
+	return b._AccessControlDataRequestToExit.deepCopy(), nil
 }
 
-func (m *_AccessControlDataRequestToExitBuilder) MustBuild() AccessControlDataRequestToExit {
-	build, err := m.Build()
+func (b *_AccessControlDataRequestToExitBuilder) MustBuild() AccessControlDataRequestToExit {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AccessControlDataRequestToExitBuilder) DeepCopy() any {
-	return m.CreateAccessControlDataRequestToExitBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AccessControlDataRequestToExitBuilder) Done() AccessControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AccessControlDataRequestToExitBuilder) buildForAccessControlData() (AccessControlData, error) {
+	return b.Build()
+}
+
+func (b *_AccessControlDataRequestToExitBuilder) DeepCopy() any {
+	_copy := b.CreateAccessControlDataRequestToExitBuilder().(*_AccessControlDataRequestToExitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAccessControlDataRequestToExitBuilder creates a AccessControlDataRequestToExitBuilder
-func (m *_AccessControlDataRequestToExit) CreateAccessControlDataRequestToExitBuilder() AccessControlDataRequestToExitBuilder {
-	if m == nil {
+func (b *_AccessControlDataRequestToExit) CreateAccessControlDataRequestToExitBuilder() AccessControlDataRequestToExitBuilder {
+	if b == nil {
 		return NewAccessControlDataRequestToExitBuilder()
 	}
-	return &_AccessControlDataRequestToExitBuilder{_AccessControlDataRequestToExit: m.deepCopy()}
+	return &_AccessControlDataRequestToExitBuilder{_AccessControlDataRequestToExit: b.deepCopy()}
 }
 
 ///////////////////////

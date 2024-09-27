@@ -105,55 +105,59 @@ type _BVLCForeignDeviceTableEntryBuilder struct {
 
 var _ (BVLCForeignDeviceTableEntryBuilder) = (*_BVLCForeignDeviceTableEntryBuilder)(nil)
 
-func (m *_BVLCForeignDeviceTableEntryBuilder) WithMandatoryFields(ip []uint8, port uint16, ttl uint16, secondRemainingBeforePurge uint16) BVLCForeignDeviceTableEntryBuilder {
-	return m.WithIp(ip...).WithPort(port).WithTtl(ttl).WithSecondRemainingBeforePurge(secondRemainingBeforePurge)
+func (b *_BVLCForeignDeviceTableEntryBuilder) WithMandatoryFields(ip []uint8, port uint16, ttl uint16, secondRemainingBeforePurge uint16) BVLCForeignDeviceTableEntryBuilder {
+	return b.WithIp(ip...).WithPort(port).WithTtl(ttl).WithSecondRemainingBeforePurge(secondRemainingBeforePurge)
 }
 
-func (m *_BVLCForeignDeviceTableEntryBuilder) WithIp(ip ...uint8) BVLCForeignDeviceTableEntryBuilder {
-	m.Ip = ip
-	return m
+func (b *_BVLCForeignDeviceTableEntryBuilder) WithIp(ip ...uint8) BVLCForeignDeviceTableEntryBuilder {
+	b.Ip = ip
+	return b
 }
 
-func (m *_BVLCForeignDeviceTableEntryBuilder) WithPort(port uint16) BVLCForeignDeviceTableEntryBuilder {
-	m.Port = port
-	return m
+func (b *_BVLCForeignDeviceTableEntryBuilder) WithPort(port uint16) BVLCForeignDeviceTableEntryBuilder {
+	b.Port = port
+	return b
 }
 
-func (m *_BVLCForeignDeviceTableEntryBuilder) WithTtl(ttl uint16) BVLCForeignDeviceTableEntryBuilder {
-	m.Ttl = ttl
-	return m
+func (b *_BVLCForeignDeviceTableEntryBuilder) WithTtl(ttl uint16) BVLCForeignDeviceTableEntryBuilder {
+	b.Ttl = ttl
+	return b
 }
 
-func (m *_BVLCForeignDeviceTableEntryBuilder) WithSecondRemainingBeforePurge(secondRemainingBeforePurge uint16) BVLCForeignDeviceTableEntryBuilder {
-	m.SecondRemainingBeforePurge = secondRemainingBeforePurge
-	return m
+func (b *_BVLCForeignDeviceTableEntryBuilder) WithSecondRemainingBeforePurge(secondRemainingBeforePurge uint16) BVLCForeignDeviceTableEntryBuilder {
+	b.SecondRemainingBeforePurge = secondRemainingBeforePurge
+	return b
 }
 
-func (m *_BVLCForeignDeviceTableEntryBuilder) Build() (BVLCForeignDeviceTableEntry, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BVLCForeignDeviceTableEntryBuilder) Build() (BVLCForeignDeviceTableEntry, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BVLCForeignDeviceTableEntry.deepCopy(), nil
+	return b._BVLCForeignDeviceTableEntry.deepCopy(), nil
 }
 
-func (m *_BVLCForeignDeviceTableEntryBuilder) MustBuild() BVLCForeignDeviceTableEntry {
-	build, err := m.Build()
+func (b *_BVLCForeignDeviceTableEntryBuilder) MustBuild() BVLCForeignDeviceTableEntry {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BVLCForeignDeviceTableEntryBuilder) DeepCopy() any {
-	return m.CreateBVLCForeignDeviceTableEntryBuilder()
+func (b *_BVLCForeignDeviceTableEntryBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCForeignDeviceTableEntryBuilder().(*_BVLCForeignDeviceTableEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBVLCForeignDeviceTableEntryBuilder creates a BVLCForeignDeviceTableEntryBuilder
-func (m *_BVLCForeignDeviceTableEntry) CreateBVLCForeignDeviceTableEntryBuilder() BVLCForeignDeviceTableEntryBuilder {
-	if m == nil {
+func (b *_BVLCForeignDeviceTableEntry) CreateBVLCForeignDeviceTableEntryBuilder() BVLCForeignDeviceTableEntryBuilder {
+	if b == nil {
 		return NewBVLCForeignDeviceTableEntryBuilder()
 	}
-	return &_BVLCForeignDeviceTableEntryBuilder{_BVLCForeignDeviceTableEntry: m.deepCopy()}
+	return &_BVLCForeignDeviceTableEntryBuilder{_BVLCForeignDeviceTableEntry: b.deepCopy()}
 }
 
 ///////////////////////

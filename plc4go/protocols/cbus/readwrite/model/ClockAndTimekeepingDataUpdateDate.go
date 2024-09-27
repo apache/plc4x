@@ -117,65 +117,84 @@ func NewClockAndTimekeepingDataUpdateDateBuilder() ClockAndTimekeepingDataUpdate
 type _ClockAndTimekeepingDataUpdateDateBuilder struct {
 	*_ClockAndTimekeepingDataUpdateDate
 
+	parentBuilder *_ClockAndTimekeepingDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ClockAndTimekeepingDataUpdateDateBuilder) = (*_ClockAndTimekeepingDataUpdateDateBuilder)(nil)
 
-func (m *_ClockAndTimekeepingDataUpdateDateBuilder) WithMandatoryFields(yearHigh byte, yearLow byte, month uint8, day uint8, dayOfWeek uint8) ClockAndTimekeepingDataUpdateDateBuilder {
-	return m.WithYearHigh(yearHigh).WithYearLow(yearLow).WithMonth(month).WithDay(day).WithDayOfWeek(dayOfWeek)
+func (b *_ClockAndTimekeepingDataUpdateDateBuilder) setParent(contract ClockAndTimekeepingDataContract) {
+	b.ClockAndTimekeepingDataContract = contract
 }
 
-func (m *_ClockAndTimekeepingDataUpdateDateBuilder) WithYearHigh(yearHigh byte) ClockAndTimekeepingDataUpdateDateBuilder {
-	m.YearHigh = yearHigh
-	return m
+func (b *_ClockAndTimekeepingDataUpdateDateBuilder) WithMandatoryFields(yearHigh byte, yearLow byte, month uint8, day uint8, dayOfWeek uint8) ClockAndTimekeepingDataUpdateDateBuilder {
+	return b.WithYearHigh(yearHigh).WithYearLow(yearLow).WithMonth(month).WithDay(day).WithDayOfWeek(dayOfWeek)
 }
 
-func (m *_ClockAndTimekeepingDataUpdateDateBuilder) WithYearLow(yearLow byte) ClockAndTimekeepingDataUpdateDateBuilder {
-	m.YearLow = yearLow
-	return m
+func (b *_ClockAndTimekeepingDataUpdateDateBuilder) WithYearHigh(yearHigh byte) ClockAndTimekeepingDataUpdateDateBuilder {
+	b.YearHigh = yearHigh
+	return b
 }
 
-func (m *_ClockAndTimekeepingDataUpdateDateBuilder) WithMonth(month uint8) ClockAndTimekeepingDataUpdateDateBuilder {
-	m.Month = month
-	return m
+func (b *_ClockAndTimekeepingDataUpdateDateBuilder) WithYearLow(yearLow byte) ClockAndTimekeepingDataUpdateDateBuilder {
+	b.YearLow = yearLow
+	return b
 }
 
-func (m *_ClockAndTimekeepingDataUpdateDateBuilder) WithDay(day uint8) ClockAndTimekeepingDataUpdateDateBuilder {
-	m.Day = day
-	return m
+func (b *_ClockAndTimekeepingDataUpdateDateBuilder) WithMonth(month uint8) ClockAndTimekeepingDataUpdateDateBuilder {
+	b.Month = month
+	return b
 }
 
-func (m *_ClockAndTimekeepingDataUpdateDateBuilder) WithDayOfWeek(dayOfWeek uint8) ClockAndTimekeepingDataUpdateDateBuilder {
-	m.DayOfWeek = dayOfWeek
-	return m
+func (b *_ClockAndTimekeepingDataUpdateDateBuilder) WithDay(day uint8) ClockAndTimekeepingDataUpdateDateBuilder {
+	b.Day = day
+	return b
 }
 
-func (m *_ClockAndTimekeepingDataUpdateDateBuilder) Build() (ClockAndTimekeepingDataUpdateDate, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ClockAndTimekeepingDataUpdateDateBuilder) WithDayOfWeek(dayOfWeek uint8) ClockAndTimekeepingDataUpdateDateBuilder {
+	b.DayOfWeek = dayOfWeek
+	return b
+}
+
+func (b *_ClockAndTimekeepingDataUpdateDateBuilder) Build() (ClockAndTimekeepingDataUpdateDate, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ClockAndTimekeepingDataUpdateDate.deepCopy(), nil
+	return b._ClockAndTimekeepingDataUpdateDate.deepCopy(), nil
 }
 
-func (m *_ClockAndTimekeepingDataUpdateDateBuilder) MustBuild() ClockAndTimekeepingDataUpdateDate {
-	build, err := m.Build()
+func (b *_ClockAndTimekeepingDataUpdateDateBuilder) MustBuild() ClockAndTimekeepingDataUpdateDate {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ClockAndTimekeepingDataUpdateDateBuilder) DeepCopy() any {
-	return m.CreateClockAndTimekeepingDataUpdateDateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ClockAndTimekeepingDataUpdateDateBuilder) Done() ClockAndTimekeepingDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ClockAndTimekeepingDataUpdateDateBuilder) buildForClockAndTimekeepingData() (ClockAndTimekeepingData, error) {
+	return b.Build()
+}
+
+func (b *_ClockAndTimekeepingDataUpdateDateBuilder) DeepCopy() any {
+	_copy := b.CreateClockAndTimekeepingDataUpdateDateBuilder().(*_ClockAndTimekeepingDataUpdateDateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateClockAndTimekeepingDataUpdateDateBuilder creates a ClockAndTimekeepingDataUpdateDateBuilder
-func (m *_ClockAndTimekeepingDataUpdateDate) CreateClockAndTimekeepingDataUpdateDateBuilder() ClockAndTimekeepingDataUpdateDateBuilder {
-	if m == nil {
+func (b *_ClockAndTimekeepingDataUpdateDate) CreateClockAndTimekeepingDataUpdateDateBuilder() ClockAndTimekeepingDataUpdateDateBuilder {
+	if b == nil {
 		return NewClockAndTimekeepingDataUpdateDateBuilder()
 	}
-	return &_ClockAndTimekeepingDataUpdateDateBuilder{_ClockAndTimekeepingDataUpdateDate: m.deepCopy()}
+	return &_ClockAndTimekeepingDataUpdateDateBuilder{_ClockAndTimekeepingDataUpdateDate: b.deepCopy()}
 }
 
 ///////////////////////

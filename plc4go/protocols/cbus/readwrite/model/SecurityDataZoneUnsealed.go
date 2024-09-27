@@ -93,45 +93,64 @@ func NewSecurityDataZoneUnsealedBuilder() SecurityDataZoneUnsealedBuilder {
 type _SecurityDataZoneUnsealedBuilder struct {
 	*_SecurityDataZoneUnsealed
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataZoneUnsealedBuilder) = (*_SecurityDataZoneUnsealedBuilder)(nil)
 
-func (m *_SecurityDataZoneUnsealedBuilder) WithMandatoryFields(zoneNumber uint8) SecurityDataZoneUnsealedBuilder {
-	return m.WithZoneNumber(zoneNumber)
+func (b *_SecurityDataZoneUnsealedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataZoneUnsealedBuilder) WithZoneNumber(zoneNumber uint8) SecurityDataZoneUnsealedBuilder {
-	m.ZoneNumber = zoneNumber
-	return m
+func (b *_SecurityDataZoneUnsealedBuilder) WithMandatoryFields(zoneNumber uint8) SecurityDataZoneUnsealedBuilder {
+	return b.WithZoneNumber(zoneNumber)
 }
 
-func (m *_SecurityDataZoneUnsealedBuilder) Build() (SecurityDataZoneUnsealed, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataZoneUnsealedBuilder) WithZoneNumber(zoneNumber uint8) SecurityDataZoneUnsealedBuilder {
+	b.ZoneNumber = zoneNumber
+	return b
+}
+
+func (b *_SecurityDataZoneUnsealedBuilder) Build() (SecurityDataZoneUnsealed, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataZoneUnsealed.deepCopy(), nil
+	return b._SecurityDataZoneUnsealed.deepCopy(), nil
 }
 
-func (m *_SecurityDataZoneUnsealedBuilder) MustBuild() SecurityDataZoneUnsealed {
-	build, err := m.Build()
+func (b *_SecurityDataZoneUnsealedBuilder) MustBuild() SecurityDataZoneUnsealed {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataZoneUnsealedBuilder) DeepCopy() any {
-	return m.CreateSecurityDataZoneUnsealedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataZoneUnsealedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataZoneUnsealedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataZoneUnsealedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataZoneUnsealedBuilder().(*_SecurityDataZoneUnsealedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataZoneUnsealedBuilder creates a SecurityDataZoneUnsealedBuilder
-func (m *_SecurityDataZoneUnsealed) CreateSecurityDataZoneUnsealedBuilder() SecurityDataZoneUnsealedBuilder {
-	if m == nil {
+func (b *_SecurityDataZoneUnsealed) CreateSecurityDataZoneUnsealedBuilder() SecurityDataZoneUnsealedBuilder {
+	if b == nil {
 		return NewSecurityDataZoneUnsealedBuilder()
 	}
-	return &_SecurityDataZoneUnsealedBuilder{_SecurityDataZoneUnsealed: m.deepCopy()}
+	return &_SecurityDataZoneUnsealedBuilder{_SecurityDataZoneUnsealed: b.deepCopy()}
 }
 
 ///////////////////////

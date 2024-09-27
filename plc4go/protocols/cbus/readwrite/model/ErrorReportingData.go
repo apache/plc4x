@@ -92,10 +92,19 @@ type ErrorReportingDataBuilder interface {
 	WithMandatoryFields(commandTypeContainer ErrorReportingCommandTypeContainer) ErrorReportingDataBuilder
 	// WithCommandTypeContainer adds CommandTypeContainer (property field)
 	WithCommandTypeContainer(ErrorReportingCommandTypeContainer) ErrorReportingDataBuilder
+	// AsErrorReportingDataGeneric converts this build to a subType of ErrorReportingData. It is always possible to return to current builder using Done()
+	AsErrorReportingDataGeneric() interface {
+		ErrorReportingDataGenericBuilder
+		Done() ErrorReportingDataBuilder
+	}
 	// Build builds the ErrorReportingData or returns an error if something is wrong
-	Build() (ErrorReportingDataContract, error)
+	PartialBuild() (ErrorReportingDataContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() ErrorReportingDataContract
+	PartialMustBuild() ErrorReportingDataContract
+	// Build builds the ErrorReportingData or returns an error if something is wrong
+	Build() (ErrorReportingData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ErrorReportingData
 }
 
 // NewErrorReportingDataBuilder() creates a ErrorReportingDataBuilder
@@ -103,48 +112,98 @@ func NewErrorReportingDataBuilder() ErrorReportingDataBuilder {
 	return &_ErrorReportingDataBuilder{_ErrorReportingData: new(_ErrorReportingData)}
 }
 
+type _ErrorReportingDataChildBuilder interface {
+	utils.Copyable
+	setParent(ErrorReportingDataContract)
+	buildForErrorReportingData() (ErrorReportingData, error)
+}
+
 type _ErrorReportingDataBuilder struct {
 	*_ErrorReportingData
+
+	childBuilder _ErrorReportingDataChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (ErrorReportingDataBuilder) = (*_ErrorReportingDataBuilder)(nil)
 
-func (m *_ErrorReportingDataBuilder) WithMandatoryFields(commandTypeContainer ErrorReportingCommandTypeContainer) ErrorReportingDataBuilder {
-	return m.WithCommandTypeContainer(commandTypeContainer)
+func (b *_ErrorReportingDataBuilder) WithMandatoryFields(commandTypeContainer ErrorReportingCommandTypeContainer) ErrorReportingDataBuilder {
+	return b.WithCommandTypeContainer(commandTypeContainer)
 }
 
-func (m *_ErrorReportingDataBuilder) WithCommandTypeContainer(commandTypeContainer ErrorReportingCommandTypeContainer) ErrorReportingDataBuilder {
-	m.CommandTypeContainer = commandTypeContainer
-	return m
+func (b *_ErrorReportingDataBuilder) WithCommandTypeContainer(commandTypeContainer ErrorReportingCommandTypeContainer) ErrorReportingDataBuilder {
+	b.CommandTypeContainer = commandTypeContainer
+	return b
 }
 
-func (m *_ErrorReportingDataBuilder) Build() (ErrorReportingDataContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ErrorReportingDataBuilder) PartialBuild() (ErrorReportingDataContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ErrorReportingData.deepCopy(), nil
+	return b._ErrorReportingData.deepCopy(), nil
 }
 
-func (m *_ErrorReportingDataBuilder) MustBuild() ErrorReportingDataContract {
-	build, err := m.Build()
+func (b *_ErrorReportingDataBuilder) PartialMustBuild() ErrorReportingDataContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ErrorReportingDataBuilder) DeepCopy() any {
-	return m.CreateErrorReportingDataBuilder()
+func (b *_ErrorReportingDataBuilder) AsErrorReportingDataGeneric() interface {
+	ErrorReportingDataGenericBuilder
+	Done() ErrorReportingDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ErrorReportingDataGenericBuilder
+		Done() ErrorReportingDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewErrorReportingDataGenericBuilder().(*_ErrorReportingDataGenericBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ErrorReportingDataBuilder) Build() (ErrorReportingData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForErrorReportingData()
+}
+
+func (b *_ErrorReportingDataBuilder) MustBuild() ErrorReportingData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ErrorReportingDataBuilder) DeepCopy() any {
+	_copy := b.CreateErrorReportingDataBuilder().(*_ErrorReportingDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ErrorReportingDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateErrorReportingDataBuilder creates a ErrorReportingDataBuilder
-func (m *_ErrorReportingData) CreateErrorReportingDataBuilder() ErrorReportingDataBuilder {
-	if m == nil {
+func (b *_ErrorReportingData) CreateErrorReportingDataBuilder() ErrorReportingDataBuilder {
+	if b == nil {
 		return NewErrorReportingDataBuilder()
 	}
-	return &_ErrorReportingDataBuilder{_ErrorReportingData: m.deepCopy()}
+	return &_ErrorReportingDataBuilder{_ErrorReportingData: b.deepCopy()}
 }
 
 ///////////////////////

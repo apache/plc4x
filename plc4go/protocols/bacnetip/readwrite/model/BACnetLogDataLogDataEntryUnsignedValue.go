@@ -98,64 +98,83 @@ func NewBACnetLogDataLogDataEntryUnsignedValueBuilder() BACnetLogDataLogDataEntr
 type _BACnetLogDataLogDataEntryUnsignedValueBuilder struct {
 	*_BACnetLogDataLogDataEntryUnsignedValue
 
+	parentBuilder *_BACnetLogDataLogDataEntryBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetLogDataLogDataEntryUnsignedValueBuilder) = (*_BACnetLogDataLogDataEntryUnsignedValueBuilder)(nil)
 
-func (m *_BACnetLogDataLogDataEntryUnsignedValueBuilder) WithMandatoryFields(unsignedValue BACnetContextTagUnsignedInteger) BACnetLogDataLogDataEntryUnsignedValueBuilder {
-	return m.WithUnsignedValue(unsignedValue)
+func (b *_BACnetLogDataLogDataEntryUnsignedValueBuilder) setParent(contract BACnetLogDataLogDataEntryContract) {
+	b.BACnetLogDataLogDataEntryContract = contract
 }
 
-func (m *_BACnetLogDataLogDataEntryUnsignedValueBuilder) WithUnsignedValue(unsignedValue BACnetContextTagUnsignedInteger) BACnetLogDataLogDataEntryUnsignedValueBuilder {
-	m.UnsignedValue = unsignedValue
-	return m
+func (b *_BACnetLogDataLogDataEntryUnsignedValueBuilder) WithMandatoryFields(unsignedValue BACnetContextTagUnsignedInteger) BACnetLogDataLogDataEntryUnsignedValueBuilder {
+	return b.WithUnsignedValue(unsignedValue)
 }
 
-func (m *_BACnetLogDataLogDataEntryUnsignedValueBuilder) WithUnsignedValueBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLogDataLogDataEntryUnsignedValueBuilder {
-	builder := builderSupplier(m.UnsignedValue.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetLogDataLogDataEntryUnsignedValueBuilder) WithUnsignedValue(unsignedValue BACnetContextTagUnsignedInteger) BACnetLogDataLogDataEntryUnsignedValueBuilder {
+	b.UnsignedValue = unsignedValue
+	return b
+}
+
+func (b *_BACnetLogDataLogDataEntryUnsignedValueBuilder) WithUnsignedValueBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLogDataLogDataEntryUnsignedValueBuilder {
+	builder := builderSupplier(b.UnsignedValue.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.UnsignedValue, err = builder.Build()
+	b.UnsignedValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogDataLogDataEntryUnsignedValueBuilder) Build() (BACnetLogDataLogDataEntryUnsignedValue, error) {
-	if m.UnsignedValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLogDataLogDataEntryUnsignedValueBuilder) Build() (BACnetLogDataLogDataEntryUnsignedValue, error) {
+	if b.UnsignedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'unsignedValue' not set"))
+		b.err.Append(errors.New("mandatory field 'unsignedValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLogDataLogDataEntryUnsignedValue.deepCopy(), nil
+	return b._BACnetLogDataLogDataEntryUnsignedValue.deepCopy(), nil
 }
 
-func (m *_BACnetLogDataLogDataEntryUnsignedValueBuilder) MustBuild() BACnetLogDataLogDataEntryUnsignedValue {
-	build, err := m.Build()
+func (b *_BACnetLogDataLogDataEntryUnsignedValueBuilder) MustBuild() BACnetLogDataLogDataEntryUnsignedValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLogDataLogDataEntryUnsignedValueBuilder) DeepCopy() any {
-	return m.CreateBACnetLogDataLogDataEntryUnsignedValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogDataLogDataEntryUnsignedValueBuilder) Done() BACnetLogDataLogDataEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogDataLogDataEntryUnsignedValueBuilder) buildForBACnetLogDataLogDataEntry() (BACnetLogDataLogDataEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogDataLogDataEntryUnsignedValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogDataLogDataEntryUnsignedValueBuilder().(*_BACnetLogDataLogDataEntryUnsignedValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLogDataLogDataEntryUnsignedValueBuilder creates a BACnetLogDataLogDataEntryUnsignedValueBuilder
-func (m *_BACnetLogDataLogDataEntryUnsignedValue) CreateBACnetLogDataLogDataEntryUnsignedValueBuilder() BACnetLogDataLogDataEntryUnsignedValueBuilder {
-	if m == nil {
+func (b *_BACnetLogDataLogDataEntryUnsignedValue) CreateBACnetLogDataLogDataEntryUnsignedValueBuilder() BACnetLogDataLogDataEntryUnsignedValueBuilder {
+	if b == nil {
 		return NewBACnetLogDataLogDataEntryUnsignedValueBuilder()
 	}
-	return &_BACnetLogDataLogDataEntryUnsignedValueBuilder{_BACnetLogDataLogDataEntryUnsignedValue: m.deepCopy()}
+	return &_BACnetLogDataLogDataEntryUnsignedValueBuilder{_BACnetLogDataLogDataEntryUnsignedValue: b.deepCopy()}
 }
 
 ///////////////////////

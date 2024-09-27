@@ -78,6 +78,8 @@ type NodeIdBuilder interface {
 	WithMandatoryFields(nodeId NodeIdTypeDefinition) NodeIdBuilder
 	// WithNodeId adds NodeId (property field)
 	WithNodeId(NodeIdTypeDefinition) NodeIdBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(NodeIdTypeDefinitionBuilder) NodeIdTypeDefinitionBuilder) NodeIdBuilder
 	// Build builds the NodeId or returns an error if something is wrong
 	Build() (NodeId, error)
 	// MustBuild does the same as Build but panics on error
@@ -97,46 +99,63 @@ type _NodeIdBuilder struct {
 
 var _ (NodeIdBuilder) = (*_NodeIdBuilder)(nil)
 
-func (m *_NodeIdBuilder) WithMandatoryFields(nodeId NodeIdTypeDefinition) NodeIdBuilder {
-	return m.WithNodeId(nodeId)
+func (b *_NodeIdBuilder) WithMandatoryFields(nodeId NodeIdTypeDefinition) NodeIdBuilder {
+	return b.WithNodeId(nodeId)
 }
 
-func (m *_NodeIdBuilder) WithNodeId(nodeId NodeIdTypeDefinition) NodeIdBuilder {
-	m.NodeId = nodeId
-	return m
+func (b *_NodeIdBuilder) WithNodeId(nodeId NodeIdTypeDefinition) NodeIdBuilder {
+	b.NodeId = nodeId
+	return b
 }
 
-func (m *_NodeIdBuilder) Build() (NodeId, error) {
-	if m.NodeId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_NodeIdBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdTypeDefinitionBuilder) NodeIdTypeDefinitionBuilder) NodeIdBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdTypeDefinitionBuilder())
+	var err error
+	b.NodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'nodeId' not set"))
+		b.err.Append(errors.Wrap(err, "NodeIdTypeDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._NodeId.deepCopy(), nil
+	return b
 }
 
-func (m *_NodeIdBuilder) MustBuild() NodeId {
-	build, err := m.Build()
+func (b *_NodeIdBuilder) Build() (NodeId, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NodeId.deepCopy(), nil
+}
+
+func (b *_NodeIdBuilder) MustBuild() NodeId {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NodeIdBuilder) DeepCopy() any {
-	return m.CreateNodeIdBuilder()
+func (b *_NodeIdBuilder) DeepCopy() any {
+	_copy := b.CreateNodeIdBuilder().(*_NodeIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNodeIdBuilder creates a NodeIdBuilder
-func (m *_NodeId) CreateNodeIdBuilder() NodeIdBuilder {
-	if m == nil {
+func (b *_NodeId) CreateNodeIdBuilder() NodeIdBuilder {
+	if b == nil {
 		return NewNodeIdBuilder()
 	}
-	return &_NodeIdBuilder{_NodeId: m.deepCopy()}
+	return &_NodeIdBuilder{_NodeId: b.deepCopy()}
 }
 
 ///////////////////////

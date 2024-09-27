@@ -100,40 +100,44 @@ type _SecurityArmCodeBuilder struct {
 
 var _ (SecurityArmCodeBuilder) = (*_SecurityArmCodeBuilder)(nil)
 
-func (m *_SecurityArmCodeBuilder) WithMandatoryFields(code uint8) SecurityArmCodeBuilder {
-	return m.WithCode(code)
+func (b *_SecurityArmCodeBuilder) WithMandatoryFields(code uint8) SecurityArmCodeBuilder {
+	return b.WithCode(code)
 }
 
-func (m *_SecurityArmCodeBuilder) WithCode(code uint8) SecurityArmCodeBuilder {
-	m.Code = code
-	return m
+func (b *_SecurityArmCodeBuilder) WithCode(code uint8) SecurityArmCodeBuilder {
+	b.Code = code
+	return b
 }
 
-func (m *_SecurityArmCodeBuilder) Build() (SecurityArmCode, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityArmCodeBuilder) Build() (SecurityArmCode, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityArmCode.deepCopy(), nil
+	return b._SecurityArmCode.deepCopy(), nil
 }
 
-func (m *_SecurityArmCodeBuilder) MustBuild() SecurityArmCode {
-	build, err := m.Build()
+func (b *_SecurityArmCodeBuilder) MustBuild() SecurityArmCode {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityArmCodeBuilder) DeepCopy() any {
-	return m.CreateSecurityArmCodeBuilder()
+func (b *_SecurityArmCodeBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityArmCodeBuilder().(*_SecurityArmCodeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityArmCodeBuilder creates a SecurityArmCodeBuilder
-func (m *_SecurityArmCode) CreateSecurityArmCodeBuilder() SecurityArmCodeBuilder {
-	if m == nil {
+func (b *_SecurityArmCode) CreateSecurityArmCodeBuilder() SecurityArmCodeBuilder {
+	if b == nil {
 		return NewSecurityArmCodeBuilder()
 	}
-	return &_SecurityArmCodeBuilder{_SecurityArmCode: m.deepCopy()}
+	return &_SecurityArmCodeBuilder{_SecurityArmCode: b.deepCopy()}
 }
 
 ///////////////////////

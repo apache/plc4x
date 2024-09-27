@@ -129,75 +129,94 @@ func NewNLMRequestKeyUpdateBuilder() NLMRequestKeyUpdateBuilder {
 type _NLMRequestKeyUpdateBuilder struct {
 	*_NLMRequestKeyUpdate
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMRequestKeyUpdateBuilder) = (*_NLMRequestKeyUpdateBuilder)(nil)
 
-func (m *_NLMRequestKeyUpdateBuilder) WithMandatoryFields(set1KeyRevision byte, set1ActivationTime uint32, set1ExpirationTime uint32, set2KeyRevision byte, set2ActivationTime uint32, set2ExpirationTime uint32, distributionKeyRevision byte) NLMRequestKeyUpdateBuilder {
-	return m.WithSet1KeyRevision(set1KeyRevision).WithSet1ActivationTime(set1ActivationTime).WithSet1ExpirationTime(set1ExpirationTime).WithSet2KeyRevision(set2KeyRevision).WithSet2ActivationTime(set2ActivationTime).WithSet2ExpirationTime(set2ExpirationTime).WithDistributionKeyRevision(distributionKeyRevision)
+func (b *_NLMRequestKeyUpdateBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMRequestKeyUpdateBuilder) WithSet1KeyRevision(set1KeyRevision byte) NLMRequestKeyUpdateBuilder {
-	m.Set1KeyRevision = set1KeyRevision
-	return m
+func (b *_NLMRequestKeyUpdateBuilder) WithMandatoryFields(set1KeyRevision byte, set1ActivationTime uint32, set1ExpirationTime uint32, set2KeyRevision byte, set2ActivationTime uint32, set2ExpirationTime uint32, distributionKeyRevision byte) NLMRequestKeyUpdateBuilder {
+	return b.WithSet1KeyRevision(set1KeyRevision).WithSet1ActivationTime(set1ActivationTime).WithSet1ExpirationTime(set1ExpirationTime).WithSet2KeyRevision(set2KeyRevision).WithSet2ActivationTime(set2ActivationTime).WithSet2ExpirationTime(set2ExpirationTime).WithDistributionKeyRevision(distributionKeyRevision)
 }
 
-func (m *_NLMRequestKeyUpdateBuilder) WithSet1ActivationTime(set1ActivationTime uint32) NLMRequestKeyUpdateBuilder {
-	m.Set1ActivationTime = set1ActivationTime
-	return m
+func (b *_NLMRequestKeyUpdateBuilder) WithSet1KeyRevision(set1KeyRevision byte) NLMRequestKeyUpdateBuilder {
+	b.Set1KeyRevision = set1KeyRevision
+	return b
 }
 
-func (m *_NLMRequestKeyUpdateBuilder) WithSet1ExpirationTime(set1ExpirationTime uint32) NLMRequestKeyUpdateBuilder {
-	m.Set1ExpirationTime = set1ExpirationTime
-	return m
+func (b *_NLMRequestKeyUpdateBuilder) WithSet1ActivationTime(set1ActivationTime uint32) NLMRequestKeyUpdateBuilder {
+	b.Set1ActivationTime = set1ActivationTime
+	return b
 }
 
-func (m *_NLMRequestKeyUpdateBuilder) WithSet2KeyRevision(set2KeyRevision byte) NLMRequestKeyUpdateBuilder {
-	m.Set2KeyRevision = set2KeyRevision
-	return m
+func (b *_NLMRequestKeyUpdateBuilder) WithSet1ExpirationTime(set1ExpirationTime uint32) NLMRequestKeyUpdateBuilder {
+	b.Set1ExpirationTime = set1ExpirationTime
+	return b
 }
 
-func (m *_NLMRequestKeyUpdateBuilder) WithSet2ActivationTime(set2ActivationTime uint32) NLMRequestKeyUpdateBuilder {
-	m.Set2ActivationTime = set2ActivationTime
-	return m
+func (b *_NLMRequestKeyUpdateBuilder) WithSet2KeyRevision(set2KeyRevision byte) NLMRequestKeyUpdateBuilder {
+	b.Set2KeyRevision = set2KeyRevision
+	return b
 }
 
-func (m *_NLMRequestKeyUpdateBuilder) WithSet2ExpirationTime(set2ExpirationTime uint32) NLMRequestKeyUpdateBuilder {
-	m.Set2ExpirationTime = set2ExpirationTime
-	return m
+func (b *_NLMRequestKeyUpdateBuilder) WithSet2ActivationTime(set2ActivationTime uint32) NLMRequestKeyUpdateBuilder {
+	b.Set2ActivationTime = set2ActivationTime
+	return b
 }
 
-func (m *_NLMRequestKeyUpdateBuilder) WithDistributionKeyRevision(distributionKeyRevision byte) NLMRequestKeyUpdateBuilder {
-	m.DistributionKeyRevision = distributionKeyRevision
-	return m
+func (b *_NLMRequestKeyUpdateBuilder) WithSet2ExpirationTime(set2ExpirationTime uint32) NLMRequestKeyUpdateBuilder {
+	b.Set2ExpirationTime = set2ExpirationTime
+	return b
 }
 
-func (m *_NLMRequestKeyUpdateBuilder) Build() (NLMRequestKeyUpdate, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMRequestKeyUpdateBuilder) WithDistributionKeyRevision(distributionKeyRevision byte) NLMRequestKeyUpdateBuilder {
+	b.DistributionKeyRevision = distributionKeyRevision
+	return b
+}
+
+func (b *_NLMRequestKeyUpdateBuilder) Build() (NLMRequestKeyUpdate, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMRequestKeyUpdate.deepCopy(), nil
+	return b._NLMRequestKeyUpdate.deepCopy(), nil
 }
 
-func (m *_NLMRequestKeyUpdateBuilder) MustBuild() NLMRequestKeyUpdate {
-	build, err := m.Build()
+func (b *_NLMRequestKeyUpdateBuilder) MustBuild() NLMRequestKeyUpdate {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMRequestKeyUpdateBuilder) DeepCopy() any {
-	return m.CreateNLMRequestKeyUpdateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMRequestKeyUpdateBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMRequestKeyUpdateBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMRequestKeyUpdateBuilder) DeepCopy() any {
+	_copy := b.CreateNLMRequestKeyUpdateBuilder().(*_NLMRequestKeyUpdateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMRequestKeyUpdateBuilder creates a NLMRequestKeyUpdateBuilder
-func (m *_NLMRequestKeyUpdate) CreateNLMRequestKeyUpdateBuilder() NLMRequestKeyUpdateBuilder {
-	if m == nil {
+func (b *_NLMRequestKeyUpdate) CreateNLMRequestKeyUpdateBuilder() NLMRequestKeyUpdateBuilder {
+	if b == nil {
 		return NewNLMRequestKeyUpdateBuilder()
 	}
-	return &_NLMRequestKeyUpdateBuilder{_NLMRequestKeyUpdate: m.deepCopy()}
+	return &_NLMRequestKeyUpdateBuilder{_NLMRequestKeyUpdate: b.deepCopy()}
 }
 
 ///////////////////////

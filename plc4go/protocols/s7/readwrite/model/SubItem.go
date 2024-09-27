@@ -100,50 +100,54 @@ type _SubItemBuilder struct {
 
 var _ (SubItemBuilder) = (*_SubItemBuilder)(nil)
 
-func (m *_SubItemBuilder) WithMandatoryFields(bytesToRead uint8, dbNumber uint16, startAddress uint16) SubItemBuilder {
-	return m.WithBytesToRead(bytesToRead).WithDbNumber(dbNumber).WithStartAddress(startAddress)
+func (b *_SubItemBuilder) WithMandatoryFields(bytesToRead uint8, dbNumber uint16, startAddress uint16) SubItemBuilder {
+	return b.WithBytesToRead(bytesToRead).WithDbNumber(dbNumber).WithStartAddress(startAddress)
 }
 
-func (m *_SubItemBuilder) WithBytesToRead(bytesToRead uint8) SubItemBuilder {
-	m.BytesToRead = bytesToRead
-	return m
+func (b *_SubItemBuilder) WithBytesToRead(bytesToRead uint8) SubItemBuilder {
+	b.BytesToRead = bytesToRead
+	return b
 }
 
-func (m *_SubItemBuilder) WithDbNumber(dbNumber uint16) SubItemBuilder {
-	m.DbNumber = dbNumber
-	return m
+func (b *_SubItemBuilder) WithDbNumber(dbNumber uint16) SubItemBuilder {
+	b.DbNumber = dbNumber
+	return b
 }
 
-func (m *_SubItemBuilder) WithStartAddress(startAddress uint16) SubItemBuilder {
-	m.StartAddress = startAddress
-	return m
+func (b *_SubItemBuilder) WithStartAddress(startAddress uint16) SubItemBuilder {
+	b.StartAddress = startAddress
+	return b
 }
 
-func (m *_SubItemBuilder) Build() (SubItem, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SubItemBuilder) Build() (SubItem, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SubItem.deepCopy(), nil
+	return b._SubItem.deepCopy(), nil
 }
 
-func (m *_SubItemBuilder) MustBuild() SubItem {
-	build, err := m.Build()
+func (b *_SubItemBuilder) MustBuild() SubItem {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SubItemBuilder) DeepCopy() any {
-	return m.CreateSubItemBuilder()
+func (b *_SubItemBuilder) DeepCopy() any {
+	_copy := b.CreateSubItemBuilder().(*_SubItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSubItemBuilder creates a SubItemBuilder
-func (m *_SubItem) CreateSubItemBuilder() SubItemBuilder {
-	if m == nil {
+func (b *_SubItem) CreateSubItemBuilder() SubItemBuilder {
+	if b == nil {
 		return NewSubItemBuilder()
 	}
-	return &_SubItemBuilder{_SubItem: m.deepCopy()}
+	return &_SubItemBuilder{_SubItem: b.deepCopy()}
 }
 
 ///////////////////////

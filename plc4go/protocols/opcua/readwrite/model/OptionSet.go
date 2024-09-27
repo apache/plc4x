@@ -109,88 +109,107 @@ func NewOptionSetBuilder() OptionSetBuilder {
 type _OptionSetBuilder struct {
 	*_OptionSet
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (OptionSetBuilder) = (*_OptionSetBuilder)(nil)
 
-func (m *_OptionSetBuilder) WithMandatoryFields(value PascalByteString, validBits PascalByteString) OptionSetBuilder {
-	return m.WithValue(value).WithValidBits(validBits)
+func (b *_OptionSetBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_OptionSetBuilder) WithValue(value PascalByteString) OptionSetBuilder {
-	m.Value = value
-	return m
+func (b *_OptionSetBuilder) WithMandatoryFields(value PascalByteString, validBits PascalByteString) OptionSetBuilder {
+	return b.WithValue(value).WithValidBits(validBits)
 }
 
-func (m *_OptionSetBuilder) WithValueBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) OptionSetBuilder {
-	builder := builderSupplier(m.Value.CreatePascalByteStringBuilder())
+func (b *_OptionSetBuilder) WithValue(value PascalByteString) OptionSetBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_OptionSetBuilder) WithValueBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) OptionSetBuilder {
+	builder := builderSupplier(b.Value.CreatePascalByteStringBuilder())
 	var err error
-	m.Value, err = builder.Build()
+	b.Value, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_OptionSetBuilder) WithValidBits(validBits PascalByteString) OptionSetBuilder {
-	m.ValidBits = validBits
-	return m
+func (b *_OptionSetBuilder) WithValidBits(validBits PascalByteString) OptionSetBuilder {
+	b.ValidBits = validBits
+	return b
 }
 
-func (m *_OptionSetBuilder) WithValidBitsBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) OptionSetBuilder {
-	builder := builderSupplier(m.ValidBits.CreatePascalByteStringBuilder())
+func (b *_OptionSetBuilder) WithValidBitsBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) OptionSetBuilder {
+	builder := builderSupplier(b.ValidBits.CreatePascalByteStringBuilder())
 	var err error
-	m.ValidBits, err = builder.Build()
+	b.ValidBits, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_OptionSetBuilder) Build() (OptionSet, error) {
-	if m.Value == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_OptionSetBuilder) Build() (OptionSet, error) {
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'value' not set"))
+		b.err.Append(errors.New("mandatory field 'value' not set"))
 	}
-	if m.ValidBits == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ValidBits == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'validBits' not set"))
+		b.err.Append(errors.New("mandatory field 'validBits' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._OptionSet.deepCopy(), nil
+	return b._OptionSet.deepCopy(), nil
 }
 
-func (m *_OptionSetBuilder) MustBuild() OptionSet {
-	build, err := m.Build()
+func (b *_OptionSetBuilder) MustBuild() OptionSet {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_OptionSetBuilder) DeepCopy() any {
-	return m.CreateOptionSetBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OptionSetBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OptionSetBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_OptionSetBuilder) DeepCopy() any {
+	_copy := b.CreateOptionSetBuilder().(*_OptionSetBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateOptionSetBuilder creates a OptionSetBuilder
-func (m *_OptionSet) CreateOptionSetBuilder() OptionSetBuilder {
-	if m == nil {
+func (b *_OptionSet) CreateOptionSetBuilder() OptionSetBuilder {
+	if b == nil {
 		return NewOptionSetBuilder()
 	}
-	return &_OptionSetBuilder{_OptionSet: m.deepCopy()}
+	return &_OptionSetBuilder{_OptionSet: b.deepCopy()}
 }
 
 ///////////////////////

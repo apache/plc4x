@@ -93,45 +93,64 @@ func NewBACnetConstructedDataVirtualMACAddressTableBuilder() BACnetConstructedDa
 type _BACnetConstructedDataVirtualMACAddressTableBuilder struct {
 	*_BACnetConstructedDataVirtualMACAddressTable
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataVirtualMACAddressTableBuilder) = (*_BACnetConstructedDataVirtualMACAddressTableBuilder)(nil)
 
-func (m *_BACnetConstructedDataVirtualMACAddressTableBuilder) WithMandatoryFields(virtualMacAddressTable []BACnetVMACEntry) BACnetConstructedDataVirtualMACAddressTableBuilder {
-	return m.WithVirtualMacAddressTable(virtualMacAddressTable...)
+func (b *_BACnetConstructedDataVirtualMACAddressTableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataVirtualMACAddressTableBuilder) WithVirtualMacAddressTable(virtualMacAddressTable ...BACnetVMACEntry) BACnetConstructedDataVirtualMACAddressTableBuilder {
-	m.VirtualMacAddressTable = virtualMacAddressTable
-	return m
+func (b *_BACnetConstructedDataVirtualMACAddressTableBuilder) WithMandatoryFields(virtualMacAddressTable []BACnetVMACEntry) BACnetConstructedDataVirtualMACAddressTableBuilder {
+	return b.WithVirtualMacAddressTable(virtualMacAddressTable...)
 }
 
-func (m *_BACnetConstructedDataVirtualMACAddressTableBuilder) Build() (BACnetConstructedDataVirtualMACAddressTable, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataVirtualMACAddressTableBuilder) WithVirtualMacAddressTable(virtualMacAddressTable ...BACnetVMACEntry) BACnetConstructedDataVirtualMACAddressTableBuilder {
+	b.VirtualMacAddressTable = virtualMacAddressTable
+	return b
+}
+
+func (b *_BACnetConstructedDataVirtualMACAddressTableBuilder) Build() (BACnetConstructedDataVirtualMACAddressTable, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataVirtualMACAddressTable.deepCopy(), nil
+	return b._BACnetConstructedDataVirtualMACAddressTable.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataVirtualMACAddressTableBuilder) MustBuild() BACnetConstructedDataVirtualMACAddressTable {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataVirtualMACAddressTableBuilder) MustBuild() BACnetConstructedDataVirtualMACAddressTable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataVirtualMACAddressTableBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataVirtualMACAddressTableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataVirtualMACAddressTableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataVirtualMACAddressTableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataVirtualMACAddressTableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataVirtualMACAddressTableBuilder().(*_BACnetConstructedDataVirtualMACAddressTableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataVirtualMACAddressTableBuilder creates a BACnetConstructedDataVirtualMACAddressTableBuilder
-func (m *_BACnetConstructedDataVirtualMACAddressTable) CreateBACnetConstructedDataVirtualMACAddressTableBuilder() BACnetConstructedDataVirtualMACAddressTableBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataVirtualMACAddressTable) CreateBACnetConstructedDataVirtualMACAddressTableBuilder() BACnetConstructedDataVirtualMACAddressTableBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataVirtualMACAddressTableBuilder()
 	}
-	return &_BACnetConstructedDataVirtualMACAddressTableBuilder{_BACnetConstructedDataVirtualMACAddressTable: m.deepCopy()}
+	return &_BACnetConstructedDataVirtualMACAddressTableBuilder{_BACnetConstructedDataVirtualMACAddressTable: b.deepCopy()}
 }
 
 ///////////////////////

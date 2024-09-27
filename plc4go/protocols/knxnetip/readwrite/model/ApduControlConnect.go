@@ -85,40 +85,59 @@ func NewApduControlConnectBuilder() ApduControlConnectBuilder {
 type _ApduControlConnectBuilder struct {
 	*_ApduControlConnect
 
+	parentBuilder *_ApduControlBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduControlConnectBuilder) = (*_ApduControlConnectBuilder)(nil)
 
-func (m *_ApduControlConnectBuilder) WithMandatoryFields() ApduControlConnectBuilder {
-	return m
+func (b *_ApduControlConnectBuilder) setParent(contract ApduControlContract) {
+	b.ApduControlContract = contract
 }
 
-func (m *_ApduControlConnectBuilder) Build() (ApduControlConnect, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduControlConnectBuilder) WithMandatoryFields() ApduControlConnectBuilder {
+	return b
+}
+
+func (b *_ApduControlConnectBuilder) Build() (ApduControlConnect, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduControlConnect.deepCopy(), nil
+	return b._ApduControlConnect.deepCopy(), nil
 }
 
-func (m *_ApduControlConnectBuilder) MustBuild() ApduControlConnect {
-	build, err := m.Build()
+func (b *_ApduControlConnectBuilder) MustBuild() ApduControlConnect {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduControlConnectBuilder) DeepCopy() any {
-	return m.CreateApduControlConnectBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduControlConnectBuilder) Done() ApduControlBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduControlConnectBuilder) buildForApduControl() (ApduControl, error) {
+	return b.Build()
+}
+
+func (b *_ApduControlConnectBuilder) DeepCopy() any {
+	_copy := b.CreateApduControlConnectBuilder().(*_ApduControlConnectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduControlConnectBuilder creates a ApduControlConnectBuilder
-func (m *_ApduControlConnect) CreateApduControlConnectBuilder() ApduControlConnectBuilder {
-	if m == nil {
+func (b *_ApduControlConnect) CreateApduControlConnectBuilder() ApduControlConnectBuilder {
+	if b == nil {
 		return NewApduControlConnectBuilder()
 	}
-	return &_ApduControlConnectBuilder{_ApduControlConnect: m.deepCopy()}
+	return &_ApduControlConnectBuilder{_ApduControlConnect: b.deepCopy()}
 }
 
 ///////////////////////

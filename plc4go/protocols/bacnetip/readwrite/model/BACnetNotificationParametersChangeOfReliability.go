@@ -142,160 +142,179 @@ func NewBACnetNotificationParametersChangeOfReliabilityBuilder() BACnetNotificat
 type _BACnetNotificationParametersChangeOfReliabilityBuilder struct {
 	*_BACnetNotificationParametersChangeOfReliability
 
+	parentBuilder *_BACnetNotificationParametersBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersChangeOfReliabilityBuilder) = (*_BACnetNotificationParametersChangeOfReliabilityBuilder)(nil)
 
-func (m *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, reliability BACnetReliabilityTagged, statusFlags BACnetStatusFlagsTagged, propertyValues BACnetPropertyValues, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfReliabilityBuilder {
-	return m.WithInnerOpeningTag(innerOpeningTag).WithReliability(reliability).WithStatusFlags(statusFlags).WithPropertyValues(propertyValues).WithInnerClosingTag(innerClosingTag)
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) setParent(contract BACnetNotificationParametersContract) {
+	b.BACnetNotificationParametersContract = contract
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersChangeOfReliabilityBuilder {
-	m.InnerOpeningTag = innerOpeningTag
-	return m
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, reliability BACnetReliabilityTagged, statusFlags BACnetStatusFlagsTagged, propertyValues BACnetPropertyValues, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfReliabilityBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithReliability(reliability).WithStatusFlags(statusFlags).WithPropertyValues(propertyValues).WithInnerClosingTag(innerClosingTag)
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfReliabilityBuilder {
-	builder := builderSupplier(m.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersChangeOfReliabilityBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfReliabilityBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.InnerOpeningTag, err = builder.Build()
+	b.InnerOpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithReliability(reliability BACnetReliabilityTagged) BACnetNotificationParametersChangeOfReliabilityBuilder {
-	m.Reliability = reliability
-	return m
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithReliability(reliability BACnetReliabilityTagged) BACnetNotificationParametersChangeOfReliabilityBuilder {
+	b.Reliability = reliability
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithReliabilityBuilder(builderSupplier func(BACnetReliabilityTaggedBuilder) BACnetReliabilityTaggedBuilder) BACnetNotificationParametersChangeOfReliabilityBuilder {
-	builder := builderSupplier(m.Reliability.CreateBACnetReliabilityTaggedBuilder())
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithReliabilityBuilder(builderSupplier func(BACnetReliabilityTaggedBuilder) BACnetReliabilityTaggedBuilder) BACnetNotificationParametersChangeOfReliabilityBuilder {
+	builder := builderSupplier(b.Reliability.CreateBACnetReliabilityTaggedBuilder())
 	var err error
-	m.Reliability, err = builder.Build()
+	b.Reliability, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetReliabilityTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetReliabilityTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersChangeOfReliabilityBuilder {
-	m.StatusFlags = statusFlags
-	return m
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersChangeOfReliabilityBuilder {
+	b.StatusFlags = statusFlags
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersChangeOfReliabilityBuilder {
-	builder := builderSupplier(m.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersChangeOfReliabilityBuilder {
+	builder := builderSupplier(b.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
 	var err error
-	m.StatusFlags, err = builder.Build()
+	b.StatusFlags, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithPropertyValues(propertyValues BACnetPropertyValues) BACnetNotificationParametersChangeOfReliabilityBuilder {
-	m.PropertyValues = propertyValues
-	return m
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithPropertyValues(propertyValues BACnetPropertyValues) BACnetNotificationParametersChangeOfReliabilityBuilder {
+	b.PropertyValues = propertyValues
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithPropertyValuesBuilder(builderSupplier func(BACnetPropertyValuesBuilder) BACnetPropertyValuesBuilder) BACnetNotificationParametersChangeOfReliabilityBuilder {
-	builder := builderSupplier(m.PropertyValues.CreateBACnetPropertyValuesBuilder())
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithPropertyValuesBuilder(builderSupplier func(BACnetPropertyValuesBuilder) BACnetPropertyValuesBuilder) BACnetNotificationParametersChangeOfReliabilityBuilder {
+	builder := builderSupplier(b.PropertyValues.CreateBACnetPropertyValuesBuilder())
 	var err error
-	m.PropertyValues, err = builder.Build()
+	b.PropertyValues, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetPropertyValuesBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetPropertyValuesBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfReliabilityBuilder {
-	m.InnerClosingTag = innerClosingTag
-	return m
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfReliabilityBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfReliabilityBuilder {
-	builder := builderSupplier(m.InnerClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfReliabilityBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.InnerClosingTag, err = builder.Build()
+	b.InnerClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliabilityBuilder) Build() (BACnetNotificationParametersChangeOfReliability, error) {
-	if m.InnerOpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) Build() (BACnetNotificationParametersChangeOfReliability, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
 	}
-	if m.Reliability == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Reliability == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'reliability' not set"))
+		b.err.Append(errors.New("mandatory field 'reliability' not set"))
 	}
-	if m.StatusFlags == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.StatusFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusFlags' not set"))
+		b.err.Append(errors.New("mandatory field 'statusFlags' not set"))
 	}
-	if m.PropertyValues == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.PropertyValues == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'propertyValues' not set"))
+		b.err.Append(errors.New("mandatory field 'propertyValues' not set"))
 	}
-	if m.InnerClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNotificationParametersChangeOfReliability.deepCopy(), nil
+	return b._BACnetNotificationParametersChangeOfReliability.deepCopy(), nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliabilityBuilder) MustBuild() BACnetNotificationParametersChangeOfReliability {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) MustBuild() BACnetNotificationParametersChangeOfReliability {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersChangeOfReliabilityBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersChangeOfReliabilityBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) Done() BACnetNotificationParametersBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) buildForBACnetNotificationParameters() (BACnetNotificationParameters, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersChangeOfReliabilityBuilder().(*_BACnetNotificationParametersChangeOfReliabilityBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersChangeOfReliabilityBuilder creates a BACnetNotificationParametersChangeOfReliabilityBuilder
-func (m *_BACnetNotificationParametersChangeOfReliability) CreateBACnetNotificationParametersChangeOfReliabilityBuilder() BACnetNotificationParametersChangeOfReliabilityBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersChangeOfReliability) CreateBACnetNotificationParametersChangeOfReliabilityBuilder() BACnetNotificationParametersChangeOfReliabilityBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersChangeOfReliabilityBuilder()
 	}
-	return &_BACnetNotificationParametersChangeOfReliabilityBuilder{_BACnetNotificationParametersChangeOfReliability: m.deepCopy()}
+	return &_BACnetNotificationParametersChangeOfReliabilityBuilder{_BACnetNotificationParametersChangeOfReliability: b.deepCopy()}
 }
 
 ///////////////////////

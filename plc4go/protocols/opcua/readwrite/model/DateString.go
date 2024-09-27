@@ -83,35 +83,39 @@ type _DateStringBuilder struct {
 
 var _ (DateStringBuilder) = (*_DateStringBuilder)(nil)
 
-func (m *_DateStringBuilder) WithMandatoryFields() DateStringBuilder {
-	return m
+func (b *_DateStringBuilder) WithMandatoryFields() DateStringBuilder {
+	return b
 }
 
-func (m *_DateStringBuilder) Build() (DateString, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DateStringBuilder) Build() (DateString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DateString.deepCopy(), nil
+	return b._DateString.deepCopy(), nil
 }
 
-func (m *_DateStringBuilder) MustBuild() DateString {
-	build, err := m.Build()
+func (b *_DateStringBuilder) MustBuild() DateString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DateStringBuilder) DeepCopy() any {
-	return m.CreateDateStringBuilder()
+func (b *_DateStringBuilder) DeepCopy() any {
+	_copy := b.CreateDateStringBuilder().(*_DateStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDateStringBuilder creates a DateStringBuilder
-func (m *_DateString) CreateDateStringBuilder() DateStringBuilder {
-	if m == nil {
+func (b *_DateString) CreateDateStringBuilder() DateStringBuilder {
+	if b == nil {
 		return NewDateStringBuilder()
 	}
-	return &_DateStringBuilder{_DateString: m.deepCopy()}
+	return &_DateStringBuilder{_DateString: b.deepCopy()}
 }
 
 ///////////////////////

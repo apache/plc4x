@@ -137,141 +137,160 @@ func NewUserTokenPolicyBuilder() UserTokenPolicyBuilder {
 type _UserTokenPolicyBuilder struct {
 	*_UserTokenPolicy
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (UserTokenPolicyBuilder) = (*_UserTokenPolicyBuilder)(nil)
 
-func (m *_UserTokenPolicyBuilder) WithMandatoryFields(policyId PascalString, tokenType UserTokenType, issuedTokenType PascalString, issuerEndpointUrl PascalString, securityPolicyUri PascalString) UserTokenPolicyBuilder {
-	return m.WithPolicyId(policyId).WithTokenType(tokenType).WithIssuedTokenType(issuedTokenType).WithIssuerEndpointUrl(issuerEndpointUrl).WithSecurityPolicyUri(securityPolicyUri)
+func (b *_UserTokenPolicyBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_UserTokenPolicyBuilder) WithPolicyId(policyId PascalString) UserTokenPolicyBuilder {
-	m.PolicyId = policyId
-	return m
+func (b *_UserTokenPolicyBuilder) WithMandatoryFields(policyId PascalString, tokenType UserTokenType, issuedTokenType PascalString, issuerEndpointUrl PascalString, securityPolicyUri PascalString) UserTokenPolicyBuilder {
+	return b.WithPolicyId(policyId).WithTokenType(tokenType).WithIssuedTokenType(issuedTokenType).WithIssuerEndpointUrl(issuerEndpointUrl).WithSecurityPolicyUri(securityPolicyUri)
 }
 
-func (m *_UserTokenPolicyBuilder) WithPolicyIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserTokenPolicyBuilder {
-	builder := builderSupplier(m.PolicyId.CreatePascalStringBuilder())
+func (b *_UserTokenPolicyBuilder) WithPolicyId(policyId PascalString) UserTokenPolicyBuilder {
+	b.PolicyId = policyId
+	return b
+}
+
+func (b *_UserTokenPolicyBuilder) WithPolicyIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserTokenPolicyBuilder {
+	builder := builderSupplier(b.PolicyId.CreatePascalStringBuilder())
 	var err error
-	m.PolicyId, err = builder.Build()
+	b.PolicyId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_UserTokenPolicyBuilder) WithTokenType(tokenType UserTokenType) UserTokenPolicyBuilder {
-	m.TokenType = tokenType
-	return m
+func (b *_UserTokenPolicyBuilder) WithTokenType(tokenType UserTokenType) UserTokenPolicyBuilder {
+	b.TokenType = tokenType
+	return b
 }
 
-func (m *_UserTokenPolicyBuilder) WithIssuedTokenType(issuedTokenType PascalString) UserTokenPolicyBuilder {
-	m.IssuedTokenType = issuedTokenType
-	return m
+func (b *_UserTokenPolicyBuilder) WithIssuedTokenType(issuedTokenType PascalString) UserTokenPolicyBuilder {
+	b.IssuedTokenType = issuedTokenType
+	return b
 }
 
-func (m *_UserTokenPolicyBuilder) WithIssuedTokenTypeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserTokenPolicyBuilder {
-	builder := builderSupplier(m.IssuedTokenType.CreatePascalStringBuilder())
+func (b *_UserTokenPolicyBuilder) WithIssuedTokenTypeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserTokenPolicyBuilder {
+	builder := builderSupplier(b.IssuedTokenType.CreatePascalStringBuilder())
 	var err error
-	m.IssuedTokenType, err = builder.Build()
+	b.IssuedTokenType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_UserTokenPolicyBuilder) WithIssuerEndpointUrl(issuerEndpointUrl PascalString) UserTokenPolicyBuilder {
-	m.IssuerEndpointUrl = issuerEndpointUrl
-	return m
+func (b *_UserTokenPolicyBuilder) WithIssuerEndpointUrl(issuerEndpointUrl PascalString) UserTokenPolicyBuilder {
+	b.IssuerEndpointUrl = issuerEndpointUrl
+	return b
 }
 
-func (m *_UserTokenPolicyBuilder) WithIssuerEndpointUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserTokenPolicyBuilder {
-	builder := builderSupplier(m.IssuerEndpointUrl.CreatePascalStringBuilder())
+func (b *_UserTokenPolicyBuilder) WithIssuerEndpointUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserTokenPolicyBuilder {
+	builder := builderSupplier(b.IssuerEndpointUrl.CreatePascalStringBuilder())
 	var err error
-	m.IssuerEndpointUrl, err = builder.Build()
+	b.IssuerEndpointUrl, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_UserTokenPolicyBuilder) WithSecurityPolicyUri(securityPolicyUri PascalString) UserTokenPolicyBuilder {
-	m.SecurityPolicyUri = securityPolicyUri
-	return m
+func (b *_UserTokenPolicyBuilder) WithSecurityPolicyUri(securityPolicyUri PascalString) UserTokenPolicyBuilder {
+	b.SecurityPolicyUri = securityPolicyUri
+	return b
 }
 
-func (m *_UserTokenPolicyBuilder) WithSecurityPolicyUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserTokenPolicyBuilder {
-	builder := builderSupplier(m.SecurityPolicyUri.CreatePascalStringBuilder())
+func (b *_UserTokenPolicyBuilder) WithSecurityPolicyUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserTokenPolicyBuilder {
+	builder := builderSupplier(b.SecurityPolicyUri.CreatePascalStringBuilder())
 	var err error
-	m.SecurityPolicyUri, err = builder.Build()
+	b.SecurityPolicyUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_UserTokenPolicyBuilder) Build() (UserTokenPolicy, error) {
-	if m.PolicyId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_UserTokenPolicyBuilder) Build() (UserTokenPolicy, error) {
+	if b.PolicyId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'policyId' not set"))
+		b.err.Append(errors.New("mandatory field 'policyId' not set"))
 	}
-	if m.IssuedTokenType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.IssuedTokenType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'issuedTokenType' not set"))
+		b.err.Append(errors.New("mandatory field 'issuedTokenType' not set"))
 	}
-	if m.IssuerEndpointUrl == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.IssuerEndpointUrl == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'issuerEndpointUrl' not set"))
+		b.err.Append(errors.New("mandatory field 'issuerEndpointUrl' not set"))
 	}
-	if m.SecurityPolicyUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.SecurityPolicyUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
+		b.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._UserTokenPolicy.deepCopy(), nil
+	return b._UserTokenPolicy.deepCopy(), nil
 }
 
-func (m *_UserTokenPolicyBuilder) MustBuild() UserTokenPolicy {
-	build, err := m.Build()
+func (b *_UserTokenPolicyBuilder) MustBuild() UserTokenPolicy {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_UserTokenPolicyBuilder) DeepCopy() any {
-	return m.CreateUserTokenPolicyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UserTokenPolicyBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UserTokenPolicyBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_UserTokenPolicyBuilder) DeepCopy() any {
+	_copy := b.CreateUserTokenPolicyBuilder().(*_UserTokenPolicyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateUserTokenPolicyBuilder creates a UserTokenPolicyBuilder
-func (m *_UserTokenPolicy) CreateUserTokenPolicyBuilder() UserTokenPolicyBuilder {
-	if m == nil {
+func (b *_UserTokenPolicy) CreateUserTokenPolicyBuilder() UserTokenPolicyBuilder {
+	if b == nil {
 		return NewUserTokenPolicyBuilder()
 	}
-	return &_UserTokenPolicyBuilder{_UserTokenPolicy: m.deepCopy()}
+	return &_UserTokenPolicyBuilder{_UserTokenPolicy: b.deepCopy()}
 }
 
 ///////////////////////

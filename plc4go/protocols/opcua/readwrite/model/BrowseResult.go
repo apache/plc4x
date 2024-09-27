@@ -121,98 +121,117 @@ func NewBrowseResultBuilder() BrowseResultBuilder {
 type _BrowseResultBuilder struct {
 	*_BrowseResult
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BrowseResultBuilder) = (*_BrowseResultBuilder)(nil)
 
-func (m *_BrowseResultBuilder) WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, noOfReferences int32, references []ExtensionObjectDefinition) BrowseResultBuilder {
-	return m.WithStatusCode(statusCode).WithContinuationPoint(continuationPoint).WithNoOfReferences(noOfReferences).WithReferences(references...)
+func (b *_BrowseResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_BrowseResultBuilder) WithStatusCode(statusCode StatusCode) BrowseResultBuilder {
-	m.StatusCode = statusCode
-	return m
+func (b *_BrowseResultBuilder) WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, noOfReferences int32, references []ExtensionObjectDefinition) BrowseResultBuilder {
+	return b.WithStatusCode(statusCode).WithContinuationPoint(continuationPoint).WithNoOfReferences(noOfReferences).WithReferences(references...)
 }
 
-func (m *_BrowseResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) BrowseResultBuilder {
-	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+func (b *_BrowseResultBuilder) WithStatusCode(statusCode StatusCode) BrowseResultBuilder {
+	b.StatusCode = statusCode
+	return b
+}
+
+func (b *_BrowseResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) BrowseResultBuilder {
+	builder := builderSupplier(b.StatusCode.CreateStatusCodeBuilder())
 	var err error
-	m.StatusCode, err = builder.Build()
+	b.StatusCode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BrowseResultBuilder) WithContinuationPoint(continuationPoint PascalByteString) BrowseResultBuilder {
-	m.ContinuationPoint = continuationPoint
-	return m
+func (b *_BrowseResultBuilder) WithContinuationPoint(continuationPoint PascalByteString) BrowseResultBuilder {
+	b.ContinuationPoint = continuationPoint
+	return b
 }
 
-func (m *_BrowseResultBuilder) WithContinuationPointBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) BrowseResultBuilder {
-	builder := builderSupplier(m.ContinuationPoint.CreatePascalByteStringBuilder())
+func (b *_BrowseResultBuilder) WithContinuationPointBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) BrowseResultBuilder {
+	builder := builderSupplier(b.ContinuationPoint.CreatePascalByteStringBuilder())
 	var err error
-	m.ContinuationPoint, err = builder.Build()
+	b.ContinuationPoint, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BrowseResultBuilder) WithNoOfReferences(noOfReferences int32) BrowseResultBuilder {
-	m.NoOfReferences = noOfReferences
-	return m
+func (b *_BrowseResultBuilder) WithNoOfReferences(noOfReferences int32) BrowseResultBuilder {
+	b.NoOfReferences = noOfReferences
+	return b
 }
 
-func (m *_BrowseResultBuilder) WithReferences(references ...ExtensionObjectDefinition) BrowseResultBuilder {
-	m.References = references
-	return m
+func (b *_BrowseResultBuilder) WithReferences(references ...ExtensionObjectDefinition) BrowseResultBuilder {
+	b.References = references
+	return b
 }
 
-func (m *_BrowseResultBuilder) Build() (BrowseResult, error) {
-	if m.StatusCode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BrowseResultBuilder) Build() (BrowseResult, error) {
+	if b.StatusCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
 	}
-	if m.ContinuationPoint == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ContinuationPoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'continuationPoint' not set"))
+		b.err.Append(errors.New("mandatory field 'continuationPoint' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BrowseResult.deepCopy(), nil
+	return b._BrowseResult.deepCopy(), nil
 }
 
-func (m *_BrowseResultBuilder) MustBuild() BrowseResult {
-	build, err := m.Build()
+func (b *_BrowseResultBuilder) MustBuild() BrowseResult {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BrowseResultBuilder) DeepCopy() any {
-	return m.CreateBrowseResultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BrowseResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BrowseResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_BrowseResultBuilder) DeepCopy() any {
+	_copy := b.CreateBrowseResultBuilder().(*_BrowseResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBrowseResultBuilder creates a BrowseResultBuilder
-func (m *_BrowseResult) CreateBrowseResultBuilder() BrowseResultBuilder {
-	if m == nil {
+func (b *_BrowseResult) CreateBrowseResultBuilder() BrowseResultBuilder {
+	if b == nil {
 		return NewBrowseResultBuilder()
 	}
-	return &_BrowseResultBuilder{_BrowseResult: m.deepCopy()}
+	return &_BrowseResultBuilder{_BrowseResult: b.deepCopy()}
 }
 
 ///////////////////////

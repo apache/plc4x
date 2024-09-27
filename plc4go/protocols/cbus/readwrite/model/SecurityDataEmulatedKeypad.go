@@ -115,45 +115,64 @@ func NewSecurityDataEmulatedKeypadBuilder() SecurityDataEmulatedKeypadBuilder {
 type _SecurityDataEmulatedKeypadBuilder struct {
 	*_SecurityDataEmulatedKeypad
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataEmulatedKeypadBuilder) = (*_SecurityDataEmulatedKeypadBuilder)(nil)
 
-func (m *_SecurityDataEmulatedKeypadBuilder) WithMandatoryFields(key byte) SecurityDataEmulatedKeypadBuilder {
-	return m.WithKey(key)
+func (b *_SecurityDataEmulatedKeypadBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataEmulatedKeypadBuilder) WithKey(key byte) SecurityDataEmulatedKeypadBuilder {
-	m.Key = key
-	return m
+func (b *_SecurityDataEmulatedKeypadBuilder) WithMandatoryFields(key byte) SecurityDataEmulatedKeypadBuilder {
+	return b.WithKey(key)
 }
 
-func (m *_SecurityDataEmulatedKeypadBuilder) Build() (SecurityDataEmulatedKeypad, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataEmulatedKeypadBuilder) WithKey(key byte) SecurityDataEmulatedKeypadBuilder {
+	b.Key = key
+	return b
+}
+
+func (b *_SecurityDataEmulatedKeypadBuilder) Build() (SecurityDataEmulatedKeypad, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataEmulatedKeypad.deepCopy(), nil
+	return b._SecurityDataEmulatedKeypad.deepCopy(), nil
 }
 
-func (m *_SecurityDataEmulatedKeypadBuilder) MustBuild() SecurityDataEmulatedKeypad {
-	build, err := m.Build()
+func (b *_SecurityDataEmulatedKeypadBuilder) MustBuild() SecurityDataEmulatedKeypad {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataEmulatedKeypadBuilder) DeepCopy() any {
-	return m.CreateSecurityDataEmulatedKeypadBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataEmulatedKeypadBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataEmulatedKeypadBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataEmulatedKeypadBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataEmulatedKeypadBuilder().(*_SecurityDataEmulatedKeypadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataEmulatedKeypadBuilder creates a SecurityDataEmulatedKeypadBuilder
-func (m *_SecurityDataEmulatedKeypad) CreateSecurityDataEmulatedKeypadBuilder() SecurityDataEmulatedKeypadBuilder {
-	if m == nil {
+func (b *_SecurityDataEmulatedKeypad) CreateSecurityDataEmulatedKeypadBuilder() SecurityDataEmulatedKeypadBuilder {
+	if b == nil {
 		return NewSecurityDataEmulatedKeypadBuilder()
 	}
-	return &_SecurityDataEmulatedKeypadBuilder{_SecurityDataEmulatedKeypad: m.deepCopy()}
+	return &_SecurityDataEmulatedKeypadBuilder{_SecurityDataEmulatedKeypad: b.deepCopy()}
 }
 
 ///////////////////////

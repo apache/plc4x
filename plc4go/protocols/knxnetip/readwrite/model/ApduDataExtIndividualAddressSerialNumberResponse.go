@@ -85,40 +85,59 @@ func NewApduDataExtIndividualAddressSerialNumberResponseBuilder() ApduDataExtInd
 type _ApduDataExtIndividualAddressSerialNumberResponseBuilder struct {
 	*_ApduDataExtIndividualAddressSerialNumberResponse
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtIndividualAddressSerialNumberResponseBuilder) = (*_ApduDataExtIndividualAddressSerialNumberResponseBuilder)(nil)
 
-func (m *_ApduDataExtIndividualAddressSerialNumberResponseBuilder) WithMandatoryFields() ApduDataExtIndividualAddressSerialNumberResponseBuilder {
-	return m
+func (b *_ApduDataExtIndividualAddressSerialNumberResponseBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtIndividualAddressSerialNumberResponseBuilder) Build() (ApduDataExtIndividualAddressSerialNumberResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtIndividualAddressSerialNumberResponseBuilder) WithMandatoryFields() ApduDataExtIndividualAddressSerialNumberResponseBuilder {
+	return b
+}
+
+func (b *_ApduDataExtIndividualAddressSerialNumberResponseBuilder) Build() (ApduDataExtIndividualAddressSerialNumberResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtIndividualAddressSerialNumberResponse.deepCopy(), nil
+	return b._ApduDataExtIndividualAddressSerialNumberResponse.deepCopy(), nil
 }
 
-func (m *_ApduDataExtIndividualAddressSerialNumberResponseBuilder) MustBuild() ApduDataExtIndividualAddressSerialNumberResponse {
-	build, err := m.Build()
+func (b *_ApduDataExtIndividualAddressSerialNumberResponseBuilder) MustBuild() ApduDataExtIndividualAddressSerialNumberResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtIndividualAddressSerialNumberResponseBuilder) DeepCopy() any {
-	return m.CreateApduDataExtIndividualAddressSerialNumberResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtIndividualAddressSerialNumberResponseBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtIndividualAddressSerialNumberResponseBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtIndividualAddressSerialNumberResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtIndividualAddressSerialNumberResponseBuilder().(*_ApduDataExtIndividualAddressSerialNumberResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtIndividualAddressSerialNumberResponseBuilder creates a ApduDataExtIndividualAddressSerialNumberResponseBuilder
-func (m *_ApduDataExtIndividualAddressSerialNumberResponse) CreateApduDataExtIndividualAddressSerialNumberResponseBuilder() ApduDataExtIndividualAddressSerialNumberResponseBuilder {
-	if m == nil {
+func (b *_ApduDataExtIndividualAddressSerialNumberResponse) CreateApduDataExtIndividualAddressSerialNumberResponseBuilder() ApduDataExtIndividualAddressSerialNumberResponseBuilder {
+	if b == nil {
 		return NewApduDataExtIndividualAddressSerialNumberResponseBuilder()
 	}
-	return &_ApduDataExtIndividualAddressSerialNumberResponseBuilder{_ApduDataExtIndividualAddressSerialNumberResponse: m.deepCopy()}
+	return &_ApduDataExtIndividualAddressSerialNumberResponseBuilder{_ApduDataExtIndividualAddressSerialNumberResponse: b.deepCopy()}
 }
 
 ///////////////////////

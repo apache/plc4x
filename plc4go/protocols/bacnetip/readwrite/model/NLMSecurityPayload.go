@@ -99,50 +99,69 @@ func NewNLMSecurityPayloadBuilder() NLMSecurityPayloadBuilder {
 type _NLMSecurityPayloadBuilder struct {
 	*_NLMSecurityPayload
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMSecurityPayloadBuilder) = (*_NLMSecurityPayloadBuilder)(nil)
 
-func (m *_NLMSecurityPayloadBuilder) WithMandatoryFields(payloadLength uint16, payload []byte) NLMSecurityPayloadBuilder {
-	return m.WithPayloadLength(payloadLength).WithPayload(payload...)
+func (b *_NLMSecurityPayloadBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMSecurityPayloadBuilder) WithPayloadLength(payloadLength uint16) NLMSecurityPayloadBuilder {
-	m.PayloadLength = payloadLength
-	return m
+func (b *_NLMSecurityPayloadBuilder) WithMandatoryFields(payloadLength uint16, payload []byte) NLMSecurityPayloadBuilder {
+	return b.WithPayloadLength(payloadLength).WithPayload(payload...)
 }
 
-func (m *_NLMSecurityPayloadBuilder) WithPayload(payload ...byte) NLMSecurityPayloadBuilder {
-	m.Payload = payload
-	return m
+func (b *_NLMSecurityPayloadBuilder) WithPayloadLength(payloadLength uint16) NLMSecurityPayloadBuilder {
+	b.PayloadLength = payloadLength
+	return b
 }
 
-func (m *_NLMSecurityPayloadBuilder) Build() (NLMSecurityPayload, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMSecurityPayloadBuilder) WithPayload(payload ...byte) NLMSecurityPayloadBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_NLMSecurityPayloadBuilder) Build() (NLMSecurityPayload, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMSecurityPayload.deepCopy(), nil
+	return b._NLMSecurityPayload.deepCopy(), nil
 }
 
-func (m *_NLMSecurityPayloadBuilder) MustBuild() NLMSecurityPayload {
-	build, err := m.Build()
+func (b *_NLMSecurityPayloadBuilder) MustBuild() NLMSecurityPayload {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMSecurityPayloadBuilder) DeepCopy() any {
-	return m.CreateNLMSecurityPayloadBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMSecurityPayloadBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMSecurityPayloadBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMSecurityPayloadBuilder) DeepCopy() any {
+	_copy := b.CreateNLMSecurityPayloadBuilder().(*_NLMSecurityPayloadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMSecurityPayloadBuilder creates a NLMSecurityPayloadBuilder
-func (m *_NLMSecurityPayload) CreateNLMSecurityPayloadBuilder() NLMSecurityPayloadBuilder {
-	if m == nil {
+func (b *_NLMSecurityPayload) CreateNLMSecurityPayloadBuilder() NLMSecurityPayloadBuilder {
+	if b == nil {
 		return NewNLMSecurityPayloadBuilder()
 	}
-	return &_NLMSecurityPayloadBuilder{_NLMSecurityPayload: m.deepCopy()}
+	return &_NLMSecurityPayloadBuilder{_NLMSecurityPayload: b.deepCopy()}
 }
 
 ///////////////////////

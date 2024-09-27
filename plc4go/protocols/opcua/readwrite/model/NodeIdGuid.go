@@ -101,50 +101,69 @@ func NewNodeIdGuidBuilder() NodeIdGuidBuilder {
 type _NodeIdGuidBuilder struct {
 	*_NodeIdGuid
 
+	parentBuilder *_NodeIdTypeDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NodeIdGuidBuilder) = (*_NodeIdGuidBuilder)(nil)
 
-func (m *_NodeIdGuidBuilder) WithMandatoryFields(namespaceIndex uint16, id []byte) NodeIdGuidBuilder {
-	return m.WithNamespaceIndex(namespaceIndex).WithId(id...)
+func (b *_NodeIdGuidBuilder) setParent(contract NodeIdTypeDefinitionContract) {
+	b.NodeIdTypeDefinitionContract = contract
 }
 
-func (m *_NodeIdGuidBuilder) WithNamespaceIndex(namespaceIndex uint16) NodeIdGuidBuilder {
-	m.NamespaceIndex = namespaceIndex
-	return m
+func (b *_NodeIdGuidBuilder) WithMandatoryFields(namespaceIndex uint16, id []byte) NodeIdGuidBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithId(id...)
 }
 
-func (m *_NodeIdGuidBuilder) WithId(id ...byte) NodeIdGuidBuilder {
-	m.Id = id
-	return m
+func (b *_NodeIdGuidBuilder) WithNamespaceIndex(namespaceIndex uint16) NodeIdGuidBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
 }
 
-func (m *_NodeIdGuidBuilder) Build() (NodeIdGuid, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NodeIdGuidBuilder) WithId(id ...byte) NodeIdGuidBuilder {
+	b.Id = id
+	return b
+}
+
+func (b *_NodeIdGuidBuilder) Build() (NodeIdGuid, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NodeIdGuid.deepCopy(), nil
+	return b._NodeIdGuid.deepCopy(), nil
 }
 
-func (m *_NodeIdGuidBuilder) MustBuild() NodeIdGuid {
-	build, err := m.Build()
+func (b *_NodeIdGuidBuilder) MustBuild() NodeIdGuid {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NodeIdGuidBuilder) DeepCopy() any {
-	return m.CreateNodeIdGuidBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NodeIdGuidBuilder) Done() NodeIdTypeDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NodeIdGuidBuilder) buildForNodeIdTypeDefinition() (NodeIdTypeDefinition, error) {
+	return b.Build()
+}
+
+func (b *_NodeIdGuidBuilder) DeepCopy() any {
+	_copy := b.CreateNodeIdGuidBuilder().(*_NodeIdGuidBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNodeIdGuidBuilder creates a NodeIdGuidBuilder
-func (m *_NodeIdGuid) CreateNodeIdGuidBuilder() NodeIdGuidBuilder {
-	if m == nil {
+func (b *_NodeIdGuid) CreateNodeIdGuidBuilder() NodeIdGuidBuilder {
+	if b == nil {
 		return NewNodeIdGuidBuilder()
 	}
-	return &_NodeIdGuidBuilder{_NodeIdGuid: m.deepCopy()}
+	return &_NodeIdGuidBuilder{_NodeIdGuid: b.deepCopy()}
 }
 
 ///////////////////////

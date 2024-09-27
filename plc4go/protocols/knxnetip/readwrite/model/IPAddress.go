@@ -90,40 +90,44 @@ type _IPAddressBuilder struct {
 
 var _ (IPAddressBuilder) = (*_IPAddressBuilder)(nil)
 
-func (m *_IPAddressBuilder) WithMandatoryFields(addr []byte) IPAddressBuilder {
-	return m.WithAddr(addr...)
+func (b *_IPAddressBuilder) WithMandatoryFields(addr []byte) IPAddressBuilder {
+	return b.WithAddr(addr...)
 }
 
-func (m *_IPAddressBuilder) WithAddr(addr ...byte) IPAddressBuilder {
-	m.Addr = addr
-	return m
+func (b *_IPAddressBuilder) WithAddr(addr ...byte) IPAddressBuilder {
+	b.Addr = addr
+	return b
 }
 
-func (m *_IPAddressBuilder) Build() (IPAddress, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IPAddressBuilder) Build() (IPAddress, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IPAddress.deepCopy(), nil
+	return b._IPAddress.deepCopy(), nil
 }
 
-func (m *_IPAddressBuilder) MustBuild() IPAddress {
-	build, err := m.Build()
+func (b *_IPAddressBuilder) MustBuild() IPAddress {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IPAddressBuilder) DeepCopy() any {
-	return m.CreateIPAddressBuilder()
+func (b *_IPAddressBuilder) DeepCopy() any {
+	_copy := b.CreateIPAddressBuilder().(*_IPAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIPAddressBuilder creates a IPAddressBuilder
-func (m *_IPAddress) CreateIPAddressBuilder() IPAddressBuilder {
-	if m == nil {
+func (b *_IPAddress) CreateIPAddressBuilder() IPAddressBuilder {
+	if b == nil {
 		return NewIPAddressBuilder()
 	}
-	return &_IPAddressBuilder{_IPAddress: m.deepCopy()}
+	return &_IPAddressBuilder{_IPAddress: b.deepCopy()}
 }
 
 ///////////////////////

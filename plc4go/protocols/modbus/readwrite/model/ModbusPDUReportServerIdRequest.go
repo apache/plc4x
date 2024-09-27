@@ -85,40 +85,59 @@ func NewModbusPDUReportServerIdRequestBuilder() ModbusPDUReportServerIdRequestBu
 type _ModbusPDUReportServerIdRequestBuilder struct {
 	*_ModbusPDUReportServerIdRequest
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUReportServerIdRequestBuilder) = (*_ModbusPDUReportServerIdRequestBuilder)(nil)
 
-func (m *_ModbusPDUReportServerIdRequestBuilder) WithMandatoryFields() ModbusPDUReportServerIdRequestBuilder {
-	return m
+func (b *_ModbusPDUReportServerIdRequestBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUReportServerIdRequestBuilder) Build() (ModbusPDUReportServerIdRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUReportServerIdRequestBuilder) WithMandatoryFields() ModbusPDUReportServerIdRequestBuilder {
+	return b
+}
+
+func (b *_ModbusPDUReportServerIdRequestBuilder) Build() (ModbusPDUReportServerIdRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUReportServerIdRequest.deepCopy(), nil
+	return b._ModbusPDUReportServerIdRequest.deepCopy(), nil
 }
 
-func (m *_ModbusPDUReportServerIdRequestBuilder) MustBuild() ModbusPDUReportServerIdRequest {
-	build, err := m.Build()
+func (b *_ModbusPDUReportServerIdRequestBuilder) MustBuild() ModbusPDUReportServerIdRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUReportServerIdRequestBuilder) DeepCopy() any {
-	return m.CreateModbusPDUReportServerIdRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUReportServerIdRequestBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUReportServerIdRequestBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUReportServerIdRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUReportServerIdRequestBuilder().(*_ModbusPDUReportServerIdRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUReportServerIdRequestBuilder creates a ModbusPDUReportServerIdRequestBuilder
-func (m *_ModbusPDUReportServerIdRequest) CreateModbusPDUReportServerIdRequestBuilder() ModbusPDUReportServerIdRequestBuilder {
-	if m == nil {
+func (b *_ModbusPDUReportServerIdRequest) CreateModbusPDUReportServerIdRequestBuilder() ModbusPDUReportServerIdRequestBuilder {
+	if b == nil {
 		return NewModbusPDUReportServerIdRequestBuilder()
 	}
-	return &_ModbusPDUReportServerIdRequestBuilder{_ModbusPDUReportServerIdRequest: m.deepCopy()}
+	return &_ModbusPDUReportServerIdRequestBuilder{_ModbusPDUReportServerIdRequest: b.deepCopy()}
 }
 
 ///////////////////////

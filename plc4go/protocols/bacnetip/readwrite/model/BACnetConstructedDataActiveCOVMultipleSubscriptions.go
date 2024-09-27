@@ -93,45 +93,64 @@ func NewBACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder() BACnetConst
 type _BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder struct {
 	*_BACnetConstructedDataActiveCOVMultipleSubscriptions
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) = (*_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder)(nil)
 
-func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) WithMandatoryFields(activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription) BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder {
-	return m.WithActiveCOVMultipleSubscriptions(activeCOVMultipleSubscriptions...)
+func (b *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) WithActiveCOVMultipleSubscriptions(activeCOVMultipleSubscriptions ...BACnetCOVMultipleSubscription) BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder {
-	m.ActiveCOVMultipleSubscriptions = activeCOVMultipleSubscriptions
-	return m
+func (b *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) WithMandatoryFields(activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription) BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder {
+	return b.WithActiveCOVMultipleSubscriptions(activeCOVMultipleSubscriptions...)
 }
 
-func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) Build() (BACnetConstructedDataActiveCOVMultipleSubscriptions, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) WithActiveCOVMultipleSubscriptions(activeCOVMultipleSubscriptions ...BACnetCOVMultipleSubscription) BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder {
+	b.ActiveCOVMultipleSubscriptions = activeCOVMultipleSubscriptions
+	return b
+}
+
+func (b *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) Build() (BACnetConstructedDataActiveCOVMultipleSubscriptions, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataActiveCOVMultipleSubscriptions.deepCopy(), nil
+	return b._BACnetConstructedDataActiveCOVMultipleSubscriptions.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) MustBuild() BACnetConstructedDataActiveCOVMultipleSubscriptions {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) MustBuild() BACnetConstructedDataActiveCOVMultipleSubscriptions {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder().(*_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder creates a BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder
-func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) CreateBACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder() BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataActiveCOVMultipleSubscriptions) CreateBACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder() BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder()
 	}
-	return &_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder{_BACnetConstructedDataActiveCOVMultipleSubscriptions: m.deepCopy()}
+	return &_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder{_BACnetConstructedDataActiveCOVMultipleSubscriptions: b.deepCopy()}
 }
 
 ///////////////////////

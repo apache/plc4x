@@ -100,64 +100,83 @@ func NewBACnetConstructedDataProgramChangeBuilder() BACnetConstructedDataProgram
 type _BACnetConstructedDataProgramChangeBuilder struct {
 	*_BACnetConstructedDataProgramChange
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataProgramChangeBuilder) = (*_BACnetConstructedDataProgramChangeBuilder)(nil)
 
-func (m *_BACnetConstructedDataProgramChangeBuilder) WithMandatoryFields(programChange BACnetProgramRequestTagged) BACnetConstructedDataProgramChangeBuilder {
-	return m.WithProgramChange(programChange)
+func (b *_BACnetConstructedDataProgramChangeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataProgramChangeBuilder) WithProgramChange(programChange BACnetProgramRequestTagged) BACnetConstructedDataProgramChangeBuilder {
-	m.ProgramChange = programChange
-	return m
+func (b *_BACnetConstructedDataProgramChangeBuilder) WithMandatoryFields(programChange BACnetProgramRequestTagged) BACnetConstructedDataProgramChangeBuilder {
+	return b.WithProgramChange(programChange)
 }
 
-func (m *_BACnetConstructedDataProgramChangeBuilder) WithProgramChangeBuilder(builderSupplier func(BACnetProgramRequestTaggedBuilder) BACnetProgramRequestTaggedBuilder) BACnetConstructedDataProgramChangeBuilder {
-	builder := builderSupplier(m.ProgramChange.CreateBACnetProgramRequestTaggedBuilder())
+func (b *_BACnetConstructedDataProgramChangeBuilder) WithProgramChange(programChange BACnetProgramRequestTagged) BACnetConstructedDataProgramChangeBuilder {
+	b.ProgramChange = programChange
+	return b
+}
+
+func (b *_BACnetConstructedDataProgramChangeBuilder) WithProgramChangeBuilder(builderSupplier func(BACnetProgramRequestTaggedBuilder) BACnetProgramRequestTaggedBuilder) BACnetConstructedDataProgramChangeBuilder {
+	builder := builderSupplier(b.ProgramChange.CreateBACnetProgramRequestTaggedBuilder())
 	var err error
-	m.ProgramChange, err = builder.Build()
+	b.ProgramChange, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetProgramRequestTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetProgramRequestTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataProgramChangeBuilder) Build() (BACnetConstructedDataProgramChange, error) {
-	if m.ProgramChange == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataProgramChangeBuilder) Build() (BACnetConstructedDataProgramChange, error) {
+	if b.ProgramChange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'programChange' not set"))
+		b.err.Append(errors.New("mandatory field 'programChange' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataProgramChange.deepCopy(), nil
+	return b._BACnetConstructedDataProgramChange.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataProgramChangeBuilder) MustBuild() BACnetConstructedDataProgramChange {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataProgramChangeBuilder) MustBuild() BACnetConstructedDataProgramChange {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataProgramChangeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataProgramChangeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataProgramChangeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataProgramChangeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataProgramChangeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataProgramChangeBuilder().(*_BACnetConstructedDataProgramChangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataProgramChangeBuilder creates a BACnetConstructedDataProgramChangeBuilder
-func (m *_BACnetConstructedDataProgramChange) CreateBACnetConstructedDataProgramChangeBuilder() BACnetConstructedDataProgramChangeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataProgramChange) CreateBACnetConstructedDataProgramChangeBuilder() BACnetConstructedDataProgramChangeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataProgramChangeBuilder()
 	}
-	return &_BACnetConstructedDataProgramChangeBuilder{_BACnetConstructedDataProgramChange: m.deepCopy()}
+	return &_BACnetConstructedDataProgramChangeBuilder{_BACnetConstructedDataProgramChange: b.deepCopy()}
 }
 
 ///////////////////////

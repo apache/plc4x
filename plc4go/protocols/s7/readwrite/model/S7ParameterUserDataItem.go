@@ -85,10 +85,19 @@ type S7ParameterUserDataItemBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() S7ParameterUserDataItemBuilder
+	// AsS7ParameterUserDataItemCPUFunctions converts this build to a subType of S7ParameterUserDataItem. It is always possible to return to current builder using Done()
+	AsS7ParameterUserDataItemCPUFunctions() interface {
+		S7ParameterUserDataItemCPUFunctionsBuilder
+		Done() S7ParameterUserDataItemBuilder
+	}
 	// Build builds the S7ParameterUserDataItem or returns an error if something is wrong
-	Build() (S7ParameterUserDataItemContract, error)
+	PartialBuild() (S7ParameterUserDataItemContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() S7ParameterUserDataItemContract
+	PartialMustBuild() S7ParameterUserDataItemContract
+	// Build builds the S7ParameterUserDataItem or returns an error if something is wrong
+	Build() (S7ParameterUserDataItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7ParameterUserDataItem
 }
 
 // NewS7ParameterUserDataItemBuilder() creates a S7ParameterUserDataItemBuilder
@@ -96,43 +105,93 @@ func NewS7ParameterUserDataItemBuilder() S7ParameterUserDataItemBuilder {
 	return &_S7ParameterUserDataItemBuilder{_S7ParameterUserDataItem: new(_S7ParameterUserDataItem)}
 }
 
+type _S7ParameterUserDataItemChildBuilder interface {
+	utils.Copyable
+	setParent(S7ParameterUserDataItemContract)
+	buildForS7ParameterUserDataItem() (S7ParameterUserDataItem, error)
+}
+
 type _S7ParameterUserDataItemBuilder struct {
 	*_S7ParameterUserDataItem
+
+	childBuilder _S7ParameterUserDataItemChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (S7ParameterUserDataItemBuilder) = (*_S7ParameterUserDataItemBuilder)(nil)
 
-func (m *_S7ParameterUserDataItemBuilder) WithMandatoryFields() S7ParameterUserDataItemBuilder {
-	return m
+func (b *_S7ParameterUserDataItemBuilder) WithMandatoryFields() S7ParameterUserDataItemBuilder {
+	return b
 }
 
-func (m *_S7ParameterUserDataItemBuilder) Build() (S7ParameterUserDataItemContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7ParameterUserDataItemBuilder) PartialBuild() (S7ParameterUserDataItemContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7ParameterUserDataItem.deepCopy(), nil
+	return b._S7ParameterUserDataItem.deepCopy(), nil
 }
 
-func (m *_S7ParameterUserDataItemBuilder) MustBuild() S7ParameterUserDataItemContract {
-	build, err := m.Build()
+func (b *_S7ParameterUserDataItemBuilder) PartialMustBuild() S7ParameterUserDataItemContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7ParameterUserDataItemBuilder) DeepCopy() any {
-	return m.CreateS7ParameterUserDataItemBuilder()
+func (b *_S7ParameterUserDataItemBuilder) AsS7ParameterUserDataItemCPUFunctions() interface {
+	S7ParameterUserDataItemCPUFunctionsBuilder
+	Done() S7ParameterUserDataItemBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7ParameterUserDataItemCPUFunctionsBuilder
+		Done() S7ParameterUserDataItemBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7ParameterUserDataItemCPUFunctionsBuilder().(*_S7ParameterUserDataItemCPUFunctionsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7ParameterUserDataItemBuilder) Build() (S7ParameterUserDataItem, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForS7ParameterUserDataItem()
+}
+
+func (b *_S7ParameterUserDataItemBuilder) MustBuild() S7ParameterUserDataItem {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_S7ParameterUserDataItemBuilder) DeepCopy() any {
+	_copy := b.CreateS7ParameterUserDataItemBuilder().(*_S7ParameterUserDataItemBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_S7ParameterUserDataItemChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7ParameterUserDataItemBuilder creates a S7ParameterUserDataItemBuilder
-func (m *_S7ParameterUserDataItem) CreateS7ParameterUserDataItemBuilder() S7ParameterUserDataItemBuilder {
-	if m == nil {
+func (b *_S7ParameterUserDataItem) CreateS7ParameterUserDataItemBuilder() S7ParameterUserDataItemBuilder {
+	if b == nil {
 		return NewS7ParameterUserDataItemBuilder()
 	}
-	return &_S7ParameterUserDataItemBuilder{_S7ParameterUserDataItem: m.deepCopy()}
+	return &_S7ParameterUserDataItemBuilder{_S7ParameterUserDataItem: b.deepCopy()}
 }
 
 ///////////////////////

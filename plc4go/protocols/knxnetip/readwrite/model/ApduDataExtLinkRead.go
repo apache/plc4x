@@ -85,40 +85,59 @@ func NewApduDataExtLinkReadBuilder() ApduDataExtLinkReadBuilder {
 type _ApduDataExtLinkReadBuilder struct {
 	*_ApduDataExtLinkRead
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtLinkReadBuilder) = (*_ApduDataExtLinkReadBuilder)(nil)
 
-func (m *_ApduDataExtLinkReadBuilder) WithMandatoryFields() ApduDataExtLinkReadBuilder {
-	return m
+func (b *_ApduDataExtLinkReadBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtLinkReadBuilder) Build() (ApduDataExtLinkRead, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtLinkReadBuilder) WithMandatoryFields() ApduDataExtLinkReadBuilder {
+	return b
+}
+
+func (b *_ApduDataExtLinkReadBuilder) Build() (ApduDataExtLinkRead, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtLinkRead.deepCopy(), nil
+	return b._ApduDataExtLinkRead.deepCopy(), nil
 }
 
-func (m *_ApduDataExtLinkReadBuilder) MustBuild() ApduDataExtLinkRead {
-	build, err := m.Build()
+func (b *_ApduDataExtLinkReadBuilder) MustBuild() ApduDataExtLinkRead {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtLinkReadBuilder) DeepCopy() any {
-	return m.CreateApduDataExtLinkReadBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtLinkReadBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtLinkReadBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtLinkReadBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtLinkReadBuilder().(*_ApduDataExtLinkReadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtLinkReadBuilder creates a ApduDataExtLinkReadBuilder
-func (m *_ApduDataExtLinkRead) CreateApduDataExtLinkReadBuilder() ApduDataExtLinkReadBuilder {
-	if m == nil {
+func (b *_ApduDataExtLinkRead) CreateApduDataExtLinkReadBuilder() ApduDataExtLinkReadBuilder {
+	if b == nil {
 		return NewApduDataExtLinkReadBuilder()
 	}
-	return &_ApduDataExtLinkReadBuilder{_ApduDataExtLinkRead: m.deepCopy()}
+	return &_ApduDataExtLinkReadBuilder{_ApduDataExtLinkRead: b.deepCopy()}
 }
 
 ///////////////////////

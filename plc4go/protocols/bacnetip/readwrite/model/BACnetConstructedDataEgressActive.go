@@ -100,64 +100,83 @@ func NewBACnetConstructedDataEgressActiveBuilder() BACnetConstructedDataEgressAc
 type _BACnetConstructedDataEgressActiveBuilder struct {
 	*_BACnetConstructedDataEgressActive
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataEgressActiveBuilder) = (*_BACnetConstructedDataEgressActiveBuilder)(nil)
 
-func (m *_BACnetConstructedDataEgressActiveBuilder) WithMandatoryFields(egressActive BACnetApplicationTagBoolean) BACnetConstructedDataEgressActiveBuilder {
-	return m.WithEgressActive(egressActive)
+func (b *_BACnetConstructedDataEgressActiveBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataEgressActiveBuilder) WithEgressActive(egressActive BACnetApplicationTagBoolean) BACnetConstructedDataEgressActiveBuilder {
-	m.EgressActive = egressActive
-	return m
+func (b *_BACnetConstructedDataEgressActiveBuilder) WithMandatoryFields(egressActive BACnetApplicationTagBoolean) BACnetConstructedDataEgressActiveBuilder {
+	return b.WithEgressActive(egressActive)
 }
 
-func (m *_BACnetConstructedDataEgressActiveBuilder) WithEgressActiveBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataEgressActiveBuilder {
-	builder := builderSupplier(m.EgressActive.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataEgressActiveBuilder) WithEgressActive(egressActive BACnetApplicationTagBoolean) BACnetConstructedDataEgressActiveBuilder {
+	b.EgressActive = egressActive
+	return b
+}
+
+func (b *_BACnetConstructedDataEgressActiveBuilder) WithEgressActiveBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataEgressActiveBuilder {
+	builder := builderSupplier(b.EgressActive.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.EgressActive, err = builder.Build()
+	b.EgressActive, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataEgressActiveBuilder) Build() (BACnetConstructedDataEgressActive, error) {
-	if m.EgressActive == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataEgressActiveBuilder) Build() (BACnetConstructedDataEgressActive, error) {
+	if b.EgressActive == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'egressActive' not set"))
+		b.err.Append(errors.New("mandatory field 'egressActive' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataEgressActive.deepCopy(), nil
+	return b._BACnetConstructedDataEgressActive.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataEgressActiveBuilder) MustBuild() BACnetConstructedDataEgressActive {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataEgressActiveBuilder) MustBuild() BACnetConstructedDataEgressActive {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataEgressActiveBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataEgressActiveBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEgressActiveBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEgressActiveBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEgressActiveBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEgressActiveBuilder().(*_BACnetConstructedDataEgressActiveBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataEgressActiveBuilder creates a BACnetConstructedDataEgressActiveBuilder
-func (m *_BACnetConstructedDataEgressActive) CreateBACnetConstructedDataEgressActiveBuilder() BACnetConstructedDataEgressActiveBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataEgressActive) CreateBACnetConstructedDataEgressActiveBuilder() BACnetConstructedDataEgressActiveBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataEgressActiveBuilder()
 	}
-	return &_BACnetConstructedDataEgressActiveBuilder{_BACnetConstructedDataEgressActive: m.deepCopy()}
+	return &_BACnetConstructedDataEgressActiveBuilder{_BACnetConstructedDataEgressActive: b.deepCopy()}
 }
 
 ///////////////////////

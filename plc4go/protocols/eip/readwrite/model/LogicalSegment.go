@@ -82,6 +82,8 @@ type LogicalSegmentBuilder interface {
 	WithMandatoryFields(segmentType LogicalSegmentType) LogicalSegmentBuilder
 	// WithSegmentType adds SegmentType (property field)
 	WithSegmentType(LogicalSegmentType) LogicalSegmentBuilder
+	// WithSegmentTypeBuilder adds SegmentType (property field) which is build by the builder
+	WithSegmentTypeBuilder(func(LogicalSegmentTypeBuilder) LogicalSegmentTypeBuilder) LogicalSegmentBuilder
 	// Build builds the LogicalSegment or returns an error if something is wrong
 	Build() (LogicalSegment, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewLogicalSegmentBuilder() LogicalSegmentBuilder {
 type _LogicalSegmentBuilder struct {
 	*_LogicalSegment
 
+	parentBuilder *_PathSegmentBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LogicalSegmentBuilder) = (*_LogicalSegmentBuilder)(nil)
 
-func (m *_LogicalSegmentBuilder) WithMandatoryFields(segmentType LogicalSegmentType) LogicalSegmentBuilder {
-	return m.WithSegmentType(segmentType)
+func (b *_LogicalSegmentBuilder) setParent(contract PathSegmentContract) {
+	b.PathSegmentContract = contract
 }
 
-func (m *_LogicalSegmentBuilder) WithSegmentType(segmentType LogicalSegmentType) LogicalSegmentBuilder {
-	m.SegmentType = segmentType
-	return m
+func (b *_LogicalSegmentBuilder) WithMandatoryFields(segmentType LogicalSegmentType) LogicalSegmentBuilder {
+	return b.WithSegmentType(segmentType)
 }
 
-func (m *_LogicalSegmentBuilder) Build() (LogicalSegment, error) {
-	if m.SegmentType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_LogicalSegmentBuilder) WithSegmentType(segmentType LogicalSegmentType) LogicalSegmentBuilder {
+	b.SegmentType = segmentType
+	return b
+}
+
+func (b *_LogicalSegmentBuilder) WithSegmentTypeBuilder(builderSupplier func(LogicalSegmentTypeBuilder) LogicalSegmentTypeBuilder) LogicalSegmentBuilder {
+	builder := builderSupplier(b.SegmentType.CreateLogicalSegmentTypeBuilder())
+	var err error
+	b.SegmentType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'segmentType' not set"))
+		b.err.Append(errors.Wrap(err, "LogicalSegmentTypeBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._LogicalSegment.deepCopy(), nil
+	return b
 }
 
-func (m *_LogicalSegmentBuilder) MustBuild() LogicalSegment {
-	build, err := m.Build()
+func (b *_LogicalSegmentBuilder) Build() (LogicalSegment, error) {
+	if b.SegmentType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'segmentType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LogicalSegment.deepCopy(), nil
+}
+
+func (b *_LogicalSegmentBuilder) MustBuild() LogicalSegment {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LogicalSegmentBuilder) DeepCopy() any {
-	return m.CreateLogicalSegmentBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LogicalSegmentBuilder) Done() PathSegmentBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LogicalSegmentBuilder) buildForPathSegment() (PathSegment, error) {
+	return b.Build()
+}
+
+func (b *_LogicalSegmentBuilder) DeepCopy() any {
+	_copy := b.CreateLogicalSegmentBuilder().(*_LogicalSegmentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLogicalSegmentBuilder creates a LogicalSegmentBuilder
-func (m *_LogicalSegment) CreateLogicalSegmentBuilder() LogicalSegmentBuilder {
-	if m == nil {
+func (b *_LogicalSegment) CreateLogicalSegmentBuilder() LogicalSegmentBuilder {
+	if b == nil {
 		return NewLogicalSegmentBuilder()
 	}
-	return &_LogicalSegmentBuilder{_LogicalSegment: m.deepCopy()}
+	return &_LogicalSegmentBuilder{_LogicalSegment: b.deepCopy()}
 }
 
 ///////////////////////

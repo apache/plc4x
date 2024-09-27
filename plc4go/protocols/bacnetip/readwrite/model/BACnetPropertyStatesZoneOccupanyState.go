@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesZoneOccupanyStateBuilder() BACnetPropertyStatesZoneO
 type _BACnetPropertyStatesZoneOccupanyStateBuilder struct {
 	*_BACnetPropertyStatesZoneOccupanyState
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesZoneOccupanyStateBuilder) = (*_BACnetPropertyStatesZoneOccupanyStateBuilder)(nil)
 
-func (m *_BACnetPropertyStatesZoneOccupanyStateBuilder) WithMandatoryFields(zoneOccupanyState BACnetAccessZoneOccupancyStateTagged) BACnetPropertyStatesZoneOccupanyStateBuilder {
-	return m.WithZoneOccupanyState(zoneOccupanyState)
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesZoneOccupanyStateBuilder) WithZoneOccupanyState(zoneOccupanyState BACnetAccessZoneOccupancyStateTagged) BACnetPropertyStatesZoneOccupanyStateBuilder {
-	m.ZoneOccupanyState = zoneOccupanyState
-	return m
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) WithMandatoryFields(zoneOccupanyState BACnetAccessZoneOccupancyStateTagged) BACnetPropertyStatesZoneOccupanyStateBuilder {
+	return b.WithZoneOccupanyState(zoneOccupanyState)
 }
 
-func (m *_BACnetPropertyStatesZoneOccupanyStateBuilder) WithZoneOccupanyStateBuilder(builderSupplier func(BACnetAccessZoneOccupancyStateTaggedBuilder) BACnetAccessZoneOccupancyStateTaggedBuilder) BACnetPropertyStatesZoneOccupanyStateBuilder {
-	builder := builderSupplier(m.ZoneOccupanyState.CreateBACnetAccessZoneOccupancyStateTaggedBuilder())
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) WithZoneOccupanyState(zoneOccupanyState BACnetAccessZoneOccupancyStateTagged) BACnetPropertyStatesZoneOccupanyStateBuilder {
+	b.ZoneOccupanyState = zoneOccupanyState
+	return b
+}
+
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) WithZoneOccupanyStateBuilder(builderSupplier func(BACnetAccessZoneOccupancyStateTaggedBuilder) BACnetAccessZoneOccupancyStateTaggedBuilder) BACnetPropertyStatesZoneOccupanyStateBuilder {
+	builder := builderSupplier(b.ZoneOccupanyState.CreateBACnetAccessZoneOccupancyStateTaggedBuilder())
 	var err error
-	m.ZoneOccupanyState, err = builder.Build()
+	b.ZoneOccupanyState, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAccessZoneOccupancyStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAccessZoneOccupancyStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesZoneOccupanyStateBuilder) Build() (BACnetPropertyStatesZoneOccupanyState, error) {
-	if m.ZoneOccupanyState == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) Build() (BACnetPropertyStatesZoneOccupanyState, error) {
+	if b.ZoneOccupanyState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'zoneOccupanyState' not set"))
+		b.err.Append(errors.New("mandatory field 'zoneOccupanyState' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesZoneOccupanyState.deepCopy(), nil
+	return b._BACnetPropertyStatesZoneOccupanyState.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesZoneOccupanyStateBuilder) MustBuild() BACnetPropertyStatesZoneOccupanyState {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) MustBuild() BACnetPropertyStatesZoneOccupanyState {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesZoneOccupanyStateBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesZoneOccupanyStateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesZoneOccupanyStateBuilder().(*_BACnetPropertyStatesZoneOccupanyStateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesZoneOccupanyStateBuilder creates a BACnetPropertyStatesZoneOccupanyStateBuilder
-func (m *_BACnetPropertyStatesZoneOccupanyState) CreateBACnetPropertyStatesZoneOccupanyStateBuilder() BACnetPropertyStatesZoneOccupanyStateBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesZoneOccupanyState) CreateBACnetPropertyStatesZoneOccupanyStateBuilder() BACnetPropertyStatesZoneOccupanyStateBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesZoneOccupanyStateBuilder()
 	}
-	return &_BACnetPropertyStatesZoneOccupanyStateBuilder{_BACnetPropertyStatesZoneOccupanyState: m.deepCopy()}
+	return &_BACnetPropertyStatesZoneOccupanyStateBuilder{_BACnetPropertyStatesZoneOccupanyState: b.deepCopy()}
 }
 
 ///////////////////////

@@ -98,64 +98,83 @@ func NewBACnetChannelValueCharacterStringBuilder() BACnetChannelValueCharacterSt
 type _BACnetChannelValueCharacterStringBuilder struct {
 	*_BACnetChannelValueCharacterString
 
+	parentBuilder *_BACnetChannelValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetChannelValueCharacterStringBuilder) = (*_BACnetChannelValueCharacterStringBuilder)(nil)
 
-func (m *_BACnetChannelValueCharacterStringBuilder) WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetChannelValueCharacterStringBuilder {
-	return m.WithCharacterStringValue(characterStringValue)
+func (b *_BACnetChannelValueCharacterStringBuilder) setParent(contract BACnetChannelValueContract) {
+	b.BACnetChannelValueContract = contract
 }
 
-func (m *_BACnetChannelValueCharacterStringBuilder) WithCharacterStringValue(characterStringValue BACnetApplicationTagCharacterString) BACnetChannelValueCharacterStringBuilder {
-	m.CharacterStringValue = characterStringValue
-	return m
+func (b *_BACnetChannelValueCharacterStringBuilder) WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetChannelValueCharacterStringBuilder {
+	return b.WithCharacterStringValue(characterStringValue)
 }
 
-func (m *_BACnetChannelValueCharacterStringBuilder) WithCharacterStringValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetChannelValueCharacterStringBuilder {
-	builder := builderSupplier(m.CharacterStringValue.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetChannelValueCharacterStringBuilder) WithCharacterStringValue(characterStringValue BACnetApplicationTagCharacterString) BACnetChannelValueCharacterStringBuilder {
+	b.CharacterStringValue = characterStringValue
+	return b
+}
+
+func (b *_BACnetChannelValueCharacterStringBuilder) WithCharacterStringValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetChannelValueCharacterStringBuilder {
+	builder := builderSupplier(b.CharacterStringValue.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.CharacterStringValue, err = builder.Build()
+	b.CharacterStringValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetChannelValueCharacterStringBuilder) Build() (BACnetChannelValueCharacterString, error) {
-	if m.CharacterStringValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetChannelValueCharacterStringBuilder) Build() (BACnetChannelValueCharacterString, error) {
+	if b.CharacterStringValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'characterStringValue' not set"))
+		b.err.Append(errors.New("mandatory field 'characterStringValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetChannelValueCharacterString.deepCopy(), nil
+	return b._BACnetChannelValueCharacterString.deepCopy(), nil
 }
 
-func (m *_BACnetChannelValueCharacterStringBuilder) MustBuild() BACnetChannelValueCharacterString {
-	build, err := m.Build()
+func (b *_BACnetChannelValueCharacterStringBuilder) MustBuild() BACnetChannelValueCharacterString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetChannelValueCharacterStringBuilder) DeepCopy() any {
-	return m.CreateBACnetChannelValueCharacterStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetChannelValueCharacterStringBuilder) Done() BACnetChannelValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetChannelValueCharacterStringBuilder) buildForBACnetChannelValue() (BACnetChannelValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetChannelValueCharacterStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetChannelValueCharacterStringBuilder().(*_BACnetChannelValueCharacterStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetChannelValueCharacterStringBuilder creates a BACnetChannelValueCharacterStringBuilder
-func (m *_BACnetChannelValueCharacterString) CreateBACnetChannelValueCharacterStringBuilder() BACnetChannelValueCharacterStringBuilder {
-	if m == nil {
+func (b *_BACnetChannelValueCharacterString) CreateBACnetChannelValueCharacterStringBuilder() BACnetChannelValueCharacterStringBuilder {
+	if b == nil {
 		return NewBACnetChannelValueCharacterStringBuilder()
 	}
-	return &_BACnetChannelValueCharacterStringBuilder{_BACnetChannelValueCharacterString: m.deepCopy()}
+	return &_BACnetChannelValueCharacterStringBuilder{_BACnetChannelValueCharacterString: b.deepCopy()}
 }
 
 ///////////////////////

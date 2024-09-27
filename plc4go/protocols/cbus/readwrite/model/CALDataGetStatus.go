@@ -99,50 +99,69 @@ func NewCALDataGetStatusBuilder() CALDataGetStatusBuilder {
 type _CALDataGetStatusBuilder struct {
 	*_CALDataGetStatus
 
+	parentBuilder *_CALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CALDataGetStatusBuilder) = (*_CALDataGetStatusBuilder)(nil)
 
-func (m *_CALDataGetStatusBuilder) WithMandatoryFields(paramNo Parameter, count uint8) CALDataGetStatusBuilder {
-	return m.WithParamNo(paramNo).WithCount(count)
+func (b *_CALDataGetStatusBuilder) setParent(contract CALDataContract) {
+	b.CALDataContract = contract
 }
 
-func (m *_CALDataGetStatusBuilder) WithParamNo(paramNo Parameter) CALDataGetStatusBuilder {
-	m.ParamNo = paramNo
-	return m
+func (b *_CALDataGetStatusBuilder) WithMandatoryFields(paramNo Parameter, count uint8) CALDataGetStatusBuilder {
+	return b.WithParamNo(paramNo).WithCount(count)
 }
 
-func (m *_CALDataGetStatusBuilder) WithCount(count uint8) CALDataGetStatusBuilder {
-	m.Count = count
-	return m
+func (b *_CALDataGetStatusBuilder) WithParamNo(paramNo Parameter) CALDataGetStatusBuilder {
+	b.ParamNo = paramNo
+	return b
 }
 
-func (m *_CALDataGetStatusBuilder) Build() (CALDataGetStatus, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CALDataGetStatusBuilder) WithCount(count uint8) CALDataGetStatusBuilder {
+	b.Count = count
+	return b
+}
+
+func (b *_CALDataGetStatusBuilder) Build() (CALDataGetStatus, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CALDataGetStatus.deepCopy(), nil
+	return b._CALDataGetStatus.deepCopy(), nil
 }
 
-func (m *_CALDataGetStatusBuilder) MustBuild() CALDataGetStatus {
-	build, err := m.Build()
+func (b *_CALDataGetStatusBuilder) MustBuild() CALDataGetStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CALDataGetStatusBuilder) DeepCopy() any {
-	return m.CreateCALDataGetStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CALDataGetStatusBuilder) Done() CALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CALDataGetStatusBuilder) buildForCALData() (CALData, error) {
+	return b.Build()
+}
+
+func (b *_CALDataGetStatusBuilder) DeepCopy() any {
+	_copy := b.CreateCALDataGetStatusBuilder().(*_CALDataGetStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCALDataGetStatusBuilder creates a CALDataGetStatusBuilder
-func (m *_CALDataGetStatus) CreateCALDataGetStatusBuilder() CALDataGetStatusBuilder {
-	if m == nil {
+func (b *_CALDataGetStatus) CreateCALDataGetStatusBuilder() CALDataGetStatusBuilder {
+	if b == nil {
 		return NewCALDataGetStatusBuilder()
 	}
-	return &_CALDataGetStatusBuilder{_CALDataGetStatus: m.deepCopy()}
+	return &_CALDataGetStatusBuilder{_CALDataGetStatus: b.deepCopy()}
 }
 
 ///////////////////////

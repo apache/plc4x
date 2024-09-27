@@ -104,69 +104,88 @@ func NewOpcuaAcknowledgeResponseBuilder() OpcuaAcknowledgeResponseBuilder {
 type _OpcuaAcknowledgeResponseBuilder struct {
 	*_OpcuaAcknowledgeResponse
 
+	parentBuilder *_MessagePDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (OpcuaAcknowledgeResponseBuilder) = (*_OpcuaAcknowledgeResponseBuilder)(nil)
 
-func (m *_OpcuaAcknowledgeResponseBuilder) WithMandatoryFields(version uint32, limits OpcuaProtocolLimits) OpcuaAcknowledgeResponseBuilder {
-	return m.WithVersion(version).WithLimits(limits)
+func (b *_OpcuaAcknowledgeResponseBuilder) setParent(contract MessagePDUContract) {
+	b.MessagePDUContract = contract
 }
 
-func (m *_OpcuaAcknowledgeResponseBuilder) WithVersion(version uint32) OpcuaAcknowledgeResponseBuilder {
-	m.Version = version
-	return m
+func (b *_OpcuaAcknowledgeResponseBuilder) WithMandatoryFields(version uint32, limits OpcuaProtocolLimits) OpcuaAcknowledgeResponseBuilder {
+	return b.WithVersion(version).WithLimits(limits)
 }
 
-func (m *_OpcuaAcknowledgeResponseBuilder) WithLimits(limits OpcuaProtocolLimits) OpcuaAcknowledgeResponseBuilder {
-	m.Limits = limits
-	return m
+func (b *_OpcuaAcknowledgeResponseBuilder) WithVersion(version uint32) OpcuaAcknowledgeResponseBuilder {
+	b.Version = version
+	return b
 }
 
-func (m *_OpcuaAcknowledgeResponseBuilder) WithLimitsBuilder(builderSupplier func(OpcuaProtocolLimitsBuilder) OpcuaProtocolLimitsBuilder) OpcuaAcknowledgeResponseBuilder {
-	builder := builderSupplier(m.Limits.CreateOpcuaProtocolLimitsBuilder())
+func (b *_OpcuaAcknowledgeResponseBuilder) WithLimits(limits OpcuaProtocolLimits) OpcuaAcknowledgeResponseBuilder {
+	b.Limits = limits
+	return b
+}
+
+func (b *_OpcuaAcknowledgeResponseBuilder) WithLimitsBuilder(builderSupplier func(OpcuaProtocolLimitsBuilder) OpcuaProtocolLimitsBuilder) OpcuaAcknowledgeResponseBuilder {
+	builder := builderSupplier(b.Limits.CreateOpcuaProtocolLimitsBuilder())
 	var err error
-	m.Limits, err = builder.Build()
+	b.Limits, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "OpcuaProtocolLimitsBuilder failed"))
+		b.err.Append(errors.Wrap(err, "OpcuaProtocolLimitsBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_OpcuaAcknowledgeResponseBuilder) Build() (OpcuaAcknowledgeResponse, error) {
-	if m.Limits == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_OpcuaAcknowledgeResponseBuilder) Build() (OpcuaAcknowledgeResponse, error) {
+	if b.Limits == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'limits' not set"))
+		b.err.Append(errors.New("mandatory field 'limits' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._OpcuaAcknowledgeResponse.deepCopy(), nil
+	return b._OpcuaAcknowledgeResponse.deepCopy(), nil
 }
 
-func (m *_OpcuaAcknowledgeResponseBuilder) MustBuild() OpcuaAcknowledgeResponse {
-	build, err := m.Build()
+func (b *_OpcuaAcknowledgeResponseBuilder) MustBuild() OpcuaAcknowledgeResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_OpcuaAcknowledgeResponseBuilder) DeepCopy() any {
-	return m.CreateOpcuaAcknowledgeResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OpcuaAcknowledgeResponseBuilder) Done() MessagePDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OpcuaAcknowledgeResponseBuilder) buildForMessagePDU() (MessagePDU, error) {
+	return b.Build()
+}
+
+func (b *_OpcuaAcknowledgeResponseBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaAcknowledgeResponseBuilder().(*_OpcuaAcknowledgeResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateOpcuaAcknowledgeResponseBuilder creates a OpcuaAcknowledgeResponseBuilder
-func (m *_OpcuaAcknowledgeResponse) CreateOpcuaAcknowledgeResponseBuilder() OpcuaAcknowledgeResponseBuilder {
-	if m == nil {
+func (b *_OpcuaAcknowledgeResponse) CreateOpcuaAcknowledgeResponseBuilder() OpcuaAcknowledgeResponseBuilder {
+	if b == nil {
 		return NewOpcuaAcknowledgeResponseBuilder()
 	}
-	return &_OpcuaAcknowledgeResponseBuilder{_OpcuaAcknowledgeResponse: m.deepCopy()}
+	return &_OpcuaAcknowledgeResponseBuilder{_OpcuaAcknowledgeResponse: b.deepCopy()}
 }
 
 ///////////////////////

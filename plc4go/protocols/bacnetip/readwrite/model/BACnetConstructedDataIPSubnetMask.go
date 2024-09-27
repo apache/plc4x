@@ -100,64 +100,83 @@ func NewBACnetConstructedDataIPSubnetMaskBuilder() BACnetConstructedDataIPSubnet
 type _BACnetConstructedDataIPSubnetMaskBuilder struct {
 	*_BACnetConstructedDataIPSubnetMask
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataIPSubnetMaskBuilder) = (*_BACnetConstructedDataIPSubnetMaskBuilder)(nil)
 
-func (m *_BACnetConstructedDataIPSubnetMaskBuilder) WithMandatoryFields(ipSubnetMask BACnetApplicationTagOctetString) BACnetConstructedDataIPSubnetMaskBuilder {
-	return m.WithIpSubnetMask(ipSubnetMask)
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataIPSubnetMaskBuilder) WithIpSubnetMask(ipSubnetMask BACnetApplicationTagOctetString) BACnetConstructedDataIPSubnetMaskBuilder {
-	m.IpSubnetMask = ipSubnetMask
-	return m
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) WithMandatoryFields(ipSubnetMask BACnetApplicationTagOctetString) BACnetConstructedDataIPSubnetMaskBuilder {
+	return b.WithIpSubnetMask(ipSubnetMask)
 }
 
-func (m *_BACnetConstructedDataIPSubnetMaskBuilder) WithIpSubnetMaskBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPSubnetMaskBuilder {
-	builder := builderSupplier(m.IpSubnetMask.CreateBACnetApplicationTagOctetStringBuilder())
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) WithIpSubnetMask(ipSubnetMask BACnetApplicationTagOctetString) BACnetConstructedDataIPSubnetMaskBuilder {
+	b.IpSubnetMask = ipSubnetMask
+	return b
+}
+
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) WithIpSubnetMaskBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPSubnetMaskBuilder {
+	builder := builderSupplier(b.IpSubnetMask.CreateBACnetApplicationTagOctetStringBuilder())
 	var err error
-	m.IpSubnetMask, err = builder.Build()
+	b.IpSubnetMask, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataIPSubnetMaskBuilder) Build() (BACnetConstructedDataIPSubnetMask, error) {
-	if m.IpSubnetMask == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) Build() (BACnetConstructedDataIPSubnetMask, error) {
+	if b.IpSubnetMask == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'ipSubnetMask' not set"))
+		b.err.Append(errors.New("mandatory field 'ipSubnetMask' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataIPSubnetMask.deepCopy(), nil
+	return b._BACnetConstructedDataIPSubnetMask.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataIPSubnetMaskBuilder) MustBuild() BACnetConstructedDataIPSubnetMask {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) MustBuild() BACnetConstructedDataIPSubnetMask {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataIPSubnetMaskBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataIPSubnetMaskBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPSubnetMaskBuilder().(*_BACnetConstructedDataIPSubnetMaskBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataIPSubnetMaskBuilder creates a BACnetConstructedDataIPSubnetMaskBuilder
-func (m *_BACnetConstructedDataIPSubnetMask) CreateBACnetConstructedDataIPSubnetMaskBuilder() BACnetConstructedDataIPSubnetMaskBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataIPSubnetMask) CreateBACnetConstructedDataIPSubnetMaskBuilder() BACnetConstructedDataIPSubnetMaskBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataIPSubnetMaskBuilder()
 	}
-	return &_BACnetConstructedDataIPSubnetMaskBuilder{_BACnetConstructedDataIPSubnetMask: m.deepCopy()}
+	return &_BACnetConstructedDataIPSubnetMaskBuilder{_BACnetConstructedDataIPSubnetMask: b.deepCopy()}
 }
 
 ///////////////////////

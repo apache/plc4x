@@ -82,6 +82,8 @@ type SALDataTriggerControlBuilder interface {
 	WithMandatoryFields(triggerControlData TriggerControlData) SALDataTriggerControlBuilder
 	// WithTriggerControlData adds TriggerControlData (property field)
 	WithTriggerControlData(TriggerControlData) SALDataTriggerControlBuilder
+	// WithTriggerControlDataBuilder adds TriggerControlData (property field) which is build by the builder
+	WithTriggerControlDataBuilder(func(TriggerControlDataBuilder) TriggerControlDataBuilder) SALDataTriggerControlBuilder
 	// Build builds the SALDataTriggerControl or returns an error if something is wrong
 	Build() (SALDataTriggerControl, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewSALDataTriggerControlBuilder() SALDataTriggerControlBuilder {
 type _SALDataTriggerControlBuilder struct {
 	*_SALDataTriggerControl
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataTriggerControlBuilder) = (*_SALDataTriggerControlBuilder)(nil)
 
-func (m *_SALDataTriggerControlBuilder) WithMandatoryFields(triggerControlData TriggerControlData) SALDataTriggerControlBuilder {
-	return m.WithTriggerControlData(triggerControlData)
+func (b *_SALDataTriggerControlBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataTriggerControlBuilder) WithTriggerControlData(triggerControlData TriggerControlData) SALDataTriggerControlBuilder {
-	m.TriggerControlData = triggerControlData
-	return m
+func (b *_SALDataTriggerControlBuilder) WithMandatoryFields(triggerControlData TriggerControlData) SALDataTriggerControlBuilder {
+	return b.WithTriggerControlData(triggerControlData)
 }
 
-func (m *_SALDataTriggerControlBuilder) Build() (SALDataTriggerControl, error) {
-	if m.TriggerControlData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SALDataTriggerControlBuilder) WithTriggerControlData(triggerControlData TriggerControlData) SALDataTriggerControlBuilder {
+	b.TriggerControlData = triggerControlData
+	return b
+}
+
+func (b *_SALDataTriggerControlBuilder) WithTriggerControlDataBuilder(builderSupplier func(TriggerControlDataBuilder) TriggerControlDataBuilder) SALDataTriggerControlBuilder {
+	builder := builderSupplier(b.TriggerControlData.CreateTriggerControlDataBuilder())
+	var err error
+	b.TriggerControlData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'triggerControlData' not set"))
+		b.err.Append(errors.Wrap(err, "TriggerControlDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._SALDataTriggerControl.deepCopy(), nil
+	return b
 }
 
-func (m *_SALDataTriggerControlBuilder) MustBuild() SALDataTriggerControl {
-	build, err := m.Build()
+func (b *_SALDataTriggerControlBuilder) Build() (SALDataTriggerControl, error) {
+	if b.TriggerControlData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'triggerControlData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataTriggerControl.deepCopy(), nil
+}
+
+func (b *_SALDataTriggerControlBuilder) MustBuild() SALDataTriggerControl {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataTriggerControlBuilder) DeepCopy() any {
-	return m.CreateSALDataTriggerControlBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataTriggerControlBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataTriggerControlBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataTriggerControlBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataTriggerControlBuilder().(*_SALDataTriggerControlBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataTriggerControlBuilder creates a SALDataTriggerControlBuilder
-func (m *_SALDataTriggerControl) CreateSALDataTriggerControlBuilder() SALDataTriggerControlBuilder {
-	if m == nil {
+func (b *_SALDataTriggerControl) CreateSALDataTriggerControlBuilder() SALDataTriggerControlBuilder {
+	if b == nil {
 		return NewSALDataTriggerControlBuilder()
 	}
-	return &_SALDataTriggerControlBuilder{_SALDataTriggerControl: m.deepCopy()}
+	return &_SALDataTriggerControlBuilder{_SALDataTriggerControl: b.deepCopy()}
 }
 
 ///////////////////////

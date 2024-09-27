@@ -111,6 +111,8 @@ type BACnetEventParameterChangeOfValueBuilder interface {
 	WithTimeDelayBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventParameterChangeOfValueBuilder
 	// WithCovCriteria adds CovCriteria (property field)
 	WithCovCriteria(BACnetEventParameterChangeOfValueCivCriteria) BACnetEventParameterChangeOfValueBuilder
+	// WithCovCriteriaBuilder adds CovCriteria (property field) which is build by the builder
+	WithCovCriteriaBuilder(func(BACnetEventParameterChangeOfValueCivCriteriaBuilder) BACnetEventParameterChangeOfValueCivCriteriaBuilder) BACnetEventParameterChangeOfValueBuilder
 	// WithClosingTag adds ClosingTag (property field)
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfValueBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
@@ -129,123 +131,155 @@ func NewBACnetEventParameterChangeOfValueBuilder() BACnetEventParameterChangeOfV
 type _BACnetEventParameterChangeOfValueBuilder struct {
 	*_BACnetEventParameterChangeOfValue
 
+	parentBuilder *_BACnetEventParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetEventParameterChangeOfValueBuilder) = (*_BACnetEventParameterChangeOfValueBuilder)(nil)
 
-func (m *_BACnetEventParameterChangeOfValueBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, covCriteria BACnetEventParameterChangeOfValueCivCriteria, closingTag BACnetClosingTag) BACnetEventParameterChangeOfValueBuilder {
-	return m.WithOpeningTag(openingTag).WithTimeDelay(timeDelay).WithCovCriteria(covCriteria).WithClosingTag(closingTag)
+func (b *_BACnetEventParameterChangeOfValueBuilder) setParent(contract BACnetEventParameterContract) {
+	b.BACnetEventParameterContract = contract
 }
 
-func (m *_BACnetEventParameterChangeOfValueBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterChangeOfValueBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetEventParameterChangeOfValueBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, covCriteria BACnetEventParameterChangeOfValueCivCriteria, closingTag BACnetClosingTag) BACnetEventParameterChangeOfValueBuilder {
+	return b.WithOpeningTag(openingTag).WithTimeDelay(timeDelay).WithCovCriteria(covCriteria).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetEventParameterChangeOfValueBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfValueBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetEventParameterChangeOfValueBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterChangeOfValueBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfValueBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfValueBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfValueBuilder) WithTimeDelay(timeDelay BACnetContextTagUnsignedInteger) BACnetEventParameterChangeOfValueBuilder {
-	m.TimeDelay = timeDelay
-	return m
+func (b *_BACnetEventParameterChangeOfValueBuilder) WithTimeDelay(timeDelay BACnetContextTagUnsignedInteger) BACnetEventParameterChangeOfValueBuilder {
+	b.TimeDelay = timeDelay
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfValueBuilder) WithTimeDelayBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventParameterChangeOfValueBuilder {
-	builder := builderSupplier(m.TimeDelay.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetEventParameterChangeOfValueBuilder) WithTimeDelayBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventParameterChangeOfValueBuilder {
+	builder := builderSupplier(b.TimeDelay.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.TimeDelay, err = builder.Build()
+	b.TimeDelay, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfValueBuilder) WithCovCriteria(covCriteria BACnetEventParameterChangeOfValueCivCriteria) BACnetEventParameterChangeOfValueBuilder {
-	m.CovCriteria = covCriteria
-	return m
+func (b *_BACnetEventParameterChangeOfValueBuilder) WithCovCriteria(covCriteria BACnetEventParameterChangeOfValueCivCriteria) BACnetEventParameterChangeOfValueBuilder {
+	b.CovCriteria = covCriteria
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfValueBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterChangeOfValueBuilder {
-	m.ClosingTag = closingTag
-	return m
-}
-
-func (m *_BACnetEventParameterChangeOfValueBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfValueBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetEventParameterChangeOfValueBuilder) WithCovCriteriaBuilder(builderSupplier func(BACnetEventParameterChangeOfValueCivCriteriaBuilder) BACnetEventParameterChangeOfValueCivCriteriaBuilder) BACnetEventParameterChangeOfValueBuilder {
+	builder := builderSupplier(b.CovCriteria.CreateBACnetEventParameterChangeOfValueCivCriteriaBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.CovCriteria, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventParameterChangeOfValueCivCriteriaBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfValueBuilder) Build() (BACnetEventParameterChangeOfValue, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
-	}
-	if m.TimeDelay == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'timeDelay' not set"))
-	}
-	if m.CovCriteria == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'covCriteria' not set"))
-	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetEventParameterChangeOfValue.deepCopy(), nil
+func (b *_BACnetEventParameterChangeOfValueBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterChangeOfValueBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfValueBuilder) MustBuild() BACnetEventParameterChangeOfValue {
-	build, err := m.Build()
+func (b *_BACnetEventParameterChangeOfValueBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfValueBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfValueBuilder) Build() (BACnetEventParameterChangeOfValue, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.TimeDelay == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timeDelay' not set"))
+	}
+	if b.CovCriteria == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'covCriteria' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetEventParameterChangeOfValue.deepCopy(), nil
+}
+
+func (b *_BACnetEventParameterChangeOfValueBuilder) MustBuild() BACnetEventParameterChangeOfValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetEventParameterChangeOfValueBuilder) DeepCopy() any {
-	return m.CreateBACnetEventParameterChangeOfValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetEventParameterChangeOfValueBuilder) Done() BACnetEventParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetEventParameterChangeOfValueBuilder) buildForBACnetEventParameter() (BACnetEventParameter, error) {
+	return b.Build()
+}
+
+func (b *_BACnetEventParameterChangeOfValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventParameterChangeOfValueBuilder().(*_BACnetEventParameterChangeOfValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetEventParameterChangeOfValueBuilder creates a BACnetEventParameterChangeOfValueBuilder
-func (m *_BACnetEventParameterChangeOfValue) CreateBACnetEventParameterChangeOfValueBuilder() BACnetEventParameterChangeOfValueBuilder {
-	if m == nil {
+func (b *_BACnetEventParameterChangeOfValue) CreateBACnetEventParameterChangeOfValueBuilder() BACnetEventParameterChangeOfValueBuilder {
+	if b == nil {
 		return NewBACnetEventParameterChangeOfValueBuilder()
 	}
-	return &_BACnetEventParameterChangeOfValueBuilder{_BACnetEventParameterChangeOfValue: m.deepCopy()}
+	return &_BACnetEventParameterChangeOfValueBuilder{_BACnetEventParameterChangeOfValue: b.deepCopy()}
 }
 
 ///////////////////////

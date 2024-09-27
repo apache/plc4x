@@ -90,6 +90,8 @@ type UnregisterNodesRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToUnregister int32, nodesToUnregister []NodeId) UnregisterNodesRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) UnregisterNodesRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) UnregisterNodesRequestBuilder
 	// WithNoOfNodesToUnregister adds NoOfNodesToUnregister (property field)
 	WithNoOfNodesToUnregister(int32) UnregisterNodesRequestBuilder
 	// WithNodesToUnregister adds NodesToUnregister (property field)
@@ -108,61 +110,93 @@ func NewUnregisterNodesRequestBuilder() UnregisterNodesRequestBuilder {
 type _UnregisterNodesRequestBuilder struct {
 	*_UnregisterNodesRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (UnregisterNodesRequestBuilder) = (*_UnregisterNodesRequestBuilder)(nil)
 
-func (m *_UnregisterNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToUnregister int32, nodesToUnregister []NodeId) UnregisterNodesRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithNoOfNodesToUnregister(noOfNodesToUnregister).WithNodesToUnregister(nodesToUnregister...)
+func (b *_UnregisterNodesRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_UnregisterNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) UnregisterNodesRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_UnregisterNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToUnregister int32, nodesToUnregister []NodeId) UnregisterNodesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNoOfNodesToUnregister(noOfNodesToUnregister).WithNodesToUnregister(nodesToUnregister...)
 }
 
-func (m *_UnregisterNodesRequestBuilder) WithNoOfNodesToUnregister(noOfNodesToUnregister int32) UnregisterNodesRequestBuilder {
-	m.NoOfNodesToUnregister = noOfNodesToUnregister
-	return m
+func (b *_UnregisterNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) UnregisterNodesRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_UnregisterNodesRequestBuilder) WithNodesToUnregister(nodesToUnregister ...NodeId) UnregisterNodesRequestBuilder {
-	m.NodesToUnregister = nodesToUnregister
-	return m
-}
-
-func (m *_UnregisterNodesRequestBuilder) Build() (UnregisterNodesRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_UnregisterNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) UnregisterNodesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._UnregisterNodesRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_UnregisterNodesRequestBuilder) MustBuild() UnregisterNodesRequest {
-	build, err := m.Build()
+func (b *_UnregisterNodesRequestBuilder) WithNoOfNodesToUnregister(noOfNodesToUnregister int32) UnregisterNodesRequestBuilder {
+	b.NoOfNodesToUnregister = noOfNodesToUnregister
+	return b
+}
+
+func (b *_UnregisterNodesRequestBuilder) WithNodesToUnregister(nodesToUnregister ...NodeId) UnregisterNodesRequestBuilder {
+	b.NodesToUnregister = nodesToUnregister
+	return b
+}
+
+func (b *_UnregisterNodesRequestBuilder) Build() (UnregisterNodesRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._UnregisterNodesRequest.deepCopy(), nil
+}
+
+func (b *_UnregisterNodesRequestBuilder) MustBuild() UnregisterNodesRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_UnregisterNodesRequestBuilder) DeepCopy() any {
-	return m.CreateUnregisterNodesRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UnregisterNodesRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UnregisterNodesRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_UnregisterNodesRequestBuilder) DeepCopy() any {
+	_copy := b.CreateUnregisterNodesRequestBuilder().(*_UnregisterNodesRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateUnregisterNodesRequestBuilder creates a UnregisterNodesRequestBuilder
-func (m *_UnregisterNodesRequest) CreateUnregisterNodesRequestBuilder() UnregisterNodesRequestBuilder {
-	if m == nil {
+func (b *_UnregisterNodesRequest) CreateUnregisterNodesRequestBuilder() UnregisterNodesRequestBuilder {
+	if b == nil {
 		return NewUnregisterNodesRequestBuilder()
 	}
-	return &_UnregisterNodesRequestBuilder{_UnregisterNodesRequest: m.deepCopy()}
+	return &_UnregisterNodesRequestBuilder{_UnregisterNodesRequest: b.deepCopy()}
 }
 
 ///////////////////////

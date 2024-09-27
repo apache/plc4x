@@ -103,63 +103,82 @@ func NewBACnetConstructedDataIPv6DNSServerBuilder() BACnetConstructedDataIPv6DNS
 type _BACnetConstructedDataIPv6DNSServerBuilder struct {
 	*_BACnetConstructedDataIPv6DNSServer
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataIPv6DNSServerBuilder) = (*_BACnetConstructedDataIPv6DNSServerBuilder)(nil)
 
-func (m *_BACnetConstructedDataIPv6DNSServerBuilder) WithMandatoryFields(ipv6DnsServer []BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DNSServerBuilder {
-	return m.WithIpv6DnsServer(ipv6DnsServer...)
+func (b *_BACnetConstructedDataIPv6DNSServerBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataIPv6DNSServerBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPv6DNSServerBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataIPv6DNSServerBuilder) WithMandatoryFields(ipv6DnsServer []BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DNSServerBuilder {
+	return b.WithIpv6DnsServer(ipv6DnsServer...)
 }
 
-func (m *_BACnetConstructedDataIPv6DNSServerBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIPv6DNSServerBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataIPv6DNSServerBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPv6DNSServerBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataIPv6DNSServerBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIPv6DNSServerBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataIPv6DNSServerBuilder) WithIpv6DnsServer(ipv6DnsServer ...BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DNSServerBuilder {
-	m.Ipv6DnsServer = ipv6DnsServer
-	return m
+func (b *_BACnetConstructedDataIPv6DNSServerBuilder) WithIpv6DnsServer(ipv6DnsServer ...BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DNSServerBuilder {
+	b.Ipv6DnsServer = ipv6DnsServer
+	return b
 }
 
-func (m *_BACnetConstructedDataIPv6DNSServerBuilder) Build() (BACnetConstructedDataIPv6DNSServer, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataIPv6DNSServerBuilder) Build() (BACnetConstructedDataIPv6DNSServer, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataIPv6DNSServer.deepCopy(), nil
+	return b._BACnetConstructedDataIPv6DNSServer.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataIPv6DNSServerBuilder) MustBuild() BACnetConstructedDataIPv6DNSServer {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataIPv6DNSServerBuilder) MustBuild() BACnetConstructedDataIPv6DNSServer {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataIPv6DNSServerBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataIPv6DNSServerBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPv6DNSServerBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPv6DNSServerBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPv6DNSServerBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPv6DNSServerBuilder().(*_BACnetConstructedDataIPv6DNSServerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataIPv6DNSServerBuilder creates a BACnetConstructedDataIPv6DNSServerBuilder
-func (m *_BACnetConstructedDataIPv6DNSServer) CreateBACnetConstructedDataIPv6DNSServerBuilder() BACnetConstructedDataIPv6DNSServerBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataIPv6DNSServer) CreateBACnetConstructedDataIPv6DNSServerBuilder() BACnetConstructedDataIPv6DNSServerBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataIPv6DNSServerBuilder()
 	}
-	return &_BACnetConstructedDataIPv6DNSServerBuilder{_BACnetConstructedDataIPv6DNSServer: m.deepCopy()}
+	return &_BACnetConstructedDataIPv6DNSServerBuilder{_BACnetConstructedDataIPv6DNSServer: b.deepCopy()}
 }
 
 ///////////////////////

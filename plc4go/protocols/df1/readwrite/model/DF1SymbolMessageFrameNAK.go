@@ -86,40 +86,59 @@ func NewDF1SymbolMessageFrameNAKBuilder() DF1SymbolMessageFrameNAKBuilder {
 type _DF1SymbolMessageFrameNAKBuilder struct {
 	*_DF1SymbolMessageFrameNAK
 
+	parentBuilder *_DF1SymbolBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DF1SymbolMessageFrameNAKBuilder) = (*_DF1SymbolMessageFrameNAKBuilder)(nil)
 
-func (m *_DF1SymbolMessageFrameNAKBuilder) WithMandatoryFields() DF1SymbolMessageFrameNAKBuilder {
-	return m
+func (b *_DF1SymbolMessageFrameNAKBuilder) setParent(contract DF1SymbolContract) {
+	b.DF1SymbolContract = contract
 }
 
-func (m *_DF1SymbolMessageFrameNAKBuilder) Build() (DF1SymbolMessageFrameNAK, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DF1SymbolMessageFrameNAKBuilder) WithMandatoryFields() DF1SymbolMessageFrameNAKBuilder {
+	return b
+}
+
+func (b *_DF1SymbolMessageFrameNAKBuilder) Build() (DF1SymbolMessageFrameNAK, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DF1SymbolMessageFrameNAK.deepCopy(), nil
+	return b._DF1SymbolMessageFrameNAK.deepCopy(), nil
 }
 
-func (m *_DF1SymbolMessageFrameNAKBuilder) MustBuild() DF1SymbolMessageFrameNAK {
-	build, err := m.Build()
+func (b *_DF1SymbolMessageFrameNAKBuilder) MustBuild() DF1SymbolMessageFrameNAK {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DF1SymbolMessageFrameNAKBuilder) DeepCopy() any {
-	return m.CreateDF1SymbolMessageFrameNAKBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DF1SymbolMessageFrameNAKBuilder) Done() DF1SymbolBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DF1SymbolMessageFrameNAKBuilder) buildForDF1Symbol() (DF1Symbol, error) {
+	return b.Build()
+}
+
+func (b *_DF1SymbolMessageFrameNAKBuilder) DeepCopy() any {
+	_copy := b.CreateDF1SymbolMessageFrameNAKBuilder().(*_DF1SymbolMessageFrameNAKBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDF1SymbolMessageFrameNAKBuilder creates a DF1SymbolMessageFrameNAKBuilder
-func (m *_DF1SymbolMessageFrameNAK) CreateDF1SymbolMessageFrameNAKBuilder() DF1SymbolMessageFrameNAKBuilder {
-	if m == nil {
+func (b *_DF1SymbolMessageFrameNAK) CreateDF1SymbolMessageFrameNAKBuilder() DF1SymbolMessageFrameNAKBuilder {
+	if b == nil {
 		return NewDF1SymbolMessageFrameNAKBuilder()
 	}
-	return &_DF1SymbolMessageFrameNAKBuilder{_DF1SymbolMessageFrameNAK: m.deepCopy()}
+	return &_DF1SymbolMessageFrameNAKBuilder{_DF1SymbolMessageFrameNAK: b.deepCopy()}
 }
 
 ///////////////////////

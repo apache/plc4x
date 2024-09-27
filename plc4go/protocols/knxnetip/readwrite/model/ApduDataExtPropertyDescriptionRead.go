@@ -105,55 +105,74 @@ func NewApduDataExtPropertyDescriptionReadBuilder() ApduDataExtPropertyDescripti
 type _ApduDataExtPropertyDescriptionReadBuilder struct {
 	*_ApduDataExtPropertyDescriptionRead
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtPropertyDescriptionReadBuilder) = (*_ApduDataExtPropertyDescriptionReadBuilder)(nil)
 
-func (m *_ApduDataExtPropertyDescriptionReadBuilder) WithMandatoryFields(objectIndex uint8, propertyId uint8, index uint8) ApduDataExtPropertyDescriptionReadBuilder {
-	return m.WithObjectIndex(objectIndex).WithPropertyId(propertyId).WithIndex(index)
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtPropertyDescriptionReadBuilder) WithObjectIndex(objectIndex uint8) ApduDataExtPropertyDescriptionReadBuilder {
-	m.ObjectIndex = objectIndex
-	return m
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) WithMandatoryFields(objectIndex uint8, propertyId uint8, index uint8) ApduDataExtPropertyDescriptionReadBuilder {
+	return b.WithObjectIndex(objectIndex).WithPropertyId(propertyId).WithIndex(index)
 }
 
-func (m *_ApduDataExtPropertyDescriptionReadBuilder) WithPropertyId(propertyId uint8) ApduDataExtPropertyDescriptionReadBuilder {
-	m.PropertyId = propertyId
-	return m
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) WithObjectIndex(objectIndex uint8) ApduDataExtPropertyDescriptionReadBuilder {
+	b.ObjectIndex = objectIndex
+	return b
 }
 
-func (m *_ApduDataExtPropertyDescriptionReadBuilder) WithIndex(index uint8) ApduDataExtPropertyDescriptionReadBuilder {
-	m.Index = index
-	return m
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) WithPropertyId(propertyId uint8) ApduDataExtPropertyDescriptionReadBuilder {
+	b.PropertyId = propertyId
+	return b
 }
 
-func (m *_ApduDataExtPropertyDescriptionReadBuilder) Build() (ApduDataExtPropertyDescriptionRead, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) WithIndex(index uint8) ApduDataExtPropertyDescriptionReadBuilder {
+	b.Index = index
+	return b
+}
+
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) Build() (ApduDataExtPropertyDescriptionRead, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtPropertyDescriptionRead.deepCopy(), nil
+	return b._ApduDataExtPropertyDescriptionRead.deepCopy(), nil
 }
 
-func (m *_ApduDataExtPropertyDescriptionReadBuilder) MustBuild() ApduDataExtPropertyDescriptionRead {
-	build, err := m.Build()
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) MustBuild() ApduDataExtPropertyDescriptionRead {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtPropertyDescriptionReadBuilder) DeepCopy() any {
-	return m.CreateApduDataExtPropertyDescriptionReadBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtPropertyDescriptionReadBuilder().(*_ApduDataExtPropertyDescriptionReadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtPropertyDescriptionReadBuilder creates a ApduDataExtPropertyDescriptionReadBuilder
-func (m *_ApduDataExtPropertyDescriptionRead) CreateApduDataExtPropertyDescriptionReadBuilder() ApduDataExtPropertyDescriptionReadBuilder {
-	if m == nil {
+func (b *_ApduDataExtPropertyDescriptionRead) CreateApduDataExtPropertyDescriptionReadBuilder() ApduDataExtPropertyDescriptionReadBuilder {
+	if b == nil {
 		return NewApduDataExtPropertyDescriptionReadBuilder()
 	}
-	return &_ApduDataExtPropertyDescriptionReadBuilder{_ApduDataExtPropertyDescriptionRead: m.deepCopy()}
+	return &_ApduDataExtPropertyDescriptionReadBuilder{_ApduDataExtPropertyDescriptionRead: b.deepCopy()}
 }
 
 ///////////////////////

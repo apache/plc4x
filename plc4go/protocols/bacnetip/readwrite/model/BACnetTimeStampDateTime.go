@@ -98,64 +98,83 @@ func NewBACnetTimeStampDateTimeBuilder() BACnetTimeStampDateTimeBuilder {
 type _BACnetTimeStampDateTimeBuilder struct {
 	*_BACnetTimeStampDateTime
 
+	parentBuilder *_BACnetTimeStampBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetTimeStampDateTimeBuilder) = (*_BACnetTimeStampDateTimeBuilder)(nil)
 
-func (m *_BACnetTimeStampDateTimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetTimeStampDateTimeBuilder {
-	return m.WithDateTimeValue(dateTimeValue)
+func (b *_BACnetTimeStampDateTimeBuilder) setParent(contract BACnetTimeStampContract) {
+	b.BACnetTimeStampContract = contract
 }
 
-func (m *_BACnetTimeStampDateTimeBuilder) WithDateTimeValue(dateTimeValue BACnetDateTimeEnclosed) BACnetTimeStampDateTimeBuilder {
-	m.DateTimeValue = dateTimeValue
-	return m
+func (b *_BACnetTimeStampDateTimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetTimeStampDateTimeBuilder {
+	return b.WithDateTimeValue(dateTimeValue)
 }
 
-func (m *_BACnetTimeStampDateTimeBuilder) WithDateTimeValueBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetTimeStampDateTimeBuilder {
-	builder := builderSupplier(m.DateTimeValue.CreateBACnetDateTimeEnclosedBuilder())
+func (b *_BACnetTimeStampDateTimeBuilder) WithDateTimeValue(dateTimeValue BACnetDateTimeEnclosed) BACnetTimeStampDateTimeBuilder {
+	b.DateTimeValue = dateTimeValue
+	return b
+}
+
+func (b *_BACnetTimeStampDateTimeBuilder) WithDateTimeValueBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetTimeStampDateTimeBuilder {
+	builder := builderSupplier(b.DateTimeValue.CreateBACnetDateTimeEnclosedBuilder())
 	var err error
-	m.DateTimeValue, err = builder.Build()
+	b.DateTimeValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetTimeStampDateTimeBuilder) Build() (BACnetTimeStampDateTime, error) {
-	if m.DateTimeValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetTimeStampDateTimeBuilder) Build() (BACnetTimeStampDateTime, error) {
+	if b.DateTimeValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dateTimeValue' not set"))
+		b.err.Append(errors.New("mandatory field 'dateTimeValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTimeStampDateTime.deepCopy(), nil
+	return b._BACnetTimeStampDateTime.deepCopy(), nil
 }
 
-func (m *_BACnetTimeStampDateTimeBuilder) MustBuild() BACnetTimeStampDateTime {
-	build, err := m.Build()
+func (b *_BACnetTimeStampDateTimeBuilder) MustBuild() BACnetTimeStampDateTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTimeStampDateTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetTimeStampDateTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetTimeStampDateTimeBuilder) Done() BACnetTimeStampBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetTimeStampDateTimeBuilder) buildForBACnetTimeStamp() (BACnetTimeStamp, error) {
+	return b.Build()
+}
+
+func (b *_BACnetTimeStampDateTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimeStampDateTimeBuilder().(*_BACnetTimeStampDateTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTimeStampDateTimeBuilder creates a BACnetTimeStampDateTimeBuilder
-func (m *_BACnetTimeStampDateTime) CreateBACnetTimeStampDateTimeBuilder() BACnetTimeStampDateTimeBuilder {
-	if m == nil {
+func (b *_BACnetTimeStampDateTime) CreateBACnetTimeStampDateTimeBuilder() BACnetTimeStampDateTimeBuilder {
+	if b == nil {
 		return NewBACnetTimeStampDateTimeBuilder()
 	}
-	return &_BACnetTimeStampDateTimeBuilder{_BACnetTimeStampDateTime: m.deepCopy()}
+	return &_BACnetTimeStampDateTimeBuilder{_BACnetTimeStampDateTime: b.deepCopy()}
 }
 
 ///////////////////////

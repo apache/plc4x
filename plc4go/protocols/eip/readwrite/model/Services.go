@@ -98,45 +98,49 @@ type _ServicesBuilder struct {
 
 var _ (ServicesBuilder) = (*_ServicesBuilder)(nil)
 
-func (m *_ServicesBuilder) WithMandatoryFields(offsets []uint16, services []CipService) ServicesBuilder {
-	return m.WithOffsets(offsets...).WithServices(services...)
+func (b *_ServicesBuilder) WithMandatoryFields(offsets []uint16, services []CipService) ServicesBuilder {
+	return b.WithOffsets(offsets...).WithServices(services...)
 }
 
-func (m *_ServicesBuilder) WithOffsets(offsets ...uint16) ServicesBuilder {
-	m.Offsets = offsets
-	return m
+func (b *_ServicesBuilder) WithOffsets(offsets ...uint16) ServicesBuilder {
+	b.Offsets = offsets
+	return b
 }
 
-func (m *_ServicesBuilder) WithServices(services ...CipService) ServicesBuilder {
-	m.Services = services
-	return m
+func (b *_ServicesBuilder) WithServices(services ...CipService) ServicesBuilder {
+	b.Services = services
+	return b
 }
 
-func (m *_ServicesBuilder) Build() (Services, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ServicesBuilder) Build() (Services, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Services.deepCopy(), nil
+	return b._Services.deepCopy(), nil
 }
 
-func (m *_ServicesBuilder) MustBuild() Services {
-	build, err := m.Build()
+func (b *_ServicesBuilder) MustBuild() Services {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ServicesBuilder) DeepCopy() any {
-	return m.CreateServicesBuilder()
+func (b *_ServicesBuilder) DeepCopy() any {
+	_copy := b.CreateServicesBuilder().(*_ServicesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateServicesBuilder creates a ServicesBuilder
-func (m *_Services) CreateServicesBuilder() ServicesBuilder {
-	if m == nil {
+func (b *_Services) CreateServicesBuilder() ServicesBuilder {
+	if b == nil {
 		return NewServicesBuilder()
 	}
-	return &_ServicesBuilder{_Services: m.deepCopy()}
+	return &_ServicesBuilder{_Services: b.deepCopy()}
 }
 
 ///////////////////////

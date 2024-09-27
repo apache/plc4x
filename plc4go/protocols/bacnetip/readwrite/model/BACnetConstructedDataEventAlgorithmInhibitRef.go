@@ -100,64 +100,83 @@ func NewBACnetConstructedDataEventAlgorithmInhibitRefBuilder() BACnetConstructed
 type _BACnetConstructedDataEventAlgorithmInhibitRefBuilder struct {
 	*_BACnetConstructedDataEventAlgorithmInhibitRef
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataEventAlgorithmInhibitRefBuilder) = (*_BACnetConstructedDataEventAlgorithmInhibitRefBuilder)(nil)
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibitRefBuilder) WithMandatoryFields(eventAlgorithmInhibitRef BACnetObjectPropertyReference) BACnetConstructedDataEventAlgorithmInhibitRefBuilder {
-	return m.WithEventAlgorithmInhibitRef(eventAlgorithmInhibitRef)
+func (b *_BACnetConstructedDataEventAlgorithmInhibitRefBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibitRefBuilder) WithEventAlgorithmInhibitRef(eventAlgorithmInhibitRef BACnetObjectPropertyReference) BACnetConstructedDataEventAlgorithmInhibitRefBuilder {
-	m.EventAlgorithmInhibitRef = eventAlgorithmInhibitRef
-	return m
+func (b *_BACnetConstructedDataEventAlgorithmInhibitRefBuilder) WithMandatoryFields(eventAlgorithmInhibitRef BACnetObjectPropertyReference) BACnetConstructedDataEventAlgorithmInhibitRefBuilder {
+	return b.WithEventAlgorithmInhibitRef(eventAlgorithmInhibitRef)
 }
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibitRefBuilder) WithEventAlgorithmInhibitRefBuilder(builderSupplier func(BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceBuilder) BACnetConstructedDataEventAlgorithmInhibitRefBuilder {
-	builder := builderSupplier(m.EventAlgorithmInhibitRef.CreateBACnetObjectPropertyReferenceBuilder())
+func (b *_BACnetConstructedDataEventAlgorithmInhibitRefBuilder) WithEventAlgorithmInhibitRef(eventAlgorithmInhibitRef BACnetObjectPropertyReference) BACnetConstructedDataEventAlgorithmInhibitRefBuilder {
+	b.EventAlgorithmInhibitRef = eventAlgorithmInhibitRef
+	return b
+}
+
+func (b *_BACnetConstructedDataEventAlgorithmInhibitRefBuilder) WithEventAlgorithmInhibitRefBuilder(builderSupplier func(BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceBuilder) BACnetConstructedDataEventAlgorithmInhibitRefBuilder {
+	builder := builderSupplier(b.EventAlgorithmInhibitRef.CreateBACnetObjectPropertyReferenceBuilder())
 	var err error
-	m.EventAlgorithmInhibitRef, err = builder.Build()
+	b.EventAlgorithmInhibitRef, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibitRefBuilder) Build() (BACnetConstructedDataEventAlgorithmInhibitRef, error) {
-	if m.EventAlgorithmInhibitRef == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataEventAlgorithmInhibitRefBuilder) Build() (BACnetConstructedDataEventAlgorithmInhibitRef, error) {
+	if b.EventAlgorithmInhibitRef == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'eventAlgorithmInhibitRef' not set"))
+		b.err.Append(errors.New("mandatory field 'eventAlgorithmInhibitRef' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataEventAlgorithmInhibitRef.deepCopy(), nil
+	return b._BACnetConstructedDataEventAlgorithmInhibitRef.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibitRefBuilder) MustBuild() BACnetConstructedDataEventAlgorithmInhibitRef {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataEventAlgorithmInhibitRefBuilder) MustBuild() BACnetConstructedDataEventAlgorithmInhibitRef {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataEventAlgorithmInhibitRefBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataEventAlgorithmInhibitRefBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEventAlgorithmInhibitRefBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEventAlgorithmInhibitRefBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEventAlgorithmInhibitRefBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEventAlgorithmInhibitRefBuilder().(*_BACnetConstructedDataEventAlgorithmInhibitRefBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataEventAlgorithmInhibitRefBuilder creates a BACnetConstructedDataEventAlgorithmInhibitRefBuilder
-func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) CreateBACnetConstructedDataEventAlgorithmInhibitRefBuilder() BACnetConstructedDataEventAlgorithmInhibitRefBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataEventAlgorithmInhibitRef) CreateBACnetConstructedDataEventAlgorithmInhibitRefBuilder() BACnetConstructedDataEventAlgorithmInhibitRefBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataEventAlgorithmInhibitRefBuilder()
 	}
-	return &_BACnetConstructedDataEventAlgorithmInhibitRefBuilder{_BACnetConstructedDataEventAlgorithmInhibitRef: m.deepCopy()}
+	return &_BACnetConstructedDataEventAlgorithmInhibitRefBuilder{_BACnetConstructedDataEventAlgorithmInhibitRef: b.deepCopy()}
 }
 
 ///////////////////////

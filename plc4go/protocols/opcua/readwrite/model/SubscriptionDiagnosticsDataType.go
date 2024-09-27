@@ -280,214 +280,233 @@ func NewSubscriptionDiagnosticsDataTypeBuilder() SubscriptionDiagnosticsDataType
 type _SubscriptionDiagnosticsDataTypeBuilder struct {
 	*_SubscriptionDiagnosticsDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SubscriptionDiagnosticsDataTypeBuilder) = (*_SubscriptionDiagnosticsDataTypeBuilder)(nil)
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithMandatoryFields(sessionId NodeId, subscriptionId uint32, priority uint8, publishingInterval float64, maxKeepAliveCount uint32, maxLifetimeCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, modifyCount uint32, enableCount uint32, disableCount uint32, republishRequestCount uint32, republishMessageRequestCount uint32, republishMessageCount uint32, transferRequestCount uint32, transferredToAltClientCount uint32, transferredToSameClientCount uint32, publishRequestCount uint32, dataChangeNotificationsCount uint32, eventNotificationsCount uint32, notificationsCount uint32, latePublishRequestCount uint32, currentKeepAliveCount uint32, currentLifetimeCount uint32, unacknowledgedMessageCount uint32, discardedMessageCount uint32, monitoredItemCount uint32, disabledMonitoredItemCount uint32, monitoringQueueOverflowCount uint32, nextSequenceNumber uint32, eventQueueOverFlowCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	return m.WithSessionId(sessionId).WithSubscriptionId(subscriptionId).WithPriority(priority).WithPublishingInterval(publishingInterval).WithMaxKeepAliveCount(maxKeepAliveCount).WithMaxLifetimeCount(maxLifetimeCount).WithMaxNotificationsPerPublish(maxNotificationsPerPublish).WithPublishingEnabled(publishingEnabled).WithModifyCount(modifyCount).WithEnableCount(enableCount).WithDisableCount(disableCount).WithRepublishRequestCount(republishRequestCount).WithRepublishMessageRequestCount(republishMessageRequestCount).WithRepublishMessageCount(republishMessageCount).WithTransferRequestCount(transferRequestCount).WithTransferredToAltClientCount(transferredToAltClientCount).WithTransferredToSameClientCount(transferredToSameClientCount).WithPublishRequestCount(publishRequestCount).WithDataChangeNotificationsCount(dataChangeNotificationsCount).WithEventNotificationsCount(eventNotificationsCount).WithNotificationsCount(notificationsCount).WithLatePublishRequestCount(latePublishRequestCount).WithCurrentKeepAliveCount(currentKeepAliveCount).WithCurrentLifetimeCount(currentLifetimeCount).WithUnacknowledgedMessageCount(unacknowledgedMessageCount).WithDiscardedMessageCount(discardedMessageCount).WithMonitoredItemCount(monitoredItemCount).WithDisabledMonitoredItemCount(disabledMonitoredItemCount).WithMonitoringQueueOverflowCount(monitoringQueueOverflowCount).WithNextSequenceNumber(nextSequenceNumber).WithEventQueueOverFlowCount(eventQueueOverFlowCount)
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithSessionId(sessionId NodeId) SubscriptionDiagnosticsDataTypeBuilder {
-	m.SessionId = sessionId
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithMandatoryFields(sessionId NodeId, subscriptionId uint32, priority uint8, publishingInterval float64, maxKeepAliveCount uint32, maxLifetimeCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, modifyCount uint32, enableCount uint32, disableCount uint32, republishRequestCount uint32, republishMessageRequestCount uint32, republishMessageCount uint32, transferRequestCount uint32, transferredToAltClientCount uint32, transferredToSameClientCount uint32, publishRequestCount uint32, dataChangeNotificationsCount uint32, eventNotificationsCount uint32, notificationsCount uint32, latePublishRequestCount uint32, currentKeepAliveCount uint32, currentLifetimeCount uint32, unacknowledgedMessageCount uint32, discardedMessageCount uint32, monitoredItemCount uint32, disabledMonitoredItemCount uint32, monitoringQueueOverflowCount uint32, nextSequenceNumber uint32, eventQueueOverFlowCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	return b.WithSessionId(sessionId).WithSubscriptionId(subscriptionId).WithPriority(priority).WithPublishingInterval(publishingInterval).WithMaxKeepAliveCount(maxKeepAliveCount).WithMaxLifetimeCount(maxLifetimeCount).WithMaxNotificationsPerPublish(maxNotificationsPerPublish).WithPublishingEnabled(publishingEnabled).WithModifyCount(modifyCount).WithEnableCount(enableCount).WithDisableCount(disableCount).WithRepublishRequestCount(republishRequestCount).WithRepublishMessageRequestCount(republishMessageRequestCount).WithRepublishMessageCount(republishMessageCount).WithTransferRequestCount(transferRequestCount).WithTransferredToAltClientCount(transferredToAltClientCount).WithTransferredToSameClientCount(transferredToSameClientCount).WithPublishRequestCount(publishRequestCount).WithDataChangeNotificationsCount(dataChangeNotificationsCount).WithEventNotificationsCount(eventNotificationsCount).WithNotificationsCount(notificationsCount).WithLatePublishRequestCount(latePublishRequestCount).WithCurrentKeepAliveCount(currentKeepAliveCount).WithCurrentLifetimeCount(currentLifetimeCount).WithUnacknowledgedMessageCount(unacknowledgedMessageCount).WithDiscardedMessageCount(discardedMessageCount).WithMonitoredItemCount(monitoredItemCount).WithDisabledMonitoredItemCount(disabledMonitoredItemCount).WithMonitoringQueueOverflowCount(monitoringQueueOverflowCount).WithNextSequenceNumber(nextSequenceNumber).WithEventQueueOverFlowCount(eventQueueOverFlowCount)
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithSessionIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) SubscriptionDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(m.SessionId.CreateNodeIdBuilder())
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithSessionId(sessionId NodeId) SubscriptionDiagnosticsDataTypeBuilder {
+	b.SessionId = sessionId
+	return b
+}
+
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithSessionIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) SubscriptionDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.SessionId.CreateNodeIdBuilder())
 	var err error
-	m.SessionId, err = builder.Build()
+	b.SessionId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithSubscriptionId(subscriptionId uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.SubscriptionId = subscriptionId
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithSubscriptionId(subscriptionId uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.SubscriptionId = subscriptionId
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithPriority(priority uint8) SubscriptionDiagnosticsDataTypeBuilder {
-	m.Priority = priority
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithPriority(priority uint8) SubscriptionDiagnosticsDataTypeBuilder {
+	b.Priority = priority
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithPublishingInterval(publishingInterval float64) SubscriptionDiagnosticsDataTypeBuilder {
-	m.PublishingInterval = publishingInterval
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithPublishingInterval(publishingInterval float64) SubscriptionDiagnosticsDataTypeBuilder {
+	b.PublishingInterval = publishingInterval
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithMaxKeepAliveCount(maxKeepAliveCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.MaxKeepAliveCount = maxKeepAliveCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithMaxKeepAliveCount(maxKeepAliveCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.MaxKeepAliveCount = maxKeepAliveCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithMaxLifetimeCount(maxLifetimeCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.MaxLifetimeCount = maxLifetimeCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithMaxLifetimeCount(maxLifetimeCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.MaxLifetimeCount = maxLifetimeCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithMaxNotificationsPerPublish(maxNotificationsPerPublish uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.MaxNotificationsPerPublish = maxNotificationsPerPublish
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithMaxNotificationsPerPublish(maxNotificationsPerPublish uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.MaxNotificationsPerPublish = maxNotificationsPerPublish
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithPublishingEnabled(publishingEnabled bool) SubscriptionDiagnosticsDataTypeBuilder {
-	m.PublishingEnabled = publishingEnabled
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithPublishingEnabled(publishingEnabled bool) SubscriptionDiagnosticsDataTypeBuilder {
+	b.PublishingEnabled = publishingEnabled
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithModifyCount(modifyCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.ModifyCount = modifyCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithModifyCount(modifyCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.ModifyCount = modifyCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithEnableCount(enableCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.EnableCount = enableCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithEnableCount(enableCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.EnableCount = enableCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithDisableCount(disableCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.DisableCount = disableCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithDisableCount(disableCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.DisableCount = disableCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithRepublishRequestCount(republishRequestCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.RepublishRequestCount = republishRequestCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithRepublishRequestCount(republishRequestCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.RepublishRequestCount = republishRequestCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithRepublishMessageRequestCount(republishMessageRequestCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.RepublishMessageRequestCount = republishMessageRequestCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithRepublishMessageRequestCount(republishMessageRequestCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.RepublishMessageRequestCount = republishMessageRequestCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithRepublishMessageCount(republishMessageCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.RepublishMessageCount = republishMessageCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithRepublishMessageCount(republishMessageCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.RepublishMessageCount = republishMessageCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithTransferRequestCount(transferRequestCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.TransferRequestCount = transferRequestCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithTransferRequestCount(transferRequestCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.TransferRequestCount = transferRequestCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithTransferredToAltClientCount(transferredToAltClientCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.TransferredToAltClientCount = transferredToAltClientCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithTransferredToAltClientCount(transferredToAltClientCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.TransferredToAltClientCount = transferredToAltClientCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithTransferredToSameClientCount(transferredToSameClientCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.TransferredToSameClientCount = transferredToSameClientCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithTransferredToSameClientCount(transferredToSameClientCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.TransferredToSameClientCount = transferredToSameClientCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithPublishRequestCount(publishRequestCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.PublishRequestCount = publishRequestCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithPublishRequestCount(publishRequestCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.PublishRequestCount = publishRequestCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithDataChangeNotificationsCount(dataChangeNotificationsCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.DataChangeNotificationsCount = dataChangeNotificationsCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithDataChangeNotificationsCount(dataChangeNotificationsCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.DataChangeNotificationsCount = dataChangeNotificationsCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithEventNotificationsCount(eventNotificationsCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.EventNotificationsCount = eventNotificationsCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithEventNotificationsCount(eventNotificationsCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.EventNotificationsCount = eventNotificationsCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithNotificationsCount(notificationsCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.NotificationsCount = notificationsCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithNotificationsCount(notificationsCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.NotificationsCount = notificationsCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithLatePublishRequestCount(latePublishRequestCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.LatePublishRequestCount = latePublishRequestCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithLatePublishRequestCount(latePublishRequestCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.LatePublishRequestCount = latePublishRequestCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithCurrentKeepAliveCount(currentKeepAliveCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.CurrentKeepAliveCount = currentKeepAliveCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithCurrentKeepAliveCount(currentKeepAliveCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.CurrentKeepAliveCount = currentKeepAliveCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithCurrentLifetimeCount(currentLifetimeCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.CurrentLifetimeCount = currentLifetimeCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithCurrentLifetimeCount(currentLifetimeCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.CurrentLifetimeCount = currentLifetimeCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithUnacknowledgedMessageCount(unacknowledgedMessageCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.UnacknowledgedMessageCount = unacknowledgedMessageCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithUnacknowledgedMessageCount(unacknowledgedMessageCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.UnacknowledgedMessageCount = unacknowledgedMessageCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithDiscardedMessageCount(discardedMessageCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.DiscardedMessageCount = discardedMessageCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithDiscardedMessageCount(discardedMessageCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.DiscardedMessageCount = discardedMessageCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithMonitoredItemCount(monitoredItemCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.MonitoredItemCount = monitoredItemCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithMonitoredItemCount(monitoredItemCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.MonitoredItemCount = monitoredItemCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithDisabledMonitoredItemCount(disabledMonitoredItemCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.DisabledMonitoredItemCount = disabledMonitoredItemCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithDisabledMonitoredItemCount(disabledMonitoredItemCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.DisabledMonitoredItemCount = disabledMonitoredItemCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithMonitoringQueueOverflowCount(monitoringQueueOverflowCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.MonitoringQueueOverflowCount = monitoringQueueOverflowCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithMonitoringQueueOverflowCount(monitoringQueueOverflowCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.MonitoringQueueOverflowCount = monitoringQueueOverflowCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithNextSequenceNumber(nextSequenceNumber uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.NextSequenceNumber = nextSequenceNumber
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithNextSequenceNumber(nextSequenceNumber uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.NextSequenceNumber = nextSequenceNumber
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) WithEventQueueOverFlowCount(eventQueueOverFlowCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
-	m.EventQueueOverFlowCount = eventQueueOverFlowCount
-	return m
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithEventQueueOverFlowCount(eventQueueOverFlowCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
+	b.EventQueueOverFlowCount = eventQueueOverFlowCount
+	return b
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) Build() (SubscriptionDiagnosticsDataType, error) {
-	if m.SessionId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) Build() (SubscriptionDiagnosticsDataType, error) {
+	if b.SessionId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'sessionId' not set"))
+		b.err.Append(errors.New("mandatory field 'sessionId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SubscriptionDiagnosticsDataType.deepCopy(), nil
+	return b._SubscriptionDiagnosticsDataType.deepCopy(), nil
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) MustBuild() SubscriptionDiagnosticsDataType {
-	build, err := m.Build()
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) MustBuild() SubscriptionDiagnosticsDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SubscriptionDiagnosticsDataTypeBuilder) DeepCopy() any {
-	return m.CreateSubscriptionDiagnosticsDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SubscriptionDiagnosticsDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateSubscriptionDiagnosticsDataTypeBuilder().(*_SubscriptionDiagnosticsDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSubscriptionDiagnosticsDataTypeBuilder creates a SubscriptionDiagnosticsDataTypeBuilder
-func (m *_SubscriptionDiagnosticsDataType) CreateSubscriptionDiagnosticsDataTypeBuilder() SubscriptionDiagnosticsDataTypeBuilder {
-	if m == nil {
+func (b *_SubscriptionDiagnosticsDataType) CreateSubscriptionDiagnosticsDataTypeBuilder() SubscriptionDiagnosticsDataTypeBuilder {
+	if b == nil {
 		return NewSubscriptionDiagnosticsDataTypeBuilder()
 	}
-	return &_SubscriptionDiagnosticsDataTypeBuilder{_SubscriptionDiagnosticsDataType: m.deepCopy()}
+	return &_SubscriptionDiagnosticsDataTypeBuilder{_SubscriptionDiagnosticsDataType: b.deepCopy()}
 }
 
 ///////////////////////

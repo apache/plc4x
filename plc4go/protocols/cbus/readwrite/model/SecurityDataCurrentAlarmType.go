@@ -85,40 +85,59 @@ func NewSecurityDataCurrentAlarmTypeBuilder() SecurityDataCurrentAlarmTypeBuilde
 type _SecurityDataCurrentAlarmTypeBuilder struct {
 	*_SecurityDataCurrentAlarmType
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataCurrentAlarmTypeBuilder) = (*_SecurityDataCurrentAlarmTypeBuilder)(nil)
 
-func (m *_SecurityDataCurrentAlarmTypeBuilder) WithMandatoryFields() SecurityDataCurrentAlarmTypeBuilder {
-	return m
+func (b *_SecurityDataCurrentAlarmTypeBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataCurrentAlarmTypeBuilder) Build() (SecurityDataCurrentAlarmType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataCurrentAlarmTypeBuilder) WithMandatoryFields() SecurityDataCurrentAlarmTypeBuilder {
+	return b
+}
+
+func (b *_SecurityDataCurrentAlarmTypeBuilder) Build() (SecurityDataCurrentAlarmType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataCurrentAlarmType.deepCopy(), nil
+	return b._SecurityDataCurrentAlarmType.deepCopy(), nil
 }
 
-func (m *_SecurityDataCurrentAlarmTypeBuilder) MustBuild() SecurityDataCurrentAlarmType {
-	build, err := m.Build()
+func (b *_SecurityDataCurrentAlarmTypeBuilder) MustBuild() SecurityDataCurrentAlarmType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataCurrentAlarmTypeBuilder) DeepCopy() any {
-	return m.CreateSecurityDataCurrentAlarmTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataCurrentAlarmTypeBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataCurrentAlarmTypeBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataCurrentAlarmTypeBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataCurrentAlarmTypeBuilder().(*_SecurityDataCurrentAlarmTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataCurrentAlarmTypeBuilder creates a SecurityDataCurrentAlarmTypeBuilder
-func (m *_SecurityDataCurrentAlarmType) CreateSecurityDataCurrentAlarmTypeBuilder() SecurityDataCurrentAlarmTypeBuilder {
-	if m == nil {
+func (b *_SecurityDataCurrentAlarmType) CreateSecurityDataCurrentAlarmTypeBuilder() SecurityDataCurrentAlarmTypeBuilder {
+	if b == nil {
 		return NewSecurityDataCurrentAlarmTypeBuilder()
 	}
-	return &_SecurityDataCurrentAlarmTypeBuilder{_SecurityDataCurrentAlarmType: m.deepCopy()}
+	return &_SecurityDataCurrentAlarmTypeBuilder{_SecurityDataCurrentAlarmType: b.deepCopy()}
 }
 
 ///////////////////////

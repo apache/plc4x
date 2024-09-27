@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAnalogOutputRelinquishDefaultBuilder() BACnetConstr
 type _BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder struct {
 	*_BACnetConstructedDataAnalogOutputRelinquishDefault
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) = (*_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder)(nil)
 
-func (m *_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetApplicationTagReal) BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder {
-	return m.WithRelinquishDefault(relinquishDefault)
+func (b *_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetApplicationTagReal) BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder {
-	m.RelinquishDefault = relinquishDefault
-	return m
+func (b *_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetApplicationTagReal) BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder {
+	return b.WithRelinquishDefault(relinquishDefault)
 }
 
-func (m *_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder {
-	builder := builderSupplier(m.RelinquishDefault.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetApplicationTagReal) BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder {
+	b.RelinquishDefault = relinquishDefault
+	return b
+}
+
+func (b *_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder {
+	builder := builderSupplier(b.RelinquishDefault.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.RelinquishDefault, err = builder.Build()
+	b.RelinquishDefault, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) Build() (BACnetConstructedDataAnalogOutputRelinquishDefault, error) {
-	if m.RelinquishDefault == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) Build() (BACnetConstructedDataAnalogOutputRelinquishDefault, error) {
+	if b.RelinquishDefault == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
+		b.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAnalogOutputRelinquishDefault.deepCopy(), nil
+	return b._BACnetConstructedDataAnalogOutputRelinquishDefault.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataAnalogOutputRelinquishDefault {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataAnalogOutputRelinquishDefault {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAnalogOutputRelinquishDefaultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAnalogOutputRelinquishDefaultBuilder().(*_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAnalogOutputRelinquishDefaultBuilder creates a BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder
-func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) CreateBACnetConstructedDataAnalogOutputRelinquishDefaultBuilder() BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAnalogOutputRelinquishDefault) CreateBACnetConstructedDataAnalogOutputRelinquishDefaultBuilder() BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAnalogOutputRelinquishDefaultBuilder()
 	}
-	return &_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder{_BACnetConstructedDataAnalogOutputRelinquishDefault: m.deepCopy()}
+	return &_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder{_BACnetConstructedDataAnalogOutputRelinquishDefault: b.deepCopy()}
 }
 
 ///////////////////////

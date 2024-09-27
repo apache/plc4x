@@ -109,88 +109,107 @@ func NewEphemeralKeyTypeBuilder() EphemeralKeyTypeBuilder {
 type _EphemeralKeyTypeBuilder struct {
 	*_EphemeralKeyType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (EphemeralKeyTypeBuilder) = (*_EphemeralKeyTypeBuilder)(nil)
 
-func (m *_EphemeralKeyTypeBuilder) WithMandatoryFields(publicKey PascalByteString, signature PascalByteString) EphemeralKeyTypeBuilder {
-	return m.WithPublicKey(publicKey).WithSignature(signature)
+func (b *_EphemeralKeyTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_EphemeralKeyTypeBuilder) WithPublicKey(publicKey PascalByteString) EphemeralKeyTypeBuilder {
-	m.PublicKey = publicKey
-	return m
+func (b *_EphemeralKeyTypeBuilder) WithMandatoryFields(publicKey PascalByteString, signature PascalByteString) EphemeralKeyTypeBuilder {
+	return b.WithPublicKey(publicKey).WithSignature(signature)
 }
 
-func (m *_EphemeralKeyTypeBuilder) WithPublicKeyBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) EphemeralKeyTypeBuilder {
-	builder := builderSupplier(m.PublicKey.CreatePascalByteStringBuilder())
+func (b *_EphemeralKeyTypeBuilder) WithPublicKey(publicKey PascalByteString) EphemeralKeyTypeBuilder {
+	b.PublicKey = publicKey
+	return b
+}
+
+func (b *_EphemeralKeyTypeBuilder) WithPublicKeyBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) EphemeralKeyTypeBuilder {
+	builder := builderSupplier(b.PublicKey.CreatePascalByteStringBuilder())
 	var err error
-	m.PublicKey, err = builder.Build()
+	b.PublicKey, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_EphemeralKeyTypeBuilder) WithSignature(signature PascalByteString) EphemeralKeyTypeBuilder {
-	m.Signature = signature
-	return m
+func (b *_EphemeralKeyTypeBuilder) WithSignature(signature PascalByteString) EphemeralKeyTypeBuilder {
+	b.Signature = signature
+	return b
 }
 
-func (m *_EphemeralKeyTypeBuilder) WithSignatureBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) EphemeralKeyTypeBuilder {
-	builder := builderSupplier(m.Signature.CreatePascalByteStringBuilder())
+func (b *_EphemeralKeyTypeBuilder) WithSignatureBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) EphemeralKeyTypeBuilder {
+	builder := builderSupplier(b.Signature.CreatePascalByteStringBuilder())
 	var err error
-	m.Signature, err = builder.Build()
+	b.Signature, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_EphemeralKeyTypeBuilder) Build() (EphemeralKeyType, error) {
-	if m.PublicKey == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_EphemeralKeyTypeBuilder) Build() (EphemeralKeyType, error) {
+	if b.PublicKey == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'publicKey' not set"))
+		b.err.Append(errors.New("mandatory field 'publicKey' not set"))
 	}
-	if m.Signature == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Signature == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'signature' not set"))
+		b.err.Append(errors.New("mandatory field 'signature' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EphemeralKeyType.deepCopy(), nil
+	return b._EphemeralKeyType.deepCopy(), nil
 }
 
-func (m *_EphemeralKeyTypeBuilder) MustBuild() EphemeralKeyType {
-	build, err := m.Build()
+func (b *_EphemeralKeyTypeBuilder) MustBuild() EphemeralKeyType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EphemeralKeyTypeBuilder) DeepCopy() any {
-	return m.CreateEphemeralKeyTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EphemeralKeyTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EphemeralKeyTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_EphemeralKeyTypeBuilder) DeepCopy() any {
+	_copy := b.CreateEphemeralKeyTypeBuilder().(*_EphemeralKeyTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEphemeralKeyTypeBuilder creates a EphemeralKeyTypeBuilder
-func (m *_EphemeralKeyType) CreateEphemeralKeyTypeBuilder() EphemeralKeyTypeBuilder {
-	if m == nil {
+func (b *_EphemeralKeyType) CreateEphemeralKeyTypeBuilder() EphemeralKeyTypeBuilder {
+	if b == nil {
 		return NewEphemeralKeyTypeBuilder()
 	}
-	return &_EphemeralKeyTypeBuilder{_EphemeralKeyType: m.deepCopy()}
+	return &_EphemeralKeyTypeBuilder{_EphemeralKeyType: b.deepCopy()}
 }
 
 ///////////////////////

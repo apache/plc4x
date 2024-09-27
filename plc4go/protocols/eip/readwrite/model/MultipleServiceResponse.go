@@ -119,65 +119,84 @@ func NewMultipleServiceResponseBuilder() MultipleServiceResponseBuilder {
 type _MultipleServiceResponseBuilder struct {
 	*_MultipleServiceResponse
 
+	parentBuilder *_CipServiceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MultipleServiceResponseBuilder) = (*_MultipleServiceResponseBuilder)(nil)
 
-func (m *_MultipleServiceResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte) MultipleServiceResponseBuilder {
-	return m.WithStatus(status).WithExtStatus(extStatus).WithServiceNb(serviceNb).WithOffsets(offsets...).WithServicesData(servicesData...)
+func (b *_MultipleServiceResponseBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
 }
 
-func (m *_MultipleServiceResponseBuilder) WithStatus(status uint8) MultipleServiceResponseBuilder {
-	m.Status = status
-	return m
+func (b *_MultipleServiceResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte) MultipleServiceResponseBuilder {
+	return b.WithStatus(status).WithExtStatus(extStatus).WithServiceNb(serviceNb).WithOffsets(offsets...).WithServicesData(servicesData...)
 }
 
-func (m *_MultipleServiceResponseBuilder) WithExtStatus(extStatus uint8) MultipleServiceResponseBuilder {
-	m.ExtStatus = extStatus
-	return m
+func (b *_MultipleServiceResponseBuilder) WithStatus(status uint8) MultipleServiceResponseBuilder {
+	b.Status = status
+	return b
 }
 
-func (m *_MultipleServiceResponseBuilder) WithServiceNb(serviceNb uint16) MultipleServiceResponseBuilder {
-	m.ServiceNb = serviceNb
-	return m
+func (b *_MultipleServiceResponseBuilder) WithExtStatus(extStatus uint8) MultipleServiceResponseBuilder {
+	b.ExtStatus = extStatus
+	return b
 }
 
-func (m *_MultipleServiceResponseBuilder) WithOffsets(offsets ...uint16) MultipleServiceResponseBuilder {
-	m.Offsets = offsets
-	return m
+func (b *_MultipleServiceResponseBuilder) WithServiceNb(serviceNb uint16) MultipleServiceResponseBuilder {
+	b.ServiceNb = serviceNb
+	return b
 }
 
-func (m *_MultipleServiceResponseBuilder) WithServicesData(servicesData ...byte) MultipleServiceResponseBuilder {
-	m.ServicesData = servicesData
-	return m
+func (b *_MultipleServiceResponseBuilder) WithOffsets(offsets ...uint16) MultipleServiceResponseBuilder {
+	b.Offsets = offsets
+	return b
 }
 
-func (m *_MultipleServiceResponseBuilder) Build() (MultipleServiceResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MultipleServiceResponseBuilder) WithServicesData(servicesData ...byte) MultipleServiceResponseBuilder {
+	b.ServicesData = servicesData
+	return b
+}
+
+func (b *_MultipleServiceResponseBuilder) Build() (MultipleServiceResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MultipleServiceResponse.deepCopy(), nil
+	return b._MultipleServiceResponse.deepCopy(), nil
 }
 
-func (m *_MultipleServiceResponseBuilder) MustBuild() MultipleServiceResponse {
-	build, err := m.Build()
+func (b *_MultipleServiceResponseBuilder) MustBuild() MultipleServiceResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MultipleServiceResponseBuilder) DeepCopy() any {
-	return m.CreateMultipleServiceResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MultipleServiceResponseBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MultipleServiceResponseBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_MultipleServiceResponseBuilder) DeepCopy() any {
+	_copy := b.CreateMultipleServiceResponseBuilder().(*_MultipleServiceResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMultipleServiceResponseBuilder creates a MultipleServiceResponseBuilder
-func (m *_MultipleServiceResponse) CreateMultipleServiceResponseBuilder() MultipleServiceResponseBuilder {
-	if m == nil {
+func (b *_MultipleServiceResponse) CreateMultipleServiceResponseBuilder() MultipleServiceResponseBuilder {
+	if b == nil {
 		return NewMultipleServiceResponseBuilder()
 	}
-	return &_MultipleServiceResponseBuilder{_MultipleServiceResponse: m.deepCopy()}
+	return &_MultipleServiceResponseBuilder{_MultipleServiceResponse: b.deepCopy()}
 }
 
 ///////////////////////

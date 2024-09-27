@@ -104,64 +104,68 @@ type _BACnetSegmentationTaggedBuilder struct {
 
 var _ (BACnetSegmentationTaggedBuilder) = (*_BACnetSegmentationTaggedBuilder)(nil)
 
-func (m *_BACnetSegmentationTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetSegmentation) BACnetSegmentationTaggedBuilder {
-	return m.WithHeader(header).WithValue(value)
+func (b *_BACnetSegmentationTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetSegmentation) BACnetSegmentationTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
 }
 
-func (m *_BACnetSegmentationTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetSegmentationTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetSegmentationTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetSegmentationTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetSegmentationTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSegmentationTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetSegmentationTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSegmentationTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetSegmentationTaggedBuilder) WithValue(value BACnetSegmentation) BACnetSegmentationTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetSegmentationTaggedBuilder) WithValue(value BACnetSegmentation) BACnetSegmentationTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetSegmentationTaggedBuilder) Build() (BACnetSegmentationTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetSegmentationTaggedBuilder) Build() (BACnetSegmentationTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetSegmentationTagged.deepCopy(), nil
+	return b._BACnetSegmentationTagged.deepCopy(), nil
 }
 
-func (m *_BACnetSegmentationTaggedBuilder) MustBuild() BACnetSegmentationTagged {
-	build, err := m.Build()
+func (b *_BACnetSegmentationTaggedBuilder) MustBuild() BACnetSegmentationTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetSegmentationTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetSegmentationTaggedBuilder()
+func (b *_BACnetSegmentationTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetSegmentationTaggedBuilder().(*_BACnetSegmentationTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetSegmentationTaggedBuilder creates a BACnetSegmentationTaggedBuilder
-func (m *_BACnetSegmentationTagged) CreateBACnetSegmentationTaggedBuilder() BACnetSegmentationTaggedBuilder {
-	if m == nil {
+func (b *_BACnetSegmentationTagged) CreateBACnetSegmentationTaggedBuilder() BACnetSegmentationTaggedBuilder {
+	if b == nil {
 		return NewBACnetSegmentationTaggedBuilder()
 	}
-	return &_BACnetSegmentationTaggedBuilder{_BACnetSegmentationTagged: m.deepCopy()}
+	return &_BACnetSegmentationTaggedBuilder{_BACnetSegmentationTagged: b.deepCopy()}
 }
 
 ///////////////////////

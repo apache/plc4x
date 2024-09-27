@@ -90,40 +90,59 @@ func NewServerErrorReplyBuilder() ServerErrorReplyBuilder {
 type _ServerErrorReplyBuilder struct {
 	*_ServerErrorReply
 
+	parentBuilder *_ReplyOrConfirmationBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ServerErrorReplyBuilder) = (*_ServerErrorReplyBuilder)(nil)
 
-func (m *_ServerErrorReplyBuilder) WithMandatoryFields() ServerErrorReplyBuilder {
-	return m
+func (b *_ServerErrorReplyBuilder) setParent(contract ReplyOrConfirmationContract) {
+	b.ReplyOrConfirmationContract = contract
 }
 
-func (m *_ServerErrorReplyBuilder) Build() (ServerErrorReply, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ServerErrorReplyBuilder) WithMandatoryFields() ServerErrorReplyBuilder {
+	return b
+}
+
+func (b *_ServerErrorReplyBuilder) Build() (ServerErrorReply, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ServerErrorReply.deepCopy(), nil
+	return b._ServerErrorReply.deepCopy(), nil
 }
 
-func (m *_ServerErrorReplyBuilder) MustBuild() ServerErrorReply {
-	build, err := m.Build()
+func (b *_ServerErrorReplyBuilder) MustBuild() ServerErrorReply {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ServerErrorReplyBuilder) DeepCopy() any {
-	return m.CreateServerErrorReplyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ServerErrorReplyBuilder) Done() ReplyOrConfirmationBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ServerErrorReplyBuilder) buildForReplyOrConfirmation() (ReplyOrConfirmation, error) {
+	return b.Build()
+}
+
+func (b *_ServerErrorReplyBuilder) DeepCopy() any {
+	_copy := b.CreateServerErrorReplyBuilder().(*_ServerErrorReplyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateServerErrorReplyBuilder creates a ServerErrorReplyBuilder
-func (m *_ServerErrorReply) CreateServerErrorReplyBuilder() ServerErrorReplyBuilder {
-	if m == nil {
+func (b *_ServerErrorReply) CreateServerErrorReplyBuilder() ServerErrorReplyBuilder {
+	if b == nil {
 		return NewServerErrorReplyBuilder()
 	}
-	return &_ServerErrorReplyBuilder{_ServerErrorReply: m.deepCopy()}
+	return &_ServerErrorReplyBuilder{_ServerErrorReply: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetApplicationTagCharacterStringBuilder() BACnetApplicationTagCharact
 type _BACnetApplicationTagCharacterStringBuilder struct {
 	*_BACnetApplicationTagCharacterString
 
+	parentBuilder *_BACnetApplicationTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetApplicationTagCharacterStringBuilder) = (*_BACnetApplicationTagCharacterStringBuilder)(nil)
 
-func (m *_BACnetApplicationTagCharacterStringBuilder) WithMandatoryFields(payload BACnetTagPayloadCharacterString) BACnetApplicationTagCharacterStringBuilder {
-	return m.WithPayload(payload)
+func (b *_BACnetApplicationTagCharacterStringBuilder) setParent(contract BACnetApplicationTagContract) {
+	b.BACnetApplicationTagContract = contract
 }
 
-func (m *_BACnetApplicationTagCharacterStringBuilder) WithPayload(payload BACnetTagPayloadCharacterString) BACnetApplicationTagCharacterStringBuilder {
-	m.Payload = payload
-	return m
+func (b *_BACnetApplicationTagCharacterStringBuilder) WithMandatoryFields(payload BACnetTagPayloadCharacterString) BACnetApplicationTagCharacterStringBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_BACnetApplicationTagCharacterStringBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadCharacterStringBuilder) BACnetTagPayloadCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder {
-	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadCharacterStringBuilder())
+func (b *_BACnetApplicationTagCharacterStringBuilder) WithPayload(payload BACnetTagPayloadCharacterString) BACnetApplicationTagCharacterStringBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetApplicationTagCharacterStringBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadCharacterStringBuilder) BACnetTagPayloadCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadCharacterStringBuilder())
 	var err error
-	m.Payload, err = builder.Build()
+	b.Payload, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagPayloadCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetApplicationTagCharacterStringBuilder) Build() (BACnetApplicationTagCharacterString, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetApplicationTagCharacterStringBuilder) Build() (BACnetApplicationTagCharacterString, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetApplicationTagCharacterString.deepCopy(), nil
+	return b._BACnetApplicationTagCharacterString.deepCopy(), nil
 }
 
-func (m *_BACnetApplicationTagCharacterStringBuilder) MustBuild() BACnetApplicationTagCharacterString {
-	build, err := m.Build()
+func (b *_BACnetApplicationTagCharacterStringBuilder) MustBuild() BACnetApplicationTagCharacterString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetApplicationTagCharacterStringBuilder) DeepCopy() any {
-	return m.CreateBACnetApplicationTagCharacterStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetApplicationTagCharacterStringBuilder) Done() BACnetApplicationTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetApplicationTagCharacterStringBuilder) buildForBACnetApplicationTag() (BACnetApplicationTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetApplicationTagCharacterStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetApplicationTagCharacterStringBuilder().(*_BACnetApplicationTagCharacterStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetApplicationTagCharacterStringBuilder creates a BACnetApplicationTagCharacterStringBuilder
-func (m *_BACnetApplicationTagCharacterString) CreateBACnetApplicationTagCharacterStringBuilder() BACnetApplicationTagCharacterStringBuilder {
-	if m == nil {
+func (b *_BACnetApplicationTagCharacterString) CreateBACnetApplicationTagCharacterStringBuilder() BACnetApplicationTagCharacterStringBuilder {
+	if b == nil {
 		return NewBACnetApplicationTagCharacterStringBuilder()
 	}
-	return &_BACnetApplicationTagCharacterStringBuilder{_BACnetApplicationTagCharacterString: m.deepCopy()}
+	return &_BACnetApplicationTagCharacterStringBuilder{_BACnetApplicationTagCharacterString: b.deepCopy()}
 }
 
 ///////////////////////

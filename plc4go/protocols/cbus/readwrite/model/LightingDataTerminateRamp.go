@@ -93,45 +93,64 @@ func NewLightingDataTerminateRampBuilder() LightingDataTerminateRampBuilder {
 type _LightingDataTerminateRampBuilder struct {
 	*_LightingDataTerminateRamp
 
+	parentBuilder *_LightingDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LightingDataTerminateRampBuilder) = (*_LightingDataTerminateRampBuilder)(nil)
 
-func (m *_LightingDataTerminateRampBuilder) WithMandatoryFields(group byte) LightingDataTerminateRampBuilder {
-	return m.WithGroup(group)
+func (b *_LightingDataTerminateRampBuilder) setParent(contract LightingDataContract) {
+	b.LightingDataContract = contract
 }
 
-func (m *_LightingDataTerminateRampBuilder) WithGroup(group byte) LightingDataTerminateRampBuilder {
-	m.Group = group
-	return m
+func (b *_LightingDataTerminateRampBuilder) WithMandatoryFields(group byte) LightingDataTerminateRampBuilder {
+	return b.WithGroup(group)
 }
 
-func (m *_LightingDataTerminateRampBuilder) Build() (LightingDataTerminateRamp, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_LightingDataTerminateRampBuilder) WithGroup(group byte) LightingDataTerminateRampBuilder {
+	b.Group = group
+	return b
+}
+
+func (b *_LightingDataTerminateRampBuilder) Build() (LightingDataTerminateRamp, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LightingDataTerminateRamp.deepCopy(), nil
+	return b._LightingDataTerminateRamp.deepCopy(), nil
 }
 
-func (m *_LightingDataTerminateRampBuilder) MustBuild() LightingDataTerminateRamp {
-	build, err := m.Build()
+func (b *_LightingDataTerminateRampBuilder) MustBuild() LightingDataTerminateRamp {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LightingDataTerminateRampBuilder) DeepCopy() any {
-	return m.CreateLightingDataTerminateRampBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LightingDataTerminateRampBuilder) Done() LightingDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LightingDataTerminateRampBuilder) buildForLightingData() (LightingData, error) {
+	return b.Build()
+}
+
+func (b *_LightingDataTerminateRampBuilder) DeepCopy() any {
+	_copy := b.CreateLightingDataTerminateRampBuilder().(*_LightingDataTerminateRampBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLightingDataTerminateRampBuilder creates a LightingDataTerminateRampBuilder
-func (m *_LightingDataTerminateRamp) CreateLightingDataTerminateRampBuilder() LightingDataTerminateRampBuilder {
-	if m == nil {
+func (b *_LightingDataTerminateRamp) CreateLightingDataTerminateRampBuilder() LightingDataTerminateRampBuilder {
+	if b == nil {
 		return NewLightingDataTerminateRampBuilder()
 	}
-	return &_LightingDataTerminateRampBuilder{_LightingDataTerminateRamp: m.deepCopy()}
+	return &_LightingDataTerminateRampBuilder{_LightingDataTerminateRamp: b.deepCopy()}
 }
 
 ///////////////////////

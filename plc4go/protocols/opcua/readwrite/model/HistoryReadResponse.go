@@ -98,6 +98,8 @@ type HistoryReadResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) HistoryReadResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) HistoryReadResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) HistoryReadResponseBuilder
 	// WithNoOfResults adds NoOfResults (property field)
 	WithNoOfResults(int32) HistoryReadResponseBuilder
 	// WithResults adds Results (property field)
@@ -120,71 +122,103 @@ func NewHistoryReadResponseBuilder() HistoryReadResponseBuilder {
 type _HistoryReadResponseBuilder struct {
 	*_HistoryReadResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (HistoryReadResponseBuilder) = (*_HistoryReadResponseBuilder)(nil)
 
-func (m *_HistoryReadResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) HistoryReadResponseBuilder {
-	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_HistoryReadResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_HistoryReadResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) HistoryReadResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_HistoryReadResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) HistoryReadResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (m *_HistoryReadResponseBuilder) WithNoOfResults(noOfResults int32) HistoryReadResponseBuilder {
-	m.NoOfResults = noOfResults
-	return m
+func (b *_HistoryReadResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) HistoryReadResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
 }
 
-func (m *_HistoryReadResponseBuilder) WithResults(results ...ExtensionObjectDefinition) HistoryReadResponseBuilder {
-	m.Results = results
-	return m
-}
-
-func (m *_HistoryReadResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) HistoryReadResponseBuilder {
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
-	return m
-}
-
-func (m *_HistoryReadResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) HistoryReadResponseBuilder {
-	m.DiagnosticInfos = diagnosticInfos
-	return m
-}
-
-func (m *_HistoryReadResponseBuilder) Build() (HistoryReadResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_HistoryReadResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) HistoryReadResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._HistoryReadResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_HistoryReadResponseBuilder) MustBuild() HistoryReadResponse {
-	build, err := m.Build()
+func (b *_HistoryReadResponseBuilder) WithNoOfResults(noOfResults int32) HistoryReadResponseBuilder {
+	b.NoOfResults = noOfResults
+	return b
+}
+
+func (b *_HistoryReadResponseBuilder) WithResults(results ...ExtensionObjectDefinition) HistoryReadResponseBuilder {
+	b.Results = results
+	return b
+}
+
+func (b *_HistoryReadResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) HistoryReadResponseBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_HistoryReadResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) HistoryReadResponseBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_HistoryReadResponseBuilder) Build() (HistoryReadResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HistoryReadResponse.deepCopy(), nil
+}
+
+func (b *_HistoryReadResponseBuilder) MustBuild() HistoryReadResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HistoryReadResponseBuilder) DeepCopy() any {
-	return m.CreateHistoryReadResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryReadResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryReadResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryReadResponseBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryReadResponseBuilder().(*_HistoryReadResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHistoryReadResponseBuilder creates a HistoryReadResponseBuilder
-func (m *_HistoryReadResponse) CreateHistoryReadResponseBuilder() HistoryReadResponseBuilder {
-	if m == nil {
+func (b *_HistoryReadResponse) CreateHistoryReadResponseBuilder() HistoryReadResponseBuilder {
+	if b == nil {
 		return NewHistoryReadResponseBuilder()
 	}
-	return &_HistoryReadResponseBuilder{_HistoryReadResponse: m.deepCopy()}
+	return &_HistoryReadResponseBuilder{_HistoryReadResponse: b.deepCopy()}
 }
 
 ///////////////////////

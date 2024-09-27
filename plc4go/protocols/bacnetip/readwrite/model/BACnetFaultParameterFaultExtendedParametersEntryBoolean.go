@@ -98,64 +98,83 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder() BACnetF
 type _BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntryBoolean
 
+	parentBuilder *_BACnetFaultParameterFaultExtendedParametersEntryBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder)(nil)
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) WithMandatoryFields(booleanValue BACnetApplicationTagBoolean) BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder {
-	return m.WithBooleanValue(booleanValue)
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) setParent(contract BACnetFaultParameterFaultExtendedParametersEntryContract) {
+	b.BACnetFaultParameterFaultExtendedParametersEntryContract = contract
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) WithBooleanValue(booleanValue BACnetApplicationTagBoolean) BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder {
-	m.BooleanValue = booleanValue
-	return m
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) WithMandatoryFields(booleanValue BACnetApplicationTagBoolean) BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder {
+	return b.WithBooleanValue(booleanValue)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) WithBooleanValueBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder {
-	builder := builderSupplier(m.BooleanValue.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) WithBooleanValue(booleanValue BACnetApplicationTagBoolean) BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder {
+	b.BooleanValue = booleanValue
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) WithBooleanValueBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder {
+	builder := builderSupplier(b.BooleanValue.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.BooleanValue, err = builder.Build()
+	b.BooleanValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryBoolean, error) {
-	if m.BooleanValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryBoolean, error) {
+	if b.BooleanValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'booleanValue' not set"))
+		b.err.Append(errors.New("mandatory field 'booleanValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetFaultParameterFaultExtendedParametersEntryBoolean.deepCopy(), nil
+	return b._BACnetFaultParameterFaultExtendedParametersEntryBoolean.deepCopy(), nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryBoolean {
-	build, err := m.Build()
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryBoolean {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) DeepCopy() any {
-	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) buildForBACnetFaultParameterFaultExtendedParametersEntry() (BACnetFaultParameterFaultExtendedParametersEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) CreateBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder() BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder {
-	if m == nil {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) CreateBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder() BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder {
+	if b == nil {
 		return NewBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder()
 	}
-	return &_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder{_BACnetFaultParameterFaultExtendedParametersEntryBoolean: m.deepCopy()}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder{_BACnetFaultParameterFaultExtendedParametersEntryBoolean: b.deepCopy()}
 }
 
 ///////////////////////

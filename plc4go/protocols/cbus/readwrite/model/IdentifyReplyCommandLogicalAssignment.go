@@ -93,45 +93,64 @@ func NewIdentifyReplyCommandLogicalAssignmentBuilder() IdentifyReplyCommandLogic
 type _IdentifyReplyCommandLogicalAssignmentBuilder struct {
 	*_IdentifyReplyCommandLogicalAssignment
 
+	parentBuilder *_IdentifyReplyCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (IdentifyReplyCommandLogicalAssignmentBuilder) = (*_IdentifyReplyCommandLogicalAssignmentBuilder)(nil)
 
-func (m *_IdentifyReplyCommandLogicalAssignmentBuilder) WithMandatoryFields(logicAssigment []LogicAssignment) IdentifyReplyCommandLogicalAssignmentBuilder {
-	return m.WithLogicAssigment(logicAssigment...)
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
 }
 
-func (m *_IdentifyReplyCommandLogicalAssignmentBuilder) WithLogicAssigment(logicAssigment ...LogicAssignment) IdentifyReplyCommandLogicalAssignmentBuilder {
-	m.LogicAssigment = logicAssigment
-	return m
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) WithMandatoryFields(logicAssigment []LogicAssignment) IdentifyReplyCommandLogicalAssignmentBuilder {
+	return b.WithLogicAssigment(logicAssigment...)
 }
 
-func (m *_IdentifyReplyCommandLogicalAssignmentBuilder) Build() (IdentifyReplyCommandLogicalAssignment, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) WithLogicAssigment(logicAssigment ...LogicAssignment) IdentifyReplyCommandLogicalAssignmentBuilder {
+	b.LogicAssigment = logicAssigment
+	return b
+}
+
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) Build() (IdentifyReplyCommandLogicalAssignment, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommandLogicalAssignment.deepCopy(), nil
+	return b._IdentifyReplyCommandLogicalAssignment.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandLogicalAssignmentBuilder) MustBuild() IdentifyReplyCommandLogicalAssignment {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) MustBuild() IdentifyReplyCommandLogicalAssignment {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandLogicalAssignmentBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandLogicalAssignmentBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandLogicalAssignmentBuilder().(*_IdentifyReplyCommandLogicalAssignmentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandLogicalAssignmentBuilder creates a IdentifyReplyCommandLogicalAssignmentBuilder
-func (m *_IdentifyReplyCommandLogicalAssignment) CreateIdentifyReplyCommandLogicalAssignmentBuilder() IdentifyReplyCommandLogicalAssignmentBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommandLogicalAssignment) CreateIdentifyReplyCommandLogicalAssignmentBuilder() IdentifyReplyCommandLogicalAssignmentBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandLogicalAssignmentBuilder()
 	}
-	return &_IdentifyReplyCommandLogicalAssignmentBuilder{_IdentifyReplyCommandLogicalAssignment: m.deepCopy()}
+	return &_IdentifyReplyCommandLogicalAssignmentBuilder{_IdentifyReplyCommandLogicalAssignment: b.deepCopy()}
 }
 
 ///////////////////////

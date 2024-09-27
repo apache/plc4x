@@ -93,45 +93,64 @@ func NewBACnetConstructedDataRecipientListBuilder() BACnetConstructedDataRecipie
 type _BACnetConstructedDataRecipientListBuilder struct {
 	*_BACnetConstructedDataRecipientList
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataRecipientListBuilder) = (*_BACnetConstructedDataRecipientListBuilder)(nil)
 
-func (m *_BACnetConstructedDataRecipientListBuilder) WithMandatoryFields(recipientList []BACnetDestination) BACnetConstructedDataRecipientListBuilder {
-	return m.WithRecipientList(recipientList...)
+func (b *_BACnetConstructedDataRecipientListBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataRecipientListBuilder) WithRecipientList(recipientList ...BACnetDestination) BACnetConstructedDataRecipientListBuilder {
-	m.RecipientList = recipientList
-	return m
+func (b *_BACnetConstructedDataRecipientListBuilder) WithMandatoryFields(recipientList []BACnetDestination) BACnetConstructedDataRecipientListBuilder {
+	return b.WithRecipientList(recipientList...)
 }
 
-func (m *_BACnetConstructedDataRecipientListBuilder) Build() (BACnetConstructedDataRecipientList, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataRecipientListBuilder) WithRecipientList(recipientList ...BACnetDestination) BACnetConstructedDataRecipientListBuilder {
+	b.RecipientList = recipientList
+	return b
+}
+
+func (b *_BACnetConstructedDataRecipientListBuilder) Build() (BACnetConstructedDataRecipientList, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataRecipientList.deepCopy(), nil
+	return b._BACnetConstructedDataRecipientList.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataRecipientListBuilder) MustBuild() BACnetConstructedDataRecipientList {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataRecipientListBuilder) MustBuild() BACnetConstructedDataRecipientList {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataRecipientListBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataRecipientListBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataRecipientListBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataRecipientListBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataRecipientListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataRecipientListBuilder().(*_BACnetConstructedDataRecipientListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataRecipientListBuilder creates a BACnetConstructedDataRecipientListBuilder
-func (m *_BACnetConstructedDataRecipientList) CreateBACnetConstructedDataRecipientListBuilder() BACnetConstructedDataRecipientListBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataRecipientList) CreateBACnetConstructedDataRecipientListBuilder() BACnetConstructedDataRecipientListBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataRecipientListBuilder()
 	}
-	return &_BACnetConstructedDataRecipientListBuilder{_BACnetConstructedDataRecipientList: m.deepCopy()}
+	return &_BACnetConstructedDataRecipientListBuilder{_BACnetConstructedDataRecipientList: b.deepCopy()}
 }
 
 ///////////////////////

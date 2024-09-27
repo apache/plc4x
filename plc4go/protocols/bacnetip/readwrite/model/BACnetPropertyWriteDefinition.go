@@ -94,6 +94,8 @@ type BACnetPropertyWriteDefinitionBuilder interface {
 	WithOptionalArrayIndexBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPropertyWriteDefinitionBuilder
 	// WithPropertyValue adds PropertyValue (property field)
 	WithOptionalPropertyValue(BACnetConstructedData) BACnetPropertyWriteDefinitionBuilder
+	// WithOptionalPropertyValueBuilder adds PropertyValue (property field) which is build by the builder
+	WithOptionalPropertyValueBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetPropertyWriteDefinitionBuilder
 	// WithPriority adds Priority (property field)
 	WithOptionalPriority(BACnetContextTagUnsignedInteger) BACnetPropertyWriteDefinitionBuilder
 	// WithOptionalPriorityBuilder adds Priority (property field) which is build by the builder
@@ -117,100 +119,117 @@ type _BACnetPropertyWriteDefinitionBuilder struct {
 
 var _ (BACnetPropertyWriteDefinitionBuilder) = (*_BACnetPropertyWriteDefinitionBuilder)(nil)
 
-func (m *_BACnetPropertyWriteDefinitionBuilder) WithMandatoryFields(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetPropertyWriteDefinitionBuilder {
-	return m.WithPropertyIdentifier(propertyIdentifier)
+func (b *_BACnetPropertyWriteDefinitionBuilder) WithMandatoryFields(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetPropertyWriteDefinitionBuilder {
+	return b.WithPropertyIdentifier(propertyIdentifier)
 }
 
-func (m *_BACnetPropertyWriteDefinitionBuilder) WithPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetPropertyWriteDefinitionBuilder {
-	m.PropertyIdentifier = propertyIdentifier
-	return m
+func (b *_BACnetPropertyWriteDefinitionBuilder) WithPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetPropertyWriteDefinitionBuilder {
+	b.PropertyIdentifier = propertyIdentifier
+	return b
 }
 
-func (m *_BACnetPropertyWriteDefinitionBuilder) WithPropertyIdentifierBuilder(builderSupplier func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyWriteDefinitionBuilder {
-	builder := builderSupplier(m.PropertyIdentifier.CreateBACnetPropertyIdentifierTaggedBuilder())
+func (b *_BACnetPropertyWriteDefinitionBuilder) WithPropertyIdentifierBuilder(builderSupplier func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyWriteDefinitionBuilder {
+	builder := builderSupplier(b.PropertyIdentifier.CreateBACnetPropertyIdentifierTaggedBuilder())
 	var err error
-	m.PropertyIdentifier, err = builder.Build()
+	b.PropertyIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyWriteDefinitionBuilder) WithOptionalArrayIndex(arrayIndex BACnetContextTagUnsignedInteger) BACnetPropertyWriteDefinitionBuilder {
-	m.ArrayIndex = arrayIndex
-	return m
+func (b *_BACnetPropertyWriteDefinitionBuilder) WithOptionalArrayIndex(arrayIndex BACnetContextTagUnsignedInteger) BACnetPropertyWriteDefinitionBuilder {
+	b.ArrayIndex = arrayIndex
+	return b
 }
 
-func (m *_BACnetPropertyWriteDefinitionBuilder) WithOptionalArrayIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPropertyWriteDefinitionBuilder {
-	builder := builderSupplier(m.ArrayIndex.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetPropertyWriteDefinitionBuilder) WithOptionalArrayIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPropertyWriteDefinitionBuilder {
+	builder := builderSupplier(b.ArrayIndex.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.ArrayIndex, err = builder.Build()
+	b.ArrayIndex, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyWriteDefinitionBuilder) WithOptionalPropertyValue(propertyValue BACnetConstructedData) BACnetPropertyWriteDefinitionBuilder {
-	m.PropertyValue = propertyValue
-	return m
+func (b *_BACnetPropertyWriteDefinitionBuilder) WithOptionalPropertyValue(propertyValue BACnetConstructedData) BACnetPropertyWriteDefinitionBuilder {
+	b.PropertyValue = propertyValue
+	return b
 }
 
-func (m *_BACnetPropertyWriteDefinitionBuilder) WithOptionalPriority(priority BACnetContextTagUnsignedInteger) BACnetPropertyWriteDefinitionBuilder {
-	m.Priority = priority
-	return m
-}
-
-func (m *_BACnetPropertyWriteDefinitionBuilder) WithOptionalPriorityBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPropertyWriteDefinitionBuilder {
-	builder := builderSupplier(m.Priority.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetPropertyWriteDefinitionBuilder) WithOptionalPropertyValueBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetPropertyWriteDefinitionBuilder {
+	builder := builderSupplier(b.PropertyValue.CreateBACnetConstructedDataBuilder())
 	var err error
-	m.Priority, err = builder.Build()
+	b.PropertyValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyWriteDefinitionBuilder) Build() (BACnetPropertyWriteDefinition, error) {
-	if m.PropertyIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'propertyIdentifier' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetPropertyWriteDefinition.deepCopy(), nil
+func (b *_BACnetPropertyWriteDefinitionBuilder) WithOptionalPriority(priority BACnetContextTagUnsignedInteger) BACnetPropertyWriteDefinitionBuilder {
+	b.Priority = priority
+	return b
 }
 
-func (m *_BACnetPropertyWriteDefinitionBuilder) MustBuild() BACnetPropertyWriteDefinition {
-	build, err := m.Build()
+func (b *_BACnetPropertyWriteDefinitionBuilder) WithOptionalPriorityBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPropertyWriteDefinitionBuilder {
+	builder := builderSupplier(b.Priority.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.Priority, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyWriteDefinitionBuilder) Build() (BACnetPropertyWriteDefinition, error) {
+	if b.PropertyIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'propertyIdentifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyWriteDefinition.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyWriteDefinitionBuilder) MustBuild() BACnetPropertyWriteDefinition {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyWriteDefinitionBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyWriteDefinitionBuilder()
+func (b *_BACnetPropertyWriteDefinitionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyWriteDefinitionBuilder().(*_BACnetPropertyWriteDefinitionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyWriteDefinitionBuilder creates a BACnetPropertyWriteDefinitionBuilder
-func (m *_BACnetPropertyWriteDefinition) CreateBACnetPropertyWriteDefinitionBuilder() BACnetPropertyWriteDefinitionBuilder {
-	if m == nil {
+func (b *_BACnetPropertyWriteDefinition) CreateBACnetPropertyWriteDefinitionBuilder() BACnetPropertyWriteDefinitionBuilder {
+	if b == nil {
 		return NewBACnetPropertyWriteDefinitionBuilder()
 	}
-	return &_BACnetPropertyWriteDefinitionBuilder{_BACnetPropertyWriteDefinition: m.deepCopy()}
+	return &_BACnetPropertyWriteDefinitionBuilder{_BACnetPropertyWriteDefinition: b.deepCopy()}
 }
 
 ///////////////////////

@@ -93,45 +93,64 @@ func NewIdentifyReplyCommandNetworkTerminalLevelsBuilder() IdentifyReplyCommandN
 type _IdentifyReplyCommandNetworkTerminalLevelsBuilder struct {
 	*_IdentifyReplyCommandNetworkTerminalLevels
 
+	parentBuilder *_IdentifyReplyCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (IdentifyReplyCommandNetworkTerminalLevelsBuilder) = (*_IdentifyReplyCommandNetworkTerminalLevelsBuilder)(nil)
 
-func (m *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) WithMandatoryFields(networkTerminalLevels []byte) IdentifyReplyCommandNetworkTerminalLevelsBuilder {
-	return m.WithNetworkTerminalLevels(networkTerminalLevels...)
+func (b *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
 }
 
-func (m *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) WithNetworkTerminalLevels(networkTerminalLevels ...byte) IdentifyReplyCommandNetworkTerminalLevelsBuilder {
-	m.NetworkTerminalLevels = networkTerminalLevels
-	return m
+func (b *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) WithMandatoryFields(networkTerminalLevels []byte) IdentifyReplyCommandNetworkTerminalLevelsBuilder {
+	return b.WithNetworkTerminalLevels(networkTerminalLevels...)
 }
 
-func (m *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) Build() (IdentifyReplyCommandNetworkTerminalLevels, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) WithNetworkTerminalLevels(networkTerminalLevels ...byte) IdentifyReplyCommandNetworkTerminalLevelsBuilder {
+	b.NetworkTerminalLevels = networkTerminalLevels
+	return b
+}
+
+func (b *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) Build() (IdentifyReplyCommandNetworkTerminalLevels, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommandNetworkTerminalLevels.deepCopy(), nil
+	return b._IdentifyReplyCommandNetworkTerminalLevels.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) MustBuild() IdentifyReplyCommandNetworkTerminalLevels {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) MustBuild() IdentifyReplyCommandNetworkTerminalLevels {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandNetworkTerminalLevelsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandNetworkTerminalLevelsBuilder().(*_IdentifyReplyCommandNetworkTerminalLevelsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandNetworkTerminalLevelsBuilder creates a IdentifyReplyCommandNetworkTerminalLevelsBuilder
-func (m *_IdentifyReplyCommandNetworkTerminalLevels) CreateIdentifyReplyCommandNetworkTerminalLevelsBuilder() IdentifyReplyCommandNetworkTerminalLevelsBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommandNetworkTerminalLevels) CreateIdentifyReplyCommandNetworkTerminalLevelsBuilder() IdentifyReplyCommandNetworkTerminalLevelsBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandNetworkTerminalLevelsBuilder()
 	}
-	return &_IdentifyReplyCommandNetworkTerminalLevelsBuilder{_IdentifyReplyCommandNetworkTerminalLevels: m.deepCopy()}
+	return &_IdentifyReplyCommandNetworkTerminalLevelsBuilder{_IdentifyReplyCommandNetworkTerminalLevels: b.deepCopy()}
 }
 
 ///////////////////////

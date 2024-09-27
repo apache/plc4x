@@ -90,40 +90,44 @@ type _AlphaBuilder struct {
 
 var _ (AlphaBuilder) = (*_AlphaBuilder)(nil)
 
-func (m *_AlphaBuilder) WithMandatoryFields(character byte) AlphaBuilder {
-	return m.WithCharacter(character)
+func (b *_AlphaBuilder) WithMandatoryFields(character byte) AlphaBuilder {
+	return b.WithCharacter(character)
 }
 
-func (m *_AlphaBuilder) WithCharacter(character byte) AlphaBuilder {
-	m.Character = character
-	return m
+func (b *_AlphaBuilder) WithCharacter(character byte) AlphaBuilder {
+	b.Character = character
+	return b
 }
 
-func (m *_AlphaBuilder) Build() (Alpha, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AlphaBuilder) Build() (Alpha, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Alpha.deepCopy(), nil
+	return b._Alpha.deepCopy(), nil
 }
 
-func (m *_AlphaBuilder) MustBuild() Alpha {
-	build, err := m.Build()
+func (b *_AlphaBuilder) MustBuild() Alpha {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AlphaBuilder) DeepCopy() any {
-	return m.CreateAlphaBuilder()
+func (b *_AlphaBuilder) DeepCopy() any {
+	_copy := b.CreateAlphaBuilder().(*_AlphaBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAlphaBuilder creates a AlphaBuilder
-func (m *_Alpha) CreateAlphaBuilder() AlphaBuilder {
-	if m == nil {
+func (b *_Alpha) CreateAlphaBuilder() AlphaBuilder {
+	if b == nil {
 		return NewAlphaBuilder()
 	}
-	return &_AlphaBuilder{_Alpha: m.deepCopy()}
+	return &_AlphaBuilder{_Alpha: b.deepCopy()}
 }
 
 ///////////////////////

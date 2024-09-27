@@ -95,59 +95,63 @@ type _BACnetAssignedLandingCallsBuilder struct {
 
 var _ (BACnetAssignedLandingCallsBuilder) = (*_BACnetAssignedLandingCallsBuilder)(nil)
 
-func (m *_BACnetAssignedLandingCallsBuilder) WithMandatoryFields(landingCalls BACnetAssignedLandingCallsLandingCallsList) BACnetAssignedLandingCallsBuilder {
-	return m.WithLandingCalls(landingCalls)
+func (b *_BACnetAssignedLandingCallsBuilder) WithMandatoryFields(landingCalls BACnetAssignedLandingCallsLandingCallsList) BACnetAssignedLandingCallsBuilder {
+	return b.WithLandingCalls(landingCalls)
 }
 
-func (m *_BACnetAssignedLandingCallsBuilder) WithLandingCalls(landingCalls BACnetAssignedLandingCallsLandingCallsList) BACnetAssignedLandingCallsBuilder {
-	m.LandingCalls = landingCalls
-	return m
+func (b *_BACnetAssignedLandingCallsBuilder) WithLandingCalls(landingCalls BACnetAssignedLandingCallsLandingCallsList) BACnetAssignedLandingCallsBuilder {
+	b.LandingCalls = landingCalls
+	return b
 }
 
-func (m *_BACnetAssignedLandingCallsBuilder) WithLandingCallsBuilder(builderSupplier func(BACnetAssignedLandingCallsLandingCallsListBuilder) BACnetAssignedLandingCallsLandingCallsListBuilder) BACnetAssignedLandingCallsBuilder {
-	builder := builderSupplier(m.LandingCalls.CreateBACnetAssignedLandingCallsLandingCallsListBuilder())
+func (b *_BACnetAssignedLandingCallsBuilder) WithLandingCallsBuilder(builderSupplier func(BACnetAssignedLandingCallsLandingCallsListBuilder) BACnetAssignedLandingCallsLandingCallsListBuilder) BACnetAssignedLandingCallsBuilder {
+	builder := builderSupplier(b.LandingCalls.CreateBACnetAssignedLandingCallsLandingCallsListBuilder())
 	var err error
-	m.LandingCalls, err = builder.Build()
+	b.LandingCalls, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAssignedLandingCallsLandingCallsListBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAssignedLandingCallsLandingCallsListBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAssignedLandingCallsBuilder) Build() (BACnetAssignedLandingCalls, error) {
-	if m.LandingCalls == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAssignedLandingCallsBuilder) Build() (BACnetAssignedLandingCalls, error) {
+	if b.LandingCalls == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'landingCalls' not set"))
+		b.err.Append(errors.New("mandatory field 'landingCalls' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAssignedLandingCalls.deepCopy(), nil
+	return b._BACnetAssignedLandingCalls.deepCopy(), nil
 }
 
-func (m *_BACnetAssignedLandingCallsBuilder) MustBuild() BACnetAssignedLandingCalls {
-	build, err := m.Build()
+func (b *_BACnetAssignedLandingCallsBuilder) MustBuild() BACnetAssignedLandingCalls {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAssignedLandingCallsBuilder) DeepCopy() any {
-	return m.CreateBACnetAssignedLandingCallsBuilder()
+func (b *_BACnetAssignedLandingCallsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAssignedLandingCallsBuilder().(*_BACnetAssignedLandingCallsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAssignedLandingCallsBuilder creates a BACnetAssignedLandingCallsBuilder
-func (m *_BACnetAssignedLandingCalls) CreateBACnetAssignedLandingCallsBuilder() BACnetAssignedLandingCallsBuilder {
-	if m == nil {
+func (b *_BACnetAssignedLandingCalls) CreateBACnetAssignedLandingCallsBuilder() BACnetAssignedLandingCallsBuilder {
+	if b == nil {
 		return NewBACnetAssignedLandingCallsBuilder()
 	}
-	return &_BACnetAssignedLandingCallsBuilder{_BACnetAssignedLandingCalls: m.deepCopy()}
+	return &_BACnetAssignedLandingCallsBuilder{_BACnetAssignedLandingCalls: b.deepCopy()}
 }
 
 ///////////////////////

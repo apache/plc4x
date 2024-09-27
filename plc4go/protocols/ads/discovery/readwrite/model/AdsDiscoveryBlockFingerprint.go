@@ -93,45 +93,64 @@ func NewAdsDiscoveryBlockFingerprintBuilder() AdsDiscoveryBlockFingerprintBuilde
 type _AdsDiscoveryBlockFingerprintBuilder struct {
 	*_AdsDiscoveryBlockFingerprint
 
+	parentBuilder *_AdsDiscoveryBlockBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsDiscoveryBlockFingerprintBuilder) = (*_AdsDiscoveryBlockFingerprintBuilder)(nil)
 
-func (m *_AdsDiscoveryBlockFingerprintBuilder) WithMandatoryFields(data []byte) AdsDiscoveryBlockFingerprintBuilder {
-	return m.WithData(data...)
+func (b *_AdsDiscoveryBlockFingerprintBuilder) setParent(contract AdsDiscoveryBlockContract) {
+	b.AdsDiscoveryBlockContract = contract
 }
 
-func (m *_AdsDiscoveryBlockFingerprintBuilder) WithData(data ...byte) AdsDiscoveryBlockFingerprintBuilder {
-	m.Data = data
-	return m
+func (b *_AdsDiscoveryBlockFingerprintBuilder) WithMandatoryFields(data []byte) AdsDiscoveryBlockFingerprintBuilder {
+	return b.WithData(data...)
 }
 
-func (m *_AdsDiscoveryBlockFingerprintBuilder) Build() (AdsDiscoveryBlockFingerprint, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsDiscoveryBlockFingerprintBuilder) WithData(data ...byte) AdsDiscoveryBlockFingerprintBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_AdsDiscoveryBlockFingerprintBuilder) Build() (AdsDiscoveryBlockFingerprint, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsDiscoveryBlockFingerprint.deepCopy(), nil
+	return b._AdsDiscoveryBlockFingerprint.deepCopy(), nil
 }
 
-func (m *_AdsDiscoveryBlockFingerprintBuilder) MustBuild() AdsDiscoveryBlockFingerprint {
-	build, err := m.Build()
+func (b *_AdsDiscoveryBlockFingerprintBuilder) MustBuild() AdsDiscoveryBlockFingerprint {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsDiscoveryBlockFingerprintBuilder) DeepCopy() any {
-	return m.CreateAdsDiscoveryBlockFingerprintBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsDiscoveryBlockFingerprintBuilder) Done() AdsDiscoveryBlockBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsDiscoveryBlockFingerprintBuilder) buildForAdsDiscoveryBlock() (AdsDiscoveryBlock, error) {
+	return b.Build()
+}
+
+func (b *_AdsDiscoveryBlockFingerprintBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryBlockFingerprintBuilder().(*_AdsDiscoveryBlockFingerprintBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsDiscoveryBlockFingerprintBuilder creates a AdsDiscoveryBlockFingerprintBuilder
-func (m *_AdsDiscoveryBlockFingerprint) CreateAdsDiscoveryBlockFingerprintBuilder() AdsDiscoveryBlockFingerprintBuilder {
-	if m == nil {
+func (b *_AdsDiscoveryBlockFingerprint) CreateAdsDiscoveryBlockFingerprintBuilder() AdsDiscoveryBlockFingerprintBuilder {
+	if b == nil {
 		return NewAdsDiscoveryBlockFingerprintBuilder()
 	}
-	return &_AdsDiscoveryBlockFingerprintBuilder{_AdsDiscoveryBlockFingerprint: m.deepCopy()}
+	return &_AdsDiscoveryBlockFingerprintBuilder{_AdsDiscoveryBlockFingerprint: b.deepCopy()}
 }
 
 ///////////////////////

@@ -182,223 +182,242 @@ func NewSessionSecurityDiagnosticsDataTypeBuilder() SessionSecurityDiagnosticsDa
 type _SessionSecurityDiagnosticsDataTypeBuilder struct {
 	*_SessionSecurityDiagnosticsDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SessionSecurityDiagnosticsDataTypeBuilder) = (*_SessionSecurityDiagnosticsDataTypeBuilder)(nil)
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithMandatoryFields(sessionId NodeId, clientUserIdOfSession PascalString, noOfClientUserIdHistory int32, clientUserIdHistory []PascalString, authenticationMechanism PascalString, encoding PascalString, transportProtocol PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, clientCertificate PascalByteString) SessionSecurityDiagnosticsDataTypeBuilder {
-	return m.WithSessionId(sessionId).WithClientUserIdOfSession(clientUserIdOfSession).WithNoOfClientUserIdHistory(noOfClientUserIdHistory).WithClientUserIdHistory(clientUserIdHistory...).WithAuthenticationMechanism(authenticationMechanism).WithEncoding(encoding).WithTransportProtocol(transportProtocol).WithSecurityMode(securityMode).WithSecurityPolicyUri(securityPolicyUri).WithClientCertificate(clientCertificate)
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithSessionId(sessionId NodeId) SessionSecurityDiagnosticsDataTypeBuilder {
-	m.SessionId = sessionId
-	return m
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithMandatoryFields(sessionId NodeId, clientUserIdOfSession PascalString, noOfClientUserIdHistory int32, clientUserIdHistory []PascalString, authenticationMechanism PascalString, encoding PascalString, transportProtocol PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, clientCertificate PascalByteString) SessionSecurityDiagnosticsDataTypeBuilder {
+	return b.WithSessionId(sessionId).WithClientUserIdOfSession(clientUserIdOfSession).WithNoOfClientUserIdHistory(noOfClientUserIdHistory).WithClientUserIdHistory(clientUserIdHistory...).WithAuthenticationMechanism(authenticationMechanism).WithEncoding(encoding).WithTransportProtocol(transportProtocol).WithSecurityMode(securityMode).WithSecurityPolicyUri(securityPolicyUri).WithClientCertificate(clientCertificate)
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithSessionIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) SessionSecurityDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(m.SessionId.CreateNodeIdBuilder())
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithSessionId(sessionId NodeId) SessionSecurityDiagnosticsDataTypeBuilder {
+	b.SessionId = sessionId
+	return b
+}
+
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithSessionIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) SessionSecurityDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.SessionId.CreateNodeIdBuilder())
 	var err error
-	m.SessionId, err = builder.Build()
+	b.SessionId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithClientUserIdOfSession(clientUserIdOfSession PascalString) SessionSecurityDiagnosticsDataTypeBuilder {
-	m.ClientUserIdOfSession = clientUserIdOfSession
-	return m
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithClientUserIdOfSession(clientUserIdOfSession PascalString) SessionSecurityDiagnosticsDataTypeBuilder {
+	b.ClientUserIdOfSession = clientUserIdOfSession
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithClientUserIdOfSessionBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SessionSecurityDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(m.ClientUserIdOfSession.CreatePascalStringBuilder())
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithClientUserIdOfSessionBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SessionSecurityDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.ClientUserIdOfSession.CreatePascalStringBuilder())
 	var err error
-	m.ClientUserIdOfSession, err = builder.Build()
+	b.ClientUserIdOfSession, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithNoOfClientUserIdHistory(noOfClientUserIdHistory int32) SessionSecurityDiagnosticsDataTypeBuilder {
-	m.NoOfClientUserIdHistory = noOfClientUserIdHistory
-	return m
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithNoOfClientUserIdHistory(noOfClientUserIdHistory int32) SessionSecurityDiagnosticsDataTypeBuilder {
+	b.NoOfClientUserIdHistory = noOfClientUserIdHistory
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithClientUserIdHistory(clientUserIdHistory ...PascalString) SessionSecurityDiagnosticsDataTypeBuilder {
-	m.ClientUserIdHistory = clientUserIdHistory
-	return m
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithClientUserIdHistory(clientUserIdHistory ...PascalString) SessionSecurityDiagnosticsDataTypeBuilder {
+	b.ClientUserIdHistory = clientUserIdHistory
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithAuthenticationMechanism(authenticationMechanism PascalString) SessionSecurityDiagnosticsDataTypeBuilder {
-	m.AuthenticationMechanism = authenticationMechanism
-	return m
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithAuthenticationMechanism(authenticationMechanism PascalString) SessionSecurityDiagnosticsDataTypeBuilder {
+	b.AuthenticationMechanism = authenticationMechanism
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithAuthenticationMechanismBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SessionSecurityDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(m.AuthenticationMechanism.CreatePascalStringBuilder())
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithAuthenticationMechanismBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SessionSecurityDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.AuthenticationMechanism.CreatePascalStringBuilder())
 	var err error
-	m.AuthenticationMechanism, err = builder.Build()
+	b.AuthenticationMechanism, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithEncoding(encoding PascalString) SessionSecurityDiagnosticsDataTypeBuilder {
-	m.Encoding = encoding
-	return m
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithEncoding(encoding PascalString) SessionSecurityDiagnosticsDataTypeBuilder {
+	b.Encoding = encoding
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithEncodingBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SessionSecurityDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(m.Encoding.CreatePascalStringBuilder())
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithEncodingBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SessionSecurityDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.Encoding.CreatePascalStringBuilder())
 	var err error
-	m.Encoding, err = builder.Build()
+	b.Encoding, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithTransportProtocol(transportProtocol PascalString) SessionSecurityDiagnosticsDataTypeBuilder {
-	m.TransportProtocol = transportProtocol
-	return m
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithTransportProtocol(transportProtocol PascalString) SessionSecurityDiagnosticsDataTypeBuilder {
+	b.TransportProtocol = transportProtocol
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithTransportProtocolBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SessionSecurityDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(m.TransportProtocol.CreatePascalStringBuilder())
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithTransportProtocolBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SessionSecurityDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.TransportProtocol.CreatePascalStringBuilder())
 	var err error
-	m.TransportProtocol, err = builder.Build()
+	b.TransportProtocol, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithSecurityMode(securityMode MessageSecurityMode) SessionSecurityDiagnosticsDataTypeBuilder {
-	m.SecurityMode = securityMode
-	return m
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithSecurityMode(securityMode MessageSecurityMode) SessionSecurityDiagnosticsDataTypeBuilder {
+	b.SecurityMode = securityMode
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithSecurityPolicyUri(securityPolicyUri PascalString) SessionSecurityDiagnosticsDataTypeBuilder {
-	m.SecurityPolicyUri = securityPolicyUri
-	return m
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithSecurityPolicyUri(securityPolicyUri PascalString) SessionSecurityDiagnosticsDataTypeBuilder {
+	b.SecurityPolicyUri = securityPolicyUri
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithSecurityPolicyUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SessionSecurityDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(m.SecurityPolicyUri.CreatePascalStringBuilder())
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithSecurityPolicyUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SessionSecurityDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.SecurityPolicyUri.CreatePascalStringBuilder())
 	var err error
-	m.SecurityPolicyUri, err = builder.Build()
+	b.SecurityPolicyUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithClientCertificate(clientCertificate PascalByteString) SessionSecurityDiagnosticsDataTypeBuilder {
-	m.ClientCertificate = clientCertificate
-	return m
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithClientCertificate(clientCertificate PascalByteString) SessionSecurityDiagnosticsDataTypeBuilder {
+	b.ClientCertificate = clientCertificate
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) WithClientCertificateBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) SessionSecurityDiagnosticsDataTypeBuilder {
-	builder := builderSupplier(m.ClientCertificate.CreatePascalByteStringBuilder())
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithClientCertificateBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) SessionSecurityDiagnosticsDataTypeBuilder {
+	builder := builderSupplier(b.ClientCertificate.CreatePascalByteStringBuilder())
 	var err error
-	m.ClientCertificate, err = builder.Build()
+	b.ClientCertificate, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) Build() (SessionSecurityDiagnosticsDataType, error) {
-	if m.SessionId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) Build() (SessionSecurityDiagnosticsDataType, error) {
+	if b.SessionId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'sessionId' not set"))
+		b.err.Append(errors.New("mandatory field 'sessionId' not set"))
 	}
-	if m.ClientUserIdOfSession == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClientUserIdOfSession == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'clientUserIdOfSession' not set"))
+		b.err.Append(errors.New("mandatory field 'clientUserIdOfSession' not set"))
 	}
-	if m.AuthenticationMechanism == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.AuthenticationMechanism == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'authenticationMechanism' not set"))
+		b.err.Append(errors.New("mandatory field 'authenticationMechanism' not set"))
 	}
-	if m.Encoding == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Encoding == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'encoding' not set"))
+		b.err.Append(errors.New("mandatory field 'encoding' not set"))
 	}
-	if m.TransportProtocol == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TransportProtocol == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'transportProtocol' not set"))
+		b.err.Append(errors.New("mandatory field 'transportProtocol' not set"))
 	}
-	if m.SecurityPolicyUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.SecurityPolicyUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
+		b.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
 	}
-	if m.ClientCertificate == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClientCertificate == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'clientCertificate' not set"))
+		b.err.Append(errors.New("mandatory field 'clientCertificate' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SessionSecurityDiagnosticsDataType.deepCopy(), nil
+	return b._SessionSecurityDiagnosticsDataType.deepCopy(), nil
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) MustBuild() SessionSecurityDiagnosticsDataType {
-	build, err := m.Build()
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) MustBuild() SessionSecurityDiagnosticsDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SessionSecurityDiagnosticsDataTypeBuilder) DeepCopy() any {
-	return m.CreateSessionSecurityDiagnosticsDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SessionSecurityDiagnosticsDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateSessionSecurityDiagnosticsDataTypeBuilder().(*_SessionSecurityDiagnosticsDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSessionSecurityDiagnosticsDataTypeBuilder creates a SessionSecurityDiagnosticsDataTypeBuilder
-func (m *_SessionSecurityDiagnosticsDataType) CreateSessionSecurityDiagnosticsDataTypeBuilder() SessionSecurityDiagnosticsDataTypeBuilder {
-	if m == nil {
+func (b *_SessionSecurityDiagnosticsDataType) CreateSessionSecurityDiagnosticsDataTypeBuilder() SessionSecurityDiagnosticsDataTypeBuilder {
+	if b == nil {
 		return NewSessionSecurityDiagnosticsDataTypeBuilder()
 	}
-	return &_SessionSecurityDiagnosticsDataTypeBuilder{_SessionSecurityDiagnosticsDataType: m.deepCopy()}
+	return &_SessionSecurityDiagnosticsDataTypeBuilder{_SessionSecurityDiagnosticsDataType: b.deepCopy()}
 }
 
 ///////////////////////

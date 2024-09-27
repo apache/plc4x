@@ -99,50 +99,69 @@ func NewHistoryEventFieldListBuilder() HistoryEventFieldListBuilder {
 type _HistoryEventFieldListBuilder struct {
 	*_HistoryEventFieldList
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (HistoryEventFieldListBuilder) = (*_HistoryEventFieldListBuilder)(nil)
 
-func (m *_HistoryEventFieldListBuilder) WithMandatoryFields(noOfEventFields int32, eventFields []Variant) HistoryEventFieldListBuilder {
-	return m.WithNoOfEventFields(noOfEventFields).WithEventFields(eventFields...)
+func (b *_HistoryEventFieldListBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_HistoryEventFieldListBuilder) WithNoOfEventFields(noOfEventFields int32) HistoryEventFieldListBuilder {
-	m.NoOfEventFields = noOfEventFields
-	return m
+func (b *_HistoryEventFieldListBuilder) WithMandatoryFields(noOfEventFields int32, eventFields []Variant) HistoryEventFieldListBuilder {
+	return b.WithNoOfEventFields(noOfEventFields).WithEventFields(eventFields...)
 }
 
-func (m *_HistoryEventFieldListBuilder) WithEventFields(eventFields ...Variant) HistoryEventFieldListBuilder {
-	m.EventFields = eventFields
-	return m
+func (b *_HistoryEventFieldListBuilder) WithNoOfEventFields(noOfEventFields int32) HistoryEventFieldListBuilder {
+	b.NoOfEventFields = noOfEventFields
+	return b
 }
 
-func (m *_HistoryEventFieldListBuilder) Build() (HistoryEventFieldList, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_HistoryEventFieldListBuilder) WithEventFields(eventFields ...Variant) HistoryEventFieldListBuilder {
+	b.EventFields = eventFields
+	return b
+}
+
+func (b *_HistoryEventFieldListBuilder) Build() (HistoryEventFieldList, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HistoryEventFieldList.deepCopy(), nil
+	return b._HistoryEventFieldList.deepCopy(), nil
 }
 
-func (m *_HistoryEventFieldListBuilder) MustBuild() HistoryEventFieldList {
-	build, err := m.Build()
+func (b *_HistoryEventFieldListBuilder) MustBuild() HistoryEventFieldList {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HistoryEventFieldListBuilder) DeepCopy() any {
-	return m.CreateHistoryEventFieldListBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryEventFieldListBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryEventFieldListBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryEventFieldListBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryEventFieldListBuilder().(*_HistoryEventFieldListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHistoryEventFieldListBuilder creates a HistoryEventFieldListBuilder
-func (m *_HistoryEventFieldList) CreateHistoryEventFieldListBuilder() HistoryEventFieldListBuilder {
-	if m == nil {
+func (b *_HistoryEventFieldList) CreateHistoryEventFieldListBuilder() HistoryEventFieldListBuilder {
+	if b == nil {
 		return NewHistoryEventFieldListBuilder()
 	}
-	return &_HistoryEventFieldListBuilder{_HistoryEventFieldList: m.deepCopy()}
+	return &_HistoryEventFieldListBuilder{_HistoryEventFieldList: b.deepCopy()}
 }
 
 ///////////////////////

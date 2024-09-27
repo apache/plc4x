@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAnalogOutputPresentValueBuilder() BACnetConstructed
 type _BACnetConstructedDataAnalogOutputPresentValueBuilder struct {
 	*_BACnetConstructedDataAnalogOutputPresentValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAnalogOutputPresentValueBuilder) = (*_BACnetConstructedDataAnalogOutputPresentValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataAnalogOutputPresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagReal) BACnetConstructedDataAnalogOutputPresentValueBuilder {
-	return m.WithPresentValue(presentValue)
+func (b *_BACnetConstructedDataAnalogOutputPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAnalogOutputPresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagReal) BACnetConstructedDataAnalogOutputPresentValueBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetConstructedDataAnalogOutputPresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagReal) BACnetConstructedDataAnalogOutputPresentValueBuilder {
+	return b.WithPresentValue(presentValue)
 }
 
-func (m *_BACnetConstructedDataAnalogOutputPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataAnalogOutputPresentValueBuilder {
-	builder := builderSupplier(m.PresentValue.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataAnalogOutputPresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagReal) BACnetConstructedDataAnalogOutputPresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataAnalogOutputPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataAnalogOutputPresentValueBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.PresentValue, err = builder.Build()
+	b.PresentValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAnalogOutputPresentValueBuilder) Build() (BACnetConstructedDataAnalogOutputPresentValue, error) {
-	if m.PresentValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAnalogOutputPresentValueBuilder) Build() (BACnetConstructedDataAnalogOutputPresentValue, error) {
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAnalogOutputPresentValue.deepCopy(), nil
+	return b._BACnetConstructedDataAnalogOutputPresentValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAnalogOutputPresentValueBuilder) MustBuild() BACnetConstructedDataAnalogOutputPresentValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAnalogOutputPresentValueBuilder) MustBuild() BACnetConstructedDataAnalogOutputPresentValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAnalogOutputPresentValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAnalogOutputPresentValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAnalogOutputPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAnalogOutputPresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAnalogOutputPresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAnalogOutputPresentValueBuilder().(*_BACnetConstructedDataAnalogOutputPresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAnalogOutputPresentValueBuilder creates a BACnetConstructedDataAnalogOutputPresentValueBuilder
-func (m *_BACnetConstructedDataAnalogOutputPresentValue) CreateBACnetConstructedDataAnalogOutputPresentValueBuilder() BACnetConstructedDataAnalogOutputPresentValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAnalogOutputPresentValue) CreateBACnetConstructedDataAnalogOutputPresentValueBuilder() BACnetConstructedDataAnalogOutputPresentValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAnalogOutputPresentValueBuilder()
 	}
-	return &_BACnetConstructedDataAnalogOutputPresentValueBuilder{_BACnetConstructedDataAnalogOutputPresentValue: m.deepCopy()}
+	return &_BACnetConstructedDataAnalogOutputPresentValueBuilder{_BACnetConstructedDataAnalogOutputPresentValue: b.deepCopy()}
 }
 
 ///////////////////////

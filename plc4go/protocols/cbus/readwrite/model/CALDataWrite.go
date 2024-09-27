@@ -94,6 +94,8 @@ type CALDataWriteBuilder interface {
 	WithCode(byte) CALDataWriteBuilder
 	// WithParameterValue adds ParameterValue (property field)
 	WithParameterValue(ParameterValue) CALDataWriteBuilder
+	// WithParameterValueBuilder adds ParameterValue (property field) which is build by the builder
+	WithParameterValueBuilder(func(ParameterValueBuilder) ParameterValueBuilder) CALDataWriteBuilder
 	// Build builds the CALDataWrite or returns an error if something is wrong
 	Build() (CALDataWrite, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,61 +110,93 @@ func NewCALDataWriteBuilder() CALDataWriteBuilder {
 type _CALDataWriteBuilder struct {
 	*_CALDataWrite
 
+	parentBuilder *_CALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CALDataWriteBuilder) = (*_CALDataWriteBuilder)(nil)
 
-func (m *_CALDataWriteBuilder) WithMandatoryFields(paramNo Parameter, code byte, parameterValue ParameterValue) CALDataWriteBuilder {
-	return m.WithParamNo(paramNo).WithCode(code).WithParameterValue(parameterValue)
+func (b *_CALDataWriteBuilder) setParent(contract CALDataContract) {
+	b.CALDataContract = contract
 }
 
-func (m *_CALDataWriteBuilder) WithParamNo(paramNo Parameter) CALDataWriteBuilder {
-	m.ParamNo = paramNo
-	return m
+func (b *_CALDataWriteBuilder) WithMandatoryFields(paramNo Parameter, code byte, parameterValue ParameterValue) CALDataWriteBuilder {
+	return b.WithParamNo(paramNo).WithCode(code).WithParameterValue(parameterValue)
 }
 
-func (m *_CALDataWriteBuilder) WithCode(code byte) CALDataWriteBuilder {
-	m.Code = code
-	return m
+func (b *_CALDataWriteBuilder) WithParamNo(paramNo Parameter) CALDataWriteBuilder {
+	b.ParamNo = paramNo
+	return b
 }
 
-func (m *_CALDataWriteBuilder) WithParameterValue(parameterValue ParameterValue) CALDataWriteBuilder {
-	m.ParameterValue = parameterValue
-	return m
+func (b *_CALDataWriteBuilder) WithCode(code byte) CALDataWriteBuilder {
+	b.Code = code
+	return b
 }
 
-func (m *_CALDataWriteBuilder) Build() (CALDataWrite, error) {
-	if m.ParameterValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CALDataWriteBuilder) WithParameterValue(parameterValue ParameterValue) CALDataWriteBuilder {
+	b.ParameterValue = parameterValue
+	return b
+}
+
+func (b *_CALDataWriteBuilder) WithParameterValueBuilder(builderSupplier func(ParameterValueBuilder) ParameterValueBuilder) CALDataWriteBuilder {
+	builder := builderSupplier(b.ParameterValue.CreateParameterValueBuilder())
+	var err error
+	b.ParameterValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'parameterValue' not set"))
+		b.err.Append(errors.Wrap(err, "ParameterValueBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._CALDataWrite.deepCopy(), nil
+	return b
 }
 
-func (m *_CALDataWriteBuilder) MustBuild() CALDataWrite {
-	build, err := m.Build()
+func (b *_CALDataWriteBuilder) Build() (CALDataWrite, error) {
+	if b.ParameterValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'parameterValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CALDataWrite.deepCopy(), nil
+}
+
+func (b *_CALDataWriteBuilder) MustBuild() CALDataWrite {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CALDataWriteBuilder) DeepCopy() any {
-	return m.CreateCALDataWriteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CALDataWriteBuilder) Done() CALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CALDataWriteBuilder) buildForCALData() (CALData, error) {
+	return b.Build()
+}
+
+func (b *_CALDataWriteBuilder) DeepCopy() any {
+	_copy := b.CreateCALDataWriteBuilder().(*_CALDataWriteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCALDataWriteBuilder creates a CALDataWriteBuilder
-func (m *_CALDataWrite) CreateCALDataWriteBuilder() CALDataWriteBuilder {
-	if m == nil {
+func (b *_CALDataWrite) CreateCALDataWriteBuilder() CALDataWriteBuilder {
+	if b == nil {
 		return NewCALDataWriteBuilder()
 	}
-	return &_CALDataWriteBuilder{_CALDataWrite: m.deepCopy()}
+	return &_CALDataWriteBuilder{_CALDataWrite: b.deepCopy()}
 }
 
 ///////////////////////

@@ -105,55 +105,59 @@ type _SerialNumberBuilder struct {
 
 var _ (SerialNumberBuilder) = (*_SerialNumberBuilder)(nil)
 
-func (m *_SerialNumberBuilder) WithMandatoryFields(octet1 byte, octet2 byte, octet3 byte, octet4 byte) SerialNumberBuilder {
-	return m.WithOctet1(octet1).WithOctet2(octet2).WithOctet3(octet3).WithOctet4(octet4)
+func (b *_SerialNumberBuilder) WithMandatoryFields(octet1 byte, octet2 byte, octet3 byte, octet4 byte) SerialNumberBuilder {
+	return b.WithOctet1(octet1).WithOctet2(octet2).WithOctet3(octet3).WithOctet4(octet4)
 }
 
-func (m *_SerialNumberBuilder) WithOctet1(octet1 byte) SerialNumberBuilder {
-	m.Octet1 = octet1
-	return m
+func (b *_SerialNumberBuilder) WithOctet1(octet1 byte) SerialNumberBuilder {
+	b.Octet1 = octet1
+	return b
 }
 
-func (m *_SerialNumberBuilder) WithOctet2(octet2 byte) SerialNumberBuilder {
-	m.Octet2 = octet2
-	return m
+func (b *_SerialNumberBuilder) WithOctet2(octet2 byte) SerialNumberBuilder {
+	b.Octet2 = octet2
+	return b
 }
 
-func (m *_SerialNumberBuilder) WithOctet3(octet3 byte) SerialNumberBuilder {
-	m.Octet3 = octet3
-	return m
+func (b *_SerialNumberBuilder) WithOctet3(octet3 byte) SerialNumberBuilder {
+	b.Octet3 = octet3
+	return b
 }
 
-func (m *_SerialNumberBuilder) WithOctet4(octet4 byte) SerialNumberBuilder {
-	m.Octet4 = octet4
-	return m
+func (b *_SerialNumberBuilder) WithOctet4(octet4 byte) SerialNumberBuilder {
+	b.Octet4 = octet4
+	return b
 }
 
-func (m *_SerialNumberBuilder) Build() (SerialNumber, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SerialNumberBuilder) Build() (SerialNumber, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SerialNumber.deepCopy(), nil
+	return b._SerialNumber.deepCopy(), nil
 }
 
-func (m *_SerialNumberBuilder) MustBuild() SerialNumber {
-	build, err := m.Build()
+func (b *_SerialNumberBuilder) MustBuild() SerialNumber {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SerialNumberBuilder) DeepCopy() any {
-	return m.CreateSerialNumberBuilder()
+func (b *_SerialNumberBuilder) DeepCopy() any {
+	_copy := b.CreateSerialNumberBuilder().(*_SerialNumberBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSerialNumberBuilder creates a SerialNumberBuilder
-func (m *_SerialNumber) CreateSerialNumberBuilder() SerialNumberBuilder {
-	if m == nil {
+func (b *_SerialNumber) CreateSerialNumberBuilder() SerialNumberBuilder {
+	if b == nil {
 		return NewSerialNumberBuilder()
 	}
-	return &_SerialNumberBuilder{_SerialNumber: m.deepCopy()}
+	return &_SerialNumberBuilder{_SerialNumber: b.deepCopy()}
 }
 
 ///////////////////////

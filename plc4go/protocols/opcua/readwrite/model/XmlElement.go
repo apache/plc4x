@@ -95,45 +95,49 @@ type _XmlElementBuilder struct {
 
 var _ (XmlElementBuilder) = (*_XmlElementBuilder)(nil)
 
-func (m *_XmlElementBuilder) WithMandatoryFields(length int32, value []string) XmlElementBuilder {
-	return m.WithLength(length).WithValue(value...)
+func (b *_XmlElementBuilder) WithMandatoryFields(length int32, value []string) XmlElementBuilder {
+	return b.WithLength(length).WithValue(value...)
 }
 
-func (m *_XmlElementBuilder) WithLength(length int32) XmlElementBuilder {
-	m.Length = length
-	return m
+func (b *_XmlElementBuilder) WithLength(length int32) XmlElementBuilder {
+	b.Length = length
+	return b
 }
 
-func (m *_XmlElementBuilder) WithValue(value ...string) XmlElementBuilder {
-	m.Value = value
-	return m
+func (b *_XmlElementBuilder) WithValue(value ...string) XmlElementBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_XmlElementBuilder) Build() (XmlElement, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_XmlElementBuilder) Build() (XmlElement, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._XmlElement.deepCopy(), nil
+	return b._XmlElement.deepCopy(), nil
 }
 
-func (m *_XmlElementBuilder) MustBuild() XmlElement {
-	build, err := m.Build()
+func (b *_XmlElementBuilder) MustBuild() XmlElement {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_XmlElementBuilder) DeepCopy() any {
-	return m.CreateXmlElementBuilder()
+func (b *_XmlElementBuilder) DeepCopy() any {
+	_copy := b.CreateXmlElementBuilder().(*_XmlElementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateXmlElementBuilder creates a XmlElementBuilder
-func (m *_XmlElement) CreateXmlElementBuilder() XmlElementBuilder {
-	if m == nil {
+func (b *_XmlElement) CreateXmlElementBuilder() XmlElementBuilder {
+	if b == nil {
 		return NewXmlElementBuilder()
 	}
-	return &_XmlElementBuilder{_XmlElement: m.deepCopy()}
+	return &_XmlElementBuilder{_XmlElement: b.deepCopy()}
 }
 
 ///////////////////////

@@ -90,6 +90,8 @@ type DeleteReferencesRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfReferencesToDelete int32, referencesToDelete []ExtensionObjectDefinition) DeleteReferencesRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) DeleteReferencesRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteReferencesRequestBuilder
 	// WithNoOfReferencesToDelete adds NoOfReferencesToDelete (property field)
 	WithNoOfReferencesToDelete(int32) DeleteReferencesRequestBuilder
 	// WithReferencesToDelete adds ReferencesToDelete (property field)
@@ -108,61 +110,93 @@ func NewDeleteReferencesRequestBuilder() DeleteReferencesRequestBuilder {
 type _DeleteReferencesRequestBuilder struct {
 	*_DeleteReferencesRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DeleteReferencesRequestBuilder) = (*_DeleteReferencesRequestBuilder)(nil)
 
-func (m *_DeleteReferencesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfReferencesToDelete int32, referencesToDelete []ExtensionObjectDefinition) DeleteReferencesRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithNoOfReferencesToDelete(noOfReferencesToDelete).WithReferencesToDelete(referencesToDelete...)
+func (b *_DeleteReferencesRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_DeleteReferencesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteReferencesRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_DeleteReferencesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfReferencesToDelete int32, referencesToDelete []ExtensionObjectDefinition) DeleteReferencesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNoOfReferencesToDelete(noOfReferencesToDelete).WithReferencesToDelete(referencesToDelete...)
 }
 
-func (m *_DeleteReferencesRequestBuilder) WithNoOfReferencesToDelete(noOfReferencesToDelete int32) DeleteReferencesRequestBuilder {
-	m.NoOfReferencesToDelete = noOfReferencesToDelete
-	return m
+func (b *_DeleteReferencesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteReferencesRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_DeleteReferencesRequestBuilder) WithReferencesToDelete(referencesToDelete ...ExtensionObjectDefinition) DeleteReferencesRequestBuilder {
-	m.ReferencesToDelete = referencesToDelete
-	return m
-}
-
-func (m *_DeleteReferencesRequestBuilder) Build() (DeleteReferencesRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_DeleteReferencesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteReferencesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._DeleteReferencesRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_DeleteReferencesRequestBuilder) MustBuild() DeleteReferencesRequest {
-	build, err := m.Build()
+func (b *_DeleteReferencesRequestBuilder) WithNoOfReferencesToDelete(noOfReferencesToDelete int32) DeleteReferencesRequestBuilder {
+	b.NoOfReferencesToDelete = noOfReferencesToDelete
+	return b
+}
+
+func (b *_DeleteReferencesRequestBuilder) WithReferencesToDelete(referencesToDelete ...ExtensionObjectDefinition) DeleteReferencesRequestBuilder {
+	b.ReferencesToDelete = referencesToDelete
+	return b
+}
+
+func (b *_DeleteReferencesRequestBuilder) Build() (DeleteReferencesRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DeleteReferencesRequest.deepCopy(), nil
+}
+
+func (b *_DeleteReferencesRequestBuilder) MustBuild() DeleteReferencesRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DeleteReferencesRequestBuilder) DeepCopy() any {
-	return m.CreateDeleteReferencesRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DeleteReferencesRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DeleteReferencesRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DeleteReferencesRequestBuilder) DeepCopy() any {
+	_copy := b.CreateDeleteReferencesRequestBuilder().(*_DeleteReferencesRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDeleteReferencesRequestBuilder creates a DeleteReferencesRequestBuilder
-func (m *_DeleteReferencesRequest) CreateDeleteReferencesRequestBuilder() DeleteReferencesRequestBuilder {
-	if m == nil {
+func (b *_DeleteReferencesRequest) CreateDeleteReferencesRequestBuilder() DeleteReferencesRequestBuilder {
+	if b == nil {
 		return NewDeleteReferencesRequestBuilder()
 	}
-	return &_DeleteReferencesRequestBuilder{_DeleteReferencesRequest: m.deepCopy()}
+	return &_DeleteReferencesRequestBuilder{_DeleteReferencesRequest: b.deepCopy()}
 }
 
 ///////////////////////

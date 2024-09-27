@@ -99,50 +99,69 @@ func NewUnsignedRationalNumberBuilder() UnsignedRationalNumberBuilder {
 type _UnsignedRationalNumberBuilder struct {
 	*_UnsignedRationalNumber
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (UnsignedRationalNumberBuilder) = (*_UnsignedRationalNumberBuilder)(nil)
 
-func (m *_UnsignedRationalNumberBuilder) WithMandatoryFields(numerator uint32, denominator uint32) UnsignedRationalNumberBuilder {
-	return m.WithNumerator(numerator).WithDenominator(denominator)
+func (b *_UnsignedRationalNumberBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_UnsignedRationalNumberBuilder) WithNumerator(numerator uint32) UnsignedRationalNumberBuilder {
-	m.Numerator = numerator
-	return m
+func (b *_UnsignedRationalNumberBuilder) WithMandatoryFields(numerator uint32, denominator uint32) UnsignedRationalNumberBuilder {
+	return b.WithNumerator(numerator).WithDenominator(denominator)
 }
 
-func (m *_UnsignedRationalNumberBuilder) WithDenominator(denominator uint32) UnsignedRationalNumberBuilder {
-	m.Denominator = denominator
-	return m
+func (b *_UnsignedRationalNumberBuilder) WithNumerator(numerator uint32) UnsignedRationalNumberBuilder {
+	b.Numerator = numerator
+	return b
 }
 
-func (m *_UnsignedRationalNumberBuilder) Build() (UnsignedRationalNumber, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_UnsignedRationalNumberBuilder) WithDenominator(denominator uint32) UnsignedRationalNumberBuilder {
+	b.Denominator = denominator
+	return b
+}
+
+func (b *_UnsignedRationalNumberBuilder) Build() (UnsignedRationalNumber, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._UnsignedRationalNumber.deepCopy(), nil
+	return b._UnsignedRationalNumber.deepCopy(), nil
 }
 
-func (m *_UnsignedRationalNumberBuilder) MustBuild() UnsignedRationalNumber {
-	build, err := m.Build()
+func (b *_UnsignedRationalNumberBuilder) MustBuild() UnsignedRationalNumber {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_UnsignedRationalNumberBuilder) DeepCopy() any {
-	return m.CreateUnsignedRationalNumberBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UnsignedRationalNumberBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UnsignedRationalNumberBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_UnsignedRationalNumberBuilder) DeepCopy() any {
+	_copy := b.CreateUnsignedRationalNumberBuilder().(*_UnsignedRationalNumberBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateUnsignedRationalNumberBuilder creates a UnsignedRationalNumberBuilder
-func (m *_UnsignedRationalNumber) CreateUnsignedRationalNumberBuilder() UnsignedRationalNumberBuilder {
-	if m == nil {
+func (b *_UnsignedRationalNumber) CreateUnsignedRationalNumberBuilder() UnsignedRationalNumberBuilder {
+	if b == nil {
 		return NewUnsignedRationalNumberBuilder()
 	}
-	return &_UnsignedRationalNumberBuilder{_UnsignedRationalNumber: m.deepCopy()}
+	return &_UnsignedRationalNumberBuilder{_UnsignedRationalNumber: b.deepCopy()}
 }
 
 ///////////////////////

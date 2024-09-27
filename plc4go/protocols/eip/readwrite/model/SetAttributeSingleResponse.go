@@ -85,40 +85,59 @@ func NewSetAttributeSingleResponseBuilder() SetAttributeSingleResponseBuilder {
 type _SetAttributeSingleResponseBuilder struct {
 	*_SetAttributeSingleResponse
 
+	parentBuilder *_CipServiceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SetAttributeSingleResponseBuilder) = (*_SetAttributeSingleResponseBuilder)(nil)
 
-func (m *_SetAttributeSingleResponseBuilder) WithMandatoryFields() SetAttributeSingleResponseBuilder {
-	return m
+func (b *_SetAttributeSingleResponseBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
 }
 
-func (m *_SetAttributeSingleResponseBuilder) Build() (SetAttributeSingleResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SetAttributeSingleResponseBuilder) WithMandatoryFields() SetAttributeSingleResponseBuilder {
+	return b
+}
+
+func (b *_SetAttributeSingleResponseBuilder) Build() (SetAttributeSingleResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SetAttributeSingleResponse.deepCopy(), nil
+	return b._SetAttributeSingleResponse.deepCopy(), nil
 }
 
-func (m *_SetAttributeSingleResponseBuilder) MustBuild() SetAttributeSingleResponse {
-	build, err := m.Build()
+func (b *_SetAttributeSingleResponseBuilder) MustBuild() SetAttributeSingleResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SetAttributeSingleResponseBuilder) DeepCopy() any {
-	return m.CreateSetAttributeSingleResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SetAttributeSingleResponseBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SetAttributeSingleResponseBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_SetAttributeSingleResponseBuilder) DeepCopy() any {
+	_copy := b.CreateSetAttributeSingleResponseBuilder().(*_SetAttributeSingleResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSetAttributeSingleResponseBuilder creates a SetAttributeSingleResponseBuilder
-func (m *_SetAttributeSingleResponse) CreateSetAttributeSingleResponseBuilder() SetAttributeSingleResponseBuilder {
-	if m == nil {
+func (b *_SetAttributeSingleResponse) CreateSetAttributeSingleResponseBuilder() SetAttributeSingleResponseBuilder {
+	if b == nil {
 		return NewSetAttributeSingleResponseBuilder()
 	}
-	return &_SetAttributeSingleResponseBuilder{_SetAttributeSingleResponse: m.deepCopy()}
+	return &_SetAttributeSingleResponseBuilder{_SetAttributeSingleResponse: b.deepCopy()}
 }
 
 ///////////////////////

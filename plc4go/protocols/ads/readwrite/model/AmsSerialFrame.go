@@ -102,6 +102,8 @@ type AmsSerialFrameBuilder interface {
 	WithLength(int8) AmsSerialFrameBuilder
 	// WithUserdata adds Userdata (property field)
 	WithUserdata(AmsPacket) AmsSerialFrameBuilder
+	// WithUserdataBuilder adds Userdata (property field) which is build by the builder
+	WithUserdataBuilder(func(AmsPacketBuilder) AmsPacketBuilder) AmsSerialFrameBuilder
 	// WithCrc adds Crc (property field)
 	WithCrc(uint16) AmsSerialFrameBuilder
 	// Build builds the AmsSerialFrame or returns an error if something is wrong
@@ -123,76 +125,93 @@ type _AmsSerialFrameBuilder struct {
 
 var _ (AmsSerialFrameBuilder) = (*_AmsSerialFrameBuilder)(nil)
 
-func (m *_AmsSerialFrameBuilder) WithMandatoryFields(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, userdata AmsPacket, crc uint16) AmsSerialFrameBuilder {
-	return m.WithMagicCookie(magicCookie).WithTransmitterAddress(transmitterAddress).WithReceiverAddress(receiverAddress).WithFragmentNumber(fragmentNumber).WithLength(length).WithUserdata(userdata).WithCrc(crc)
+func (b *_AmsSerialFrameBuilder) WithMandatoryFields(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, userdata AmsPacket, crc uint16) AmsSerialFrameBuilder {
+	return b.WithMagicCookie(magicCookie).WithTransmitterAddress(transmitterAddress).WithReceiverAddress(receiverAddress).WithFragmentNumber(fragmentNumber).WithLength(length).WithUserdata(userdata).WithCrc(crc)
 }
 
-func (m *_AmsSerialFrameBuilder) WithMagicCookie(magicCookie uint16) AmsSerialFrameBuilder {
-	m.MagicCookie = magicCookie
-	return m
+func (b *_AmsSerialFrameBuilder) WithMagicCookie(magicCookie uint16) AmsSerialFrameBuilder {
+	b.MagicCookie = magicCookie
+	return b
 }
 
-func (m *_AmsSerialFrameBuilder) WithTransmitterAddress(transmitterAddress int8) AmsSerialFrameBuilder {
-	m.TransmitterAddress = transmitterAddress
-	return m
+func (b *_AmsSerialFrameBuilder) WithTransmitterAddress(transmitterAddress int8) AmsSerialFrameBuilder {
+	b.TransmitterAddress = transmitterAddress
+	return b
 }
 
-func (m *_AmsSerialFrameBuilder) WithReceiverAddress(receiverAddress int8) AmsSerialFrameBuilder {
-	m.ReceiverAddress = receiverAddress
-	return m
+func (b *_AmsSerialFrameBuilder) WithReceiverAddress(receiverAddress int8) AmsSerialFrameBuilder {
+	b.ReceiverAddress = receiverAddress
+	return b
 }
 
-func (m *_AmsSerialFrameBuilder) WithFragmentNumber(fragmentNumber int8) AmsSerialFrameBuilder {
-	m.FragmentNumber = fragmentNumber
-	return m
+func (b *_AmsSerialFrameBuilder) WithFragmentNumber(fragmentNumber int8) AmsSerialFrameBuilder {
+	b.FragmentNumber = fragmentNumber
+	return b
 }
 
-func (m *_AmsSerialFrameBuilder) WithLength(length int8) AmsSerialFrameBuilder {
-	m.Length = length
-	return m
+func (b *_AmsSerialFrameBuilder) WithLength(length int8) AmsSerialFrameBuilder {
+	b.Length = length
+	return b
 }
 
-func (m *_AmsSerialFrameBuilder) WithUserdata(userdata AmsPacket) AmsSerialFrameBuilder {
-	m.Userdata = userdata
-	return m
+func (b *_AmsSerialFrameBuilder) WithUserdata(userdata AmsPacket) AmsSerialFrameBuilder {
+	b.Userdata = userdata
+	return b
 }
 
-func (m *_AmsSerialFrameBuilder) WithCrc(crc uint16) AmsSerialFrameBuilder {
-	m.Crc = crc
-	return m
-}
-
-func (m *_AmsSerialFrameBuilder) Build() (AmsSerialFrame, error) {
-	if m.Userdata == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AmsSerialFrameBuilder) WithUserdataBuilder(builderSupplier func(AmsPacketBuilder) AmsPacketBuilder) AmsSerialFrameBuilder {
+	builder := builderSupplier(b.Userdata.CreateAmsPacketBuilder())
+	var err error
+	b.Userdata, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'userdata' not set"))
+		b.err.Append(errors.Wrap(err, "AmsPacketBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._AmsSerialFrame.deepCopy(), nil
+	return b
 }
 
-func (m *_AmsSerialFrameBuilder) MustBuild() AmsSerialFrame {
-	build, err := m.Build()
+func (b *_AmsSerialFrameBuilder) WithCrc(crc uint16) AmsSerialFrameBuilder {
+	b.Crc = crc
+	return b
+}
+
+func (b *_AmsSerialFrameBuilder) Build() (AmsSerialFrame, error) {
+	if b.Userdata == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'userdata' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AmsSerialFrame.deepCopy(), nil
+}
+
+func (b *_AmsSerialFrameBuilder) MustBuild() AmsSerialFrame {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AmsSerialFrameBuilder) DeepCopy() any {
-	return m.CreateAmsSerialFrameBuilder()
+func (b *_AmsSerialFrameBuilder) DeepCopy() any {
+	_copy := b.CreateAmsSerialFrameBuilder().(*_AmsSerialFrameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAmsSerialFrameBuilder creates a AmsSerialFrameBuilder
-func (m *_AmsSerialFrame) CreateAmsSerialFrameBuilder() AmsSerialFrameBuilder {
-	if m == nil {
+func (b *_AmsSerialFrame) CreateAmsSerialFrameBuilder() AmsSerialFrameBuilder {
+	if b == nil {
 		return NewAmsSerialFrameBuilder()
 	}
-	return &_AmsSerialFrameBuilder{_AmsSerialFrame: m.deepCopy()}
+	return &_AmsSerialFrameBuilder{_AmsSerialFrame: b.deepCopy()}
 }
 
 ///////////////////////

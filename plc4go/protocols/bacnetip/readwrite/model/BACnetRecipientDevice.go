@@ -98,64 +98,83 @@ func NewBACnetRecipientDeviceBuilder() BACnetRecipientDeviceBuilder {
 type _BACnetRecipientDeviceBuilder struct {
 	*_BACnetRecipientDevice
 
+	parentBuilder *_BACnetRecipientBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetRecipientDeviceBuilder) = (*_BACnetRecipientDeviceBuilder)(nil)
 
-func (m *_BACnetRecipientDeviceBuilder) WithMandatoryFields(deviceValue BACnetContextTagObjectIdentifier) BACnetRecipientDeviceBuilder {
-	return m.WithDeviceValue(deviceValue)
+func (b *_BACnetRecipientDeviceBuilder) setParent(contract BACnetRecipientContract) {
+	b.BACnetRecipientContract = contract
 }
 
-func (m *_BACnetRecipientDeviceBuilder) WithDeviceValue(deviceValue BACnetContextTagObjectIdentifier) BACnetRecipientDeviceBuilder {
-	m.DeviceValue = deviceValue
-	return m
+func (b *_BACnetRecipientDeviceBuilder) WithMandatoryFields(deviceValue BACnetContextTagObjectIdentifier) BACnetRecipientDeviceBuilder {
+	return b.WithDeviceValue(deviceValue)
 }
 
-func (m *_BACnetRecipientDeviceBuilder) WithDeviceValueBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetRecipientDeviceBuilder {
-	builder := builderSupplier(m.DeviceValue.CreateBACnetContextTagObjectIdentifierBuilder())
+func (b *_BACnetRecipientDeviceBuilder) WithDeviceValue(deviceValue BACnetContextTagObjectIdentifier) BACnetRecipientDeviceBuilder {
+	b.DeviceValue = deviceValue
+	return b
+}
+
+func (b *_BACnetRecipientDeviceBuilder) WithDeviceValueBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetRecipientDeviceBuilder {
+	builder := builderSupplier(b.DeviceValue.CreateBACnetContextTagObjectIdentifierBuilder())
 	var err error
-	m.DeviceValue, err = builder.Build()
+	b.DeviceValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetRecipientDeviceBuilder) Build() (BACnetRecipientDevice, error) {
-	if m.DeviceValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetRecipientDeviceBuilder) Build() (BACnetRecipientDevice, error) {
+	if b.DeviceValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'deviceValue' not set"))
+		b.err.Append(errors.New("mandatory field 'deviceValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetRecipientDevice.deepCopy(), nil
+	return b._BACnetRecipientDevice.deepCopy(), nil
 }
 
-func (m *_BACnetRecipientDeviceBuilder) MustBuild() BACnetRecipientDevice {
-	build, err := m.Build()
+func (b *_BACnetRecipientDeviceBuilder) MustBuild() BACnetRecipientDevice {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetRecipientDeviceBuilder) DeepCopy() any {
-	return m.CreateBACnetRecipientDeviceBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetRecipientDeviceBuilder) Done() BACnetRecipientBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetRecipientDeviceBuilder) buildForBACnetRecipient() (BACnetRecipient, error) {
+	return b.Build()
+}
+
+func (b *_BACnetRecipientDeviceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetRecipientDeviceBuilder().(*_BACnetRecipientDeviceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetRecipientDeviceBuilder creates a BACnetRecipientDeviceBuilder
-func (m *_BACnetRecipientDevice) CreateBACnetRecipientDeviceBuilder() BACnetRecipientDeviceBuilder {
-	if m == nil {
+func (b *_BACnetRecipientDevice) CreateBACnetRecipientDeviceBuilder() BACnetRecipientDeviceBuilder {
+	if b == nil {
 		return NewBACnetRecipientDeviceBuilder()
 	}
-	return &_BACnetRecipientDeviceBuilder{_BACnetRecipientDevice: m.deepCopy()}
+	return &_BACnetRecipientDeviceBuilder{_BACnetRecipientDevice: b.deepCopy()}
 }
 
 ///////////////////////

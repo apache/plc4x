@@ -100,64 +100,83 @@ func NewBACnetConstructedDataReasonForHaltBuilder() BACnetConstructedDataReasonF
 type _BACnetConstructedDataReasonForHaltBuilder struct {
 	*_BACnetConstructedDataReasonForHalt
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataReasonForHaltBuilder) = (*_BACnetConstructedDataReasonForHaltBuilder)(nil)
 
-func (m *_BACnetConstructedDataReasonForHaltBuilder) WithMandatoryFields(programError BACnetProgramErrorTagged) BACnetConstructedDataReasonForHaltBuilder {
-	return m.WithProgramError(programError)
+func (b *_BACnetConstructedDataReasonForHaltBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataReasonForHaltBuilder) WithProgramError(programError BACnetProgramErrorTagged) BACnetConstructedDataReasonForHaltBuilder {
-	m.ProgramError = programError
-	return m
+func (b *_BACnetConstructedDataReasonForHaltBuilder) WithMandatoryFields(programError BACnetProgramErrorTagged) BACnetConstructedDataReasonForHaltBuilder {
+	return b.WithProgramError(programError)
 }
 
-func (m *_BACnetConstructedDataReasonForHaltBuilder) WithProgramErrorBuilder(builderSupplier func(BACnetProgramErrorTaggedBuilder) BACnetProgramErrorTaggedBuilder) BACnetConstructedDataReasonForHaltBuilder {
-	builder := builderSupplier(m.ProgramError.CreateBACnetProgramErrorTaggedBuilder())
+func (b *_BACnetConstructedDataReasonForHaltBuilder) WithProgramError(programError BACnetProgramErrorTagged) BACnetConstructedDataReasonForHaltBuilder {
+	b.ProgramError = programError
+	return b
+}
+
+func (b *_BACnetConstructedDataReasonForHaltBuilder) WithProgramErrorBuilder(builderSupplier func(BACnetProgramErrorTaggedBuilder) BACnetProgramErrorTaggedBuilder) BACnetConstructedDataReasonForHaltBuilder {
+	builder := builderSupplier(b.ProgramError.CreateBACnetProgramErrorTaggedBuilder())
 	var err error
-	m.ProgramError, err = builder.Build()
+	b.ProgramError, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetProgramErrorTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetProgramErrorTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataReasonForHaltBuilder) Build() (BACnetConstructedDataReasonForHalt, error) {
-	if m.ProgramError == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataReasonForHaltBuilder) Build() (BACnetConstructedDataReasonForHalt, error) {
+	if b.ProgramError == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'programError' not set"))
+		b.err.Append(errors.New("mandatory field 'programError' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataReasonForHalt.deepCopy(), nil
+	return b._BACnetConstructedDataReasonForHalt.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataReasonForHaltBuilder) MustBuild() BACnetConstructedDataReasonForHalt {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataReasonForHaltBuilder) MustBuild() BACnetConstructedDataReasonForHalt {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataReasonForHaltBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataReasonForHaltBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataReasonForHaltBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataReasonForHaltBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataReasonForHaltBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataReasonForHaltBuilder().(*_BACnetConstructedDataReasonForHaltBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataReasonForHaltBuilder creates a BACnetConstructedDataReasonForHaltBuilder
-func (m *_BACnetConstructedDataReasonForHalt) CreateBACnetConstructedDataReasonForHaltBuilder() BACnetConstructedDataReasonForHaltBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataReasonForHalt) CreateBACnetConstructedDataReasonForHaltBuilder() BACnetConstructedDataReasonForHaltBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataReasonForHaltBuilder()
 	}
-	return &_BACnetConstructedDataReasonForHaltBuilder{_BACnetConstructedDataReasonForHalt: m.deepCopy()}
+	return &_BACnetConstructedDataReasonForHaltBuilder{_BACnetConstructedDataReasonForHalt: b.deepCopy()}
 }
 
 ///////////////////////

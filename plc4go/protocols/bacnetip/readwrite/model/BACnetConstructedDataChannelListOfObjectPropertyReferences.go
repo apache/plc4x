@@ -103,63 +103,82 @@ func NewBACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder() BACn
 type _BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder struct {
 	*_BACnetConstructedDataChannelListOfObjectPropertyReferences
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) = (*_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder)(nil)
 
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) WithMandatoryFields(references []BACnetDeviceObjectPropertyReference) BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder {
-	return m.WithReferences(references...)
+func (b *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) WithMandatoryFields(references []BACnetDeviceObjectPropertyReference) BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder {
+	return b.WithReferences(references...)
 }
 
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) WithReferences(references ...BACnetDeviceObjectPropertyReference) BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder {
-	m.References = references
-	return m
+func (b *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) WithReferences(references ...BACnetDeviceObjectPropertyReference) BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder {
+	b.References = references
+	return b
 }
 
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) Build() (BACnetConstructedDataChannelListOfObjectPropertyReferences, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) Build() (BACnetConstructedDataChannelListOfObjectPropertyReferences, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataChannelListOfObjectPropertyReferences.deepCopy(), nil
+	return b._BACnetConstructedDataChannelListOfObjectPropertyReferences.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) MustBuild() BACnetConstructedDataChannelListOfObjectPropertyReferences {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) MustBuild() BACnetConstructedDataChannelListOfObjectPropertyReferences {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder().(*_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder creates a BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) CreateBACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder() BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataChannelListOfObjectPropertyReferences) CreateBACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder() BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder()
 	}
-	return &_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder{_BACnetConstructedDataChannelListOfObjectPropertyReferences: m.deepCopy()}
+	return &_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder{_BACnetConstructedDataChannelListOfObjectPropertyReferences: b.deepCopy()}
 }
 
 ///////////////////////

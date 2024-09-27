@@ -111,60 +111,79 @@ func NewNLMSecurityResponseBuilder() NLMSecurityResponseBuilder {
 type _NLMSecurityResponseBuilder struct {
 	*_NLMSecurityResponse
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMSecurityResponseBuilder) = (*_NLMSecurityResponseBuilder)(nil)
 
-func (m *_NLMSecurityResponseBuilder) WithMandatoryFields(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte) NLMSecurityResponseBuilder {
-	return m.WithResponseCode(responseCode).WithOriginalMessageId(originalMessageId).WithOriginalTimestamp(originalTimestamp).WithVariableParameters(variableParameters...)
+func (b *_NLMSecurityResponseBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMSecurityResponseBuilder) WithResponseCode(responseCode SecurityResponseCode) NLMSecurityResponseBuilder {
-	m.ResponseCode = responseCode
-	return m
+func (b *_NLMSecurityResponseBuilder) WithMandatoryFields(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte) NLMSecurityResponseBuilder {
+	return b.WithResponseCode(responseCode).WithOriginalMessageId(originalMessageId).WithOriginalTimestamp(originalTimestamp).WithVariableParameters(variableParameters...)
 }
 
-func (m *_NLMSecurityResponseBuilder) WithOriginalMessageId(originalMessageId uint32) NLMSecurityResponseBuilder {
-	m.OriginalMessageId = originalMessageId
-	return m
+func (b *_NLMSecurityResponseBuilder) WithResponseCode(responseCode SecurityResponseCode) NLMSecurityResponseBuilder {
+	b.ResponseCode = responseCode
+	return b
 }
 
-func (m *_NLMSecurityResponseBuilder) WithOriginalTimestamp(originalTimestamp uint32) NLMSecurityResponseBuilder {
-	m.OriginalTimestamp = originalTimestamp
-	return m
+func (b *_NLMSecurityResponseBuilder) WithOriginalMessageId(originalMessageId uint32) NLMSecurityResponseBuilder {
+	b.OriginalMessageId = originalMessageId
+	return b
 }
 
-func (m *_NLMSecurityResponseBuilder) WithVariableParameters(variableParameters ...byte) NLMSecurityResponseBuilder {
-	m.VariableParameters = variableParameters
-	return m
+func (b *_NLMSecurityResponseBuilder) WithOriginalTimestamp(originalTimestamp uint32) NLMSecurityResponseBuilder {
+	b.OriginalTimestamp = originalTimestamp
+	return b
 }
 
-func (m *_NLMSecurityResponseBuilder) Build() (NLMSecurityResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMSecurityResponseBuilder) WithVariableParameters(variableParameters ...byte) NLMSecurityResponseBuilder {
+	b.VariableParameters = variableParameters
+	return b
+}
+
+func (b *_NLMSecurityResponseBuilder) Build() (NLMSecurityResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMSecurityResponse.deepCopy(), nil
+	return b._NLMSecurityResponse.deepCopy(), nil
 }
 
-func (m *_NLMSecurityResponseBuilder) MustBuild() NLMSecurityResponse {
-	build, err := m.Build()
+func (b *_NLMSecurityResponseBuilder) MustBuild() NLMSecurityResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMSecurityResponseBuilder) DeepCopy() any {
-	return m.CreateNLMSecurityResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMSecurityResponseBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMSecurityResponseBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMSecurityResponseBuilder) DeepCopy() any {
+	_copy := b.CreateNLMSecurityResponseBuilder().(*_NLMSecurityResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMSecurityResponseBuilder creates a NLMSecurityResponseBuilder
-func (m *_NLMSecurityResponse) CreateNLMSecurityResponseBuilder() NLMSecurityResponseBuilder {
-	if m == nil {
+func (b *_NLMSecurityResponse) CreateNLMSecurityResponseBuilder() NLMSecurityResponseBuilder {
+	if b == nil {
 		return NewNLMSecurityResponseBuilder()
 	}
-	return &_NLMSecurityResponseBuilder{_NLMSecurityResponse: m.deepCopy()}
+	return &_NLMSecurityResponseBuilder{_NLMSecurityResponse: b.deepCopy()}
 }
 
 ///////////////////////

@@ -93,45 +93,64 @@ func NewAdsDiscoveryBlockOsDataBuilder() AdsDiscoveryBlockOsDataBuilder {
 type _AdsDiscoveryBlockOsDataBuilder struct {
 	*_AdsDiscoveryBlockOsData
 
+	parentBuilder *_AdsDiscoveryBlockBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsDiscoveryBlockOsDataBuilder) = (*_AdsDiscoveryBlockOsDataBuilder)(nil)
 
-func (m *_AdsDiscoveryBlockOsDataBuilder) WithMandatoryFields(osData []byte) AdsDiscoveryBlockOsDataBuilder {
-	return m.WithOsData(osData...)
+func (b *_AdsDiscoveryBlockOsDataBuilder) setParent(contract AdsDiscoveryBlockContract) {
+	b.AdsDiscoveryBlockContract = contract
 }
 
-func (m *_AdsDiscoveryBlockOsDataBuilder) WithOsData(osData ...byte) AdsDiscoveryBlockOsDataBuilder {
-	m.OsData = osData
-	return m
+func (b *_AdsDiscoveryBlockOsDataBuilder) WithMandatoryFields(osData []byte) AdsDiscoveryBlockOsDataBuilder {
+	return b.WithOsData(osData...)
 }
 
-func (m *_AdsDiscoveryBlockOsDataBuilder) Build() (AdsDiscoveryBlockOsData, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsDiscoveryBlockOsDataBuilder) WithOsData(osData ...byte) AdsDiscoveryBlockOsDataBuilder {
+	b.OsData = osData
+	return b
+}
+
+func (b *_AdsDiscoveryBlockOsDataBuilder) Build() (AdsDiscoveryBlockOsData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsDiscoveryBlockOsData.deepCopy(), nil
+	return b._AdsDiscoveryBlockOsData.deepCopy(), nil
 }
 
-func (m *_AdsDiscoveryBlockOsDataBuilder) MustBuild() AdsDiscoveryBlockOsData {
-	build, err := m.Build()
+func (b *_AdsDiscoveryBlockOsDataBuilder) MustBuild() AdsDiscoveryBlockOsData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsDiscoveryBlockOsDataBuilder) DeepCopy() any {
-	return m.CreateAdsDiscoveryBlockOsDataBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsDiscoveryBlockOsDataBuilder) Done() AdsDiscoveryBlockBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsDiscoveryBlockOsDataBuilder) buildForAdsDiscoveryBlock() (AdsDiscoveryBlock, error) {
+	return b.Build()
+}
+
+func (b *_AdsDiscoveryBlockOsDataBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryBlockOsDataBuilder().(*_AdsDiscoveryBlockOsDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsDiscoveryBlockOsDataBuilder creates a AdsDiscoveryBlockOsDataBuilder
-func (m *_AdsDiscoveryBlockOsData) CreateAdsDiscoveryBlockOsDataBuilder() AdsDiscoveryBlockOsDataBuilder {
-	if m == nil {
+func (b *_AdsDiscoveryBlockOsData) CreateAdsDiscoveryBlockOsDataBuilder() AdsDiscoveryBlockOsDataBuilder {
+	if b == nil {
 		return NewAdsDiscoveryBlockOsDataBuilder()
 	}
-	return &_AdsDiscoveryBlockOsDataBuilder{_AdsDiscoveryBlockOsData: m.deepCopy()}
+	return &_AdsDiscoveryBlockOsDataBuilder{_AdsDiscoveryBlockOsData: b.deepCopy()}
 }
 
 ///////////////////////

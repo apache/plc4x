@@ -100,64 +100,83 @@ func NewBACnetConstructedDataProfileNameBuilder() BACnetConstructedDataProfileNa
 type _BACnetConstructedDataProfileNameBuilder struct {
 	*_BACnetConstructedDataProfileName
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataProfileNameBuilder) = (*_BACnetConstructedDataProfileNameBuilder)(nil)
 
-func (m *_BACnetConstructedDataProfileNameBuilder) WithMandatoryFields(profileName BACnetApplicationTagCharacterString) BACnetConstructedDataProfileNameBuilder {
-	return m.WithProfileName(profileName)
+func (b *_BACnetConstructedDataProfileNameBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataProfileNameBuilder) WithProfileName(profileName BACnetApplicationTagCharacterString) BACnetConstructedDataProfileNameBuilder {
-	m.ProfileName = profileName
-	return m
+func (b *_BACnetConstructedDataProfileNameBuilder) WithMandatoryFields(profileName BACnetApplicationTagCharacterString) BACnetConstructedDataProfileNameBuilder {
+	return b.WithProfileName(profileName)
 }
 
-func (m *_BACnetConstructedDataProfileNameBuilder) WithProfileNameBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataProfileNameBuilder {
-	builder := builderSupplier(m.ProfileName.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetConstructedDataProfileNameBuilder) WithProfileName(profileName BACnetApplicationTagCharacterString) BACnetConstructedDataProfileNameBuilder {
+	b.ProfileName = profileName
+	return b
+}
+
+func (b *_BACnetConstructedDataProfileNameBuilder) WithProfileNameBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataProfileNameBuilder {
+	builder := builderSupplier(b.ProfileName.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.ProfileName, err = builder.Build()
+	b.ProfileName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataProfileNameBuilder) Build() (BACnetConstructedDataProfileName, error) {
-	if m.ProfileName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataProfileNameBuilder) Build() (BACnetConstructedDataProfileName, error) {
+	if b.ProfileName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'profileName' not set"))
+		b.err.Append(errors.New("mandatory field 'profileName' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataProfileName.deepCopy(), nil
+	return b._BACnetConstructedDataProfileName.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataProfileNameBuilder) MustBuild() BACnetConstructedDataProfileName {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataProfileNameBuilder) MustBuild() BACnetConstructedDataProfileName {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataProfileNameBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataProfileNameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataProfileNameBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataProfileNameBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataProfileNameBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataProfileNameBuilder().(*_BACnetConstructedDataProfileNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataProfileNameBuilder creates a BACnetConstructedDataProfileNameBuilder
-func (m *_BACnetConstructedDataProfileName) CreateBACnetConstructedDataProfileNameBuilder() BACnetConstructedDataProfileNameBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataProfileName) CreateBACnetConstructedDataProfileNameBuilder() BACnetConstructedDataProfileNameBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataProfileNameBuilder()
 	}
-	return &_BACnetConstructedDataProfileNameBuilder{_BACnetConstructedDataProfileName: m.deepCopy()}
+	return &_BACnetConstructedDataProfileNameBuilder{_BACnetConstructedDataProfileName: b.deepCopy()}
 }
 
 ///////////////////////

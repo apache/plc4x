@@ -101,50 +101,69 @@ func NewS7MessageObjectResponseBuilder() S7MessageObjectResponseBuilder {
 type _S7MessageObjectResponseBuilder struct {
 	*_S7MessageObjectResponse
 
+	parentBuilder *_S7DataAlarmMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7MessageObjectResponseBuilder) = (*_S7MessageObjectResponseBuilder)(nil)
 
-func (m *_S7MessageObjectResponseBuilder) WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize) S7MessageObjectResponseBuilder {
-	return m.WithReturnCode(returnCode).WithTransportSize(transportSize)
+func (b *_S7MessageObjectResponseBuilder) setParent(contract S7DataAlarmMessageContract) {
+	b.S7DataAlarmMessageContract = contract
 }
 
-func (m *_S7MessageObjectResponseBuilder) WithReturnCode(returnCode DataTransportErrorCode) S7MessageObjectResponseBuilder {
-	m.ReturnCode = returnCode
-	return m
+func (b *_S7MessageObjectResponseBuilder) WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize) S7MessageObjectResponseBuilder {
+	return b.WithReturnCode(returnCode).WithTransportSize(transportSize)
 }
 
-func (m *_S7MessageObjectResponseBuilder) WithTransportSize(transportSize DataTransportSize) S7MessageObjectResponseBuilder {
-	m.TransportSize = transportSize
-	return m
+func (b *_S7MessageObjectResponseBuilder) WithReturnCode(returnCode DataTransportErrorCode) S7MessageObjectResponseBuilder {
+	b.ReturnCode = returnCode
+	return b
 }
 
-func (m *_S7MessageObjectResponseBuilder) Build() (S7MessageObjectResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7MessageObjectResponseBuilder) WithTransportSize(transportSize DataTransportSize) S7MessageObjectResponseBuilder {
+	b.TransportSize = transportSize
+	return b
+}
+
+func (b *_S7MessageObjectResponseBuilder) Build() (S7MessageObjectResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7MessageObjectResponse.deepCopy(), nil
+	return b._S7MessageObjectResponse.deepCopy(), nil
 }
 
-func (m *_S7MessageObjectResponseBuilder) MustBuild() S7MessageObjectResponse {
-	build, err := m.Build()
+func (b *_S7MessageObjectResponseBuilder) MustBuild() S7MessageObjectResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7MessageObjectResponseBuilder) DeepCopy() any {
-	return m.CreateS7MessageObjectResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7MessageObjectResponseBuilder) Done() S7DataAlarmMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7MessageObjectResponseBuilder) buildForS7DataAlarmMessage() (S7DataAlarmMessage, error) {
+	return b.Build()
+}
+
+func (b *_S7MessageObjectResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7MessageObjectResponseBuilder().(*_S7MessageObjectResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7MessageObjectResponseBuilder creates a S7MessageObjectResponseBuilder
-func (m *_S7MessageObjectResponse) CreateS7MessageObjectResponseBuilder() S7MessageObjectResponseBuilder {
-	if m == nil {
+func (b *_S7MessageObjectResponse) CreateS7MessageObjectResponseBuilder() S7MessageObjectResponseBuilder {
+	if b == nil {
 		return NewS7MessageObjectResponseBuilder()
 	}
-	return &_S7MessageObjectResponseBuilder{_S7MessageObjectResponse: m.deepCopy()}
+	return &_S7MessageObjectResponseBuilder{_S7MessageObjectResponse: b.deepCopy()}
 }
 
 ///////////////////////

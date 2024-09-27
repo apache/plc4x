@@ -100,64 +100,83 @@ func NewBACnetConstructedDataTimeSynchronizationIntervalBuilder() BACnetConstruc
 type _BACnetConstructedDataTimeSynchronizationIntervalBuilder struct {
 	*_BACnetConstructedDataTimeSynchronizationInterval
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataTimeSynchronizationIntervalBuilder) = (*_BACnetConstructedDataTimeSynchronizationIntervalBuilder)(nil)
 
-func (m *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) WithMandatoryFields(timeSynchronization BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeSynchronizationIntervalBuilder {
-	return m.WithTimeSynchronization(timeSynchronization)
+func (b *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) WithTimeSynchronization(timeSynchronization BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeSynchronizationIntervalBuilder {
-	m.TimeSynchronization = timeSynchronization
-	return m
+func (b *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) WithMandatoryFields(timeSynchronization BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeSynchronizationIntervalBuilder {
+	return b.WithTimeSynchronization(timeSynchronization)
 }
 
-func (m *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) WithTimeSynchronizationBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimeSynchronizationIntervalBuilder {
-	builder := builderSupplier(m.TimeSynchronization.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) WithTimeSynchronization(timeSynchronization BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeSynchronizationIntervalBuilder {
+	b.TimeSynchronization = timeSynchronization
+	return b
+}
+
+func (b *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) WithTimeSynchronizationBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimeSynchronizationIntervalBuilder {
+	builder := builderSupplier(b.TimeSynchronization.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.TimeSynchronization, err = builder.Build()
+	b.TimeSynchronization, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) Build() (BACnetConstructedDataTimeSynchronizationInterval, error) {
-	if m.TimeSynchronization == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) Build() (BACnetConstructedDataTimeSynchronizationInterval, error) {
+	if b.TimeSynchronization == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeSynchronization' not set"))
+		b.err.Append(errors.New("mandatory field 'timeSynchronization' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataTimeSynchronizationInterval.deepCopy(), nil
+	return b._BACnetConstructedDataTimeSynchronizationInterval.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) MustBuild() BACnetConstructedDataTimeSynchronizationInterval {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) MustBuild() BACnetConstructedDataTimeSynchronizationInterval {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataTimeSynchronizationIntervalBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTimeSynchronizationIntervalBuilder().(*_BACnetConstructedDataTimeSynchronizationIntervalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataTimeSynchronizationIntervalBuilder creates a BACnetConstructedDataTimeSynchronizationIntervalBuilder
-func (m *_BACnetConstructedDataTimeSynchronizationInterval) CreateBACnetConstructedDataTimeSynchronizationIntervalBuilder() BACnetConstructedDataTimeSynchronizationIntervalBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataTimeSynchronizationInterval) CreateBACnetConstructedDataTimeSynchronizationIntervalBuilder() BACnetConstructedDataTimeSynchronizationIntervalBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataTimeSynchronizationIntervalBuilder()
 	}
-	return &_BACnetConstructedDataTimeSynchronizationIntervalBuilder{_BACnetConstructedDataTimeSynchronizationInterval: m.deepCopy()}
+	return &_BACnetConstructedDataTimeSynchronizationIntervalBuilder{_BACnetConstructedDataTimeSynchronizationInterval: b.deepCopy()}
 }
 
 ///////////////////////

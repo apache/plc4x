@@ -98,64 +98,83 @@ func NewBACnetTimeStampTimeBuilder() BACnetTimeStampTimeBuilder {
 type _BACnetTimeStampTimeBuilder struct {
 	*_BACnetTimeStampTime
 
+	parentBuilder *_BACnetTimeStampBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetTimeStampTimeBuilder) = (*_BACnetTimeStampTimeBuilder)(nil)
 
-func (m *_BACnetTimeStampTimeBuilder) WithMandatoryFields(timeValue BACnetContextTagTime) BACnetTimeStampTimeBuilder {
-	return m.WithTimeValue(timeValue)
+func (b *_BACnetTimeStampTimeBuilder) setParent(contract BACnetTimeStampContract) {
+	b.BACnetTimeStampContract = contract
 }
 
-func (m *_BACnetTimeStampTimeBuilder) WithTimeValue(timeValue BACnetContextTagTime) BACnetTimeStampTimeBuilder {
-	m.TimeValue = timeValue
-	return m
+func (b *_BACnetTimeStampTimeBuilder) WithMandatoryFields(timeValue BACnetContextTagTime) BACnetTimeStampTimeBuilder {
+	return b.WithTimeValue(timeValue)
 }
 
-func (m *_BACnetTimeStampTimeBuilder) WithTimeValueBuilder(builderSupplier func(BACnetContextTagTimeBuilder) BACnetContextTagTimeBuilder) BACnetTimeStampTimeBuilder {
-	builder := builderSupplier(m.TimeValue.CreateBACnetContextTagTimeBuilder())
+func (b *_BACnetTimeStampTimeBuilder) WithTimeValue(timeValue BACnetContextTagTime) BACnetTimeStampTimeBuilder {
+	b.TimeValue = timeValue
+	return b
+}
+
+func (b *_BACnetTimeStampTimeBuilder) WithTimeValueBuilder(builderSupplier func(BACnetContextTagTimeBuilder) BACnetContextTagTimeBuilder) BACnetTimeStampTimeBuilder {
+	builder := builderSupplier(b.TimeValue.CreateBACnetContextTagTimeBuilder())
 	var err error
-	m.TimeValue, err = builder.Build()
+	b.TimeValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetTimeStampTimeBuilder) Build() (BACnetTimeStampTime, error) {
-	if m.TimeValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetTimeStampTimeBuilder) Build() (BACnetTimeStampTime, error) {
+	if b.TimeValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeValue' not set"))
+		b.err.Append(errors.New("mandatory field 'timeValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTimeStampTime.deepCopy(), nil
+	return b._BACnetTimeStampTime.deepCopy(), nil
 }
 
-func (m *_BACnetTimeStampTimeBuilder) MustBuild() BACnetTimeStampTime {
-	build, err := m.Build()
+func (b *_BACnetTimeStampTimeBuilder) MustBuild() BACnetTimeStampTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTimeStampTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetTimeStampTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetTimeStampTimeBuilder) Done() BACnetTimeStampBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetTimeStampTimeBuilder) buildForBACnetTimeStamp() (BACnetTimeStamp, error) {
+	return b.Build()
+}
+
+func (b *_BACnetTimeStampTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimeStampTimeBuilder().(*_BACnetTimeStampTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTimeStampTimeBuilder creates a BACnetTimeStampTimeBuilder
-func (m *_BACnetTimeStampTime) CreateBACnetTimeStampTimeBuilder() BACnetTimeStampTimeBuilder {
-	if m == nil {
+func (b *_BACnetTimeStampTime) CreateBACnetTimeStampTimeBuilder() BACnetTimeStampTimeBuilder {
+	if b == nil {
 		return NewBACnetTimeStampTimeBuilder()
 	}
-	return &_BACnetTimeStampTimeBuilder{_BACnetTimeStampTime: m.deepCopy()}
+	return &_BACnetTimeStampTimeBuilder{_BACnetTimeStampTime: b.deepCopy()}
 }
 
 ///////////////////////

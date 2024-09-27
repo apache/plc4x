@@ -113,88 +113,92 @@ type _BACnetLiftCarCallListFloorListBuilder struct {
 
 var _ (BACnetLiftCarCallListFloorListBuilder) = (*_BACnetLiftCarCallListFloorListBuilder)(nil)
 
-func (m *_BACnetLiftCarCallListFloorListBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, floorNumbers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag) BACnetLiftCarCallListFloorListBuilder {
-	return m.WithOpeningTag(openingTag).WithFloorNumbers(floorNumbers...).WithClosingTag(closingTag)
+func (b *_BACnetLiftCarCallListFloorListBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, floorNumbers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag) BACnetLiftCarCallListFloorListBuilder {
+	return b.WithOpeningTag(openingTag).WithFloorNumbers(floorNumbers...).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetLiftCarCallListFloorListBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetLiftCarCallListFloorListBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetLiftCarCallListFloorListBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetLiftCarCallListFloorListBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetLiftCarCallListFloorListBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLiftCarCallListFloorListBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetLiftCarCallListFloorListBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLiftCarCallListFloorListBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLiftCarCallListFloorListBuilder) WithFloorNumbers(floorNumbers ...BACnetApplicationTagUnsignedInteger) BACnetLiftCarCallListFloorListBuilder {
-	m.FloorNumbers = floorNumbers
-	return m
+func (b *_BACnetLiftCarCallListFloorListBuilder) WithFloorNumbers(floorNumbers ...BACnetApplicationTagUnsignedInteger) BACnetLiftCarCallListFloorListBuilder {
+	b.FloorNumbers = floorNumbers
+	return b
 }
 
-func (m *_BACnetLiftCarCallListFloorListBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetLiftCarCallListFloorListBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetLiftCarCallListFloorListBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetLiftCarCallListFloorListBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetLiftCarCallListFloorListBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLiftCarCallListFloorListBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetLiftCarCallListFloorListBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLiftCarCallListFloorListBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLiftCarCallListFloorListBuilder) Build() (BACnetLiftCarCallListFloorList, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLiftCarCallListFloorListBuilder) Build() (BACnetLiftCarCallListFloorList, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLiftCarCallListFloorList.deepCopy(), nil
+	return b._BACnetLiftCarCallListFloorList.deepCopy(), nil
 }
 
-func (m *_BACnetLiftCarCallListFloorListBuilder) MustBuild() BACnetLiftCarCallListFloorList {
-	build, err := m.Build()
+func (b *_BACnetLiftCarCallListFloorListBuilder) MustBuild() BACnetLiftCarCallListFloorList {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLiftCarCallListFloorListBuilder) DeepCopy() any {
-	return m.CreateBACnetLiftCarCallListFloorListBuilder()
+func (b *_BACnetLiftCarCallListFloorListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLiftCarCallListFloorListBuilder().(*_BACnetLiftCarCallListFloorListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLiftCarCallListFloorListBuilder creates a BACnetLiftCarCallListFloorListBuilder
-func (m *_BACnetLiftCarCallListFloorList) CreateBACnetLiftCarCallListFloorListBuilder() BACnetLiftCarCallListFloorListBuilder {
-	if m == nil {
+func (b *_BACnetLiftCarCallListFloorList) CreateBACnetLiftCarCallListFloorListBuilder() BACnetLiftCarCallListFloorListBuilder {
+	if b == nil {
 		return NewBACnetLiftCarCallListFloorListBuilder()
 	}
-	return &_BACnetLiftCarCallListFloorListBuilder{_BACnetLiftCarCallListFloorList: m.deepCopy()}
+	return &_BACnetLiftCarCallListFloorListBuilder{_BACnetLiftCarCallListFloorList: b.deepCopy()}
 }
 
 ///////////////////////

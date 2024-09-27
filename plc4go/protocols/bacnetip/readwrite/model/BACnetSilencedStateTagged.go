@@ -111,69 +111,73 @@ type _BACnetSilencedStateTaggedBuilder struct {
 
 var _ (BACnetSilencedStateTaggedBuilder) = (*_BACnetSilencedStateTaggedBuilder)(nil)
 
-func (m *_BACnetSilencedStateTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetSilencedState, proprietaryValue uint32) BACnetSilencedStateTaggedBuilder {
-	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetSilencedStateTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetSilencedState, proprietaryValue uint32) BACnetSilencedStateTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_BACnetSilencedStateTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetSilencedStateTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetSilencedStateTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetSilencedStateTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetSilencedStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSilencedStateTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetSilencedStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSilencedStateTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetSilencedStateTaggedBuilder) WithValue(value BACnetSilencedState) BACnetSilencedStateTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetSilencedStateTaggedBuilder) WithValue(value BACnetSilencedState) BACnetSilencedStateTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetSilencedStateTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetSilencedStateTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetSilencedStateTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetSilencedStateTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetSilencedStateTaggedBuilder) Build() (BACnetSilencedStateTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetSilencedStateTaggedBuilder) Build() (BACnetSilencedStateTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetSilencedStateTagged.deepCopy(), nil
+	return b._BACnetSilencedStateTagged.deepCopy(), nil
 }
 
-func (m *_BACnetSilencedStateTaggedBuilder) MustBuild() BACnetSilencedStateTagged {
-	build, err := m.Build()
+func (b *_BACnetSilencedStateTaggedBuilder) MustBuild() BACnetSilencedStateTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetSilencedStateTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetSilencedStateTaggedBuilder()
+func (b *_BACnetSilencedStateTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetSilencedStateTaggedBuilder().(*_BACnetSilencedStateTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetSilencedStateTaggedBuilder creates a BACnetSilencedStateTaggedBuilder
-func (m *_BACnetSilencedStateTagged) CreateBACnetSilencedStateTaggedBuilder() BACnetSilencedStateTaggedBuilder {
-	if m == nil {
+func (b *_BACnetSilencedStateTagged) CreateBACnetSilencedStateTaggedBuilder() BACnetSilencedStateTaggedBuilder {
+	if b == nil {
 		return NewBACnetSilencedStateTaggedBuilder()
 	}
-	return &_BACnetSilencedStateTaggedBuilder{_BACnetSilencedStateTagged: m.deepCopy()}
+	return &_BACnetSilencedStateTaggedBuilder{_BACnetSilencedStateTagged: b.deepCopy()}
 }
 
 ///////////////////////

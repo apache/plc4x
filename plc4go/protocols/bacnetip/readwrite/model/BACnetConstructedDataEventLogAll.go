@@ -85,40 +85,59 @@ func NewBACnetConstructedDataEventLogAllBuilder() BACnetConstructedDataEventLogA
 type _BACnetConstructedDataEventLogAllBuilder struct {
 	*_BACnetConstructedDataEventLogAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataEventLogAllBuilder) = (*_BACnetConstructedDataEventLogAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataEventLogAllBuilder) WithMandatoryFields() BACnetConstructedDataEventLogAllBuilder {
-	return m
+func (b *_BACnetConstructedDataEventLogAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataEventLogAllBuilder) Build() (BACnetConstructedDataEventLogAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataEventLogAllBuilder) WithMandatoryFields() BACnetConstructedDataEventLogAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataEventLogAllBuilder) Build() (BACnetConstructedDataEventLogAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataEventLogAll.deepCopy(), nil
+	return b._BACnetConstructedDataEventLogAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataEventLogAllBuilder) MustBuild() BACnetConstructedDataEventLogAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataEventLogAllBuilder) MustBuild() BACnetConstructedDataEventLogAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataEventLogAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataEventLogAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEventLogAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEventLogAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEventLogAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEventLogAllBuilder().(*_BACnetConstructedDataEventLogAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataEventLogAllBuilder creates a BACnetConstructedDataEventLogAllBuilder
-func (m *_BACnetConstructedDataEventLogAll) CreateBACnetConstructedDataEventLogAllBuilder() BACnetConstructedDataEventLogAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataEventLogAll) CreateBACnetConstructedDataEventLogAllBuilder() BACnetConstructedDataEventLogAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataEventLogAllBuilder()
 	}
-	return &_BACnetConstructedDataEventLogAllBuilder{_BACnetConstructedDataEventLogAll: m.deepCopy()}
+	return &_BACnetConstructedDataEventLogAllBuilder{_BACnetConstructedDataEventLogAll: b.deepCopy()}
 }
 
 ///////////////////////

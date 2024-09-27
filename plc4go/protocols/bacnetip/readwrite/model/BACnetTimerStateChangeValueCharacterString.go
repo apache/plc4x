@@ -98,64 +98,83 @@ func NewBACnetTimerStateChangeValueCharacterStringBuilder() BACnetTimerStateChan
 type _BACnetTimerStateChangeValueCharacterStringBuilder struct {
 	*_BACnetTimerStateChangeValueCharacterString
 
+	parentBuilder *_BACnetTimerStateChangeValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetTimerStateChangeValueCharacterStringBuilder) = (*_BACnetTimerStateChangeValueCharacterStringBuilder)(nil)
 
-func (m *_BACnetTimerStateChangeValueCharacterStringBuilder) WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetTimerStateChangeValueCharacterStringBuilder {
-	return m.WithCharacterStringValue(characterStringValue)
+func (b *_BACnetTimerStateChangeValueCharacterStringBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
+	b.BACnetTimerStateChangeValueContract = contract
 }
 
-func (m *_BACnetTimerStateChangeValueCharacterStringBuilder) WithCharacterStringValue(characterStringValue BACnetApplicationTagCharacterString) BACnetTimerStateChangeValueCharacterStringBuilder {
-	m.CharacterStringValue = characterStringValue
-	return m
+func (b *_BACnetTimerStateChangeValueCharacterStringBuilder) WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetTimerStateChangeValueCharacterStringBuilder {
+	return b.WithCharacterStringValue(characterStringValue)
 }
 
-func (m *_BACnetTimerStateChangeValueCharacterStringBuilder) WithCharacterStringValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetTimerStateChangeValueCharacterStringBuilder {
-	builder := builderSupplier(m.CharacterStringValue.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetTimerStateChangeValueCharacterStringBuilder) WithCharacterStringValue(characterStringValue BACnetApplicationTagCharacterString) BACnetTimerStateChangeValueCharacterStringBuilder {
+	b.CharacterStringValue = characterStringValue
+	return b
+}
+
+func (b *_BACnetTimerStateChangeValueCharacterStringBuilder) WithCharacterStringValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetTimerStateChangeValueCharacterStringBuilder {
+	builder := builderSupplier(b.CharacterStringValue.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.CharacterStringValue, err = builder.Build()
+	b.CharacterStringValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetTimerStateChangeValueCharacterStringBuilder) Build() (BACnetTimerStateChangeValueCharacterString, error) {
-	if m.CharacterStringValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetTimerStateChangeValueCharacterStringBuilder) Build() (BACnetTimerStateChangeValueCharacterString, error) {
+	if b.CharacterStringValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'characterStringValue' not set"))
+		b.err.Append(errors.New("mandatory field 'characterStringValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTimerStateChangeValueCharacterString.deepCopy(), nil
+	return b._BACnetTimerStateChangeValueCharacterString.deepCopy(), nil
 }
 
-func (m *_BACnetTimerStateChangeValueCharacterStringBuilder) MustBuild() BACnetTimerStateChangeValueCharacterString {
-	build, err := m.Build()
+func (b *_BACnetTimerStateChangeValueCharacterStringBuilder) MustBuild() BACnetTimerStateChangeValueCharacterString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTimerStateChangeValueCharacterStringBuilder) DeepCopy() any {
-	return m.CreateBACnetTimerStateChangeValueCharacterStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetTimerStateChangeValueCharacterStringBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetTimerStateChangeValueCharacterStringBuilder) buildForBACnetTimerStateChangeValue() (BACnetTimerStateChangeValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetTimerStateChangeValueCharacterStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimerStateChangeValueCharacterStringBuilder().(*_BACnetTimerStateChangeValueCharacterStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTimerStateChangeValueCharacterStringBuilder creates a BACnetTimerStateChangeValueCharacterStringBuilder
-func (m *_BACnetTimerStateChangeValueCharacterString) CreateBACnetTimerStateChangeValueCharacterStringBuilder() BACnetTimerStateChangeValueCharacterStringBuilder {
-	if m == nil {
+func (b *_BACnetTimerStateChangeValueCharacterString) CreateBACnetTimerStateChangeValueCharacterStringBuilder() BACnetTimerStateChangeValueCharacterStringBuilder {
+	if b == nil {
 		return NewBACnetTimerStateChangeValueCharacterStringBuilder()
 	}
-	return &_BACnetTimerStateChangeValueCharacterStringBuilder{_BACnetTimerStateChangeValueCharacterString: m.deepCopy()}
+	return &_BACnetTimerStateChangeValueCharacterStringBuilder{_BACnetTimerStateChangeValueCharacterString: b.deepCopy()}
 }
 
 ///////////////////////

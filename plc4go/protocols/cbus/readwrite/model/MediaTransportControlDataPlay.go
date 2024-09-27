@@ -85,40 +85,59 @@ func NewMediaTransportControlDataPlayBuilder() MediaTransportControlDataPlayBuil
 type _MediaTransportControlDataPlayBuilder struct {
 	*_MediaTransportControlDataPlay
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataPlayBuilder) = (*_MediaTransportControlDataPlayBuilder)(nil)
 
-func (m *_MediaTransportControlDataPlayBuilder) WithMandatoryFields() MediaTransportControlDataPlayBuilder {
-	return m
+func (b *_MediaTransportControlDataPlayBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataPlayBuilder) Build() (MediaTransportControlDataPlay, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataPlayBuilder) WithMandatoryFields() MediaTransportControlDataPlayBuilder {
+	return b
+}
+
+func (b *_MediaTransportControlDataPlayBuilder) Build() (MediaTransportControlDataPlay, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataPlay.deepCopy(), nil
+	return b._MediaTransportControlDataPlay.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataPlayBuilder) MustBuild() MediaTransportControlDataPlay {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataPlayBuilder) MustBuild() MediaTransportControlDataPlay {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataPlayBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataPlayBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataPlayBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataPlayBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataPlayBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataPlayBuilder().(*_MediaTransportControlDataPlayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataPlayBuilder creates a MediaTransportControlDataPlayBuilder
-func (m *_MediaTransportControlDataPlay) CreateMediaTransportControlDataPlayBuilder() MediaTransportControlDataPlayBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataPlay) CreateMediaTransportControlDataPlayBuilder() MediaTransportControlDataPlayBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataPlayBuilder()
 	}
-	return &_MediaTransportControlDataPlayBuilder{_MediaTransportControlDataPlay: m.deepCopy()}
+	return &_MediaTransportControlDataPlayBuilder{_MediaTransportControlDataPlay: b.deepCopy()}
 }
 
 ///////////////////////

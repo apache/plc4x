@@ -99,50 +99,69 @@ func NewHistoryEventBuilder() HistoryEventBuilder {
 type _HistoryEventBuilder struct {
 	*_HistoryEvent
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (HistoryEventBuilder) = (*_HistoryEventBuilder)(nil)
 
-func (m *_HistoryEventBuilder) WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) HistoryEventBuilder {
-	return m.WithNoOfEvents(noOfEvents).WithEvents(events...)
+func (b *_HistoryEventBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_HistoryEventBuilder) WithNoOfEvents(noOfEvents int32) HistoryEventBuilder {
-	m.NoOfEvents = noOfEvents
-	return m
+func (b *_HistoryEventBuilder) WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) HistoryEventBuilder {
+	return b.WithNoOfEvents(noOfEvents).WithEvents(events...)
 }
 
-func (m *_HistoryEventBuilder) WithEvents(events ...ExtensionObjectDefinition) HistoryEventBuilder {
-	m.Events = events
-	return m
+func (b *_HistoryEventBuilder) WithNoOfEvents(noOfEvents int32) HistoryEventBuilder {
+	b.NoOfEvents = noOfEvents
+	return b
 }
 
-func (m *_HistoryEventBuilder) Build() (HistoryEvent, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_HistoryEventBuilder) WithEvents(events ...ExtensionObjectDefinition) HistoryEventBuilder {
+	b.Events = events
+	return b
+}
+
+func (b *_HistoryEventBuilder) Build() (HistoryEvent, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HistoryEvent.deepCopy(), nil
+	return b._HistoryEvent.deepCopy(), nil
 }
 
-func (m *_HistoryEventBuilder) MustBuild() HistoryEvent {
-	build, err := m.Build()
+func (b *_HistoryEventBuilder) MustBuild() HistoryEvent {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HistoryEventBuilder) DeepCopy() any {
-	return m.CreateHistoryEventBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryEventBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryEventBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryEventBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryEventBuilder().(*_HistoryEventBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHistoryEventBuilder creates a HistoryEventBuilder
-func (m *_HistoryEvent) CreateHistoryEventBuilder() HistoryEventBuilder {
-	if m == nil {
+func (b *_HistoryEvent) CreateHistoryEventBuilder() HistoryEventBuilder {
+	if b == nil {
 		return NewHistoryEventBuilder()
 	}
-	return &_HistoryEventBuilder{_HistoryEvent: m.deepCopy()}
+	return &_HistoryEventBuilder{_HistoryEvent: b.deepCopy()}
 }
 
 ///////////////////////

@@ -85,40 +85,59 @@ func NewBACnetConstructedDataNotificationClassAllBuilder() BACnetConstructedData
 type _BACnetConstructedDataNotificationClassAllBuilder struct {
 	*_BACnetConstructedDataNotificationClassAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataNotificationClassAllBuilder) = (*_BACnetConstructedDataNotificationClassAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataNotificationClassAllBuilder) WithMandatoryFields() BACnetConstructedDataNotificationClassAllBuilder {
-	return m
+func (b *_BACnetConstructedDataNotificationClassAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataNotificationClassAllBuilder) Build() (BACnetConstructedDataNotificationClassAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataNotificationClassAllBuilder) WithMandatoryFields() BACnetConstructedDataNotificationClassAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataNotificationClassAllBuilder) Build() (BACnetConstructedDataNotificationClassAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataNotificationClassAll.deepCopy(), nil
+	return b._BACnetConstructedDataNotificationClassAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataNotificationClassAllBuilder) MustBuild() BACnetConstructedDataNotificationClassAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataNotificationClassAllBuilder) MustBuild() BACnetConstructedDataNotificationClassAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataNotificationClassAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataNotificationClassAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNotificationClassAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNotificationClassAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNotificationClassAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNotificationClassAllBuilder().(*_BACnetConstructedDataNotificationClassAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataNotificationClassAllBuilder creates a BACnetConstructedDataNotificationClassAllBuilder
-func (m *_BACnetConstructedDataNotificationClassAll) CreateBACnetConstructedDataNotificationClassAllBuilder() BACnetConstructedDataNotificationClassAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataNotificationClassAll) CreateBACnetConstructedDataNotificationClassAllBuilder() BACnetConstructedDataNotificationClassAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataNotificationClassAllBuilder()
 	}
-	return &_BACnetConstructedDataNotificationClassAllBuilder{_BACnetConstructedDataNotificationClassAll: m.deepCopy()}
+	return &_BACnetConstructedDataNotificationClassAllBuilder{_BACnetConstructedDataNotificationClassAll: b.deepCopy()}
 }
 
 ///////////////////////

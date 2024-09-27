@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDefaultTimeoutBuilder() BACnetConstructedDataDefaul
 type _BACnetConstructedDataDefaultTimeoutBuilder struct {
 	*_BACnetConstructedDataDefaultTimeout
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDefaultTimeoutBuilder) = (*_BACnetConstructedDataDefaultTimeoutBuilder)(nil)
 
-func (m *_BACnetConstructedDataDefaultTimeoutBuilder) WithMandatoryFields(defaultTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDefaultTimeoutBuilder {
-	return m.WithDefaultTimeout(defaultTimeout)
+func (b *_BACnetConstructedDataDefaultTimeoutBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDefaultTimeoutBuilder) WithDefaultTimeout(defaultTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDefaultTimeoutBuilder {
-	m.DefaultTimeout = defaultTimeout
-	return m
+func (b *_BACnetConstructedDataDefaultTimeoutBuilder) WithMandatoryFields(defaultTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDefaultTimeoutBuilder {
+	return b.WithDefaultTimeout(defaultTimeout)
 }
 
-func (m *_BACnetConstructedDataDefaultTimeoutBuilder) WithDefaultTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDefaultTimeoutBuilder {
-	builder := builderSupplier(m.DefaultTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataDefaultTimeoutBuilder) WithDefaultTimeout(defaultTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDefaultTimeoutBuilder {
+	b.DefaultTimeout = defaultTimeout
+	return b
+}
+
+func (b *_BACnetConstructedDataDefaultTimeoutBuilder) WithDefaultTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDefaultTimeoutBuilder {
+	builder := builderSupplier(b.DefaultTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.DefaultTimeout, err = builder.Build()
+	b.DefaultTimeout, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDefaultTimeoutBuilder) Build() (BACnetConstructedDataDefaultTimeout, error) {
-	if m.DefaultTimeout == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDefaultTimeoutBuilder) Build() (BACnetConstructedDataDefaultTimeout, error) {
+	if b.DefaultTimeout == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'defaultTimeout' not set"))
+		b.err.Append(errors.New("mandatory field 'defaultTimeout' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDefaultTimeout.deepCopy(), nil
+	return b._BACnetConstructedDataDefaultTimeout.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDefaultTimeoutBuilder) MustBuild() BACnetConstructedDataDefaultTimeout {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDefaultTimeoutBuilder) MustBuild() BACnetConstructedDataDefaultTimeout {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDefaultTimeoutBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDefaultTimeoutBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDefaultTimeoutBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDefaultTimeoutBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDefaultTimeoutBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDefaultTimeoutBuilder().(*_BACnetConstructedDataDefaultTimeoutBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDefaultTimeoutBuilder creates a BACnetConstructedDataDefaultTimeoutBuilder
-func (m *_BACnetConstructedDataDefaultTimeout) CreateBACnetConstructedDataDefaultTimeoutBuilder() BACnetConstructedDataDefaultTimeoutBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDefaultTimeout) CreateBACnetConstructedDataDefaultTimeoutBuilder() BACnetConstructedDataDefaultTimeoutBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDefaultTimeoutBuilder()
 	}
-	return &_BACnetConstructedDataDefaultTimeoutBuilder{_BACnetConstructedDataDefaultTimeout: m.deepCopy()}
+	return &_BACnetConstructedDataDefaultTimeoutBuilder{_BACnetConstructedDataDefaultTimeout: b.deepCopy()}
 }
 
 ///////////////////////

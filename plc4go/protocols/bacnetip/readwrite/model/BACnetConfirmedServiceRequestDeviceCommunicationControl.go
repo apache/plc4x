@@ -114,100 +114,119 @@ func NewBACnetConfirmedServiceRequestDeviceCommunicationControlBuilder() BACnetC
 type _BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder struct {
 	*_BACnetConfirmedServiceRequestDeviceCommunicationControl
 
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) = (*_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithMandatoryFields(enableDisable BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
-	return m.WithEnableDisable(enableDisable)
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithOptionalTimeDuration(timeDuration BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
-	m.TimeDuration = timeDuration
-	return m
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithMandatoryFields(enableDisable BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
+	return b.WithEnableDisable(enableDisable)
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithOptionalTimeDurationBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
-	builder := builderSupplier(m.TimeDuration.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithOptionalTimeDuration(timeDuration BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
+	b.TimeDuration = timeDuration
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithOptionalTimeDurationBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
+	builder := builderSupplier(b.TimeDuration.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.TimeDuration, err = builder.Build()
+	b.TimeDuration, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithEnableDisable(enableDisable BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
-	m.EnableDisable = enableDisable
-	return m
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithEnableDisable(enableDisable BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
+	b.EnableDisable = enableDisable
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithEnableDisableBuilder(builderSupplier func(BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
-	builder := builderSupplier(m.EnableDisable.CreateBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder())
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithEnableDisableBuilder(builderSupplier func(BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
+	builder := builderSupplier(b.EnableDisable.CreateBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder())
 	var err error
-	m.EnableDisable, err = builder.Build()
+	b.EnableDisable, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithOptionalPassword(password BACnetContextTagCharacterString) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
-	m.Password = password
-	return m
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithOptionalPassword(password BACnetContextTagCharacterString) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
+	b.Password = password
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithOptionalPasswordBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
-	builder := builderSupplier(m.Password.CreateBACnetContextTagCharacterStringBuilder())
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithOptionalPasswordBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
+	builder := builderSupplier(b.Password.CreateBACnetContextTagCharacterStringBuilder())
 	var err error
-	m.Password, err = builder.Build()
+	b.Password, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) Build() (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
-	if m.EnableDisable == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) Build() (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
+	if b.EnableDisable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'enableDisable' not set"))
+		b.err.Append(errors.New("mandatory field 'enableDisable' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestDeviceCommunicationControl.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestDeviceCommunicationControl.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) MustBuild() BACnetConfirmedServiceRequestDeviceCommunicationControl {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) MustBuild() BACnetConfirmedServiceRequestDeviceCommunicationControl {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestDeviceCommunicationControlBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestDeviceCommunicationControlBuilder().(*_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestDeviceCommunicationControlBuilder creates a BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) CreateBACnetConfirmedServiceRequestDeviceCommunicationControlBuilder() BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControl) CreateBACnetConfirmedServiceRequestDeviceCommunicationControlBuilder() BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestDeviceCommunicationControlBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder{_BACnetConfirmedServiceRequestDeviceCommunicationControl: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder{_BACnetConfirmedServiceRequestDeviceCommunicationControl: b.deepCopy()}
 }
 
 ///////////////////////

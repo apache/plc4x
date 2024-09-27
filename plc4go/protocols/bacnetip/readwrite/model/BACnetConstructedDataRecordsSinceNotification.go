@@ -100,64 +100,83 @@ func NewBACnetConstructedDataRecordsSinceNotificationBuilder() BACnetConstructed
 type _BACnetConstructedDataRecordsSinceNotificationBuilder struct {
 	*_BACnetConstructedDataRecordsSinceNotification
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataRecordsSinceNotificationBuilder) = (*_BACnetConstructedDataRecordsSinceNotificationBuilder)(nil)
 
-func (m *_BACnetConstructedDataRecordsSinceNotificationBuilder) WithMandatoryFields(recordsSinceNotifications BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRecordsSinceNotificationBuilder {
-	return m.WithRecordsSinceNotifications(recordsSinceNotifications)
+func (b *_BACnetConstructedDataRecordsSinceNotificationBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataRecordsSinceNotificationBuilder) WithRecordsSinceNotifications(recordsSinceNotifications BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRecordsSinceNotificationBuilder {
-	m.RecordsSinceNotifications = recordsSinceNotifications
-	return m
+func (b *_BACnetConstructedDataRecordsSinceNotificationBuilder) WithMandatoryFields(recordsSinceNotifications BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRecordsSinceNotificationBuilder {
+	return b.WithRecordsSinceNotifications(recordsSinceNotifications)
 }
 
-func (m *_BACnetConstructedDataRecordsSinceNotificationBuilder) WithRecordsSinceNotificationsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataRecordsSinceNotificationBuilder {
-	builder := builderSupplier(m.RecordsSinceNotifications.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataRecordsSinceNotificationBuilder) WithRecordsSinceNotifications(recordsSinceNotifications BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRecordsSinceNotificationBuilder {
+	b.RecordsSinceNotifications = recordsSinceNotifications
+	return b
+}
+
+func (b *_BACnetConstructedDataRecordsSinceNotificationBuilder) WithRecordsSinceNotificationsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataRecordsSinceNotificationBuilder {
+	builder := builderSupplier(b.RecordsSinceNotifications.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.RecordsSinceNotifications, err = builder.Build()
+	b.RecordsSinceNotifications, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataRecordsSinceNotificationBuilder) Build() (BACnetConstructedDataRecordsSinceNotification, error) {
-	if m.RecordsSinceNotifications == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataRecordsSinceNotificationBuilder) Build() (BACnetConstructedDataRecordsSinceNotification, error) {
+	if b.RecordsSinceNotifications == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'recordsSinceNotifications' not set"))
+		b.err.Append(errors.New("mandatory field 'recordsSinceNotifications' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataRecordsSinceNotification.deepCopy(), nil
+	return b._BACnetConstructedDataRecordsSinceNotification.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataRecordsSinceNotificationBuilder) MustBuild() BACnetConstructedDataRecordsSinceNotification {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataRecordsSinceNotificationBuilder) MustBuild() BACnetConstructedDataRecordsSinceNotification {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataRecordsSinceNotificationBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataRecordsSinceNotificationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataRecordsSinceNotificationBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataRecordsSinceNotificationBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataRecordsSinceNotificationBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataRecordsSinceNotificationBuilder().(*_BACnetConstructedDataRecordsSinceNotificationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataRecordsSinceNotificationBuilder creates a BACnetConstructedDataRecordsSinceNotificationBuilder
-func (m *_BACnetConstructedDataRecordsSinceNotification) CreateBACnetConstructedDataRecordsSinceNotificationBuilder() BACnetConstructedDataRecordsSinceNotificationBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataRecordsSinceNotification) CreateBACnetConstructedDataRecordsSinceNotificationBuilder() BACnetConstructedDataRecordsSinceNotificationBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataRecordsSinceNotificationBuilder()
 	}
-	return &_BACnetConstructedDataRecordsSinceNotificationBuilder{_BACnetConstructedDataRecordsSinceNotification: m.deepCopy()}
+	return &_BACnetConstructedDataRecordsSinceNotificationBuilder{_BACnetConstructedDataRecordsSinceNotification: b.deepCopy()}
 }
 
 ///////////////////////

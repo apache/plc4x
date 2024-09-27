@@ -102,64 +102,83 @@ func NewBACnetContextTagObjectIdentifierBuilder() BACnetContextTagObjectIdentifi
 type _BACnetContextTagObjectIdentifierBuilder struct {
 	*_BACnetContextTagObjectIdentifier
 
+	parentBuilder *_BACnetContextTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetContextTagObjectIdentifierBuilder) = (*_BACnetContextTagObjectIdentifierBuilder)(nil)
 
-func (m *_BACnetContextTagObjectIdentifierBuilder) WithMandatoryFields(payload BACnetTagPayloadObjectIdentifier) BACnetContextTagObjectIdentifierBuilder {
-	return m.WithPayload(payload)
+func (b *_BACnetContextTagObjectIdentifierBuilder) setParent(contract BACnetContextTagContract) {
+	b.BACnetContextTagContract = contract
 }
 
-func (m *_BACnetContextTagObjectIdentifierBuilder) WithPayload(payload BACnetTagPayloadObjectIdentifier) BACnetContextTagObjectIdentifierBuilder {
-	m.Payload = payload
-	return m
+func (b *_BACnetContextTagObjectIdentifierBuilder) WithMandatoryFields(payload BACnetTagPayloadObjectIdentifier) BACnetContextTagObjectIdentifierBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_BACnetContextTagObjectIdentifierBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadObjectIdentifierBuilder) BACnetTagPayloadObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder {
-	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadObjectIdentifierBuilder())
+func (b *_BACnetContextTagObjectIdentifierBuilder) WithPayload(payload BACnetTagPayloadObjectIdentifier) BACnetContextTagObjectIdentifierBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetContextTagObjectIdentifierBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadObjectIdentifierBuilder) BACnetTagPayloadObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadObjectIdentifierBuilder())
 	var err error
-	m.Payload, err = builder.Build()
+	b.Payload, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagPayloadObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetContextTagObjectIdentifierBuilder) Build() (BACnetContextTagObjectIdentifier, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetContextTagObjectIdentifierBuilder) Build() (BACnetContextTagObjectIdentifier, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetContextTagObjectIdentifier.deepCopy(), nil
+	return b._BACnetContextTagObjectIdentifier.deepCopy(), nil
 }
 
-func (m *_BACnetContextTagObjectIdentifierBuilder) MustBuild() BACnetContextTagObjectIdentifier {
-	build, err := m.Build()
+func (b *_BACnetContextTagObjectIdentifierBuilder) MustBuild() BACnetContextTagObjectIdentifier {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetContextTagObjectIdentifierBuilder) DeepCopy() any {
-	return m.CreateBACnetContextTagObjectIdentifierBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetContextTagObjectIdentifierBuilder) Done() BACnetContextTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetContextTagObjectIdentifierBuilder) buildForBACnetContextTag() (BACnetContextTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetContextTagObjectIdentifierBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetContextTagObjectIdentifierBuilder().(*_BACnetContextTagObjectIdentifierBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetContextTagObjectIdentifierBuilder creates a BACnetContextTagObjectIdentifierBuilder
-func (m *_BACnetContextTagObjectIdentifier) CreateBACnetContextTagObjectIdentifierBuilder() BACnetContextTagObjectIdentifierBuilder {
-	if m == nil {
+func (b *_BACnetContextTagObjectIdentifier) CreateBACnetContextTagObjectIdentifierBuilder() BACnetContextTagObjectIdentifierBuilder {
+	if b == nil {
 		return NewBACnetContextTagObjectIdentifierBuilder()
 	}
-	return &_BACnetContextTagObjectIdentifierBuilder{_BACnetContextTagObjectIdentifier: m.deepCopy()}
+	return &_BACnetContextTagObjectIdentifierBuilder{_BACnetContextTagObjectIdentifier: b.deepCopy()}
 }
 
 ///////////////////////

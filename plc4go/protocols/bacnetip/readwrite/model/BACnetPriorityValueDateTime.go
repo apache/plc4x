@@ -98,64 +98,83 @@ func NewBACnetPriorityValueDateTimeBuilder() BACnetPriorityValueDateTimeBuilder 
 type _BACnetPriorityValueDateTimeBuilder struct {
 	*_BACnetPriorityValueDateTime
 
+	parentBuilder *_BACnetPriorityValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPriorityValueDateTimeBuilder) = (*_BACnetPriorityValueDateTimeBuilder)(nil)
 
-func (m *_BACnetPriorityValueDateTimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetPriorityValueDateTimeBuilder {
-	return m.WithDateTimeValue(dateTimeValue)
+func (b *_BACnetPriorityValueDateTimeBuilder) setParent(contract BACnetPriorityValueContract) {
+	b.BACnetPriorityValueContract = contract
 }
 
-func (m *_BACnetPriorityValueDateTimeBuilder) WithDateTimeValue(dateTimeValue BACnetDateTimeEnclosed) BACnetPriorityValueDateTimeBuilder {
-	m.DateTimeValue = dateTimeValue
-	return m
+func (b *_BACnetPriorityValueDateTimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetPriorityValueDateTimeBuilder {
+	return b.WithDateTimeValue(dateTimeValue)
 }
 
-func (m *_BACnetPriorityValueDateTimeBuilder) WithDateTimeValueBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetPriorityValueDateTimeBuilder {
-	builder := builderSupplier(m.DateTimeValue.CreateBACnetDateTimeEnclosedBuilder())
+func (b *_BACnetPriorityValueDateTimeBuilder) WithDateTimeValue(dateTimeValue BACnetDateTimeEnclosed) BACnetPriorityValueDateTimeBuilder {
+	b.DateTimeValue = dateTimeValue
+	return b
+}
+
+func (b *_BACnetPriorityValueDateTimeBuilder) WithDateTimeValueBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetPriorityValueDateTimeBuilder {
+	builder := builderSupplier(b.DateTimeValue.CreateBACnetDateTimeEnclosedBuilder())
 	var err error
-	m.DateTimeValue, err = builder.Build()
+	b.DateTimeValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPriorityValueDateTimeBuilder) Build() (BACnetPriorityValueDateTime, error) {
-	if m.DateTimeValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPriorityValueDateTimeBuilder) Build() (BACnetPriorityValueDateTime, error) {
+	if b.DateTimeValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dateTimeValue' not set"))
+		b.err.Append(errors.New("mandatory field 'dateTimeValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPriorityValueDateTime.deepCopy(), nil
+	return b._BACnetPriorityValueDateTime.deepCopy(), nil
 }
 
-func (m *_BACnetPriorityValueDateTimeBuilder) MustBuild() BACnetPriorityValueDateTime {
-	build, err := m.Build()
+func (b *_BACnetPriorityValueDateTimeBuilder) MustBuild() BACnetPriorityValueDateTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPriorityValueDateTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetPriorityValueDateTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPriorityValueDateTimeBuilder) Done() BACnetPriorityValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPriorityValueDateTimeBuilder) buildForBACnetPriorityValue() (BACnetPriorityValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPriorityValueDateTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityValueDateTimeBuilder().(*_BACnetPriorityValueDateTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPriorityValueDateTimeBuilder creates a BACnetPriorityValueDateTimeBuilder
-func (m *_BACnetPriorityValueDateTime) CreateBACnetPriorityValueDateTimeBuilder() BACnetPriorityValueDateTimeBuilder {
-	if m == nil {
+func (b *_BACnetPriorityValueDateTime) CreateBACnetPriorityValueDateTimeBuilder() BACnetPriorityValueDateTimeBuilder {
+	if b == nil {
 		return NewBACnetPriorityValueDateTimeBuilder()
 	}
-	return &_BACnetPriorityValueDateTimeBuilder{_BACnetPriorityValueDateTime: m.deepCopy()}
+	return &_BACnetPriorityValueDateTimeBuilder{_BACnetPriorityValueDateTime: b.deepCopy()}
 }
 
 ///////////////////////

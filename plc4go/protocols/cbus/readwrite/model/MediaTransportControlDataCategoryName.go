@@ -93,45 +93,64 @@ func NewMediaTransportControlDataCategoryNameBuilder() MediaTransportControlData
 type _MediaTransportControlDataCategoryNameBuilder struct {
 	*_MediaTransportControlDataCategoryName
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataCategoryNameBuilder) = (*_MediaTransportControlDataCategoryNameBuilder)(nil)
 
-func (m *_MediaTransportControlDataCategoryNameBuilder) WithMandatoryFields(categoryName string) MediaTransportControlDataCategoryNameBuilder {
-	return m.WithCategoryName(categoryName)
+func (b *_MediaTransportControlDataCategoryNameBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataCategoryNameBuilder) WithCategoryName(categoryName string) MediaTransportControlDataCategoryNameBuilder {
-	m.CategoryName = categoryName
-	return m
+func (b *_MediaTransportControlDataCategoryNameBuilder) WithMandatoryFields(categoryName string) MediaTransportControlDataCategoryNameBuilder {
+	return b.WithCategoryName(categoryName)
 }
 
-func (m *_MediaTransportControlDataCategoryNameBuilder) Build() (MediaTransportControlDataCategoryName, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataCategoryNameBuilder) WithCategoryName(categoryName string) MediaTransportControlDataCategoryNameBuilder {
+	b.CategoryName = categoryName
+	return b
+}
+
+func (b *_MediaTransportControlDataCategoryNameBuilder) Build() (MediaTransportControlDataCategoryName, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataCategoryName.deepCopy(), nil
+	return b._MediaTransportControlDataCategoryName.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataCategoryNameBuilder) MustBuild() MediaTransportControlDataCategoryName {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataCategoryNameBuilder) MustBuild() MediaTransportControlDataCategoryName {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataCategoryNameBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataCategoryNameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataCategoryNameBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataCategoryNameBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataCategoryNameBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataCategoryNameBuilder().(*_MediaTransportControlDataCategoryNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataCategoryNameBuilder creates a MediaTransportControlDataCategoryNameBuilder
-func (m *_MediaTransportControlDataCategoryName) CreateMediaTransportControlDataCategoryNameBuilder() MediaTransportControlDataCategoryNameBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataCategoryName) CreateMediaTransportControlDataCategoryNameBuilder() MediaTransportControlDataCategoryNameBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataCategoryNameBuilder()
 	}
-	return &_MediaTransportControlDataCategoryNameBuilder{_MediaTransportControlDataCategoryName: m.deepCopy()}
+	return &_MediaTransportControlDataCategoryNameBuilder{_MediaTransportControlDataCategoryName: b.deepCopy()}
 }
 
 ///////////////////////

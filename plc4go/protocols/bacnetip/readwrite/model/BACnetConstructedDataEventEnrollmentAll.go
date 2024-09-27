@@ -85,40 +85,59 @@ func NewBACnetConstructedDataEventEnrollmentAllBuilder() BACnetConstructedDataEv
 type _BACnetConstructedDataEventEnrollmentAllBuilder struct {
 	*_BACnetConstructedDataEventEnrollmentAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataEventEnrollmentAllBuilder) = (*_BACnetConstructedDataEventEnrollmentAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataEventEnrollmentAllBuilder) WithMandatoryFields() BACnetConstructedDataEventEnrollmentAllBuilder {
-	return m
+func (b *_BACnetConstructedDataEventEnrollmentAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataEventEnrollmentAllBuilder) Build() (BACnetConstructedDataEventEnrollmentAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataEventEnrollmentAllBuilder) WithMandatoryFields() BACnetConstructedDataEventEnrollmentAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataEventEnrollmentAllBuilder) Build() (BACnetConstructedDataEventEnrollmentAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataEventEnrollmentAll.deepCopy(), nil
+	return b._BACnetConstructedDataEventEnrollmentAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataEventEnrollmentAllBuilder) MustBuild() BACnetConstructedDataEventEnrollmentAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataEventEnrollmentAllBuilder) MustBuild() BACnetConstructedDataEventEnrollmentAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataEventEnrollmentAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataEventEnrollmentAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEventEnrollmentAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEventEnrollmentAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEventEnrollmentAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEventEnrollmentAllBuilder().(*_BACnetConstructedDataEventEnrollmentAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataEventEnrollmentAllBuilder creates a BACnetConstructedDataEventEnrollmentAllBuilder
-func (m *_BACnetConstructedDataEventEnrollmentAll) CreateBACnetConstructedDataEventEnrollmentAllBuilder() BACnetConstructedDataEventEnrollmentAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataEventEnrollmentAll) CreateBACnetConstructedDataEventEnrollmentAllBuilder() BACnetConstructedDataEventEnrollmentAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataEventEnrollmentAllBuilder()
 	}
-	return &_BACnetConstructedDataEventEnrollmentAllBuilder{_BACnetConstructedDataEventEnrollmentAll: m.deepCopy()}
+	return &_BACnetConstructedDataEventEnrollmentAllBuilder{_BACnetConstructedDataEventEnrollmentAll: b.deepCopy()}
 }
 
 ///////////////////////

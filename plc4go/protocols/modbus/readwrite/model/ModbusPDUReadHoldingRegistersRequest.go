@@ -99,50 +99,69 @@ func NewModbusPDUReadHoldingRegistersRequestBuilder() ModbusPDUReadHoldingRegist
 type _ModbusPDUReadHoldingRegistersRequestBuilder struct {
 	*_ModbusPDUReadHoldingRegistersRequest
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUReadHoldingRegistersRequestBuilder) = (*_ModbusPDUReadHoldingRegistersRequestBuilder)(nil)
 
-func (m *_ModbusPDUReadHoldingRegistersRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUReadHoldingRegistersRequestBuilder {
-	return m.WithStartingAddress(startingAddress).WithQuantity(quantity)
+func (b *_ModbusPDUReadHoldingRegistersRequestBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUReadHoldingRegistersRequestBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUReadHoldingRegistersRequestBuilder {
-	m.StartingAddress = startingAddress
-	return m
+func (b *_ModbusPDUReadHoldingRegistersRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUReadHoldingRegistersRequestBuilder {
+	return b.WithStartingAddress(startingAddress).WithQuantity(quantity)
 }
 
-func (m *_ModbusPDUReadHoldingRegistersRequestBuilder) WithQuantity(quantity uint16) ModbusPDUReadHoldingRegistersRequestBuilder {
-	m.Quantity = quantity
-	return m
+func (b *_ModbusPDUReadHoldingRegistersRequestBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUReadHoldingRegistersRequestBuilder {
+	b.StartingAddress = startingAddress
+	return b
 }
 
-func (m *_ModbusPDUReadHoldingRegistersRequestBuilder) Build() (ModbusPDUReadHoldingRegistersRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUReadHoldingRegistersRequestBuilder) WithQuantity(quantity uint16) ModbusPDUReadHoldingRegistersRequestBuilder {
+	b.Quantity = quantity
+	return b
+}
+
+func (b *_ModbusPDUReadHoldingRegistersRequestBuilder) Build() (ModbusPDUReadHoldingRegistersRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUReadHoldingRegistersRequest.deepCopy(), nil
+	return b._ModbusPDUReadHoldingRegistersRequest.deepCopy(), nil
 }
 
-func (m *_ModbusPDUReadHoldingRegistersRequestBuilder) MustBuild() ModbusPDUReadHoldingRegistersRequest {
-	build, err := m.Build()
+func (b *_ModbusPDUReadHoldingRegistersRequestBuilder) MustBuild() ModbusPDUReadHoldingRegistersRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUReadHoldingRegistersRequestBuilder) DeepCopy() any {
-	return m.CreateModbusPDUReadHoldingRegistersRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUReadHoldingRegistersRequestBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUReadHoldingRegistersRequestBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUReadHoldingRegistersRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUReadHoldingRegistersRequestBuilder().(*_ModbusPDUReadHoldingRegistersRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUReadHoldingRegistersRequestBuilder creates a ModbusPDUReadHoldingRegistersRequestBuilder
-func (m *_ModbusPDUReadHoldingRegistersRequest) CreateModbusPDUReadHoldingRegistersRequestBuilder() ModbusPDUReadHoldingRegistersRequestBuilder {
-	if m == nil {
+func (b *_ModbusPDUReadHoldingRegistersRequest) CreateModbusPDUReadHoldingRegistersRequestBuilder() ModbusPDUReadHoldingRegistersRequestBuilder {
+	if b == nil {
 		return NewModbusPDUReadHoldingRegistersRequestBuilder()
 	}
-	return &_ModbusPDUReadHoldingRegistersRequestBuilder{_ModbusPDUReadHoldingRegistersRequest: m.deepCopy()}
+	return &_ModbusPDUReadHoldingRegistersRequestBuilder{_ModbusPDUReadHoldingRegistersRequest: b.deepCopy()}
 }
 
 ///////////////////////

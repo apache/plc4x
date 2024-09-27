@@ -103,63 +103,82 @@ func NewBACnetConstructedDataLinkSpeedsBuilder() BACnetConstructedDataLinkSpeeds
 type _BACnetConstructedDataLinkSpeedsBuilder struct {
 	*_BACnetConstructedDataLinkSpeeds
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLinkSpeedsBuilder) = (*_BACnetConstructedDataLinkSpeedsBuilder)(nil)
 
-func (m *_BACnetConstructedDataLinkSpeedsBuilder) WithMandatoryFields(linkSpeeds []BACnetApplicationTagReal) BACnetConstructedDataLinkSpeedsBuilder {
-	return m.WithLinkSpeeds(linkSpeeds...)
+func (b *_BACnetConstructedDataLinkSpeedsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLinkSpeedsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLinkSpeedsBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataLinkSpeedsBuilder) WithMandatoryFields(linkSpeeds []BACnetApplicationTagReal) BACnetConstructedDataLinkSpeedsBuilder {
+	return b.WithLinkSpeeds(linkSpeeds...)
 }
 
-func (m *_BACnetConstructedDataLinkSpeedsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLinkSpeedsBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataLinkSpeedsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLinkSpeedsBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataLinkSpeedsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLinkSpeedsBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLinkSpeedsBuilder) WithLinkSpeeds(linkSpeeds ...BACnetApplicationTagReal) BACnetConstructedDataLinkSpeedsBuilder {
-	m.LinkSpeeds = linkSpeeds
-	return m
+func (b *_BACnetConstructedDataLinkSpeedsBuilder) WithLinkSpeeds(linkSpeeds ...BACnetApplicationTagReal) BACnetConstructedDataLinkSpeedsBuilder {
+	b.LinkSpeeds = linkSpeeds
+	return b
 }
 
-func (m *_BACnetConstructedDataLinkSpeedsBuilder) Build() (BACnetConstructedDataLinkSpeeds, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataLinkSpeedsBuilder) Build() (BACnetConstructedDataLinkSpeeds, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLinkSpeeds.deepCopy(), nil
+	return b._BACnetConstructedDataLinkSpeeds.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLinkSpeedsBuilder) MustBuild() BACnetConstructedDataLinkSpeeds {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLinkSpeedsBuilder) MustBuild() BACnetConstructedDataLinkSpeeds {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLinkSpeedsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLinkSpeedsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLinkSpeedsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLinkSpeedsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLinkSpeedsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLinkSpeedsBuilder().(*_BACnetConstructedDataLinkSpeedsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLinkSpeedsBuilder creates a BACnetConstructedDataLinkSpeedsBuilder
-func (m *_BACnetConstructedDataLinkSpeeds) CreateBACnetConstructedDataLinkSpeedsBuilder() BACnetConstructedDataLinkSpeedsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLinkSpeeds) CreateBACnetConstructedDataLinkSpeedsBuilder() BACnetConstructedDataLinkSpeedsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLinkSpeedsBuilder()
 	}
-	return &_BACnetConstructedDataLinkSpeedsBuilder{_BACnetConstructedDataLinkSpeeds: m.deepCopy()}
+	return &_BACnetConstructedDataLinkSpeedsBuilder{_BACnetConstructedDataLinkSpeeds: b.deepCopy()}
 }
 
 ///////////////////////

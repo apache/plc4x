@@ -100,50 +100,54 @@ type _TunnelingResponseDataBlockBuilder struct {
 
 var _ (TunnelingResponseDataBlockBuilder) = (*_TunnelingResponseDataBlockBuilder)(nil)
 
-func (m *_TunnelingResponseDataBlockBuilder) WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8, status Status) TunnelingResponseDataBlockBuilder {
-	return m.WithCommunicationChannelId(communicationChannelId).WithSequenceCounter(sequenceCounter).WithStatus(status)
+func (b *_TunnelingResponseDataBlockBuilder) WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8, status Status) TunnelingResponseDataBlockBuilder {
+	return b.WithCommunicationChannelId(communicationChannelId).WithSequenceCounter(sequenceCounter).WithStatus(status)
 }
 
-func (m *_TunnelingResponseDataBlockBuilder) WithCommunicationChannelId(communicationChannelId uint8) TunnelingResponseDataBlockBuilder {
-	m.CommunicationChannelId = communicationChannelId
-	return m
+func (b *_TunnelingResponseDataBlockBuilder) WithCommunicationChannelId(communicationChannelId uint8) TunnelingResponseDataBlockBuilder {
+	b.CommunicationChannelId = communicationChannelId
+	return b
 }
 
-func (m *_TunnelingResponseDataBlockBuilder) WithSequenceCounter(sequenceCounter uint8) TunnelingResponseDataBlockBuilder {
-	m.SequenceCounter = sequenceCounter
-	return m
+func (b *_TunnelingResponseDataBlockBuilder) WithSequenceCounter(sequenceCounter uint8) TunnelingResponseDataBlockBuilder {
+	b.SequenceCounter = sequenceCounter
+	return b
 }
 
-func (m *_TunnelingResponseDataBlockBuilder) WithStatus(status Status) TunnelingResponseDataBlockBuilder {
-	m.Status = status
-	return m
+func (b *_TunnelingResponseDataBlockBuilder) WithStatus(status Status) TunnelingResponseDataBlockBuilder {
+	b.Status = status
+	return b
 }
 
-func (m *_TunnelingResponseDataBlockBuilder) Build() (TunnelingResponseDataBlock, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TunnelingResponseDataBlockBuilder) Build() (TunnelingResponseDataBlock, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TunnelingResponseDataBlock.deepCopy(), nil
+	return b._TunnelingResponseDataBlock.deepCopy(), nil
 }
 
-func (m *_TunnelingResponseDataBlockBuilder) MustBuild() TunnelingResponseDataBlock {
-	build, err := m.Build()
+func (b *_TunnelingResponseDataBlockBuilder) MustBuild() TunnelingResponseDataBlock {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TunnelingResponseDataBlockBuilder) DeepCopy() any {
-	return m.CreateTunnelingResponseDataBlockBuilder()
+func (b *_TunnelingResponseDataBlockBuilder) DeepCopy() any {
+	_copy := b.CreateTunnelingResponseDataBlockBuilder().(*_TunnelingResponseDataBlockBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTunnelingResponseDataBlockBuilder creates a TunnelingResponseDataBlockBuilder
-func (m *_TunnelingResponseDataBlock) CreateTunnelingResponseDataBlockBuilder() TunnelingResponseDataBlockBuilder {
-	if m == nil {
+func (b *_TunnelingResponseDataBlock) CreateTunnelingResponseDataBlockBuilder() TunnelingResponseDataBlockBuilder {
+	if b == nil {
 		return NewTunnelingResponseDataBlockBuilder()
 	}
-	return &_TunnelingResponseDataBlockBuilder{_TunnelingResponseDataBlock: m.deepCopy()}
+	return &_TunnelingResponseDataBlockBuilder{_TunnelingResponseDataBlock: b.deepCopy()}
 }
 
 ///////////////////////

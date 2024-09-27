@@ -89,35 +89,39 @@ type _PowerUpBuilder struct {
 
 var _ (PowerUpBuilder) = (*_PowerUpBuilder)(nil)
 
-func (m *_PowerUpBuilder) WithMandatoryFields() PowerUpBuilder {
-	return m
+func (b *_PowerUpBuilder) WithMandatoryFields() PowerUpBuilder {
+	return b
 }
 
-func (m *_PowerUpBuilder) Build() (PowerUp, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_PowerUpBuilder) Build() (PowerUp, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._PowerUp.deepCopy(), nil
+	return b._PowerUp.deepCopy(), nil
 }
 
-func (m *_PowerUpBuilder) MustBuild() PowerUp {
-	build, err := m.Build()
+func (b *_PowerUpBuilder) MustBuild() PowerUp {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PowerUpBuilder) DeepCopy() any {
-	return m.CreatePowerUpBuilder()
+func (b *_PowerUpBuilder) DeepCopy() any {
+	_copy := b.CreatePowerUpBuilder().(*_PowerUpBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePowerUpBuilder creates a PowerUpBuilder
-func (m *_PowerUp) CreatePowerUpBuilder() PowerUpBuilder {
-	if m == nil {
+func (b *_PowerUp) CreatePowerUpBuilder() PowerUpBuilder {
+	if b == nil {
 		return NewPowerUpBuilder()
 	}
-	return &_PowerUpBuilder{_PowerUp: m.deepCopy()}
+	return &_PowerUpBuilder{_PowerUp: b.deepCopy()}
 }
 
 ///////////////////////

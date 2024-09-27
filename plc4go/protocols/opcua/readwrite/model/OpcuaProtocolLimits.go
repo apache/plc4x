@@ -105,55 +105,59 @@ type _OpcuaProtocolLimitsBuilder struct {
 
 var _ (OpcuaProtocolLimitsBuilder) = (*_OpcuaProtocolLimitsBuilder)(nil)
 
-func (m *_OpcuaProtocolLimitsBuilder) WithMandatoryFields(receiveBufferSize uint32, sendBufferSize uint32, maxMessageSize uint32, maxChunkCount uint32) OpcuaProtocolLimitsBuilder {
-	return m.WithReceiveBufferSize(receiveBufferSize).WithSendBufferSize(sendBufferSize).WithMaxMessageSize(maxMessageSize).WithMaxChunkCount(maxChunkCount)
+func (b *_OpcuaProtocolLimitsBuilder) WithMandatoryFields(receiveBufferSize uint32, sendBufferSize uint32, maxMessageSize uint32, maxChunkCount uint32) OpcuaProtocolLimitsBuilder {
+	return b.WithReceiveBufferSize(receiveBufferSize).WithSendBufferSize(sendBufferSize).WithMaxMessageSize(maxMessageSize).WithMaxChunkCount(maxChunkCount)
 }
 
-func (m *_OpcuaProtocolLimitsBuilder) WithReceiveBufferSize(receiveBufferSize uint32) OpcuaProtocolLimitsBuilder {
-	m.ReceiveBufferSize = receiveBufferSize
-	return m
+func (b *_OpcuaProtocolLimitsBuilder) WithReceiveBufferSize(receiveBufferSize uint32) OpcuaProtocolLimitsBuilder {
+	b.ReceiveBufferSize = receiveBufferSize
+	return b
 }
 
-func (m *_OpcuaProtocolLimitsBuilder) WithSendBufferSize(sendBufferSize uint32) OpcuaProtocolLimitsBuilder {
-	m.SendBufferSize = sendBufferSize
-	return m
+func (b *_OpcuaProtocolLimitsBuilder) WithSendBufferSize(sendBufferSize uint32) OpcuaProtocolLimitsBuilder {
+	b.SendBufferSize = sendBufferSize
+	return b
 }
 
-func (m *_OpcuaProtocolLimitsBuilder) WithMaxMessageSize(maxMessageSize uint32) OpcuaProtocolLimitsBuilder {
-	m.MaxMessageSize = maxMessageSize
-	return m
+func (b *_OpcuaProtocolLimitsBuilder) WithMaxMessageSize(maxMessageSize uint32) OpcuaProtocolLimitsBuilder {
+	b.MaxMessageSize = maxMessageSize
+	return b
 }
 
-func (m *_OpcuaProtocolLimitsBuilder) WithMaxChunkCount(maxChunkCount uint32) OpcuaProtocolLimitsBuilder {
-	m.MaxChunkCount = maxChunkCount
-	return m
+func (b *_OpcuaProtocolLimitsBuilder) WithMaxChunkCount(maxChunkCount uint32) OpcuaProtocolLimitsBuilder {
+	b.MaxChunkCount = maxChunkCount
+	return b
 }
 
-func (m *_OpcuaProtocolLimitsBuilder) Build() (OpcuaProtocolLimits, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_OpcuaProtocolLimitsBuilder) Build() (OpcuaProtocolLimits, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._OpcuaProtocolLimits.deepCopy(), nil
+	return b._OpcuaProtocolLimits.deepCopy(), nil
 }
 
-func (m *_OpcuaProtocolLimitsBuilder) MustBuild() OpcuaProtocolLimits {
-	build, err := m.Build()
+func (b *_OpcuaProtocolLimitsBuilder) MustBuild() OpcuaProtocolLimits {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_OpcuaProtocolLimitsBuilder) DeepCopy() any {
-	return m.CreateOpcuaProtocolLimitsBuilder()
+func (b *_OpcuaProtocolLimitsBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaProtocolLimitsBuilder().(*_OpcuaProtocolLimitsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateOpcuaProtocolLimitsBuilder creates a OpcuaProtocolLimitsBuilder
-func (m *_OpcuaProtocolLimits) CreateOpcuaProtocolLimitsBuilder() OpcuaProtocolLimitsBuilder {
-	if m == nil {
+func (b *_OpcuaProtocolLimits) CreateOpcuaProtocolLimitsBuilder() OpcuaProtocolLimitsBuilder {
+	if b == nil {
 		return NewOpcuaProtocolLimitsBuilder()
 	}
-	return &_OpcuaProtocolLimitsBuilder{_OpcuaProtocolLimits: m.deepCopy()}
+	return &_OpcuaProtocolLimitsBuilder{_OpcuaProtocolLimits: b.deepCopy()}
 }
 
 ///////////////////////

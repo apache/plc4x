@@ -98,45 +98,64 @@ func NewBVLCSecureBVLLBuilder() BVLCSecureBVLLBuilder {
 type _BVLCSecureBVLLBuilder struct {
 	*_BVLCSecureBVLL
 
+	parentBuilder *_BVLCBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BVLCSecureBVLLBuilder) = (*_BVLCSecureBVLLBuilder)(nil)
 
-func (m *_BVLCSecureBVLLBuilder) WithMandatoryFields(securityWrapper []byte) BVLCSecureBVLLBuilder {
-	return m.WithSecurityWrapper(securityWrapper...)
+func (b *_BVLCSecureBVLLBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
 }
 
-func (m *_BVLCSecureBVLLBuilder) WithSecurityWrapper(securityWrapper ...byte) BVLCSecureBVLLBuilder {
-	m.SecurityWrapper = securityWrapper
-	return m
+func (b *_BVLCSecureBVLLBuilder) WithMandatoryFields(securityWrapper []byte) BVLCSecureBVLLBuilder {
+	return b.WithSecurityWrapper(securityWrapper...)
 }
 
-func (m *_BVLCSecureBVLLBuilder) Build() (BVLCSecureBVLL, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BVLCSecureBVLLBuilder) WithSecurityWrapper(securityWrapper ...byte) BVLCSecureBVLLBuilder {
+	b.SecurityWrapper = securityWrapper
+	return b
+}
+
+func (b *_BVLCSecureBVLLBuilder) Build() (BVLCSecureBVLL, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BVLCSecureBVLL.deepCopy(), nil
+	return b._BVLCSecureBVLL.deepCopy(), nil
 }
 
-func (m *_BVLCSecureBVLLBuilder) MustBuild() BVLCSecureBVLL {
-	build, err := m.Build()
+func (b *_BVLCSecureBVLLBuilder) MustBuild() BVLCSecureBVLL {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BVLCSecureBVLLBuilder) DeepCopy() any {
-	return m.CreateBVLCSecureBVLLBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCSecureBVLLBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCSecureBVLLBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCSecureBVLLBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCSecureBVLLBuilder().(*_BVLCSecureBVLLBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBVLCSecureBVLLBuilder creates a BVLCSecureBVLLBuilder
-func (m *_BVLCSecureBVLL) CreateBVLCSecureBVLLBuilder() BVLCSecureBVLLBuilder {
-	if m == nil {
+func (b *_BVLCSecureBVLL) CreateBVLCSecureBVLLBuilder() BVLCSecureBVLLBuilder {
+	if b == nil {
 		return NewBVLCSecureBVLLBuilder()
 	}
-	return &_BVLCSecureBVLLBuilder{_BVLCSecureBVLL: m.deepCopy()}
+	return &_BVLCSecureBVLLBuilder{_BVLCSecureBVLL: b.deepCopy()}
 }
 
 ///////////////////////

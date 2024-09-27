@@ -93,45 +93,64 @@ func NewSecurityDataOffBuilder() SecurityDataOffBuilder {
 type _SecurityDataOffBuilder struct {
 	*_SecurityDataOff
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataOffBuilder) = (*_SecurityDataOffBuilder)(nil)
 
-func (m *_SecurityDataOffBuilder) WithMandatoryFields(data []byte) SecurityDataOffBuilder {
-	return m.WithData(data...)
+func (b *_SecurityDataOffBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataOffBuilder) WithData(data ...byte) SecurityDataOffBuilder {
-	m.Data = data
-	return m
+func (b *_SecurityDataOffBuilder) WithMandatoryFields(data []byte) SecurityDataOffBuilder {
+	return b.WithData(data...)
 }
 
-func (m *_SecurityDataOffBuilder) Build() (SecurityDataOff, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataOffBuilder) WithData(data ...byte) SecurityDataOffBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_SecurityDataOffBuilder) Build() (SecurityDataOff, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataOff.deepCopy(), nil
+	return b._SecurityDataOff.deepCopy(), nil
 }
 
-func (m *_SecurityDataOffBuilder) MustBuild() SecurityDataOff {
-	build, err := m.Build()
+func (b *_SecurityDataOffBuilder) MustBuild() SecurityDataOff {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataOffBuilder) DeepCopy() any {
-	return m.CreateSecurityDataOffBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataOffBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataOffBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataOffBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataOffBuilder().(*_SecurityDataOffBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataOffBuilder creates a SecurityDataOffBuilder
-func (m *_SecurityDataOff) CreateSecurityDataOffBuilder() SecurityDataOffBuilder {
-	if m == nil {
+func (b *_SecurityDataOff) CreateSecurityDataOffBuilder() SecurityDataOffBuilder {
+	if b == nil {
 		return NewSecurityDataOffBuilder()
 	}
-	return &_SecurityDataOffBuilder{_SecurityDataOff: m.deepCopy()}
+	return &_SecurityDataOffBuilder{_SecurityDataOff: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataNotificationClassBuilder() BACnetConstructedDataNot
 type _BACnetConstructedDataNotificationClassBuilder struct {
 	*_BACnetConstructedDataNotificationClass
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataNotificationClassBuilder) = (*_BACnetConstructedDataNotificationClassBuilder)(nil)
 
-func (m *_BACnetConstructedDataNotificationClassBuilder) WithMandatoryFields(notificationClass BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNotificationClassBuilder {
-	return m.WithNotificationClass(notificationClass)
+func (b *_BACnetConstructedDataNotificationClassBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataNotificationClassBuilder) WithNotificationClass(notificationClass BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNotificationClassBuilder {
-	m.NotificationClass = notificationClass
-	return m
+func (b *_BACnetConstructedDataNotificationClassBuilder) WithMandatoryFields(notificationClass BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNotificationClassBuilder {
+	return b.WithNotificationClass(notificationClass)
 }
 
-func (m *_BACnetConstructedDataNotificationClassBuilder) WithNotificationClassBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNotificationClassBuilder {
-	builder := builderSupplier(m.NotificationClass.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataNotificationClassBuilder) WithNotificationClass(notificationClass BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNotificationClassBuilder {
+	b.NotificationClass = notificationClass
+	return b
+}
+
+func (b *_BACnetConstructedDataNotificationClassBuilder) WithNotificationClassBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNotificationClassBuilder {
+	builder := builderSupplier(b.NotificationClass.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NotificationClass, err = builder.Build()
+	b.NotificationClass, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataNotificationClassBuilder) Build() (BACnetConstructedDataNotificationClass, error) {
-	if m.NotificationClass == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataNotificationClassBuilder) Build() (BACnetConstructedDataNotificationClass, error) {
+	if b.NotificationClass == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'notificationClass' not set"))
+		b.err.Append(errors.New("mandatory field 'notificationClass' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataNotificationClass.deepCopy(), nil
+	return b._BACnetConstructedDataNotificationClass.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataNotificationClassBuilder) MustBuild() BACnetConstructedDataNotificationClass {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataNotificationClassBuilder) MustBuild() BACnetConstructedDataNotificationClass {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataNotificationClassBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataNotificationClassBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNotificationClassBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNotificationClassBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNotificationClassBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNotificationClassBuilder().(*_BACnetConstructedDataNotificationClassBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataNotificationClassBuilder creates a BACnetConstructedDataNotificationClassBuilder
-func (m *_BACnetConstructedDataNotificationClass) CreateBACnetConstructedDataNotificationClassBuilder() BACnetConstructedDataNotificationClassBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataNotificationClass) CreateBACnetConstructedDataNotificationClassBuilder() BACnetConstructedDataNotificationClassBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataNotificationClassBuilder()
 	}
-	return &_BACnetConstructedDataNotificationClassBuilder{_BACnetConstructedDataNotificationClass: m.deepCopy()}
+	return &_BACnetConstructedDataNotificationClassBuilder{_BACnetConstructedDataNotificationClass: b.deepCopy()}
 }
 
 ///////////////////////

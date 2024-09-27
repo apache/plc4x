@@ -83,35 +83,39 @@ type _DurationStringBuilder struct {
 
 var _ (DurationStringBuilder) = (*_DurationStringBuilder)(nil)
 
-func (m *_DurationStringBuilder) WithMandatoryFields() DurationStringBuilder {
-	return m
+func (b *_DurationStringBuilder) WithMandatoryFields() DurationStringBuilder {
+	return b
 }
 
-func (m *_DurationStringBuilder) Build() (DurationString, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DurationStringBuilder) Build() (DurationString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DurationString.deepCopy(), nil
+	return b._DurationString.deepCopy(), nil
 }
 
-func (m *_DurationStringBuilder) MustBuild() DurationString {
-	build, err := m.Build()
+func (b *_DurationStringBuilder) MustBuild() DurationString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DurationStringBuilder) DeepCopy() any {
-	return m.CreateDurationStringBuilder()
+func (b *_DurationStringBuilder) DeepCopy() any {
+	_copy := b.CreateDurationStringBuilder().(*_DurationStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDurationStringBuilder creates a DurationStringBuilder
-func (m *_DurationString) CreateDurationStringBuilder() DurationStringBuilder {
-	if m == nil {
+func (b *_DurationString) CreateDurationStringBuilder() DurationStringBuilder {
+	if b == nil {
 		return NewDurationStringBuilder()
 	}
-	return &_DurationStringBuilder{_DurationString: m.deepCopy()}
+	return &_DurationStringBuilder{_DurationString: b.deepCopy()}
 }
 
 ///////////////////////

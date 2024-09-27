@@ -99,50 +99,69 @@ func NewVariantLocalizedTextBuilder() VariantLocalizedTextBuilder {
 type _VariantLocalizedTextBuilder struct {
 	*_VariantLocalizedText
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantLocalizedTextBuilder) = (*_VariantLocalizedTextBuilder)(nil)
 
-func (m *_VariantLocalizedTextBuilder) WithMandatoryFields(value []LocalizedText) VariantLocalizedTextBuilder {
-	return m.WithValue(value...)
+func (b *_VariantLocalizedTextBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantLocalizedTextBuilder) WithOptionalArrayLength(arrayLength int32) VariantLocalizedTextBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantLocalizedTextBuilder) WithMandatoryFields(value []LocalizedText) VariantLocalizedTextBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantLocalizedTextBuilder) WithValue(value ...LocalizedText) VariantLocalizedTextBuilder {
-	m.Value = value
-	return m
+func (b *_VariantLocalizedTextBuilder) WithOptionalArrayLength(arrayLength int32) VariantLocalizedTextBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantLocalizedTextBuilder) Build() (VariantLocalizedText, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantLocalizedTextBuilder) WithValue(value ...LocalizedText) VariantLocalizedTextBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantLocalizedTextBuilder) Build() (VariantLocalizedText, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantLocalizedText.deepCopy(), nil
+	return b._VariantLocalizedText.deepCopy(), nil
 }
 
-func (m *_VariantLocalizedTextBuilder) MustBuild() VariantLocalizedText {
-	build, err := m.Build()
+func (b *_VariantLocalizedTextBuilder) MustBuild() VariantLocalizedText {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantLocalizedTextBuilder) DeepCopy() any {
-	return m.CreateVariantLocalizedTextBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantLocalizedTextBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantLocalizedTextBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantLocalizedTextBuilder) DeepCopy() any {
+	_copy := b.CreateVariantLocalizedTextBuilder().(*_VariantLocalizedTextBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantLocalizedTextBuilder creates a VariantLocalizedTextBuilder
-func (m *_VariantLocalizedText) CreateVariantLocalizedTextBuilder() VariantLocalizedTextBuilder {
-	if m == nil {
+func (b *_VariantLocalizedText) CreateVariantLocalizedTextBuilder() VariantLocalizedTextBuilder {
+	if b == nil {
 		return NewVariantLocalizedTextBuilder()
 	}
-	return &_VariantLocalizedTextBuilder{_VariantLocalizedText: m.deepCopy()}
+	return &_VariantLocalizedTextBuilder{_VariantLocalizedText: b.deepCopy()}
 }
 
 ///////////////////////

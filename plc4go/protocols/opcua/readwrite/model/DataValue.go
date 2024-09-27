@@ -118,6 +118,8 @@ type DataValueBuilder interface {
 	WithValueSpecified(bool) DataValueBuilder
 	// WithValue adds Value (property field)
 	WithOptionalValue(Variant) DataValueBuilder
+	// WithOptionalValueBuilder adds Value (property field) which is build by the builder
+	WithOptionalValueBuilder(func(VariantBuilder) VariantBuilder) DataValueBuilder
 	// WithStatusCode adds StatusCode (property field)
 	WithOptionalStatusCode(StatusCode) DataValueBuilder
 	// WithOptionalStatusCodeBuilder adds StatusCode (property field) which is build by the builder
@@ -149,108 +151,125 @@ type _DataValueBuilder struct {
 
 var _ (DataValueBuilder) = (*_DataValueBuilder)(nil)
 
-func (m *_DataValueBuilder) WithMandatoryFields(serverPicosecondsSpecified bool, sourcePicosecondsSpecified bool, serverTimestampSpecified bool, sourceTimestampSpecified bool, statusCodeSpecified bool, valueSpecified bool) DataValueBuilder {
-	return m.WithServerPicosecondsSpecified(serverPicosecondsSpecified).WithSourcePicosecondsSpecified(sourcePicosecondsSpecified).WithServerTimestampSpecified(serverTimestampSpecified).WithSourceTimestampSpecified(sourceTimestampSpecified).WithStatusCodeSpecified(statusCodeSpecified).WithValueSpecified(valueSpecified)
+func (b *_DataValueBuilder) WithMandatoryFields(serverPicosecondsSpecified bool, sourcePicosecondsSpecified bool, serverTimestampSpecified bool, sourceTimestampSpecified bool, statusCodeSpecified bool, valueSpecified bool) DataValueBuilder {
+	return b.WithServerPicosecondsSpecified(serverPicosecondsSpecified).WithSourcePicosecondsSpecified(sourcePicosecondsSpecified).WithServerTimestampSpecified(serverTimestampSpecified).WithSourceTimestampSpecified(sourceTimestampSpecified).WithStatusCodeSpecified(statusCodeSpecified).WithValueSpecified(valueSpecified)
 }
 
-func (m *_DataValueBuilder) WithServerPicosecondsSpecified(serverPicosecondsSpecified bool) DataValueBuilder {
-	m.ServerPicosecondsSpecified = serverPicosecondsSpecified
-	return m
+func (b *_DataValueBuilder) WithServerPicosecondsSpecified(serverPicosecondsSpecified bool) DataValueBuilder {
+	b.ServerPicosecondsSpecified = serverPicosecondsSpecified
+	return b
 }
 
-func (m *_DataValueBuilder) WithSourcePicosecondsSpecified(sourcePicosecondsSpecified bool) DataValueBuilder {
-	m.SourcePicosecondsSpecified = sourcePicosecondsSpecified
-	return m
+func (b *_DataValueBuilder) WithSourcePicosecondsSpecified(sourcePicosecondsSpecified bool) DataValueBuilder {
+	b.SourcePicosecondsSpecified = sourcePicosecondsSpecified
+	return b
 }
 
-func (m *_DataValueBuilder) WithServerTimestampSpecified(serverTimestampSpecified bool) DataValueBuilder {
-	m.ServerTimestampSpecified = serverTimestampSpecified
-	return m
+func (b *_DataValueBuilder) WithServerTimestampSpecified(serverTimestampSpecified bool) DataValueBuilder {
+	b.ServerTimestampSpecified = serverTimestampSpecified
+	return b
 }
 
-func (m *_DataValueBuilder) WithSourceTimestampSpecified(sourceTimestampSpecified bool) DataValueBuilder {
-	m.SourceTimestampSpecified = sourceTimestampSpecified
-	return m
+func (b *_DataValueBuilder) WithSourceTimestampSpecified(sourceTimestampSpecified bool) DataValueBuilder {
+	b.SourceTimestampSpecified = sourceTimestampSpecified
+	return b
 }
 
-func (m *_DataValueBuilder) WithStatusCodeSpecified(statusCodeSpecified bool) DataValueBuilder {
-	m.StatusCodeSpecified = statusCodeSpecified
-	return m
+func (b *_DataValueBuilder) WithStatusCodeSpecified(statusCodeSpecified bool) DataValueBuilder {
+	b.StatusCodeSpecified = statusCodeSpecified
+	return b
 }
 
-func (m *_DataValueBuilder) WithValueSpecified(valueSpecified bool) DataValueBuilder {
-	m.ValueSpecified = valueSpecified
-	return m
+func (b *_DataValueBuilder) WithValueSpecified(valueSpecified bool) DataValueBuilder {
+	b.ValueSpecified = valueSpecified
+	return b
 }
 
-func (m *_DataValueBuilder) WithOptionalValue(value Variant) DataValueBuilder {
-	m.Value = value
-	return m
+func (b *_DataValueBuilder) WithOptionalValue(value Variant) DataValueBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_DataValueBuilder) WithOptionalStatusCode(statusCode StatusCode) DataValueBuilder {
-	m.StatusCode = statusCode
-	return m
-}
-
-func (m *_DataValueBuilder) WithOptionalStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) DataValueBuilder {
-	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+func (b *_DataValueBuilder) WithOptionalValueBuilder(builderSupplier func(VariantBuilder) VariantBuilder) DataValueBuilder {
+	builder := builderSupplier(b.Value.CreateVariantBuilder())
 	var err error
-	m.StatusCode, err = builder.Build()
+	b.Value, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "VariantBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_DataValueBuilder) WithOptionalSourceTimestamp(sourceTimestamp int64) DataValueBuilder {
-	m.SourceTimestamp = &sourceTimestamp
-	return m
+func (b *_DataValueBuilder) WithOptionalStatusCode(statusCode StatusCode) DataValueBuilder {
+	b.StatusCode = statusCode
+	return b
 }
 
-func (m *_DataValueBuilder) WithOptionalSourcePicoseconds(sourcePicoseconds uint16) DataValueBuilder {
-	m.SourcePicoseconds = &sourcePicoseconds
-	return m
-}
-
-func (m *_DataValueBuilder) WithOptionalServerTimestamp(serverTimestamp int64) DataValueBuilder {
-	m.ServerTimestamp = &serverTimestamp
-	return m
-}
-
-func (m *_DataValueBuilder) WithOptionalServerPicoseconds(serverPicoseconds uint16) DataValueBuilder {
-	m.ServerPicoseconds = &serverPicoseconds
-	return m
-}
-
-func (m *_DataValueBuilder) Build() (DataValue, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DataValueBuilder) WithOptionalStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) DataValueBuilder {
+	builder := builderSupplier(b.StatusCode.CreateStatusCodeBuilder())
+	var err error
+	b.StatusCode, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return m._DataValue.deepCopy(), nil
+	return b
 }
 
-func (m *_DataValueBuilder) MustBuild() DataValue {
-	build, err := m.Build()
+func (b *_DataValueBuilder) WithOptionalSourceTimestamp(sourceTimestamp int64) DataValueBuilder {
+	b.SourceTimestamp = &sourceTimestamp
+	return b
+}
+
+func (b *_DataValueBuilder) WithOptionalSourcePicoseconds(sourcePicoseconds uint16) DataValueBuilder {
+	b.SourcePicoseconds = &sourcePicoseconds
+	return b
+}
+
+func (b *_DataValueBuilder) WithOptionalServerTimestamp(serverTimestamp int64) DataValueBuilder {
+	b.ServerTimestamp = &serverTimestamp
+	return b
+}
+
+func (b *_DataValueBuilder) WithOptionalServerPicoseconds(serverPicoseconds uint16) DataValueBuilder {
+	b.ServerPicoseconds = &serverPicoseconds
+	return b
+}
+
+func (b *_DataValueBuilder) Build() (DataValue, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DataValue.deepCopy(), nil
+}
+
+func (b *_DataValueBuilder) MustBuild() DataValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DataValueBuilder) DeepCopy() any {
-	return m.CreateDataValueBuilder()
+func (b *_DataValueBuilder) DeepCopy() any {
+	_copy := b.CreateDataValueBuilder().(*_DataValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDataValueBuilder creates a DataValueBuilder
-func (m *_DataValue) CreateDataValueBuilder() DataValueBuilder {
-	if m == nil {
+func (b *_DataValue) CreateDataValueBuilder() DataValueBuilder {
+	if b == nil {
 		return NewDataValueBuilder()
 	}
-	return &_DataValueBuilder{_DataValue: m.deepCopy()}
+	return &_DataValueBuilder{_DataValue: b.deepCopy()}
 }
 
 ///////////////////////

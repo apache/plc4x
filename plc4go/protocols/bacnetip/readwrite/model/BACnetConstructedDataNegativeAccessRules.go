@@ -103,63 +103,82 @@ func NewBACnetConstructedDataNegativeAccessRulesBuilder() BACnetConstructedDataN
 type _BACnetConstructedDataNegativeAccessRulesBuilder struct {
 	*_BACnetConstructedDataNegativeAccessRules
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataNegativeAccessRulesBuilder) = (*_BACnetConstructedDataNegativeAccessRulesBuilder)(nil)
 
-func (m *_BACnetConstructedDataNegativeAccessRulesBuilder) WithMandatoryFields(negativeAccessRules []BACnetAccessRule) BACnetConstructedDataNegativeAccessRulesBuilder {
-	return m.WithNegativeAccessRules(negativeAccessRules...)
+func (b *_BACnetConstructedDataNegativeAccessRulesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataNegativeAccessRulesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNegativeAccessRulesBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataNegativeAccessRulesBuilder) WithMandatoryFields(negativeAccessRules []BACnetAccessRule) BACnetConstructedDataNegativeAccessRulesBuilder {
+	return b.WithNegativeAccessRules(negativeAccessRules...)
 }
 
-func (m *_BACnetConstructedDataNegativeAccessRulesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNegativeAccessRulesBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataNegativeAccessRulesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNegativeAccessRulesBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataNegativeAccessRulesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNegativeAccessRulesBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataNegativeAccessRulesBuilder) WithNegativeAccessRules(negativeAccessRules ...BACnetAccessRule) BACnetConstructedDataNegativeAccessRulesBuilder {
-	m.NegativeAccessRules = negativeAccessRules
-	return m
+func (b *_BACnetConstructedDataNegativeAccessRulesBuilder) WithNegativeAccessRules(negativeAccessRules ...BACnetAccessRule) BACnetConstructedDataNegativeAccessRulesBuilder {
+	b.NegativeAccessRules = negativeAccessRules
+	return b
 }
 
-func (m *_BACnetConstructedDataNegativeAccessRulesBuilder) Build() (BACnetConstructedDataNegativeAccessRules, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataNegativeAccessRulesBuilder) Build() (BACnetConstructedDataNegativeAccessRules, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataNegativeAccessRules.deepCopy(), nil
+	return b._BACnetConstructedDataNegativeAccessRules.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataNegativeAccessRulesBuilder) MustBuild() BACnetConstructedDataNegativeAccessRules {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataNegativeAccessRulesBuilder) MustBuild() BACnetConstructedDataNegativeAccessRules {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataNegativeAccessRulesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataNegativeAccessRulesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNegativeAccessRulesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNegativeAccessRulesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNegativeAccessRulesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNegativeAccessRulesBuilder().(*_BACnetConstructedDataNegativeAccessRulesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataNegativeAccessRulesBuilder creates a BACnetConstructedDataNegativeAccessRulesBuilder
-func (m *_BACnetConstructedDataNegativeAccessRules) CreateBACnetConstructedDataNegativeAccessRulesBuilder() BACnetConstructedDataNegativeAccessRulesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataNegativeAccessRules) CreateBACnetConstructedDataNegativeAccessRulesBuilder() BACnetConstructedDataNegativeAccessRulesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataNegativeAccessRulesBuilder()
 	}
-	return &_BACnetConstructedDataNegativeAccessRulesBuilder{_BACnetConstructedDataNegativeAccessRules: m.deepCopy()}
+	return &_BACnetConstructedDataNegativeAccessRulesBuilder{_BACnetConstructedDataNegativeAccessRules: b.deepCopy()}
 }
 
 ///////////////////////

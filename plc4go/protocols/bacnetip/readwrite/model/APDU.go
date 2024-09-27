@@ -90,10 +90,59 @@ type APDUBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() APDUBuilder
+	// AsAPDUConfirmedRequest converts this build to a subType of APDU. It is always possible to return to current builder using Done()
+	AsAPDUConfirmedRequest() interface {
+		APDUConfirmedRequestBuilder
+		Done() APDUBuilder
+	}
+	// AsAPDUUnconfirmedRequest converts this build to a subType of APDU. It is always possible to return to current builder using Done()
+	AsAPDUUnconfirmedRequest() interface {
+		APDUUnconfirmedRequestBuilder
+		Done() APDUBuilder
+	}
+	// AsAPDUSimpleAck converts this build to a subType of APDU. It is always possible to return to current builder using Done()
+	AsAPDUSimpleAck() interface {
+		APDUSimpleAckBuilder
+		Done() APDUBuilder
+	}
+	// AsAPDUComplexAck converts this build to a subType of APDU. It is always possible to return to current builder using Done()
+	AsAPDUComplexAck() interface {
+		APDUComplexAckBuilder
+		Done() APDUBuilder
+	}
+	// AsAPDUSegmentAck converts this build to a subType of APDU. It is always possible to return to current builder using Done()
+	AsAPDUSegmentAck() interface {
+		APDUSegmentAckBuilder
+		Done() APDUBuilder
+	}
+	// AsAPDUError converts this build to a subType of APDU. It is always possible to return to current builder using Done()
+	AsAPDUError() interface {
+		APDUErrorBuilder
+		Done() APDUBuilder
+	}
+	// AsAPDUReject converts this build to a subType of APDU. It is always possible to return to current builder using Done()
+	AsAPDUReject() interface {
+		APDURejectBuilder
+		Done() APDUBuilder
+	}
+	// AsAPDUAbort converts this build to a subType of APDU. It is always possible to return to current builder using Done()
+	AsAPDUAbort() interface {
+		APDUAbortBuilder
+		Done() APDUBuilder
+	}
+	// AsAPDUUnknown converts this build to a subType of APDU. It is always possible to return to current builder using Done()
+	AsAPDUUnknown() interface {
+		APDUUnknownBuilder
+		Done() APDUBuilder
+	}
 	// Build builds the APDU or returns an error if something is wrong
-	Build() (APDUContract, error)
+	PartialBuild() (APDUContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() APDUContract
+	PartialMustBuild() APDUContract
+	// Build builds the APDU or returns an error if something is wrong
+	Build() (APDU, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() APDU
 }
 
 // NewAPDUBuilder() creates a APDUBuilder
@@ -101,43 +150,221 @@ func NewAPDUBuilder() APDUBuilder {
 	return &_APDUBuilder{_APDU: new(_APDU)}
 }
 
+type _APDUChildBuilder interface {
+	utils.Copyable
+	setParent(APDUContract)
+	buildForAPDU() (APDU, error)
+}
+
 type _APDUBuilder struct {
 	*_APDU
+
+	childBuilder _APDUChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (APDUBuilder) = (*_APDUBuilder)(nil)
 
-func (m *_APDUBuilder) WithMandatoryFields() APDUBuilder {
-	return m
+func (b *_APDUBuilder) WithMandatoryFields() APDUBuilder {
+	return b
 }
 
-func (m *_APDUBuilder) Build() (APDUContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_APDUBuilder) PartialBuild() (APDUContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._APDU.deepCopy(), nil
+	return b._APDU.deepCopy(), nil
 }
 
-func (m *_APDUBuilder) MustBuild() APDUContract {
-	build, err := m.Build()
+func (b *_APDUBuilder) PartialMustBuild() APDUContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_APDUBuilder) DeepCopy() any {
-	return m.CreateAPDUBuilder()
+func (b *_APDUBuilder) AsAPDUConfirmedRequest() interface {
+	APDUConfirmedRequestBuilder
+	Done() APDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		APDUConfirmedRequestBuilder
+		Done() APDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAPDUConfirmedRequestBuilder().(*_APDUConfirmedRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_APDUBuilder) AsAPDUUnconfirmedRequest() interface {
+	APDUUnconfirmedRequestBuilder
+	Done() APDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		APDUUnconfirmedRequestBuilder
+		Done() APDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAPDUUnconfirmedRequestBuilder().(*_APDUUnconfirmedRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_APDUBuilder) AsAPDUSimpleAck() interface {
+	APDUSimpleAckBuilder
+	Done() APDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		APDUSimpleAckBuilder
+		Done() APDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAPDUSimpleAckBuilder().(*_APDUSimpleAckBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_APDUBuilder) AsAPDUComplexAck() interface {
+	APDUComplexAckBuilder
+	Done() APDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		APDUComplexAckBuilder
+		Done() APDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAPDUComplexAckBuilder().(*_APDUComplexAckBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_APDUBuilder) AsAPDUSegmentAck() interface {
+	APDUSegmentAckBuilder
+	Done() APDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		APDUSegmentAckBuilder
+		Done() APDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAPDUSegmentAckBuilder().(*_APDUSegmentAckBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_APDUBuilder) AsAPDUError() interface {
+	APDUErrorBuilder
+	Done() APDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		APDUErrorBuilder
+		Done() APDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAPDUErrorBuilder().(*_APDUErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_APDUBuilder) AsAPDUReject() interface {
+	APDURejectBuilder
+	Done() APDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		APDURejectBuilder
+		Done() APDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAPDURejectBuilder().(*_APDURejectBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_APDUBuilder) AsAPDUAbort() interface {
+	APDUAbortBuilder
+	Done() APDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		APDUAbortBuilder
+		Done() APDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAPDUAbortBuilder().(*_APDUAbortBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_APDUBuilder) AsAPDUUnknown() interface {
+	APDUUnknownBuilder
+	Done() APDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		APDUUnknownBuilder
+		Done() APDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAPDUUnknownBuilder().(*_APDUUnknownBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_APDUBuilder) Build() (APDU, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForAPDU()
+}
+
+func (b *_APDUBuilder) MustBuild() APDU {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_APDUBuilder) DeepCopy() any {
+	_copy := b.CreateAPDUBuilder().(*_APDUBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_APDUChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAPDUBuilder creates a APDUBuilder
-func (m *_APDU) CreateAPDUBuilder() APDUBuilder {
-	if m == nil {
+func (b *_APDU) CreateAPDUBuilder() APDUBuilder {
+	if b == nil {
 		return NewAPDUBuilder()
 	}
-	return &_APDUBuilder{_APDU: m.deepCopy()}
+	return &_APDUBuilder{_APDU: b.deepCopy()}
 }
 
 ///////////////////////

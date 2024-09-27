@@ -97,45 +97,64 @@ func NewTelephonyDataIsolateSecondaryOutletBuilder() TelephonyDataIsolateSeconda
 type _TelephonyDataIsolateSecondaryOutletBuilder struct {
 	*_TelephonyDataIsolateSecondaryOutlet
 
+	parentBuilder *_TelephonyDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TelephonyDataIsolateSecondaryOutletBuilder) = (*_TelephonyDataIsolateSecondaryOutletBuilder)(nil)
 
-func (m *_TelephonyDataIsolateSecondaryOutletBuilder) WithMandatoryFields(isolateStatus byte) TelephonyDataIsolateSecondaryOutletBuilder {
-	return m.WithIsolateStatus(isolateStatus)
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) setParent(contract TelephonyDataContract) {
+	b.TelephonyDataContract = contract
 }
 
-func (m *_TelephonyDataIsolateSecondaryOutletBuilder) WithIsolateStatus(isolateStatus byte) TelephonyDataIsolateSecondaryOutletBuilder {
-	m.IsolateStatus = isolateStatus
-	return m
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) WithMandatoryFields(isolateStatus byte) TelephonyDataIsolateSecondaryOutletBuilder {
+	return b.WithIsolateStatus(isolateStatus)
 }
 
-func (m *_TelephonyDataIsolateSecondaryOutletBuilder) Build() (TelephonyDataIsolateSecondaryOutlet, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) WithIsolateStatus(isolateStatus byte) TelephonyDataIsolateSecondaryOutletBuilder {
+	b.IsolateStatus = isolateStatus
+	return b
+}
+
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) Build() (TelephonyDataIsolateSecondaryOutlet, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TelephonyDataIsolateSecondaryOutlet.deepCopy(), nil
+	return b._TelephonyDataIsolateSecondaryOutlet.deepCopy(), nil
 }
 
-func (m *_TelephonyDataIsolateSecondaryOutletBuilder) MustBuild() TelephonyDataIsolateSecondaryOutlet {
-	build, err := m.Build()
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) MustBuild() TelephonyDataIsolateSecondaryOutlet {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TelephonyDataIsolateSecondaryOutletBuilder) DeepCopy() any {
-	return m.CreateTelephonyDataIsolateSecondaryOutletBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) Done() TelephonyDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) buildForTelephonyData() (TelephonyData, error) {
+	return b.Build()
+}
+
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) DeepCopy() any {
+	_copy := b.CreateTelephonyDataIsolateSecondaryOutletBuilder().(*_TelephonyDataIsolateSecondaryOutletBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTelephonyDataIsolateSecondaryOutletBuilder creates a TelephonyDataIsolateSecondaryOutletBuilder
-func (m *_TelephonyDataIsolateSecondaryOutlet) CreateTelephonyDataIsolateSecondaryOutletBuilder() TelephonyDataIsolateSecondaryOutletBuilder {
-	if m == nil {
+func (b *_TelephonyDataIsolateSecondaryOutlet) CreateTelephonyDataIsolateSecondaryOutletBuilder() TelephonyDataIsolateSecondaryOutletBuilder {
+	if b == nil {
 		return NewTelephonyDataIsolateSecondaryOutletBuilder()
 	}
-	return &_TelephonyDataIsolateSecondaryOutletBuilder{_TelephonyDataIsolateSecondaryOutlet: m.deepCopy()}
+	return &_TelephonyDataIsolateSecondaryOutletBuilder{_TelephonyDataIsolateSecondaryOutlet: b.deepCopy()}
 }
 
 ///////////////////////

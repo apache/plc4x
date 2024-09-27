@@ -89,10 +89,209 @@ type ModbusPDUBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ModbusPDUBuilder
+	// AsModbusPDUError converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUError() interface {
+		ModbusPDUErrorBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadDiscreteInputsRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadDiscreteInputsRequest() interface {
+		ModbusPDUReadDiscreteInputsRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadDiscreteInputsResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadDiscreteInputsResponse() interface {
+		ModbusPDUReadDiscreteInputsResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadCoilsRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadCoilsRequest() interface {
+		ModbusPDUReadCoilsRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadCoilsResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadCoilsResponse() interface {
+		ModbusPDUReadCoilsResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUWriteSingleCoilRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUWriteSingleCoilRequest() interface {
+		ModbusPDUWriteSingleCoilRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUWriteSingleCoilResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUWriteSingleCoilResponse() interface {
+		ModbusPDUWriteSingleCoilResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUWriteMultipleCoilsRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUWriteMultipleCoilsRequest() interface {
+		ModbusPDUWriteMultipleCoilsRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUWriteMultipleCoilsResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUWriteMultipleCoilsResponse() interface {
+		ModbusPDUWriteMultipleCoilsResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadInputRegistersRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadInputRegistersRequest() interface {
+		ModbusPDUReadInputRegistersRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadInputRegistersResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadInputRegistersResponse() interface {
+		ModbusPDUReadInputRegistersResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadHoldingRegistersRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadHoldingRegistersRequest() interface {
+		ModbusPDUReadHoldingRegistersRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadHoldingRegistersResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadHoldingRegistersResponse() interface {
+		ModbusPDUReadHoldingRegistersResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUWriteSingleRegisterRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUWriteSingleRegisterRequest() interface {
+		ModbusPDUWriteSingleRegisterRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUWriteSingleRegisterResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUWriteSingleRegisterResponse() interface {
+		ModbusPDUWriteSingleRegisterResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUWriteMultipleHoldingRegistersRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUWriteMultipleHoldingRegistersRequest() interface {
+		ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUWriteMultipleHoldingRegistersResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUWriteMultipleHoldingRegistersResponse() interface {
+		ModbusPDUWriteMultipleHoldingRegistersResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadWriteMultipleHoldingRegistersRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadWriteMultipleHoldingRegistersRequest() interface {
+		ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadWriteMultipleHoldingRegistersResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadWriteMultipleHoldingRegistersResponse() interface {
+		ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUMaskWriteHoldingRegisterRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUMaskWriteHoldingRegisterRequest() interface {
+		ModbusPDUMaskWriteHoldingRegisterRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUMaskWriteHoldingRegisterResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUMaskWriteHoldingRegisterResponse() interface {
+		ModbusPDUMaskWriteHoldingRegisterResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadFifoQueueRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadFifoQueueRequest() interface {
+		ModbusPDUReadFifoQueueRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadFifoQueueResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadFifoQueueResponse() interface {
+		ModbusPDUReadFifoQueueResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadFileRecordRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadFileRecordRequest() interface {
+		ModbusPDUReadFileRecordRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadFileRecordResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadFileRecordResponse() interface {
+		ModbusPDUReadFileRecordResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUWriteFileRecordRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUWriteFileRecordRequest() interface {
+		ModbusPDUWriteFileRecordRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUWriteFileRecordResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUWriteFileRecordResponse() interface {
+		ModbusPDUWriteFileRecordResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadExceptionStatusRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadExceptionStatusRequest() interface {
+		ModbusPDUReadExceptionStatusRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadExceptionStatusResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadExceptionStatusResponse() interface {
+		ModbusPDUReadExceptionStatusResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUDiagnosticRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUDiagnosticRequest() interface {
+		ModbusPDUDiagnosticRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUDiagnosticResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUDiagnosticResponse() interface {
+		ModbusPDUDiagnosticResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUGetComEventCounterRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUGetComEventCounterRequest() interface {
+		ModbusPDUGetComEventCounterRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUGetComEventCounterResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUGetComEventCounterResponse() interface {
+		ModbusPDUGetComEventCounterResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUGetComEventLogRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUGetComEventLogRequest() interface {
+		ModbusPDUGetComEventLogRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUGetComEventLogResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUGetComEventLogResponse() interface {
+		ModbusPDUGetComEventLogResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReportServerIdRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReportServerIdRequest() interface {
+		ModbusPDUReportServerIdRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReportServerIdResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReportServerIdResponse() interface {
+		ModbusPDUReportServerIdResponseBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadDeviceIdentificationRequest converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadDeviceIdentificationRequest() interface {
+		ModbusPDUReadDeviceIdentificationRequestBuilder
+		Done() ModbusPDUBuilder
+	}
+	// AsModbusPDUReadDeviceIdentificationResponse converts this build to a subType of ModbusPDU. It is always possible to return to current builder using Done()
+	AsModbusPDUReadDeviceIdentificationResponse() interface {
+		ModbusPDUReadDeviceIdentificationResponseBuilder
+		Done() ModbusPDUBuilder
+	}
 	// Build builds the ModbusPDU or returns an error if something is wrong
-	Build() (ModbusPDUContract, error)
+	PartialBuild() (ModbusPDUContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() ModbusPDUContract
+	PartialMustBuild() ModbusPDUContract
+	// Build builds the ModbusPDU or returns an error if something is wrong
+	Build() (ModbusPDU, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDU
 }
 
 // NewModbusPDUBuilder() creates a ModbusPDUBuilder
@@ -100,43 +299,701 @@ func NewModbusPDUBuilder() ModbusPDUBuilder {
 	return &_ModbusPDUBuilder{_ModbusPDU: new(_ModbusPDU)}
 }
 
+type _ModbusPDUChildBuilder interface {
+	utils.Copyable
+	setParent(ModbusPDUContract)
+	buildForModbusPDU() (ModbusPDU, error)
+}
+
 type _ModbusPDUBuilder struct {
 	*_ModbusPDU
+
+	childBuilder _ModbusPDUChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUBuilder) = (*_ModbusPDUBuilder)(nil)
 
-func (m *_ModbusPDUBuilder) WithMandatoryFields() ModbusPDUBuilder {
-	return m
+func (b *_ModbusPDUBuilder) WithMandatoryFields() ModbusPDUBuilder {
+	return b
 }
 
-func (m *_ModbusPDUBuilder) Build() (ModbusPDUContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUBuilder) PartialBuild() (ModbusPDUContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDU.deepCopy(), nil
+	return b._ModbusPDU.deepCopy(), nil
 }
 
-func (m *_ModbusPDUBuilder) MustBuild() ModbusPDUContract {
-	build, err := m.Build()
+func (b *_ModbusPDUBuilder) PartialMustBuild() ModbusPDUContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUBuilder) DeepCopy() any {
-	return m.CreateModbusPDUBuilder()
+func (b *_ModbusPDUBuilder) AsModbusPDUError() interface {
+	ModbusPDUErrorBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUErrorBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUErrorBuilder().(*_ModbusPDUErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadDiscreteInputsRequest() interface {
+	ModbusPDUReadDiscreteInputsRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadDiscreteInputsRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadDiscreteInputsRequestBuilder().(*_ModbusPDUReadDiscreteInputsRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadDiscreteInputsResponse() interface {
+	ModbusPDUReadDiscreteInputsResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadDiscreteInputsResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadDiscreteInputsResponseBuilder().(*_ModbusPDUReadDiscreteInputsResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadCoilsRequest() interface {
+	ModbusPDUReadCoilsRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadCoilsRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadCoilsRequestBuilder().(*_ModbusPDUReadCoilsRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadCoilsResponse() interface {
+	ModbusPDUReadCoilsResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadCoilsResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadCoilsResponseBuilder().(*_ModbusPDUReadCoilsResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUWriteSingleCoilRequest() interface {
+	ModbusPDUWriteSingleCoilRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUWriteSingleCoilRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUWriteSingleCoilRequestBuilder().(*_ModbusPDUWriteSingleCoilRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUWriteSingleCoilResponse() interface {
+	ModbusPDUWriteSingleCoilResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUWriteSingleCoilResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUWriteSingleCoilResponseBuilder().(*_ModbusPDUWriteSingleCoilResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUWriteMultipleCoilsRequest() interface {
+	ModbusPDUWriteMultipleCoilsRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUWriteMultipleCoilsRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUWriteMultipleCoilsRequestBuilder().(*_ModbusPDUWriteMultipleCoilsRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUWriteMultipleCoilsResponse() interface {
+	ModbusPDUWriteMultipleCoilsResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUWriteMultipleCoilsResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUWriteMultipleCoilsResponseBuilder().(*_ModbusPDUWriteMultipleCoilsResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadInputRegistersRequest() interface {
+	ModbusPDUReadInputRegistersRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadInputRegistersRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadInputRegistersRequestBuilder().(*_ModbusPDUReadInputRegistersRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadInputRegistersResponse() interface {
+	ModbusPDUReadInputRegistersResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadInputRegistersResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadInputRegistersResponseBuilder().(*_ModbusPDUReadInputRegistersResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadHoldingRegistersRequest() interface {
+	ModbusPDUReadHoldingRegistersRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadHoldingRegistersRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadHoldingRegistersRequestBuilder().(*_ModbusPDUReadHoldingRegistersRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadHoldingRegistersResponse() interface {
+	ModbusPDUReadHoldingRegistersResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadHoldingRegistersResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadHoldingRegistersResponseBuilder().(*_ModbusPDUReadHoldingRegistersResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUWriteSingleRegisterRequest() interface {
+	ModbusPDUWriteSingleRegisterRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUWriteSingleRegisterRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUWriteSingleRegisterRequestBuilder().(*_ModbusPDUWriteSingleRegisterRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUWriteSingleRegisterResponse() interface {
+	ModbusPDUWriteSingleRegisterResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUWriteSingleRegisterResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUWriteSingleRegisterResponseBuilder().(*_ModbusPDUWriteSingleRegisterResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUWriteMultipleHoldingRegistersRequest() interface {
+	ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUWriteMultipleHoldingRegistersRequestBuilder().(*_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUWriteMultipleHoldingRegistersResponse() interface {
+	ModbusPDUWriteMultipleHoldingRegistersResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUWriteMultipleHoldingRegistersResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUWriteMultipleHoldingRegistersResponseBuilder().(*_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadWriteMultipleHoldingRegistersRequest() interface {
+	ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder().(*_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadWriteMultipleHoldingRegistersResponse() interface {
+	ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder().(*_ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUMaskWriteHoldingRegisterRequest() interface {
+	ModbusPDUMaskWriteHoldingRegisterRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUMaskWriteHoldingRegisterRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUMaskWriteHoldingRegisterRequestBuilder().(*_ModbusPDUMaskWriteHoldingRegisterRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUMaskWriteHoldingRegisterResponse() interface {
+	ModbusPDUMaskWriteHoldingRegisterResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUMaskWriteHoldingRegisterResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUMaskWriteHoldingRegisterResponseBuilder().(*_ModbusPDUMaskWriteHoldingRegisterResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadFifoQueueRequest() interface {
+	ModbusPDUReadFifoQueueRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadFifoQueueRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadFifoQueueRequestBuilder().(*_ModbusPDUReadFifoQueueRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadFifoQueueResponse() interface {
+	ModbusPDUReadFifoQueueResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadFifoQueueResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadFifoQueueResponseBuilder().(*_ModbusPDUReadFifoQueueResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadFileRecordRequest() interface {
+	ModbusPDUReadFileRecordRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadFileRecordRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadFileRecordRequestBuilder().(*_ModbusPDUReadFileRecordRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadFileRecordResponse() interface {
+	ModbusPDUReadFileRecordResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadFileRecordResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadFileRecordResponseBuilder().(*_ModbusPDUReadFileRecordResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUWriteFileRecordRequest() interface {
+	ModbusPDUWriteFileRecordRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUWriteFileRecordRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUWriteFileRecordRequestBuilder().(*_ModbusPDUWriteFileRecordRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUWriteFileRecordResponse() interface {
+	ModbusPDUWriteFileRecordResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUWriteFileRecordResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUWriteFileRecordResponseBuilder().(*_ModbusPDUWriteFileRecordResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadExceptionStatusRequest() interface {
+	ModbusPDUReadExceptionStatusRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadExceptionStatusRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadExceptionStatusRequestBuilder().(*_ModbusPDUReadExceptionStatusRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadExceptionStatusResponse() interface {
+	ModbusPDUReadExceptionStatusResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadExceptionStatusResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadExceptionStatusResponseBuilder().(*_ModbusPDUReadExceptionStatusResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUDiagnosticRequest() interface {
+	ModbusPDUDiagnosticRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUDiagnosticRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUDiagnosticRequestBuilder().(*_ModbusPDUDiagnosticRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUDiagnosticResponse() interface {
+	ModbusPDUDiagnosticResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUDiagnosticResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUDiagnosticResponseBuilder().(*_ModbusPDUDiagnosticResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUGetComEventCounterRequest() interface {
+	ModbusPDUGetComEventCounterRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUGetComEventCounterRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUGetComEventCounterRequestBuilder().(*_ModbusPDUGetComEventCounterRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUGetComEventCounterResponse() interface {
+	ModbusPDUGetComEventCounterResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUGetComEventCounterResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUGetComEventCounterResponseBuilder().(*_ModbusPDUGetComEventCounterResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUGetComEventLogRequest() interface {
+	ModbusPDUGetComEventLogRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUGetComEventLogRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUGetComEventLogRequestBuilder().(*_ModbusPDUGetComEventLogRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUGetComEventLogResponse() interface {
+	ModbusPDUGetComEventLogResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUGetComEventLogResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUGetComEventLogResponseBuilder().(*_ModbusPDUGetComEventLogResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReportServerIdRequest() interface {
+	ModbusPDUReportServerIdRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReportServerIdRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReportServerIdRequestBuilder().(*_ModbusPDUReportServerIdRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReportServerIdResponse() interface {
+	ModbusPDUReportServerIdResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReportServerIdResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReportServerIdResponseBuilder().(*_ModbusPDUReportServerIdResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadDeviceIdentificationRequest() interface {
+	ModbusPDUReadDeviceIdentificationRequestBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadDeviceIdentificationRequestBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadDeviceIdentificationRequestBuilder().(*_ModbusPDUReadDeviceIdentificationRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) AsModbusPDUReadDeviceIdentificationResponse() interface {
+	ModbusPDUReadDeviceIdentificationResponseBuilder
+	Done() ModbusPDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusPDUReadDeviceIdentificationResponseBuilder
+		Done() ModbusPDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusPDUReadDeviceIdentificationResponseBuilder().(*_ModbusPDUReadDeviceIdentificationResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusPDUBuilder) Build() (ModbusPDU, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForModbusPDU()
+}
+
+func (b *_ModbusPDUBuilder) MustBuild() ModbusPDU {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ModbusPDUBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUBuilder().(*_ModbusPDUBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ModbusPDUChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUBuilder creates a ModbusPDUBuilder
-func (m *_ModbusPDU) CreateModbusPDUBuilder() ModbusPDUBuilder {
-	if m == nil {
+func (b *_ModbusPDU) CreateModbusPDUBuilder() ModbusPDUBuilder {
+	if b == nil {
 		return NewModbusPDUBuilder()
 	}
-	return &_ModbusPDUBuilder{_ModbusPDU: m.deepCopy()}
+	return &_ModbusPDUBuilder{_ModbusPDU: b.deepCopy()}
 }
 
 ///////////////////////

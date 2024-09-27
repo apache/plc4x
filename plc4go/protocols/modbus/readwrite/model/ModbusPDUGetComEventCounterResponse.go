@@ -99,50 +99,69 @@ func NewModbusPDUGetComEventCounterResponseBuilder() ModbusPDUGetComEventCounter
 type _ModbusPDUGetComEventCounterResponseBuilder struct {
 	*_ModbusPDUGetComEventCounterResponse
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUGetComEventCounterResponseBuilder) = (*_ModbusPDUGetComEventCounterResponseBuilder)(nil)
 
-func (m *_ModbusPDUGetComEventCounterResponseBuilder) WithMandatoryFields(status uint16, eventCount uint16) ModbusPDUGetComEventCounterResponseBuilder {
-	return m.WithStatus(status).WithEventCount(eventCount)
+func (b *_ModbusPDUGetComEventCounterResponseBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUGetComEventCounterResponseBuilder) WithStatus(status uint16) ModbusPDUGetComEventCounterResponseBuilder {
-	m.Status = status
-	return m
+func (b *_ModbusPDUGetComEventCounterResponseBuilder) WithMandatoryFields(status uint16, eventCount uint16) ModbusPDUGetComEventCounterResponseBuilder {
+	return b.WithStatus(status).WithEventCount(eventCount)
 }
 
-func (m *_ModbusPDUGetComEventCounterResponseBuilder) WithEventCount(eventCount uint16) ModbusPDUGetComEventCounterResponseBuilder {
-	m.EventCount = eventCount
-	return m
+func (b *_ModbusPDUGetComEventCounterResponseBuilder) WithStatus(status uint16) ModbusPDUGetComEventCounterResponseBuilder {
+	b.Status = status
+	return b
 }
 
-func (m *_ModbusPDUGetComEventCounterResponseBuilder) Build() (ModbusPDUGetComEventCounterResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUGetComEventCounterResponseBuilder) WithEventCount(eventCount uint16) ModbusPDUGetComEventCounterResponseBuilder {
+	b.EventCount = eventCount
+	return b
+}
+
+func (b *_ModbusPDUGetComEventCounterResponseBuilder) Build() (ModbusPDUGetComEventCounterResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUGetComEventCounterResponse.deepCopy(), nil
+	return b._ModbusPDUGetComEventCounterResponse.deepCopy(), nil
 }
 
-func (m *_ModbusPDUGetComEventCounterResponseBuilder) MustBuild() ModbusPDUGetComEventCounterResponse {
-	build, err := m.Build()
+func (b *_ModbusPDUGetComEventCounterResponseBuilder) MustBuild() ModbusPDUGetComEventCounterResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUGetComEventCounterResponseBuilder) DeepCopy() any {
-	return m.CreateModbusPDUGetComEventCounterResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUGetComEventCounterResponseBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUGetComEventCounterResponseBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUGetComEventCounterResponseBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUGetComEventCounterResponseBuilder().(*_ModbusPDUGetComEventCounterResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUGetComEventCounterResponseBuilder creates a ModbusPDUGetComEventCounterResponseBuilder
-func (m *_ModbusPDUGetComEventCounterResponse) CreateModbusPDUGetComEventCounterResponseBuilder() ModbusPDUGetComEventCounterResponseBuilder {
-	if m == nil {
+func (b *_ModbusPDUGetComEventCounterResponse) CreateModbusPDUGetComEventCounterResponseBuilder() ModbusPDUGetComEventCounterResponseBuilder {
+	if b == nil {
 		return NewModbusPDUGetComEventCounterResponseBuilder()
 	}
-	return &_ModbusPDUGetComEventCounterResponseBuilder{_ModbusPDUGetComEventCounterResponse: m.deepCopy()}
+	return &_ModbusPDUGetComEventCounterResponseBuilder{_ModbusPDUGetComEventCounterResponse: b.deepCopy()}
 }
 
 ///////////////////////

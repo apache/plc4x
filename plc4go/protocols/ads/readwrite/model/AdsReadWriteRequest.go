@@ -117,65 +117,84 @@ func NewAdsReadWriteRequestBuilder() AdsReadWriteRequestBuilder {
 type _AdsReadWriteRequestBuilder struct {
 	*_AdsReadWriteRequest
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsReadWriteRequestBuilder) = (*_AdsReadWriteRequestBuilder)(nil)
 
-func (m *_AdsReadWriteRequestBuilder) WithMandatoryFields(indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte) AdsReadWriteRequestBuilder {
-	return m.WithIndexGroup(indexGroup).WithIndexOffset(indexOffset).WithReadLength(readLength).WithItems(items...).WithData(data...)
+func (b *_AdsReadWriteRequestBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_AdsReadWriteRequestBuilder) WithIndexGroup(indexGroup uint32) AdsReadWriteRequestBuilder {
-	m.IndexGroup = indexGroup
-	return m
+func (b *_AdsReadWriteRequestBuilder) WithMandatoryFields(indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte) AdsReadWriteRequestBuilder {
+	return b.WithIndexGroup(indexGroup).WithIndexOffset(indexOffset).WithReadLength(readLength).WithItems(items...).WithData(data...)
 }
 
-func (m *_AdsReadWriteRequestBuilder) WithIndexOffset(indexOffset uint32) AdsReadWriteRequestBuilder {
-	m.IndexOffset = indexOffset
-	return m
+func (b *_AdsReadWriteRequestBuilder) WithIndexGroup(indexGroup uint32) AdsReadWriteRequestBuilder {
+	b.IndexGroup = indexGroup
+	return b
 }
 
-func (m *_AdsReadWriteRequestBuilder) WithReadLength(readLength uint32) AdsReadWriteRequestBuilder {
-	m.ReadLength = readLength
-	return m
+func (b *_AdsReadWriteRequestBuilder) WithIndexOffset(indexOffset uint32) AdsReadWriteRequestBuilder {
+	b.IndexOffset = indexOffset
+	return b
 }
 
-func (m *_AdsReadWriteRequestBuilder) WithItems(items ...AdsMultiRequestItem) AdsReadWriteRequestBuilder {
-	m.Items = items
-	return m
+func (b *_AdsReadWriteRequestBuilder) WithReadLength(readLength uint32) AdsReadWriteRequestBuilder {
+	b.ReadLength = readLength
+	return b
 }
 
-func (m *_AdsReadWriteRequestBuilder) WithData(data ...byte) AdsReadWriteRequestBuilder {
-	m.Data = data
-	return m
+func (b *_AdsReadWriteRequestBuilder) WithItems(items ...AdsMultiRequestItem) AdsReadWriteRequestBuilder {
+	b.Items = items
+	return b
 }
 
-func (m *_AdsReadWriteRequestBuilder) Build() (AdsReadWriteRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsReadWriteRequestBuilder) WithData(data ...byte) AdsReadWriteRequestBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_AdsReadWriteRequestBuilder) Build() (AdsReadWriteRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsReadWriteRequest.deepCopy(), nil
+	return b._AdsReadWriteRequest.deepCopy(), nil
 }
 
-func (m *_AdsReadWriteRequestBuilder) MustBuild() AdsReadWriteRequest {
-	build, err := m.Build()
+func (b *_AdsReadWriteRequestBuilder) MustBuild() AdsReadWriteRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsReadWriteRequestBuilder) DeepCopy() any {
-	return m.CreateAdsReadWriteRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsReadWriteRequestBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsReadWriteRequestBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsReadWriteRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAdsReadWriteRequestBuilder().(*_AdsReadWriteRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsReadWriteRequestBuilder creates a AdsReadWriteRequestBuilder
-func (m *_AdsReadWriteRequest) CreateAdsReadWriteRequestBuilder() AdsReadWriteRequestBuilder {
-	if m == nil {
+func (b *_AdsReadWriteRequest) CreateAdsReadWriteRequestBuilder() AdsReadWriteRequestBuilder {
+	if b == nil {
 		return NewAdsReadWriteRequestBuilder()
 	}
-	return &_AdsReadWriteRequestBuilder{_AdsReadWriteRequest: m.deepCopy()}
+	return &_AdsReadWriteRequestBuilder{_AdsReadWriteRequest: b.deepCopy()}
 }
 
 ///////////////////////

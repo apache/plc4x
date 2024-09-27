@@ -115,65 +115,69 @@ type _AmsSerialResetFrameBuilder struct {
 
 var _ (AmsSerialResetFrameBuilder) = (*_AmsSerialResetFrameBuilder)(nil)
 
-func (m *_AmsSerialResetFrameBuilder) WithMandatoryFields(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) AmsSerialResetFrameBuilder {
-	return m.WithMagicCookie(magicCookie).WithTransmitterAddress(transmitterAddress).WithReceiverAddress(receiverAddress).WithFragmentNumber(fragmentNumber).WithLength(length).WithCrc(crc)
+func (b *_AmsSerialResetFrameBuilder) WithMandatoryFields(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) AmsSerialResetFrameBuilder {
+	return b.WithMagicCookie(magicCookie).WithTransmitterAddress(transmitterAddress).WithReceiverAddress(receiverAddress).WithFragmentNumber(fragmentNumber).WithLength(length).WithCrc(crc)
 }
 
-func (m *_AmsSerialResetFrameBuilder) WithMagicCookie(magicCookie uint16) AmsSerialResetFrameBuilder {
-	m.MagicCookie = magicCookie
-	return m
+func (b *_AmsSerialResetFrameBuilder) WithMagicCookie(magicCookie uint16) AmsSerialResetFrameBuilder {
+	b.MagicCookie = magicCookie
+	return b
 }
 
-func (m *_AmsSerialResetFrameBuilder) WithTransmitterAddress(transmitterAddress int8) AmsSerialResetFrameBuilder {
-	m.TransmitterAddress = transmitterAddress
-	return m
+func (b *_AmsSerialResetFrameBuilder) WithTransmitterAddress(transmitterAddress int8) AmsSerialResetFrameBuilder {
+	b.TransmitterAddress = transmitterAddress
+	return b
 }
 
-func (m *_AmsSerialResetFrameBuilder) WithReceiverAddress(receiverAddress int8) AmsSerialResetFrameBuilder {
-	m.ReceiverAddress = receiverAddress
-	return m
+func (b *_AmsSerialResetFrameBuilder) WithReceiverAddress(receiverAddress int8) AmsSerialResetFrameBuilder {
+	b.ReceiverAddress = receiverAddress
+	return b
 }
 
-func (m *_AmsSerialResetFrameBuilder) WithFragmentNumber(fragmentNumber int8) AmsSerialResetFrameBuilder {
-	m.FragmentNumber = fragmentNumber
-	return m
+func (b *_AmsSerialResetFrameBuilder) WithFragmentNumber(fragmentNumber int8) AmsSerialResetFrameBuilder {
+	b.FragmentNumber = fragmentNumber
+	return b
 }
 
-func (m *_AmsSerialResetFrameBuilder) WithLength(length int8) AmsSerialResetFrameBuilder {
-	m.Length = length
-	return m
+func (b *_AmsSerialResetFrameBuilder) WithLength(length int8) AmsSerialResetFrameBuilder {
+	b.Length = length
+	return b
 }
 
-func (m *_AmsSerialResetFrameBuilder) WithCrc(crc uint16) AmsSerialResetFrameBuilder {
-	m.Crc = crc
-	return m
+func (b *_AmsSerialResetFrameBuilder) WithCrc(crc uint16) AmsSerialResetFrameBuilder {
+	b.Crc = crc
+	return b
 }
 
-func (m *_AmsSerialResetFrameBuilder) Build() (AmsSerialResetFrame, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AmsSerialResetFrameBuilder) Build() (AmsSerialResetFrame, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AmsSerialResetFrame.deepCopy(), nil
+	return b._AmsSerialResetFrame.deepCopy(), nil
 }
 
-func (m *_AmsSerialResetFrameBuilder) MustBuild() AmsSerialResetFrame {
-	build, err := m.Build()
+func (b *_AmsSerialResetFrameBuilder) MustBuild() AmsSerialResetFrame {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AmsSerialResetFrameBuilder) DeepCopy() any {
-	return m.CreateAmsSerialResetFrameBuilder()
+func (b *_AmsSerialResetFrameBuilder) DeepCopy() any {
+	_copy := b.CreateAmsSerialResetFrameBuilder().(*_AmsSerialResetFrameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAmsSerialResetFrameBuilder creates a AmsSerialResetFrameBuilder
-func (m *_AmsSerialResetFrame) CreateAmsSerialResetFrameBuilder() AmsSerialResetFrameBuilder {
-	if m == nil {
+func (b *_AmsSerialResetFrame) CreateAmsSerialResetFrameBuilder() AmsSerialResetFrameBuilder {
+	if b == nil {
 		return NewAmsSerialResetFrameBuilder()
 	}
-	return &_AmsSerialResetFrameBuilder{_AmsSerialResetFrame: m.deepCopy()}
+	return &_AmsSerialResetFrameBuilder{_AmsSerialResetFrame: b.deepCopy()}
 }
 
 ///////////////////////

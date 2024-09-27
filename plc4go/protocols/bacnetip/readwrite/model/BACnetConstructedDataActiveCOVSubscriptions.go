@@ -93,45 +93,64 @@ func NewBACnetConstructedDataActiveCOVSubscriptionsBuilder() BACnetConstructedDa
 type _BACnetConstructedDataActiveCOVSubscriptionsBuilder struct {
 	*_BACnetConstructedDataActiveCOVSubscriptions
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataActiveCOVSubscriptionsBuilder) = (*_BACnetConstructedDataActiveCOVSubscriptionsBuilder)(nil)
 
-func (m *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) WithMandatoryFields(activeCOVSubscriptions []BACnetCOVSubscription) BACnetConstructedDataActiveCOVSubscriptionsBuilder {
-	return m.WithActiveCOVSubscriptions(activeCOVSubscriptions...)
+func (b *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) WithActiveCOVSubscriptions(activeCOVSubscriptions ...BACnetCOVSubscription) BACnetConstructedDataActiveCOVSubscriptionsBuilder {
-	m.ActiveCOVSubscriptions = activeCOVSubscriptions
-	return m
+func (b *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) WithMandatoryFields(activeCOVSubscriptions []BACnetCOVSubscription) BACnetConstructedDataActiveCOVSubscriptionsBuilder {
+	return b.WithActiveCOVSubscriptions(activeCOVSubscriptions...)
 }
 
-func (m *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) Build() (BACnetConstructedDataActiveCOVSubscriptions, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) WithActiveCOVSubscriptions(activeCOVSubscriptions ...BACnetCOVSubscription) BACnetConstructedDataActiveCOVSubscriptionsBuilder {
+	b.ActiveCOVSubscriptions = activeCOVSubscriptions
+	return b
+}
+
+func (b *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) Build() (BACnetConstructedDataActiveCOVSubscriptions, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataActiveCOVSubscriptions.deepCopy(), nil
+	return b._BACnetConstructedDataActiveCOVSubscriptions.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) MustBuild() BACnetConstructedDataActiveCOVSubscriptions {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) MustBuild() BACnetConstructedDataActiveCOVSubscriptions {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataActiveCOVSubscriptionsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataActiveCOVSubscriptionsBuilder().(*_BACnetConstructedDataActiveCOVSubscriptionsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataActiveCOVSubscriptionsBuilder creates a BACnetConstructedDataActiveCOVSubscriptionsBuilder
-func (m *_BACnetConstructedDataActiveCOVSubscriptions) CreateBACnetConstructedDataActiveCOVSubscriptionsBuilder() BACnetConstructedDataActiveCOVSubscriptionsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataActiveCOVSubscriptions) CreateBACnetConstructedDataActiveCOVSubscriptionsBuilder() BACnetConstructedDataActiveCOVSubscriptionsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataActiveCOVSubscriptionsBuilder()
 	}
-	return &_BACnetConstructedDataActiveCOVSubscriptionsBuilder{_BACnetConstructedDataActiveCOVSubscriptions: m.deepCopy()}
+	return &_BACnetConstructedDataActiveCOVSubscriptionsBuilder{_BACnetConstructedDataActiveCOVSubscriptions: b.deepCopy()}
 }
 
 ///////////////////////

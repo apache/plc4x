@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAPDUSegmentTimeoutBuilder() BACnetConstructedDataAP
 type _BACnetConstructedDataAPDUSegmentTimeoutBuilder struct {
 	*_BACnetConstructedDataAPDUSegmentTimeout
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAPDUSegmentTimeoutBuilder) = (*_BACnetConstructedDataAPDUSegmentTimeoutBuilder)(nil)
 
-func (m *_BACnetConstructedDataAPDUSegmentTimeoutBuilder) WithMandatoryFields(apduSegmentTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDUSegmentTimeoutBuilder {
-	return m.WithApduSegmentTimeout(apduSegmentTimeout)
+func (b *_BACnetConstructedDataAPDUSegmentTimeoutBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAPDUSegmentTimeoutBuilder) WithApduSegmentTimeout(apduSegmentTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDUSegmentTimeoutBuilder {
-	m.ApduSegmentTimeout = apduSegmentTimeout
-	return m
+func (b *_BACnetConstructedDataAPDUSegmentTimeoutBuilder) WithMandatoryFields(apduSegmentTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDUSegmentTimeoutBuilder {
+	return b.WithApduSegmentTimeout(apduSegmentTimeout)
 }
 
-func (m *_BACnetConstructedDataAPDUSegmentTimeoutBuilder) WithApduSegmentTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAPDUSegmentTimeoutBuilder {
-	builder := builderSupplier(m.ApduSegmentTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataAPDUSegmentTimeoutBuilder) WithApduSegmentTimeout(apduSegmentTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDUSegmentTimeoutBuilder {
+	b.ApduSegmentTimeout = apduSegmentTimeout
+	return b
+}
+
+func (b *_BACnetConstructedDataAPDUSegmentTimeoutBuilder) WithApduSegmentTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAPDUSegmentTimeoutBuilder {
+	builder := builderSupplier(b.ApduSegmentTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.ApduSegmentTimeout, err = builder.Build()
+	b.ApduSegmentTimeout, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAPDUSegmentTimeoutBuilder) Build() (BACnetConstructedDataAPDUSegmentTimeout, error) {
-	if m.ApduSegmentTimeout == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAPDUSegmentTimeoutBuilder) Build() (BACnetConstructedDataAPDUSegmentTimeout, error) {
+	if b.ApduSegmentTimeout == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'apduSegmentTimeout' not set"))
+		b.err.Append(errors.New("mandatory field 'apduSegmentTimeout' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAPDUSegmentTimeout.deepCopy(), nil
+	return b._BACnetConstructedDataAPDUSegmentTimeout.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAPDUSegmentTimeoutBuilder) MustBuild() BACnetConstructedDataAPDUSegmentTimeout {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAPDUSegmentTimeoutBuilder) MustBuild() BACnetConstructedDataAPDUSegmentTimeout {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAPDUSegmentTimeoutBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAPDUSegmentTimeoutBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAPDUSegmentTimeoutBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAPDUSegmentTimeoutBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAPDUSegmentTimeoutBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAPDUSegmentTimeoutBuilder().(*_BACnetConstructedDataAPDUSegmentTimeoutBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAPDUSegmentTimeoutBuilder creates a BACnetConstructedDataAPDUSegmentTimeoutBuilder
-func (m *_BACnetConstructedDataAPDUSegmentTimeout) CreateBACnetConstructedDataAPDUSegmentTimeoutBuilder() BACnetConstructedDataAPDUSegmentTimeoutBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAPDUSegmentTimeout) CreateBACnetConstructedDataAPDUSegmentTimeoutBuilder() BACnetConstructedDataAPDUSegmentTimeoutBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAPDUSegmentTimeoutBuilder()
 	}
-	return &_BACnetConstructedDataAPDUSegmentTimeoutBuilder{_BACnetConstructedDataAPDUSegmentTimeout: m.deepCopy()}
+	return &_BACnetConstructedDataAPDUSegmentTimeoutBuilder{_BACnetConstructedDataAPDUSegmentTimeout: b.deepCopy()}
 }
 
 ///////////////////////

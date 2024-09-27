@@ -96,45 +96,64 @@ func NewCipConnectedRequestBuilder() CipConnectedRequestBuilder {
 type _CipConnectedRequestBuilder struct {
 	*_CipConnectedRequest
 
+	parentBuilder *_CipServiceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CipConnectedRequestBuilder) = (*_CipConnectedRequestBuilder)(nil)
 
-func (m *_CipConnectedRequestBuilder) WithMandatoryFields(pathSegments []byte) CipConnectedRequestBuilder {
-	return m.WithPathSegments(pathSegments...)
+func (b *_CipConnectedRequestBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
 }
 
-func (m *_CipConnectedRequestBuilder) WithPathSegments(pathSegments ...byte) CipConnectedRequestBuilder {
-	m.PathSegments = pathSegments
-	return m
+func (b *_CipConnectedRequestBuilder) WithMandatoryFields(pathSegments []byte) CipConnectedRequestBuilder {
+	return b.WithPathSegments(pathSegments...)
 }
 
-func (m *_CipConnectedRequestBuilder) Build() (CipConnectedRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CipConnectedRequestBuilder) WithPathSegments(pathSegments ...byte) CipConnectedRequestBuilder {
+	b.PathSegments = pathSegments
+	return b
+}
+
+func (b *_CipConnectedRequestBuilder) Build() (CipConnectedRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CipConnectedRequest.deepCopy(), nil
+	return b._CipConnectedRequest.deepCopy(), nil
 }
 
-func (m *_CipConnectedRequestBuilder) MustBuild() CipConnectedRequest {
-	build, err := m.Build()
+func (b *_CipConnectedRequestBuilder) MustBuild() CipConnectedRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CipConnectedRequestBuilder) DeepCopy() any {
-	return m.CreateCipConnectedRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipConnectedRequestBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipConnectedRequestBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_CipConnectedRequestBuilder) DeepCopy() any {
+	_copy := b.CreateCipConnectedRequestBuilder().(*_CipConnectedRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCipConnectedRequestBuilder creates a CipConnectedRequestBuilder
-func (m *_CipConnectedRequest) CreateCipConnectedRequestBuilder() CipConnectedRequestBuilder {
-	if m == nil {
+func (b *_CipConnectedRequest) CreateCipConnectedRequestBuilder() CipConnectedRequestBuilder {
+	if b == nil {
 		return NewCipConnectedRequestBuilder()
 	}
-	return &_CipConnectedRequestBuilder{_CipConnectedRequest: m.deepCopy()}
+	return &_CipConnectedRequestBuilder{_CipConnectedRequest: b.deepCopy()}
 }
 
 ///////////////////////

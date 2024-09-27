@@ -110,74 +110,93 @@ func NewBrowsePathResultBuilder() BrowsePathResultBuilder {
 type _BrowsePathResultBuilder struct {
 	*_BrowsePathResult
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BrowsePathResultBuilder) = (*_BrowsePathResultBuilder)(nil)
 
-func (m *_BrowsePathResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfTargets int32, targets []ExtensionObjectDefinition) BrowsePathResultBuilder {
-	return m.WithStatusCode(statusCode).WithNoOfTargets(noOfTargets).WithTargets(targets...)
+func (b *_BrowsePathResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_BrowsePathResultBuilder) WithStatusCode(statusCode StatusCode) BrowsePathResultBuilder {
-	m.StatusCode = statusCode
-	return m
+func (b *_BrowsePathResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfTargets int32, targets []ExtensionObjectDefinition) BrowsePathResultBuilder {
+	return b.WithStatusCode(statusCode).WithNoOfTargets(noOfTargets).WithTargets(targets...)
 }
 
-func (m *_BrowsePathResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) BrowsePathResultBuilder {
-	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+func (b *_BrowsePathResultBuilder) WithStatusCode(statusCode StatusCode) BrowsePathResultBuilder {
+	b.StatusCode = statusCode
+	return b
+}
+
+func (b *_BrowsePathResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) BrowsePathResultBuilder {
+	builder := builderSupplier(b.StatusCode.CreateStatusCodeBuilder())
 	var err error
-	m.StatusCode, err = builder.Build()
+	b.StatusCode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BrowsePathResultBuilder) WithNoOfTargets(noOfTargets int32) BrowsePathResultBuilder {
-	m.NoOfTargets = noOfTargets
-	return m
+func (b *_BrowsePathResultBuilder) WithNoOfTargets(noOfTargets int32) BrowsePathResultBuilder {
+	b.NoOfTargets = noOfTargets
+	return b
 }
 
-func (m *_BrowsePathResultBuilder) WithTargets(targets ...ExtensionObjectDefinition) BrowsePathResultBuilder {
-	m.Targets = targets
-	return m
+func (b *_BrowsePathResultBuilder) WithTargets(targets ...ExtensionObjectDefinition) BrowsePathResultBuilder {
+	b.Targets = targets
+	return b
 }
 
-func (m *_BrowsePathResultBuilder) Build() (BrowsePathResult, error) {
-	if m.StatusCode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BrowsePathResultBuilder) Build() (BrowsePathResult, error) {
+	if b.StatusCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BrowsePathResult.deepCopy(), nil
+	return b._BrowsePathResult.deepCopy(), nil
 }
 
-func (m *_BrowsePathResultBuilder) MustBuild() BrowsePathResult {
-	build, err := m.Build()
+func (b *_BrowsePathResultBuilder) MustBuild() BrowsePathResult {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BrowsePathResultBuilder) DeepCopy() any {
-	return m.CreateBrowsePathResultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BrowsePathResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BrowsePathResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_BrowsePathResultBuilder) DeepCopy() any {
+	_copy := b.CreateBrowsePathResultBuilder().(*_BrowsePathResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBrowsePathResultBuilder creates a BrowsePathResultBuilder
-func (m *_BrowsePathResult) CreateBrowsePathResultBuilder() BrowsePathResultBuilder {
-	if m == nil {
+func (b *_BrowsePathResult) CreateBrowsePathResultBuilder() BrowsePathResultBuilder {
+	if b == nil {
 		return NewBrowsePathResultBuilder()
 	}
-	return &_BrowsePathResultBuilder{_BrowsePathResult: m.deepCopy()}
+	return &_BrowsePathResultBuilder{_BrowsePathResult: b.deepCopy()}
 }
 
 ///////////////////////

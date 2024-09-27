@@ -115,74 +115,93 @@ func NewBVLCForwardedNPDUBuilder() BVLCForwardedNPDUBuilder {
 type _BVLCForwardedNPDUBuilder struct {
 	*_BVLCForwardedNPDU
 
+	parentBuilder *_BVLCBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BVLCForwardedNPDUBuilder) = (*_BVLCForwardedNPDUBuilder)(nil)
 
-func (m *_BVLCForwardedNPDUBuilder) WithMandatoryFields(ip []uint8, port uint16, npdu NPDU) BVLCForwardedNPDUBuilder {
-	return m.WithIp(ip...).WithPort(port).WithNpdu(npdu)
+func (b *_BVLCForwardedNPDUBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
 }
 
-func (m *_BVLCForwardedNPDUBuilder) WithIp(ip ...uint8) BVLCForwardedNPDUBuilder {
-	m.Ip = ip
-	return m
+func (b *_BVLCForwardedNPDUBuilder) WithMandatoryFields(ip []uint8, port uint16, npdu NPDU) BVLCForwardedNPDUBuilder {
+	return b.WithIp(ip...).WithPort(port).WithNpdu(npdu)
 }
 
-func (m *_BVLCForwardedNPDUBuilder) WithPort(port uint16) BVLCForwardedNPDUBuilder {
-	m.Port = port
-	return m
+func (b *_BVLCForwardedNPDUBuilder) WithIp(ip ...uint8) BVLCForwardedNPDUBuilder {
+	b.Ip = ip
+	return b
 }
 
-func (m *_BVLCForwardedNPDUBuilder) WithNpdu(npdu NPDU) BVLCForwardedNPDUBuilder {
-	m.Npdu = npdu
-	return m
+func (b *_BVLCForwardedNPDUBuilder) WithPort(port uint16) BVLCForwardedNPDUBuilder {
+	b.Port = port
+	return b
 }
 
-func (m *_BVLCForwardedNPDUBuilder) WithNpduBuilder(builderSupplier func(NPDUBuilder) NPDUBuilder) BVLCForwardedNPDUBuilder {
-	builder := builderSupplier(m.Npdu.CreateNPDUBuilder())
+func (b *_BVLCForwardedNPDUBuilder) WithNpdu(npdu NPDU) BVLCForwardedNPDUBuilder {
+	b.Npdu = npdu
+	return b
+}
+
+func (b *_BVLCForwardedNPDUBuilder) WithNpduBuilder(builderSupplier func(NPDUBuilder) NPDUBuilder) BVLCForwardedNPDUBuilder {
+	builder := builderSupplier(b.Npdu.CreateNPDUBuilder())
 	var err error
-	m.Npdu, err = builder.Build()
+	b.Npdu, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NPDUBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NPDUBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BVLCForwardedNPDUBuilder) Build() (BVLCForwardedNPDU, error) {
-	if m.Npdu == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BVLCForwardedNPDUBuilder) Build() (BVLCForwardedNPDU, error) {
+	if b.Npdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'npdu' not set"))
+		b.err.Append(errors.New("mandatory field 'npdu' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BVLCForwardedNPDU.deepCopy(), nil
+	return b._BVLCForwardedNPDU.deepCopy(), nil
 }
 
-func (m *_BVLCForwardedNPDUBuilder) MustBuild() BVLCForwardedNPDU {
-	build, err := m.Build()
+func (b *_BVLCForwardedNPDUBuilder) MustBuild() BVLCForwardedNPDU {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BVLCForwardedNPDUBuilder) DeepCopy() any {
-	return m.CreateBVLCForwardedNPDUBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCForwardedNPDUBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCForwardedNPDUBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCForwardedNPDUBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCForwardedNPDUBuilder().(*_BVLCForwardedNPDUBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBVLCForwardedNPDUBuilder creates a BVLCForwardedNPDUBuilder
-func (m *_BVLCForwardedNPDU) CreateBVLCForwardedNPDUBuilder() BVLCForwardedNPDUBuilder {
-	if m == nil {
+func (b *_BVLCForwardedNPDU) CreateBVLCForwardedNPDUBuilder() BVLCForwardedNPDUBuilder {
+	if b == nil {
 		return NewBVLCForwardedNPDUBuilder()
 	}
-	return &_BVLCForwardedNPDUBuilder{_BVLCForwardedNPDU: m.deepCopy()}
+	return &_BVLCForwardedNPDUBuilder{_BVLCForwardedNPDU: b.deepCopy()}
 }
 
 ///////////////////////

@@ -85,40 +85,59 @@ func NewApduDataIndividualAddressReadBuilder() ApduDataIndividualAddressReadBuil
 type _ApduDataIndividualAddressReadBuilder struct {
 	*_ApduDataIndividualAddressRead
 
+	parentBuilder *_ApduDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataIndividualAddressReadBuilder) = (*_ApduDataIndividualAddressReadBuilder)(nil)
 
-func (m *_ApduDataIndividualAddressReadBuilder) WithMandatoryFields() ApduDataIndividualAddressReadBuilder {
-	return m
+func (b *_ApduDataIndividualAddressReadBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
 }
 
-func (m *_ApduDataIndividualAddressReadBuilder) Build() (ApduDataIndividualAddressRead, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataIndividualAddressReadBuilder) WithMandatoryFields() ApduDataIndividualAddressReadBuilder {
+	return b
+}
+
+func (b *_ApduDataIndividualAddressReadBuilder) Build() (ApduDataIndividualAddressRead, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataIndividualAddressRead.deepCopy(), nil
+	return b._ApduDataIndividualAddressRead.deepCopy(), nil
 }
 
-func (m *_ApduDataIndividualAddressReadBuilder) MustBuild() ApduDataIndividualAddressRead {
-	build, err := m.Build()
+func (b *_ApduDataIndividualAddressReadBuilder) MustBuild() ApduDataIndividualAddressRead {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataIndividualAddressReadBuilder) DeepCopy() any {
-	return m.CreateApduDataIndividualAddressReadBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataIndividualAddressReadBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataIndividualAddressReadBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataIndividualAddressReadBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataIndividualAddressReadBuilder().(*_ApduDataIndividualAddressReadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataIndividualAddressReadBuilder creates a ApduDataIndividualAddressReadBuilder
-func (m *_ApduDataIndividualAddressRead) CreateApduDataIndividualAddressReadBuilder() ApduDataIndividualAddressReadBuilder {
-	if m == nil {
+func (b *_ApduDataIndividualAddressRead) CreateApduDataIndividualAddressReadBuilder() ApduDataIndividualAddressReadBuilder {
+	if b == nil {
 		return NewApduDataIndividualAddressReadBuilder()
 	}
-	return &_ApduDataIndividualAddressReadBuilder{_ApduDataIndividualAddressRead: m.deepCopy()}
+	return &_ApduDataIndividualAddressReadBuilder{_ApduDataIndividualAddressRead: b.deepCopy()}
 }
 
 ///////////////////////

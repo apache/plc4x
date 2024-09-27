@@ -116,79 +116,98 @@ func NewTriggerControlDataLabelBuilder() TriggerControlDataLabelBuilder {
 type _TriggerControlDataLabelBuilder struct {
 	*_TriggerControlDataLabel
 
+	parentBuilder *_TriggerControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TriggerControlDataLabelBuilder) = (*_TriggerControlDataLabelBuilder)(nil)
 
-func (m *_TriggerControlDataLabelBuilder) WithMandatoryFields(triggerControlOptions TriggerControlLabelOptions, actionSelector byte, data []byte) TriggerControlDataLabelBuilder {
-	return m.WithTriggerControlOptions(triggerControlOptions).WithActionSelector(actionSelector).WithData(data...)
+func (b *_TriggerControlDataLabelBuilder) setParent(contract TriggerControlDataContract) {
+	b.TriggerControlDataContract = contract
 }
 
-func (m *_TriggerControlDataLabelBuilder) WithTriggerControlOptions(triggerControlOptions TriggerControlLabelOptions) TriggerControlDataLabelBuilder {
-	m.TriggerControlOptions = triggerControlOptions
-	return m
+func (b *_TriggerControlDataLabelBuilder) WithMandatoryFields(triggerControlOptions TriggerControlLabelOptions, actionSelector byte, data []byte) TriggerControlDataLabelBuilder {
+	return b.WithTriggerControlOptions(triggerControlOptions).WithActionSelector(actionSelector).WithData(data...)
 }
 
-func (m *_TriggerControlDataLabelBuilder) WithTriggerControlOptionsBuilder(builderSupplier func(TriggerControlLabelOptionsBuilder) TriggerControlLabelOptionsBuilder) TriggerControlDataLabelBuilder {
-	builder := builderSupplier(m.TriggerControlOptions.CreateTriggerControlLabelOptionsBuilder())
+func (b *_TriggerControlDataLabelBuilder) WithTriggerControlOptions(triggerControlOptions TriggerControlLabelOptions) TriggerControlDataLabelBuilder {
+	b.TriggerControlOptions = triggerControlOptions
+	return b
+}
+
+func (b *_TriggerControlDataLabelBuilder) WithTriggerControlOptionsBuilder(builderSupplier func(TriggerControlLabelOptionsBuilder) TriggerControlLabelOptionsBuilder) TriggerControlDataLabelBuilder {
+	builder := builderSupplier(b.TriggerControlOptions.CreateTriggerControlLabelOptionsBuilder())
 	var err error
-	m.TriggerControlOptions, err = builder.Build()
+	b.TriggerControlOptions, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "TriggerControlLabelOptionsBuilder failed"))
+		b.err.Append(errors.Wrap(err, "TriggerControlLabelOptionsBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_TriggerControlDataLabelBuilder) WithActionSelector(actionSelector byte) TriggerControlDataLabelBuilder {
-	m.ActionSelector = actionSelector
-	return m
+func (b *_TriggerControlDataLabelBuilder) WithActionSelector(actionSelector byte) TriggerControlDataLabelBuilder {
+	b.ActionSelector = actionSelector
+	return b
 }
 
-func (m *_TriggerControlDataLabelBuilder) WithOptionalLanguage(language Language) TriggerControlDataLabelBuilder {
-	m.Language = &language
-	return m
+func (b *_TriggerControlDataLabelBuilder) WithOptionalLanguage(language Language) TriggerControlDataLabelBuilder {
+	b.Language = &language
+	return b
 }
 
-func (m *_TriggerControlDataLabelBuilder) WithData(data ...byte) TriggerControlDataLabelBuilder {
-	m.Data = data
-	return m
+func (b *_TriggerControlDataLabelBuilder) WithData(data ...byte) TriggerControlDataLabelBuilder {
+	b.Data = data
+	return b
 }
 
-func (m *_TriggerControlDataLabelBuilder) Build() (TriggerControlDataLabel, error) {
-	if m.TriggerControlOptions == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_TriggerControlDataLabelBuilder) Build() (TriggerControlDataLabel, error) {
+	if b.TriggerControlOptions == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'triggerControlOptions' not set"))
+		b.err.Append(errors.New("mandatory field 'triggerControlOptions' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TriggerControlDataLabel.deepCopy(), nil
+	return b._TriggerControlDataLabel.deepCopy(), nil
 }
 
-func (m *_TriggerControlDataLabelBuilder) MustBuild() TriggerControlDataLabel {
-	build, err := m.Build()
+func (b *_TriggerControlDataLabelBuilder) MustBuild() TriggerControlDataLabel {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TriggerControlDataLabelBuilder) DeepCopy() any {
-	return m.CreateTriggerControlDataLabelBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TriggerControlDataLabelBuilder) Done() TriggerControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TriggerControlDataLabelBuilder) buildForTriggerControlData() (TriggerControlData, error) {
+	return b.Build()
+}
+
+func (b *_TriggerControlDataLabelBuilder) DeepCopy() any {
+	_copy := b.CreateTriggerControlDataLabelBuilder().(*_TriggerControlDataLabelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTriggerControlDataLabelBuilder creates a TriggerControlDataLabelBuilder
-func (m *_TriggerControlDataLabel) CreateTriggerControlDataLabelBuilder() TriggerControlDataLabelBuilder {
-	if m == nil {
+func (b *_TriggerControlDataLabel) CreateTriggerControlDataLabelBuilder() TriggerControlDataLabelBuilder {
+	if b == nil {
 		return NewTriggerControlDataLabelBuilder()
 	}
-	return &_TriggerControlDataLabelBuilder{_TriggerControlDataLabel: m.deepCopy()}
+	return &_TriggerControlDataLabelBuilder{_TriggerControlDataLabel: b.deepCopy()}
 }
 
 ///////////////////////

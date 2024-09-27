@@ -79,6 +79,8 @@ type BACnetLogRecordLogDatumAnyValueBuilder interface {
 	WithMandatoryFields() BACnetLogRecordLogDatumAnyValueBuilder
 	// WithAnyValue adds AnyValue (property field)
 	WithOptionalAnyValue(BACnetConstructedData) BACnetLogRecordLogDatumAnyValueBuilder
+	// WithOptionalAnyValueBuilder adds AnyValue (property field) which is build by the builder
+	WithOptionalAnyValueBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetLogRecordLogDatumAnyValueBuilder
 	// Build builds the BACnetLogRecordLogDatumAnyValue or returns an error if something is wrong
 	Build() (BACnetLogRecordLogDatumAnyValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -93,45 +95,77 @@ func NewBACnetLogRecordLogDatumAnyValueBuilder() BACnetLogRecordLogDatumAnyValue
 type _BACnetLogRecordLogDatumAnyValueBuilder struct {
 	*_BACnetLogRecordLogDatumAnyValue
 
+	parentBuilder *_BACnetLogRecordLogDatumBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetLogRecordLogDatumAnyValueBuilder) = (*_BACnetLogRecordLogDatumAnyValueBuilder)(nil)
 
-func (m *_BACnetLogRecordLogDatumAnyValueBuilder) WithMandatoryFields() BACnetLogRecordLogDatumAnyValueBuilder {
-	return m
+func (b *_BACnetLogRecordLogDatumAnyValueBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
+	b.BACnetLogRecordLogDatumContract = contract
 }
 
-func (m *_BACnetLogRecordLogDatumAnyValueBuilder) WithOptionalAnyValue(anyValue BACnetConstructedData) BACnetLogRecordLogDatumAnyValueBuilder {
-	m.AnyValue = anyValue
-	return m
+func (b *_BACnetLogRecordLogDatumAnyValueBuilder) WithMandatoryFields() BACnetLogRecordLogDatumAnyValueBuilder {
+	return b
 }
 
-func (m *_BACnetLogRecordLogDatumAnyValueBuilder) Build() (BACnetLogRecordLogDatumAnyValue, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetLogRecordLogDatumAnyValueBuilder) WithOptionalAnyValue(anyValue BACnetConstructedData) BACnetLogRecordLogDatumAnyValueBuilder {
+	b.AnyValue = anyValue
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumAnyValueBuilder) WithOptionalAnyValueBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetLogRecordLogDatumAnyValueBuilder {
+	builder := builderSupplier(b.AnyValue.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.AnyValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
-	return m._BACnetLogRecordLogDatumAnyValue.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetLogRecordLogDatumAnyValueBuilder) MustBuild() BACnetLogRecordLogDatumAnyValue {
-	build, err := m.Build()
+func (b *_BACnetLogRecordLogDatumAnyValueBuilder) Build() (BACnetLogRecordLogDatumAnyValue, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLogRecordLogDatumAnyValue.deepCopy(), nil
+}
+
+func (b *_BACnetLogRecordLogDatumAnyValueBuilder) MustBuild() BACnetLogRecordLogDatumAnyValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLogRecordLogDatumAnyValueBuilder) DeepCopy() any {
-	return m.CreateBACnetLogRecordLogDatumAnyValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogRecordLogDatumAnyValueBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogRecordLogDatumAnyValueBuilder) buildForBACnetLogRecordLogDatum() (BACnetLogRecordLogDatum, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogRecordLogDatumAnyValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogRecordLogDatumAnyValueBuilder().(*_BACnetLogRecordLogDatumAnyValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLogRecordLogDatumAnyValueBuilder creates a BACnetLogRecordLogDatumAnyValueBuilder
-func (m *_BACnetLogRecordLogDatumAnyValue) CreateBACnetLogRecordLogDatumAnyValueBuilder() BACnetLogRecordLogDatumAnyValueBuilder {
-	if m == nil {
+func (b *_BACnetLogRecordLogDatumAnyValue) CreateBACnetLogRecordLogDatumAnyValueBuilder() BACnetLogRecordLogDatumAnyValueBuilder {
+	if b == nil {
 		return NewBACnetLogRecordLogDatumAnyValueBuilder()
 	}
-	return &_BACnetLogRecordLogDatumAnyValueBuilder{_BACnetLogRecordLogDatumAnyValue: m.deepCopy()}
+	return &_BACnetLogRecordLogDatumAnyValueBuilder{_BACnetLogRecordLogDatumAnyValue: b.deepCopy()}
 }
 
 ///////////////////////

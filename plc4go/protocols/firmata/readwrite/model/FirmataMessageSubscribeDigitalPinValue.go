@@ -103,50 +103,69 @@ func NewFirmataMessageSubscribeDigitalPinValueBuilder() FirmataMessageSubscribeD
 type _FirmataMessageSubscribeDigitalPinValueBuilder struct {
 	*_FirmataMessageSubscribeDigitalPinValue
 
+	parentBuilder *_FirmataMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (FirmataMessageSubscribeDigitalPinValueBuilder) = (*_FirmataMessageSubscribeDigitalPinValueBuilder)(nil)
 
-func (m *_FirmataMessageSubscribeDigitalPinValueBuilder) WithMandatoryFields(pin uint8, enable bool) FirmataMessageSubscribeDigitalPinValueBuilder {
-	return m.WithPin(pin).WithEnable(enable)
+func (b *_FirmataMessageSubscribeDigitalPinValueBuilder) setParent(contract FirmataMessageContract) {
+	b.FirmataMessageContract = contract
 }
 
-func (m *_FirmataMessageSubscribeDigitalPinValueBuilder) WithPin(pin uint8) FirmataMessageSubscribeDigitalPinValueBuilder {
-	m.Pin = pin
-	return m
+func (b *_FirmataMessageSubscribeDigitalPinValueBuilder) WithMandatoryFields(pin uint8, enable bool) FirmataMessageSubscribeDigitalPinValueBuilder {
+	return b.WithPin(pin).WithEnable(enable)
 }
 
-func (m *_FirmataMessageSubscribeDigitalPinValueBuilder) WithEnable(enable bool) FirmataMessageSubscribeDigitalPinValueBuilder {
-	m.Enable = enable
-	return m
+func (b *_FirmataMessageSubscribeDigitalPinValueBuilder) WithPin(pin uint8) FirmataMessageSubscribeDigitalPinValueBuilder {
+	b.Pin = pin
+	return b
 }
 
-func (m *_FirmataMessageSubscribeDigitalPinValueBuilder) Build() (FirmataMessageSubscribeDigitalPinValue, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_FirmataMessageSubscribeDigitalPinValueBuilder) WithEnable(enable bool) FirmataMessageSubscribeDigitalPinValueBuilder {
+	b.Enable = enable
+	return b
+}
+
+func (b *_FirmataMessageSubscribeDigitalPinValueBuilder) Build() (FirmataMessageSubscribeDigitalPinValue, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._FirmataMessageSubscribeDigitalPinValue.deepCopy(), nil
+	return b._FirmataMessageSubscribeDigitalPinValue.deepCopy(), nil
 }
 
-func (m *_FirmataMessageSubscribeDigitalPinValueBuilder) MustBuild() FirmataMessageSubscribeDigitalPinValue {
-	build, err := m.Build()
+func (b *_FirmataMessageSubscribeDigitalPinValueBuilder) MustBuild() FirmataMessageSubscribeDigitalPinValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FirmataMessageSubscribeDigitalPinValueBuilder) DeepCopy() any {
-	return m.CreateFirmataMessageSubscribeDigitalPinValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FirmataMessageSubscribeDigitalPinValueBuilder) Done() FirmataMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FirmataMessageSubscribeDigitalPinValueBuilder) buildForFirmataMessage() (FirmataMessage, error) {
+	return b.Build()
+}
+
+func (b *_FirmataMessageSubscribeDigitalPinValueBuilder) DeepCopy() any {
+	_copy := b.CreateFirmataMessageSubscribeDigitalPinValueBuilder().(*_FirmataMessageSubscribeDigitalPinValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFirmataMessageSubscribeDigitalPinValueBuilder creates a FirmataMessageSubscribeDigitalPinValueBuilder
-func (m *_FirmataMessageSubscribeDigitalPinValue) CreateFirmataMessageSubscribeDigitalPinValueBuilder() FirmataMessageSubscribeDigitalPinValueBuilder {
-	if m == nil {
+func (b *_FirmataMessageSubscribeDigitalPinValue) CreateFirmataMessageSubscribeDigitalPinValueBuilder() FirmataMessageSubscribeDigitalPinValueBuilder {
+	if b == nil {
 		return NewFirmataMessageSubscribeDigitalPinValueBuilder()
 	}
-	return &_FirmataMessageSubscribeDigitalPinValueBuilder{_FirmataMessageSubscribeDigitalPinValue: m.deepCopy()}
+	return &_FirmataMessageSubscribeDigitalPinValueBuilder{_FirmataMessageSubscribeDigitalPinValue: b.deepCopy()}
 }
 
 ///////////////////////

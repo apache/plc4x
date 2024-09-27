@@ -100,64 +100,83 @@ func NewBACnetConstructedDataNodeTypeBuilder() BACnetConstructedDataNodeTypeBuil
 type _BACnetConstructedDataNodeTypeBuilder struct {
 	*_BACnetConstructedDataNodeType
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataNodeTypeBuilder) = (*_BACnetConstructedDataNodeTypeBuilder)(nil)
 
-func (m *_BACnetConstructedDataNodeTypeBuilder) WithMandatoryFields(nodeType BACnetNodeTypeTagged) BACnetConstructedDataNodeTypeBuilder {
-	return m.WithNodeType(nodeType)
+func (b *_BACnetConstructedDataNodeTypeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataNodeTypeBuilder) WithNodeType(nodeType BACnetNodeTypeTagged) BACnetConstructedDataNodeTypeBuilder {
-	m.NodeType = nodeType
-	return m
+func (b *_BACnetConstructedDataNodeTypeBuilder) WithMandatoryFields(nodeType BACnetNodeTypeTagged) BACnetConstructedDataNodeTypeBuilder {
+	return b.WithNodeType(nodeType)
 }
 
-func (m *_BACnetConstructedDataNodeTypeBuilder) WithNodeTypeBuilder(builderSupplier func(BACnetNodeTypeTaggedBuilder) BACnetNodeTypeTaggedBuilder) BACnetConstructedDataNodeTypeBuilder {
-	builder := builderSupplier(m.NodeType.CreateBACnetNodeTypeTaggedBuilder())
+func (b *_BACnetConstructedDataNodeTypeBuilder) WithNodeType(nodeType BACnetNodeTypeTagged) BACnetConstructedDataNodeTypeBuilder {
+	b.NodeType = nodeType
+	return b
+}
+
+func (b *_BACnetConstructedDataNodeTypeBuilder) WithNodeTypeBuilder(builderSupplier func(BACnetNodeTypeTaggedBuilder) BACnetNodeTypeTaggedBuilder) BACnetConstructedDataNodeTypeBuilder {
+	builder := builderSupplier(b.NodeType.CreateBACnetNodeTypeTaggedBuilder())
 	var err error
-	m.NodeType, err = builder.Build()
+	b.NodeType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetNodeTypeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetNodeTypeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataNodeTypeBuilder) Build() (BACnetConstructedDataNodeType, error) {
-	if m.NodeType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataNodeTypeBuilder) Build() (BACnetConstructedDataNodeType, error) {
+	if b.NodeType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nodeType' not set"))
+		b.err.Append(errors.New("mandatory field 'nodeType' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataNodeType.deepCopy(), nil
+	return b._BACnetConstructedDataNodeType.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataNodeTypeBuilder) MustBuild() BACnetConstructedDataNodeType {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataNodeTypeBuilder) MustBuild() BACnetConstructedDataNodeType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataNodeTypeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataNodeTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNodeTypeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNodeTypeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNodeTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNodeTypeBuilder().(*_BACnetConstructedDataNodeTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataNodeTypeBuilder creates a BACnetConstructedDataNodeTypeBuilder
-func (m *_BACnetConstructedDataNodeType) CreateBACnetConstructedDataNodeTypeBuilder() BACnetConstructedDataNodeTypeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataNodeType) CreateBACnetConstructedDataNodeTypeBuilder() BACnetConstructedDataNodeTypeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataNodeTypeBuilder()
 	}
-	return &_BACnetConstructedDataNodeTypeBuilder{_BACnetConstructedDataNodeType: m.deepCopy()}
+	return &_BACnetConstructedDataNodeTypeBuilder{_BACnetConstructedDataNodeType: b.deepCopy()}
 }
 
 ///////////////////////

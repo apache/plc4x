@@ -110,74 +110,93 @@ func NewTransferResultBuilder() TransferResultBuilder {
 type _TransferResultBuilder struct {
 	*_TransferResult
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TransferResultBuilder) = (*_TransferResultBuilder)(nil)
 
-func (m *_TransferResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32) TransferResultBuilder {
-	return m.WithStatusCode(statusCode).WithNoOfAvailableSequenceNumbers(noOfAvailableSequenceNumbers).WithAvailableSequenceNumbers(availableSequenceNumbers...)
+func (b *_TransferResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_TransferResultBuilder) WithStatusCode(statusCode StatusCode) TransferResultBuilder {
-	m.StatusCode = statusCode
-	return m
+func (b *_TransferResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32) TransferResultBuilder {
+	return b.WithStatusCode(statusCode).WithNoOfAvailableSequenceNumbers(noOfAvailableSequenceNumbers).WithAvailableSequenceNumbers(availableSequenceNumbers...)
 }
 
-func (m *_TransferResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) TransferResultBuilder {
-	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+func (b *_TransferResultBuilder) WithStatusCode(statusCode StatusCode) TransferResultBuilder {
+	b.StatusCode = statusCode
+	return b
+}
+
+func (b *_TransferResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) TransferResultBuilder {
+	builder := builderSupplier(b.StatusCode.CreateStatusCodeBuilder())
 	var err error
-	m.StatusCode, err = builder.Build()
+	b.StatusCode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_TransferResultBuilder) WithNoOfAvailableSequenceNumbers(noOfAvailableSequenceNumbers int32) TransferResultBuilder {
-	m.NoOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers
-	return m
+func (b *_TransferResultBuilder) WithNoOfAvailableSequenceNumbers(noOfAvailableSequenceNumbers int32) TransferResultBuilder {
+	b.NoOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers
+	return b
 }
 
-func (m *_TransferResultBuilder) WithAvailableSequenceNumbers(availableSequenceNumbers ...uint32) TransferResultBuilder {
-	m.AvailableSequenceNumbers = availableSequenceNumbers
-	return m
+func (b *_TransferResultBuilder) WithAvailableSequenceNumbers(availableSequenceNumbers ...uint32) TransferResultBuilder {
+	b.AvailableSequenceNumbers = availableSequenceNumbers
+	return b
 }
 
-func (m *_TransferResultBuilder) Build() (TransferResult, error) {
-	if m.StatusCode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_TransferResultBuilder) Build() (TransferResult, error) {
+	if b.StatusCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TransferResult.deepCopy(), nil
+	return b._TransferResult.deepCopy(), nil
 }
 
-func (m *_TransferResultBuilder) MustBuild() TransferResult {
-	build, err := m.Build()
+func (b *_TransferResultBuilder) MustBuild() TransferResult {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TransferResultBuilder) DeepCopy() any {
-	return m.CreateTransferResultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TransferResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TransferResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_TransferResultBuilder) DeepCopy() any {
+	_copy := b.CreateTransferResultBuilder().(*_TransferResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTransferResultBuilder creates a TransferResultBuilder
-func (m *_TransferResult) CreateTransferResultBuilder() TransferResultBuilder {
-	if m == nil {
+func (b *_TransferResult) CreateTransferResultBuilder() TransferResultBuilder {
+	if b == nil {
 		return NewTransferResultBuilder()
 	}
-	return &_TransferResultBuilder{_TransferResult: m.deepCopy()}
+	return &_TransferResultBuilder{_TransferResult: b.deepCopy()}
 }
 
 ///////////////////////

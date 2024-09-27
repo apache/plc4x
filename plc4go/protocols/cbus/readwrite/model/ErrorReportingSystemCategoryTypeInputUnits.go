@@ -93,45 +93,64 @@ func NewErrorReportingSystemCategoryTypeInputUnitsBuilder() ErrorReportingSystem
 type _ErrorReportingSystemCategoryTypeInputUnitsBuilder struct {
 	*_ErrorReportingSystemCategoryTypeInputUnits
 
+	parentBuilder *_ErrorReportingSystemCategoryTypeBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ErrorReportingSystemCategoryTypeInputUnitsBuilder) = (*_ErrorReportingSystemCategoryTypeInputUnitsBuilder)(nil)
 
-func (m *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) ErrorReportingSystemCategoryTypeInputUnitsBuilder {
-	return m.WithCategoryForType(categoryForType)
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) setParent(contract ErrorReportingSystemCategoryTypeContract) {
+	b.ErrorReportingSystemCategoryTypeContract = contract
 }
 
-func (m *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) WithCategoryForType(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) ErrorReportingSystemCategoryTypeInputUnitsBuilder {
-	m.CategoryForType = categoryForType
-	return m
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) ErrorReportingSystemCategoryTypeInputUnitsBuilder {
+	return b.WithCategoryForType(categoryForType)
 }
 
-func (m *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) Build() (ErrorReportingSystemCategoryTypeInputUnits, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) WithCategoryForType(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) ErrorReportingSystemCategoryTypeInputUnitsBuilder {
+	b.CategoryForType = categoryForType
+	return b
+}
+
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) Build() (ErrorReportingSystemCategoryTypeInputUnits, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ErrorReportingSystemCategoryTypeInputUnits.deepCopy(), nil
+	return b._ErrorReportingSystemCategoryTypeInputUnits.deepCopy(), nil
 }
 
-func (m *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) MustBuild() ErrorReportingSystemCategoryTypeInputUnits {
-	build, err := m.Build()
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) MustBuild() ErrorReportingSystemCategoryTypeInputUnits {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) DeepCopy() any {
-	return m.CreateErrorReportingSystemCategoryTypeInputUnitsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) Done() ErrorReportingSystemCategoryTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) buildForErrorReportingSystemCategoryType() (ErrorReportingSystemCategoryType, error) {
+	return b.Build()
+}
+
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) DeepCopy() any {
+	_copy := b.CreateErrorReportingSystemCategoryTypeInputUnitsBuilder().(*_ErrorReportingSystemCategoryTypeInputUnitsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateErrorReportingSystemCategoryTypeInputUnitsBuilder creates a ErrorReportingSystemCategoryTypeInputUnitsBuilder
-func (m *_ErrorReportingSystemCategoryTypeInputUnits) CreateErrorReportingSystemCategoryTypeInputUnitsBuilder() ErrorReportingSystemCategoryTypeInputUnitsBuilder {
-	if m == nil {
+func (b *_ErrorReportingSystemCategoryTypeInputUnits) CreateErrorReportingSystemCategoryTypeInputUnitsBuilder() ErrorReportingSystemCategoryTypeInputUnitsBuilder {
+	if b == nil {
 		return NewErrorReportingSystemCategoryTypeInputUnitsBuilder()
 	}
-	return &_ErrorReportingSystemCategoryTypeInputUnitsBuilder{_ErrorReportingSystemCategoryTypeInputUnits: m.deepCopy()}
+	return &_ErrorReportingSystemCategoryTypeInputUnitsBuilder{_ErrorReportingSystemCategoryTypeInputUnits: b.deepCopy()}
 }
 
 ///////////////////////

@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesEventTypeBuilder() BACnetPropertyStatesEventTypeBuil
 type _BACnetPropertyStatesEventTypeBuilder struct {
 	*_BACnetPropertyStatesEventType
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesEventTypeBuilder) = (*_BACnetPropertyStatesEventTypeBuilder)(nil)
 
-func (m *_BACnetPropertyStatesEventTypeBuilder) WithMandatoryFields(eventType BACnetEventTypeTagged) BACnetPropertyStatesEventTypeBuilder {
-	return m.WithEventType(eventType)
+func (b *_BACnetPropertyStatesEventTypeBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesEventTypeBuilder) WithEventType(eventType BACnetEventTypeTagged) BACnetPropertyStatesEventTypeBuilder {
-	m.EventType = eventType
-	return m
+func (b *_BACnetPropertyStatesEventTypeBuilder) WithMandatoryFields(eventType BACnetEventTypeTagged) BACnetPropertyStatesEventTypeBuilder {
+	return b.WithEventType(eventType)
 }
 
-func (m *_BACnetPropertyStatesEventTypeBuilder) WithEventTypeBuilder(builderSupplier func(BACnetEventTypeTaggedBuilder) BACnetEventTypeTaggedBuilder) BACnetPropertyStatesEventTypeBuilder {
-	builder := builderSupplier(m.EventType.CreateBACnetEventTypeTaggedBuilder())
+func (b *_BACnetPropertyStatesEventTypeBuilder) WithEventType(eventType BACnetEventTypeTagged) BACnetPropertyStatesEventTypeBuilder {
+	b.EventType = eventType
+	return b
+}
+
+func (b *_BACnetPropertyStatesEventTypeBuilder) WithEventTypeBuilder(builderSupplier func(BACnetEventTypeTaggedBuilder) BACnetEventTypeTaggedBuilder) BACnetPropertyStatesEventTypeBuilder {
+	builder := builderSupplier(b.EventType.CreateBACnetEventTypeTaggedBuilder())
 	var err error
-	m.EventType, err = builder.Build()
+	b.EventType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventTypeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventTypeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesEventTypeBuilder) Build() (BACnetPropertyStatesEventType, error) {
-	if m.EventType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesEventTypeBuilder) Build() (BACnetPropertyStatesEventType, error) {
+	if b.EventType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'eventType' not set"))
+		b.err.Append(errors.New("mandatory field 'eventType' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesEventType.deepCopy(), nil
+	return b._BACnetPropertyStatesEventType.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesEventTypeBuilder) MustBuild() BACnetPropertyStatesEventType {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesEventTypeBuilder) MustBuild() BACnetPropertyStatesEventType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesEventTypeBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesEventTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesEventTypeBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesEventTypeBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesEventTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesEventTypeBuilder().(*_BACnetPropertyStatesEventTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesEventTypeBuilder creates a BACnetPropertyStatesEventTypeBuilder
-func (m *_BACnetPropertyStatesEventType) CreateBACnetPropertyStatesEventTypeBuilder() BACnetPropertyStatesEventTypeBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesEventType) CreateBACnetPropertyStatesEventTypeBuilder() BACnetPropertyStatesEventTypeBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesEventTypeBuilder()
 	}
-	return &_BACnetPropertyStatesEventTypeBuilder{_BACnetPropertyStatesEventType: m.deepCopy()}
+	return &_BACnetPropertyStatesEventTypeBuilder{_BACnetPropertyStatesEventType: b.deepCopy()}
 }
 
 ///////////////////////

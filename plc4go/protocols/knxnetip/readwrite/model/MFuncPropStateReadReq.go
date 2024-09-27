@@ -85,40 +85,59 @@ func NewMFuncPropStateReadReqBuilder() MFuncPropStateReadReqBuilder {
 type _MFuncPropStateReadReqBuilder struct {
 	*_MFuncPropStateReadReq
 
+	parentBuilder *_CEMIBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MFuncPropStateReadReqBuilder) = (*_MFuncPropStateReadReqBuilder)(nil)
 
-func (m *_MFuncPropStateReadReqBuilder) WithMandatoryFields() MFuncPropStateReadReqBuilder {
-	return m
+func (b *_MFuncPropStateReadReqBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
 }
 
-func (m *_MFuncPropStateReadReqBuilder) Build() (MFuncPropStateReadReq, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MFuncPropStateReadReqBuilder) WithMandatoryFields() MFuncPropStateReadReqBuilder {
+	return b
+}
+
+func (b *_MFuncPropStateReadReqBuilder) Build() (MFuncPropStateReadReq, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MFuncPropStateReadReq.deepCopy(), nil
+	return b._MFuncPropStateReadReq.deepCopy(), nil
 }
 
-func (m *_MFuncPropStateReadReqBuilder) MustBuild() MFuncPropStateReadReq {
-	build, err := m.Build()
+func (b *_MFuncPropStateReadReqBuilder) MustBuild() MFuncPropStateReadReq {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MFuncPropStateReadReqBuilder) DeepCopy() any {
-	return m.CreateMFuncPropStateReadReqBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MFuncPropStateReadReqBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MFuncPropStateReadReqBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_MFuncPropStateReadReqBuilder) DeepCopy() any {
+	_copy := b.CreateMFuncPropStateReadReqBuilder().(*_MFuncPropStateReadReqBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMFuncPropStateReadReqBuilder creates a MFuncPropStateReadReqBuilder
-func (m *_MFuncPropStateReadReq) CreateMFuncPropStateReadReqBuilder() MFuncPropStateReadReqBuilder {
-	if m == nil {
+func (b *_MFuncPropStateReadReq) CreateMFuncPropStateReadReqBuilder() MFuncPropStateReadReqBuilder {
+	if b == nil {
 		return NewMFuncPropStateReadReqBuilder()
 	}
-	return &_MFuncPropStateReadReqBuilder{_MFuncPropStateReadReq: m.deepCopy()}
+	return &_MFuncPropStateReadReqBuilder{_MFuncPropStateReadReq: b.deepCopy()}
 }
 
 ///////////////////////

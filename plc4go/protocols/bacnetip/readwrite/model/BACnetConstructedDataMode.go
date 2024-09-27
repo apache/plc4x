@@ -100,64 +100,83 @@ func NewBACnetConstructedDataModeBuilder() BACnetConstructedDataModeBuilder {
 type _BACnetConstructedDataModeBuilder struct {
 	*_BACnetConstructedDataMode
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataModeBuilder) = (*_BACnetConstructedDataModeBuilder)(nil)
 
-func (m *_BACnetConstructedDataModeBuilder) WithMandatoryFields(mode BACnetLifeSafetyModeTagged) BACnetConstructedDataModeBuilder {
-	return m.WithMode(mode)
+func (b *_BACnetConstructedDataModeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataModeBuilder) WithMode(mode BACnetLifeSafetyModeTagged) BACnetConstructedDataModeBuilder {
-	m.Mode = mode
-	return m
+func (b *_BACnetConstructedDataModeBuilder) WithMandatoryFields(mode BACnetLifeSafetyModeTagged) BACnetConstructedDataModeBuilder {
+	return b.WithMode(mode)
 }
 
-func (m *_BACnetConstructedDataModeBuilder) WithModeBuilder(builderSupplier func(BACnetLifeSafetyModeTaggedBuilder) BACnetLifeSafetyModeTaggedBuilder) BACnetConstructedDataModeBuilder {
-	builder := builderSupplier(m.Mode.CreateBACnetLifeSafetyModeTaggedBuilder())
+func (b *_BACnetConstructedDataModeBuilder) WithMode(mode BACnetLifeSafetyModeTagged) BACnetConstructedDataModeBuilder {
+	b.Mode = mode
+	return b
+}
+
+func (b *_BACnetConstructedDataModeBuilder) WithModeBuilder(builderSupplier func(BACnetLifeSafetyModeTaggedBuilder) BACnetLifeSafetyModeTaggedBuilder) BACnetConstructedDataModeBuilder {
+	builder := builderSupplier(b.Mode.CreateBACnetLifeSafetyModeTaggedBuilder())
 	var err error
-	m.Mode, err = builder.Build()
+	b.Mode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLifeSafetyModeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLifeSafetyModeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataModeBuilder) Build() (BACnetConstructedDataMode, error) {
-	if m.Mode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataModeBuilder) Build() (BACnetConstructedDataMode, error) {
+	if b.Mode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'mode' not set"))
+		b.err.Append(errors.New("mandatory field 'mode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataMode.deepCopy(), nil
+	return b._BACnetConstructedDataMode.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataModeBuilder) MustBuild() BACnetConstructedDataMode {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataModeBuilder) MustBuild() BACnetConstructedDataMode {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataModeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataModeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataModeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataModeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataModeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataModeBuilder().(*_BACnetConstructedDataModeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataModeBuilder creates a BACnetConstructedDataModeBuilder
-func (m *_BACnetConstructedDataMode) CreateBACnetConstructedDataModeBuilder() BACnetConstructedDataModeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMode) CreateBACnetConstructedDataModeBuilder() BACnetConstructedDataModeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataModeBuilder()
 	}
-	return &_BACnetConstructedDataModeBuilder{_BACnetConstructedDataMode: m.deepCopy()}
+	return &_BACnetConstructedDataModeBuilder{_BACnetConstructedDataMode: b.deepCopy()}
 }
 
 ///////////////////////

@@ -79,6 +79,8 @@ type OpcuaAPUBuilder interface {
 	WithMandatoryFields(message MessagePDU) OpcuaAPUBuilder
 	// WithMessage adds Message (property field)
 	WithMessage(MessagePDU) OpcuaAPUBuilder
+	// WithMessageBuilder adds Message (property field) which is build by the builder
+	WithMessageBuilder(func(MessagePDUBuilder) MessagePDUBuilder) OpcuaAPUBuilder
 	// Build builds the OpcuaAPU or returns an error if something is wrong
 	Build() (OpcuaAPU, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,46 +100,63 @@ type _OpcuaAPUBuilder struct {
 
 var _ (OpcuaAPUBuilder) = (*_OpcuaAPUBuilder)(nil)
 
-func (m *_OpcuaAPUBuilder) WithMandatoryFields(message MessagePDU) OpcuaAPUBuilder {
-	return m.WithMessage(message)
+func (b *_OpcuaAPUBuilder) WithMandatoryFields(message MessagePDU) OpcuaAPUBuilder {
+	return b.WithMessage(message)
 }
 
-func (m *_OpcuaAPUBuilder) WithMessage(message MessagePDU) OpcuaAPUBuilder {
-	m.Message = message
-	return m
+func (b *_OpcuaAPUBuilder) WithMessage(message MessagePDU) OpcuaAPUBuilder {
+	b.Message = message
+	return b
 }
 
-func (m *_OpcuaAPUBuilder) Build() (OpcuaAPU, error) {
-	if m.Message == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_OpcuaAPUBuilder) WithMessageBuilder(builderSupplier func(MessagePDUBuilder) MessagePDUBuilder) OpcuaAPUBuilder {
+	builder := builderSupplier(b.Message.CreateMessagePDUBuilder())
+	var err error
+	b.Message, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'message' not set"))
+		b.err.Append(errors.Wrap(err, "MessagePDUBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._OpcuaAPU.deepCopy(), nil
+	return b
 }
 
-func (m *_OpcuaAPUBuilder) MustBuild() OpcuaAPU {
-	build, err := m.Build()
+func (b *_OpcuaAPUBuilder) Build() (OpcuaAPU, error) {
+	if b.Message == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'message' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._OpcuaAPU.deepCopy(), nil
+}
+
+func (b *_OpcuaAPUBuilder) MustBuild() OpcuaAPU {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_OpcuaAPUBuilder) DeepCopy() any {
-	return m.CreateOpcuaAPUBuilder()
+func (b *_OpcuaAPUBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaAPUBuilder().(*_OpcuaAPUBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateOpcuaAPUBuilder creates a OpcuaAPUBuilder
-func (m *_OpcuaAPU) CreateOpcuaAPUBuilder() OpcuaAPUBuilder {
-	if m == nil {
+func (b *_OpcuaAPU) CreateOpcuaAPUBuilder() OpcuaAPUBuilder {
+	if b == nil {
 		return NewOpcuaAPUBuilder()
 	}
-	return &_OpcuaAPUBuilder{_OpcuaAPU: m.deepCopy()}
+	return &_OpcuaAPUBuilder{_OpcuaAPU: b.deepCopy()}
 }
 
 ///////////////////////

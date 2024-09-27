@@ -93,45 +93,64 @@ func NewMeteringDataOilConsumptionBuilder() MeteringDataOilConsumptionBuilder {
 type _MeteringDataOilConsumptionBuilder struct {
 	*_MeteringDataOilConsumption
 
+	parentBuilder *_MeteringDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MeteringDataOilConsumptionBuilder) = (*_MeteringDataOilConsumptionBuilder)(nil)
 
-func (m *_MeteringDataOilConsumptionBuilder) WithMandatoryFields(L uint32) MeteringDataOilConsumptionBuilder {
-	return m.WithL(L)
+func (b *_MeteringDataOilConsumptionBuilder) setParent(contract MeteringDataContract) {
+	b.MeteringDataContract = contract
 }
 
-func (m *_MeteringDataOilConsumptionBuilder) WithL(L uint32) MeteringDataOilConsumptionBuilder {
-	m.L = L
-	return m
+func (b *_MeteringDataOilConsumptionBuilder) WithMandatoryFields(L uint32) MeteringDataOilConsumptionBuilder {
+	return b.WithL(L)
 }
 
-func (m *_MeteringDataOilConsumptionBuilder) Build() (MeteringDataOilConsumption, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MeteringDataOilConsumptionBuilder) WithL(L uint32) MeteringDataOilConsumptionBuilder {
+	b.L = L
+	return b
+}
+
+func (b *_MeteringDataOilConsumptionBuilder) Build() (MeteringDataOilConsumption, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MeteringDataOilConsumption.deepCopy(), nil
+	return b._MeteringDataOilConsumption.deepCopy(), nil
 }
 
-func (m *_MeteringDataOilConsumptionBuilder) MustBuild() MeteringDataOilConsumption {
-	build, err := m.Build()
+func (b *_MeteringDataOilConsumptionBuilder) MustBuild() MeteringDataOilConsumption {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MeteringDataOilConsumptionBuilder) DeepCopy() any {
-	return m.CreateMeteringDataOilConsumptionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MeteringDataOilConsumptionBuilder) Done() MeteringDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MeteringDataOilConsumptionBuilder) buildForMeteringData() (MeteringData, error) {
+	return b.Build()
+}
+
+func (b *_MeteringDataOilConsumptionBuilder) DeepCopy() any {
+	_copy := b.CreateMeteringDataOilConsumptionBuilder().(*_MeteringDataOilConsumptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMeteringDataOilConsumptionBuilder creates a MeteringDataOilConsumptionBuilder
-func (m *_MeteringDataOilConsumption) CreateMeteringDataOilConsumptionBuilder() MeteringDataOilConsumptionBuilder {
-	if m == nil {
+func (b *_MeteringDataOilConsumption) CreateMeteringDataOilConsumptionBuilder() MeteringDataOilConsumptionBuilder {
+	if b == nil {
 		return NewMeteringDataOilConsumptionBuilder()
 	}
-	return &_MeteringDataOilConsumptionBuilder{_MeteringDataOilConsumption: m.deepCopy()}
+	return &_MeteringDataOilConsumptionBuilder{_MeteringDataOilConsumption: b.deepCopy()}
 }
 
 ///////////////////////

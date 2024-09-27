@@ -98,64 +98,83 @@ func NewBACnetShedLevelPercentBuilder() BACnetShedLevelPercentBuilder {
 type _BACnetShedLevelPercentBuilder struct {
 	*_BACnetShedLevelPercent
 
+	parentBuilder *_BACnetShedLevelBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetShedLevelPercentBuilder) = (*_BACnetShedLevelPercentBuilder)(nil)
 
-func (m *_BACnetShedLevelPercentBuilder) WithMandatoryFields(percent BACnetContextTagUnsignedInteger) BACnetShedLevelPercentBuilder {
-	return m.WithPercent(percent)
+func (b *_BACnetShedLevelPercentBuilder) setParent(contract BACnetShedLevelContract) {
+	b.BACnetShedLevelContract = contract
 }
 
-func (m *_BACnetShedLevelPercentBuilder) WithPercent(percent BACnetContextTagUnsignedInteger) BACnetShedLevelPercentBuilder {
-	m.Percent = percent
-	return m
+func (b *_BACnetShedLevelPercentBuilder) WithMandatoryFields(percent BACnetContextTagUnsignedInteger) BACnetShedLevelPercentBuilder {
+	return b.WithPercent(percent)
 }
 
-func (m *_BACnetShedLevelPercentBuilder) WithPercentBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetShedLevelPercentBuilder {
-	builder := builderSupplier(m.Percent.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetShedLevelPercentBuilder) WithPercent(percent BACnetContextTagUnsignedInteger) BACnetShedLevelPercentBuilder {
+	b.Percent = percent
+	return b
+}
+
+func (b *_BACnetShedLevelPercentBuilder) WithPercentBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetShedLevelPercentBuilder {
+	builder := builderSupplier(b.Percent.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.Percent, err = builder.Build()
+	b.Percent, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetShedLevelPercentBuilder) Build() (BACnetShedLevelPercent, error) {
-	if m.Percent == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetShedLevelPercentBuilder) Build() (BACnetShedLevelPercent, error) {
+	if b.Percent == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'percent' not set"))
+		b.err.Append(errors.New("mandatory field 'percent' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetShedLevelPercent.deepCopy(), nil
+	return b._BACnetShedLevelPercent.deepCopy(), nil
 }
 
-func (m *_BACnetShedLevelPercentBuilder) MustBuild() BACnetShedLevelPercent {
-	build, err := m.Build()
+func (b *_BACnetShedLevelPercentBuilder) MustBuild() BACnetShedLevelPercent {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetShedLevelPercentBuilder) DeepCopy() any {
-	return m.CreateBACnetShedLevelPercentBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetShedLevelPercentBuilder) Done() BACnetShedLevelBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetShedLevelPercentBuilder) buildForBACnetShedLevel() (BACnetShedLevel, error) {
+	return b.Build()
+}
+
+func (b *_BACnetShedLevelPercentBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetShedLevelPercentBuilder().(*_BACnetShedLevelPercentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetShedLevelPercentBuilder creates a BACnetShedLevelPercentBuilder
-func (m *_BACnetShedLevelPercent) CreateBACnetShedLevelPercentBuilder() BACnetShedLevelPercentBuilder {
-	if m == nil {
+func (b *_BACnetShedLevelPercent) CreateBACnetShedLevelPercentBuilder() BACnetShedLevelPercentBuilder {
+	if b == nil {
 		return NewBACnetShedLevelPercentBuilder()
 	}
-	return &_BACnetShedLevelPercentBuilder{_BACnetShedLevelPercent: m.deepCopy()}
+	return &_BACnetShedLevelPercentBuilder{_BACnetShedLevelPercent: b.deepCopy()}
 }
 
 ///////////////////////

@@ -118,107 +118,111 @@ type _BACnetObjectPropertyReferenceEnclosedBuilder struct {
 
 var _ (BACnetObjectPropertyReferenceEnclosedBuilder) = (*_BACnetObjectPropertyReferenceEnclosedBuilder)(nil)
 
-func (m *_BACnetObjectPropertyReferenceEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, objectPropertyReference BACnetObjectPropertyReference, closingTag BACnetClosingTag) BACnetObjectPropertyReferenceEnclosedBuilder {
-	return m.WithOpeningTag(openingTag).WithObjectPropertyReference(objectPropertyReference).WithClosingTag(closingTag)
+func (b *_BACnetObjectPropertyReferenceEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, objectPropertyReference BACnetObjectPropertyReference, closingTag BACnetClosingTag) BACnetObjectPropertyReferenceEnclosedBuilder {
+	return b.WithOpeningTag(openingTag).WithObjectPropertyReference(objectPropertyReference).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetObjectPropertyReferenceEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetObjectPropertyReferenceEnclosedBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetObjectPropertyReferenceEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetObjectPropertyReferenceEnclosedBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetObjectPropertyReferenceEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetObjectPropertyReferenceEnclosedBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetObjectPropertyReferenceEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetObjectPropertyReferenceEnclosedBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetObjectPropertyReferenceEnclosedBuilder) WithObjectPropertyReference(objectPropertyReference BACnetObjectPropertyReference) BACnetObjectPropertyReferenceEnclosedBuilder {
-	m.ObjectPropertyReference = objectPropertyReference
-	return m
+func (b *_BACnetObjectPropertyReferenceEnclosedBuilder) WithObjectPropertyReference(objectPropertyReference BACnetObjectPropertyReference) BACnetObjectPropertyReferenceEnclosedBuilder {
+	b.ObjectPropertyReference = objectPropertyReference
+	return b
 }
 
-func (m *_BACnetObjectPropertyReferenceEnclosedBuilder) WithObjectPropertyReferenceBuilder(builderSupplier func(BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceEnclosedBuilder {
-	builder := builderSupplier(m.ObjectPropertyReference.CreateBACnetObjectPropertyReferenceBuilder())
+func (b *_BACnetObjectPropertyReferenceEnclosedBuilder) WithObjectPropertyReferenceBuilder(builderSupplier func(BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceEnclosedBuilder {
+	builder := builderSupplier(b.ObjectPropertyReference.CreateBACnetObjectPropertyReferenceBuilder())
 	var err error
-	m.ObjectPropertyReference, err = builder.Build()
+	b.ObjectPropertyReference, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetObjectPropertyReferenceEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetObjectPropertyReferenceEnclosedBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetObjectPropertyReferenceEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetObjectPropertyReferenceEnclosedBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetObjectPropertyReferenceEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetObjectPropertyReferenceEnclosedBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetObjectPropertyReferenceEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetObjectPropertyReferenceEnclosedBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetObjectPropertyReferenceEnclosedBuilder) Build() (BACnetObjectPropertyReferenceEnclosed, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetObjectPropertyReferenceEnclosedBuilder) Build() (BACnetObjectPropertyReferenceEnclosed, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ObjectPropertyReference == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ObjectPropertyReference == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectPropertyReference' not set"))
+		b.err.Append(errors.New("mandatory field 'objectPropertyReference' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetObjectPropertyReferenceEnclosed.deepCopy(), nil
+	return b._BACnetObjectPropertyReferenceEnclosed.deepCopy(), nil
 }
 
-func (m *_BACnetObjectPropertyReferenceEnclosedBuilder) MustBuild() BACnetObjectPropertyReferenceEnclosed {
-	build, err := m.Build()
+func (b *_BACnetObjectPropertyReferenceEnclosedBuilder) MustBuild() BACnetObjectPropertyReferenceEnclosed {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetObjectPropertyReferenceEnclosedBuilder) DeepCopy() any {
-	return m.CreateBACnetObjectPropertyReferenceEnclosedBuilder()
+func (b *_BACnetObjectPropertyReferenceEnclosedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetObjectPropertyReferenceEnclosedBuilder().(*_BACnetObjectPropertyReferenceEnclosedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetObjectPropertyReferenceEnclosedBuilder creates a BACnetObjectPropertyReferenceEnclosedBuilder
-func (m *_BACnetObjectPropertyReferenceEnclosed) CreateBACnetObjectPropertyReferenceEnclosedBuilder() BACnetObjectPropertyReferenceEnclosedBuilder {
-	if m == nil {
+func (b *_BACnetObjectPropertyReferenceEnclosed) CreateBACnetObjectPropertyReferenceEnclosedBuilder() BACnetObjectPropertyReferenceEnclosedBuilder {
+	if b == nil {
 		return NewBACnetObjectPropertyReferenceEnclosedBuilder()
 	}
-	return &_BACnetObjectPropertyReferenceEnclosedBuilder{_BACnetObjectPropertyReferenceEnclosed: m.deepCopy()}
+	return &_BACnetObjectPropertyReferenceEnclosedBuilder{_BACnetObjectPropertyReferenceEnclosed: b.deepCopy()}
 }
 
 ///////////////////////

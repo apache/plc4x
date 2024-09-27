@@ -100,64 +100,83 @@ func NewBACnetConstructedDataBinaryInputPresentValueBuilder() BACnetConstructedD
 type _BACnetConstructedDataBinaryInputPresentValueBuilder struct {
 	*_BACnetConstructedDataBinaryInputPresentValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBinaryInputPresentValueBuilder) = (*_BACnetConstructedDataBinaryInputPresentValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataBinaryInputPresentValueBuilder) WithMandatoryFields(presentValue BACnetBinaryPVTagged) BACnetConstructedDataBinaryInputPresentValueBuilder {
-	return m.WithPresentValue(presentValue)
+func (b *_BACnetConstructedDataBinaryInputPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBinaryInputPresentValueBuilder) WithPresentValue(presentValue BACnetBinaryPVTagged) BACnetConstructedDataBinaryInputPresentValueBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetConstructedDataBinaryInputPresentValueBuilder) WithMandatoryFields(presentValue BACnetBinaryPVTagged) BACnetConstructedDataBinaryInputPresentValueBuilder {
+	return b.WithPresentValue(presentValue)
 }
 
-func (m *_BACnetConstructedDataBinaryInputPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataBinaryInputPresentValueBuilder {
-	builder := builderSupplier(m.PresentValue.CreateBACnetBinaryPVTaggedBuilder())
+func (b *_BACnetConstructedDataBinaryInputPresentValueBuilder) WithPresentValue(presentValue BACnetBinaryPVTagged) BACnetConstructedDataBinaryInputPresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataBinaryInputPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataBinaryInputPresentValueBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetBinaryPVTaggedBuilder())
 	var err error
-	m.PresentValue, err = builder.Build()
+	b.PresentValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetBinaryPVTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetBinaryPVTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBinaryInputPresentValueBuilder) Build() (BACnetConstructedDataBinaryInputPresentValue, error) {
-	if m.PresentValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBinaryInputPresentValueBuilder) Build() (BACnetConstructedDataBinaryInputPresentValue, error) {
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBinaryInputPresentValue.deepCopy(), nil
+	return b._BACnetConstructedDataBinaryInputPresentValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBinaryInputPresentValueBuilder) MustBuild() BACnetConstructedDataBinaryInputPresentValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBinaryInputPresentValueBuilder) MustBuild() BACnetConstructedDataBinaryInputPresentValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBinaryInputPresentValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBinaryInputPresentValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBinaryInputPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBinaryInputPresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBinaryInputPresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBinaryInputPresentValueBuilder().(*_BACnetConstructedDataBinaryInputPresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBinaryInputPresentValueBuilder creates a BACnetConstructedDataBinaryInputPresentValueBuilder
-func (m *_BACnetConstructedDataBinaryInputPresentValue) CreateBACnetConstructedDataBinaryInputPresentValueBuilder() BACnetConstructedDataBinaryInputPresentValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBinaryInputPresentValue) CreateBACnetConstructedDataBinaryInputPresentValueBuilder() BACnetConstructedDataBinaryInputPresentValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBinaryInputPresentValueBuilder()
 	}
-	return &_BACnetConstructedDataBinaryInputPresentValueBuilder{_BACnetConstructedDataBinaryInputPresentValue: m.deepCopy()}
+	return &_BACnetConstructedDataBinaryInputPresentValueBuilder{_BACnetConstructedDataBinaryInputPresentValue: b.deepCopy()}
 }
 
 ///////////////////////

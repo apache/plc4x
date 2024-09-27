@@ -105,55 +105,74 @@ func NewModbusPDUWriteMultipleHoldingRegistersRequestBuilder() ModbusPDUWriteMul
 type _ModbusPDUWriteMultipleHoldingRegistersRequestBuilder struct {
 	*_ModbusPDUWriteMultipleHoldingRegistersRequest
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) = (*_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder)(nil)
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16, value []byte) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
-	return m.WithStartingAddress(startingAddress).WithQuantity(quantity).WithValue(value...)
+func (b *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
-	m.StartingAddress = startingAddress
-	return m
+func (b *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16, value []byte) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
+	return b.WithStartingAddress(startingAddress).WithQuantity(quantity).WithValue(value...)
 }
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) WithQuantity(quantity uint16) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
-	m.Quantity = quantity
-	return m
+func (b *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
+	b.StartingAddress = startingAddress
+	return b
 }
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) WithValue(value ...byte) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
-	m.Value = value
-	return m
+func (b *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) WithQuantity(quantity uint16) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
+	b.Quantity = quantity
+	return b
 }
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) Build() (ModbusPDUWriteMultipleHoldingRegistersRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) WithValue(value ...byte) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) Build() (ModbusPDUWriteMultipleHoldingRegistersRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUWriteMultipleHoldingRegistersRequest.deepCopy(), nil
+	return b._ModbusPDUWriteMultipleHoldingRegistersRequest.deepCopy(), nil
 }
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) MustBuild() ModbusPDUWriteMultipleHoldingRegistersRequest {
-	build, err := m.Build()
+func (b *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) MustBuild() ModbusPDUWriteMultipleHoldingRegistersRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) DeepCopy() any {
-	return m.CreateModbusPDUWriteMultipleHoldingRegistersRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUWriteMultipleHoldingRegistersRequestBuilder().(*_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUWriteMultipleHoldingRegistersRequestBuilder creates a ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
-func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) CreateModbusPDUWriteMultipleHoldingRegistersRequestBuilder() ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
-	if m == nil {
+func (b *_ModbusPDUWriteMultipleHoldingRegistersRequest) CreateModbusPDUWriteMultipleHoldingRegistersRequestBuilder() ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
+	if b == nil {
 		return NewModbusPDUWriteMultipleHoldingRegistersRequestBuilder()
 	}
-	return &_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder{_ModbusPDUWriteMultipleHoldingRegistersRequest: m.deepCopy()}
+	return &_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder{_ModbusPDUWriteMultipleHoldingRegistersRequest: b.deepCopy()}
 }
 
 ///////////////////////

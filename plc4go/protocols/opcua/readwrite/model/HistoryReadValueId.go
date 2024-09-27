@@ -131,136 +131,155 @@ func NewHistoryReadValueIdBuilder() HistoryReadValueIdBuilder {
 type _HistoryReadValueIdBuilder struct {
 	*_HistoryReadValueId
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (HistoryReadValueIdBuilder) = (*_HistoryReadValueIdBuilder)(nil)
 
-func (m *_HistoryReadValueIdBuilder) WithMandatoryFields(nodeId NodeId, indexRange PascalString, dataEncoding QualifiedName, continuationPoint PascalByteString) HistoryReadValueIdBuilder {
-	return m.WithNodeId(nodeId).WithIndexRange(indexRange).WithDataEncoding(dataEncoding).WithContinuationPoint(continuationPoint)
+func (b *_HistoryReadValueIdBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_HistoryReadValueIdBuilder) WithNodeId(nodeId NodeId) HistoryReadValueIdBuilder {
-	m.NodeId = nodeId
-	return m
+func (b *_HistoryReadValueIdBuilder) WithMandatoryFields(nodeId NodeId, indexRange PascalString, dataEncoding QualifiedName, continuationPoint PascalByteString) HistoryReadValueIdBuilder {
+	return b.WithNodeId(nodeId).WithIndexRange(indexRange).WithDataEncoding(dataEncoding).WithContinuationPoint(continuationPoint)
 }
 
-func (m *_HistoryReadValueIdBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) HistoryReadValueIdBuilder {
-	builder := builderSupplier(m.NodeId.CreateNodeIdBuilder())
+func (b *_HistoryReadValueIdBuilder) WithNodeId(nodeId NodeId) HistoryReadValueIdBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_HistoryReadValueIdBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) HistoryReadValueIdBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdBuilder())
 	var err error
-	m.NodeId, err = builder.Build()
+	b.NodeId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_HistoryReadValueIdBuilder) WithIndexRange(indexRange PascalString) HistoryReadValueIdBuilder {
-	m.IndexRange = indexRange
-	return m
+func (b *_HistoryReadValueIdBuilder) WithIndexRange(indexRange PascalString) HistoryReadValueIdBuilder {
+	b.IndexRange = indexRange
+	return b
 }
 
-func (m *_HistoryReadValueIdBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) HistoryReadValueIdBuilder {
-	builder := builderSupplier(m.IndexRange.CreatePascalStringBuilder())
+func (b *_HistoryReadValueIdBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) HistoryReadValueIdBuilder {
+	builder := builderSupplier(b.IndexRange.CreatePascalStringBuilder())
 	var err error
-	m.IndexRange, err = builder.Build()
+	b.IndexRange, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_HistoryReadValueIdBuilder) WithDataEncoding(dataEncoding QualifiedName) HistoryReadValueIdBuilder {
-	m.DataEncoding = dataEncoding
-	return m
+func (b *_HistoryReadValueIdBuilder) WithDataEncoding(dataEncoding QualifiedName) HistoryReadValueIdBuilder {
+	b.DataEncoding = dataEncoding
+	return b
 }
 
-func (m *_HistoryReadValueIdBuilder) WithDataEncodingBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) HistoryReadValueIdBuilder {
-	builder := builderSupplier(m.DataEncoding.CreateQualifiedNameBuilder())
+func (b *_HistoryReadValueIdBuilder) WithDataEncodingBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) HistoryReadValueIdBuilder {
+	builder := builderSupplier(b.DataEncoding.CreateQualifiedNameBuilder())
 	var err error
-	m.DataEncoding, err = builder.Build()
+	b.DataEncoding, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_HistoryReadValueIdBuilder) WithContinuationPoint(continuationPoint PascalByteString) HistoryReadValueIdBuilder {
-	m.ContinuationPoint = continuationPoint
-	return m
+func (b *_HistoryReadValueIdBuilder) WithContinuationPoint(continuationPoint PascalByteString) HistoryReadValueIdBuilder {
+	b.ContinuationPoint = continuationPoint
+	return b
 }
 
-func (m *_HistoryReadValueIdBuilder) WithContinuationPointBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) HistoryReadValueIdBuilder {
-	builder := builderSupplier(m.ContinuationPoint.CreatePascalByteStringBuilder())
+func (b *_HistoryReadValueIdBuilder) WithContinuationPointBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) HistoryReadValueIdBuilder {
+	builder := builderSupplier(b.ContinuationPoint.CreatePascalByteStringBuilder())
 	var err error
-	m.ContinuationPoint, err = builder.Build()
+	b.ContinuationPoint, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_HistoryReadValueIdBuilder) Build() (HistoryReadValueId, error) {
-	if m.NodeId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_HistoryReadValueIdBuilder) Build() (HistoryReadValueId, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nodeId' not set"))
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
 	}
-	if m.IndexRange == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.IndexRange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'indexRange' not set"))
+		b.err.Append(errors.New("mandatory field 'indexRange' not set"))
 	}
-	if m.DataEncoding == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.DataEncoding == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dataEncoding' not set"))
+		b.err.Append(errors.New("mandatory field 'dataEncoding' not set"))
 	}
-	if m.ContinuationPoint == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ContinuationPoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'continuationPoint' not set"))
+		b.err.Append(errors.New("mandatory field 'continuationPoint' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HistoryReadValueId.deepCopy(), nil
+	return b._HistoryReadValueId.deepCopy(), nil
 }
 
-func (m *_HistoryReadValueIdBuilder) MustBuild() HistoryReadValueId {
-	build, err := m.Build()
+func (b *_HistoryReadValueIdBuilder) MustBuild() HistoryReadValueId {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HistoryReadValueIdBuilder) DeepCopy() any {
-	return m.CreateHistoryReadValueIdBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryReadValueIdBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryReadValueIdBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryReadValueIdBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryReadValueIdBuilder().(*_HistoryReadValueIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHistoryReadValueIdBuilder creates a HistoryReadValueIdBuilder
-func (m *_HistoryReadValueId) CreateHistoryReadValueIdBuilder() HistoryReadValueIdBuilder {
-	if m == nil {
+func (b *_HistoryReadValueId) CreateHistoryReadValueIdBuilder() HistoryReadValueIdBuilder {
+	if b == nil {
 		return NewHistoryReadValueIdBuilder()
 	}
-	return &_HistoryReadValueIdBuilder{_HistoryReadValueId: m.deepCopy()}
+	return &_HistoryReadValueIdBuilder{_HistoryReadValueId: b.deepCopy()}
 }
 
 ///////////////////////

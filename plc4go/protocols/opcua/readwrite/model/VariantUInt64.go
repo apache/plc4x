@@ -99,50 +99,69 @@ func NewVariantUInt64Builder() VariantUInt64Builder {
 type _VariantUInt64Builder struct {
 	*_VariantUInt64
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantUInt64Builder) = (*_VariantUInt64Builder)(nil)
 
-func (m *_VariantUInt64Builder) WithMandatoryFields(value []uint64) VariantUInt64Builder {
-	return m.WithValue(value...)
+func (b *_VariantUInt64Builder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantUInt64Builder) WithOptionalArrayLength(arrayLength int32) VariantUInt64Builder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantUInt64Builder) WithMandatoryFields(value []uint64) VariantUInt64Builder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantUInt64Builder) WithValue(value ...uint64) VariantUInt64Builder {
-	m.Value = value
-	return m
+func (b *_VariantUInt64Builder) WithOptionalArrayLength(arrayLength int32) VariantUInt64Builder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantUInt64Builder) Build() (VariantUInt64, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantUInt64Builder) WithValue(value ...uint64) VariantUInt64Builder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantUInt64Builder) Build() (VariantUInt64, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantUInt64.deepCopy(), nil
+	return b._VariantUInt64.deepCopy(), nil
 }
 
-func (m *_VariantUInt64Builder) MustBuild() VariantUInt64 {
-	build, err := m.Build()
+func (b *_VariantUInt64Builder) MustBuild() VariantUInt64 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantUInt64Builder) DeepCopy() any {
-	return m.CreateVariantUInt64Builder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantUInt64Builder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantUInt64Builder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantUInt64Builder) DeepCopy() any {
+	_copy := b.CreateVariantUInt64Builder().(*_VariantUInt64Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantUInt64Builder creates a VariantUInt64Builder
-func (m *_VariantUInt64) CreateVariantUInt64Builder() VariantUInt64Builder {
-	if m == nil {
+func (b *_VariantUInt64) CreateVariantUInt64Builder() VariantUInt64Builder {
+	if b == nil {
 		return NewVariantUInt64Builder()
 	}
-	return &_VariantUInt64Builder{_VariantUInt64: m.deepCopy()}
+	return &_VariantUInt64Builder{_VariantUInt64: b.deepCopy()}
 }
 
 ///////////////////////

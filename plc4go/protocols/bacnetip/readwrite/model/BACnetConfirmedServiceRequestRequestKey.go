@@ -96,45 +96,64 @@ func NewBACnetConfirmedServiceRequestRequestKeyBuilder() BACnetConfirmedServiceR
 type _BACnetConfirmedServiceRequestRequestKeyBuilder struct {
 	*_BACnetConfirmedServiceRequestRequestKey
 
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestRequestKeyBuilder) = (*_BACnetConfirmedServiceRequestRequestKeyBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestRequestKeyBuilder) WithMandatoryFields(bytesOfRemovedService []byte) BACnetConfirmedServiceRequestRequestKeyBuilder {
-	return m.WithBytesOfRemovedService(bytesOfRemovedService...)
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestRequestKeyBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetConfirmedServiceRequestRequestKeyBuilder {
-	m.BytesOfRemovedService = bytesOfRemovedService
-	return m
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) WithMandatoryFields(bytesOfRemovedService []byte) BACnetConfirmedServiceRequestRequestKeyBuilder {
+	return b.WithBytesOfRemovedService(bytesOfRemovedService...)
 }
 
-func (m *_BACnetConfirmedServiceRequestRequestKeyBuilder) Build() (BACnetConfirmedServiceRequestRequestKey, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetConfirmedServiceRequestRequestKeyBuilder {
+	b.BytesOfRemovedService = bytesOfRemovedService
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) Build() (BACnetConfirmedServiceRequestRequestKey, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestRequestKey.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestRequestKey.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestRequestKeyBuilder) MustBuild() BACnetConfirmedServiceRequestRequestKey {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) MustBuild() BACnetConfirmedServiceRequestRequestKey {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestRequestKeyBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestRequestKeyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestRequestKeyBuilder().(*_BACnetConfirmedServiceRequestRequestKeyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestRequestKeyBuilder creates a BACnetConfirmedServiceRequestRequestKeyBuilder
-func (m *_BACnetConfirmedServiceRequestRequestKey) CreateBACnetConfirmedServiceRequestRequestKeyBuilder() BACnetConfirmedServiceRequestRequestKeyBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestRequestKey) CreateBACnetConfirmedServiceRequestRequestKeyBuilder() BACnetConfirmedServiceRequestRequestKeyBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestRequestKeyBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestRequestKeyBuilder{_BACnetConfirmedServiceRequestRequestKey: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestRequestKeyBuilder{_BACnetConfirmedServiceRequestRequestKey: b.deepCopy()}
 }
 
 ///////////////////////

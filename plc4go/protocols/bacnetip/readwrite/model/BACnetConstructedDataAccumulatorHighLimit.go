@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAccumulatorHighLimitBuilder() BACnetConstructedData
 type _BACnetConstructedDataAccumulatorHighLimitBuilder struct {
 	*_BACnetConstructedDataAccumulatorHighLimit
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccumulatorHighLimitBuilder) = (*_BACnetConstructedDataAccumulatorHighLimitBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccumulatorHighLimitBuilder) WithMandatoryFields(highLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorHighLimitBuilder {
-	return m.WithHighLimit(highLimit)
+func (b *_BACnetConstructedDataAccumulatorHighLimitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccumulatorHighLimitBuilder) WithHighLimit(highLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorHighLimitBuilder {
-	m.HighLimit = highLimit
-	return m
+func (b *_BACnetConstructedDataAccumulatorHighLimitBuilder) WithMandatoryFields(highLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorHighLimitBuilder {
+	return b.WithHighLimit(highLimit)
 }
 
-func (m *_BACnetConstructedDataAccumulatorHighLimitBuilder) WithHighLimitBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccumulatorHighLimitBuilder {
-	builder := builderSupplier(m.HighLimit.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataAccumulatorHighLimitBuilder) WithHighLimit(highLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorHighLimitBuilder {
+	b.HighLimit = highLimit
+	return b
+}
+
+func (b *_BACnetConstructedDataAccumulatorHighLimitBuilder) WithHighLimitBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccumulatorHighLimitBuilder {
+	builder := builderSupplier(b.HighLimit.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.HighLimit, err = builder.Build()
+	b.HighLimit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAccumulatorHighLimitBuilder) Build() (BACnetConstructedDataAccumulatorHighLimit, error) {
-	if m.HighLimit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAccumulatorHighLimitBuilder) Build() (BACnetConstructedDataAccumulatorHighLimit, error) {
+	if b.HighLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'highLimit' not set"))
+		b.err.Append(errors.New("mandatory field 'highLimit' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAccumulatorHighLimit.deepCopy(), nil
+	return b._BACnetConstructedDataAccumulatorHighLimit.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAccumulatorHighLimitBuilder) MustBuild() BACnetConstructedDataAccumulatorHighLimit {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccumulatorHighLimitBuilder) MustBuild() BACnetConstructedDataAccumulatorHighLimit {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccumulatorHighLimitBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccumulatorHighLimitBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccumulatorHighLimitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccumulatorHighLimitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccumulatorHighLimitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccumulatorHighLimitBuilder().(*_BACnetConstructedDataAccumulatorHighLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccumulatorHighLimitBuilder creates a BACnetConstructedDataAccumulatorHighLimitBuilder
-func (m *_BACnetConstructedDataAccumulatorHighLimit) CreateBACnetConstructedDataAccumulatorHighLimitBuilder() BACnetConstructedDataAccumulatorHighLimitBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccumulatorHighLimit) CreateBACnetConstructedDataAccumulatorHighLimitBuilder() BACnetConstructedDataAccumulatorHighLimitBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccumulatorHighLimitBuilder()
 	}
-	return &_BACnetConstructedDataAccumulatorHighLimitBuilder{_BACnetConstructedDataAccumulatorHighLimit: m.deepCopy()}
+	return &_BACnetConstructedDataAccumulatorHighLimitBuilder{_BACnetConstructedDataAccumulatorHighLimit: b.deepCopy()}
 }
 
 ///////////////////////

@@ -82,6 +82,8 @@ type ApduDataOtherBuilder interface {
 	WithMandatoryFields(extendedApdu ApduDataExt) ApduDataOtherBuilder
 	// WithExtendedApdu adds ExtendedApdu (property field)
 	WithExtendedApdu(ApduDataExt) ApduDataOtherBuilder
+	// WithExtendedApduBuilder adds ExtendedApdu (property field) which is build by the builder
+	WithExtendedApduBuilder(func(ApduDataExtBuilder) ApduDataExtBuilder) ApduDataOtherBuilder
 	// Build builds the ApduDataOther or returns an error if something is wrong
 	Build() (ApduDataOther, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewApduDataOtherBuilder() ApduDataOtherBuilder {
 type _ApduDataOtherBuilder struct {
 	*_ApduDataOther
 
+	parentBuilder *_ApduDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataOtherBuilder) = (*_ApduDataOtherBuilder)(nil)
 
-func (m *_ApduDataOtherBuilder) WithMandatoryFields(extendedApdu ApduDataExt) ApduDataOtherBuilder {
-	return m.WithExtendedApdu(extendedApdu)
+func (b *_ApduDataOtherBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
 }
 
-func (m *_ApduDataOtherBuilder) WithExtendedApdu(extendedApdu ApduDataExt) ApduDataOtherBuilder {
-	m.ExtendedApdu = extendedApdu
-	return m
+func (b *_ApduDataOtherBuilder) WithMandatoryFields(extendedApdu ApduDataExt) ApduDataOtherBuilder {
+	return b.WithExtendedApdu(extendedApdu)
 }
 
-func (m *_ApduDataOtherBuilder) Build() (ApduDataOther, error) {
-	if m.ExtendedApdu == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ApduDataOtherBuilder) WithExtendedApdu(extendedApdu ApduDataExt) ApduDataOtherBuilder {
+	b.ExtendedApdu = extendedApdu
+	return b
+}
+
+func (b *_ApduDataOtherBuilder) WithExtendedApduBuilder(builderSupplier func(ApduDataExtBuilder) ApduDataExtBuilder) ApduDataOtherBuilder {
+	builder := builderSupplier(b.ExtendedApdu.CreateApduDataExtBuilder())
+	var err error
+	b.ExtendedApdu, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'extendedApdu' not set"))
+		b.err.Append(errors.Wrap(err, "ApduDataExtBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._ApduDataOther.deepCopy(), nil
+	return b
 }
 
-func (m *_ApduDataOtherBuilder) MustBuild() ApduDataOther {
-	build, err := m.Build()
+func (b *_ApduDataOtherBuilder) Build() (ApduDataOther, error) {
+	if b.ExtendedApdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'extendedApdu' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduDataOther.deepCopy(), nil
+}
+
+func (b *_ApduDataOtherBuilder) MustBuild() ApduDataOther {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataOtherBuilder) DeepCopy() any {
-	return m.CreateApduDataOtherBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataOtherBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataOtherBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataOtherBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataOtherBuilder().(*_ApduDataOtherBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataOtherBuilder creates a ApduDataOtherBuilder
-func (m *_ApduDataOther) CreateApduDataOtherBuilder() ApduDataOtherBuilder {
-	if m == nil {
+func (b *_ApduDataOther) CreateApduDataOtherBuilder() ApduDataOtherBuilder {
+	if b == nil {
 		return NewApduDataOtherBuilder()
 	}
-	return &_ApduDataOtherBuilder{_ApduDataOther: m.deepCopy()}
+	return &_ApduDataOtherBuilder{_ApduDataOther: b.deepCopy()}
 }
 
 ///////////////////////

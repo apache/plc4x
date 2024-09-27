@@ -93,45 +93,64 @@ func NewCOTPParameterCallingTsapBuilder() COTPParameterCallingTsapBuilder {
 type _COTPParameterCallingTsapBuilder struct {
 	*_COTPParameterCallingTsap
 
+	parentBuilder *_COTPParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (COTPParameterCallingTsapBuilder) = (*_COTPParameterCallingTsapBuilder)(nil)
 
-func (m *_COTPParameterCallingTsapBuilder) WithMandatoryFields(tsapId uint16) COTPParameterCallingTsapBuilder {
-	return m.WithTsapId(tsapId)
+func (b *_COTPParameterCallingTsapBuilder) setParent(contract COTPParameterContract) {
+	b.COTPParameterContract = contract
 }
 
-func (m *_COTPParameterCallingTsapBuilder) WithTsapId(tsapId uint16) COTPParameterCallingTsapBuilder {
-	m.TsapId = tsapId
-	return m
+func (b *_COTPParameterCallingTsapBuilder) WithMandatoryFields(tsapId uint16) COTPParameterCallingTsapBuilder {
+	return b.WithTsapId(tsapId)
 }
 
-func (m *_COTPParameterCallingTsapBuilder) Build() (COTPParameterCallingTsap, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_COTPParameterCallingTsapBuilder) WithTsapId(tsapId uint16) COTPParameterCallingTsapBuilder {
+	b.TsapId = tsapId
+	return b
+}
+
+func (b *_COTPParameterCallingTsapBuilder) Build() (COTPParameterCallingTsap, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._COTPParameterCallingTsap.deepCopy(), nil
+	return b._COTPParameterCallingTsap.deepCopy(), nil
 }
 
-func (m *_COTPParameterCallingTsapBuilder) MustBuild() COTPParameterCallingTsap {
-	build, err := m.Build()
+func (b *_COTPParameterCallingTsapBuilder) MustBuild() COTPParameterCallingTsap {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_COTPParameterCallingTsapBuilder) DeepCopy() any {
-	return m.CreateCOTPParameterCallingTsapBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_COTPParameterCallingTsapBuilder) Done() COTPParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_COTPParameterCallingTsapBuilder) buildForCOTPParameter() (COTPParameter, error) {
+	return b.Build()
+}
+
+func (b *_COTPParameterCallingTsapBuilder) DeepCopy() any {
+	_copy := b.CreateCOTPParameterCallingTsapBuilder().(*_COTPParameterCallingTsapBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCOTPParameterCallingTsapBuilder creates a COTPParameterCallingTsapBuilder
-func (m *_COTPParameterCallingTsap) CreateCOTPParameterCallingTsapBuilder() COTPParameterCallingTsapBuilder {
-	if m == nil {
+func (b *_COTPParameterCallingTsap) CreateCOTPParameterCallingTsapBuilder() COTPParameterCallingTsapBuilder {
+	if b == nil {
 		return NewCOTPParameterCallingTsapBuilder()
 	}
-	return &_COTPParameterCallingTsapBuilder{_COTPParameterCallingTsap: m.deepCopy()}
+	return &_COTPParameterCallingTsapBuilder{_COTPParameterCallingTsap: b.deepCopy()}
 }
 
 ///////////////////////

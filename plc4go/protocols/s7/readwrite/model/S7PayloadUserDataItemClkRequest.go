@@ -85,40 +85,59 @@ func NewS7PayloadUserDataItemClkRequestBuilder() S7PayloadUserDataItemClkRequest
 type _S7PayloadUserDataItemClkRequestBuilder struct {
 	*_S7PayloadUserDataItemClkRequest
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadUserDataItemClkRequestBuilder) = (*_S7PayloadUserDataItemClkRequestBuilder)(nil)
 
-func (m *_S7PayloadUserDataItemClkRequestBuilder) WithMandatoryFields() S7PayloadUserDataItemClkRequestBuilder {
-	return m
+func (b *_S7PayloadUserDataItemClkRequestBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadUserDataItemClkRequestBuilder) Build() (S7PayloadUserDataItemClkRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7PayloadUserDataItemClkRequestBuilder) WithMandatoryFields() S7PayloadUserDataItemClkRequestBuilder {
+	return b
+}
+
+func (b *_S7PayloadUserDataItemClkRequestBuilder) Build() (S7PayloadUserDataItemClkRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadUserDataItemClkRequest.deepCopy(), nil
+	return b._S7PayloadUserDataItemClkRequest.deepCopy(), nil
 }
 
-func (m *_S7PayloadUserDataItemClkRequestBuilder) MustBuild() S7PayloadUserDataItemClkRequest {
-	build, err := m.Build()
+func (b *_S7PayloadUserDataItemClkRequestBuilder) MustBuild() S7PayloadUserDataItemClkRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadUserDataItemClkRequestBuilder) DeepCopy() any {
-	return m.CreateS7PayloadUserDataItemClkRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemClkRequestBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemClkRequestBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemClkRequestBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemClkRequestBuilder().(*_S7PayloadUserDataItemClkRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadUserDataItemClkRequestBuilder creates a S7PayloadUserDataItemClkRequestBuilder
-func (m *_S7PayloadUserDataItemClkRequest) CreateS7PayloadUserDataItemClkRequestBuilder() S7PayloadUserDataItemClkRequestBuilder {
-	if m == nil {
+func (b *_S7PayloadUserDataItemClkRequest) CreateS7PayloadUserDataItemClkRequestBuilder() S7PayloadUserDataItemClkRequestBuilder {
+	if b == nil {
 		return NewS7PayloadUserDataItemClkRequestBuilder()
 	}
-	return &_S7PayloadUserDataItemClkRequestBuilder{_S7PayloadUserDataItemClkRequest: m.deepCopy()}
+	return &_S7PayloadUserDataItemClkRequestBuilder{_S7PayloadUserDataItemClkRequest: b.deepCopy()}
 }
 
 ///////////////////////

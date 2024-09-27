@@ -82,6 +82,8 @@ type S7VarRequestParameterItemAddressBuilder interface {
 	WithMandatoryFields(address S7Address) S7VarRequestParameterItemAddressBuilder
 	// WithAddress adds Address (property field)
 	WithAddress(S7Address) S7VarRequestParameterItemAddressBuilder
+	// WithAddressBuilder adds Address (property field) which is build by the builder
+	WithAddressBuilder(func(S7AddressBuilder) S7AddressBuilder) S7VarRequestParameterItemAddressBuilder
 	// Build builds the S7VarRequestParameterItemAddress or returns an error if something is wrong
 	Build() (S7VarRequestParameterItemAddress, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewS7VarRequestParameterItemAddressBuilder() S7VarRequestParameterItemAddre
 type _S7VarRequestParameterItemAddressBuilder struct {
 	*_S7VarRequestParameterItemAddress
 
+	parentBuilder *_S7VarRequestParameterItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7VarRequestParameterItemAddressBuilder) = (*_S7VarRequestParameterItemAddressBuilder)(nil)
 
-func (m *_S7VarRequestParameterItemAddressBuilder) WithMandatoryFields(address S7Address) S7VarRequestParameterItemAddressBuilder {
-	return m.WithAddress(address)
+func (b *_S7VarRequestParameterItemAddressBuilder) setParent(contract S7VarRequestParameterItemContract) {
+	b.S7VarRequestParameterItemContract = contract
 }
 
-func (m *_S7VarRequestParameterItemAddressBuilder) WithAddress(address S7Address) S7VarRequestParameterItemAddressBuilder {
-	m.Address = address
-	return m
+func (b *_S7VarRequestParameterItemAddressBuilder) WithMandatoryFields(address S7Address) S7VarRequestParameterItemAddressBuilder {
+	return b.WithAddress(address)
 }
 
-func (m *_S7VarRequestParameterItemAddressBuilder) Build() (S7VarRequestParameterItemAddress, error) {
-	if m.Address == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_S7VarRequestParameterItemAddressBuilder) WithAddress(address S7Address) S7VarRequestParameterItemAddressBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_S7VarRequestParameterItemAddressBuilder) WithAddressBuilder(builderSupplier func(S7AddressBuilder) S7AddressBuilder) S7VarRequestParameterItemAddressBuilder {
+	builder := builderSupplier(b.Address.CreateS7AddressBuilder())
+	var err error
+	b.Address, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'address' not set"))
+		b.err.Append(errors.Wrap(err, "S7AddressBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._S7VarRequestParameterItemAddress.deepCopy(), nil
+	return b
 }
 
-func (m *_S7VarRequestParameterItemAddressBuilder) MustBuild() S7VarRequestParameterItemAddress {
-	build, err := m.Build()
+func (b *_S7VarRequestParameterItemAddressBuilder) Build() (S7VarRequestParameterItemAddress, error) {
+	if b.Address == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'address' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7VarRequestParameterItemAddress.deepCopy(), nil
+}
+
+func (b *_S7VarRequestParameterItemAddressBuilder) MustBuild() S7VarRequestParameterItemAddress {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7VarRequestParameterItemAddressBuilder) DeepCopy() any {
-	return m.CreateS7VarRequestParameterItemAddressBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7VarRequestParameterItemAddressBuilder) Done() S7VarRequestParameterItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7VarRequestParameterItemAddressBuilder) buildForS7VarRequestParameterItem() (S7VarRequestParameterItem, error) {
+	return b.Build()
+}
+
+func (b *_S7VarRequestParameterItemAddressBuilder) DeepCopy() any {
+	_copy := b.CreateS7VarRequestParameterItemAddressBuilder().(*_S7VarRequestParameterItemAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7VarRequestParameterItemAddressBuilder creates a S7VarRequestParameterItemAddressBuilder
-func (m *_S7VarRequestParameterItemAddress) CreateS7VarRequestParameterItemAddressBuilder() S7VarRequestParameterItemAddressBuilder {
-	if m == nil {
+func (b *_S7VarRequestParameterItemAddress) CreateS7VarRequestParameterItemAddressBuilder() S7VarRequestParameterItemAddressBuilder {
+	if b == nil {
 		return NewS7VarRequestParameterItemAddressBuilder()
 	}
-	return &_S7VarRequestParameterItemAddressBuilder{_S7VarRequestParameterItemAddress: m.deepCopy()}
+	return &_S7VarRequestParameterItemAddressBuilder{_S7VarRequestParameterItemAddress: b.deepCopy()}
 }
 
 ///////////////////////

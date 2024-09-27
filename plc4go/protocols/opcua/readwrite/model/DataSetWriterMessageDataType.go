@@ -85,40 +85,59 @@ func NewDataSetWriterMessageDataTypeBuilder() DataSetWriterMessageDataTypeBuilde
 type _DataSetWriterMessageDataTypeBuilder struct {
 	*_DataSetWriterMessageDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DataSetWriterMessageDataTypeBuilder) = (*_DataSetWriterMessageDataTypeBuilder)(nil)
 
-func (m *_DataSetWriterMessageDataTypeBuilder) WithMandatoryFields() DataSetWriterMessageDataTypeBuilder {
-	return m
+func (b *_DataSetWriterMessageDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_DataSetWriterMessageDataTypeBuilder) Build() (DataSetWriterMessageDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DataSetWriterMessageDataTypeBuilder) WithMandatoryFields() DataSetWriterMessageDataTypeBuilder {
+	return b
+}
+
+func (b *_DataSetWriterMessageDataTypeBuilder) Build() (DataSetWriterMessageDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DataSetWriterMessageDataType.deepCopy(), nil
+	return b._DataSetWriterMessageDataType.deepCopy(), nil
 }
 
-func (m *_DataSetWriterMessageDataTypeBuilder) MustBuild() DataSetWriterMessageDataType {
-	build, err := m.Build()
+func (b *_DataSetWriterMessageDataTypeBuilder) MustBuild() DataSetWriterMessageDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DataSetWriterMessageDataTypeBuilder) DeepCopy() any {
-	return m.CreateDataSetWriterMessageDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DataSetWriterMessageDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DataSetWriterMessageDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DataSetWriterMessageDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateDataSetWriterMessageDataTypeBuilder().(*_DataSetWriterMessageDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDataSetWriterMessageDataTypeBuilder creates a DataSetWriterMessageDataTypeBuilder
-func (m *_DataSetWriterMessageDataType) CreateDataSetWriterMessageDataTypeBuilder() DataSetWriterMessageDataTypeBuilder {
-	if m == nil {
+func (b *_DataSetWriterMessageDataType) CreateDataSetWriterMessageDataTypeBuilder() DataSetWriterMessageDataTypeBuilder {
+	if b == nil {
 		return NewDataSetWriterMessageDataTypeBuilder()
 	}
-	return &_DataSetWriterMessageDataTypeBuilder{_DataSetWriterMessageDataType: m.deepCopy()}
+	return &_DataSetWriterMessageDataTypeBuilder{_DataSetWriterMessageDataType: b.deepCopy()}
 }
 
 ///////////////////////

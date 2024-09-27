@@ -100,50 +100,54 @@ type _NLMUpdateKeyUpdateKeyEntryBuilder struct {
 
 var _ (NLMUpdateKeyUpdateKeyEntryBuilder) = (*_NLMUpdateKeyUpdateKeyEntryBuilder)(nil)
 
-func (m *_NLMUpdateKeyUpdateKeyEntryBuilder) WithMandatoryFields(keyIdentifier uint16, keySize uint8, key []byte) NLMUpdateKeyUpdateKeyEntryBuilder {
-	return m.WithKeyIdentifier(keyIdentifier).WithKeySize(keySize).WithKey(key...)
+func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) WithMandatoryFields(keyIdentifier uint16, keySize uint8, key []byte) NLMUpdateKeyUpdateKeyEntryBuilder {
+	return b.WithKeyIdentifier(keyIdentifier).WithKeySize(keySize).WithKey(key...)
 }
 
-func (m *_NLMUpdateKeyUpdateKeyEntryBuilder) WithKeyIdentifier(keyIdentifier uint16) NLMUpdateKeyUpdateKeyEntryBuilder {
-	m.KeyIdentifier = keyIdentifier
-	return m
+func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) WithKeyIdentifier(keyIdentifier uint16) NLMUpdateKeyUpdateKeyEntryBuilder {
+	b.KeyIdentifier = keyIdentifier
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateKeyEntryBuilder) WithKeySize(keySize uint8) NLMUpdateKeyUpdateKeyEntryBuilder {
-	m.KeySize = keySize
-	return m
+func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) WithKeySize(keySize uint8) NLMUpdateKeyUpdateKeyEntryBuilder {
+	b.KeySize = keySize
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateKeyEntryBuilder) WithKey(key ...byte) NLMUpdateKeyUpdateKeyEntryBuilder {
-	m.Key = key
-	return m
+func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) WithKey(key ...byte) NLMUpdateKeyUpdateKeyEntryBuilder {
+	b.Key = key
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateKeyEntryBuilder) Build() (NLMUpdateKeyUpdateKeyEntry, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) Build() (NLMUpdateKeyUpdateKeyEntry, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMUpdateKeyUpdateKeyEntry.deepCopy(), nil
+	return b._NLMUpdateKeyUpdateKeyEntry.deepCopy(), nil
 }
 
-func (m *_NLMUpdateKeyUpdateKeyEntryBuilder) MustBuild() NLMUpdateKeyUpdateKeyEntry {
-	build, err := m.Build()
+func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) MustBuild() NLMUpdateKeyUpdateKeyEntry {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMUpdateKeyUpdateKeyEntryBuilder) DeepCopy() any {
-	return m.CreateNLMUpdateKeyUpdateKeyEntryBuilder()
+func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) DeepCopy() any {
+	_copy := b.CreateNLMUpdateKeyUpdateKeyEntryBuilder().(*_NLMUpdateKeyUpdateKeyEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMUpdateKeyUpdateKeyEntryBuilder creates a NLMUpdateKeyUpdateKeyEntryBuilder
-func (m *_NLMUpdateKeyUpdateKeyEntry) CreateNLMUpdateKeyUpdateKeyEntryBuilder() NLMUpdateKeyUpdateKeyEntryBuilder {
-	if m == nil {
+func (b *_NLMUpdateKeyUpdateKeyEntry) CreateNLMUpdateKeyUpdateKeyEntryBuilder() NLMUpdateKeyUpdateKeyEntryBuilder {
+	if b == nil {
 		return NewNLMUpdateKeyUpdateKeyEntryBuilder()
 	}
-	return &_NLMUpdateKeyUpdateKeyEntryBuilder{_NLMUpdateKeyUpdateKeyEntry: m.deepCopy()}
+	return &_NLMUpdateKeyUpdateKeyEntryBuilder{_NLMUpdateKeyUpdateKeyEntry: b.deepCopy()}
 }
 
 ///////////////////////

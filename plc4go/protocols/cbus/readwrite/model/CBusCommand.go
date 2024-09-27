@@ -106,10 +106,34 @@ type CBusCommandBuilder interface {
 	WithHeader(CBusHeader) CBusCommandBuilder
 	// WithHeaderBuilder adds Header (property field) which is build by the builder
 	WithHeaderBuilder(func(CBusHeaderBuilder) CBusHeaderBuilder) CBusCommandBuilder
+	// AsCBusCommandDeviceManagement converts this build to a subType of CBusCommand. It is always possible to return to current builder using Done()
+	AsCBusCommandDeviceManagement() interface {
+		CBusCommandDeviceManagementBuilder
+		Done() CBusCommandBuilder
+	}
+	// AsCBusCommandPointToPointToMultiPoint converts this build to a subType of CBusCommand. It is always possible to return to current builder using Done()
+	AsCBusCommandPointToPointToMultiPoint() interface {
+		CBusCommandPointToPointToMultiPointBuilder
+		Done() CBusCommandBuilder
+	}
+	// AsCBusCommandPointToMultiPoint converts this build to a subType of CBusCommand. It is always possible to return to current builder using Done()
+	AsCBusCommandPointToMultiPoint() interface {
+		CBusCommandPointToMultiPointBuilder
+		Done() CBusCommandBuilder
+	}
+	// AsCBusCommandPointToPoint converts this build to a subType of CBusCommand. It is always possible to return to current builder using Done()
+	AsCBusCommandPointToPoint() interface {
+		CBusCommandPointToPointBuilder
+		Done() CBusCommandBuilder
+	}
 	// Build builds the CBusCommand or returns an error if something is wrong
-	Build() (CBusCommandContract, error)
+	PartialBuild() (CBusCommandContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() CBusCommandContract
+	PartialMustBuild() CBusCommandContract
+	// Build builds the CBusCommand or returns an error if something is wrong
+	Build() (CBusCommand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusCommand
 }
 
 // NewCBusCommandBuilder() creates a CBusCommandBuilder
@@ -117,67 +141,165 @@ func NewCBusCommandBuilder() CBusCommandBuilder {
 	return &_CBusCommandBuilder{_CBusCommand: new(_CBusCommand)}
 }
 
+type _CBusCommandChildBuilder interface {
+	utils.Copyable
+	setParent(CBusCommandContract)
+	buildForCBusCommand() (CBusCommand, error)
+}
+
 type _CBusCommandBuilder struct {
 	*_CBusCommand
+
+	childBuilder _CBusCommandChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (CBusCommandBuilder) = (*_CBusCommandBuilder)(nil)
 
-func (m *_CBusCommandBuilder) WithMandatoryFields(header CBusHeader) CBusCommandBuilder {
-	return m.WithHeader(header)
+func (b *_CBusCommandBuilder) WithMandatoryFields(header CBusHeader) CBusCommandBuilder {
+	return b.WithHeader(header)
 }
 
-func (m *_CBusCommandBuilder) WithHeader(header CBusHeader) CBusCommandBuilder {
-	m.Header = header
-	return m
+func (b *_CBusCommandBuilder) WithHeader(header CBusHeader) CBusCommandBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_CBusCommandBuilder) WithHeaderBuilder(builderSupplier func(CBusHeaderBuilder) CBusHeaderBuilder) CBusCommandBuilder {
-	builder := builderSupplier(m.Header.CreateCBusHeaderBuilder())
+func (b *_CBusCommandBuilder) WithHeaderBuilder(builderSupplier func(CBusHeaderBuilder) CBusHeaderBuilder) CBusCommandBuilder {
+	builder := builderSupplier(b.Header.CreateCBusHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "CBusHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "CBusHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CBusCommandBuilder) Build() (CBusCommandContract, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CBusCommandBuilder) PartialBuild() (CBusCommandContract, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CBusCommand.deepCopy(), nil
+	return b._CBusCommand.deepCopy(), nil
 }
 
-func (m *_CBusCommandBuilder) MustBuild() CBusCommandContract {
-	build, err := m.Build()
+func (b *_CBusCommandBuilder) PartialMustBuild() CBusCommandContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CBusCommandBuilder) DeepCopy() any {
-	return m.CreateCBusCommandBuilder()
+func (b *_CBusCommandBuilder) AsCBusCommandDeviceManagement() interface {
+	CBusCommandDeviceManagementBuilder
+	Done() CBusCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CBusCommandDeviceManagementBuilder
+		Done() CBusCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCBusCommandDeviceManagementBuilder().(*_CBusCommandDeviceManagementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CBusCommandBuilder) AsCBusCommandPointToPointToMultiPoint() interface {
+	CBusCommandPointToPointToMultiPointBuilder
+	Done() CBusCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CBusCommandPointToPointToMultiPointBuilder
+		Done() CBusCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCBusCommandPointToPointToMultiPointBuilder().(*_CBusCommandPointToPointToMultiPointBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CBusCommandBuilder) AsCBusCommandPointToMultiPoint() interface {
+	CBusCommandPointToMultiPointBuilder
+	Done() CBusCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CBusCommandPointToMultiPointBuilder
+		Done() CBusCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCBusCommandPointToMultiPointBuilder().(*_CBusCommandPointToMultiPointBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CBusCommandBuilder) AsCBusCommandPointToPoint() interface {
+	CBusCommandPointToPointBuilder
+	Done() CBusCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CBusCommandPointToPointBuilder
+		Done() CBusCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCBusCommandPointToPointBuilder().(*_CBusCommandPointToPointBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CBusCommandBuilder) Build() (CBusCommand, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForCBusCommand()
+}
+
+func (b *_CBusCommandBuilder) MustBuild() CBusCommand {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CBusCommandBuilder) DeepCopy() any {
+	_copy := b.CreateCBusCommandBuilder().(*_CBusCommandBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_CBusCommandChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCBusCommandBuilder creates a CBusCommandBuilder
-func (m *_CBusCommand) CreateCBusCommandBuilder() CBusCommandBuilder {
-	if m == nil {
+func (b *_CBusCommand) CreateCBusCommandBuilder() CBusCommandBuilder {
+	if b == nil {
 		return NewCBusCommandBuilder()
 	}
-	return &_CBusCommandBuilder{_CBusCommand: m.deepCopy()}
+	return &_CBusCommandBuilder{_CBusCommand: b.deepCopy()}
 }
 
 ///////////////////////

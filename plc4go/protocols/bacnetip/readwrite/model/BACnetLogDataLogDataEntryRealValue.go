@@ -98,64 +98,83 @@ func NewBACnetLogDataLogDataEntryRealValueBuilder() BACnetLogDataLogDataEntryRea
 type _BACnetLogDataLogDataEntryRealValueBuilder struct {
 	*_BACnetLogDataLogDataEntryRealValue
 
+	parentBuilder *_BACnetLogDataLogDataEntryBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetLogDataLogDataEntryRealValueBuilder) = (*_BACnetLogDataLogDataEntryRealValueBuilder)(nil)
 
-func (m *_BACnetLogDataLogDataEntryRealValueBuilder) WithMandatoryFields(realValue BACnetContextTagReal) BACnetLogDataLogDataEntryRealValueBuilder {
-	return m.WithRealValue(realValue)
+func (b *_BACnetLogDataLogDataEntryRealValueBuilder) setParent(contract BACnetLogDataLogDataEntryContract) {
+	b.BACnetLogDataLogDataEntryContract = contract
 }
 
-func (m *_BACnetLogDataLogDataEntryRealValueBuilder) WithRealValue(realValue BACnetContextTagReal) BACnetLogDataLogDataEntryRealValueBuilder {
-	m.RealValue = realValue
-	return m
+func (b *_BACnetLogDataLogDataEntryRealValueBuilder) WithMandatoryFields(realValue BACnetContextTagReal) BACnetLogDataLogDataEntryRealValueBuilder {
+	return b.WithRealValue(realValue)
 }
 
-func (m *_BACnetLogDataLogDataEntryRealValueBuilder) WithRealValueBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLogDataLogDataEntryRealValueBuilder {
-	builder := builderSupplier(m.RealValue.CreateBACnetContextTagRealBuilder())
+func (b *_BACnetLogDataLogDataEntryRealValueBuilder) WithRealValue(realValue BACnetContextTagReal) BACnetLogDataLogDataEntryRealValueBuilder {
+	b.RealValue = realValue
+	return b
+}
+
+func (b *_BACnetLogDataLogDataEntryRealValueBuilder) WithRealValueBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLogDataLogDataEntryRealValueBuilder {
+	builder := builderSupplier(b.RealValue.CreateBACnetContextTagRealBuilder())
 	var err error
-	m.RealValue, err = builder.Build()
+	b.RealValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogDataLogDataEntryRealValueBuilder) Build() (BACnetLogDataLogDataEntryRealValue, error) {
-	if m.RealValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLogDataLogDataEntryRealValueBuilder) Build() (BACnetLogDataLogDataEntryRealValue, error) {
+	if b.RealValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'realValue' not set"))
+		b.err.Append(errors.New("mandatory field 'realValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLogDataLogDataEntryRealValue.deepCopy(), nil
+	return b._BACnetLogDataLogDataEntryRealValue.deepCopy(), nil
 }
 
-func (m *_BACnetLogDataLogDataEntryRealValueBuilder) MustBuild() BACnetLogDataLogDataEntryRealValue {
-	build, err := m.Build()
+func (b *_BACnetLogDataLogDataEntryRealValueBuilder) MustBuild() BACnetLogDataLogDataEntryRealValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLogDataLogDataEntryRealValueBuilder) DeepCopy() any {
-	return m.CreateBACnetLogDataLogDataEntryRealValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogDataLogDataEntryRealValueBuilder) Done() BACnetLogDataLogDataEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogDataLogDataEntryRealValueBuilder) buildForBACnetLogDataLogDataEntry() (BACnetLogDataLogDataEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogDataLogDataEntryRealValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogDataLogDataEntryRealValueBuilder().(*_BACnetLogDataLogDataEntryRealValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLogDataLogDataEntryRealValueBuilder creates a BACnetLogDataLogDataEntryRealValueBuilder
-func (m *_BACnetLogDataLogDataEntryRealValue) CreateBACnetLogDataLogDataEntryRealValueBuilder() BACnetLogDataLogDataEntryRealValueBuilder {
-	if m == nil {
+func (b *_BACnetLogDataLogDataEntryRealValue) CreateBACnetLogDataLogDataEntryRealValueBuilder() BACnetLogDataLogDataEntryRealValueBuilder {
+	if b == nil {
 		return NewBACnetLogDataLogDataEntryRealValueBuilder()
 	}
-	return &_BACnetLogDataLogDataEntryRealValueBuilder{_BACnetLogDataLogDataEntryRealValue: m.deepCopy()}
+	return &_BACnetLogDataLogDataEntryRealValueBuilder{_BACnetLogDataLogDataEntryRealValue: b.deepCopy()}
 }
 
 ///////////////////////

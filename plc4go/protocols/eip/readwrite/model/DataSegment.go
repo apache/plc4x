@@ -82,6 +82,8 @@ type DataSegmentBuilder interface {
 	WithMandatoryFields(segmentType DataSegmentType) DataSegmentBuilder
 	// WithSegmentType adds SegmentType (property field)
 	WithSegmentType(DataSegmentType) DataSegmentBuilder
+	// WithSegmentTypeBuilder adds SegmentType (property field) which is build by the builder
+	WithSegmentTypeBuilder(func(DataSegmentTypeBuilder) DataSegmentTypeBuilder) DataSegmentBuilder
 	// Build builds the DataSegment or returns an error if something is wrong
 	Build() (DataSegment, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewDataSegmentBuilder() DataSegmentBuilder {
 type _DataSegmentBuilder struct {
 	*_DataSegment
 
+	parentBuilder *_PathSegmentBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DataSegmentBuilder) = (*_DataSegmentBuilder)(nil)
 
-func (m *_DataSegmentBuilder) WithMandatoryFields(segmentType DataSegmentType) DataSegmentBuilder {
-	return m.WithSegmentType(segmentType)
+func (b *_DataSegmentBuilder) setParent(contract PathSegmentContract) {
+	b.PathSegmentContract = contract
 }
 
-func (m *_DataSegmentBuilder) WithSegmentType(segmentType DataSegmentType) DataSegmentBuilder {
-	m.SegmentType = segmentType
-	return m
+func (b *_DataSegmentBuilder) WithMandatoryFields(segmentType DataSegmentType) DataSegmentBuilder {
+	return b.WithSegmentType(segmentType)
 }
 
-func (m *_DataSegmentBuilder) Build() (DataSegment, error) {
-	if m.SegmentType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_DataSegmentBuilder) WithSegmentType(segmentType DataSegmentType) DataSegmentBuilder {
+	b.SegmentType = segmentType
+	return b
+}
+
+func (b *_DataSegmentBuilder) WithSegmentTypeBuilder(builderSupplier func(DataSegmentTypeBuilder) DataSegmentTypeBuilder) DataSegmentBuilder {
+	builder := builderSupplier(b.SegmentType.CreateDataSegmentTypeBuilder())
+	var err error
+	b.SegmentType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'segmentType' not set"))
+		b.err.Append(errors.Wrap(err, "DataSegmentTypeBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._DataSegment.deepCopy(), nil
+	return b
 }
 
-func (m *_DataSegmentBuilder) MustBuild() DataSegment {
-	build, err := m.Build()
+func (b *_DataSegmentBuilder) Build() (DataSegment, error) {
+	if b.SegmentType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'segmentType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DataSegment.deepCopy(), nil
+}
+
+func (b *_DataSegmentBuilder) MustBuild() DataSegment {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DataSegmentBuilder) DeepCopy() any {
-	return m.CreateDataSegmentBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DataSegmentBuilder) Done() PathSegmentBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DataSegmentBuilder) buildForPathSegment() (PathSegment, error) {
+	return b.Build()
+}
+
+func (b *_DataSegmentBuilder) DeepCopy() any {
+	_copy := b.CreateDataSegmentBuilder().(*_DataSegmentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDataSegmentBuilder creates a DataSegmentBuilder
-func (m *_DataSegment) CreateDataSegmentBuilder() DataSegmentBuilder {
-	if m == nil {
+func (b *_DataSegment) CreateDataSegmentBuilder() DataSegmentBuilder {
+	if b == nil {
 		return NewDataSegmentBuilder()
 	}
-	return &_DataSegmentBuilder{_DataSegment: m.deepCopy()}
+	return &_DataSegmentBuilder{_DataSegment: b.deepCopy()}
 }
 
 ///////////////////////

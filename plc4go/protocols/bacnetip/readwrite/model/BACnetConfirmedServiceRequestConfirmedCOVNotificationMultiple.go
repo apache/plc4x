@@ -139,154 +139,173 @@ func NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder() B
 type _BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder struct {
 	*_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
 
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) = (*_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithMandatoryFields(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, timeRemaining BACnetContextTagUnsignedInteger, listOfCovNotifications ListOfCovNotificationsList) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
-	return m.WithSubscriberProcessIdentifier(subscriberProcessIdentifier).WithInitiatingDeviceIdentifier(initiatingDeviceIdentifier).WithTimeRemaining(timeRemaining).WithListOfCovNotifications(listOfCovNotifications)
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithSubscriberProcessIdentifier(subscriberProcessIdentifier BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
-	m.SubscriberProcessIdentifier = subscriberProcessIdentifier
-	return m
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithMandatoryFields(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, timeRemaining BACnetContextTagUnsignedInteger, listOfCovNotifications ListOfCovNotificationsList) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
+	return b.WithSubscriberProcessIdentifier(subscriberProcessIdentifier).WithInitiatingDeviceIdentifier(initiatingDeviceIdentifier).WithTimeRemaining(timeRemaining).WithListOfCovNotifications(listOfCovNotifications)
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithSubscriberProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
-	builder := builderSupplier(m.SubscriberProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithSubscriberProcessIdentifier(subscriberProcessIdentifier BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
+	b.SubscriberProcessIdentifier = subscriberProcessIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithSubscriberProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
+	builder := builderSupplier(b.SubscriberProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.SubscriberProcessIdentifier, err = builder.Build()
+	b.SubscriberProcessIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithInitiatingDeviceIdentifier(initiatingDeviceIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
-	m.InitiatingDeviceIdentifier = initiatingDeviceIdentifier
-	return m
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithInitiatingDeviceIdentifier(initiatingDeviceIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
+	b.InitiatingDeviceIdentifier = initiatingDeviceIdentifier
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithInitiatingDeviceIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
-	builder := builderSupplier(m.InitiatingDeviceIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithInitiatingDeviceIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
+	builder := builderSupplier(b.InitiatingDeviceIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
 	var err error
-	m.InitiatingDeviceIdentifier, err = builder.Build()
+	b.InitiatingDeviceIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithTimeRemaining(timeRemaining BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
-	m.TimeRemaining = timeRemaining
-	return m
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithTimeRemaining(timeRemaining BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
+	b.TimeRemaining = timeRemaining
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithTimeRemainingBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
-	builder := builderSupplier(m.TimeRemaining.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithTimeRemainingBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
+	builder := builderSupplier(b.TimeRemaining.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.TimeRemaining, err = builder.Build()
+	b.TimeRemaining, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithOptionalTimestamp(timestamp BACnetTimeStampEnclosed) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
-	m.Timestamp = timestamp
-	return m
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithOptionalTimestamp(timestamp BACnetTimeStampEnclosed) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
+	b.Timestamp = timestamp
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithOptionalTimestampBuilder(builderSupplier func(BACnetTimeStampEnclosedBuilder) BACnetTimeStampEnclosedBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
-	builder := builderSupplier(m.Timestamp.CreateBACnetTimeStampEnclosedBuilder())
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithOptionalTimestampBuilder(builderSupplier func(BACnetTimeStampEnclosedBuilder) BACnetTimeStampEnclosedBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
+	builder := builderSupplier(b.Timestamp.CreateBACnetTimeStampEnclosedBuilder())
 	var err error
-	m.Timestamp, err = builder.Build()
+	b.Timestamp, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTimeStampEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTimeStampEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithListOfCovNotifications(listOfCovNotifications ListOfCovNotificationsList) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
-	m.ListOfCovNotifications = listOfCovNotifications
-	return m
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithListOfCovNotifications(listOfCovNotifications ListOfCovNotificationsList) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
+	b.ListOfCovNotifications = listOfCovNotifications
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithListOfCovNotificationsBuilder(builderSupplier func(ListOfCovNotificationsListBuilder) ListOfCovNotificationsListBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
-	builder := builderSupplier(m.ListOfCovNotifications.CreateListOfCovNotificationsListBuilder())
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) WithListOfCovNotificationsBuilder(builderSupplier func(ListOfCovNotificationsListBuilder) ListOfCovNotificationsListBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
+	builder := builderSupplier(b.ListOfCovNotifications.CreateListOfCovNotificationsListBuilder())
 	var err error
-	m.ListOfCovNotifications, err = builder.Build()
+	b.ListOfCovNotifications, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ListOfCovNotificationsListBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ListOfCovNotificationsListBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) Build() (BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple, error) {
-	if m.SubscriberProcessIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) Build() (BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple, error) {
+	if b.SubscriberProcessIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'subscriberProcessIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'subscriberProcessIdentifier' not set"))
 	}
-	if m.InitiatingDeviceIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.InitiatingDeviceIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'initiatingDeviceIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'initiatingDeviceIdentifier' not set"))
 	}
-	if m.TimeRemaining == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TimeRemaining == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeRemaining' not set"))
+		b.err.Append(errors.New("mandatory field 'timeRemaining' not set"))
 	}
-	if m.ListOfCovNotifications == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ListOfCovNotifications == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'listOfCovNotifications' not set"))
+		b.err.Append(errors.New("mandatory field 'listOfCovNotifications' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) MustBuild() BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) MustBuild() BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder().(*_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder creates a BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder
-func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) CreateBACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder() BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) CreateBACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder() BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder{_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder{_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple: b.deepCopy()}
 }
 
 ///////////////////////

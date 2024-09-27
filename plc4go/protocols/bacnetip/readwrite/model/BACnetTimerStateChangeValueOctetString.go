@@ -98,64 +98,83 @@ func NewBACnetTimerStateChangeValueOctetStringBuilder() BACnetTimerStateChangeVa
 type _BACnetTimerStateChangeValueOctetStringBuilder struct {
 	*_BACnetTimerStateChangeValueOctetString
 
+	parentBuilder *_BACnetTimerStateChangeValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetTimerStateChangeValueOctetStringBuilder) = (*_BACnetTimerStateChangeValueOctetStringBuilder)(nil)
 
-func (m *_BACnetTimerStateChangeValueOctetStringBuilder) WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetTimerStateChangeValueOctetStringBuilder {
-	return m.WithOctetStringValue(octetStringValue)
+func (b *_BACnetTimerStateChangeValueOctetStringBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
+	b.BACnetTimerStateChangeValueContract = contract
 }
 
-func (m *_BACnetTimerStateChangeValueOctetStringBuilder) WithOctetStringValue(octetStringValue BACnetApplicationTagOctetString) BACnetTimerStateChangeValueOctetStringBuilder {
-	m.OctetStringValue = octetStringValue
-	return m
+func (b *_BACnetTimerStateChangeValueOctetStringBuilder) WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetTimerStateChangeValueOctetStringBuilder {
+	return b.WithOctetStringValue(octetStringValue)
 }
 
-func (m *_BACnetTimerStateChangeValueOctetStringBuilder) WithOctetStringValueBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetTimerStateChangeValueOctetStringBuilder {
-	builder := builderSupplier(m.OctetStringValue.CreateBACnetApplicationTagOctetStringBuilder())
+func (b *_BACnetTimerStateChangeValueOctetStringBuilder) WithOctetStringValue(octetStringValue BACnetApplicationTagOctetString) BACnetTimerStateChangeValueOctetStringBuilder {
+	b.OctetStringValue = octetStringValue
+	return b
+}
+
+func (b *_BACnetTimerStateChangeValueOctetStringBuilder) WithOctetStringValueBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetTimerStateChangeValueOctetStringBuilder {
+	builder := builderSupplier(b.OctetStringValue.CreateBACnetApplicationTagOctetStringBuilder())
 	var err error
-	m.OctetStringValue, err = builder.Build()
+	b.OctetStringValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetTimerStateChangeValueOctetStringBuilder) Build() (BACnetTimerStateChangeValueOctetString, error) {
-	if m.OctetStringValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetTimerStateChangeValueOctetStringBuilder) Build() (BACnetTimerStateChangeValueOctetString, error) {
+	if b.OctetStringValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'octetStringValue' not set"))
+		b.err.Append(errors.New("mandatory field 'octetStringValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTimerStateChangeValueOctetString.deepCopy(), nil
+	return b._BACnetTimerStateChangeValueOctetString.deepCopy(), nil
 }
 
-func (m *_BACnetTimerStateChangeValueOctetStringBuilder) MustBuild() BACnetTimerStateChangeValueOctetString {
-	build, err := m.Build()
+func (b *_BACnetTimerStateChangeValueOctetStringBuilder) MustBuild() BACnetTimerStateChangeValueOctetString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTimerStateChangeValueOctetStringBuilder) DeepCopy() any {
-	return m.CreateBACnetTimerStateChangeValueOctetStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetTimerStateChangeValueOctetStringBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetTimerStateChangeValueOctetStringBuilder) buildForBACnetTimerStateChangeValue() (BACnetTimerStateChangeValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetTimerStateChangeValueOctetStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimerStateChangeValueOctetStringBuilder().(*_BACnetTimerStateChangeValueOctetStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTimerStateChangeValueOctetStringBuilder creates a BACnetTimerStateChangeValueOctetStringBuilder
-func (m *_BACnetTimerStateChangeValueOctetString) CreateBACnetTimerStateChangeValueOctetStringBuilder() BACnetTimerStateChangeValueOctetStringBuilder {
-	if m == nil {
+func (b *_BACnetTimerStateChangeValueOctetString) CreateBACnetTimerStateChangeValueOctetStringBuilder() BACnetTimerStateChangeValueOctetStringBuilder {
+	if b == nil {
 		return NewBACnetTimerStateChangeValueOctetStringBuilder()
 	}
-	return &_BACnetTimerStateChangeValueOctetStringBuilder{_BACnetTimerStateChangeValueOctetString: m.deepCopy()}
+	return &_BACnetTimerStateChangeValueOctetStringBuilder{_BACnetTimerStateChangeValueOctetString: b.deepCopy()}
 }
 
 ///////////////////////

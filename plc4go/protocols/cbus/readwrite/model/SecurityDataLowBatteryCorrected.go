@@ -85,40 +85,59 @@ func NewSecurityDataLowBatteryCorrectedBuilder() SecurityDataLowBatteryCorrected
 type _SecurityDataLowBatteryCorrectedBuilder struct {
 	*_SecurityDataLowBatteryCorrected
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataLowBatteryCorrectedBuilder) = (*_SecurityDataLowBatteryCorrectedBuilder)(nil)
 
-func (m *_SecurityDataLowBatteryCorrectedBuilder) WithMandatoryFields() SecurityDataLowBatteryCorrectedBuilder {
-	return m
+func (b *_SecurityDataLowBatteryCorrectedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataLowBatteryCorrectedBuilder) Build() (SecurityDataLowBatteryCorrected, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataLowBatteryCorrectedBuilder) WithMandatoryFields() SecurityDataLowBatteryCorrectedBuilder {
+	return b
+}
+
+func (b *_SecurityDataLowBatteryCorrectedBuilder) Build() (SecurityDataLowBatteryCorrected, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataLowBatteryCorrected.deepCopy(), nil
+	return b._SecurityDataLowBatteryCorrected.deepCopy(), nil
 }
 
-func (m *_SecurityDataLowBatteryCorrectedBuilder) MustBuild() SecurityDataLowBatteryCorrected {
-	build, err := m.Build()
+func (b *_SecurityDataLowBatteryCorrectedBuilder) MustBuild() SecurityDataLowBatteryCorrected {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataLowBatteryCorrectedBuilder) DeepCopy() any {
-	return m.CreateSecurityDataLowBatteryCorrectedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataLowBatteryCorrectedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataLowBatteryCorrectedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataLowBatteryCorrectedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataLowBatteryCorrectedBuilder().(*_SecurityDataLowBatteryCorrectedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataLowBatteryCorrectedBuilder creates a SecurityDataLowBatteryCorrectedBuilder
-func (m *_SecurityDataLowBatteryCorrected) CreateSecurityDataLowBatteryCorrectedBuilder() SecurityDataLowBatteryCorrectedBuilder {
-	if m == nil {
+func (b *_SecurityDataLowBatteryCorrected) CreateSecurityDataLowBatteryCorrectedBuilder() SecurityDataLowBatteryCorrectedBuilder {
+	if b == nil {
 		return NewSecurityDataLowBatteryCorrectedBuilder()
 	}
-	return &_SecurityDataLowBatteryCorrectedBuilder{_SecurityDataLowBatteryCorrected: m.deepCopy()}
+	return &_SecurityDataLowBatteryCorrectedBuilder{_SecurityDataLowBatteryCorrected: b.deepCopy()}
 }
 
 ///////////////////////

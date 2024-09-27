@@ -104,69 +104,88 @@ func NewBrowsePathTargetBuilder() BrowsePathTargetBuilder {
 type _BrowsePathTargetBuilder struct {
 	*_BrowsePathTarget
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BrowsePathTargetBuilder) = (*_BrowsePathTargetBuilder)(nil)
 
-func (m *_BrowsePathTargetBuilder) WithMandatoryFields(targetId ExpandedNodeId, remainingPathIndex uint32) BrowsePathTargetBuilder {
-	return m.WithTargetId(targetId).WithRemainingPathIndex(remainingPathIndex)
+func (b *_BrowsePathTargetBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_BrowsePathTargetBuilder) WithTargetId(targetId ExpandedNodeId) BrowsePathTargetBuilder {
-	m.TargetId = targetId
-	return m
+func (b *_BrowsePathTargetBuilder) WithMandatoryFields(targetId ExpandedNodeId, remainingPathIndex uint32) BrowsePathTargetBuilder {
+	return b.WithTargetId(targetId).WithRemainingPathIndex(remainingPathIndex)
 }
 
-func (m *_BrowsePathTargetBuilder) WithTargetIdBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) BrowsePathTargetBuilder {
-	builder := builderSupplier(m.TargetId.CreateExpandedNodeIdBuilder())
+func (b *_BrowsePathTargetBuilder) WithTargetId(targetId ExpandedNodeId) BrowsePathTargetBuilder {
+	b.TargetId = targetId
+	return b
+}
+
+func (b *_BrowsePathTargetBuilder) WithTargetIdBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) BrowsePathTargetBuilder {
+	builder := builderSupplier(b.TargetId.CreateExpandedNodeIdBuilder())
 	var err error
-	m.TargetId, err = builder.Build()
+	b.TargetId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BrowsePathTargetBuilder) WithRemainingPathIndex(remainingPathIndex uint32) BrowsePathTargetBuilder {
-	m.RemainingPathIndex = remainingPathIndex
-	return m
+func (b *_BrowsePathTargetBuilder) WithRemainingPathIndex(remainingPathIndex uint32) BrowsePathTargetBuilder {
+	b.RemainingPathIndex = remainingPathIndex
+	return b
 }
 
-func (m *_BrowsePathTargetBuilder) Build() (BrowsePathTarget, error) {
-	if m.TargetId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BrowsePathTargetBuilder) Build() (BrowsePathTarget, error) {
+	if b.TargetId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'targetId' not set"))
+		b.err.Append(errors.New("mandatory field 'targetId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BrowsePathTarget.deepCopy(), nil
+	return b._BrowsePathTarget.deepCopy(), nil
 }
 
-func (m *_BrowsePathTargetBuilder) MustBuild() BrowsePathTarget {
-	build, err := m.Build()
+func (b *_BrowsePathTargetBuilder) MustBuild() BrowsePathTarget {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BrowsePathTargetBuilder) DeepCopy() any {
-	return m.CreateBrowsePathTargetBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BrowsePathTargetBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BrowsePathTargetBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_BrowsePathTargetBuilder) DeepCopy() any {
+	_copy := b.CreateBrowsePathTargetBuilder().(*_BrowsePathTargetBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBrowsePathTargetBuilder creates a BrowsePathTargetBuilder
-func (m *_BrowsePathTarget) CreateBrowsePathTargetBuilder() BrowsePathTargetBuilder {
-	if m == nil {
+func (b *_BrowsePathTarget) CreateBrowsePathTargetBuilder() BrowsePathTargetBuilder {
+	if b == nil {
 		return NewBrowsePathTargetBuilder()
 	}
-	return &_BrowsePathTargetBuilder{_BrowsePathTarget: m.deepCopy()}
+	return &_BrowsePathTargetBuilder{_BrowsePathTarget: b.deepCopy()}
 }
 
 ///////////////////////

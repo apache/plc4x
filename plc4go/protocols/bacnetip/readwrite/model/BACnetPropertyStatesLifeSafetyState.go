@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesLifeSafetyStateBuilder() BACnetPropertyStatesLifeSaf
 type _BACnetPropertyStatesLifeSafetyStateBuilder struct {
 	*_BACnetPropertyStatesLifeSafetyState
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesLifeSafetyStateBuilder) = (*_BACnetPropertyStatesLifeSafetyStateBuilder)(nil)
 
-func (m *_BACnetPropertyStatesLifeSafetyStateBuilder) WithMandatoryFields(lifeSafetyState BACnetLifeSafetyStateTagged) BACnetPropertyStatesLifeSafetyStateBuilder {
-	return m.WithLifeSafetyState(lifeSafetyState)
+func (b *_BACnetPropertyStatesLifeSafetyStateBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesLifeSafetyStateBuilder) WithLifeSafetyState(lifeSafetyState BACnetLifeSafetyStateTagged) BACnetPropertyStatesLifeSafetyStateBuilder {
-	m.LifeSafetyState = lifeSafetyState
-	return m
+func (b *_BACnetPropertyStatesLifeSafetyStateBuilder) WithMandatoryFields(lifeSafetyState BACnetLifeSafetyStateTagged) BACnetPropertyStatesLifeSafetyStateBuilder {
+	return b.WithLifeSafetyState(lifeSafetyState)
 }
 
-func (m *_BACnetPropertyStatesLifeSafetyStateBuilder) WithLifeSafetyStateBuilder(builderSupplier func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetPropertyStatesLifeSafetyStateBuilder {
-	builder := builderSupplier(m.LifeSafetyState.CreateBACnetLifeSafetyStateTaggedBuilder())
+func (b *_BACnetPropertyStatesLifeSafetyStateBuilder) WithLifeSafetyState(lifeSafetyState BACnetLifeSafetyStateTagged) BACnetPropertyStatesLifeSafetyStateBuilder {
+	b.LifeSafetyState = lifeSafetyState
+	return b
+}
+
+func (b *_BACnetPropertyStatesLifeSafetyStateBuilder) WithLifeSafetyStateBuilder(builderSupplier func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetPropertyStatesLifeSafetyStateBuilder {
+	builder := builderSupplier(b.LifeSafetyState.CreateBACnetLifeSafetyStateTaggedBuilder())
 	var err error
-	m.LifeSafetyState, err = builder.Build()
+	b.LifeSafetyState, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLifeSafetyStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLifeSafetyStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesLifeSafetyStateBuilder) Build() (BACnetPropertyStatesLifeSafetyState, error) {
-	if m.LifeSafetyState == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesLifeSafetyStateBuilder) Build() (BACnetPropertyStatesLifeSafetyState, error) {
+	if b.LifeSafetyState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lifeSafetyState' not set"))
+		b.err.Append(errors.New("mandatory field 'lifeSafetyState' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesLifeSafetyState.deepCopy(), nil
+	return b._BACnetPropertyStatesLifeSafetyState.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesLifeSafetyStateBuilder) MustBuild() BACnetPropertyStatesLifeSafetyState {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesLifeSafetyStateBuilder) MustBuild() BACnetPropertyStatesLifeSafetyState {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesLifeSafetyStateBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesLifeSafetyStateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesLifeSafetyStateBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesLifeSafetyStateBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesLifeSafetyStateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesLifeSafetyStateBuilder().(*_BACnetPropertyStatesLifeSafetyStateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesLifeSafetyStateBuilder creates a BACnetPropertyStatesLifeSafetyStateBuilder
-func (m *_BACnetPropertyStatesLifeSafetyState) CreateBACnetPropertyStatesLifeSafetyStateBuilder() BACnetPropertyStatesLifeSafetyStateBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesLifeSafetyState) CreateBACnetPropertyStatesLifeSafetyStateBuilder() BACnetPropertyStatesLifeSafetyStateBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesLifeSafetyStateBuilder()
 	}
-	return &_BACnetPropertyStatesLifeSafetyStateBuilder{_BACnetPropertyStatesLifeSafetyState: m.deepCopy()}
+	return &_BACnetPropertyStatesLifeSafetyStateBuilder{_BACnetPropertyStatesLifeSafetyState: b.deepCopy()}
 }
 
 ///////////////////////

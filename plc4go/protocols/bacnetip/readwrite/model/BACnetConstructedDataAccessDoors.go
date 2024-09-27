@@ -103,63 +103,82 @@ func NewBACnetConstructedDataAccessDoorsBuilder() BACnetConstructedDataAccessDoo
 type _BACnetConstructedDataAccessDoorsBuilder struct {
 	*_BACnetConstructedDataAccessDoors
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccessDoorsBuilder) = (*_BACnetConstructedDataAccessDoorsBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccessDoorsBuilder) WithMandatoryFields(accessDoors []BACnetDeviceObjectReference) BACnetConstructedDataAccessDoorsBuilder {
-	return m.WithAccessDoors(accessDoors...)
+func (b *_BACnetConstructedDataAccessDoorsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccessDoorsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccessDoorsBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataAccessDoorsBuilder) WithMandatoryFields(accessDoors []BACnetDeviceObjectReference) BACnetConstructedDataAccessDoorsBuilder {
+	return b.WithAccessDoors(accessDoors...)
 }
 
-func (m *_BACnetConstructedDataAccessDoorsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccessDoorsBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataAccessDoorsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccessDoorsBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataAccessDoorsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccessDoorsBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAccessDoorsBuilder) WithAccessDoors(accessDoors ...BACnetDeviceObjectReference) BACnetConstructedDataAccessDoorsBuilder {
-	m.AccessDoors = accessDoors
-	return m
+func (b *_BACnetConstructedDataAccessDoorsBuilder) WithAccessDoors(accessDoors ...BACnetDeviceObjectReference) BACnetConstructedDataAccessDoorsBuilder {
+	b.AccessDoors = accessDoors
+	return b
 }
 
-func (m *_BACnetConstructedDataAccessDoorsBuilder) Build() (BACnetConstructedDataAccessDoors, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataAccessDoorsBuilder) Build() (BACnetConstructedDataAccessDoors, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAccessDoors.deepCopy(), nil
+	return b._BACnetConstructedDataAccessDoors.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAccessDoorsBuilder) MustBuild() BACnetConstructedDataAccessDoors {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccessDoorsBuilder) MustBuild() BACnetConstructedDataAccessDoors {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccessDoorsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccessDoorsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccessDoorsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccessDoorsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccessDoorsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccessDoorsBuilder().(*_BACnetConstructedDataAccessDoorsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccessDoorsBuilder creates a BACnetConstructedDataAccessDoorsBuilder
-func (m *_BACnetConstructedDataAccessDoors) CreateBACnetConstructedDataAccessDoorsBuilder() BACnetConstructedDataAccessDoorsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccessDoors) CreateBACnetConstructedDataAccessDoorsBuilder() BACnetConstructedDataAccessDoorsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccessDoorsBuilder()
 	}
-	return &_BACnetConstructedDataAccessDoorsBuilder{_BACnetConstructedDataAccessDoors: m.deepCopy()}
+	return &_BACnetConstructedDataAccessDoorsBuilder{_BACnetConstructedDataAccessDoors: b.deepCopy()}
 }
 
 ///////////////////////

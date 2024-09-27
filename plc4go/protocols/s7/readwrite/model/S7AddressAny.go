@@ -125,70 +125,89 @@ func NewS7AddressAnyBuilder() S7AddressAnyBuilder {
 type _S7AddressAnyBuilder struct {
 	*_S7AddressAny
 
+	parentBuilder *_S7AddressBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7AddressAnyBuilder) = (*_S7AddressAnyBuilder)(nil)
 
-func (m *_S7AddressAnyBuilder) WithMandatoryFields(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) S7AddressAnyBuilder {
-	return m.WithTransportSize(transportSize).WithNumberOfElements(numberOfElements).WithDbNumber(dbNumber).WithArea(area).WithByteAddress(byteAddress).WithBitAddress(bitAddress)
+func (b *_S7AddressAnyBuilder) setParent(contract S7AddressContract) {
+	b.S7AddressContract = contract
 }
 
-func (m *_S7AddressAnyBuilder) WithTransportSize(transportSize TransportSize) S7AddressAnyBuilder {
-	m.TransportSize = transportSize
-	return m
+func (b *_S7AddressAnyBuilder) WithMandatoryFields(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) S7AddressAnyBuilder {
+	return b.WithTransportSize(transportSize).WithNumberOfElements(numberOfElements).WithDbNumber(dbNumber).WithArea(area).WithByteAddress(byteAddress).WithBitAddress(bitAddress)
 }
 
-func (m *_S7AddressAnyBuilder) WithNumberOfElements(numberOfElements uint16) S7AddressAnyBuilder {
-	m.NumberOfElements = numberOfElements
-	return m
+func (b *_S7AddressAnyBuilder) WithTransportSize(transportSize TransportSize) S7AddressAnyBuilder {
+	b.TransportSize = transportSize
+	return b
 }
 
-func (m *_S7AddressAnyBuilder) WithDbNumber(dbNumber uint16) S7AddressAnyBuilder {
-	m.DbNumber = dbNumber
-	return m
+func (b *_S7AddressAnyBuilder) WithNumberOfElements(numberOfElements uint16) S7AddressAnyBuilder {
+	b.NumberOfElements = numberOfElements
+	return b
 }
 
-func (m *_S7AddressAnyBuilder) WithArea(area MemoryArea) S7AddressAnyBuilder {
-	m.Area = area
-	return m
+func (b *_S7AddressAnyBuilder) WithDbNumber(dbNumber uint16) S7AddressAnyBuilder {
+	b.DbNumber = dbNumber
+	return b
 }
 
-func (m *_S7AddressAnyBuilder) WithByteAddress(byteAddress uint16) S7AddressAnyBuilder {
-	m.ByteAddress = byteAddress
-	return m
+func (b *_S7AddressAnyBuilder) WithArea(area MemoryArea) S7AddressAnyBuilder {
+	b.Area = area
+	return b
 }
 
-func (m *_S7AddressAnyBuilder) WithBitAddress(bitAddress uint8) S7AddressAnyBuilder {
-	m.BitAddress = bitAddress
-	return m
+func (b *_S7AddressAnyBuilder) WithByteAddress(byteAddress uint16) S7AddressAnyBuilder {
+	b.ByteAddress = byteAddress
+	return b
 }
 
-func (m *_S7AddressAnyBuilder) Build() (S7AddressAny, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7AddressAnyBuilder) WithBitAddress(bitAddress uint8) S7AddressAnyBuilder {
+	b.BitAddress = bitAddress
+	return b
+}
+
+func (b *_S7AddressAnyBuilder) Build() (S7AddressAny, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7AddressAny.deepCopy(), nil
+	return b._S7AddressAny.deepCopy(), nil
 }
 
-func (m *_S7AddressAnyBuilder) MustBuild() S7AddressAny {
-	build, err := m.Build()
+func (b *_S7AddressAnyBuilder) MustBuild() S7AddressAny {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7AddressAnyBuilder) DeepCopy() any {
-	return m.CreateS7AddressAnyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7AddressAnyBuilder) Done() S7AddressBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7AddressAnyBuilder) buildForS7Address() (S7Address, error) {
+	return b.Build()
+}
+
+func (b *_S7AddressAnyBuilder) DeepCopy() any {
+	_copy := b.CreateS7AddressAnyBuilder().(*_S7AddressAnyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7AddressAnyBuilder creates a S7AddressAnyBuilder
-func (m *_S7AddressAny) CreateS7AddressAnyBuilder() S7AddressAnyBuilder {
-	if m == nil {
+func (b *_S7AddressAny) CreateS7AddressAnyBuilder() S7AddressAnyBuilder {
+	if b == nil {
 		return NewS7AddressAnyBuilder()
 	}
-	return &_S7AddressAnyBuilder{_S7AddressAny: m.deepCopy()}
+	return &_S7AddressAnyBuilder{_S7AddressAny: b.deepCopy()}
 }
 
 ///////////////////////

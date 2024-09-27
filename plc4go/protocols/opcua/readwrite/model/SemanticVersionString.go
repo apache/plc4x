@@ -83,35 +83,39 @@ type _SemanticVersionStringBuilder struct {
 
 var _ (SemanticVersionStringBuilder) = (*_SemanticVersionStringBuilder)(nil)
 
-func (m *_SemanticVersionStringBuilder) WithMandatoryFields() SemanticVersionStringBuilder {
-	return m
+func (b *_SemanticVersionStringBuilder) WithMandatoryFields() SemanticVersionStringBuilder {
+	return b
 }
 
-func (m *_SemanticVersionStringBuilder) Build() (SemanticVersionString, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SemanticVersionStringBuilder) Build() (SemanticVersionString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SemanticVersionString.deepCopy(), nil
+	return b._SemanticVersionString.deepCopy(), nil
 }
 
-func (m *_SemanticVersionStringBuilder) MustBuild() SemanticVersionString {
-	build, err := m.Build()
+func (b *_SemanticVersionStringBuilder) MustBuild() SemanticVersionString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SemanticVersionStringBuilder) DeepCopy() any {
-	return m.CreateSemanticVersionStringBuilder()
+func (b *_SemanticVersionStringBuilder) DeepCopy() any {
+	_copy := b.CreateSemanticVersionStringBuilder().(*_SemanticVersionStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSemanticVersionStringBuilder creates a SemanticVersionStringBuilder
-func (m *_SemanticVersionString) CreateSemanticVersionStringBuilder() SemanticVersionStringBuilder {
-	if m == nil {
+func (b *_SemanticVersionString) CreateSemanticVersionStringBuilder() SemanticVersionStringBuilder {
+	if b == nil {
 		return NewSemanticVersionStringBuilder()
 	}
-	return &_SemanticVersionStringBuilder{_SemanticVersionString: m.deepCopy()}
+	return &_SemanticVersionStringBuilder{_SemanticVersionString: b.deepCopy()}
 }
 
 ///////////////////////

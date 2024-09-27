@@ -100,64 +100,83 @@ func NewBACnetConstructedDataPulseConverterPresentValueBuilder() BACnetConstruct
 type _BACnetConstructedDataPulseConverterPresentValueBuilder struct {
 	*_BACnetConstructedDataPulseConverterPresentValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataPulseConverterPresentValueBuilder) = (*_BACnetConstructedDataPulseConverterPresentValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataPulseConverterPresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagReal) BACnetConstructedDataPulseConverterPresentValueBuilder {
-	return m.WithPresentValue(presentValue)
+func (b *_BACnetConstructedDataPulseConverterPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataPulseConverterPresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagReal) BACnetConstructedDataPulseConverterPresentValueBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetConstructedDataPulseConverterPresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagReal) BACnetConstructedDataPulseConverterPresentValueBuilder {
+	return b.WithPresentValue(presentValue)
 }
 
-func (m *_BACnetConstructedDataPulseConverterPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataPulseConverterPresentValueBuilder {
-	builder := builderSupplier(m.PresentValue.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataPulseConverterPresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagReal) BACnetConstructedDataPulseConverterPresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataPulseConverterPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataPulseConverterPresentValueBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.PresentValue, err = builder.Build()
+	b.PresentValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataPulseConverterPresentValueBuilder) Build() (BACnetConstructedDataPulseConverterPresentValue, error) {
-	if m.PresentValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataPulseConverterPresentValueBuilder) Build() (BACnetConstructedDataPulseConverterPresentValue, error) {
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataPulseConverterPresentValue.deepCopy(), nil
+	return b._BACnetConstructedDataPulseConverterPresentValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataPulseConverterPresentValueBuilder) MustBuild() BACnetConstructedDataPulseConverterPresentValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataPulseConverterPresentValueBuilder) MustBuild() BACnetConstructedDataPulseConverterPresentValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataPulseConverterPresentValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataPulseConverterPresentValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPulseConverterPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPulseConverterPresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPulseConverterPresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPulseConverterPresentValueBuilder().(*_BACnetConstructedDataPulseConverterPresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataPulseConverterPresentValueBuilder creates a BACnetConstructedDataPulseConverterPresentValueBuilder
-func (m *_BACnetConstructedDataPulseConverterPresentValue) CreateBACnetConstructedDataPulseConverterPresentValueBuilder() BACnetConstructedDataPulseConverterPresentValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataPulseConverterPresentValue) CreateBACnetConstructedDataPulseConverterPresentValueBuilder() BACnetConstructedDataPulseConverterPresentValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataPulseConverterPresentValueBuilder()
 	}
-	return &_BACnetConstructedDataPulseConverterPresentValueBuilder{_BACnetConstructedDataPulseConverterPresentValue: m.deepCopy()}
+	return &_BACnetConstructedDataPulseConverterPresentValueBuilder{_BACnetConstructedDataPulseConverterPresentValue: b.deepCopy()}
 }
 
 ///////////////////////

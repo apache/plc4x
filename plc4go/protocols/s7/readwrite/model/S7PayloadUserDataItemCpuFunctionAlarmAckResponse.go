@@ -99,50 +99,69 @@ func NewS7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder() S7PayloadUserD
 type _S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder struct {
 	*_S7PayloadUserDataItemCpuFunctionAlarmAckResponse
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) = (*_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder)(nil)
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) WithMandatoryFields(functionId uint8, messageObjects []uint8) S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder {
-	return m.WithFunctionId(functionId).WithMessageObjects(messageObjects...)
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) WithFunctionId(functionId uint8) S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder {
-	m.FunctionId = functionId
-	return m
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) WithMandatoryFields(functionId uint8, messageObjects []uint8) S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder {
+	return b.WithFunctionId(functionId).WithMessageObjects(messageObjects...)
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) WithMessageObjects(messageObjects ...uint8) S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder {
-	m.MessageObjects = messageObjects
-	return m
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) WithFunctionId(functionId uint8) S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder {
+	b.FunctionId = functionId
+	return b
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) WithMessageObjects(messageObjects ...uint8) S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder {
+	b.MessageObjects = messageObjects
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadUserDataItemCpuFunctionAlarmAckResponse.deepCopy(), nil
+	return b._S7PayloadUserDataItemCpuFunctionAlarmAckResponse.deepCopy(), nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
-	build, err := m.Build()
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) DeepCopy() any {
-	return m.CreateS7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder creates a S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) CreateS7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder() S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder {
-	if m == nil {
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) CreateS7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder() S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder {
+	if b == nil {
 		return NewS7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder()
 	}
-	return &_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder{_S7PayloadUserDataItemCpuFunctionAlarmAckResponse: m.deepCopy()}
+	return &_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder{_S7PayloadUserDataItemCpuFunctionAlarmAckResponse: b.deepCopy()}
 }
 
 ///////////////////////

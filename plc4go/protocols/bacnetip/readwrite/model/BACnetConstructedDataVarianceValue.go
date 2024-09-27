@@ -100,64 +100,83 @@ func NewBACnetConstructedDataVarianceValueBuilder() BACnetConstructedDataVarianc
 type _BACnetConstructedDataVarianceValueBuilder struct {
 	*_BACnetConstructedDataVarianceValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataVarianceValueBuilder) = (*_BACnetConstructedDataVarianceValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataVarianceValueBuilder) WithMandatoryFields(varianceValue BACnetApplicationTagReal) BACnetConstructedDataVarianceValueBuilder {
-	return m.WithVarianceValue(varianceValue)
+func (b *_BACnetConstructedDataVarianceValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataVarianceValueBuilder) WithVarianceValue(varianceValue BACnetApplicationTagReal) BACnetConstructedDataVarianceValueBuilder {
-	m.VarianceValue = varianceValue
-	return m
+func (b *_BACnetConstructedDataVarianceValueBuilder) WithMandatoryFields(varianceValue BACnetApplicationTagReal) BACnetConstructedDataVarianceValueBuilder {
+	return b.WithVarianceValue(varianceValue)
 }
 
-func (m *_BACnetConstructedDataVarianceValueBuilder) WithVarianceValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataVarianceValueBuilder {
-	builder := builderSupplier(m.VarianceValue.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataVarianceValueBuilder) WithVarianceValue(varianceValue BACnetApplicationTagReal) BACnetConstructedDataVarianceValueBuilder {
+	b.VarianceValue = varianceValue
+	return b
+}
+
+func (b *_BACnetConstructedDataVarianceValueBuilder) WithVarianceValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataVarianceValueBuilder {
+	builder := builderSupplier(b.VarianceValue.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.VarianceValue, err = builder.Build()
+	b.VarianceValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataVarianceValueBuilder) Build() (BACnetConstructedDataVarianceValue, error) {
-	if m.VarianceValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataVarianceValueBuilder) Build() (BACnetConstructedDataVarianceValue, error) {
+	if b.VarianceValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'varianceValue' not set"))
+		b.err.Append(errors.New("mandatory field 'varianceValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataVarianceValue.deepCopy(), nil
+	return b._BACnetConstructedDataVarianceValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataVarianceValueBuilder) MustBuild() BACnetConstructedDataVarianceValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataVarianceValueBuilder) MustBuild() BACnetConstructedDataVarianceValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataVarianceValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataVarianceValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataVarianceValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataVarianceValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataVarianceValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataVarianceValueBuilder().(*_BACnetConstructedDataVarianceValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataVarianceValueBuilder creates a BACnetConstructedDataVarianceValueBuilder
-func (m *_BACnetConstructedDataVarianceValue) CreateBACnetConstructedDataVarianceValueBuilder() BACnetConstructedDataVarianceValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataVarianceValue) CreateBACnetConstructedDataVarianceValueBuilder() BACnetConstructedDataVarianceValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataVarianceValueBuilder()
 	}
-	return &_BACnetConstructedDataVarianceValueBuilder{_BACnetConstructedDataVarianceValue: m.deepCopy()}
+	return &_BACnetConstructedDataVarianceValueBuilder{_BACnetConstructedDataVarianceValue: b.deepCopy()}
 }
 
 ///////////////////////

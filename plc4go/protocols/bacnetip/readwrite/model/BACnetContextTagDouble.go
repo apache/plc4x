@@ -100,64 +100,83 @@ func NewBACnetContextTagDoubleBuilder() BACnetContextTagDoubleBuilder {
 type _BACnetContextTagDoubleBuilder struct {
 	*_BACnetContextTagDouble
 
+	parentBuilder *_BACnetContextTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetContextTagDoubleBuilder) = (*_BACnetContextTagDoubleBuilder)(nil)
 
-func (m *_BACnetContextTagDoubleBuilder) WithMandatoryFields(payload BACnetTagPayloadDouble) BACnetContextTagDoubleBuilder {
-	return m.WithPayload(payload)
+func (b *_BACnetContextTagDoubleBuilder) setParent(contract BACnetContextTagContract) {
+	b.BACnetContextTagContract = contract
 }
 
-func (m *_BACnetContextTagDoubleBuilder) WithPayload(payload BACnetTagPayloadDouble) BACnetContextTagDoubleBuilder {
-	m.Payload = payload
-	return m
+func (b *_BACnetContextTagDoubleBuilder) WithMandatoryFields(payload BACnetTagPayloadDouble) BACnetContextTagDoubleBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_BACnetContextTagDoubleBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadDoubleBuilder) BACnetTagPayloadDoubleBuilder) BACnetContextTagDoubleBuilder {
-	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadDoubleBuilder())
+func (b *_BACnetContextTagDoubleBuilder) WithPayload(payload BACnetTagPayloadDouble) BACnetContextTagDoubleBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetContextTagDoubleBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadDoubleBuilder) BACnetTagPayloadDoubleBuilder) BACnetContextTagDoubleBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadDoubleBuilder())
 	var err error
-	m.Payload, err = builder.Build()
+	b.Payload, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagPayloadDoubleBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadDoubleBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetContextTagDoubleBuilder) Build() (BACnetContextTagDouble, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetContextTagDoubleBuilder) Build() (BACnetContextTagDouble, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetContextTagDouble.deepCopy(), nil
+	return b._BACnetContextTagDouble.deepCopy(), nil
 }
 
-func (m *_BACnetContextTagDoubleBuilder) MustBuild() BACnetContextTagDouble {
-	build, err := m.Build()
+func (b *_BACnetContextTagDoubleBuilder) MustBuild() BACnetContextTagDouble {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetContextTagDoubleBuilder) DeepCopy() any {
-	return m.CreateBACnetContextTagDoubleBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetContextTagDoubleBuilder) Done() BACnetContextTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetContextTagDoubleBuilder) buildForBACnetContextTag() (BACnetContextTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetContextTagDoubleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetContextTagDoubleBuilder().(*_BACnetContextTagDoubleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetContextTagDoubleBuilder creates a BACnetContextTagDoubleBuilder
-func (m *_BACnetContextTagDouble) CreateBACnetContextTagDoubleBuilder() BACnetContextTagDoubleBuilder {
-	if m == nil {
+func (b *_BACnetContextTagDouble) CreateBACnetContextTagDoubleBuilder() BACnetContextTagDoubleBuilder {
+	if b == nil {
 		return NewBACnetContextTagDoubleBuilder()
 	}
-	return &_BACnetContextTagDoubleBuilder{_BACnetContextTagDouble: m.deepCopy()}
+	return &_BACnetContextTagDoubleBuilder{_BACnetContextTagDouble: b.deepCopy()}
 }
 
 ///////////////////////

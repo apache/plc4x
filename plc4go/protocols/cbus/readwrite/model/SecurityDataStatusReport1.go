@@ -126,117 +126,136 @@ func NewSecurityDataStatusReport1Builder() SecurityDataStatusReport1Builder {
 type _SecurityDataStatusReport1Builder struct {
 	*_SecurityDataStatusReport1
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataStatusReport1Builder) = (*_SecurityDataStatusReport1Builder)(nil)
 
-func (m *_SecurityDataStatusReport1Builder) WithMandatoryFields(armCodeType SecurityArmCode, tamperStatus TamperStatus, panicStatus PanicStatus, zoneStatus []ZoneStatus) SecurityDataStatusReport1Builder {
-	return m.WithArmCodeType(armCodeType).WithTamperStatus(tamperStatus).WithPanicStatus(panicStatus).WithZoneStatus(zoneStatus...)
+func (b *_SecurityDataStatusReport1Builder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataStatusReport1Builder) WithArmCodeType(armCodeType SecurityArmCode) SecurityDataStatusReport1Builder {
-	m.ArmCodeType = armCodeType
-	return m
+func (b *_SecurityDataStatusReport1Builder) WithMandatoryFields(armCodeType SecurityArmCode, tamperStatus TamperStatus, panicStatus PanicStatus, zoneStatus []ZoneStatus) SecurityDataStatusReport1Builder {
+	return b.WithArmCodeType(armCodeType).WithTamperStatus(tamperStatus).WithPanicStatus(panicStatus).WithZoneStatus(zoneStatus...)
 }
 
-func (m *_SecurityDataStatusReport1Builder) WithArmCodeTypeBuilder(builderSupplier func(SecurityArmCodeBuilder) SecurityArmCodeBuilder) SecurityDataStatusReport1Builder {
-	builder := builderSupplier(m.ArmCodeType.CreateSecurityArmCodeBuilder())
+func (b *_SecurityDataStatusReport1Builder) WithArmCodeType(armCodeType SecurityArmCode) SecurityDataStatusReport1Builder {
+	b.ArmCodeType = armCodeType
+	return b
+}
+
+func (b *_SecurityDataStatusReport1Builder) WithArmCodeTypeBuilder(builderSupplier func(SecurityArmCodeBuilder) SecurityArmCodeBuilder) SecurityDataStatusReport1Builder {
+	builder := builderSupplier(b.ArmCodeType.CreateSecurityArmCodeBuilder())
 	var err error
-	m.ArmCodeType, err = builder.Build()
+	b.ArmCodeType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "SecurityArmCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "SecurityArmCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SecurityDataStatusReport1Builder) WithTamperStatus(tamperStatus TamperStatus) SecurityDataStatusReport1Builder {
-	m.TamperStatus = tamperStatus
-	return m
+func (b *_SecurityDataStatusReport1Builder) WithTamperStatus(tamperStatus TamperStatus) SecurityDataStatusReport1Builder {
+	b.TamperStatus = tamperStatus
+	return b
 }
 
-func (m *_SecurityDataStatusReport1Builder) WithTamperStatusBuilder(builderSupplier func(TamperStatusBuilder) TamperStatusBuilder) SecurityDataStatusReport1Builder {
-	builder := builderSupplier(m.TamperStatus.CreateTamperStatusBuilder())
+func (b *_SecurityDataStatusReport1Builder) WithTamperStatusBuilder(builderSupplier func(TamperStatusBuilder) TamperStatusBuilder) SecurityDataStatusReport1Builder {
+	builder := builderSupplier(b.TamperStatus.CreateTamperStatusBuilder())
 	var err error
-	m.TamperStatus, err = builder.Build()
+	b.TamperStatus, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "TamperStatusBuilder failed"))
+		b.err.Append(errors.Wrap(err, "TamperStatusBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SecurityDataStatusReport1Builder) WithPanicStatus(panicStatus PanicStatus) SecurityDataStatusReport1Builder {
-	m.PanicStatus = panicStatus
-	return m
+func (b *_SecurityDataStatusReport1Builder) WithPanicStatus(panicStatus PanicStatus) SecurityDataStatusReport1Builder {
+	b.PanicStatus = panicStatus
+	return b
 }
 
-func (m *_SecurityDataStatusReport1Builder) WithPanicStatusBuilder(builderSupplier func(PanicStatusBuilder) PanicStatusBuilder) SecurityDataStatusReport1Builder {
-	builder := builderSupplier(m.PanicStatus.CreatePanicStatusBuilder())
+func (b *_SecurityDataStatusReport1Builder) WithPanicStatusBuilder(builderSupplier func(PanicStatusBuilder) PanicStatusBuilder) SecurityDataStatusReport1Builder {
+	builder := builderSupplier(b.PanicStatus.CreatePanicStatusBuilder())
 	var err error
-	m.PanicStatus, err = builder.Build()
+	b.PanicStatus, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PanicStatusBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PanicStatusBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SecurityDataStatusReport1Builder) WithZoneStatus(zoneStatus ...ZoneStatus) SecurityDataStatusReport1Builder {
-	m.ZoneStatus = zoneStatus
-	return m
+func (b *_SecurityDataStatusReport1Builder) WithZoneStatus(zoneStatus ...ZoneStatus) SecurityDataStatusReport1Builder {
+	b.ZoneStatus = zoneStatus
+	return b
 }
 
-func (m *_SecurityDataStatusReport1Builder) Build() (SecurityDataStatusReport1, error) {
-	if m.ArmCodeType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SecurityDataStatusReport1Builder) Build() (SecurityDataStatusReport1, error) {
+	if b.ArmCodeType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'armCodeType' not set"))
+		b.err.Append(errors.New("mandatory field 'armCodeType' not set"))
 	}
-	if m.TamperStatus == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TamperStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'tamperStatus' not set"))
+		b.err.Append(errors.New("mandatory field 'tamperStatus' not set"))
 	}
-	if m.PanicStatus == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.PanicStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'panicStatus' not set"))
+		b.err.Append(errors.New("mandatory field 'panicStatus' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataStatusReport1.deepCopy(), nil
+	return b._SecurityDataStatusReport1.deepCopy(), nil
 }
 
-func (m *_SecurityDataStatusReport1Builder) MustBuild() SecurityDataStatusReport1 {
-	build, err := m.Build()
+func (b *_SecurityDataStatusReport1Builder) MustBuild() SecurityDataStatusReport1 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataStatusReport1Builder) DeepCopy() any {
-	return m.CreateSecurityDataStatusReport1Builder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataStatusReport1Builder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataStatusReport1Builder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataStatusReport1Builder) DeepCopy() any {
+	_copy := b.CreateSecurityDataStatusReport1Builder().(*_SecurityDataStatusReport1Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataStatusReport1Builder creates a SecurityDataStatusReport1Builder
-func (m *_SecurityDataStatusReport1) CreateSecurityDataStatusReport1Builder() SecurityDataStatusReport1Builder {
-	if m == nil {
+func (b *_SecurityDataStatusReport1) CreateSecurityDataStatusReport1Builder() SecurityDataStatusReport1Builder {
+	if b == nil {
 		return NewSecurityDataStatusReport1Builder()
 	}
-	return &_SecurityDataStatusReport1Builder{_SecurityDataStatusReport1: m.deepCopy()}
+	return &_SecurityDataStatusReport1Builder{_SecurityDataStatusReport1: b.deepCopy()}
 }
 
 ///////////////////////

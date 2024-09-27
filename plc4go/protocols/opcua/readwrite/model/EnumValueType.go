@@ -115,93 +115,112 @@ func NewEnumValueTypeBuilder() EnumValueTypeBuilder {
 type _EnumValueTypeBuilder struct {
 	*_EnumValueType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (EnumValueTypeBuilder) = (*_EnumValueTypeBuilder)(nil)
 
-func (m *_EnumValueTypeBuilder) WithMandatoryFields(value int64, displayName LocalizedText, description LocalizedText) EnumValueTypeBuilder {
-	return m.WithValue(value).WithDisplayName(displayName).WithDescription(description)
+func (b *_EnumValueTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_EnumValueTypeBuilder) WithValue(value int64) EnumValueTypeBuilder {
-	m.Value = value
-	return m
+func (b *_EnumValueTypeBuilder) WithMandatoryFields(value int64, displayName LocalizedText, description LocalizedText) EnumValueTypeBuilder {
+	return b.WithValue(value).WithDisplayName(displayName).WithDescription(description)
 }
 
-func (m *_EnumValueTypeBuilder) WithDisplayName(displayName LocalizedText) EnumValueTypeBuilder {
-	m.DisplayName = displayName
-	return m
+func (b *_EnumValueTypeBuilder) WithValue(value int64) EnumValueTypeBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_EnumValueTypeBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) EnumValueTypeBuilder {
-	builder := builderSupplier(m.DisplayName.CreateLocalizedTextBuilder())
+func (b *_EnumValueTypeBuilder) WithDisplayName(displayName LocalizedText) EnumValueTypeBuilder {
+	b.DisplayName = displayName
+	return b
+}
+
+func (b *_EnumValueTypeBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) EnumValueTypeBuilder {
+	builder := builderSupplier(b.DisplayName.CreateLocalizedTextBuilder())
 	var err error
-	m.DisplayName, err = builder.Build()
+	b.DisplayName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_EnumValueTypeBuilder) WithDescription(description LocalizedText) EnumValueTypeBuilder {
-	m.Description = description
-	return m
+func (b *_EnumValueTypeBuilder) WithDescription(description LocalizedText) EnumValueTypeBuilder {
+	b.Description = description
+	return b
 }
 
-func (m *_EnumValueTypeBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) EnumValueTypeBuilder {
-	builder := builderSupplier(m.Description.CreateLocalizedTextBuilder())
+func (b *_EnumValueTypeBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) EnumValueTypeBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
 	var err error
-	m.Description, err = builder.Build()
+	b.Description, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_EnumValueTypeBuilder) Build() (EnumValueType, error) {
-	if m.DisplayName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_EnumValueTypeBuilder) Build() (EnumValueType, error) {
+	if b.DisplayName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'displayName' not set"))
+		b.err.Append(errors.New("mandatory field 'displayName' not set"))
 	}
-	if m.Description == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'description' not set"))
+		b.err.Append(errors.New("mandatory field 'description' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EnumValueType.deepCopy(), nil
+	return b._EnumValueType.deepCopy(), nil
 }
 
-func (m *_EnumValueTypeBuilder) MustBuild() EnumValueType {
-	build, err := m.Build()
+func (b *_EnumValueTypeBuilder) MustBuild() EnumValueType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EnumValueTypeBuilder) DeepCopy() any {
-	return m.CreateEnumValueTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EnumValueTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EnumValueTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_EnumValueTypeBuilder) DeepCopy() any {
+	_copy := b.CreateEnumValueTypeBuilder().(*_EnumValueTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEnumValueTypeBuilder creates a EnumValueTypeBuilder
-func (m *_EnumValueType) CreateEnumValueTypeBuilder() EnumValueTypeBuilder {
-	if m == nil {
+func (b *_EnumValueType) CreateEnumValueTypeBuilder() EnumValueTypeBuilder {
+	if b == nil {
 		return NewEnumValueTypeBuilder()
 	}
-	return &_EnumValueTypeBuilder{_EnumValueType: m.deepCopy()}
+	return &_EnumValueTypeBuilder{_EnumValueType: b.deepCopy()}
 }
 
 ///////////////////////

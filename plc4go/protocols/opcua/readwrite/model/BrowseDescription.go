@@ -135,108 +135,127 @@ func NewBrowseDescriptionBuilder() BrowseDescriptionBuilder {
 type _BrowseDescriptionBuilder struct {
 	*_BrowseDescription
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BrowseDescriptionBuilder) = (*_BrowseDescriptionBuilder)(nil)
 
-func (m *_BrowseDescriptionBuilder) WithMandatoryFields(nodeId NodeId, browseDirection BrowseDirection, referenceTypeId NodeId, includeSubtypes bool, nodeClassMask uint32, resultMask uint32) BrowseDescriptionBuilder {
-	return m.WithNodeId(nodeId).WithBrowseDirection(browseDirection).WithReferenceTypeId(referenceTypeId).WithIncludeSubtypes(includeSubtypes).WithNodeClassMask(nodeClassMask).WithResultMask(resultMask)
+func (b *_BrowseDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_BrowseDescriptionBuilder) WithNodeId(nodeId NodeId) BrowseDescriptionBuilder {
-	m.NodeId = nodeId
-	return m
+func (b *_BrowseDescriptionBuilder) WithMandatoryFields(nodeId NodeId, browseDirection BrowseDirection, referenceTypeId NodeId, includeSubtypes bool, nodeClassMask uint32, resultMask uint32) BrowseDescriptionBuilder {
+	return b.WithNodeId(nodeId).WithBrowseDirection(browseDirection).WithReferenceTypeId(referenceTypeId).WithIncludeSubtypes(includeSubtypes).WithNodeClassMask(nodeClassMask).WithResultMask(resultMask)
 }
 
-func (m *_BrowseDescriptionBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) BrowseDescriptionBuilder {
-	builder := builderSupplier(m.NodeId.CreateNodeIdBuilder())
+func (b *_BrowseDescriptionBuilder) WithNodeId(nodeId NodeId) BrowseDescriptionBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_BrowseDescriptionBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) BrowseDescriptionBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdBuilder())
 	var err error
-	m.NodeId, err = builder.Build()
+	b.NodeId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BrowseDescriptionBuilder) WithBrowseDirection(browseDirection BrowseDirection) BrowseDescriptionBuilder {
-	m.BrowseDirection = browseDirection
-	return m
+func (b *_BrowseDescriptionBuilder) WithBrowseDirection(browseDirection BrowseDirection) BrowseDescriptionBuilder {
+	b.BrowseDirection = browseDirection
+	return b
 }
 
-func (m *_BrowseDescriptionBuilder) WithReferenceTypeId(referenceTypeId NodeId) BrowseDescriptionBuilder {
-	m.ReferenceTypeId = referenceTypeId
-	return m
+func (b *_BrowseDescriptionBuilder) WithReferenceTypeId(referenceTypeId NodeId) BrowseDescriptionBuilder {
+	b.ReferenceTypeId = referenceTypeId
+	return b
 }
 
-func (m *_BrowseDescriptionBuilder) WithReferenceTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) BrowseDescriptionBuilder {
-	builder := builderSupplier(m.ReferenceTypeId.CreateNodeIdBuilder())
+func (b *_BrowseDescriptionBuilder) WithReferenceTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) BrowseDescriptionBuilder {
+	builder := builderSupplier(b.ReferenceTypeId.CreateNodeIdBuilder())
 	var err error
-	m.ReferenceTypeId, err = builder.Build()
+	b.ReferenceTypeId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BrowseDescriptionBuilder) WithIncludeSubtypes(includeSubtypes bool) BrowseDescriptionBuilder {
-	m.IncludeSubtypes = includeSubtypes
-	return m
+func (b *_BrowseDescriptionBuilder) WithIncludeSubtypes(includeSubtypes bool) BrowseDescriptionBuilder {
+	b.IncludeSubtypes = includeSubtypes
+	return b
 }
 
-func (m *_BrowseDescriptionBuilder) WithNodeClassMask(nodeClassMask uint32) BrowseDescriptionBuilder {
-	m.NodeClassMask = nodeClassMask
-	return m
+func (b *_BrowseDescriptionBuilder) WithNodeClassMask(nodeClassMask uint32) BrowseDescriptionBuilder {
+	b.NodeClassMask = nodeClassMask
+	return b
 }
 
-func (m *_BrowseDescriptionBuilder) WithResultMask(resultMask uint32) BrowseDescriptionBuilder {
-	m.ResultMask = resultMask
-	return m
+func (b *_BrowseDescriptionBuilder) WithResultMask(resultMask uint32) BrowseDescriptionBuilder {
+	b.ResultMask = resultMask
+	return b
 }
 
-func (m *_BrowseDescriptionBuilder) Build() (BrowseDescription, error) {
-	if m.NodeId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BrowseDescriptionBuilder) Build() (BrowseDescription, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nodeId' not set"))
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
 	}
-	if m.ReferenceTypeId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ReferenceTypeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
+		b.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BrowseDescription.deepCopy(), nil
+	return b._BrowseDescription.deepCopy(), nil
 }
 
-func (m *_BrowseDescriptionBuilder) MustBuild() BrowseDescription {
-	build, err := m.Build()
+func (b *_BrowseDescriptionBuilder) MustBuild() BrowseDescription {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BrowseDescriptionBuilder) DeepCopy() any {
-	return m.CreateBrowseDescriptionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BrowseDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BrowseDescriptionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_BrowseDescriptionBuilder) DeepCopy() any {
+	_copy := b.CreateBrowseDescriptionBuilder().(*_BrowseDescriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBrowseDescriptionBuilder creates a BrowseDescriptionBuilder
-func (m *_BrowseDescription) CreateBrowseDescriptionBuilder() BrowseDescriptionBuilder {
-	if m == nil {
+func (b *_BrowseDescription) CreateBrowseDescriptionBuilder() BrowseDescriptionBuilder {
+	if b == nil {
 		return NewBrowseDescriptionBuilder()
 	}
-	return &_BrowseDescriptionBuilder{_BrowseDescription: m.deepCopy()}
+	return &_BrowseDescriptionBuilder{_BrowseDescription: b.deepCopy()}
 }
 
 ///////////////////////

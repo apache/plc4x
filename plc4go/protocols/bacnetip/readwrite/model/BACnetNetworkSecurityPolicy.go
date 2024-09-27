@@ -105,83 +105,87 @@ type _BACnetNetworkSecurityPolicyBuilder struct {
 
 var _ (BACnetNetworkSecurityPolicyBuilder) = (*_BACnetNetworkSecurityPolicyBuilder)(nil)
 
-func (m *_BACnetNetworkSecurityPolicyBuilder) WithMandatoryFields(portId BACnetContextTagUnsignedInteger, securityLevel BACnetSecurityPolicyTagged) BACnetNetworkSecurityPolicyBuilder {
-	return m.WithPortId(portId).WithSecurityLevel(securityLevel)
+func (b *_BACnetNetworkSecurityPolicyBuilder) WithMandatoryFields(portId BACnetContextTagUnsignedInteger, securityLevel BACnetSecurityPolicyTagged) BACnetNetworkSecurityPolicyBuilder {
+	return b.WithPortId(portId).WithSecurityLevel(securityLevel)
 }
 
-func (m *_BACnetNetworkSecurityPolicyBuilder) WithPortId(portId BACnetContextTagUnsignedInteger) BACnetNetworkSecurityPolicyBuilder {
-	m.PortId = portId
-	return m
+func (b *_BACnetNetworkSecurityPolicyBuilder) WithPortId(portId BACnetContextTagUnsignedInteger) BACnetNetworkSecurityPolicyBuilder {
+	b.PortId = portId
+	return b
 }
 
-func (m *_BACnetNetworkSecurityPolicyBuilder) WithPortIdBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNetworkSecurityPolicyBuilder {
-	builder := builderSupplier(m.PortId.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetNetworkSecurityPolicyBuilder) WithPortIdBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNetworkSecurityPolicyBuilder {
+	builder := builderSupplier(b.PortId.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.PortId, err = builder.Build()
+	b.PortId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNetworkSecurityPolicyBuilder) WithSecurityLevel(securityLevel BACnetSecurityPolicyTagged) BACnetNetworkSecurityPolicyBuilder {
-	m.SecurityLevel = securityLevel
-	return m
+func (b *_BACnetNetworkSecurityPolicyBuilder) WithSecurityLevel(securityLevel BACnetSecurityPolicyTagged) BACnetNetworkSecurityPolicyBuilder {
+	b.SecurityLevel = securityLevel
+	return b
 }
 
-func (m *_BACnetNetworkSecurityPolicyBuilder) WithSecurityLevelBuilder(builderSupplier func(BACnetSecurityPolicyTaggedBuilder) BACnetSecurityPolicyTaggedBuilder) BACnetNetworkSecurityPolicyBuilder {
-	builder := builderSupplier(m.SecurityLevel.CreateBACnetSecurityPolicyTaggedBuilder())
+func (b *_BACnetNetworkSecurityPolicyBuilder) WithSecurityLevelBuilder(builderSupplier func(BACnetSecurityPolicyTaggedBuilder) BACnetSecurityPolicyTaggedBuilder) BACnetNetworkSecurityPolicyBuilder {
+	builder := builderSupplier(b.SecurityLevel.CreateBACnetSecurityPolicyTaggedBuilder())
 	var err error
-	m.SecurityLevel, err = builder.Build()
+	b.SecurityLevel, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetSecurityPolicyTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetSecurityPolicyTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNetworkSecurityPolicyBuilder) Build() (BACnetNetworkSecurityPolicy, error) {
-	if m.PortId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNetworkSecurityPolicyBuilder) Build() (BACnetNetworkSecurityPolicy, error) {
+	if b.PortId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'portId' not set"))
+		b.err.Append(errors.New("mandatory field 'portId' not set"))
 	}
-	if m.SecurityLevel == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.SecurityLevel == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'securityLevel' not set"))
+		b.err.Append(errors.New("mandatory field 'securityLevel' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNetworkSecurityPolicy.deepCopy(), nil
+	return b._BACnetNetworkSecurityPolicy.deepCopy(), nil
 }
 
-func (m *_BACnetNetworkSecurityPolicyBuilder) MustBuild() BACnetNetworkSecurityPolicy {
-	build, err := m.Build()
+func (b *_BACnetNetworkSecurityPolicyBuilder) MustBuild() BACnetNetworkSecurityPolicy {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNetworkSecurityPolicyBuilder) DeepCopy() any {
-	return m.CreateBACnetNetworkSecurityPolicyBuilder()
+func (b *_BACnetNetworkSecurityPolicyBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNetworkSecurityPolicyBuilder().(*_BACnetNetworkSecurityPolicyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNetworkSecurityPolicyBuilder creates a BACnetNetworkSecurityPolicyBuilder
-func (m *_BACnetNetworkSecurityPolicy) CreateBACnetNetworkSecurityPolicyBuilder() BACnetNetworkSecurityPolicyBuilder {
-	if m == nil {
+func (b *_BACnetNetworkSecurityPolicy) CreateBACnetNetworkSecurityPolicyBuilder() BACnetNetworkSecurityPolicyBuilder {
+	if b == nil {
 		return NewBACnetNetworkSecurityPolicyBuilder()
 	}
-	return &_BACnetNetworkSecurityPolicyBuilder{_BACnetNetworkSecurityPolicy: m.deepCopy()}
+	return &_BACnetNetworkSecurityPolicyBuilder{_BACnetNetworkSecurityPolicy: b.deepCopy()}
 }
 
 ///////////////////////

@@ -110,55 +110,59 @@ type _InterfaceOptions3Builder struct {
 
 var _ (InterfaceOptions3Builder) = (*_InterfaceOptions3Builder)(nil)
 
-func (m *_InterfaceOptions3Builder) WithMandatoryFields(exstat bool, pun bool, localSal bool, pcn bool) InterfaceOptions3Builder {
-	return m.WithExstat(exstat).WithPun(pun).WithLocalSal(localSal).WithPcn(pcn)
+func (b *_InterfaceOptions3Builder) WithMandatoryFields(exstat bool, pun bool, localSal bool, pcn bool) InterfaceOptions3Builder {
+	return b.WithExstat(exstat).WithPun(pun).WithLocalSal(localSal).WithPcn(pcn)
 }
 
-func (m *_InterfaceOptions3Builder) WithExstat(exstat bool) InterfaceOptions3Builder {
-	m.Exstat = exstat
-	return m
+func (b *_InterfaceOptions3Builder) WithExstat(exstat bool) InterfaceOptions3Builder {
+	b.Exstat = exstat
+	return b
 }
 
-func (m *_InterfaceOptions3Builder) WithPun(pun bool) InterfaceOptions3Builder {
-	m.Pun = pun
-	return m
+func (b *_InterfaceOptions3Builder) WithPun(pun bool) InterfaceOptions3Builder {
+	b.Pun = pun
+	return b
 }
 
-func (m *_InterfaceOptions3Builder) WithLocalSal(localSal bool) InterfaceOptions3Builder {
-	m.LocalSal = localSal
-	return m
+func (b *_InterfaceOptions3Builder) WithLocalSal(localSal bool) InterfaceOptions3Builder {
+	b.LocalSal = localSal
+	return b
 }
 
-func (m *_InterfaceOptions3Builder) WithPcn(pcn bool) InterfaceOptions3Builder {
-	m.Pcn = pcn
-	return m
+func (b *_InterfaceOptions3Builder) WithPcn(pcn bool) InterfaceOptions3Builder {
+	b.Pcn = pcn
+	return b
 }
 
-func (m *_InterfaceOptions3Builder) Build() (InterfaceOptions3, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_InterfaceOptions3Builder) Build() (InterfaceOptions3, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._InterfaceOptions3.deepCopy(), nil
+	return b._InterfaceOptions3.deepCopy(), nil
 }
 
-func (m *_InterfaceOptions3Builder) MustBuild() InterfaceOptions3 {
-	build, err := m.Build()
+func (b *_InterfaceOptions3Builder) MustBuild() InterfaceOptions3 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_InterfaceOptions3Builder) DeepCopy() any {
-	return m.CreateInterfaceOptions3Builder()
+func (b *_InterfaceOptions3Builder) DeepCopy() any {
+	_copy := b.CreateInterfaceOptions3Builder().(*_InterfaceOptions3Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateInterfaceOptions3Builder creates a InterfaceOptions3Builder
-func (m *_InterfaceOptions3) CreateInterfaceOptions3Builder() InterfaceOptions3Builder {
-	if m == nil {
+func (b *_InterfaceOptions3) CreateInterfaceOptions3Builder() InterfaceOptions3Builder {
+	if b == nil {
 		return NewInterfaceOptions3Builder()
 	}
-	return &_InterfaceOptions3Builder{_InterfaceOptions3: m.deepCopy()}
+	return &_InterfaceOptions3Builder{_InterfaceOptions3: b.deepCopy()}
 }
 
 ///////////////////////

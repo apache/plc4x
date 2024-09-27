@@ -100,64 +100,83 @@ func NewBACnetConstructedDataNumberOfStatesBuilder() BACnetConstructedDataNumber
 type _BACnetConstructedDataNumberOfStatesBuilder struct {
 	*_BACnetConstructedDataNumberOfStates
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataNumberOfStatesBuilder) = (*_BACnetConstructedDataNumberOfStatesBuilder)(nil)
 
-func (m *_BACnetConstructedDataNumberOfStatesBuilder) WithMandatoryFields(numberOfState BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfStatesBuilder {
-	return m.WithNumberOfState(numberOfState)
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataNumberOfStatesBuilder) WithNumberOfState(numberOfState BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfStatesBuilder {
-	m.NumberOfState = numberOfState
-	return m
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) WithMandatoryFields(numberOfState BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfStatesBuilder {
+	return b.WithNumberOfState(numberOfState)
 }
 
-func (m *_BACnetConstructedDataNumberOfStatesBuilder) WithNumberOfStateBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNumberOfStatesBuilder {
-	builder := builderSupplier(m.NumberOfState.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) WithNumberOfState(numberOfState BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfStatesBuilder {
+	b.NumberOfState = numberOfState
+	return b
+}
+
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) WithNumberOfStateBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNumberOfStatesBuilder {
+	builder := builderSupplier(b.NumberOfState.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfState, err = builder.Build()
+	b.NumberOfState, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataNumberOfStatesBuilder) Build() (BACnetConstructedDataNumberOfStates, error) {
-	if m.NumberOfState == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) Build() (BACnetConstructedDataNumberOfStates, error) {
+	if b.NumberOfState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'numberOfState' not set"))
+		b.err.Append(errors.New("mandatory field 'numberOfState' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataNumberOfStates.deepCopy(), nil
+	return b._BACnetConstructedDataNumberOfStates.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataNumberOfStatesBuilder) MustBuild() BACnetConstructedDataNumberOfStates {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) MustBuild() BACnetConstructedDataNumberOfStates {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataNumberOfStatesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataNumberOfStatesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNumberOfStatesBuilder().(*_BACnetConstructedDataNumberOfStatesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataNumberOfStatesBuilder creates a BACnetConstructedDataNumberOfStatesBuilder
-func (m *_BACnetConstructedDataNumberOfStates) CreateBACnetConstructedDataNumberOfStatesBuilder() BACnetConstructedDataNumberOfStatesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataNumberOfStates) CreateBACnetConstructedDataNumberOfStatesBuilder() BACnetConstructedDataNumberOfStatesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataNumberOfStatesBuilder()
 	}
-	return &_BACnetConstructedDataNumberOfStatesBuilder{_BACnetConstructedDataNumberOfStates: m.deepCopy()}
+	return &_BACnetConstructedDataNumberOfStatesBuilder{_BACnetConstructedDataNumberOfStates: b.deepCopy()}
 }
 
 ///////////////////////

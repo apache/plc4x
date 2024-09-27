@@ -101,50 +101,69 @@ func NewNodeIdFourByteBuilder() NodeIdFourByteBuilder {
 type _NodeIdFourByteBuilder struct {
 	*_NodeIdFourByte
 
+	parentBuilder *_NodeIdTypeDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NodeIdFourByteBuilder) = (*_NodeIdFourByteBuilder)(nil)
 
-func (m *_NodeIdFourByteBuilder) WithMandatoryFields(namespaceIndex uint8, id uint16) NodeIdFourByteBuilder {
-	return m.WithNamespaceIndex(namespaceIndex).WithId(id)
+func (b *_NodeIdFourByteBuilder) setParent(contract NodeIdTypeDefinitionContract) {
+	b.NodeIdTypeDefinitionContract = contract
 }
 
-func (m *_NodeIdFourByteBuilder) WithNamespaceIndex(namespaceIndex uint8) NodeIdFourByteBuilder {
-	m.NamespaceIndex = namespaceIndex
-	return m
+func (b *_NodeIdFourByteBuilder) WithMandatoryFields(namespaceIndex uint8, id uint16) NodeIdFourByteBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithId(id)
 }
 
-func (m *_NodeIdFourByteBuilder) WithId(id uint16) NodeIdFourByteBuilder {
-	m.Id = id
-	return m
+func (b *_NodeIdFourByteBuilder) WithNamespaceIndex(namespaceIndex uint8) NodeIdFourByteBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
 }
 
-func (m *_NodeIdFourByteBuilder) Build() (NodeIdFourByte, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NodeIdFourByteBuilder) WithId(id uint16) NodeIdFourByteBuilder {
+	b.Id = id
+	return b
+}
+
+func (b *_NodeIdFourByteBuilder) Build() (NodeIdFourByte, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NodeIdFourByte.deepCopy(), nil
+	return b._NodeIdFourByte.deepCopy(), nil
 }
 
-func (m *_NodeIdFourByteBuilder) MustBuild() NodeIdFourByte {
-	build, err := m.Build()
+func (b *_NodeIdFourByteBuilder) MustBuild() NodeIdFourByte {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NodeIdFourByteBuilder) DeepCopy() any {
-	return m.CreateNodeIdFourByteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NodeIdFourByteBuilder) Done() NodeIdTypeDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NodeIdFourByteBuilder) buildForNodeIdTypeDefinition() (NodeIdTypeDefinition, error) {
+	return b.Build()
+}
+
+func (b *_NodeIdFourByteBuilder) DeepCopy() any {
+	_copy := b.CreateNodeIdFourByteBuilder().(*_NodeIdFourByteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNodeIdFourByteBuilder creates a NodeIdFourByteBuilder
-func (m *_NodeIdFourByte) CreateNodeIdFourByteBuilder() NodeIdFourByteBuilder {
-	if m == nil {
+func (b *_NodeIdFourByte) CreateNodeIdFourByteBuilder() NodeIdFourByteBuilder {
+	if b == nil {
 		return NewNodeIdFourByteBuilder()
 	}
-	return &_NodeIdFourByteBuilder{_NodeIdFourByte: m.deepCopy()}
+	return &_NodeIdFourByteBuilder{_NodeIdFourByte: b.deepCopy()}
 }
 
 ///////////////////////

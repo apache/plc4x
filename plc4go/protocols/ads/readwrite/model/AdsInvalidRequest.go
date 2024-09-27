@@ -85,40 +85,59 @@ func NewAdsInvalidRequestBuilder() AdsInvalidRequestBuilder {
 type _AdsInvalidRequestBuilder struct {
 	*_AdsInvalidRequest
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsInvalidRequestBuilder) = (*_AdsInvalidRequestBuilder)(nil)
 
-func (m *_AdsInvalidRequestBuilder) WithMandatoryFields() AdsInvalidRequestBuilder {
-	return m
+func (b *_AdsInvalidRequestBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_AdsInvalidRequestBuilder) Build() (AdsInvalidRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsInvalidRequestBuilder) WithMandatoryFields() AdsInvalidRequestBuilder {
+	return b
+}
+
+func (b *_AdsInvalidRequestBuilder) Build() (AdsInvalidRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsInvalidRequest.deepCopy(), nil
+	return b._AdsInvalidRequest.deepCopy(), nil
 }
 
-func (m *_AdsInvalidRequestBuilder) MustBuild() AdsInvalidRequest {
-	build, err := m.Build()
+func (b *_AdsInvalidRequestBuilder) MustBuild() AdsInvalidRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsInvalidRequestBuilder) DeepCopy() any {
-	return m.CreateAdsInvalidRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsInvalidRequestBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsInvalidRequestBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsInvalidRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAdsInvalidRequestBuilder().(*_AdsInvalidRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsInvalidRequestBuilder creates a AdsInvalidRequestBuilder
-func (m *_AdsInvalidRequest) CreateAdsInvalidRequestBuilder() AdsInvalidRequestBuilder {
-	if m == nil {
+func (b *_AdsInvalidRequest) CreateAdsInvalidRequestBuilder() AdsInvalidRequestBuilder {
+	if b == nil {
 		return NewAdsInvalidRequestBuilder()
 	}
-	return &_AdsInvalidRequestBuilder{_AdsInvalidRequest: m.deepCopy()}
+	return &_AdsInvalidRequestBuilder{_AdsInvalidRequest: b.deepCopy()}
 }
 
 ///////////////////////

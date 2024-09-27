@@ -98,64 +98,83 @@ func NewBACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder() BACne
 type _BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder struct {
 	*_BACnetPropertyAccessResultAccessResultPropertyAccessError
 
+	parentBuilder *_BACnetPropertyAccessResultAccessResultBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) = (*_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder)(nil)
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) WithMandatoryFields(propertyAccessError ErrorEnclosed) BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder {
-	return m.WithPropertyAccessError(propertyAccessError)
+func (b *_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) setParent(contract BACnetPropertyAccessResultAccessResultContract) {
+	b.BACnetPropertyAccessResultAccessResultContract = contract
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) WithPropertyAccessError(propertyAccessError ErrorEnclosed) BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder {
-	m.PropertyAccessError = propertyAccessError
-	return m
+func (b *_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) WithMandatoryFields(propertyAccessError ErrorEnclosed) BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder {
+	return b.WithPropertyAccessError(propertyAccessError)
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) WithPropertyAccessErrorBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder {
-	builder := builderSupplier(m.PropertyAccessError.CreateErrorEnclosedBuilder())
+func (b *_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) WithPropertyAccessError(propertyAccessError ErrorEnclosed) BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder {
+	b.PropertyAccessError = propertyAccessError
+	return b
+}
+
+func (b *_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) WithPropertyAccessErrorBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder {
+	builder := builderSupplier(b.PropertyAccessError.CreateErrorEnclosedBuilder())
 	var err error
-	m.PropertyAccessError, err = builder.Build()
+	b.PropertyAccessError, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) Build() (BACnetPropertyAccessResultAccessResultPropertyAccessError, error) {
-	if m.PropertyAccessError == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) Build() (BACnetPropertyAccessResultAccessResultPropertyAccessError, error) {
+	if b.PropertyAccessError == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'propertyAccessError' not set"))
+		b.err.Append(errors.New("mandatory field 'propertyAccessError' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyAccessResultAccessResultPropertyAccessError.deepCopy(), nil
+	return b._BACnetPropertyAccessResultAccessResultPropertyAccessError.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) MustBuild() BACnetPropertyAccessResultAccessResultPropertyAccessError {
-	build, err := m.Build()
+func (b *_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) MustBuild() BACnetPropertyAccessResultAccessResultPropertyAccessError {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) Done() BACnetPropertyAccessResultAccessResultBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) buildForBACnetPropertyAccessResultAccessResult() (BACnetPropertyAccessResultAccessResult, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder().(*_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder creates a BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder
-func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) CreateBACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder() BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder {
-	if m == nil {
+func (b *_BACnetPropertyAccessResultAccessResultPropertyAccessError) CreateBACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder() BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder {
+	if b == nil {
 		return NewBACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder()
 	}
-	return &_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder{_BACnetPropertyAccessResultAccessResultPropertyAccessError: m.deepCopy()}
+	return &_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder{_BACnetPropertyAccessResultAccessResultPropertyAccessError: b.deepCopy()}
 }
 
 ///////////////////////

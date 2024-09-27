@@ -98,64 +98,83 @@ func NewBACnetScaleIntegerScaleBuilder() BACnetScaleIntegerScaleBuilder {
 type _BACnetScaleIntegerScaleBuilder struct {
 	*_BACnetScaleIntegerScale
 
+	parentBuilder *_BACnetScaleBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetScaleIntegerScaleBuilder) = (*_BACnetScaleIntegerScaleBuilder)(nil)
 
-func (m *_BACnetScaleIntegerScaleBuilder) WithMandatoryFields(integerScale BACnetContextTagSignedInteger) BACnetScaleIntegerScaleBuilder {
-	return m.WithIntegerScale(integerScale)
+func (b *_BACnetScaleIntegerScaleBuilder) setParent(contract BACnetScaleContract) {
+	b.BACnetScaleContract = contract
 }
 
-func (m *_BACnetScaleIntegerScaleBuilder) WithIntegerScale(integerScale BACnetContextTagSignedInteger) BACnetScaleIntegerScaleBuilder {
-	m.IntegerScale = integerScale
-	return m
+func (b *_BACnetScaleIntegerScaleBuilder) WithMandatoryFields(integerScale BACnetContextTagSignedInteger) BACnetScaleIntegerScaleBuilder {
+	return b.WithIntegerScale(integerScale)
 }
 
-func (m *_BACnetScaleIntegerScaleBuilder) WithIntegerScaleBuilder(builderSupplier func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetScaleIntegerScaleBuilder {
-	builder := builderSupplier(m.IntegerScale.CreateBACnetContextTagSignedIntegerBuilder())
+func (b *_BACnetScaleIntegerScaleBuilder) WithIntegerScale(integerScale BACnetContextTagSignedInteger) BACnetScaleIntegerScaleBuilder {
+	b.IntegerScale = integerScale
+	return b
+}
+
+func (b *_BACnetScaleIntegerScaleBuilder) WithIntegerScaleBuilder(builderSupplier func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetScaleIntegerScaleBuilder {
+	builder := builderSupplier(b.IntegerScale.CreateBACnetContextTagSignedIntegerBuilder())
 	var err error
-	m.IntegerScale, err = builder.Build()
+	b.IntegerScale, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagSignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagSignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetScaleIntegerScaleBuilder) Build() (BACnetScaleIntegerScale, error) {
-	if m.IntegerScale == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetScaleIntegerScaleBuilder) Build() (BACnetScaleIntegerScale, error) {
+	if b.IntegerScale == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'integerScale' not set"))
+		b.err.Append(errors.New("mandatory field 'integerScale' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetScaleIntegerScale.deepCopy(), nil
+	return b._BACnetScaleIntegerScale.deepCopy(), nil
 }
 
-func (m *_BACnetScaleIntegerScaleBuilder) MustBuild() BACnetScaleIntegerScale {
-	build, err := m.Build()
+func (b *_BACnetScaleIntegerScaleBuilder) MustBuild() BACnetScaleIntegerScale {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetScaleIntegerScaleBuilder) DeepCopy() any {
-	return m.CreateBACnetScaleIntegerScaleBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetScaleIntegerScaleBuilder) Done() BACnetScaleBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetScaleIntegerScaleBuilder) buildForBACnetScale() (BACnetScale, error) {
+	return b.Build()
+}
+
+func (b *_BACnetScaleIntegerScaleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetScaleIntegerScaleBuilder().(*_BACnetScaleIntegerScaleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetScaleIntegerScaleBuilder creates a BACnetScaleIntegerScaleBuilder
-func (m *_BACnetScaleIntegerScale) CreateBACnetScaleIntegerScaleBuilder() BACnetScaleIntegerScaleBuilder {
-	if m == nil {
+func (b *_BACnetScaleIntegerScale) CreateBACnetScaleIntegerScaleBuilder() BACnetScaleIntegerScaleBuilder {
+	if b == nil {
 		return NewBACnetScaleIntegerScaleBuilder()
 	}
-	return &_BACnetScaleIntegerScaleBuilder{_BACnetScaleIntegerScale: m.deepCopy()}
+	return &_BACnetScaleIntegerScaleBuilder{_BACnetScaleIntegerScale: b.deepCopy()}
 }
 
 ///////////////////////

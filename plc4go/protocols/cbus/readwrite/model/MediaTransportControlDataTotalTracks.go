@@ -111,60 +111,79 @@ func NewMediaTransportControlDataTotalTracksBuilder() MediaTransportControlDataT
 type _MediaTransportControlDataTotalTracksBuilder struct {
 	*_MediaTransportControlDataTotalTracks
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataTotalTracksBuilder) = (*_MediaTransportControlDataTotalTracksBuilder)(nil)
 
-func (m *_MediaTransportControlDataTotalTracksBuilder) WithMandatoryFields(totalTracksMSB byte, totalTracksMMSB byte, totalTracksMLSB byte, totalTracksLSB byte) MediaTransportControlDataTotalTracksBuilder {
-	return m.WithTotalTracksMSB(totalTracksMSB).WithTotalTracksMMSB(totalTracksMMSB).WithTotalTracksMLSB(totalTracksMLSB).WithTotalTracksLSB(totalTracksLSB)
+func (b *_MediaTransportControlDataTotalTracksBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataTotalTracksBuilder) WithTotalTracksMSB(totalTracksMSB byte) MediaTransportControlDataTotalTracksBuilder {
-	m.TotalTracksMSB = totalTracksMSB
-	return m
+func (b *_MediaTransportControlDataTotalTracksBuilder) WithMandatoryFields(totalTracksMSB byte, totalTracksMMSB byte, totalTracksMLSB byte, totalTracksLSB byte) MediaTransportControlDataTotalTracksBuilder {
+	return b.WithTotalTracksMSB(totalTracksMSB).WithTotalTracksMMSB(totalTracksMMSB).WithTotalTracksMLSB(totalTracksMLSB).WithTotalTracksLSB(totalTracksLSB)
 }
 
-func (m *_MediaTransportControlDataTotalTracksBuilder) WithTotalTracksMMSB(totalTracksMMSB byte) MediaTransportControlDataTotalTracksBuilder {
-	m.TotalTracksMMSB = totalTracksMMSB
-	return m
+func (b *_MediaTransportControlDataTotalTracksBuilder) WithTotalTracksMSB(totalTracksMSB byte) MediaTransportControlDataTotalTracksBuilder {
+	b.TotalTracksMSB = totalTracksMSB
+	return b
 }
 
-func (m *_MediaTransportControlDataTotalTracksBuilder) WithTotalTracksMLSB(totalTracksMLSB byte) MediaTransportControlDataTotalTracksBuilder {
-	m.TotalTracksMLSB = totalTracksMLSB
-	return m
+func (b *_MediaTransportControlDataTotalTracksBuilder) WithTotalTracksMMSB(totalTracksMMSB byte) MediaTransportControlDataTotalTracksBuilder {
+	b.TotalTracksMMSB = totalTracksMMSB
+	return b
 }
 
-func (m *_MediaTransportControlDataTotalTracksBuilder) WithTotalTracksLSB(totalTracksLSB byte) MediaTransportControlDataTotalTracksBuilder {
-	m.TotalTracksLSB = totalTracksLSB
-	return m
+func (b *_MediaTransportControlDataTotalTracksBuilder) WithTotalTracksMLSB(totalTracksMLSB byte) MediaTransportControlDataTotalTracksBuilder {
+	b.TotalTracksMLSB = totalTracksMLSB
+	return b
 }
 
-func (m *_MediaTransportControlDataTotalTracksBuilder) Build() (MediaTransportControlDataTotalTracks, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataTotalTracksBuilder) WithTotalTracksLSB(totalTracksLSB byte) MediaTransportControlDataTotalTracksBuilder {
+	b.TotalTracksLSB = totalTracksLSB
+	return b
+}
+
+func (b *_MediaTransportControlDataTotalTracksBuilder) Build() (MediaTransportControlDataTotalTracks, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataTotalTracks.deepCopy(), nil
+	return b._MediaTransportControlDataTotalTracks.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataTotalTracksBuilder) MustBuild() MediaTransportControlDataTotalTracks {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataTotalTracksBuilder) MustBuild() MediaTransportControlDataTotalTracks {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataTotalTracksBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataTotalTracksBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataTotalTracksBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataTotalTracksBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataTotalTracksBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataTotalTracksBuilder().(*_MediaTransportControlDataTotalTracksBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataTotalTracksBuilder creates a MediaTransportControlDataTotalTracksBuilder
-func (m *_MediaTransportControlDataTotalTracks) CreateMediaTransportControlDataTotalTracksBuilder() MediaTransportControlDataTotalTracksBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataTotalTracks) CreateMediaTransportControlDataTotalTracksBuilder() MediaTransportControlDataTotalTracksBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataTotalTracksBuilder()
 	}
-	return &_MediaTransportControlDataTotalTracksBuilder{_MediaTransportControlDataTotalTracks: m.deepCopy()}
+	return &_MediaTransportControlDataTotalTracksBuilder{_MediaTransportControlDataTotalTracks: b.deepCopy()}
 }
 
 ///////////////////////

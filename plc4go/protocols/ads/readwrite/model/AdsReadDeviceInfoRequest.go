@@ -85,40 +85,59 @@ func NewAdsReadDeviceInfoRequestBuilder() AdsReadDeviceInfoRequestBuilder {
 type _AdsReadDeviceInfoRequestBuilder struct {
 	*_AdsReadDeviceInfoRequest
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsReadDeviceInfoRequestBuilder) = (*_AdsReadDeviceInfoRequestBuilder)(nil)
 
-func (m *_AdsReadDeviceInfoRequestBuilder) WithMandatoryFields() AdsReadDeviceInfoRequestBuilder {
-	return m
+func (b *_AdsReadDeviceInfoRequestBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_AdsReadDeviceInfoRequestBuilder) Build() (AdsReadDeviceInfoRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsReadDeviceInfoRequestBuilder) WithMandatoryFields() AdsReadDeviceInfoRequestBuilder {
+	return b
+}
+
+func (b *_AdsReadDeviceInfoRequestBuilder) Build() (AdsReadDeviceInfoRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsReadDeviceInfoRequest.deepCopy(), nil
+	return b._AdsReadDeviceInfoRequest.deepCopy(), nil
 }
 
-func (m *_AdsReadDeviceInfoRequestBuilder) MustBuild() AdsReadDeviceInfoRequest {
-	build, err := m.Build()
+func (b *_AdsReadDeviceInfoRequestBuilder) MustBuild() AdsReadDeviceInfoRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsReadDeviceInfoRequestBuilder) DeepCopy() any {
-	return m.CreateAdsReadDeviceInfoRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsReadDeviceInfoRequestBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsReadDeviceInfoRequestBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsReadDeviceInfoRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAdsReadDeviceInfoRequestBuilder().(*_AdsReadDeviceInfoRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsReadDeviceInfoRequestBuilder creates a AdsReadDeviceInfoRequestBuilder
-func (m *_AdsReadDeviceInfoRequest) CreateAdsReadDeviceInfoRequestBuilder() AdsReadDeviceInfoRequestBuilder {
-	if m == nil {
+func (b *_AdsReadDeviceInfoRequest) CreateAdsReadDeviceInfoRequestBuilder() AdsReadDeviceInfoRequestBuilder {
+	if b == nil {
 		return NewAdsReadDeviceInfoRequestBuilder()
 	}
-	return &_AdsReadDeviceInfoRequestBuilder{_AdsReadDeviceInfoRequest: m.deepCopy()}
+	return &_AdsReadDeviceInfoRequestBuilder{_AdsReadDeviceInfoRequest: b.deepCopy()}
 }
 
 ///////////////////////

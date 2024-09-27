@@ -83,10 +83,29 @@ type ComObjectTableBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ComObjectTableBuilder
+	// AsComObjectTableRealisationType1 converts this build to a subType of ComObjectTable. It is always possible to return to current builder using Done()
+	AsComObjectTableRealisationType1() interface {
+		ComObjectTableRealisationType1Builder
+		Done() ComObjectTableBuilder
+	}
+	// AsComObjectTableRealisationType2 converts this build to a subType of ComObjectTable. It is always possible to return to current builder using Done()
+	AsComObjectTableRealisationType2() interface {
+		ComObjectTableRealisationType2Builder
+		Done() ComObjectTableBuilder
+	}
+	// AsComObjectTableRealisationType6 converts this build to a subType of ComObjectTable. It is always possible to return to current builder using Done()
+	AsComObjectTableRealisationType6() interface {
+		ComObjectTableRealisationType6Builder
+		Done() ComObjectTableBuilder
+	}
 	// Build builds the ComObjectTable or returns an error if something is wrong
-	Build() (ComObjectTableContract, error)
+	PartialBuild() (ComObjectTableContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() ComObjectTableContract
+	PartialMustBuild() ComObjectTableContract
+	// Build builds the ComObjectTable or returns an error if something is wrong
+	Build() (ComObjectTable, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ComObjectTable
 }
 
 // NewComObjectTableBuilder() creates a ComObjectTableBuilder
@@ -94,43 +113,125 @@ func NewComObjectTableBuilder() ComObjectTableBuilder {
 	return &_ComObjectTableBuilder{_ComObjectTable: new(_ComObjectTable)}
 }
 
+type _ComObjectTableChildBuilder interface {
+	utils.Copyable
+	setParent(ComObjectTableContract)
+	buildForComObjectTable() (ComObjectTable, error)
+}
+
 type _ComObjectTableBuilder struct {
 	*_ComObjectTable
+
+	childBuilder _ComObjectTableChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (ComObjectTableBuilder) = (*_ComObjectTableBuilder)(nil)
 
-func (m *_ComObjectTableBuilder) WithMandatoryFields() ComObjectTableBuilder {
-	return m
+func (b *_ComObjectTableBuilder) WithMandatoryFields() ComObjectTableBuilder {
+	return b
 }
 
-func (m *_ComObjectTableBuilder) Build() (ComObjectTableContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ComObjectTableBuilder) PartialBuild() (ComObjectTableContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ComObjectTable.deepCopy(), nil
+	return b._ComObjectTable.deepCopy(), nil
 }
 
-func (m *_ComObjectTableBuilder) MustBuild() ComObjectTableContract {
-	build, err := m.Build()
+func (b *_ComObjectTableBuilder) PartialMustBuild() ComObjectTableContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ComObjectTableBuilder) DeepCopy() any {
-	return m.CreateComObjectTableBuilder()
+func (b *_ComObjectTableBuilder) AsComObjectTableRealisationType1() interface {
+	ComObjectTableRealisationType1Builder
+	Done() ComObjectTableBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ComObjectTableRealisationType1Builder
+		Done() ComObjectTableBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewComObjectTableRealisationType1Builder().(*_ComObjectTableRealisationType1Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ComObjectTableBuilder) AsComObjectTableRealisationType2() interface {
+	ComObjectTableRealisationType2Builder
+	Done() ComObjectTableBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ComObjectTableRealisationType2Builder
+		Done() ComObjectTableBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewComObjectTableRealisationType2Builder().(*_ComObjectTableRealisationType2Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ComObjectTableBuilder) AsComObjectTableRealisationType6() interface {
+	ComObjectTableRealisationType6Builder
+	Done() ComObjectTableBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ComObjectTableRealisationType6Builder
+		Done() ComObjectTableBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewComObjectTableRealisationType6Builder().(*_ComObjectTableRealisationType6Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ComObjectTableBuilder) Build() (ComObjectTable, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForComObjectTable()
+}
+
+func (b *_ComObjectTableBuilder) MustBuild() ComObjectTable {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ComObjectTableBuilder) DeepCopy() any {
+	_copy := b.CreateComObjectTableBuilder().(*_ComObjectTableBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ComObjectTableChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateComObjectTableBuilder creates a ComObjectTableBuilder
-func (m *_ComObjectTable) CreateComObjectTableBuilder() ComObjectTableBuilder {
-	if m == nil {
+func (b *_ComObjectTable) CreateComObjectTableBuilder() ComObjectTableBuilder {
+	if b == nil {
 		return NewComObjectTableBuilder()
 	}
-	return &_ComObjectTableBuilder{_ComObjectTable: m.deepCopy()}
+	return &_ComObjectTableBuilder{_ComObjectTable: b.deepCopy()}
 }
 
 ///////////////////////

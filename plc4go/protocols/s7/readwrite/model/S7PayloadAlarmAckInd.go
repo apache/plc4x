@@ -98,64 +98,83 @@ func NewS7PayloadAlarmAckIndBuilder() S7PayloadAlarmAckIndBuilder {
 type _S7PayloadAlarmAckIndBuilder struct {
 	*_S7PayloadAlarmAckInd
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadAlarmAckIndBuilder) = (*_S7PayloadAlarmAckIndBuilder)(nil)
 
-func (m *_S7PayloadAlarmAckIndBuilder) WithMandatoryFields(alarmMessage AlarmMessageAckPushType) S7PayloadAlarmAckIndBuilder {
-	return m.WithAlarmMessage(alarmMessage)
+func (b *_S7PayloadAlarmAckIndBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadAlarmAckIndBuilder) WithAlarmMessage(alarmMessage AlarmMessageAckPushType) S7PayloadAlarmAckIndBuilder {
-	m.AlarmMessage = alarmMessage
-	return m
+func (b *_S7PayloadAlarmAckIndBuilder) WithMandatoryFields(alarmMessage AlarmMessageAckPushType) S7PayloadAlarmAckIndBuilder {
+	return b.WithAlarmMessage(alarmMessage)
 }
 
-func (m *_S7PayloadAlarmAckIndBuilder) WithAlarmMessageBuilder(builderSupplier func(AlarmMessageAckPushTypeBuilder) AlarmMessageAckPushTypeBuilder) S7PayloadAlarmAckIndBuilder {
-	builder := builderSupplier(m.AlarmMessage.CreateAlarmMessageAckPushTypeBuilder())
+func (b *_S7PayloadAlarmAckIndBuilder) WithAlarmMessage(alarmMessage AlarmMessageAckPushType) S7PayloadAlarmAckIndBuilder {
+	b.AlarmMessage = alarmMessage
+	return b
+}
+
+func (b *_S7PayloadAlarmAckIndBuilder) WithAlarmMessageBuilder(builderSupplier func(AlarmMessageAckPushTypeBuilder) AlarmMessageAckPushTypeBuilder) S7PayloadAlarmAckIndBuilder {
+	builder := builderSupplier(b.AlarmMessage.CreateAlarmMessageAckPushTypeBuilder())
 	var err error
-	m.AlarmMessage, err = builder.Build()
+	b.AlarmMessage, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AlarmMessageAckPushTypeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AlarmMessageAckPushTypeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_S7PayloadAlarmAckIndBuilder) Build() (S7PayloadAlarmAckInd, error) {
-	if m.AlarmMessage == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_S7PayloadAlarmAckIndBuilder) Build() (S7PayloadAlarmAckInd, error) {
+	if b.AlarmMessage == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'alarmMessage' not set"))
+		b.err.Append(errors.New("mandatory field 'alarmMessage' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadAlarmAckInd.deepCopy(), nil
+	return b._S7PayloadAlarmAckInd.deepCopy(), nil
 }
 
-func (m *_S7PayloadAlarmAckIndBuilder) MustBuild() S7PayloadAlarmAckInd {
-	build, err := m.Build()
+func (b *_S7PayloadAlarmAckIndBuilder) MustBuild() S7PayloadAlarmAckInd {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadAlarmAckIndBuilder) DeepCopy() any {
-	return m.CreateS7PayloadAlarmAckIndBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadAlarmAckIndBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadAlarmAckIndBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadAlarmAckIndBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadAlarmAckIndBuilder().(*_S7PayloadAlarmAckIndBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadAlarmAckIndBuilder creates a S7PayloadAlarmAckIndBuilder
-func (m *_S7PayloadAlarmAckInd) CreateS7PayloadAlarmAckIndBuilder() S7PayloadAlarmAckIndBuilder {
-	if m == nil {
+func (b *_S7PayloadAlarmAckInd) CreateS7PayloadAlarmAckIndBuilder() S7PayloadAlarmAckIndBuilder {
+	if b == nil {
 		return NewS7PayloadAlarmAckIndBuilder()
 	}
-	return &_S7PayloadAlarmAckIndBuilder{_S7PayloadAlarmAckInd: m.deepCopy()}
+	return &_S7PayloadAlarmAckIndBuilder{_S7PayloadAlarmAckInd: b.deepCopy()}
 }
 
 ///////////////////////

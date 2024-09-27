@@ -84,6 +84,8 @@ type BACnetConstructedDataMultiStateOutputInterfaceValueBuilder interface {
 	WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateOutputInterfaceValueBuilder
 	// WithInterfaceValue adds InterfaceValue (property field)
 	WithInterfaceValue(BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateOutputInterfaceValueBuilder
+	// WithInterfaceValueBuilder adds InterfaceValue (property field) which is build by the builder
+	WithInterfaceValueBuilder(func(BACnetOptionalBinaryPVBuilder) BACnetOptionalBinaryPVBuilder) BACnetConstructedDataMultiStateOutputInterfaceValueBuilder
 	// Build builds the BACnetConstructedDataMultiStateOutputInterfaceValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataMultiStateOutputInterfaceValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewBACnetConstructedDataMultiStateOutputInterfaceValueBuilder() BACnetConst
 type _BACnetConstructedDataMultiStateOutputInterfaceValueBuilder struct {
 	*_BACnetConstructedDataMultiStateOutputInterfaceValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMultiStateOutputInterfaceValueBuilder) = (*_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder) WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateOutputInterfaceValueBuilder {
-	return m.WithInterfaceValue(interfaceValue)
+func (b *_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder) WithInterfaceValue(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateOutputInterfaceValueBuilder {
-	m.InterfaceValue = interfaceValue
-	return m
+func (b *_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder) WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateOutputInterfaceValueBuilder {
+	return b.WithInterfaceValue(interfaceValue)
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder) Build() (BACnetConstructedDataMultiStateOutputInterfaceValue, error) {
-	if m.InterfaceValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder) WithInterfaceValue(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateOutputInterfaceValueBuilder {
+	b.InterfaceValue = interfaceValue
+	return b
+}
+
+func (b *_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder) WithInterfaceValueBuilder(builderSupplier func(BACnetOptionalBinaryPVBuilder) BACnetOptionalBinaryPVBuilder) BACnetConstructedDataMultiStateOutputInterfaceValueBuilder {
+	builder := builderSupplier(b.InterfaceValue.CreateBACnetOptionalBinaryPVBuilder())
+	var err error
+	b.InterfaceValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'interfaceValue' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetOptionalBinaryPVBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetConstructedDataMultiStateOutputInterfaceValue.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder) MustBuild() BACnetConstructedDataMultiStateOutputInterfaceValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder) Build() (BACnetConstructedDataMultiStateOutputInterfaceValue, error) {
+	if b.InterfaceValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'interfaceValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataMultiStateOutputInterfaceValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder) MustBuild() BACnetConstructedDataMultiStateOutputInterfaceValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMultiStateOutputInterfaceValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMultiStateOutputInterfaceValueBuilder().(*_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMultiStateOutputInterfaceValueBuilder creates a BACnetConstructedDataMultiStateOutputInterfaceValueBuilder
-func (m *_BACnetConstructedDataMultiStateOutputInterfaceValue) CreateBACnetConstructedDataMultiStateOutputInterfaceValueBuilder() BACnetConstructedDataMultiStateOutputInterfaceValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMultiStateOutputInterfaceValue) CreateBACnetConstructedDataMultiStateOutputInterfaceValueBuilder() BACnetConstructedDataMultiStateOutputInterfaceValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMultiStateOutputInterfaceValueBuilder()
 	}
-	return &_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder{_BACnetConstructedDataMultiStateOutputInterfaceValue: m.deepCopy()}
+	return &_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder{_BACnetConstructedDataMultiStateOutputInterfaceValue: b.deepCopy()}
 }
 
 ///////////////////////

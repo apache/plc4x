@@ -85,40 +85,59 @@ func NewFilterOperandBuilder() FilterOperandBuilder {
 type _FilterOperandBuilder struct {
 	*_FilterOperand
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (FilterOperandBuilder) = (*_FilterOperandBuilder)(nil)
 
-func (m *_FilterOperandBuilder) WithMandatoryFields() FilterOperandBuilder {
-	return m
+func (b *_FilterOperandBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_FilterOperandBuilder) Build() (FilterOperand, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_FilterOperandBuilder) WithMandatoryFields() FilterOperandBuilder {
+	return b
+}
+
+func (b *_FilterOperandBuilder) Build() (FilterOperand, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._FilterOperand.deepCopy(), nil
+	return b._FilterOperand.deepCopy(), nil
 }
 
-func (m *_FilterOperandBuilder) MustBuild() FilterOperand {
-	build, err := m.Build()
+func (b *_FilterOperandBuilder) MustBuild() FilterOperand {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FilterOperandBuilder) DeepCopy() any {
-	return m.CreateFilterOperandBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FilterOperandBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FilterOperandBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_FilterOperandBuilder) DeepCopy() any {
+	_copy := b.CreateFilterOperandBuilder().(*_FilterOperandBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFilterOperandBuilder creates a FilterOperandBuilder
-func (m *_FilterOperand) CreateFilterOperandBuilder() FilterOperandBuilder {
-	if m == nil {
+func (b *_FilterOperand) CreateFilterOperandBuilder() FilterOperandBuilder {
+	if b == nil {
 		return NewFilterOperandBuilder()
 	}
-	return &_FilterOperandBuilder{_FilterOperand: m.deepCopy()}
+	return &_FilterOperandBuilder{_FilterOperand: b.deepCopy()}
 }
 
 ///////////////////////

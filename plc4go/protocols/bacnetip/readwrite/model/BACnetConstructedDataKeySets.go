@@ -103,63 +103,82 @@ func NewBACnetConstructedDataKeySetsBuilder() BACnetConstructedDataKeySetsBuilde
 type _BACnetConstructedDataKeySetsBuilder struct {
 	*_BACnetConstructedDataKeySets
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataKeySetsBuilder) = (*_BACnetConstructedDataKeySetsBuilder)(nil)
 
-func (m *_BACnetConstructedDataKeySetsBuilder) WithMandatoryFields(keySets []BACnetSecurityKeySet) BACnetConstructedDataKeySetsBuilder {
-	return m.WithKeySets(keySets...)
+func (b *_BACnetConstructedDataKeySetsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataKeySetsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataKeySetsBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataKeySetsBuilder) WithMandatoryFields(keySets []BACnetSecurityKeySet) BACnetConstructedDataKeySetsBuilder {
+	return b.WithKeySets(keySets...)
 }
 
-func (m *_BACnetConstructedDataKeySetsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataKeySetsBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataKeySetsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataKeySetsBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataKeySetsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataKeySetsBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataKeySetsBuilder) WithKeySets(keySets ...BACnetSecurityKeySet) BACnetConstructedDataKeySetsBuilder {
-	m.KeySets = keySets
-	return m
+func (b *_BACnetConstructedDataKeySetsBuilder) WithKeySets(keySets ...BACnetSecurityKeySet) BACnetConstructedDataKeySetsBuilder {
+	b.KeySets = keySets
+	return b
 }
 
-func (m *_BACnetConstructedDataKeySetsBuilder) Build() (BACnetConstructedDataKeySets, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataKeySetsBuilder) Build() (BACnetConstructedDataKeySets, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataKeySets.deepCopy(), nil
+	return b._BACnetConstructedDataKeySets.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataKeySetsBuilder) MustBuild() BACnetConstructedDataKeySets {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataKeySetsBuilder) MustBuild() BACnetConstructedDataKeySets {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataKeySetsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataKeySetsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataKeySetsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataKeySetsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataKeySetsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataKeySetsBuilder().(*_BACnetConstructedDataKeySetsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataKeySetsBuilder creates a BACnetConstructedDataKeySetsBuilder
-func (m *_BACnetConstructedDataKeySets) CreateBACnetConstructedDataKeySetsBuilder() BACnetConstructedDataKeySetsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataKeySets) CreateBACnetConstructedDataKeySetsBuilder() BACnetConstructedDataKeySetsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataKeySetsBuilder()
 	}
-	return &_BACnetConstructedDataKeySetsBuilder{_BACnetConstructedDataKeySets: m.deepCopy()}
+	return &_BACnetConstructedDataKeySetsBuilder{_BACnetConstructedDataKeySets: b.deepCopy()}
 }
 
 ///////////////////////

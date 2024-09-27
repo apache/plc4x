@@ -98,64 +98,83 @@ func NewBACnetApplicationTagTimeBuilder() BACnetApplicationTagTimeBuilder {
 type _BACnetApplicationTagTimeBuilder struct {
 	*_BACnetApplicationTagTime
 
+	parentBuilder *_BACnetApplicationTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetApplicationTagTimeBuilder) = (*_BACnetApplicationTagTimeBuilder)(nil)
 
-func (m *_BACnetApplicationTagTimeBuilder) WithMandatoryFields(payload BACnetTagPayloadTime) BACnetApplicationTagTimeBuilder {
-	return m.WithPayload(payload)
+func (b *_BACnetApplicationTagTimeBuilder) setParent(contract BACnetApplicationTagContract) {
+	b.BACnetApplicationTagContract = contract
 }
 
-func (m *_BACnetApplicationTagTimeBuilder) WithPayload(payload BACnetTagPayloadTime) BACnetApplicationTagTimeBuilder {
-	m.Payload = payload
-	return m
+func (b *_BACnetApplicationTagTimeBuilder) WithMandatoryFields(payload BACnetTagPayloadTime) BACnetApplicationTagTimeBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_BACnetApplicationTagTimeBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadTimeBuilder) BACnetTagPayloadTimeBuilder) BACnetApplicationTagTimeBuilder {
-	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadTimeBuilder())
+func (b *_BACnetApplicationTagTimeBuilder) WithPayload(payload BACnetTagPayloadTime) BACnetApplicationTagTimeBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetApplicationTagTimeBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadTimeBuilder) BACnetTagPayloadTimeBuilder) BACnetApplicationTagTimeBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadTimeBuilder())
 	var err error
-	m.Payload, err = builder.Build()
+	b.Payload, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagPayloadTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetApplicationTagTimeBuilder) Build() (BACnetApplicationTagTime, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetApplicationTagTimeBuilder) Build() (BACnetApplicationTagTime, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetApplicationTagTime.deepCopy(), nil
+	return b._BACnetApplicationTagTime.deepCopy(), nil
 }
 
-func (m *_BACnetApplicationTagTimeBuilder) MustBuild() BACnetApplicationTagTime {
-	build, err := m.Build()
+func (b *_BACnetApplicationTagTimeBuilder) MustBuild() BACnetApplicationTagTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetApplicationTagTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetApplicationTagTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetApplicationTagTimeBuilder) Done() BACnetApplicationTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetApplicationTagTimeBuilder) buildForBACnetApplicationTag() (BACnetApplicationTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetApplicationTagTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetApplicationTagTimeBuilder().(*_BACnetApplicationTagTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetApplicationTagTimeBuilder creates a BACnetApplicationTagTimeBuilder
-func (m *_BACnetApplicationTagTime) CreateBACnetApplicationTagTimeBuilder() BACnetApplicationTagTimeBuilder {
-	if m == nil {
+func (b *_BACnetApplicationTagTime) CreateBACnetApplicationTagTimeBuilder() BACnetApplicationTagTimeBuilder {
+	if b == nil {
 		return NewBACnetApplicationTagTimeBuilder()
 	}
-	return &_BACnetApplicationTagTimeBuilder{_BACnetApplicationTagTime: m.deepCopy()}
+	return &_BACnetApplicationTagTimeBuilder{_BACnetApplicationTagTime: b.deepCopy()}
 }
 
 ///////////////////////

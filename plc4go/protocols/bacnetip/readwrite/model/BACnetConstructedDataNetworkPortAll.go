@@ -85,40 +85,59 @@ func NewBACnetConstructedDataNetworkPortAllBuilder() BACnetConstructedDataNetwor
 type _BACnetConstructedDataNetworkPortAllBuilder struct {
 	*_BACnetConstructedDataNetworkPortAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataNetworkPortAllBuilder) = (*_BACnetConstructedDataNetworkPortAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataNetworkPortAllBuilder) WithMandatoryFields() BACnetConstructedDataNetworkPortAllBuilder {
-	return m
+func (b *_BACnetConstructedDataNetworkPortAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataNetworkPortAllBuilder) Build() (BACnetConstructedDataNetworkPortAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataNetworkPortAllBuilder) WithMandatoryFields() BACnetConstructedDataNetworkPortAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataNetworkPortAllBuilder) Build() (BACnetConstructedDataNetworkPortAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataNetworkPortAll.deepCopy(), nil
+	return b._BACnetConstructedDataNetworkPortAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataNetworkPortAllBuilder) MustBuild() BACnetConstructedDataNetworkPortAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataNetworkPortAllBuilder) MustBuild() BACnetConstructedDataNetworkPortAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataNetworkPortAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataNetworkPortAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNetworkPortAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNetworkPortAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNetworkPortAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNetworkPortAllBuilder().(*_BACnetConstructedDataNetworkPortAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataNetworkPortAllBuilder creates a BACnetConstructedDataNetworkPortAllBuilder
-func (m *_BACnetConstructedDataNetworkPortAll) CreateBACnetConstructedDataNetworkPortAllBuilder() BACnetConstructedDataNetworkPortAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataNetworkPortAll) CreateBACnetConstructedDataNetworkPortAllBuilder() BACnetConstructedDataNetworkPortAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataNetworkPortAllBuilder()
 	}
-	return &_BACnetConstructedDataNetworkPortAllBuilder{_BACnetConstructedDataNetworkPortAll: m.deepCopy()}
+	return &_BACnetConstructedDataNetworkPortAllBuilder{_BACnetConstructedDataNetworkPortAll: b.deepCopy()}
 }
 
 ///////////////////////

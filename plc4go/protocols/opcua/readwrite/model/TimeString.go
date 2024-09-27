@@ -83,35 +83,39 @@ type _TimeStringBuilder struct {
 
 var _ (TimeStringBuilder) = (*_TimeStringBuilder)(nil)
 
-func (m *_TimeStringBuilder) WithMandatoryFields() TimeStringBuilder {
-	return m
+func (b *_TimeStringBuilder) WithMandatoryFields() TimeStringBuilder {
+	return b
 }
 
-func (m *_TimeStringBuilder) Build() (TimeString, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TimeStringBuilder) Build() (TimeString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TimeString.deepCopy(), nil
+	return b._TimeString.deepCopy(), nil
 }
 
-func (m *_TimeStringBuilder) MustBuild() TimeString {
-	build, err := m.Build()
+func (b *_TimeStringBuilder) MustBuild() TimeString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TimeStringBuilder) DeepCopy() any {
-	return m.CreateTimeStringBuilder()
+func (b *_TimeStringBuilder) DeepCopy() any {
+	_copy := b.CreateTimeStringBuilder().(*_TimeStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTimeStringBuilder creates a TimeStringBuilder
-func (m *_TimeString) CreateTimeStringBuilder() TimeStringBuilder {
-	if m == nil {
+func (b *_TimeString) CreateTimeStringBuilder() TimeStringBuilder {
+	if b == nil {
 		return NewTimeStringBuilder()
 	}
-	return &_TimeStringBuilder{_TimeString: m.deepCopy()}
+	return &_TimeStringBuilder{_TimeString: b.deepCopy()}
 }
 
 ///////////////////////

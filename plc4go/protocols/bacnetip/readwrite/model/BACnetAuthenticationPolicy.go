@@ -115,107 +115,111 @@ type _BACnetAuthenticationPolicyBuilder struct {
 
 var _ (BACnetAuthenticationPolicyBuilder) = (*_BACnetAuthenticationPolicyBuilder)(nil)
 
-func (m *_BACnetAuthenticationPolicyBuilder) WithMandatoryFields(policy BACnetAuthenticationPolicyList, orderEnforced BACnetContextTagBoolean, timeout BACnetContextTagUnsignedInteger) BACnetAuthenticationPolicyBuilder {
-	return m.WithPolicy(policy).WithOrderEnforced(orderEnforced).WithTimeout(timeout)
+func (b *_BACnetAuthenticationPolicyBuilder) WithMandatoryFields(policy BACnetAuthenticationPolicyList, orderEnforced BACnetContextTagBoolean, timeout BACnetContextTagUnsignedInteger) BACnetAuthenticationPolicyBuilder {
+	return b.WithPolicy(policy).WithOrderEnforced(orderEnforced).WithTimeout(timeout)
 }
 
-func (m *_BACnetAuthenticationPolicyBuilder) WithPolicy(policy BACnetAuthenticationPolicyList) BACnetAuthenticationPolicyBuilder {
-	m.Policy = policy
-	return m
+func (b *_BACnetAuthenticationPolicyBuilder) WithPolicy(policy BACnetAuthenticationPolicyList) BACnetAuthenticationPolicyBuilder {
+	b.Policy = policy
+	return b
 }
 
-func (m *_BACnetAuthenticationPolicyBuilder) WithPolicyBuilder(builderSupplier func(BACnetAuthenticationPolicyListBuilder) BACnetAuthenticationPolicyListBuilder) BACnetAuthenticationPolicyBuilder {
-	builder := builderSupplier(m.Policy.CreateBACnetAuthenticationPolicyListBuilder())
+func (b *_BACnetAuthenticationPolicyBuilder) WithPolicyBuilder(builderSupplier func(BACnetAuthenticationPolicyListBuilder) BACnetAuthenticationPolicyListBuilder) BACnetAuthenticationPolicyBuilder {
+	builder := builderSupplier(b.Policy.CreateBACnetAuthenticationPolicyListBuilder())
 	var err error
-	m.Policy, err = builder.Build()
+	b.Policy, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAuthenticationPolicyListBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAuthenticationPolicyListBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAuthenticationPolicyBuilder) WithOrderEnforced(orderEnforced BACnetContextTagBoolean) BACnetAuthenticationPolicyBuilder {
-	m.OrderEnforced = orderEnforced
-	return m
+func (b *_BACnetAuthenticationPolicyBuilder) WithOrderEnforced(orderEnforced BACnetContextTagBoolean) BACnetAuthenticationPolicyBuilder {
+	b.OrderEnforced = orderEnforced
+	return b
 }
 
-func (m *_BACnetAuthenticationPolicyBuilder) WithOrderEnforcedBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetAuthenticationPolicyBuilder {
-	builder := builderSupplier(m.OrderEnforced.CreateBACnetContextTagBooleanBuilder())
+func (b *_BACnetAuthenticationPolicyBuilder) WithOrderEnforcedBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetAuthenticationPolicyBuilder {
+	builder := builderSupplier(b.OrderEnforced.CreateBACnetContextTagBooleanBuilder())
 	var err error
-	m.OrderEnforced, err = builder.Build()
+	b.OrderEnforced, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAuthenticationPolicyBuilder) WithTimeout(timeout BACnetContextTagUnsignedInteger) BACnetAuthenticationPolicyBuilder {
-	m.Timeout = timeout
-	return m
+func (b *_BACnetAuthenticationPolicyBuilder) WithTimeout(timeout BACnetContextTagUnsignedInteger) BACnetAuthenticationPolicyBuilder {
+	b.Timeout = timeout
+	return b
 }
 
-func (m *_BACnetAuthenticationPolicyBuilder) WithTimeoutBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetAuthenticationPolicyBuilder {
-	builder := builderSupplier(m.Timeout.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetAuthenticationPolicyBuilder) WithTimeoutBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetAuthenticationPolicyBuilder {
+	builder := builderSupplier(b.Timeout.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.Timeout, err = builder.Build()
+	b.Timeout, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAuthenticationPolicyBuilder) Build() (BACnetAuthenticationPolicy, error) {
-	if m.Policy == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAuthenticationPolicyBuilder) Build() (BACnetAuthenticationPolicy, error) {
+	if b.Policy == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'policy' not set"))
+		b.err.Append(errors.New("mandatory field 'policy' not set"))
 	}
-	if m.OrderEnforced == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.OrderEnforced == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'orderEnforced' not set"))
+		b.err.Append(errors.New("mandatory field 'orderEnforced' not set"))
 	}
-	if m.Timeout == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Timeout == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeout' not set"))
+		b.err.Append(errors.New("mandatory field 'timeout' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAuthenticationPolicy.deepCopy(), nil
+	return b._BACnetAuthenticationPolicy.deepCopy(), nil
 }
 
-func (m *_BACnetAuthenticationPolicyBuilder) MustBuild() BACnetAuthenticationPolicy {
-	build, err := m.Build()
+func (b *_BACnetAuthenticationPolicyBuilder) MustBuild() BACnetAuthenticationPolicy {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAuthenticationPolicyBuilder) DeepCopy() any {
-	return m.CreateBACnetAuthenticationPolicyBuilder()
+func (b *_BACnetAuthenticationPolicyBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAuthenticationPolicyBuilder().(*_BACnetAuthenticationPolicyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAuthenticationPolicyBuilder creates a BACnetAuthenticationPolicyBuilder
-func (m *_BACnetAuthenticationPolicy) CreateBACnetAuthenticationPolicyBuilder() BACnetAuthenticationPolicyBuilder {
-	if m == nil {
+func (b *_BACnetAuthenticationPolicy) CreateBACnetAuthenticationPolicyBuilder() BACnetAuthenticationPolicyBuilder {
+	if b == nil {
 		return NewBACnetAuthenticationPolicyBuilder()
 	}
-	return &_BACnetAuthenticationPolicyBuilder{_BACnetAuthenticationPolicy: m.deepCopy()}
+	return &_BACnetAuthenticationPolicyBuilder{_BACnetAuthenticationPolicy: b.deepCopy()}
 }
 
 ///////////////////////

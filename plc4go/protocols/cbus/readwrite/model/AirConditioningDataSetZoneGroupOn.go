@@ -93,45 +93,64 @@ func NewAirConditioningDataSetZoneGroupOnBuilder() AirConditioningDataSetZoneGro
 type _AirConditioningDataSetZoneGroupOnBuilder struct {
 	*_AirConditioningDataSetZoneGroupOn
 
+	parentBuilder *_AirConditioningDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AirConditioningDataSetZoneGroupOnBuilder) = (*_AirConditioningDataSetZoneGroupOnBuilder)(nil)
 
-func (m *_AirConditioningDataSetZoneGroupOnBuilder) WithMandatoryFields(zoneGroup byte) AirConditioningDataSetZoneGroupOnBuilder {
-	return m.WithZoneGroup(zoneGroup)
+func (b *_AirConditioningDataSetZoneGroupOnBuilder) setParent(contract AirConditioningDataContract) {
+	b.AirConditioningDataContract = contract
 }
 
-func (m *_AirConditioningDataSetZoneGroupOnBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataSetZoneGroupOnBuilder {
-	m.ZoneGroup = zoneGroup
-	return m
+func (b *_AirConditioningDataSetZoneGroupOnBuilder) WithMandatoryFields(zoneGroup byte) AirConditioningDataSetZoneGroupOnBuilder {
+	return b.WithZoneGroup(zoneGroup)
 }
 
-func (m *_AirConditioningDataSetZoneGroupOnBuilder) Build() (AirConditioningDataSetZoneGroupOn, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AirConditioningDataSetZoneGroupOnBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataSetZoneGroupOnBuilder {
+	b.ZoneGroup = zoneGroup
+	return b
+}
+
+func (b *_AirConditioningDataSetZoneGroupOnBuilder) Build() (AirConditioningDataSetZoneGroupOn, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AirConditioningDataSetZoneGroupOn.deepCopy(), nil
+	return b._AirConditioningDataSetZoneGroupOn.deepCopy(), nil
 }
 
-func (m *_AirConditioningDataSetZoneGroupOnBuilder) MustBuild() AirConditioningDataSetZoneGroupOn {
-	build, err := m.Build()
+func (b *_AirConditioningDataSetZoneGroupOnBuilder) MustBuild() AirConditioningDataSetZoneGroupOn {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AirConditioningDataSetZoneGroupOnBuilder) DeepCopy() any {
-	return m.CreateAirConditioningDataSetZoneGroupOnBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AirConditioningDataSetZoneGroupOnBuilder) Done() AirConditioningDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AirConditioningDataSetZoneGroupOnBuilder) buildForAirConditioningData() (AirConditioningData, error) {
+	return b.Build()
+}
+
+func (b *_AirConditioningDataSetZoneGroupOnBuilder) DeepCopy() any {
+	_copy := b.CreateAirConditioningDataSetZoneGroupOnBuilder().(*_AirConditioningDataSetZoneGroupOnBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAirConditioningDataSetZoneGroupOnBuilder creates a AirConditioningDataSetZoneGroupOnBuilder
-func (m *_AirConditioningDataSetZoneGroupOn) CreateAirConditioningDataSetZoneGroupOnBuilder() AirConditioningDataSetZoneGroupOnBuilder {
-	if m == nil {
+func (b *_AirConditioningDataSetZoneGroupOn) CreateAirConditioningDataSetZoneGroupOnBuilder() AirConditioningDataSetZoneGroupOnBuilder {
+	if b == nil {
 		return NewAirConditioningDataSetZoneGroupOnBuilder()
 	}
-	return &_AirConditioningDataSetZoneGroupOnBuilder{_AirConditioningDataSetZoneGroupOn: m.deepCopy()}
+	return &_AirConditioningDataSetZoneGroupOnBuilder{_AirConditioningDataSetZoneGroupOn: b.deepCopy()}
 }
 
 ///////////////////////

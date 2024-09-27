@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDeployedProfileLocationBuilder() BACnetConstructedD
 type _BACnetConstructedDataDeployedProfileLocationBuilder struct {
 	*_BACnetConstructedDataDeployedProfileLocation
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDeployedProfileLocationBuilder) = (*_BACnetConstructedDataDeployedProfileLocationBuilder)(nil)
 
-func (m *_BACnetConstructedDataDeployedProfileLocationBuilder) WithMandatoryFields(deployedProfileLocation BACnetApplicationTagCharacterString) BACnetConstructedDataDeployedProfileLocationBuilder {
-	return m.WithDeployedProfileLocation(deployedProfileLocation)
+func (b *_BACnetConstructedDataDeployedProfileLocationBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDeployedProfileLocationBuilder) WithDeployedProfileLocation(deployedProfileLocation BACnetApplicationTagCharacterString) BACnetConstructedDataDeployedProfileLocationBuilder {
-	m.DeployedProfileLocation = deployedProfileLocation
-	return m
+func (b *_BACnetConstructedDataDeployedProfileLocationBuilder) WithMandatoryFields(deployedProfileLocation BACnetApplicationTagCharacterString) BACnetConstructedDataDeployedProfileLocationBuilder {
+	return b.WithDeployedProfileLocation(deployedProfileLocation)
 }
 
-func (m *_BACnetConstructedDataDeployedProfileLocationBuilder) WithDeployedProfileLocationBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataDeployedProfileLocationBuilder {
-	builder := builderSupplier(m.DeployedProfileLocation.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetConstructedDataDeployedProfileLocationBuilder) WithDeployedProfileLocation(deployedProfileLocation BACnetApplicationTagCharacterString) BACnetConstructedDataDeployedProfileLocationBuilder {
+	b.DeployedProfileLocation = deployedProfileLocation
+	return b
+}
+
+func (b *_BACnetConstructedDataDeployedProfileLocationBuilder) WithDeployedProfileLocationBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataDeployedProfileLocationBuilder {
+	builder := builderSupplier(b.DeployedProfileLocation.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.DeployedProfileLocation, err = builder.Build()
+	b.DeployedProfileLocation, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDeployedProfileLocationBuilder) Build() (BACnetConstructedDataDeployedProfileLocation, error) {
-	if m.DeployedProfileLocation == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDeployedProfileLocationBuilder) Build() (BACnetConstructedDataDeployedProfileLocation, error) {
+	if b.DeployedProfileLocation == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'deployedProfileLocation' not set"))
+		b.err.Append(errors.New("mandatory field 'deployedProfileLocation' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDeployedProfileLocation.deepCopy(), nil
+	return b._BACnetConstructedDataDeployedProfileLocation.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDeployedProfileLocationBuilder) MustBuild() BACnetConstructedDataDeployedProfileLocation {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDeployedProfileLocationBuilder) MustBuild() BACnetConstructedDataDeployedProfileLocation {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDeployedProfileLocationBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDeployedProfileLocationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDeployedProfileLocationBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDeployedProfileLocationBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDeployedProfileLocationBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDeployedProfileLocationBuilder().(*_BACnetConstructedDataDeployedProfileLocationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDeployedProfileLocationBuilder creates a BACnetConstructedDataDeployedProfileLocationBuilder
-func (m *_BACnetConstructedDataDeployedProfileLocation) CreateBACnetConstructedDataDeployedProfileLocationBuilder() BACnetConstructedDataDeployedProfileLocationBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDeployedProfileLocation) CreateBACnetConstructedDataDeployedProfileLocationBuilder() BACnetConstructedDataDeployedProfileLocationBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDeployedProfileLocationBuilder()
 	}
-	return &_BACnetConstructedDataDeployedProfileLocationBuilder{_BACnetConstructedDataDeployedProfileLocation: m.deepCopy()}
+	return &_BACnetConstructedDataDeployedProfileLocationBuilder{_BACnetConstructedDataDeployedProfileLocation: b.deepCopy()}
 }
 
 ///////////////////////

@@ -117,6 +117,8 @@ type LDataExtendedBuilder interface {
 	WithDestinationAddress(...byte) LDataExtendedBuilder
 	// WithApdu adds Apdu (property field)
 	WithApdu(Apdu) LDataExtendedBuilder
+	// WithApduBuilder adds Apdu (property field) which is build by the builder
+	WithApduBuilder(func(ApduBuilder) ApduBuilder) LDataExtendedBuilder
 	// Build builds the LDataExtended or returns an error if something is wrong
 	Build() (LDataExtended, error)
 	// MustBuild does the same as Build but panics on error
@@ -131,95 +133,127 @@ func NewLDataExtendedBuilder() LDataExtendedBuilder {
 type _LDataExtendedBuilder struct {
 	*_LDataExtended
 
+	parentBuilder *_LDataFrameBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LDataExtendedBuilder) = (*_LDataExtendedBuilder)(nil)
 
-func (m *_LDataExtendedBuilder) WithMandatoryFields(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress KnxAddress, destinationAddress []byte, apdu Apdu) LDataExtendedBuilder {
-	return m.WithGroupAddress(groupAddress).WithHopCount(hopCount).WithExtendedFrameFormat(extendedFrameFormat).WithSourceAddress(sourceAddress).WithDestinationAddress(destinationAddress...).WithApdu(apdu)
+func (b *_LDataExtendedBuilder) setParent(contract LDataFrameContract) {
+	b.LDataFrameContract = contract
 }
 
-func (m *_LDataExtendedBuilder) WithGroupAddress(groupAddress bool) LDataExtendedBuilder {
-	m.GroupAddress = groupAddress
-	return m
+func (b *_LDataExtendedBuilder) WithMandatoryFields(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress KnxAddress, destinationAddress []byte, apdu Apdu) LDataExtendedBuilder {
+	return b.WithGroupAddress(groupAddress).WithHopCount(hopCount).WithExtendedFrameFormat(extendedFrameFormat).WithSourceAddress(sourceAddress).WithDestinationAddress(destinationAddress...).WithApdu(apdu)
 }
 
-func (m *_LDataExtendedBuilder) WithHopCount(hopCount uint8) LDataExtendedBuilder {
-	m.HopCount = hopCount
-	return m
+func (b *_LDataExtendedBuilder) WithGroupAddress(groupAddress bool) LDataExtendedBuilder {
+	b.GroupAddress = groupAddress
+	return b
 }
 
-func (m *_LDataExtendedBuilder) WithExtendedFrameFormat(extendedFrameFormat uint8) LDataExtendedBuilder {
-	m.ExtendedFrameFormat = extendedFrameFormat
-	return m
+func (b *_LDataExtendedBuilder) WithHopCount(hopCount uint8) LDataExtendedBuilder {
+	b.HopCount = hopCount
+	return b
 }
 
-func (m *_LDataExtendedBuilder) WithSourceAddress(sourceAddress KnxAddress) LDataExtendedBuilder {
-	m.SourceAddress = sourceAddress
-	return m
+func (b *_LDataExtendedBuilder) WithExtendedFrameFormat(extendedFrameFormat uint8) LDataExtendedBuilder {
+	b.ExtendedFrameFormat = extendedFrameFormat
+	return b
 }
 
-func (m *_LDataExtendedBuilder) WithSourceAddressBuilder(builderSupplier func(KnxAddressBuilder) KnxAddressBuilder) LDataExtendedBuilder {
-	builder := builderSupplier(m.SourceAddress.CreateKnxAddressBuilder())
+func (b *_LDataExtendedBuilder) WithSourceAddress(sourceAddress KnxAddress) LDataExtendedBuilder {
+	b.SourceAddress = sourceAddress
+	return b
+}
+
+func (b *_LDataExtendedBuilder) WithSourceAddressBuilder(builderSupplier func(KnxAddressBuilder) KnxAddressBuilder) LDataExtendedBuilder {
+	builder := builderSupplier(b.SourceAddress.CreateKnxAddressBuilder())
 	var err error
-	m.SourceAddress, err = builder.Build()
+	b.SourceAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "KnxAddressBuilder failed"))
+		b.err.Append(errors.Wrap(err, "KnxAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_LDataExtendedBuilder) WithDestinationAddress(destinationAddress ...byte) LDataExtendedBuilder {
-	m.DestinationAddress = destinationAddress
-	return m
+func (b *_LDataExtendedBuilder) WithDestinationAddress(destinationAddress ...byte) LDataExtendedBuilder {
+	b.DestinationAddress = destinationAddress
+	return b
 }
 
-func (m *_LDataExtendedBuilder) WithApdu(apdu Apdu) LDataExtendedBuilder {
-	m.Apdu = apdu
-	return m
+func (b *_LDataExtendedBuilder) WithApdu(apdu Apdu) LDataExtendedBuilder {
+	b.Apdu = apdu
+	return b
 }
 
-func (m *_LDataExtendedBuilder) Build() (LDataExtended, error) {
-	if m.SourceAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_LDataExtendedBuilder) WithApduBuilder(builderSupplier func(ApduBuilder) ApduBuilder) LDataExtendedBuilder {
+	builder := builderSupplier(b.Apdu.CreateApduBuilder())
+	var err error
+	b.Apdu, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'sourceAddress' not set"))
+		b.err.Append(errors.Wrap(err, "ApduBuilder failed"))
 	}
-	if m.Apdu == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'apdu' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._LDataExtended.deepCopy(), nil
+	return b
 }
 
-func (m *_LDataExtendedBuilder) MustBuild() LDataExtended {
-	build, err := m.Build()
+func (b *_LDataExtendedBuilder) Build() (LDataExtended, error) {
+	if b.SourceAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'sourceAddress' not set"))
+	}
+	if b.Apdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'apdu' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LDataExtended.deepCopy(), nil
+}
+
+func (b *_LDataExtendedBuilder) MustBuild() LDataExtended {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LDataExtendedBuilder) DeepCopy() any {
-	return m.CreateLDataExtendedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LDataExtendedBuilder) Done() LDataFrameBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LDataExtendedBuilder) buildForLDataFrame() (LDataFrame, error) {
+	return b.Build()
+}
+
+func (b *_LDataExtendedBuilder) DeepCopy() any {
+	_copy := b.CreateLDataExtendedBuilder().(*_LDataExtendedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLDataExtendedBuilder creates a LDataExtendedBuilder
-func (m *_LDataExtended) CreateLDataExtendedBuilder() LDataExtendedBuilder {
-	if m == nil {
+func (b *_LDataExtended) CreateLDataExtendedBuilder() LDataExtendedBuilder {
+	if b == nil {
 		return NewLDataExtendedBuilder()
 	}
-	return &_LDataExtendedBuilder{_LDataExtended: m.deepCopy()}
+	return &_LDataExtendedBuilder{_LDataExtended: b.deepCopy()}
 }
 
 ///////////////////////

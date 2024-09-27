@@ -147,90 +147,109 @@ func NewIdentifyReplyCommandDSIStatusBuilder() IdentifyReplyCommandDSIStatusBuil
 type _IdentifyReplyCommandDSIStatusBuilder struct {
 	*_IdentifyReplyCommandDSIStatus
 
+	parentBuilder *_IdentifyReplyCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (IdentifyReplyCommandDSIStatusBuilder) = (*_IdentifyReplyCommandDSIStatusBuilder)(nil)
 
-func (m *_IdentifyReplyCommandDSIStatusBuilder) WithMandatoryFields(channelStatus1 ChannelStatus, channelStatus2 ChannelStatus, channelStatus3 ChannelStatus, channelStatus4 ChannelStatus, channelStatus5 ChannelStatus, channelStatus6 ChannelStatus, channelStatus7 ChannelStatus, channelStatus8 ChannelStatus, unitStatus UnitStatus, dimmingUCRevisionNumber byte) IdentifyReplyCommandDSIStatusBuilder {
-	return m.WithChannelStatus1(channelStatus1).WithChannelStatus2(channelStatus2).WithChannelStatus3(channelStatus3).WithChannelStatus4(channelStatus4).WithChannelStatus5(channelStatus5).WithChannelStatus6(channelStatus6).WithChannelStatus7(channelStatus7).WithChannelStatus8(channelStatus8).WithUnitStatus(unitStatus).WithDimmingUCRevisionNumber(dimmingUCRevisionNumber)
+func (b *_IdentifyReplyCommandDSIStatusBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
 }
 
-func (m *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus1(channelStatus1 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
-	m.ChannelStatus1 = channelStatus1
-	return m
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithMandatoryFields(channelStatus1 ChannelStatus, channelStatus2 ChannelStatus, channelStatus3 ChannelStatus, channelStatus4 ChannelStatus, channelStatus5 ChannelStatus, channelStatus6 ChannelStatus, channelStatus7 ChannelStatus, channelStatus8 ChannelStatus, unitStatus UnitStatus, dimmingUCRevisionNumber byte) IdentifyReplyCommandDSIStatusBuilder {
+	return b.WithChannelStatus1(channelStatus1).WithChannelStatus2(channelStatus2).WithChannelStatus3(channelStatus3).WithChannelStatus4(channelStatus4).WithChannelStatus5(channelStatus5).WithChannelStatus6(channelStatus6).WithChannelStatus7(channelStatus7).WithChannelStatus8(channelStatus8).WithUnitStatus(unitStatus).WithDimmingUCRevisionNumber(dimmingUCRevisionNumber)
 }
 
-func (m *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus2(channelStatus2 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
-	m.ChannelStatus2 = channelStatus2
-	return m
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus1(channelStatus1 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus1 = channelStatus1
+	return b
 }
 
-func (m *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus3(channelStatus3 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
-	m.ChannelStatus3 = channelStatus3
-	return m
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus2(channelStatus2 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus2 = channelStatus2
+	return b
 }
 
-func (m *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus4(channelStatus4 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
-	m.ChannelStatus4 = channelStatus4
-	return m
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus3(channelStatus3 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus3 = channelStatus3
+	return b
 }
 
-func (m *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus5(channelStatus5 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
-	m.ChannelStatus5 = channelStatus5
-	return m
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus4(channelStatus4 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus4 = channelStatus4
+	return b
 }
 
-func (m *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus6(channelStatus6 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
-	m.ChannelStatus6 = channelStatus6
-	return m
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus5(channelStatus5 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus5 = channelStatus5
+	return b
 }
 
-func (m *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus7(channelStatus7 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
-	m.ChannelStatus7 = channelStatus7
-	return m
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus6(channelStatus6 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus6 = channelStatus6
+	return b
 }
 
-func (m *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus8(channelStatus8 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
-	m.ChannelStatus8 = channelStatus8
-	return m
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus7(channelStatus7 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus7 = channelStatus7
+	return b
 }
 
-func (m *_IdentifyReplyCommandDSIStatusBuilder) WithUnitStatus(unitStatus UnitStatus) IdentifyReplyCommandDSIStatusBuilder {
-	m.UnitStatus = unitStatus
-	return m
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus8(channelStatus8 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus8 = channelStatus8
+	return b
 }
 
-func (m *_IdentifyReplyCommandDSIStatusBuilder) WithDimmingUCRevisionNumber(dimmingUCRevisionNumber byte) IdentifyReplyCommandDSIStatusBuilder {
-	m.DimmingUCRevisionNumber = dimmingUCRevisionNumber
-	return m
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithUnitStatus(unitStatus UnitStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.UnitStatus = unitStatus
+	return b
 }
 
-func (m *_IdentifyReplyCommandDSIStatusBuilder) Build() (IdentifyReplyCommandDSIStatus, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithDimmingUCRevisionNumber(dimmingUCRevisionNumber byte) IdentifyReplyCommandDSIStatusBuilder {
+	b.DimmingUCRevisionNumber = dimmingUCRevisionNumber
+	return b
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) Build() (IdentifyReplyCommandDSIStatus, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommandDSIStatus.deepCopy(), nil
+	return b._IdentifyReplyCommandDSIStatus.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandDSIStatusBuilder) MustBuild() IdentifyReplyCommandDSIStatus {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandDSIStatusBuilder) MustBuild() IdentifyReplyCommandDSIStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandDSIStatusBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandDSIStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandDSIStatusBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandDSIStatusBuilder().(*_IdentifyReplyCommandDSIStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandDSIStatusBuilder creates a IdentifyReplyCommandDSIStatusBuilder
-func (m *_IdentifyReplyCommandDSIStatus) CreateIdentifyReplyCommandDSIStatusBuilder() IdentifyReplyCommandDSIStatusBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommandDSIStatus) CreateIdentifyReplyCommandDSIStatusBuilder() IdentifyReplyCommandDSIStatusBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandDSIStatusBuilder()
 	}
-	return &_IdentifyReplyCommandDSIStatusBuilder{_IdentifyReplyCommandDSIStatus: m.deepCopy()}
+	return &_IdentifyReplyCommandDSIStatusBuilder{_IdentifyReplyCommandDSIStatus: b.deepCopy()}
 }
 
 ///////////////////////

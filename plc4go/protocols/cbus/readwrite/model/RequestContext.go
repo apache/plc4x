@@ -90,40 +90,44 @@ type _RequestContextBuilder struct {
 
 var _ (RequestContextBuilder) = (*_RequestContextBuilder)(nil)
 
-func (m *_RequestContextBuilder) WithMandatoryFields(sendIdentifyRequestBefore bool) RequestContextBuilder {
-	return m.WithSendIdentifyRequestBefore(sendIdentifyRequestBefore)
+func (b *_RequestContextBuilder) WithMandatoryFields(sendIdentifyRequestBefore bool) RequestContextBuilder {
+	return b.WithSendIdentifyRequestBefore(sendIdentifyRequestBefore)
 }
 
-func (m *_RequestContextBuilder) WithSendIdentifyRequestBefore(sendIdentifyRequestBefore bool) RequestContextBuilder {
-	m.SendIdentifyRequestBefore = sendIdentifyRequestBefore
-	return m
+func (b *_RequestContextBuilder) WithSendIdentifyRequestBefore(sendIdentifyRequestBefore bool) RequestContextBuilder {
+	b.SendIdentifyRequestBefore = sendIdentifyRequestBefore
+	return b
 }
 
-func (m *_RequestContextBuilder) Build() (RequestContext, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_RequestContextBuilder) Build() (RequestContext, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._RequestContext.deepCopy(), nil
+	return b._RequestContext.deepCopy(), nil
 }
 
-func (m *_RequestContextBuilder) MustBuild() RequestContext {
-	build, err := m.Build()
+func (b *_RequestContextBuilder) MustBuild() RequestContext {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RequestContextBuilder) DeepCopy() any {
-	return m.CreateRequestContextBuilder()
+func (b *_RequestContextBuilder) DeepCopy() any {
+	_copy := b.CreateRequestContextBuilder().(*_RequestContextBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRequestContextBuilder creates a RequestContextBuilder
-func (m *_RequestContext) CreateRequestContextBuilder() RequestContextBuilder {
-	if m == nil {
+func (b *_RequestContext) CreateRequestContextBuilder() RequestContextBuilder {
+	if b == nil {
 		return NewRequestContextBuilder()
 	}
-	return &_RequestContextBuilder{_RequestContext: m.deepCopy()}
+	return &_RequestContextBuilder{_RequestContext: b.deepCopy()}
 }
 
 ///////////////////////

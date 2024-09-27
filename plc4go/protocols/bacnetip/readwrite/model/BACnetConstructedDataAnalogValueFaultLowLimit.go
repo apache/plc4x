@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAnalogValueFaultLowLimitBuilder() BACnetConstructed
 type _BACnetConstructedDataAnalogValueFaultLowLimitBuilder struct {
 	*_BACnetConstructedDataAnalogValueFaultLowLimit
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAnalogValueFaultLowLimitBuilder) = (*_BACnetConstructedDataAnalogValueFaultLowLimitBuilder)(nil)
 
-func (m *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) WithMandatoryFields(faultLowLimit BACnetApplicationTagReal) BACnetConstructedDataAnalogValueFaultLowLimitBuilder {
-	return m.WithFaultLowLimit(faultLowLimit)
+func (b *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) WithFaultLowLimit(faultLowLimit BACnetApplicationTagReal) BACnetConstructedDataAnalogValueFaultLowLimitBuilder {
-	m.FaultLowLimit = faultLowLimit
-	return m
+func (b *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) WithMandatoryFields(faultLowLimit BACnetApplicationTagReal) BACnetConstructedDataAnalogValueFaultLowLimitBuilder {
+	return b.WithFaultLowLimit(faultLowLimit)
 }
 
-func (m *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) WithFaultLowLimitBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataAnalogValueFaultLowLimitBuilder {
-	builder := builderSupplier(m.FaultLowLimit.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) WithFaultLowLimit(faultLowLimit BACnetApplicationTagReal) BACnetConstructedDataAnalogValueFaultLowLimitBuilder {
+	b.FaultLowLimit = faultLowLimit
+	return b
+}
+
+func (b *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) WithFaultLowLimitBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataAnalogValueFaultLowLimitBuilder {
+	builder := builderSupplier(b.FaultLowLimit.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.FaultLowLimit, err = builder.Build()
+	b.FaultLowLimit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) Build() (BACnetConstructedDataAnalogValueFaultLowLimit, error) {
-	if m.FaultLowLimit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) Build() (BACnetConstructedDataAnalogValueFaultLowLimit, error) {
+	if b.FaultLowLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'faultLowLimit' not set"))
+		b.err.Append(errors.New("mandatory field 'faultLowLimit' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAnalogValueFaultLowLimit.deepCopy(), nil
+	return b._BACnetConstructedDataAnalogValueFaultLowLimit.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) MustBuild() BACnetConstructedDataAnalogValueFaultLowLimit {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) MustBuild() BACnetConstructedDataAnalogValueFaultLowLimit {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAnalogValueFaultLowLimitBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAnalogValueFaultLowLimitBuilder().(*_BACnetConstructedDataAnalogValueFaultLowLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAnalogValueFaultLowLimitBuilder creates a BACnetConstructedDataAnalogValueFaultLowLimitBuilder
-func (m *_BACnetConstructedDataAnalogValueFaultLowLimit) CreateBACnetConstructedDataAnalogValueFaultLowLimitBuilder() BACnetConstructedDataAnalogValueFaultLowLimitBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAnalogValueFaultLowLimit) CreateBACnetConstructedDataAnalogValueFaultLowLimitBuilder() BACnetConstructedDataAnalogValueFaultLowLimitBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAnalogValueFaultLowLimitBuilder()
 	}
-	return &_BACnetConstructedDataAnalogValueFaultLowLimitBuilder{_BACnetConstructedDataAnalogValueFaultLowLimit: m.deepCopy()}
+	return &_BACnetConstructedDataAnalogValueFaultLowLimitBuilder{_BACnetConstructedDataAnalogValueFaultLowLimit: b.deepCopy()}
 }
 
 ///////////////////////

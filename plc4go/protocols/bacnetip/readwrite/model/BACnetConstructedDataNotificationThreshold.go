@@ -100,64 +100,83 @@ func NewBACnetConstructedDataNotificationThresholdBuilder() BACnetConstructedDat
 type _BACnetConstructedDataNotificationThresholdBuilder struct {
 	*_BACnetConstructedDataNotificationThreshold
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataNotificationThresholdBuilder) = (*_BACnetConstructedDataNotificationThresholdBuilder)(nil)
 
-func (m *_BACnetConstructedDataNotificationThresholdBuilder) WithMandatoryFields(notificationThreshold BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNotificationThresholdBuilder {
-	return m.WithNotificationThreshold(notificationThreshold)
+func (b *_BACnetConstructedDataNotificationThresholdBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataNotificationThresholdBuilder) WithNotificationThreshold(notificationThreshold BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNotificationThresholdBuilder {
-	m.NotificationThreshold = notificationThreshold
-	return m
+func (b *_BACnetConstructedDataNotificationThresholdBuilder) WithMandatoryFields(notificationThreshold BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNotificationThresholdBuilder {
+	return b.WithNotificationThreshold(notificationThreshold)
 }
 
-func (m *_BACnetConstructedDataNotificationThresholdBuilder) WithNotificationThresholdBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNotificationThresholdBuilder {
-	builder := builderSupplier(m.NotificationThreshold.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataNotificationThresholdBuilder) WithNotificationThreshold(notificationThreshold BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNotificationThresholdBuilder {
+	b.NotificationThreshold = notificationThreshold
+	return b
+}
+
+func (b *_BACnetConstructedDataNotificationThresholdBuilder) WithNotificationThresholdBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNotificationThresholdBuilder {
+	builder := builderSupplier(b.NotificationThreshold.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NotificationThreshold, err = builder.Build()
+	b.NotificationThreshold, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataNotificationThresholdBuilder) Build() (BACnetConstructedDataNotificationThreshold, error) {
-	if m.NotificationThreshold == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataNotificationThresholdBuilder) Build() (BACnetConstructedDataNotificationThreshold, error) {
+	if b.NotificationThreshold == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'notificationThreshold' not set"))
+		b.err.Append(errors.New("mandatory field 'notificationThreshold' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataNotificationThreshold.deepCopy(), nil
+	return b._BACnetConstructedDataNotificationThreshold.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataNotificationThresholdBuilder) MustBuild() BACnetConstructedDataNotificationThreshold {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataNotificationThresholdBuilder) MustBuild() BACnetConstructedDataNotificationThreshold {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataNotificationThresholdBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataNotificationThresholdBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNotificationThresholdBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNotificationThresholdBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNotificationThresholdBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNotificationThresholdBuilder().(*_BACnetConstructedDataNotificationThresholdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataNotificationThresholdBuilder creates a BACnetConstructedDataNotificationThresholdBuilder
-func (m *_BACnetConstructedDataNotificationThreshold) CreateBACnetConstructedDataNotificationThresholdBuilder() BACnetConstructedDataNotificationThresholdBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataNotificationThreshold) CreateBACnetConstructedDataNotificationThresholdBuilder() BACnetConstructedDataNotificationThresholdBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataNotificationThresholdBuilder()
 	}
-	return &_BACnetConstructedDataNotificationThresholdBuilder{_BACnetConstructedDataNotificationThreshold: m.deepCopy()}
+	return &_BACnetConstructedDataNotificationThresholdBuilder{_BACnetConstructedDataNotificationThreshold: b.deepCopy()}
 }
 
 ///////////////////////

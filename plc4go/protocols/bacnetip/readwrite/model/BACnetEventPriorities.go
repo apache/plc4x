@@ -138,155 +138,159 @@ type _BACnetEventPrioritiesBuilder struct {
 
 var _ (BACnetEventPrioritiesBuilder) = (*_BACnetEventPrioritiesBuilder)(nil)
 
-func (m *_BACnetEventPrioritiesBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, toOffnormal BACnetApplicationTagUnsignedInteger, toFault BACnetApplicationTagUnsignedInteger, toNormal BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag) BACnetEventPrioritiesBuilder {
-	return m.WithOpeningTag(openingTag).WithToOffnormal(toOffnormal).WithToFault(toFault).WithToNormal(toNormal).WithClosingTag(closingTag)
+func (b *_BACnetEventPrioritiesBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, toOffnormal BACnetApplicationTagUnsignedInteger, toFault BACnetApplicationTagUnsignedInteger, toNormal BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag) BACnetEventPrioritiesBuilder {
+	return b.WithOpeningTag(openingTag).WithToOffnormal(toOffnormal).WithToFault(toFault).WithToNormal(toNormal).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetEventPrioritiesBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventPrioritiesBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetEventPrioritiesBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventPrioritiesBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetEventPrioritiesBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventPrioritiesBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetEventPrioritiesBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventPrioritiesBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventPrioritiesBuilder) WithToOffnormal(toOffnormal BACnetApplicationTagUnsignedInteger) BACnetEventPrioritiesBuilder {
-	m.ToOffnormal = toOffnormal
-	return m
+func (b *_BACnetEventPrioritiesBuilder) WithToOffnormal(toOffnormal BACnetApplicationTagUnsignedInteger) BACnetEventPrioritiesBuilder {
+	b.ToOffnormal = toOffnormal
+	return b
 }
 
-func (m *_BACnetEventPrioritiesBuilder) WithToOffnormalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetEventPrioritiesBuilder {
-	builder := builderSupplier(m.ToOffnormal.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetEventPrioritiesBuilder) WithToOffnormalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetEventPrioritiesBuilder {
+	builder := builderSupplier(b.ToOffnormal.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.ToOffnormal, err = builder.Build()
+	b.ToOffnormal, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventPrioritiesBuilder) WithToFault(toFault BACnetApplicationTagUnsignedInteger) BACnetEventPrioritiesBuilder {
-	m.ToFault = toFault
-	return m
+func (b *_BACnetEventPrioritiesBuilder) WithToFault(toFault BACnetApplicationTagUnsignedInteger) BACnetEventPrioritiesBuilder {
+	b.ToFault = toFault
+	return b
 }
 
-func (m *_BACnetEventPrioritiesBuilder) WithToFaultBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetEventPrioritiesBuilder {
-	builder := builderSupplier(m.ToFault.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetEventPrioritiesBuilder) WithToFaultBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetEventPrioritiesBuilder {
+	builder := builderSupplier(b.ToFault.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.ToFault, err = builder.Build()
+	b.ToFault, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventPrioritiesBuilder) WithToNormal(toNormal BACnetApplicationTagUnsignedInteger) BACnetEventPrioritiesBuilder {
-	m.ToNormal = toNormal
-	return m
+func (b *_BACnetEventPrioritiesBuilder) WithToNormal(toNormal BACnetApplicationTagUnsignedInteger) BACnetEventPrioritiesBuilder {
+	b.ToNormal = toNormal
+	return b
 }
 
-func (m *_BACnetEventPrioritiesBuilder) WithToNormalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetEventPrioritiesBuilder {
-	builder := builderSupplier(m.ToNormal.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetEventPrioritiesBuilder) WithToNormalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetEventPrioritiesBuilder {
+	builder := builderSupplier(b.ToNormal.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.ToNormal, err = builder.Build()
+	b.ToNormal, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventPrioritiesBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventPrioritiesBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetEventPrioritiesBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventPrioritiesBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetEventPrioritiesBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventPrioritiesBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetEventPrioritiesBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventPrioritiesBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventPrioritiesBuilder) Build() (BACnetEventPriorities, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetEventPrioritiesBuilder) Build() (BACnetEventPriorities, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ToOffnormal == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ToOffnormal == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'toOffnormal' not set"))
+		b.err.Append(errors.New("mandatory field 'toOffnormal' not set"))
 	}
-	if m.ToFault == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ToFault == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'toFault' not set"))
+		b.err.Append(errors.New("mandatory field 'toFault' not set"))
 	}
-	if m.ToNormal == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ToNormal == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'toNormal' not set"))
+		b.err.Append(errors.New("mandatory field 'toNormal' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetEventPriorities.deepCopy(), nil
+	return b._BACnetEventPriorities.deepCopy(), nil
 }
 
-func (m *_BACnetEventPrioritiesBuilder) MustBuild() BACnetEventPriorities {
-	build, err := m.Build()
+func (b *_BACnetEventPrioritiesBuilder) MustBuild() BACnetEventPriorities {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetEventPrioritiesBuilder) DeepCopy() any {
-	return m.CreateBACnetEventPrioritiesBuilder()
+func (b *_BACnetEventPrioritiesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventPrioritiesBuilder().(*_BACnetEventPrioritiesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetEventPrioritiesBuilder creates a BACnetEventPrioritiesBuilder
-func (m *_BACnetEventPriorities) CreateBACnetEventPrioritiesBuilder() BACnetEventPrioritiesBuilder {
-	if m == nil {
+func (b *_BACnetEventPriorities) CreateBACnetEventPrioritiesBuilder() BACnetEventPrioritiesBuilder {
+	if b == nil {
 		return NewBACnetEventPrioritiesBuilder()
 	}
-	return &_BACnetEventPrioritiesBuilder{_BACnetEventPriorities: m.deepCopy()}
+	return &_BACnetEventPrioritiesBuilder{_BACnetEventPriorities: b.deepCopy()}
 }
 
 ///////////////////////

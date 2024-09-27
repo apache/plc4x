@@ -85,40 +85,59 @@ func NewBACnetConstructedDataPositiveIntegerValueAllBuilder() BACnetConstructedD
 type _BACnetConstructedDataPositiveIntegerValueAllBuilder struct {
 	*_BACnetConstructedDataPositiveIntegerValueAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataPositiveIntegerValueAllBuilder) = (*_BACnetConstructedDataPositiveIntegerValueAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataPositiveIntegerValueAllBuilder) WithMandatoryFields() BACnetConstructedDataPositiveIntegerValueAllBuilder {
-	return m
+func (b *_BACnetConstructedDataPositiveIntegerValueAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueAllBuilder) Build() (BACnetConstructedDataPositiveIntegerValueAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataPositiveIntegerValueAllBuilder) WithMandatoryFields() BACnetConstructedDataPositiveIntegerValueAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueAllBuilder) Build() (BACnetConstructedDataPositiveIntegerValueAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataPositiveIntegerValueAll.deepCopy(), nil
+	return b._BACnetConstructedDataPositiveIntegerValueAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueAllBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataPositiveIntegerValueAllBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataPositiveIntegerValueAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPositiveIntegerValueAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPositiveIntegerValueAllBuilder().(*_BACnetConstructedDataPositiveIntegerValueAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataPositiveIntegerValueAllBuilder creates a BACnetConstructedDataPositiveIntegerValueAllBuilder
-func (m *_BACnetConstructedDataPositiveIntegerValueAll) CreateBACnetConstructedDataPositiveIntegerValueAllBuilder() BACnetConstructedDataPositiveIntegerValueAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataPositiveIntegerValueAll) CreateBACnetConstructedDataPositiveIntegerValueAllBuilder() BACnetConstructedDataPositiveIntegerValueAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataPositiveIntegerValueAllBuilder()
 	}
-	return &_BACnetConstructedDataPositiveIntegerValueAllBuilder{_BACnetConstructedDataPositiveIntegerValueAll: m.deepCopy()}
+	return &_BACnetConstructedDataPositiveIntegerValueAllBuilder{_BACnetConstructedDataPositiveIntegerValueAll: b.deepCopy()}
 }
 
 ///////////////////////

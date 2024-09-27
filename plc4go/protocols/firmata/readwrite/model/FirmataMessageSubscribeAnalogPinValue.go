@@ -103,50 +103,69 @@ func NewFirmataMessageSubscribeAnalogPinValueBuilder() FirmataMessageSubscribeAn
 type _FirmataMessageSubscribeAnalogPinValueBuilder struct {
 	*_FirmataMessageSubscribeAnalogPinValue
 
+	parentBuilder *_FirmataMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (FirmataMessageSubscribeAnalogPinValueBuilder) = (*_FirmataMessageSubscribeAnalogPinValueBuilder)(nil)
 
-func (m *_FirmataMessageSubscribeAnalogPinValueBuilder) WithMandatoryFields(pin uint8, enable bool) FirmataMessageSubscribeAnalogPinValueBuilder {
-	return m.WithPin(pin).WithEnable(enable)
+func (b *_FirmataMessageSubscribeAnalogPinValueBuilder) setParent(contract FirmataMessageContract) {
+	b.FirmataMessageContract = contract
 }
 
-func (m *_FirmataMessageSubscribeAnalogPinValueBuilder) WithPin(pin uint8) FirmataMessageSubscribeAnalogPinValueBuilder {
-	m.Pin = pin
-	return m
+func (b *_FirmataMessageSubscribeAnalogPinValueBuilder) WithMandatoryFields(pin uint8, enable bool) FirmataMessageSubscribeAnalogPinValueBuilder {
+	return b.WithPin(pin).WithEnable(enable)
 }
 
-func (m *_FirmataMessageSubscribeAnalogPinValueBuilder) WithEnable(enable bool) FirmataMessageSubscribeAnalogPinValueBuilder {
-	m.Enable = enable
-	return m
+func (b *_FirmataMessageSubscribeAnalogPinValueBuilder) WithPin(pin uint8) FirmataMessageSubscribeAnalogPinValueBuilder {
+	b.Pin = pin
+	return b
 }
 
-func (m *_FirmataMessageSubscribeAnalogPinValueBuilder) Build() (FirmataMessageSubscribeAnalogPinValue, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_FirmataMessageSubscribeAnalogPinValueBuilder) WithEnable(enable bool) FirmataMessageSubscribeAnalogPinValueBuilder {
+	b.Enable = enable
+	return b
+}
+
+func (b *_FirmataMessageSubscribeAnalogPinValueBuilder) Build() (FirmataMessageSubscribeAnalogPinValue, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._FirmataMessageSubscribeAnalogPinValue.deepCopy(), nil
+	return b._FirmataMessageSubscribeAnalogPinValue.deepCopy(), nil
 }
 
-func (m *_FirmataMessageSubscribeAnalogPinValueBuilder) MustBuild() FirmataMessageSubscribeAnalogPinValue {
-	build, err := m.Build()
+func (b *_FirmataMessageSubscribeAnalogPinValueBuilder) MustBuild() FirmataMessageSubscribeAnalogPinValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FirmataMessageSubscribeAnalogPinValueBuilder) DeepCopy() any {
-	return m.CreateFirmataMessageSubscribeAnalogPinValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FirmataMessageSubscribeAnalogPinValueBuilder) Done() FirmataMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FirmataMessageSubscribeAnalogPinValueBuilder) buildForFirmataMessage() (FirmataMessage, error) {
+	return b.Build()
+}
+
+func (b *_FirmataMessageSubscribeAnalogPinValueBuilder) DeepCopy() any {
+	_copy := b.CreateFirmataMessageSubscribeAnalogPinValueBuilder().(*_FirmataMessageSubscribeAnalogPinValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFirmataMessageSubscribeAnalogPinValueBuilder creates a FirmataMessageSubscribeAnalogPinValueBuilder
-func (m *_FirmataMessageSubscribeAnalogPinValue) CreateFirmataMessageSubscribeAnalogPinValueBuilder() FirmataMessageSubscribeAnalogPinValueBuilder {
-	if m == nil {
+func (b *_FirmataMessageSubscribeAnalogPinValue) CreateFirmataMessageSubscribeAnalogPinValueBuilder() FirmataMessageSubscribeAnalogPinValueBuilder {
+	if b == nil {
 		return NewFirmataMessageSubscribeAnalogPinValueBuilder()
 	}
-	return &_FirmataMessageSubscribeAnalogPinValueBuilder{_FirmataMessageSubscribeAnalogPinValue: m.deepCopy()}
+	return &_FirmataMessageSubscribeAnalogPinValueBuilder{_FirmataMessageSubscribeAnalogPinValue: b.deepCopy()}
 }
 
 ///////////////////////

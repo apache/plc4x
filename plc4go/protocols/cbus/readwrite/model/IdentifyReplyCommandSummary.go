@@ -105,55 +105,74 @@ func NewIdentifyReplyCommandSummaryBuilder() IdentifyReplyCommandSummaryBuilder 
 type _IdentifyReplyCommandSummaryBuilder struct {
 	*_IdentifyReplyCommandSummary
 
+	parentBuilder *_IdentifyReplyCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (IdentifyReplyCommandSummaryBuilder) = (*_IdentifyReplyCommandSummaryBuilder)(nil)
 
-func (m *_IdentifyReplyCommandSummaryBuilder) WithMandatoryFields(partName string, unitServiceType byte, version string) IdentifyReplyCommandSummaryBuilder {
-	return m.WithPartName(partName).WithUnitServiceType(unitServiceType).WithVersion(version)
+func (b *_IdentifyReplyCommandSummaryBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
 }
 
-func (m *_IdentifyReplyCommandSummaryBuilder) WithPartName(partName string) IdentifyReplyCommandSummaryBuilder {
-	m.PartName = partName
-	return m
+func (b *_IdentifyReplyCommandSummaryBuilder) WithMandatoryFields(partName string, unitServiceType byte, version string) IdentifyReplyCommandSummaryBuilder {
+	return b.WithPartName(partName).WithUnitServiceType(unitServiceType).WithVersion(version)
 }
 
-func (m *_IdentifyReplyCommandSummaryBuilder) WithUnitServiceType(unitServiceType byte) IdentifyReplyCommandSummaryBuilder {
-	m.UnitServiceType = unitServiceType
-	return m
+func (b *_IdentifyReplyCommandSummaryBuilder) WithPartName(partName string) IdentifyReplyCommandSummaryBuilder {
+	b.PartName = partName
+	return b
 }
 
-func (m *_IdentifyReplyCommandSummaryBuilder) WithVersion(version string) IdentifyReplyCommandSummaryBuilder {
-	m.Version = version
-	return m
+func (b *_IdentifyReplyCommandSummaryBuilder) WithUnitServiceType(unitServiceType byte) IdentifyReplyCommandSummaryBuilder {
+	b.UnitServiceType = unitServiceType
+	return b
 }
 
-func (m *_IdentifyReplyCommandSummaryBuilder) Build() (IdentifyReplyCommandSummary, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IdentifyReplyCommandSummaryBuilder) WithVersion(version string) IdentifyReplyCommandSummaryBuilder {
+	b.Version = version
+	return b
+}
+
+func (b *_IdentifyReplyCommandSummaryBuilder) Build() (IdentifyReplyCommandSummary, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommandSummary.deepCopy(), nil
+	return b._IdentifyReplyCommandSummary.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandSummaryBuilder) MustBuild() IdentifyReplyCommandSummary {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandSummaryBuilder) MustBuild() IdentifyReplyCommandSummary {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandSummaryBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandSummaryBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandSummaryBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandSummaryBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandSummaryBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandSummaryBuilder().(*_IdentifyReplyCommandSummaryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandSummaryBuilder creates a IdentifyReplyCommandSummaryBuilder
-func (m *_IdentifyReplyCommandSummary) CreateIdentifyReplyCommandSummaryBuilder() IdentifyReplyCommandSummaryBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommandSummary) CreateIdentifyReplyCommandSummaryBuilder() IdentifyReplyCommandSummaryBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandSummaryBuilder()
 	}
-	return &_IdentifyReplyCommandSummaryBuilder{_IdentifyReplyCommandSummary: m.deepCopy()}
+	return &_IdentifyReplyCommandSummaryBuilder{_IdentifyReplyCommandSummary: b.deepCopy()}
 }
 
 ///////////////////////

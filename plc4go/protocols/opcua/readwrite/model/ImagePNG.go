@@ -83,35 +83,39 @@ type _ImagePNGBuilder struct {
 
 var _ (ImagePNGBuilder) = (*_ImagePNGBuilder)(nil)
 
-func (m *_ImagePNGBuilder) WithMandatoryFields() ImagePNGBuilder {
-	return m
+func (b *_ImagePNGBuilder) WithMandatoryFields() ImagePNGBuilder {
+	return b
 }
 
-func (m *_ImagePNGBuilder) Build() (ImagePNG, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ImagePNGBuilder) Build() (ImagePNG, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ImagePNG.deepCopy(), nil
+	return b._ImagePNG.deepCopy(), nil
 }
 
-func (m *_ImagePNGBuilder) MustBuild() ImagePNG {
-	build, err := m.Build()
+func (b *_ImagePNGBuilder) MustBuild() ImagePNG {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ImagePNGBuilder) DeepCopy() any {
-	return m.CreateImagePNGBuilder()
+func (b *_ImagePNGBuilder) DeepCopy() any {
+	_copy := b.CreateImagePNGBuilder().(*_ImagePNGBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateImagePNGBuilder creates a ImagePNGBuilder
-func (m *_ImagePNG) CreateImagePNGBuilder() ImagePNGBuilder {
-	if m == nil {
+func (b *_ImagePNG) CreateImagePNGBuilder() ImagePNGBuilder {
+	if b == nil {
 		return NewImagePNGBuilder()
 	}
-	return &_ImagePNGBuilder{_ImagePNG: m.deepCopy()}
+	return &_ImagePNGBuilder{_ImagePNG: b.deepCopy()}
 }
 
 ///////////////////////

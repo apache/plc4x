@@ -85,40 +85,59 @@ func NewSecurityDataRaiseAlarmBuilder() SecurityDataRaiseAlarmBuilder {
 type _SecurityDataRaiseAlarmBuilder struct {
 	*_SecurityDataRaiseAlarm
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataRaiseAlarmBuilder) = (*_SecurityDataRaiseAlarmBuilder)(nil)
 
-func (m *_SecurityDataRaiseAlarmBuilder) WithMandatoryFields() SecurityDataRaiseAlarmBuilder {
-	return m
+func (b *_SecurityDataRaiseAlarmBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataRaiseAlarmBuilder) Build() (SecurityDataRaiseAlarm, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataRaiseAlarmBuilder) WithMandatoryFields() SecurityDataRaiseAlarmBuilder {
+	return b
+}
+
+func (b *_SecurityDataRaiseAlarmBuilder) Build() (SecurityDataRaiseAlarm, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataRaiseAlarm.deepCopy(), nil
+	return b._SecurityDataRaiseAlarm.deepCopy(), nil
 }
 
-func (m *_SecurityDataRaiseAlarmBuilder) MustBuild() SecurityDataRaiseAlarm {
-	build, err := m.Build()
+func (b *_SecurityDataRaiseAlarmBuilder) MustBuild() SecurityDataRaiseAlarm {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataRaiseAlarmBuilder) DeepCopy() any {
-	return m.CreateSecurityDataRaiseAlarmBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataRaiseAlarmBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataRaiseAlarmBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataRaiseAlarmBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataRaiseAlarmBuilder().(*_SecurityDataRaiseAlarmBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataRaiseAlarmBuilder creates a SecurityDataRaiseAlarmBuilder
-func (m *_SecurityDataRaiseAlarm) CreateSecurityDataRaiseAlarmBuilder() SecurityDataRaiseAlarmBuilder {
-	if m == nil {
+func (b *_SecurityDataRaiseAlarm) CreateSecurityDataRaiseAlarmBuilder() SecurityDataRaiseAlarmBuilder {
+	if b == nil {
 		return NewSecurityDataRaiseAlarmBuilder()
 	}
-	return &_SecurityDataRaiseAlarmBuilder{_SecurityDataRaiseAlarm: m.deepCopy()}
+	return &_SecurityDataRaiseAlarmBuilder{_SecurityDataRaiseAlarm: b.deepCopy()}
 }
 
 ///////////////////////

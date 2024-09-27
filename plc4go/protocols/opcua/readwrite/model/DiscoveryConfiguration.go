@@ -85,40 +85,59 @@ func NewDiscoveryConfigurationBuilder() DiscoveryConfigurationBuilder {
 type _DiscoveryConfigurationBuilder struct {
 	*_DiscoveryConfiguration
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DiscoveryConfigurationBuilder) = (*_DiscoveryConfigurationBuilder)(nil)
 
-func (m *_DiscoveryConfigurationBuilder) WithMandatoryFields() DiscoveryConfigurationBuilder {
-	return m
+func (b *_DiscoveryConfigurationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_DiscoveryConfigurationBuilder) Build() (DiscoveryConfiguration, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DiscoveryConfigurationBuilder) WithMandatoryFields() DiscoveryConfigurationBuilder {
+	return b
+}
+
+func (b *_DiscoveryConfigurationBuilder) Build() (DiscoveryConfiguration, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DiscoveryConfiguration.deepCopy(), nil
+	return b._DiscoveryConfiguration.deepCopy(), nil
 }
 
-func (m *_DiscoveryConfigurationBuilder) MustBuild() DiscoveryConfiguration {
-	build, err := m.Build()
+func (b *_DiscoveryConfigurationBuilder) MustBuild() DiscoveryConfiguration {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DiscoveryConfigurationBuilder) DeepCopy() any {
-	return m.CreateDiscoveryConfigurationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DiscoveryConfigurationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DiscoveryConfigurationBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DiscoveryConfigurationBuilder) DeepCopy() any {
+	_copy := b.CreateDiscoveryConfigurationBuilder().(*_DiscoveryConfigurationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDiscoveryConfigurationBuilder creates a DiscoveryConfigurationBuilder
-func (m *_DiscoveryConfiguration) CreateDiscoveryConfigurationBuilder() DiscoveryConfigurationBuilder {
-	if m == nil {
+func (b *_DiscoveryConfiguration) CreateDiscoveryConfigurationBuilder() DiscoveryConfigurationBuilder {
+	if b == nil {
 		return NewDiscoveryConfigurationBuilder()
 	}
-	return &_DiscoveryConfigurationBuilder{_DiscoveryConfiguration: m.deepCopy()}
+	return &_DiscoveryConfigurationBuilder{_DiscoveryConfiguration: b.deepCopy()}
 }
 
 ///////////////////////

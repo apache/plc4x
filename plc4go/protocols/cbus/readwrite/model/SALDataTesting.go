@@ -85,40 +85,59 @@ func NewSALDataTestingBuilder() SALDataTestingBuilder {
 type _SALDataTestingBuilder struct {
 	*_SALDataTesting
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataTestingBuilder) = (*_SALDataTestingBuilder)(nil)
 
-func (m *_SALDataTestingBuilder) WithMandatoryFields() SALDataTestingBuilder {
-	return m
+func (b *_SALDataTestingBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataTestingBuilder) Build() (SALDataTesting, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SALDataTestingBuilder) WithMandatoryFields() SALDataTestingBuilder {
+	return b
+}
+
+func (b *_SALDataTestingBuilder) Build() (SALDataTesting, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SALDataTesting.deepCopy(), nil
+	return b._SALDataTesting.deepCopy(), nil
 }
 
-func (m *_SALDataTestingBuilder) MustBuild() SALDataTesting {
-	build, err := m.Build()
+func (b *_SALDataTestingBuilder) MustBuild() SALDataTesting {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataTestingBuilder) DeepCopy() any {
-	return m.CreateSALDataTestingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataTestingBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataTestingBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataTestingBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataTestingBuilder().(*_SALDataTestingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataTestingBuilder creates a SALDataTestingBuilder
-func (m *_SALDataTesting) CreateSALDataTestingBuilder() SALDataTestingBuilder {
-	if m == nil {
+func (b *_SALDataTesting) CreateSALDataTestingBuilder() SALDataTestingBuilder {
+	if b == nil {
 		return NewSALDataTestingBuilder()
 	}
-	return &_SALDataTestingBuilder{_SALDataTesting: m.deepCopy()}
+	return &_SALDataTestingBuilder{_SALDataTesting: b.deepCopy()}
 }
 
 ///////////////////////

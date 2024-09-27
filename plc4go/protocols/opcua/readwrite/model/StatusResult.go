@@ -109,88 +109,107 @@ func NewStatusResultBuilder() StatusResultBuilder {
 type _StatusResultBuilder struct {
 	*_StatusResult
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (StatusResultBuilder) = (*_StatusResultBuilder)(nil)
 
-func (m *_StatusResultBuilder) WithMandatoryFields(statusCode StatusCode, diagnosticInfo DiagnosticInfo) StatusResultBuilder {
-	return m.WithStatusCode(statusCode).WithDiagnosticInfo(diagnosticInfo)
+func (b *_StatusResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_StatusResultBuilder) WithStatusCode(statusCode StatusCode) StatusResultBuilder {
-	m.StatusCode = statusCode
-	return m
+func (b *_StatusResultBuilder) WithMandatoryFields(statusCode StatusCode, diagnosticInfo DiagnosticInfo) StatusResultBuilder {
+	return b.WithStatusCode(statusCode).WithDiagnosticInfo(diagnosticInfo)
 }
 
-func (m *_StatusResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) StatusResultBuilder {
-	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+func (b *_StatusResultBuilder) WithStatusCode(statusCode StatusCode) StatusResultBuilder {
+	b.StatusCode = statusCode
+	return b
+}
+
+func (b *_StatusResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) StatusResultBuilder {
+	builder := builderSupplier(b.StatusCode.CreateStatusCodeBuilder())
 	var err error
-	m.StatusCode, err = builder.Build()
+	b.StatusCode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_StatusResultBuilder) WithDiagnosticInfo(diagnosticInfo DiagnosticInfo) StatusResultBuilder {
-	m.DiagnosticInfo = diagnosticInfo
-	return m
+func (b *_StatusResultBuilder) WithDiagnosticInfo(diagnosticInfo DiagnosticInfo) StatusResultBuilder {
+	b.DiagnosticInfo = diagnosticInfo
+	return b
 }
 
-func (m *_StatusResultBuilder) WithDiagnosticInfoBuilder(builderSupplier func(DiagnosticInfoBuilder) DiagnosticInfoBuilder) StatusResultBuilder {
-	builder := builderSupplier(m.DiagnosticInfo.CreateDiagnosticInfoBuilder())
+func (b *_StatusResultBuilder) WithDiagnosticInfoBuilder(builderSupplier func(DiagnosticInfoBuilder) DiagnosticInfoBuilder) StatusResultBuilder {
+	builder := builderSupplier(b.DiagnosticInfo.CreateDiagnosticInfoBuilder())
 	var err error
-	m.DiagnosticInfo, err = builder.Build()
+	b.DiagnosticInfo, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "DiagnosticInfoBuilder failed"))
+		b.err.Append(errors.Wrap(err, "DiagnosticInfoBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_StatusResultBuilder) Build() (StatusResult, error) {
-	if m.StatusCode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_StatusResultBuilder) Build() (StatusResult, error) {
+	if b.StatusCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
 	}
-	if m.DiagnosticInfo == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.DiagnosticInfo == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'diagnosticInfo' not set"))
+		b.err.Append(errors.New("mandatory field 'diagnosticInfo' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._StatusResult.deepCopy(), nil
+	return b._StatusResult.deepCopy(), nil
 }
 
-func (m *_StatusResultBuilder) MustBuild() StatusResult {
-	build, err := m.Build()
+func (b *_StatusResultBuilder) MustBuild() StatusResult {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_StatusResultBuilder) DeepCopy() any {
-	return m.CreateStatusResultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_StatusResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_StatusResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_StatusResultBuilder) DeepCopy() any {
+	_copy := b.CreateStatusResultBuilder().(*_StatusResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateStatusResultBuilder creates a StatusResultBuilder
-func (m *_StatusResult) CreateStatusResultBuilder() StatusResultBuilder {
-	if m == nil {
+func (b *_StatusResult) CreateStatusResultBuilder() StatusResultBuilder {
+	if b == nil {
 		return NewStatusResultBuilder()
 	}
-	return &_StatusResultBuilder{_StatusResult: m.deepCopy()}
+	return &_StatusResultBuilder{_StatusResult: b.deepCopy()}
 }
 
 ///////////////////////

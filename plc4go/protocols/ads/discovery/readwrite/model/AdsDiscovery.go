@@ -120,79 +120,83 @@ type _AdsDiscoveryBuilder struct {
 
 var _ (AdsDiscoveryBuilder) = (*_AdsDiscoveryBuilder)(nil)
 
-func (m *_AdsDiscoveryBuilder) WithMandatoryFields(requestId uint32, operation Operation, amsNetId AmsNetId, portNumber AdsPortNumbers, blocks []AdsDiscoveryBlock) AdsDiscoveryBuilder {
-	return m.WithRequestId(requestId).WithOperation(operation).WithAmsNetId(amsNetId).WithPortNumber(portNumber).WithBlocks(blocks...)
+func (b *_AdsDiscoveryBuilder) WithMandatoryFields(requestId uint32, operation Operation, amsNetId AmsNetId, portNumber AdsPortNumbers, blocks []AdsDiscoveryBlock) AdsDiscoveryBuilder {
+	return b.WithRequestId(requestId).WithOperation(operation).WithAmsNetId(amsNetId).WithPortNumber(portNumber).WithBlocks(blocks...)
 }
 
-func (m *_AdsDiscoveryBuilder) WithRequestId(requestId uint32) AdsDiscoveryBuilder {
-	m.RequestId = requestId
-	return m
+func (b *_AdsDiscoveryBuilder) WithRequestId(requestId uint32) AdsDiscoveryBuilder {
+	b.RequestId = requestId
+	return b
 }
 
-func (m *_AdsDiscoveryBuilder) WithOperation(operation Operation) AdsDiscoveryBuilder {
-	m.Operation = operation
-	return m
+func (b *_AdsDiscoveryBuilder) WithOperation(operation Operation) AdsDiscoveryBuilder {
+	b.Operation = operation
+	return b
 }
 
-func (m *_AdsDiscoveryBuilder) WithAmsNetId(amsNetId AmsNetId) AdsDiscoveryBuilder {
-	m.AmsNetId = amsNetId
-	return m
+func (b *_AdsDiscoveryBuilder) WithAmsNetId(amsNetId AmsNetId) AdsDiscoveryBuilder {
+	b.AmsNetId = amsNetId
+	return b
 }
 
-func (m *_AdsDiscoveryBuilder) WithAmsNetIdBuilder(builderSupplier func(AmsNetIdBuilder) AmsNetIdBuilder) AdsDiscoveryBuilder {
-	builder := builderSupplier(m.AmsNetId.CreateAmsNetIdBuilder())
+func (b *_AdsDiscoveryBuilder) WithAmsNetIdBuilder(builderSupplier func(AmsNetIdBuilder) AmsNetIdBuilder) AdsDiscoveryBuilder {
+	builder := builderSupplier(b.AmsNetId.CreateAmsNetIdBuilder())
 	var err error
-	m.AmsNetId, err = builder.Build()
+	b.AmsNetId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AmsNetIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AmsNetIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AdsDiscoveryBuilder) WithPortNumber(portNumber AdsPortNumbers) AdsDiscoveryBuilder {
-	m.PortNumber = portNumber
-	return m
+func (b *_AdsDiscoveryBuilder) WithPortNumber(portNumber AdsPortNumbers) AdsDiscoveryBuilder {
+	b.PortNumber = portNumber
+	return b
 }
 
-func (m *_AdsDiscoveryBuilder) WithBlocks(blocks ...AdsDiscoveryBlock) AdsDiscoveryBuilder {
-	m.Blocks = blocks
-	return m
+func (b *_AdsDiscoveryBuilder) WithBlocks(blocks ...AdsDiscoveryBlock) AdsDiscoveryBuilder {
+	b.Blocks = blocks
+	return b
 }
 
-func (m *_AdsDiscoveryBuilder) Build() (AdsDiscovery, error) {
-	if m.AmsNetId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AdsDiscoveryBuilder) Build() (AdsDiscovery, error) {
+	if b.AmsNetId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'amsNetId' not set"))
+		b.err.Append(errors.New("mandatory field 'amsNetId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsDiscovery.deepCopy(), nil
+	return b._AdsDiscovery.deepCopy(), nil
 }
 
-func (m *_AdsDiscoveryBuilder) MustBuild() AdsDiscovery {
-	build, err := m.Build()
+func (b *_AdsDiscoveryBuilder) MustBuild() AdsDiscovery {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsDiscoveryBuilder) DeepCopy() any {
-	return m.CreateAdsDiscoveryBuilder()
+func (b *_AdsDiscoveryBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryBuilder().(*_AdsDiscoveryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsDiscoveryBuilder creates a AdsDiscoveryBuilder
-func (m *_AdsDiscovery) CreateAdsDiscoveryBuilder() AdsDiscoveryBuilder {
-	if m == nil {
+func (b *_AdsDiscovery) CreateAdsDiscoveryBuilder() AdsDiscoveryBuilder {
+	if b == nil {
 		return NewAdsDiscoveryBuilder()
 	}
-	return &_AdsDiscoveryBuilder{_AdsDiscovery: m.deepCopy()}
+	return &_AdsDiscoveryBuilder{_AdsDiscovery: b.deepCopy()}
 }
 
 ///////////////////////

@@ -102,77 +102,81 @@ type _BACnetBDTEntryBuilder struct {
 
 var _ (BACnetBDTEntryBuilder) = (*_BACnetBDTEntryBuilder)(nil)
 
-func (m *_BACnetBDTEntryBuilder) WithMandatoryFields(bbmdAddress BACnetHostNPortEnclosed) BACnetBDTEntryBuilder {
-	return m.WithBbmdAddress(bbmdAddress)
+func (b *_BACnetBDTEntryBuilder) WithMandatoryFields(bbmdAddress BACnetHostNPortEnclosed) BACnetBDTEntryBuilder {
+	return b.WithBbmdAddress(bbmdAddress)
 }
 
-func (m *_BACnetBDTEntryBuilder) WithBbmdAddress(bbmdAddress BACnetHostNPortEnclosed) BACnetBDTEntryBuilder {
-	m.BbmdAddress = bbmdAddress
-	return m
+func (b *_BACnetBDTEntryBuilder) WithBbmdAddress(bbmdAddress BACnetHostNPortEnclosed) BACnetBDTEntryBuilder {
+	b.BbmdAddress = bbmdAddress
+	return b
 }
 
-func (m *_BACnetBDTEntryBuilder) WithBbmdAddressBuilder(builderSupplier func(BACnetHostNPortEnclosedBuilder) BACnetHostNPortEnclosedBuilder) BACnetBDTEntryBuilder {
-	builder := builderSupplier(m.BbmdAddress.CreateBACnetHostNPortEnclosedBuilder())
+func (b *_BACnetBDTEntryBuilder) WithBbmdAddressBuilder(builderSupplier func(BACnetHostNPortEnclosedBuilder) BACnetHostNPortEnclosedBuilder) BACnetBDTEntryBuilder {
+	builder := builderSupplier(b.BbmdAddress.CreateBACnetHostNPortEnclosedBuilder())
 	var err error
-	m.BbmdAddress, err = builder.Build()
+	b.BbmdAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetHostNPortEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetHostNPortEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetBDTEntryBuilder) WithOptionalBroadcastMask(broadcastMask BACnetContextTagOctetString) BACnetBDTEntryBuilder {
-	m.BroadcastMask = broadcastMask
-	return m
+func (b *_BACnetBDTEntryBuilder) WithOptionalBroadcastMask(broadcastMask BACnetContextTagOctetString) BACnetBDTEntryBuilder {
+	b.BroadcastMask = broadcastMask
+	return b
 }
 
-func (m *_BACnetBDTEntryBuilder) WithOptionalBroadcastMaskBuilder(builderSupplier func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetBDTEntryBuilder {
-	builder := builderSupplier(m.BroadcastMask.CreateBACnetContextTagOctetStringBuilder())
+func (b *_BACnetBDTEntryBuilder) WithOptionalBroadcastMaskBuilder(builderSupplier func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetBDTEntryBuilder {
+	builder := builderSupplier(b.BroadcastMask.CreateBACnetContextTagOctetStringBuilder())
 	var err error
-	m.BroadcastMask, err = builder.Build()
+	b.BroadcastMask, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetBDTEntryBuilder) Build() (BACnetBDTEntry, error) {
-	if m.BbmdAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetBDTEntryBuilder) Build() (BACnetBDTEntry, error) {
+	if b.BbmdAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'bbmdAddress' not set"))
+		b.err.Append(errors.New("mandatory field 'bbmdAddress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetBDTEntry.deepCopy(), nil
+	return b._BACnetBDTEntry.deepCopy(), nil
 }
 
-func (m *_BACnetBDTEntryBuilder) MustBuild() BACnetBDTEntry {
-	build, err := m.Build()
+func (b *_BACnetBDTEntryBuilder) MustBuild() BACnetBDTEntry {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetBDTEntryBuilder) DeepCopy() any {
-	return m.CreateBACnetBDTEntryBuilder()
+func (b *_BACnetBDTEntryBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetBDTEntryBuilder().(*_BACnetBDTEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetBDTEntryBuilder creates a BACnetBDTEntryBuilder
-func (m *_BACnetBDTEntry) CreateBACnetBDTEntryBuilder() BACnetBDTEntryBuilder {
-	if m == nil {
+func (b *_BACnetBDTEntry) CreateBACnetBDTEntryBuilder() BACnetBDTEntryBuilder {
+	if b == nil {
 		return NewBACnetBDTEntryBuilder()
 	}
-	return &_BACnetBDTEntryBuilder{_BACnetBDTEntry: m.deepCopy()}
+	return &_BACnetBDTEntryBuilder{_BACnetBDTEntry: b.deepCopy()}
 }
 
 ///////////////////////

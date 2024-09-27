@@ -85,10 +85,24 @@ type ConnectionResponseDataBlockBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ConnectionResponseDataBlockBuilder
+	// AsConnectionResponseDataBlockDeviceManagement converts this build to a subType of ConnectionResponseDataBlock. It is always possible to return to current builder using Done()
+	AsConnectionResponseDataBlockDeviceManagement() interface {
+		ConnectionResponseDataBlockDeviceManagementBuilder
+		Done() ConnectionResponseDataBlockBuilder
+	}
+	// AsConnectionResponseDataBlockTunnelConnection converts this build to a subType of ConnectionResponseDataBlock. It is always possible to return to current builder using Done()
+	AsConnectionResponseDataBlockTunnelConnection() interface {
+		ConnectionResponseDataBlockTunnelConnectionBuilder
+		Done() ConnectionResponseDataBlockBuilder
+	}
 	// Build builds the ConnectionResponseDataBlock or returns an error if something is wrong
-	Build() (ConnectionResponseDataBlockContract, error)
+	PartialBuild() (ConnectionResponseDataBlockContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() ConnectionResponseDataBlockContract
+	PartialMustBuild() ConnectionResponseDataBlockContract
+	// Build builds the ConnectionResponseDataBlock or returns an error if something is wrong
+	Build() (ConnectionResponseDataBlock, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectionResponseDataBlock
 }
 
 // NewConnectionResponseDataBlockBuilder() creates a ConnectionResponseDataBlockBuilder
@@ -96,43 +110,109 @@ func NewConnectionResponseDataBlockBuilder() ConnectionResponseDataBlockBuilder 
 	return &_ConnectionResponseDataBlockBuilder{_ConnectionResponseDataBlock: new(_ConnectionResponseDataBlock)}
 }
 
+type _ConnectionResponseDataBlockChildBuilder interface {
+	utils.Copyable
+	setParent(ConnectionResponseDataBlockContract)
+	buildForConnectionResponseDataBlock() (ConnectionResponseDataBlock, error)
+}
+
 type _ConnectionResponseDataBlockBuilder struct {
 	*_ConnectionResponseDataBlock
+
+	childBuilder _ConnectionResponseDataBlockChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (ConnectionResponseDataBlockBuilder) = (*_ConnectionResponseDataBlockBuilder)(nil)
 
-func (m *_ConnectionResponseDataBlockBuilder) WithMandatoryFields() ConnectionResponseDataBlockBuilder {
-	return m
+func (b *_ConnectionResponseDataBlockBuilder) WithMandatoryFields() ConnectionResponseDataBlockBuilder {
+	return b
 }
 
-func (m *_ConnectionResponseDataBlockBuilder) Build() (ConnectionResponseDataBlockContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ConnectionResponseDataBlockBuilder) PartialBuild() (ConnectionResponseDataBlockContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ConnectionResponseDataBlock.deepCopy(), nil
+	return b._ConnectionResponseDataBlock.deepCopy(), nil
 }
 
-func (m *_ConnectionResponseDataBlockBuilder) MustBuild() ConnectionResponseDataBlockContract {
-	build, err := m.Build()
+func (b *_ConnectionResponseDataBlockBuilder) PartialMustBuild() ConnectionResponseDataBlockContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ConnectionResponseDataBlockBuilder) DeepCopy() any {
-	return m.CreateConnectionResponseDataBlockBuilder()
+func (b *_ConnectionResponseDataBlockBuilder) AsConnectionResponseDataBlockDeviceManagement() interface {
+	ConnectionResponseDataBlockDeviceManagementBuilder
+	Done() ConnectionResponseDataBlockBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectionResponseDataBlockDeviceManagementBuilder
+		Done() ConnectionResponseDataBlockBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectionResponseDataBlockDeviceManagementBuilder().(*_ConnectionResponseDataBlockDeviceManagementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ConnectionResponseDataBlockBuilder) AsConnectionResponseDataBlockTunnelConnection() interface {
+	ConnectionResponseDataBlockTunnelConnectionBuilder
+	Done() ConnectionResponseDataBlockBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectionResponseDataBlockTunnelConnectionBuilder
+		Done() ConnectionResponseDataBlockBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectionResponseDataBlockTunnelConnectionBuilder().(*_ConnectionResponseDataBlockTunnelConnectionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ConnectionResponseDataBlockBuilder) Build() (ConnectionResponseDataBlock, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForConnectionResponseDataBlock()
+}
+
+func (b *_ConnectionResponseDataBlockBuilder) MustBuild() ConnectionResponseDataBlock {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ConnectionResponseDataBlockBuilder) DeepCopy() any {
+	_copy := b.CreateConnectionResponseDataBlockBuilder().(*_ConnectionResponseDataBlockBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ConnectionResponseDataBlockChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateConnectionResponseDataBlockBuilder creates a ConnectionResponseDataBlockBuilder
-func (m *_ConnectionResponseDataBlock) CreateConnectionResponseDataBlockBuilder() ConnectionResponseDataBlockBuilder {
-	if m == nil {
+func (b *_ConnectionResponseDataBlock) CreateConnectionResponseDataBlockBuilder() ConnectionResponseDataBlockBuilder {
+	if b == nil {
 		return NewConnectionResponseDataBlockBuilder()
 	}
-	return &_ConnectionResponseDataBlockBuilder{_ConnectionResponseDataBlock: m.deepCopy()}
+	return &_ConnectionResponseDataBlockBuilder{_ConnectionResponseDataBlock: b.deepCopy()}
 }
 
 ///////////////////////

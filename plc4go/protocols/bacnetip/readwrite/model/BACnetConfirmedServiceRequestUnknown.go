@@ -96,45 +96,64 @@ func NewBACnetConfirmedServiceRequestUnknownBuilder() BACnetConfirmedServiceRequ
 type _BACnetConfirmedServiceRequestUnknownBuilder struct {
 	*_BACnetConfirmedServiceRequestUnknown
 
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestUnknownBuilder) = (*_BACnetConfirmedServiceRequestUnknownBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestUnknownBuilder) WithMandatoryFields(unknownBytes []byte) BACnetConfirmedServiceRequestUnknownBuilder {
-	return m.WithUnknownBytes(unknownBytes...)
+func (b *_BACnetConfirmedServiceRequestUnknownBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestUnknownBuilder) WithUnknownBytes(unknownBytes ...byte) BACnetConfirmedServiceRequestUnknownBuilder {
-	m.UnknownBytes = unknownBytes
-	return m
+func (b *_BACnetConfirmedServiceRequestUnknownBuilder) WithMandatoryFields(unknownBytes []byte) BACnetConfirmedServiceRequestUnknownBuilder {
+	return b.WithUnknownBytes(unknownBytes...)
 }
 
-func (m *_BACnetConfirmedServiceRequestUnknownBuilder) Build() (BACnetConfirmedServiceRequestUnknown, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConfirmedServiceRequestUnknownBuilder) WithUnknownBytes(unknownBytes ...byte) BACnetConfirmedServiceRequestUnknownBuilder {
+	b.UnknownBytes = unknownBytes
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestUnknownBuilder) Build() (BACnetConfirmedServiceRequestUnknown, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestUnknown.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestUnknown.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestUnknownBuilder) MustBuild() BACnetConfirmedServiceRequestUnknown {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestUnknownBuilder) MustBuild() BACnetConfirmedServiceRequestUnknown {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestUnknownBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestUnknownBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestUnknownBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestUnknownBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestUnknownBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestUnknownBuilder().(*_BACnetConfirmedServiceRequestUnknownBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestUnknownBuilder creates a BACnetConfirmedServiceRequestUnknownBuilder
-func (m *_BACnetConfirmedServiceRequestUnknown) CreateBACnetConfirmedServiceRequestUnknownBuilder() BACnetConfirmedServiceRequestUnknownBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestUnknown) CreateBACnetConfirmedServiceRequestUnknownBuilder() BACnetConfirmedServiceRequestUnknownBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestUnknownBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestUnknownBuilder{_BACnetConfirmedServiceRequestUnknown: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestUnknownBuilder{_BACnetConfirmedServiceRequestUnknown: b.deepCopy()}
 }
 
 ///////////////////////

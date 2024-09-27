@@ -109,88 +109,107 @@ func NewBACnetConfirmedServiceRequestVTOpenBuilder() BACnetConfirmedServiceReque
 type _BACnetConfirmedServiceRequestVTOpenBuilder struct {
 	*_BACnetConfirmedServiceRequestVTOpen
 
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestVTOpenBuilder) = (*_BACnetConfirmedServiceRequestVTOpenBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) WithMandatoryFields(vtClass BACnetVTClassTagged, localVtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTOpenBuilder {
-	return m.WithVtClass(vtClass).WithLocalVtSessionIdentifier(localVtSessionIdentifier)
+func (b *_BACnetConfirmedServiceRequestVTOpenBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) WithVtClass(vtClass BACnetVTClassTagged) BACnetConfirmedServiceRequestVTOpenBuilder {
-	m.VtClass = vtClass
-	return m
+func (b *_BACnetConfirmedServiceRequestVTOpenBuilder) WithMandatoryFields(vtClass BACnetVTClassTagged, localVtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTOpenBuilder {
+	return b.WithVtClass(vtClass).WithLocalVtSessionIdentifier(localVtSessionIdentifier)
 }
 
-func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) WithVtClassBuilder(builderSupplier func(BACnetVTClassTaggedBuilder) BACnetVTClassTaggedBuilder) BACnetConfirmedServiceRequestVTOpenBuilder {
-	builder := builderSupplier(m.VtClass.CreateBACnetVTClassTaggedBuilder())
+func (b *_BACnetConfirmedServiceRequestVTOpenBuilder) WithVtClass(vtClass BACnetVTClassTagged) BACnetConfirmedServiceRequestVTOpenBuilder {
+	b.VtClass = vtClass
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestVTOpenBuilder) WithVtClassBuilder(builderSupplier func(BACnetVTClassTaggedBuilder) BACnetVTClassTaggedBuilder) BACnetConfirmedServiceRequestVTOpenBuilder {
+	builder := builderSupplier(b.VtClass.CreateBACnetVTClassTaggedBuilder())
 	var err error
-	m.VtClass, err = builder.Build()
+	b.VtClass, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetVTClassTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetVTClassTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) WithLocalVtSessionIdentifier(localVtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTOpenBuilder {
-	m.LocalVtSessionIdentifier = localVtSessionIdentifier
-	return m
+func (b *_BACnetConfirmedServiceRequestVTOpenBuilder) WithLocalVtSessionIdentifier(localVtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTOpenBuilder {
+	b.LocalVtSessionIdentifier = localVtSessionIdentifier
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) WithLocalVtSessionIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestVTOpenBuilder {
-	builder := builderSupplier(m.LocalVtSessionIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConfirmedServiceRequestVTOpenBuilder) WithLocalVtSessionIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestVTOpenBuilder {
+	builder := builderSupplier(b.LocalVtSessionIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.LocalVtSessionIdentifier, err = builder.Build()
+	b.LocalVtSessionIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) Build() (BACnetConfirmedServiceRequestVTOpen, error) {
-	if m.VtClass == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConfirmedServiceRequestVTOpenBuilder) Build() (BACnetConfirmedServiceRequestVTOpen, error) {
+	if b.VtClass == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'vtClass' not set"))
+		b.err.Append(errors.New("mandatory field 'vtClass' not set"))
 	}
-	if m.LocalVtSessionIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.LocalVtSessionIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'localVtSessionIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'localVtSessionIdentifier' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestVTOpen.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestVTOpen.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) MustBuild() BACnetConfirmedServiceRequestVTOpen {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestVTOpenBuilder) MustBuild() BACnetConfirmedServiceRequestVTOpen {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestVTOpenBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestVTOpenBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestVTOpenBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestVTOpenBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestVTOpenBuilder().(*_BACnetConfirmedServiceRequestVTOpenBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestVTOpenBuilder creates a BACnetConfirmedServiceRequestVTOpenBuilder
-func (m *_BACnetConfirmedServiceRequestVTOpen) CreateBACnetConfirmedServiceRequestVTOpenBuilder() BACnetConfirmedServiceRequestVTOpenBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestVTOpen) CreateBACnetConfirmedServiceRequestVTOpenBuilder() BACnetConfirmedServiceRequestVTOpenBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestVTOpenBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestVTOpenBuilder{_BACnetConfirmedServiceRequestVTOpen: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestVTOpenBuilder{_BACnetConfirmedServiceRequestVTOpen: b.deepCopy()}
 }
 
 ///////////////////////

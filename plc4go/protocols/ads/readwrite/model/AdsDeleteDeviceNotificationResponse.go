@@ -93,45 +93,64 @@ func NewAdsDeleteDeviceNotificationResponseBuilder() AdsDeleteDeviceNotification
 type _AdsDeleteDeviceNotificationResponseBuilder struct {
 	*_AdsDeleteDeviceNotificationResponse
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsDeleteDeviceNotificationResponseBuilder) = (*_AdsDeleteDeviceNotificationResponseBuilder)(nil)
 
-func (m *_AdsDeleteDeviceNotificationResponseBuilder) WithMandatoryFields(result ReturnCode) AdsDeleteDeviceNotificationResponseBuilder {
-	return m.WithResult(result)
+func (b *_AdsDeleteDeviceNotificationResponseBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_AdsDeleteDeviceNotificationResponseBuilder) WithResult(result ReturnCode) AdsDeleteDeviceNotificationResponseBuilder {
-	m.Result = result
-	return m
+func (b *_AdsDeleteDeviceNotificationResponseBuilder) WithMandatoryFields(result ReturnCode) AdsDeleteDeviceNotificationResponseBuilder {
+	return b.WithResult(result)
 }
 
-func (m *_AdsDeleteDeviceNotificationResponseBuilder) Build() (AdsDeleteDeviceNotificationResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsDeleteDeviceNotificationResponseBuilder) WithResult(result ReturnCode) AdsDeleteDeviceNotificationResponseBuilder {
+	b.Result = result
+	return b
+}
+
+func (b *_AdsDeleteDeviceNotificationResponseBuilder) Build() (AdsDeleteDeviceNotificationResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsDeleteDeviceNotificationResponse.deepCopy(), nil
+	return b._AdsDeleteDeviceNotificationResponse.deepCopy(), nil
 }
 
-func (m *_AdsDeleteDeviceNotificationResponseBuilder) MustBuild() AdsDeleteDeviceNotificationResponse {
-	build, err := m.Build()
+func (b *_AdsDeleteDeviceNotificationResponseBuilder) MustBuild() AdsDeleteDeviceNotificationResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsDeleteDeviceNotificationResponseBuilder) DeepCopy() any {
-	return m.CreateAdsDeleteDeviceNotificationResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsDeleteDeviceNotificationResponseBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsDeleteDeviceNotificationResponseBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsDeleteDeviceNotificationResponseBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDeleteDeviceNotificationResponseBuilder().(*_AdsDeleteDeviceNotificationResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsDeleteDeviceNotificationResponseBuilder creates a AdsDeleteDeviceNotificationResponseBuilder
-func (m *_AdsDeleteDeviceNotificationResponse) CreateAdsDeleteDeviceNotificationResponseBuilder() AdsDeleteDeviceNotificationResponseBuilder {
-	if m == nil {
+func (b *_AdsDeleteDeviceNotificationResponse) CreateAdsDeleteDeviceNotificationResponseBuilder() AdsDeleteDeviceNotificationResponseBuilder {
+	if b == nil {
 		return NewAdsDeleteDeviceNotificationResponseBuilder()
 	}
-	return &_AdsDeleteDeviceNotificationResponseBuilder{_AdsDeleteDeviceNotificationResponse: m.deepCopy()}
+	return &_AdsDeleteDeviceNotificationResponseBuilder{_AdsDeleteDeviceNotificationResponse: b.deepCopy()}
 }
 
 ///////////////////////

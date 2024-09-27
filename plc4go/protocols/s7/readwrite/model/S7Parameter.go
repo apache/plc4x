@@ -87,10 +87,49 @@ type S7ParameterBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() S7ParameterBuilder
+	// AsS7ParameterSetupCommunication converts this build to a subType of S7Parameter. It is always possible to return to current builder using Done()
+	AsS7ParameterSetupCommunication() interface {
+		S7ParameterSetupCommunicationBuilder
+		Done() S7ParameterBuilder
+	}
+	// AsS7ParameterReadVarRequest converts this build to a subType of S7Parameter. It is always possible to return to current builder using Done()
+	AsS7ParameterReadVarRequest() interface {
+		S7ParameterReadVarRequestBuilder
+		Done() S7ParameterBuilder
+	}
+	// AsS7ParameterReadVarResponse converts this build to a subType of S7Parameter. It is always possible to return to current builder using Done()
+	AsS7ParameterReadVarResponse() interface {
+		S7ParameterReadVarResponseBuilder
+		Done() S7ParameterBuilder
+	}
+	// AsS7ParameterWriteVarRequest converts this build to a subType of S7Parameter. It is always possible to return to current builder using Done()
+	AsS7ParameterWriteVarRequest() interface {
+		S7ParameterWriteVarRequestBuilder
+		Done() S7ParameterBuilder
+	}
+	// AsS7ParameterWriteVarResponse converts this build to a subType of S7Parameter. It is always possible to return to current builder using Done()
+	AsS7ParameterWriteVarResponse() interface {
+		S7ParameterWriteVarResponseBuilder
+		Done() S7ParameterBuilder
+	}
+	// AsS7ParameterUserData converts this build to a subType of S7Parameter. It is always possible to return to current builder using Done()
+	AsS7ParameterUserData() interface {
+		S7ParameterUserDataBuilder
+		Done() S7ParameterBuilder
+	}
+	// AsS7ParameterModeTransition converts this build to a subType of S7Parameter. It is always possible to return to current builder using Done()
+	AsS7ParameterModeTransition() interface {
+		S7ParameterModeTransitionBuilder
+		Done() S7ParameterBuilder
+	}
 	// Build builds the S7Parameter or returns an error if something is wrong
-	Build() (S7ParameterContract, error)
+	PartialBuild() (S7ParameterContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() S7ParameterContract
+	PartialMustBuild() S7ParameterContract
+	// Build builds the S7Parameter or returns an error if something is wrong
+	Build() (S7Parameter, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7Parameter
 }
 
 // NewS7ParameterBuilder() creates a S7ParameterBuilder
@@ -98,43 +137,189 @@ func NewS7ParameterBuilder() S7ParameterBuilder {
 	return &_S7ParameterBuilder{_S7Parameter: new(_S7Parameter)}
 }
 
+type _S7ParameterChildBuilder interface {
+	utils.Copyable
+	setParent(S7ParameterContract)
+	buildForS7Parameter() (S7Parameter, error)
+}
+
 type _S7ParameterBuilder struct {
 	*_S7Parameter
+
+	childBuilder _S7ParameterChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (S7ParameterBuilder) = (*_S7ParameterBuilder)(nil)
 
-func (m *_S7ParameterBuilder) WithMandatoryFields() S7ParameterBuilder {
-	return m
+func (b *_S7ParameterBuilder) WithMandatoryFields() S7ParameterBuilder {
+	return b
 }
 
-func (m *_S7ParameterBuilder) Build() (S7ParameterContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7ParameterBuilder) PartialBuild() (S7ParameterContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7Parameter.deepCopy(), nil
+	return b._S7Parameter.deepCopy(), nil
 }
 
-func (m *_S7ParameterBuilder) MustBuild() S7ParameterContract {
-	build, err := m.Build()
+func (b *_S7ParameterBuilder) PartialMustBuild() S7ParameterContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7ParameterBuilder) DeepCopy() any {
-	return m.CreateS7ParameterBuilder()
+func (b *_S7ParameterBuilder) AsS7ParameterSetupCommunication() interface {
+	S7ParameterSetupCommunicationBuilder
+	Done() S7ParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7ParameterSetupCommunicationBuilder
+		Done() S7ParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7ParameterSetupCommunicationBuilder().(*_S7ParameterSetupCommunicationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7ParameterBuilder) AsS7ParameterReadVarRequest() interface {
+	S7ParameterReadVarRequestBuilder
+	Done() S7ParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7ParameterReadVarRequestBuilder
+		Done() S7ParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7ParameterReadVarRequestBuilder().(*_S7ParameterReadVarRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7ParameterBuilder) AsS7ParameterReadVarResponse() interface {
+	S7ParameterReadVarResponseBuilder
+	Done() S7ParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7ParameterReadVarResponseBuilder
+		Done() S7ParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7ParameterReadVarResponseBuilder().(*_S7ParameterReadVarResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7ParameterBuilder) AsS7ParameterWriteVarRequest() interface {
+	S7ParameterWriteVarRequestBuilder
+	Done() S7ParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7ParameterWriteVarRequestBuilder
+		Done() S7ParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7ParameterWriteVarRequestBuilder().(*_S7ParameterWriteVarRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7ParameterBuilder) AsS7ParameterWriteVarResponse() interface {
+	S7ParameterWriteVarResponseBuilder
+	Done() S7ParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7ParameterWriteVarResponseBuilder
+		Done() S7ParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7ParameterWriteVarResponseBuilder().(*_S7ParameterWriteVarResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7ParameterBuilder) AsS7ParameterUserData() interface {
+	S7ParameterUserDataBuilder
+	Done() S7ParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7ParameterUserDataBuilder
+		Done() S7ParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7ParameterUserDataBuilder().(*_S7ParameterUserDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7ParameterBuilder) AsS7ParameterModeTransition() interface {
+	S7ParameterModeTransitionBuilder
+	Done() S7ParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7ParameterModeTransitionBuilder
+		Done() S7ParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7ParameterModeTransitionBuilder().(*_S7ParameterModeTransitionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7ParameterBuilder) Build() (S7Parameter, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForS7Parameter()
+}
+
+func (b *_S7ParameterBuilder) MustBuild() S7Parameter {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_S7ParameterBuilder) DeepCopy() any {
+	_copy := b.CreateS7ParameterBuilder().(*_S7ParameterBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_S7ParameterChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7ParameterBuilder creates a S7ParameterBuilder
-func (m *_S7Parameter) CreateS7ParameterBuilder() S7ParameterBuilder {
-	if m == nil {
+func (b *_S7Parameter) CreateS7ParameterBuilder() S7ParameterBuilder {
+	if b == nil {
 		return NewS7ParameterBuilder()
 	}
-	return &_S7ParameterBuilder{_S7Parameter: m.deepCopy()}
+	return &_S7ParameterBuilder{_S7Parameter: b.deepCopy()}
 }
 
 ///////////////////////

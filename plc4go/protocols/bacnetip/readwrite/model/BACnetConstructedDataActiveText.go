@@ -100,64 +100,83 @@ func NewBACnetConstructedDataActiveTextBuilder() BACnetConstructedDataActiveText
 type _BACnetConstructedDataActiveTextBuilder struct {
 	*_BACnetConstructedDataActiveText
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataActiveTextBuilder) = (*_BACnetConstructedDataActiveTextBuilder)(nil)
 
-func (m *_BACnetConstructedDataActiveTextBuilder) WithMandatoryFields(activeText BACnetApplicationTagCharacterString) BACnetConstructedDataActiveTextBuilder {
-	return m.WithActiveText(activeText)
+func (b *_BACnetConstructedDataActiveTextBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataActiveTextBuilder) WithActiveText(activeText BACnetApplicationTagCharacterString) BACnetConstructedDataActiveTextBuilder {
-	m.ActiveText = activeText
-	return m
+func (b *_BACnetConstructedDataActiveTextBuilder) WithMandatoryFields(activeText BACnetApplicationTagCharacterString) BACnetConstructedDataActiveTextBuilder {
+	return b.WithActiveText(activeText)
 }
 
-func (m *_BACnetConstructedDataActiveTextBuilder) WithActiveTextBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataActiveTextBuilder {
-	builder := builderSupplier(m.ActiveText.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetConstructedDataActiveTextBuilder) WithActiveText(activeText BACnetApplicationTagCharacterString) BACnetConstructedDataActiveTextBuilder {
+	b.ActiveText = activeText
+	return b
+}
+
+func (b *_BACnetConstructedDataActiveTextBuilder) WithActiveTextBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataActiveTextBuilder {
+	builder := builderSupplier(b.ActiveText.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.ActiveText, err = builder.Build()
+	b.ActiveText, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataActiveTextBuilder) Build() (BACnetConstructedDataActiveText, error) {
-	if m.ActiveText == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataActiveTextBuilder) Build() (BACnetConstructedDataActiveText, error) {
+	if b.ActiveText == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'activeText' not set"))
+		b.err.Append(errors.New("mandatory field 'activeText' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataActiveText.deepCopy(), nil
+	return b._BACnetConstructedDataActiveText.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataActiveTextBuilder) MustBuild() BACnetConstructedDataActiveText {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataActiveTextBuilder) MustBuild() BACnetConstructedDataActiveText {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataActiveTextBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataActiveTextBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataActiveTextBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataActiveTextBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataActiveTextBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataActiveTextBuilder().(*_BACnetConstructedDataActiveTextBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataActiveTextBuilder creates a BACnetConstructedDataActiveTextBuilder
-func (m *_BACnetConstructedDataActiveText) CreateBACnetConstructedDataActiveTextBuilder() BACnetConstructedDataActiveTextBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataActiveText) CreateBACnetConstructedDataActiveTextBuilder() BACnetConstructedDataActiveTextBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataActiveTextBuilder()
 	}
-	return &_BACnetConstructedDataActiveTextBuilder{_BACnetConstructedDataActiveText: m.deepCopy()}
+	return &_BACnetConstructedDataActiveTextBuilder{_BACnetConstructedDataActiveText: b.deepCopy()}
 }
 
 ///////////////////////

@@ -93,45 +93,64 @@ func NewBACnetConstructedDataAccessTransactionEventsBuilder() BACnetConstructedD
 type _BACnetConstructedDataAccessTransactionEventsBuilder struct {
 	*_BACnetConstructedDataAccessTransactionEvents
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccessTransactionEventsBuilder) = (*_BACnetConstructedDataAccessTransactionEventsBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccessTransactionEventsBuilder) WithMandatoryFields(accessTransactionEvents []BACnetAccessEventTagged) BACnetConstructedDataAccessTransactionEventsBuilder {
-	return m.WithAccessTransactionEvents(accessTransactionEvents...)
+func (b *_BACnetConstructedDataAccessTransactionEventsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccessTransactionEventsBuilder) WithAccessTransactionEvents(accessTransactionEvents ...BACnetAccessEventTagged) BACnetConstructedDataAccessTransactionEventsBuilder {
-	m.AccessTransactionEvents = accessTransactionEvents
-	return m
+func (b *_BACnetConstructedDataAccessTransactionEventsBuilder) WithMandatoryFields(accessTransactionEvents []BACnetAccessEventTagged) BACnetConstructedDataAccessTransactionEventsBuilder {
+	return b.WithAccessTransactionEvents(accessTransactionEvents...)
 }
 
-func (m *_BACnetConstructedDataAccessTransactionEventsBuilder) Build() (BACnetConstructedDataAccessTransactionEvents, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataAccessTransactionEventsBuilder) WithAccessTransactionEvents(accessTransactionEvents ...BACnetAccessEventTagged) BACnetConstructedDataAccessTransactionEventsBuilder {
+	b.AccessTransactionEvents = accessTransactionEvents
+	return b
+}
+
+func (b *_BACnetConstructedDataAccessTransactionEventsBuilder) Build() (BACnetConstructedDataAccessTransactionEvents, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAccessTransactionEvents.deepCopy(), nil
+	return b._BACnetConstructedDataAccessTransactionEvents.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAccessTransactionEventsBuilder) MustBuild() BACnetConstructedDataAccessTransactionEvents {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccessTransactionEventsBuilder) MustBuild() BACnetConstructedDataAccessTransactionEvents {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccessTransactionEventsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccessTransactionEventsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccessTransactionEventsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccessTransactionEventsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccessTransactionEventsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccessTransactionEventsBuilder().(*_BACnetConstructedDataAccessTransactionEventsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccessTransactionEventsBuilder creates a BACnetConstructedDataAccessTransactionEventsBuilder
-func (m *_BACnetConstructedDataAccessTransactionEvents) CreateBACnetConstructedDataAccessTransactionEventsBuilder() BACnetConstructedDataAccessTransactionEventsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccessTransactionEvents) CreateBACnetConstructedDataAccessTransactionEventsBuilder() BACnetConstructedDataAccessTransactionEventsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccessTransactionEventsBuilder()
 	}
-	return &_BACnetConstructedDataAccessTransactionEventsBuilder{_BACnetConstructedDataAccessTransactionEvents: m.deepCopy()}
+	return &_BACnetConstructedDataAccessTransactionEventsBuilder{_BACnetConstructedDataAccessTransactionEvents: b.deepCopy()}
 }
 
 ///////////////////////

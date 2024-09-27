@@ -96,45 +96,64 @@ func NewBACnetServiceAckAuthenticateBuilder() BACnetServiceAckAuthenticateBuilde
 type _BACnetServiceAckAuthenticateBuilder struct {
 	*_BACnetServiceAckAuthenticate
 
+	parentBuilder *_BACnetServiceAckBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetServiceAckAuthenticateBuilder) = (*_BACnetServiceAckAuthenticateBuilder)(nil)
 
-func (m *_BACnetServiceAckAuthenticateBuilder) WithMandatoryFields(bytesOfRemovedService []byte) BACnetServiceAckAuthenticateBuilder {
-	return m.WithBytesOfRemovedService(bytesOfRemovedService...)
+func (b *_BACnetServiceAckAuthenticateBuilder) setParent(contract BACnetServiceAckContract) {
+	b.BACnetServiceAckContract = contract
 }
 
-func (m *_BACnetServiceAckAuthenticateBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetServiceAckAuthenticateBuilder {
-	m.BytesOfRemovedService = bytesOfRemovedService
-	return m
+func (b *_BACnetServiceAckAuthenticateBuilder) WithMandatoryFields(bytesOfRemovedService []byte) BACnetServiceAckAuthenticateBuilder {
+	return b.WithBytesOfRemovedService(bytesOfRemovedService...)
 }
 
-func (m *_BACnetServiceAckAuthenticateBuilder) Build() (BACnetServiceAckAuthenticate, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetServiceAckAuthenticateBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetServiceAckAuthenticateBuilder {
+	b.BytesOfRemovedService = bytesOfRemovedService
+	return b
+}
+
+func (b *_BACnetServiceAckAuthenticateBuilder) Build() (BACnetServiceAckAuthenticate, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetServiceAckAuthenticate.deepCopy(), nil
+	return b._BACnetServiceAckAuthenticate.deepCopy(), nil
 }
 
-func (m *_BACnetServiceAckAuthenticateBuilder) MustBuild() BACnetServiceAckAuthenticate {
-	build, err := m.Build()
+func (b *_BACnetServiceAckAuthenticateBuilder) MustBuild() BACnetServiceAckAuthenticate {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetServiceAckAuthenticateBuilder) DeepCopy() any {
-	return m.CreateBACnetServiceAckAuthenticateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetServiceAckAuthenticateBuilder) Done() BACnetServiceAckBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetServiceAckAuthenticateBuilder) buildForBACnetServiceAck() (BACnetServiceAck, error) {
+	return b.Build()
+}
+
+func (b *_BACnetServiceAckAuthenticateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetServiceAckAuthenticateBuilder().(*_BACnetServiceAckAuthenticateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetServiceAckAuthenticateBuilder creates a BACnetServiceAckAuthenticateBuilder
-func (m *_BACnetServiceAckAuthenticate) CreateBACnetServiceAckAuthenticateBuilder() BACnetServiceAckAuthenticateBuilder {
-	if m == nil {
+func (b *_BACnetServiceAckAuthenticate) CreateBACnetServiceAckAuthenticateBuilder() BACnetServiceAckAuthenticateBuilder {
+	if b == nil {
 		return NewBACnetServiceAckAuthenticateBuilder()
 	}
-	return &_BACnetServiceAckAuthenticateBuilder{_BACnetServiceAckAuthenticate: m.deepCopy()}
+	return &_BACnetServiceAckAuthenticateBuilder{_BACnetServiceAckAuthenticate: b.deepCopy()}
 }
 
 ///////////////////////

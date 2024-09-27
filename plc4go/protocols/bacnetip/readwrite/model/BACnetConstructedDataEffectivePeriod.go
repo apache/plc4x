@@ -100,64 +100,83 @@ func NewBACnetConstructedDataEffectivePeriodBuilder() BACnetConstructedDataEffec
 type _BACnetConstructedDataEffectivePeriodBuilder struct {
 	*_BACnetConstructedDataEffectivePeriod
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataEffectivePeriodBuilder) = (*_BACnetConstructedDataEffectivePeriodBuilder)(nil)
 
-func (m *_BACnetConstructedDataEffectivePeriodBuilder) WithMandatoryFields(dateRange BACnetDateRange) BACnetConstructedDataEffectivePeriodBuilder {
-	return m.WithDateRange(dateRange)
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataEffectivePeriodBuilder) WithDateRange(dateRange BACnetDateRange) BACnetConstructedDataEffectivePeriodBuilder {
-	m.DateRange = dateRange
-	return m
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) WithMandatoryFields(dateRange BACnetDateRange) BACnetConstructedDataEffectivePeriodBuilder {
+	return b.WithDateRange(dateRange)
 }
 
-func (m *_BACnetConstructedDataEffectivePeriodBuilder) WithDateRangeBuilder(builderSupplier func(BACnetDateRangeBuilder) BACnetDateRangeBuilder) BACnetConstructedDataEffectivePeriodBuilder {
-	builder := builderSupplier(m.DateRange.CreateBACnetDateRangeBuilder())
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) WithDateRange(dateRange BACnetDateRange) BACnetConstructedDataEffectivePeriodBuilder {
+	b.DateRange = dateRange
+	return b
+}
+
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) WithDateRangeBuilder(builderSupplier func(BACnetDateRangeBuilder) BACnetDateRangeBuilder) BACnetConstructedDataEffectivePeriodBuilder {
+	builder := builderSupplier(b.DateRange.CreateBACnetDateRangeBuilder())
 	var err error
-	m.DateRange, err = builder.Build()
+	b.DateRange, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateRangeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateRangeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataEffectivePeriodBuilder) Build() (BACnetConstructedDataEffectivePeriod, error) {
-	if m.DateRange == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) Build() (BACnetConstructedDataEffectivePeriod, error) {
+	if b.DateRange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dateRange' not set"))
+		b.err.Append(errors.New("mandatory field 'dateRange' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataEffectivePeriod.deepCopy(), nil
+	return b._BACnetConstructedDataEffectivePeriod.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataEffectivePeriodBuilder) MustBuild() BACnetConstructedDataEffectivePeriod {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) MustBuild() BACnetConstructedDataEffectivePeriod {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataEffectivePeriodBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataEffectivePeriodBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEffectivePeriodBuilder().(*_BACnetConstructedDataEffectivePeriodBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataEffectivePeriodBuilder creates a BACnetConstructedDataEffectivePeriodBuilder
-func (m *_BACnetConstructedDataEffectivePeriod) CreateBACnetConstructedDataEffectivePeriodBuilder() BACnetConstructedDataEffectivePeriodBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataEffectivePeriod) CreateBACnetConstructedDataEffectivePeriodBuilder() BACnetConstructedDataEffectivePeriodBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataEffectivePeriodBuilder()
 	}
-	return &_BACnetConstructedDataEffectivePeriodBuilder{_BACnetConstructedDataEffectivePeriod: m.deepCopy()}
+	return &_BACnetConstructedDataEffectivePeriodBuilder{_BACnetConstructedDataEffectivePeriod: b.deepCopy()}
 }
 
 ///////////////////////

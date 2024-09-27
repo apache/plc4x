@@ -111,69 +111,73 @@ type _BACnetDeviceStatusTaggedBuilder struct {
 
 var _ (BACnetDeviceStatusTaggedBuilder) = (*_BACnetDeviceStatusTaggedBuilder)(nil)
 
-func (m *_BACnetDeviceStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetDeviceStatus, proprietaryValue uint32) BACnetDeviceStatusTaggedBuilder {
-	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetDeviceStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetDeviceStatus, proprietaryValue uint32) BACnetDeviceStatusTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_BACnetDeviceStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetDeviceStatusTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetDeviceStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetDeviceStatusTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetDeviceStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDeviceStatusTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetDeviceStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDeviceStatusTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetDeviceStatusTaggedBuilder) WithValue(value BACnetDeviceStatus) BACnetDeviceStatusTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetDeviceStatusTaggedBuilder) WithValue(value BACnetDeviceStatus) BACnetDeviceStatusTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetDeviceStatusTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetDeviceStatusTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetDeviceStatusTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetDeviceStatusTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetDeviceStatusTaggedBuilder) Build() (BACnetDeviceStatusTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetDeviceStatusTaggedBuilder) Build() (BACnetDeviceStatusTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetDeviceStatusTagged.deepCopy(), nil
+	return b._BACnetDeviceStatusTagged.deepCopy(), nil
 }
 
-func (m *_BACnetDeviceStatusTaggedBuilder) MustBuild() BACnetDeviceStatusTagged {
-	build, err := m.Build()
+func (b *_BACnetDeviceStatusTaggedBuilder) MustBuild() BACnetDeviceStatusTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetDeviceStatusTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetDeviceStatusTaggedBuilder()
+func (b *_BACnetDeviceStatusTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetDeviceStatusTaggedBuilder().(*_BACnetDeviceStatusTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetDeviceStatusTaggedBuilder creates a BACnetDeviceStatusTaggedBuilder
-func (m *_BACnetDeviceStatusTagged) CreateBACnetDeviceStatusTaggedBuilder() BACnetDeviceStatusTaggedBuilder {
-	if m == nil {
+func (b *_BACnetDeviceStatusTagged) CreateBACnetDeviceStatusTaggedBuilder() BACnetDeviceStatusTaggedBuilder {
+	if b == nil {
 		return NewBACnetDeviceStatusTaggedBuilder()
 	}
-	return &_BACnetDeviceStatusTaggedBuilder{_BACnetDeviceStatusTagged: m.deepCopy()}
+	return &_BACnetDeviceStatusTaggedBuilder{_BACnetDeviceStatusTagged: b.deepCopy()}
 }
 
 ///////////////////////

@@ -85,40 +85,59 @@ func NewConnectionResponseDataBlockDeviceManagementBuilder() ConnectionResponseD
 type _ConnectionResponseDataBlockDeviceManagementBuilder struct {
 	*_ConnectionResponseDataBlockDeviceManagement
 
+	parentBuilder *_ConnectionResponseDataBlockBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ConnectionResponseDataBlockDeviceManagementBuilder) = (*_ConnectionResponseDataBlockDeviceManagementBuilder)(nil)
 
-func (m *_ConnectionResponseDataBlockDeviceManagementBuilder) WithMandatoryFields() ConnectionResponseDataBlockDeviceManagementBuilder {
-	return m
+func (b *_ConnectionResponseDataBlockDeviceManagementBuilder) setParent(contract ConnectionResponseDataBlockContract) {
+	b.ConnectionResponseDataBlockContract = contract
 }
 
-func (m *_ConnectionResponseDataBlockDeviceManagementBuilder) Build() (ConnectionResponseDataBlockDeviceManagement, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ConnectionResponseDataBlockDeviceManagementBuilder) WithMandatoryFields() ConnectionResponseDataBlockDeviceManagementBuilder {
+	return b
+}
+
+func (b *_ConnectionResponseDataBlockDeviceManagementBuilder) Build() (ConnectionResponseDataBlockDeviceManagement, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ConnectionResponseDataBlockDeviceManagement.deepCopy(), nil
+	return b._ConnectionResponseDataBlockDeviceManagement.deepCopy(), nil
 }
 
-func (m *_ConnectionResponseDataBlockDeviceManagementBuilder) MustBuild() ConnectionResponseDataBlockDeviceManagement {
-	build, err := m.Build()
+func (b *_ConnectionResponseDataBlockDeviceManagementBuilder) MustBuild() ConnectionResponseDataBlockDeviceManagement {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ConnectionResponseDataBlockDeviceManagementBuilder) DeepCopy() any {
-	return m.CreateConnectionResponseDataBlockDeviceManagementBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ConnectionResponseDataBlockDeviceManagementBuilder) Done() ConnectionResponseDataBlockBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ConnectionResponseDataBlockDeviceManagementBuilder) buildForConnectionResponseDataBlock() (ConnectionResponseDataBlock, error) {
+	return b.Build()
+}
+
+func (b *_ConnectionResponseDataBlockDeviceManagementBuilder) DeepCopy() any {
+	_copy := b.CreateConnectionResponseDataBlockDeviceManagementBuilder().(*_ConnectionResponseDataBlockDeviceManagementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateConnectionResponseDataBlockDeviceManagementBuilder creates a ConnectionResponseDataBlockDeviceManagementBuilder
-func (m *_ConnectionResponseDataBlockDeviceManagement) CreateConnectionResponseDataBlockDeviceManagementBuilder() ConnectionResponseDataBlockDeviceManagementBuilder {
-	if m == nil {
+func (b *_ConnectionResponseDataBlockDeviceManagement) CreateConnectionResponseDataBlockDeviceManagementBuilder() ConnectionResponseDataBlockDeviceManagementBuilder {
+	if b == nil {
 		return NewConnectionResponseDataBlockDeviceManagementBuilder()
 	}
-	return &_ConnectionResponseDataBlockDeviceManagementBuilder{_ConnectionResponseDataBlockDeviceManagement: m.deepCopy()}
+	return &_ConnectionResponseDataBlockDeviceManagementBuilder{_ConnectionResponseDataBlockDeviceManagement: b.deepCopy()}
 }
 
 ///////////////////////

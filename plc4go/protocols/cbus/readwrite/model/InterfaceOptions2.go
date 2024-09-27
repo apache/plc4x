@@ -102,45 +102,49 @@ type _InterfaceOptions2Builder struct {
 
 var _ (InterfaceOptions2Builder) = (*_InterfaceOptions2Builder)(nil)
 
-func (m *_InterfaceOptions2Builder) WithMandatoryFields(burden bool, clockGen bool) InterfaceOptions2Builder {
-	return m.WithBurden(burden).WithClockGen(clockGen)
+func (b *_InterfaceOptions2Builder) WithMandatoryFields(burden bool, clockGen bool) InterfaceOptions2Builder {
+	return b.WithBurden(burden).WithClockGen(clockGen)
 }
 
-func (m *_InterfaceOptions2Builder) WithBurden(burden bool) InterfaceOptions2Builder {
-	m.Burden = burden
-	return m
+func (b *_InterfaceOptions2Builder) WithBurden(burden bool) InterfaceOptions2Builder {
+	b.Burden = burden
+	return b
 }
 
-func (m *_InterfaceOptions2Builder) WithClockGen(clockGen bool) InterfaceOptions2Builder {
-	m.ClockGen = clockGen
-	return m
+func (b *_InterfaceOptions2Builder) WithClockGen(clockGen bool) InterfaceOptions2Builder {
+	b.ClockGen = clockGen
+	return b
 }
 
-func (m *_InterfaceOptions2Builder) Build() (InterfaceOptions2, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_InterfaceOptions2Builder) Build() (InterfaceOptions2, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._InterfaceOptions2.deepCopy(), nil
+	return b._InterfaceOptions2.deepCopy(), nil
 }
 
-func (m *_InterfaceOptions2Builder) MustBuild() InterfaceOptions2 {
-	build, err := m.Build()
+func (b *_InterfaceOptions2Builder) MustBuild() InterfaceOptions2 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_InterfaceOptions2Builder) DeepCopy() any {
-	return m.CreateInterfaceOptions2Builder()
+func (b *_InterfaceOptions2Builder) DeepCopy() any {
+	_copy := b.CreateInterfaceOptions2Builder().(*_InterfaceOptions2Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateInterfaceOptions2Builder creates a InterfaceOptions2Builder
-func (m *_InterfaceOptions2) CreateInterfaceOptions2Builder() InterfaceOptions2Builder {
-	if m == nil {
+func (b *_InterfaceOptions2) CreateInterfaceOptions2Builder() InterfaceOptions2Builder {
+	if b == nil {
 		return NewInterfaceOptions2Builder()
 	}
-	return &_InterfaceOptions2Builder{_InterfaceOptions2: m.deepCopy()}
+	return &_InterfaceOptions2Builder{_InterfaceOptions2: b.deepCopy()}
 }
 
 ///////////////////////

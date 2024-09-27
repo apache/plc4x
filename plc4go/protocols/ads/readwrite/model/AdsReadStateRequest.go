@@ -85,40 +85,59 @@ func NewAdsReadStateRequestBuilder() AdsReadStateRequestBuilder {
 type _AdsReadStateRequestBuilder struct {
 	*_AdsReadStateRequest
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsReadStateRequestBuilder) = (*_AdsReadStateRequestBuilder)(nil)
 
-func (m *_AdsReadStateRequestBuilder) WithMandatoryFields() AdsReadStateRequestBuilder {
-	return m
+func (b *_AdsReadStateRequestBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_AdsReadStateRequestBuilder) Build() (AdsReadStateRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsReadStateRequestBuilder) WithMandatoryFields() AdsReadStateRequestBuilder {
+	return b
+}
+
+func (b *_AdsReadStateRequestBuilder) Build() (AdsReadStateRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsReadStateRequest.deepCopy(), nil
+	return b._AdsReadStateRequest.deepCopy(), nil
 }
 
-func (m *_AdsReadStateRequestBuilder) MustBuild() AdsReadStateRequest {
-	build, err := m.Build()
+func (b *_AdsReadStateRequestBuilder) MustBuild() AdsReadStateRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsReadStateRequestBuilder) DeepCopy() any {
-	return m.CreateAdsReadStateRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsReadStateRequestBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsReadStateRequestBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsReadStateRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAdsReadStateRequestBuilder().(*_AdsReadStateRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsReadStateRequestBuilder creates a AdsReadStateRequestBuilder
-func (m *_AdsReadStateRequest) CreateAdsReadStateRequestBuilder() AdsReadStateRequestBuilder {
-	if m == nil {
+func (b *_AdsReadStateRequest) CreateAdsReadStateRequestBuilder() AdsReadStateRequestBuilder {
+	if b == nil {
 		return NewAdsReadStateRequestBuilder()
 	}
-	return &_AdsReadStateRequestBuilder{_AdsReadStateRequest: m.deepCopy()}
+	return &_AdsReadStateRequestBuilder{_AdsReadStateRequest: b.deepCopy()}
 }
 
 ///////////////////////

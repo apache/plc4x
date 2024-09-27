@@ -98,64 +98,83 @@ func NewBACnetLogDataLogDataEntryNullValueBuilder() BACnetLogDataLogDataEntryNul
 type _BACnetLogDataLogDataEntryNullValueBuilder struct {
 	*_BACnetLogDataLogDataEntryNullValue
 
+	parentBuilder *_BACnetLogDataLogDataEntryBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetLogDataLogDataEntryNullValueBuilder) = (*_BACnetLogDataLogDataEntryNullValueBuilder)(nil)
 
-func (m *_BACnetLogDataLogDataEntryNullValueBuilder) WithMandatoryFields(nullValue BACnetContextTagNull) BACnetLogDataLogDataEntryNullValueBuilder {
-	return m.WithNullValue(nullValue)
+func (b *_BACnetLogDataLogDataEntryNullValueBuilder) setParent(contract BACnetLogDataLogDataEntryContract) {
+	b.BACnetLogDataLogDataEntryContract = contract
 }
 
-func (m *_BACnetLogDataLogDataEntryNullValueBuilder) WithNullValue(nullValue BACnetContextTagNull) BACnetLogDataLogDataEntryNullValueBuilder {
-	m.NullValue = nullValue
-	return m
+func (b *_BACnetLogDataLogDataEntryNullValueBuilder) WithMandatoryFields(nullValue BACnetContextTagNull) BACnetLogDataLogDataEntryNullValueBuilder {
+	return b.WithNullValue(nullValue)
 }
 
-func (m *_BACnetLogDataLogDataEntryNullValueBuilder) WithNullValueBuilder(builderSupplier func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetLogDataLogDataEntryNullValueBuilder {
-	builder := builderSupplier(m.NullValue.CreateBACnetContextTagNullBuilder())
+func (b *_BACnetLogDataLogDataEntryNullValueBuilder) WithNullValue(nullValue BACnetContextTagNull) BACnetLogDataLogDataEntryNullValueBuilder {
+	b.NullValue = nullValue
+	return b
+}
+
+func (b *_BACnetLogDataLogDataEntryNullValueBuilder) WithNullValueBuilder(builderSupplier func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetLogDataLogDataEntryNullValueBuilder {
+	builder := builderSupplier(b.NullValue.CreateBACnetContextTagNullBuilder())
 	var err error
-	m.NullValue, err = builder.Build()
+	b.NullValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogDataLogDataEntryNullValueBuilder) Build() (BACnetLogDataLogDataEntryNullValue, error) {
-	if m.NullValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLogDataLogDataEntryNullValueBuilder) Build() (BACnetLogDataLogDataEntryNullValue, error) {
+	if b.NullValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nullValue' not set"))
+		b.err.Append(errors.New("mandatory field 'nullValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLogDataLogDataEntryNullValue.deepCopy(), nil
+	return b._BACnetLogDataLogDataEntryNullValue.deepCopy(), nil
 }
 
-func (m *_BACnetLogDataLogDataEntryNullValueBuilder) MustBuild() BACnetLogDataLogDataEntryNullValue {
-	build, err := m.Build()
+func (b *_BACnetLogDataLogDataEntryNullValueBuilder) MustBuild() BACnetLogDataLogDataEntryNullValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLogDataLogDataEntryNullValueBuilder) DeepCopy() any {
-	return m.CreateBACnetLogDataLogDataEntryNullValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogDataLogDataEntryNullValueBuilder) Done() BACnetLogDataLogDataEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogDataLogDataEntryNullValueBuilder) buildForBACnetLogDataLogDataEntry() (BACnetLogDataLogDataEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogDataLogDataEntryNullValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogDataLogDataEntryNullValueBuilder().(*_BACnetLogDataLogDataEntryNullValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLogDataLogDataEntryNullValueBuilder creates a BACnetLogDataLogDataEntryNullValueBuilder
-func (m *_BACnetLogDataLogDataEntryNullValue) CreateBACnetLogDataLogDataEntryNullValueBuilder() BACnetLogDataLogDataEntryNullValueBuilder {
-	if m == nil {
+func (b *_BACnetLogDataLogDataEntryNullValue) CreateBACnetLogDataLogDataEntryNullValueBuilder() BACnetLogDataLogDataEntryNullValueBuilder {
+	if b == nil {
 		return NewBACnetLogDataLogDataEntryNullValueBuilder()
 	}
-	return &_BACnetLogDataLogDataEntryNullValueBuilder{_BACnetLogDataLogDataEntryNullValue: m.deepCopy()}
+	return &_BACnetLogDataLogDataEntryNullValueBuilder{_BACnetLogDataLogDataEntryNullValue: b.deepCopy()}
 }
 
 ///////////////////////

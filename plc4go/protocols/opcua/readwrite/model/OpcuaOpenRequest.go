@@ -92,8 +92,12 @@ type OpcuaOpenRequestBuilder interface {
 	WithMandatoryFields(openRequest OpenChannelMessage, message Payload) OpcuaOpenRequestBuilder
 	// WithOpenRequest adds OpenRequest (property field)
 	WithOpenRequest(OpenChannelMessage) OpcuaOpenRequestBuilder
+	// WithOpenRequestBuilder adds OpenRequest (property field) which is build by the builder
+	WithOpenRequestBuilder(func(OpenChannelMessageBuilder) OpenChannelMessageBuilder) OpcuaOpenRequestBuilder
 	// WithMessage adds Message (property field)
 	WithMessage(Payload) OpcuaOpenRequestBuilder
+	// WithMessageBuilder adds Message (property field) which is build by the builder
+	WithMessageBuilder(func(PayloadBuilder) PayloadBuilder) OpcuaOpenRequestBuilder
 	// Build builds the OpcuaOpenRequest or returns an error if something is wrong
 	Build() (OpcuaOpenRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,62 +112,107 @@ func NewOpcuaOpenRequestBuilder() OpcuaOpenRequestBuilder {
 type _OpcuaOpenRequestBuilder struct {
 	*_OpcuaOpenRequest
 
+	parentBuilder *_MessagePDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (OpcuaOpenRequestBuilder) = (*_OpcuaOpenRequestBuilder)(nil)
 
-func (m *_OpcuaOpenRequestBuilder) WithMandatoryFields(openRequest OpenChannelMessage, message Payload) OpcuaOpenRequestBuilder {
-	return m.WithOpenRequest(openRequest).WithMessage(message)
+func (b *_OpcuaOpenRequestBuilder) setParent(contract MessagePDUContract) {
+	b.MessagePDUContract = contract
 }
 
-func (m *_OpcuaOpenRequestBuilder) WithOpenRequest(openRequest OpenChannelMessage) OpcuaOpenRequestBuilder {
-	m.OpenRequest = openRequest
-	return m
+func (b *_OpcuaOpenRequestBuilder) WithMandatoryFields(openRequest OpenChannelMessage, message Payload) OpcuaOpenRequestBuilder {
+	return b.WithOpenRequest(openRequest).WithMessage(message)
 }
 
-func (m *_OpcuaOpenRequestBuilder) WithMessage(message Payload) OpcuaOpenRequestBuilder {
-	m.Message = message
-	return m
+func (b *_OpcuaOpenRequestBuilder) WithOpenRequest(openRequest OpenChannelMessage) OpcuaOpenRequestBuilder {
+	b.OpenRequest = openRequest
+	return b
 }
 
-func (m *_OpcuaOpenRequestBuilder) Build() (OpcuaOpenRequest, error) {
-	if m.OpenRequest == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_OpcuaOpenRequestBuilder) WithOpenRequestBuilder(builderSupplier func(OpenChannelMessageBuilder) OpenChannelMessageBuilder) OpcuaOpenRequestBuilder {
+	builder := builderSupplier(b.OpenRequest.CreateOpenChannelMessageBuilder())
+	var err error
+	b.OpenRequest, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'openRequest' not set"))
+		b.err.Append(errors.Wrap(err, "OpenChannelMessageBuilder failed"))
 	}
-	if m.Message == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'message' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._OpcuaOpenRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_OpcuaOpenRequestBuilder) MustBuild() OpcuaOpenRequest {
-	build, err := m.Build()
+func (b *_OpcuaOpenRequestBuilder) WithMessage(message Payload) OpcuaOpenRequestBuilder {
+	b.Message = message
+	return b
+}
+
+func (b *_OpcuaOpenRequestBuilder) WithMessageBuilder(builderSupplier func(PayloadBuilder) PayloadBuilder) OpcuaOpenRequestBuilder {
+	builder := builderSupplier(b.Message.CreatePayloadBuilder())
+	var err error
+	b.Message, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PayloadBuilder failed"))
+	}
+	return b
+}
+
+func (b *_OpcuaOpenRequestBuilder) Build() (OpcuaOpenRequest, error) {
+	if b.OpenRequest == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openRequest' not set"))
+	}
+	if b.Message == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'message' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._OpcuaOpenRequest.deepCopy(), nil
+}
+
+func (b *_OpcuaOpenRequestBuilder) MustBuild() OpcuaOpenRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_OpcuaOpenRequestBuilder) DeepCopy() any {
-	return m.CreateOpcuaOpenRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OpcuaOpenRequestBuilder) Done() MessagePDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OpcuaOpenRequestBuilder) buildForMessagePDU() (MessagePDU, error) {
+	return b.Build()
+}
+
+func (b *_OpcuaOpenRequestBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaOpenRequestBuilder().(*_OpcuaOpenRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateOpcuaOpenRequestBuilder creates a OpcuaOpenRequestBuilder
-func (m *_OpcuaOpenRequest) CreateOpcuaOpenRequestBuilder() OpcuaOpenRequestBuilder {
-	if m == nil {
+func (b *_OpcuaOpenRequest) CreateOpcuaOpenRequestBuilder() OpcuaOpenRequestBuilder {
+	if b == nil {
 		return NewOpcuaOpenRequestBuilder()
 	}
-	return &_OpcuaOpenRequestBuilder{_OpcuaOpenRequest: m.deepCopy()}
+	return &_OpcuaOpenRequestBuilder{_OpcuaOpenRequest: b.deepCopy()}
 }
 
 ///////////////////////

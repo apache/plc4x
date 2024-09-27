@@ -117,10 +117,24 @@ type BACnetServiceAckAtomicReadFileStreamOrRecordBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
+	// AsBACnetServiceAckAtomicReadFileStream converts this build to a subType of BACnetServiceAckAtomicReadFileStreamOrRecord. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckAtomicReadFileStream() interface {
+		BACnetServiceAckAtomicReadFileStreamBuilder
+		Done() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
+	}
+	// AsBACnetServiceAckAtomicReadFileRecord converts this build to a subType of BACnetServiceAckAtomicReadFileStreamOrRecord. It is always possible to return to current builder using Done()
+	AsBACnetServiceAckAtomicReadFileRecord() interface {
+		BACnetServiceAckAtomicReadFileRecordBuilder
+		Done() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
+	}
 	// Build builds the BACnetServiceAckAtomicReadFileStreamOrRecord or returns an error if something is wrong
-	Build() (BACnetServiceAckAtomicReadFileStreamOrRecordContract, error)
+	PartialBuild() (BACnetServiceAckAtomicReadFileStreamOrRecordContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetServiceAckAtomicReadFileStreamOrRecordContract
+	PartialMustBuild() BACnetServiceAckAtomicReadFileStreamOrRecordContract
+	// Build builds the BACnetServiceAckAtomicReadFileStreamOrRecord or returns an error if something is wrong
+	Build() (BACnetServiceAckAtomicReadFileStreamOrRecord, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetServiceAckAtomicReadFileStreamOrRecord
 }
 
 // NewBACnetServiceAckAtomicReadFileStreamOrRecordBuilder() creates a BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
@@ -128,115 +142,181 @@ func NewBACnetServiceAckAtomicReadFileStreamOrRecordBuilder() BACnetServiceAckAt
 	return &_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder{_BACnetServiceAckAtomicReadFileStreamOrRecord: new(_BACnetServiceAckAtomicReadFileStreamOrRecord)}
 }
 
+type _BACnetServiceAckAtomicReadFileStreamOrRecordChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetServiceAckAtomicReadFileStreamOrRecordContract)
+	buildForBACnetServiceAckAtomicReadFileStreamOrRecord() (BACnetServiceAckAtomicReadFileStreamOrRecord, error)
+}
+
 type _BACnetServiceAckAtomicReadFileStreamOrRecordBuilder struct {
 	*_BACnetServiceAckAtomicReadFileStreamOrRecord
+
+	childBuilder _BACnetServiceAckAtomicReadFileStreamOrRecordChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) = (*_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder)(nil)
 
-func (m *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
-	return m.WithPeekedTagHeader(peekedTagHeader).WithOpeningTag(openingTag).WithClosingTag(closingTag)
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader).WithOpeningTag(openingTag).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) Build() (BACnetServiceAckAtomicReadFileStreamOrRecordContract, error) {
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) PartialBuild() (BACnetServiceAckAtomicReadFileStreamOrRecordContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetServiceAckAtomicReadFileStreamOrRecord.deepCopy(), nil
+	return b._BACnetServiceAckAtomicReadFileStreamOrRecord.deepCopy(), nil
 }
 
-func (m *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) MustBuild() BACnetServiceAckAtomicReadFileStreamOrRecordContract {
-	build, err := m.Build()
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) PartialMustBuild() BACnetServiceAckAtomicReadFileStreamOrRecordContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) DeepCopy() any {
-	return m.CreateBACnetServiceAckAtomicReadFileStreamOrRecordBuilder()
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) AsBACnetServiceAckAtomicReadFileStream() interface {
+	BACnetServiceAckAtomicReadFileStreamBuilder
+	Done() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckAtomicReadFileStreamBuilder
+		Done() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckAtomicReadFileStreamBuilder().(*_BACnetServiceAckAtomicReadFileStreamBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) AsBACnetServiceAckAtomicReadFileRecord() interface {
+	BACnetServiceAckAtomicReadFileRecordBuilder
+	Done() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetServiceAckAtomicReadFileRecordBuilder
+		Done() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetServiceAckAtomicReadFileRecordBuilder().(*_BACnetServiceAckAtomicReadFileRecordBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) Build() (BACnetServiceAckAtomicReadFileStreamOrRecord, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetServiceAckAtomicReadFileStreamOrRecord()
+}
+
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) MustBuild() BACnetServiceAckAtomicReadFileStreamOrRecord {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetServiceAckAtomicReadFileStreamOrRecordBuilder().(*_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetServiceAckAtomicReadFileStreamOrRecordChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetServiceAckAtomicReadFileStreamOrRecordBuilder creates a BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
-func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) CreateBACnetServiceAckAtomicReadFileStreamOrRecordBuilder() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
-	if m == nil {
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecord) CreateBACnetServiceAckAtomicReadFileStreamOrRecordBuilder() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
+	if b == nil {
 		return NewBACnetServiceAckAtomicReadFileStreamOrRecordBuilder()
 	}
-	return &_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder{_BACnetServiceAckAtomicReadFileStreamOrRecord: m.deepCopy()}
+	return &_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder{_BACnetServiceAckAtomicReadFileStreamOrRecord: b.deepCopy()}
 }
 
 ///////////////////////

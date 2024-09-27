@@ -95,45 +95,49 @@ type _ChannelInformationBuilder struct {
 
 var _ (ChannelInformationBuilder) = (*_ChannelInformationBuilder)(nil)
 
-func (m *_ChannelInformationBuilder) WithMandatoryFields(numChannels uint8, channelCode uint16) ChannelInformationBuilder {
-	return m.WithNumChannels(numChannels).WithChannelCode(channelCode)
+func (b *_ChannelInformationBuilder) WithMandatoryFields(numChannels uint8, channelCode uint16) ChannelInformationBuilder {
+	return b.WithNumChannels(numChannels).WithChannelCode(channelCode)
 }
 
-func (m *_ChannelInformationBuilder) WithNumChannels(numChannels uint8) ChannelInformationBuilder {
-	m.NumChannels = numChannels
-	return m
+func (b *_ChannelInformationBuilder) WithNumChannels(numChannels uint8) ChannelInformationBuilder {
+	b.NumChannels = numChannels
+	return b
 }
 
-func (m *_ChannelInformationBuilder) WithChannelCode(channelCode uint16) ChannelInformationBuilder {
-	m.ChannelCode = channelCode
-	return m
+func (b *_ChannelInformationBuilder) WithChannelCode(channelCode uint16) ChannelInformationBuilder {
+	b.ChannelCode = channelCode
+	return b
 }
 
-func (m *_ChannelInformationBuilder) Build() (ChannelInformation, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ChannelInformationBuilder) Build() (ChannelInformation, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ChannelInformation.deepCopy(), nil
+	return b._ChannelInformation.deepCopy(), nil
 }
 
-func (m *_ChannelInformationBuilder) MustBuild() ChannelInformation {
-	build, err := m.Build()
+func (b *_ChannelInformationBuilder) MustBuild() ChannelInformation {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ChannelInformationBuilder) DeepCopy() any {
-	return m.CreateChannelInformationBuilder()
+func (b *_ChannelInformationBuilder) DeepCopy() any {
+	_copy := b.CreateChannelInformationBuilder().(*_ChannelInformationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateChannelInformationBuilder creates a ChannelInformationBuilder
-func (m *_ChannelInformation) CreateChannelInformationBuilder() ChannelInformationBuilder {
-	if m == nil {
+func (b *_ChannelInformation) CreateChannelInformationBuilder() ChannelInformationBuilder {
+	if b == nil {
 		return NewChannelInformationBuilder()
 	}
-	return &_ChannelInformationBuilder{_ChannelInformation: m.deepCopy()}
+	return &_ChannelInformationBuilder{_ChannelInformation: b.deepCopy()}
 }
 
 ///////////////////////

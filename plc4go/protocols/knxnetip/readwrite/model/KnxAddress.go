@@ -100,50 +100,54 @@ type _KnxAddressBuilder struct {
 
 var _ (KnxAddressBuilder) = (*_KnxAddressBuilder)(nil)
 
-func (m *_KnxAddressBuilder) WithMandatoryFields(mainGroup uint8, middleGroup uint8, subGroup uint8) KnxAddressBuilder {
-	return m.WithMainGroup(mainGroup).WithMiddleGroup(middleGroup).WithSubGroup(subGroup)
+func (b *_KnxAddressBuilder) WithMandatoryFields(mainGroup uint8, middleGroup uint8, subGroup uint8) KnxAddressBuilder {
+	return b.WithMainGroup(mainGroup).WithMiddleGroup(middleGroup).WithSubGroup(subGroup)
 }
 
-func (m *_KnxAddressBuilder) WithMainGroup(mainGroup uint8) KnxAddressBuilder {
-	m.MainGroup = mainGroup
-	return m
+func (b *_KnxAddressBuilder) WithMainGroup(mainGroup uint8) KnxAddressBuilder {
+	b.MainGroup = mainGroup
+	return b
 }
 
-func (m *_KnxAddressBuilder) WithMiddleGroup(middleGroup uint8) KnxAddressBuilder {
-	m.MiddleGroup = middleGroup
-	return m
+func (b *_KnxAddressBuilder) WithMiddleGroup(middleGroup uint8) KnxAddressBuilder {
+	b.MiddleGroup = middleGroup
+	return b
 }
 
-func (m *_KnxAddressBuilder) WithSubGroup(subGroup uint8) KnxAddressBuilder {
-	m.SubGroup = subGroup
-	return m
+func (b *_KnxAddressBuilder) WithSubGroup(subGroup uint8) KnxAddressBuilder {
+	b.SubGroup = subGroup
+	return b
 }
 
-func (m *_KnxAddressBuilder) Build() (KnxAddress, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_KnxAddressBuilder) Build() (KnxAddress, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._KnxAddress.deepCopy(), nil
+	return b._KnxAddress.deepCopy(), nil
 }
 
-func (m *_KnxAddressBuilder) MustBuild() KnxAddress {
-	build, err := m.Build()
+func (b *_KnxAddressBuilder) MustBuild() KnxAddress {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_KnxAddressBuilder) DeepCopy() any {
-	return m.CreateKnxAddressBuilder()
+func (b *_KnxAddressBuilder) DeepCopy() any {
+	_copy := b.CreateKnxAddressBuilder().(*_KnxAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateKnxAddressBuilder creates a KnxAddressBuilder
-func (m *_KnxAddress) CreateKnxAddressBuilder() KnxAddressBuilder {
-	if m == nil {
+func (b *_KnxAddress) CreateKnxAddressBuilder() KnxAddressBuilder {
+	if b == nil {
 		return NewKnxAddressBuilder()
 	}
-	return &_KnxAddressBuilder{_KnxAddress: m.deepCopy()}
+	return &_KnxAddressBuilder{_KnxAddress: b.deepCopy()}
 }
 
 ///////////////////////

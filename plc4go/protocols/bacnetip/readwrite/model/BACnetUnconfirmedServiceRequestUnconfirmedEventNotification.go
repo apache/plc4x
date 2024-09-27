@@ -202,6 +202,8 @@ type BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder interfac
 	WithToStateBuilder(func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder
 	// WithEventValues adds EventValues (property field)
 	WithOptionalEventValues(BACnetNotificationParameters) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder
+	// WithOptionalEventValuesBuilder adds EventValues (property field) which is build by the builder
+	WithOptionalEventValuesBuilder(func(BACnetNotificationParametersBuilder) BACnetNotificationParametersBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder
 	// Build builds the BACnetUnconfirmedServiceRequestUnconfirmedEventNotification or returns an error if something is wrong
 	Build() (BACnetUnconfirmedServiceRequestUnconfirmedEventNotification, error)
 	// MustBuild does the same as Build but panics on error
@@ -216,315 +218,347 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder() BAC
 type _BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder struct {
 	*_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
 
+	parentBuilder *_BACnetUnconfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) = (*_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder)(nil)
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithMandatoryFields(processIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, eventObjectIdentifier BACnetContextTagObjectIdentifier, timestamp BACnetTimeStampEnclosed, notificationClass BACnetContextTagUnsignedInteger, priority BACnetContextTagUnsignedInteger, eventType BACnetEventTypeTagged, notifyType BACnetNotifyTypeTagged, toState BACnetEventStateTagged) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	return m.WithProcessIdentifier(processIdentifier).WithInitiatingDeviceIdentifier(initiatingDeviceIdentifier).WithEventObjectIdentifier(eventObjectIdentifier).WithTimestamp(timestamp).WithNotificationClass(notificationClass).WithPriority(priority).WithEventType(eventType).WithNotifyType(notifyType).WithToState(toState)
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) setParent(contract BACnetUnconfirmedServiceRequestContract) {
+	b.BACnetUnconfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithProcessIdentifier(processIdentifier BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	m.ProcessIdentifier = processIdentifier
-	return m
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithMandatoryFields(processIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, eventObjectIdentifier BACnetContextTagObjectIdentifier, timestamp BACnetTimeStampEnclosed, notificationClass BACnetContextTagUnsignedInteger, priority BACnetContextTagUnsignedInteger, eventType BACnetEventTypeTagged, notifyType BACnetNotifyTypeTagged, toState BACnetEventStateTagged) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	return b.WithProcessIdentifier(processIdentifier).WithInitiatingDeviceIdentifier(initiatingDeviceIdentifier).WithEventObjectIdentifier(eventObjectIdentifier).WithTimestamp(timestamp).WithNotificationClass(notificationClass).WithPriority(priority).WithEventType(eventType).WithNotifyType(notifyType).WithToState(toState)
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	builder := builderSupplier(m.ProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithProcessIdentifier(processIdentifier BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	b.ProcessIdentifier = processIdentifier
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	builder := builderSupplier(b.ProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.ProcessIdentifier, err = builder.Build()
+	b.ProcessIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithInitiatingDeviceIdentifier(initiatingDeviceIdentifier BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	m.InitiatingDeviceIdentifier = initiatingDeviceIdentifier
-	return m
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithInitiatingDeviceIdentifier(initiatingDeviceIdentifier BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	b.InitiatingDeviceIdentifier = initiatingDeviceIdentifier
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithInitiatingDeviceIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	builder := builderSupplier(m.InitiatingDeviceIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithInitiatingDeviceIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	builder := builderSupplier(b.InitiatingDeviceIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
 	var err error
-	m.InitiatingDeviceIdentifier, err = builder.Build()
+	b.InitiatingDeviceIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithEventObjectIdentifier(eventObjectIdentifier BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	m.EventObjectIdentifier = eventObjectIdentifier
-	return m
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithEventObjectIdentifier(eventObjectIdentifier BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	b.EventObjectIdentifier = eventObjectIdentifier
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithEventObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	builder := builderSupplier(m.EventObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithEventObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	builder := builderSupplier(b.EventObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
 	var err error
-	m.EventObjectIdentifier, err = builder.Build()
+	b.EventObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithTimestamp(timestamp BACnetTimeStampEnclosed) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	m.Timestamp = timestamp
-	return m
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithTimestamp(timestamp BACnetTimeStampEnclosed) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	b.Timestamp = timestamp
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithTimestampBuilder(builderSupplier func(BACnetTimeStampEnclosedBuilder) BACnetTimeStampEnclosedBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	builder := builderSupplier(m.Timestamp.CreateBACnetTimeStampEnclosedBuilder())
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithTimestampBuilder(builderSupplier func(BACnetTimeStampEnclosedBuilder) BACnetTimeStampEnclosedBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	builder := builderSupplier(b.Timestamp.CreateBACnetTimeStampEnclosedBuilder())
 	var err error
-	m.Timestamp, err = builder.Build()
+	b.Timestamp, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTimeStampEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTimeStampEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithNotificationClass(notificationClass BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	m.NotificationClass = notificationClass
-	return m
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithNotificationClass(notificationClass BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	b.NotificationClass = notificationClass
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithNotificationClassBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	builder := builderSupplier(m.NotificationClass.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithNotificationClassBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	builder := builderSupplier(b.NotificationClass.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.NotificationClass, err = builder.Build()
+	b.NotificationClass, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithPriority(priority BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	m.Priority = priority
-	return m
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithPriority(priority BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	b.Priority = priority
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithPriorityBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	builder := builderSupplier(m.Priority.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithPriorityBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	builder := builderSupplier(b.Priority.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.Priority, err = builder.Build()
+	b.Priority, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithEventType(eventType BACnetEventTypeTagged) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	m.EventType = eventType
-	return m
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithEventType(eventType BACnetEventTypeTagged) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	b.EventType = eventType
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithEventTypeBuilder(builderSupplier func(BACnetEventTypeTaggedBuilder) BACnetEventTypeTaggedBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	builder := builderSupplier(m.EventType.CreateBACnetEventTypeTaggedBuilder())
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithEventTypeBuilder(builderSupplier func(BACnetEventTypeTaggedBuilder) BACnetEventTypeTaggedBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	builder := builderSupplier(b.EventType.CreateBACnetEventTypeTaggedBuilder())
 	var err error
-	m.EventType, err = builder.Build()
+	b.EventType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventTypeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventTypeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithOptionalMessageText(messageText BACnetContextTagCharacterString) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	m.MessageText = messageText
-	return m
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithOptionalMessageText(messageText BACnetContextTagCharacterString) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	b.MessageText = messageText
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithOptionalMessageTextBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	builder := builderSupplier(m.MessageText.CreateBACnetContextTagCharacterStringBuilder())
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithOptionalMessageTextBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	builder := builderSupplier(b.MessageText.CreateBACnetContextTagCharacterStringBuilder())
 	var err error
-	m.MessageText, err = builder.Build()
+	b.MessageText, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithNotifyType(notifyType BACnetNotifyTypeTagged) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	m.NotifyType = notifyType
-	return m
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithNotifyType(notifyType BACnetNotifyTypeTagged) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	b.NotifyType = notifyType
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithNotifyTypeBuilder(builderSupplier func(BACnetNotifyTypeTaggedBuilder) BACnetNotifyTypeTaggedBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	builder := builderSupplier(m.NotifyType.CreateBACnetNotifyTypeTaggedBuilder())
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithNotifyTypeBuilder(builderSupplier func(BACnetNotifyTypeTaggedBuilder) BACnetNotifyTypeTaggedBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	builder := builderSupplier(b.NotifyType.CreateBACnetNotifyTypeTaggedBuilder())
 	var err error
-	m.NotifyType, err = builder.Build()
+	b.NotifyType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetNotifyTypeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetNotifyTypeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithOptionalAckRequired(ackRequired BACnetContextTagBoolean) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	m.AckRequired = ackRequired
-	return m
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithOptionalAckRequired(ackRequired BACnetContextTagBoolean) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	b.AckRequired = ackRequired
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithOptionalAckRequiredBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	builder := builderSupplier(m.AckRequired.CreateBACnetContextTagBooleanBuilder())
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithOptionalAckRequiredBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	builder := builderSupplier(b.AckRequired.CreateBACnetContextTagBooleanBuilder())
 	var err error
-	m.AckRequired, err = builder.Build()
+	b.AckRequired, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithOptionalFromState(fromState BACnetEventStateTagged) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	m.FromState = fromState
-	return m
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithOptionalFromState(fromState BACnetEventStateTagged) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	b.FromState = fromState
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithOptionalFromStateBuilder(builderSupplier func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	builder := builderSupplier(m.FromState.CreateBACnetEventStateTaggedBuilder())
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithOptionalFromStateBuilder(builderSupplier func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	builder := builderSupplier(b.FromState.CreateBACnetEventStateTaggedBuilder())
 	var err error
-	m.FromState, err = builder.Build()
+	b.FromState, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithToState(toState BACnetEventStateTagged) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	m.ToState = toState
-	return m
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithToState(toState BACnetEventStateTagged) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	b.ToState = toState
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithToStateBuilder(builderSupplier func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	builder := builderSupplier(m.ToState.CreateBACnetEventStateTaggedBuilder())
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithToStateBuilder(builderSupplier func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	builder := builderSupplier(b.ToState.CreateBACnetEventStateTaggedBuilder())
 	var err error
-	m.ToState, err = builder.Build()
+	b.ToState, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithOptionalEventValues(eventValues BACnetNotificationParameters) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	m.EventValues = eventValues
-	return m
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithOptionalEventValues(eventValues BACnetNotificationParameters) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	b.EventValues = eventValues
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) Build() (BACnetUnconfirmedServiceRequestUnconfirmedEventNotification, error) {
-	if m.ProcessIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithOptionalEventValuesBuilder(builderSupplier func(BACnetNotificationParametersBuilder) BACnetNotificationParametersBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	builder := builderSupplier(b.EventValues.CreateBACnetNotificationParametersBuilder())
+	var err error
+	b.EventValues, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'processIdentifier' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetNotificationParametersBuilder failed"))
 	}
-	if m.InitiatingDeviceIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'initiatingDeviceIdentifier' not set"))
-	}
-	if m.EventObjectIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'eventObjectIdentifier' not set"))
-	}
-	if m.Timestamp == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'timestamp' not set"))
-	}
-	if m.NotificationClass == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'notificationClass' not set"))
-	}
-	if m.Priority == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'priority' not set"))
-	}
-	if m.EventType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'eventType' not set"))
-	}
-	if m.NotifyType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'notifyType' not set"))
-	}
-	if m.ToState == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'toState' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetUnconfirmedServiceRequestUnconfirmedEventNotification.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) MustBuild() BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
-	build, err := m.Build()
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) Build() (BACnetUnconfirmedServiceRequestUnconfirmedEventNotification, error) {
+	if b.ProcessIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'processIdentifier' not set"))
+	}
+	if b.InitiatingDeviceIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'initiatingDeviceIdentifier' not set"))
+	}
+	if b.EventObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'eventObjectIdentifier' not set"))
+	}
+	if b.Timestamp == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timestamp' not set"))
+	}
+	if b.NotificationClass == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'notificationClass' not set"))
+	}
+	if b.Priority == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'priority' not set"))
+	}
+	if b.EventType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'eventType' not set"))
+	}
+	if b.NotifyType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'notifyType' not set"))
+	}
+	if b.ToState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'toState' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetUnconfirmedServiceRequestUnconfirmedEventNotification.deepCopy(), nil
+}
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) MustBuild() BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) DeepCopy() any {
-	return m.CreateBACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) Done() BACnetUnconfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) buildForBACnetUnconfirmedServiceRequest() (BACnetUnconfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder().(*_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder creates a BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) CreateBACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder() BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
-	if m == nil {
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) CreateBACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder() BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
+	if b == nil {
 		return NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder()
 	}
-	return &_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder{_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification: m.deepCopy()}
+	return &_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder{_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification: b.deepCopy()}
 }
 
 ///////////////////////

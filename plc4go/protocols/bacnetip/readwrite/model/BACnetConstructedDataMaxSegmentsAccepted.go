@@ -100,64 +100,83 @@ func NewBACnetConstructedDataMaxSegmentsAcceptedBuilder() BACnetConstructedDataM
 type _BACnetConstructedDataMaxSegmentsAcceptedBuilder struct {
 	*_BACnetConstructedDataMaxSegmentsAccepted
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMaxSegmentsAcceptedBuilder) = (*_BACnetConstructedDataMaxSegmentsAcceptedBuilder)(nil)
 
-func (m *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) WithMandatoryFields(maxSegmentsAccepted BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxSegmentsAcceptedBuilder {
-	return m.WithMaxSegmentsAccepted(maxSegmentsAccepted)
+func (b *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) WithMaxSegmentsAccepted(maxSegmentsAccepted BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxSegmentsAcceptedBuilder {
-	m.MaxSegmentsAccepted = maxSegmentsAccepted
-	return m
+func (b *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) WithMandatoryFields(maxSegmentsAccepted BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxSegmentsAcceptedBuilder {
+	return b.WithMaxSegmentsAccepted(maxSegmentsAccepted)
 }
 
-func (m *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) WithMaxSegmentsAcceptedBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxSegmentsAcceptedBuilder {
-	builder := builderSupplier(m.MaxSegmentsAccepted.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) WithMaxSegmentsAccepted(maxSegmentsAccepted BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxSegmentsAcceptedBuilder {
+	b.MaxSegmentsAccepted = maxSegmentsAccepted
+	return b
+}
+
+func (b *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) WithMaxSegmentsAcceptedBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxSegmentsAcceptedBuilder {
+	builder := builderSupplier(b.MaxSegmentsAccepted.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.MaxSegmentsAccepted, err = builder.Build()
+	b.MaxSegmentsAccepted, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) Build() (BACnetConstructedDataMaxSegmentsAccepted, error) {
-	if m.MaxSegmentsAccepted == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) Build() (BACnetConstructedDataMaxSegmentsAccepted, error) {
+	if b.MaxSegmentsAccepted == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'maxSegmentsAccepted' not set"))
+		b.err.Append(errors.New("mandatory field 'maxSegmentsAccepted' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataMaxSegmentsAccepted.deepCopy(), nil
+	return b._BACnetConstructedDataMaxSegmentsAccepted.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) MustBuild() BACnetConstructedDataMaxSegmentsAccepted {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) MustBuild() BACnetConstructedDataMaxSegmentsAccepted {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMaxSegmentsAcceptedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMaxSegmentsAcceptedBuilder().(*_BACnetConstructedDataMaxSegmentsAcceptedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMaxSegmentsAcceptedBuilder creates a BACnetConstructedDataMaxSegmentsAcceptedBuilder
-func (m *_BACnetConstructedDataMaxSegmentsAccepted) CreateBACnetConstructedDataMaxSegmentsAcceptedBuilder() BACnetConstructedDataMaxSegmentsAcceptedBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMaxSegmentsAccepted) CreateBACnetConstructedDataMaxSegmentsAcceptedBuilder() BACnetConstructedDataMaxSegmentsAcceptedBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMaxSegmentsAcceptedBuilder()
 	}
-	return &_BACnetConstructedDataMaxSegmentsAcceptedBuilder{_BACnetConstructedDataMaxSegmentsAccepted: m.deepCopy()}
+	return &_BACnetConstructedDataMaxSegmentsAcceptedBuilder{_BACnetConstructedDataMaxSegmentsAccepted: b.deepCopy()}
 }
 
 ///////////////////////

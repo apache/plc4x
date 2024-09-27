@@ -100,64 +100,83 @@ func NewBACnetApplicationTagEnumeratedBuilder() BACnetApplicationTagEnumeratedBu
 type _BACnetApplicationTagEnumeratedBuilder struct {
 	*_BACnetApplicationTagEnumerated
 
+	parentBuilder *_BACnetApplicationTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetApplicationTagEnumeratedBuilder) = (*_BACnetApplicationTagEnumeratedBuilder)(nil)
 
-func (m *_BACnetApplicationTagEnumeratedBuilder) WithMandatoryFields(payload BACnetTagPayloadEnumerated) BACnetApplicationTagEnumeratedBuilder {
-	return m.WithPayload(payload)
+func (b *_BACnetApplicationTagEnumeratedBuilder) setParent(contract BACnetApplicationTagContract) {
+	b.BACnetApplicationTagContract = contract
 }
 
-func (m *_BACnetApplicationTagEnumeratedBuilder) WithPayload(payload BACnetTagPayloadEnumerated) BACnetApplicationTagEnumeratedBuilder {
-	m.Payload = payload
-	return m
+func (b *_BACnetApplicationTagEnumeratedBuilder) WithMandatoryFields(payload BACnetTagPayloadEnumerated) BACnetApplicationTagEnumeratedBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_BACnetApplicationTagEnumeratedBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadEnumeratedBuilder) BACnetTagPayloadEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder {
-	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadEnumeratedBuilder())
+func (b *_BACnetApplicationTagEnumeratedBuilder) WithPayload(payload BACnetTagPayloadEnumerated) BACnetApplicationTagEnumeratedBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetApplicationTagEnumeratedBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadEnumeratedBuilder) BACnetTagPayloadEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadEnumeratedBuilder())
 	var err error
-	m.Payload, err = builder.Build()
+	b.Payload, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagPayloadEnumeratedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadEnumeratedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetApplicationTagEnumeratedBuilder) Build() (BACnetApplicationTagEnumerated, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetApplicationTagEnumeratedBuilder) Build() (BACnetApplicationTagEnumerated, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetApplicationTagEnumerated.deepCopy(), nil
+	return b._BACnetApplicationTagEnumerated.deepCopy(), nil
 }
 
-func (m *_BACnetApplicationTagEnumeratedBuilder) MustBuild() BACnetApplicationTagEnumerated {
-	build, err := m.Build()
+func (b *_BACnetApplicationTagEnumeratedBuilder) MustBuild() BACnetApplicationTagEnumerated {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetApplicationTagEnumeratedBuilder) DeepCopy() any {
-	return m.CreateBACnetApplicationTagEnumeratedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetApplicationTagEnumeratedBuilder) Done() BACnetApplicationTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetApplicationTagEnumeratedBuilder) buildForBACnetApplicationTag() (BACnetApplicationTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetApplicationTagEnumeratedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetApplicationTagEnumeratedBuilder().(*_BACnetApplicationTagEnumeratedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetApplicationTagEnumeratedBuilder creates a BACnetApplicationTagEnumeratedBuilder
-func (m *_BACnetApplicationTagEnumerated) CreateBACnetApplicationTagEnumeratedBuilder() BACnetApplicationTagEnumeratedBuilder {
-	if m == nil {
+func (b *_BACnetApplicationTagEnumerated) CreateBACnetApplicationTagEnumeratedBuilder() BACnetApplicationTagEnumeratedBuilder {
+	if b == nil {
 		return NewBACnetApplicationTagEnumeratedBuilder()
 	}
-	return &_BACnetApplicationTagEnumeratedBuilder{_BACnetApplicationTagEnumerated: m.deepCopy()}
+	return &_BACnetApplicationTagEnumeratedBuilder{_BACnetApplicationTagEnumerated: b.deepCopy()}
 }
 
 ///////////////////////

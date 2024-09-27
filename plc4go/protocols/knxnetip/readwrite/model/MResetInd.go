@@ -85,40 +85,59 @@ func NewMResetIndBuilder() MResetIndBuilder {
 type _MResetIndBuilder struct {
 	*_MResetInd
 
+	parentBuilder *_CEMIBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MResetIndBuilder) = (*_MResetIndBuilder)(nil)
 
-func (m *_MResetIndBuilder) WithMandatoryFields() MResetIndBuilder {
-	return m
+func (b *_MResetIndBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
 }
 
-func (m *_MResetIndBuilder) Build() (MResetInd, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MResetIndBuilder) WithMandatoryFields() MResetIndBuilder {
+	return b
+}
+
+func (b *_MResetIndBuilder) Build() (MResetInd, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MResetInd.deepCopy(), nil
+	return b._MResetInd.deepCopy(), nil
 }
 
-func (m *_MResetIndBuilder) MustBuild() MResetInd {
-	build, err := m.Build()
+func (b *_MResetIndBuilder) MustBuild() MResetInd {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MResetIndBuilder) DeepCopy() any {
-	return m.CreateMResetIndBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MResetIndBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MResetIndBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_MResetIndBuilder) DeepCopy() any {
+	_copy := b.CreateMResetIndBuilder().(*_MResetIndBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMResetIndBuilder creates a MResetIndBuilder
-func (m *_MResetInd) CreateMResetIndBuilder() MResetIndBuilder {
-	if m == nil {
+func (b *_MResetInd) CreateMResetIndBuilder() MResetIndBuilder {
+	if b == nil {
 		return NewMResetIndBuilder()
 	}
-	return &_MResetIndBuilder{_MResetInd: m.deepCopy()}
+	return &_MResetIndBuilder{_MResetInd: b.deepCopy()}
 }
 
 ///////////////////////

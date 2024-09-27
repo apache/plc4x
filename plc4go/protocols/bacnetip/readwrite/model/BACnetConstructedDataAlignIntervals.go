@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAlignIntervalsBuilder() BACnetConstructedDataAlignI
 type _BACnetConstructedDataAlignIntervalsBuilder struct {
 	*_BACnetConstructedDataAlignIntervals
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAlignIntervalsBuilder) = (*_BACnetConstructedDataAlignIntervalsBuilder)(nil)
 
-func (m *_BACnetConstructedDataAlignIntervalsBuilder) WithMandatoryFields(alignIntervals BACnetApplicationTagBoolean) BACnetConstructedDataAlignIntervalsBuilder {
-	return m.WithAlignIntervals(alignIntervals)
+func (b *_BACnetConstructedDataAlignIntervalsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAlignIntervalsBuilder) WithAlignIntervals(alignIntervals BACnetApplicationTagBoolean) BACnetConstructedDataAlignIntervalsBuilder {
-	m.AlignIntervals = alignIntervals
-	return m
+func (b *_BACnetConstructedDataAlignIntervalsBuilder) WithMandatoryFields(alignIntervals BACnetApplicationTagBoolean) BACnetConstructedDataAlignIntervalsBuilder {
+	return b.WithAlignIntervals(alignIntervals)
 }
 
-func (m *_BACnetConstructedDataAlignIntervalsBuilder) WithAlignIntervalsBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataAlignIntervalsBuilder {
-	builder := builderSupplier(m.AlignIntervals.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataAlignIntervalsBuilder) WithAlignIntervals(alignIntervals BACnetApplicationTagBoolean) BACnetConstructedDataAlignIntervalsBuilder {
+	b.AlignIntervals = alignIntervals
+	return b
+}
+
+func (b *_BACnetConstructedDataAlignIntervalsBuilder) WithAlignIntervalsBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataAlignIntervalsBuilder {
+	builder := builderSupplier(b.AlignIntervals.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.AlignIntervals, err = builder.Build()
+	b.AlignIntervals, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAlignIntervalsBuilder) Build() (BACnetConstructedDataAlignIntervals, error) {
-	if m.AlignIntervals == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAlignIntervalsBuilder) Build() (BACnetConstructedDataAlignIntervals, error) {
+	if b.AlignIntervals == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'alignIntervals' not set"))
+		b.err.Append(errors.New("mandatory field 'alignIntervals' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAlignIntervals.deepCopy(), nil
+	return b._BACnetConstructedDataAlignIntervals.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAlignIntervalsBuilder) MustBuild() BACnetConstructedDataAlignIntervals {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAlignIntervalsBuilder) MustBuild() BACnetConstructedDataAlignIntervals {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAlignIntervalsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAlignIntervalsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAlignIntervalsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAlignIntervalsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAlignIntervalsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAlignIntervalsBuilder().(*_BACnetConstructedDataAlignIntervalsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAlignIntervalsBuilder creates a BACnetConstructedDataAlignIntervalsBuilder
-func (m *_BACnetConstructedDataAlignIntervals) CreateBACnetConstructedDataAlignIntervalsBuilder() BACnetConstructedDataAlignIntervalsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAlignIntervals) CreateBACnetConstructedDataAlignIntervalsBuilder() BACnetConstructedDataAlignIntervalsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAlignIntervalsBuilder()
 	}
-	return &_BACnetConstructedDataAlignIntervalsBuilder{_BACnetConstructedDataAlignIntervals: m.deepCopy()}
+	return &_BACnetConstructedDataAlignIntervalsBuilder{_BACnetConstructedDataAlignIntervals: b.deepCopy()}
 }
 
 ///////////////////////

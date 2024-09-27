@@ -93,45 +93,64 @@ func NewSysexCommandPinStateQueryBuilder() SysexCommandPinStateQueryBuilder {
 type _SysexCommandPinStateQueryBuilder struct {
 	*_SysexCommandPinStateQuery
 
+	parentBuilder *_SysexCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SysexCommandPinStateQueryBuilder) = (*_SysexCommandPinStateQueryBuilder)(nil)
 
-func (m *_SysexCommandPinStateQueryBuilder) WithMandatoryFields(pin uint8) SysexCommandPinStateQueryBuilder {
-	return m.WithPin(pin)
+func (b *_SysexCommandPinStateQueryBuilder) setParent(contract SysexCommandContract) {
+	b.SysexCommandContract = contract
 }
 
-func (m *_SysexCommandPinStateQueryBuilder) WithPin(pin uint8) SysexCommandPinStateQueryBuilder {
-	m.Pin = pin
-	return m
+func (b *_SysexCommandPinStateQueryBuilder) WithMandatoryFields(pin uint8) SysexCommandPinStateQueryBuilder {
+	return b.WithPin(pin)
 }
 
-func (m *_SysexCommandPinStateQueryBuilder) Build() (SysexCommandPinStateQuery, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SysexCommandPinStateQueryBuilder) WithPin(pin uint8) SysexCommandPinStateQueryBuilder {
+	b.Pin = pin
+	return b
+}
+
+func (b *_SysexCommandPinStateQueryBuilder) Build() (SysexCommandPinStateQuery, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SysexCommandPinStateQuery.deepCopy(), nil
+	return b._SysexCommandPinStateQuery.deepCopy(), nil
 }
 
-func (m *_SysexCommandPinStateQueryBuilder) MustBuild() SysexCommandPinStateQuery {
-	build, err := m.Build()
+func (b *_SysexCommandPinStateQueryBuilder) MustBuild() SysexCommandPinStateQuery {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SysexCommandPinStateQueryBuilder) DeepCopy() any {
-	return m.CreateSysexCommandPinStateQueryBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SysexCommandPinStateQueryBuilder) Done() SysexCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SysexCommandPinStateQueryBuilder) buildForSysexCommand() (SysexCommand, error) {
+	return b.Build()
+}
+
+func (b *_SysexCommandPinStateQueryBuilder) DeepCopy() any {
+	_copy := b.CreateSysexCommandPinStateQueryBuilder().(*_SysexCommandPinStateQueryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSysexCommandPinStateQueryBuilder creates a SysexCommandPinStateQueryBuilder
-func (m *_SysexCommandPinStateQuery) CreateSysexCommandPinStateQueryBuilder() SysexCommandPinStateQueryBuilder {
-	if m == nil {
+func (b *_SysexCommandPinStateQuery) CreateSysexCommandPinStateQueryBuilder() SysexCommandPinStateQueryBuilder {
+	if b == nil {
 		return NewSysexCommandPinStateQueryBuilder()
 	}
-	return &_SysexCommandPinStateQueryBuilder{_SysexCommandPinStateQuery: m.deepCopy()}
+	return &_SysexCommandPinStateQueryBuilder{_SysexCommandPinStateQuery: b.deepCopy()}
 }
 
 ///////////////////////

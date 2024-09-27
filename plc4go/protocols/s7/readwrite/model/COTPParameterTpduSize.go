@@ -93,45 +93,64 @@ func NewCOTPParameterTpduSizeBuilder() COTPParameterTpduSizeBuilder {
 type _COTPParameterTpduSizeBuilder struct {
 	*_COTPParameterTpduSize
 
+	parentBuilder *_COTPParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (COTPParameterTpduSizeBuilder) = (*_COTPParameterTpduSizeBuilder)(nil)
 
-func (m *_COTPParameterTpduSizeBuilder) WithMandatoryFields(tpduSize COTPTpduSize) COTPParameterTpduSizeBuilder {
-	return m.WithTpduSize(tpduSize)
+func (b *_COTPParameterTpduSizeBuilder) setParent(contract COTPParameterContract) {
+	b.COTPParameterContract = contract
 }
 
-func (m *_COTPParameterTpduSizeBuilder) WithTpduSize(tpduSize COTPTpduSize) COTPParameterTpduSizeBuilder {
-	m.TpduSize = tpduSize
-	return m
+func (b *_COTPParameterTpduSizeBuilder) WithMandatoryFields(tpduSize COTPTpduSize) COTPParameterTpduSizeBuilder {
+	return b.WithTpduSize(tpduSize)
 }
 
-func (m *_COTPParameterTpduSizeBuilder) Build() (COTPParameterTpduSize, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_COTPParameterTpduSizeBuilder) WithTpduSize(tpduSize COTPTpduSize) COTPParameterTpduSizeBuilder {
+	b.TpduSize = tpduSize
+	return b
+}
+
+func (b *_COTPParameterTpduSizeBuilder) Build() (COTPParameterTpduSize, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._COTPParameterTpduSize.deepCopy(), nil
+	return b._COTPParameterTpduSize.deepCopy(), nil
 }
 
-func (m *_COTPParameterTpduSizeBuilder) MustBuild() COTPParameterTpduSize {
-	build, err := m.Build()
+func (b *_COTPParameterTpduSizeBuilder) MustBuild() COTPParameterTpduSize {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_COTPParameterTpduSizeBuilder) DeepCopy() any {
-	return m.CreateCOTPParameterTpduSizeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_COTPParameterTpduSizeBuilder) Done() COTPParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_COTPParameterTpduSizeBuilder) buildForCOTPParameter() (COTPParameter, error) {
+	return b.Build()
+}
+
+func (b *_COTPParameterTpduSizeBuilder) DeepCopy() any {
+	_copy := b.CreateCOTPParameterTpduSizeBuilder().(*_COTPParameterTpduSizeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCOTPParameterTpduSizeBuilder creates a COTPParameterTpduSizeBuilder
-func (m *_COTPParameterTpduSize) CreateCOTPParameterTpduSizeBuilder() COTPParameterTpduSizeBuilder {
-	if m == nil {
+func (b *_COTPParameterTpduSize) CreateCOTPParameterTpduSizeBuilder() COTPParameterTpduSizeBuilder {
+	if b == nil {
 		return NewCOTPParameterTpduSizeBuilder()
 	}
-	return &_COTPParameterTpduSizeBuilder{_COTPParameterTpduSize: m.deepCopy()}
+	return &_COTPParameterTpduSizeBuilder{_COTPParameterTpduSize: b.deepCopy()}
 }
 
 ///////////////////////

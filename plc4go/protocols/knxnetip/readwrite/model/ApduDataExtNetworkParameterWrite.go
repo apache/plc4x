@@ -85,40 +85,59 @@ func NewApduDataExtNetworkParameterWriteBuilder() ApduDataExtNetworkParameterWri
 type _ApduDataExtNetworkParameterWriteBuilder struct {
 	*_ApduDataExtNetworkParameterWrite
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtNetworkParameterWriteBuilder) = (*_ApduDataExtNetworkParameterWriteBuilder)(nil)
 
-func (m *_ApduDataExtNetworkParameterWriteBuilder) WithMandatoryFields() ApduDataExtNetworkParameterWriteBuilder {
-	return m
+func (b *_ApduDataExtNetworkParameterWriteBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtNetworkParameterWriteBuilder) Build() (ApduDataExtNetworkParameterWrite, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtNetworkParameterWriteBuilder) WithMandatoryFields() ApduDataExtNetworkParameterWriteBuilder {
+	return b
+}
+
+func (b *_ApduDataExtNetworkParameterWriteBuilder) Build() (ApduDataExtNetworkParameterWrite, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtNetworkParameterWrite.deepCopy(), nil
+	return b._ApduDataExtNetworkParameterWrite.deepCopy(), nil
 }
 
-func (m *_ApduDataExtNetworkParameterWriteBuilder) MustBuild() ApduDataExtNetworkParameterWrite {
-	build, err := m.Build()
+func (b *_ApduDataExtNetworkParameterWriteBuilder) MustBuild() ApduDataExtNetworkParameterWrite {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtNetworkParameterWriteBuilder) DeepCopy() any {
-	return m.CreateApduDataExtNetworkParameterWriteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtNetworkParameterWriteBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtNetworkParameterWriteBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtNetworkParameterWriteBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtNetworkParameterWriteBuilder().(*_ApduDataExtNetworkParameterWriteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtNetworkParameterWriteBuilder creates a ApduDataExtNetworkParameterWriteBuilder
-func (m *_ApduDataExtNetworkParameterWrite) CreateApduDataExtNetworkParameterWriteBuilder() ApduDataExtNetworkParameterWriteBuilder {
-	if m == nil {
+func (b *_ApduDataExtNetworkParameterWrite) CreateApduDataExtNetworkParameterWriteBuilder() ApduDataExtNetworkParameterWriteBuilder {
+	if b == nil {
 		return NewApduDataExtNetworkParameterWriteBuilder()
 	}
-	return &_ApduDataExtNetworkParameterWriteBuilder{_ApduDataExtNetworkParameterWrite: m.deepCopy()}
+	return &_ApduDataExtNetworkParameterWriteBuilder{_ApduDataExtNetworkParameterWrite: b.deepCopy()}
 }
 
 ///////////////////////

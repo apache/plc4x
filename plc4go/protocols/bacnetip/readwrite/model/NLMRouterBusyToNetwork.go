@@ -93,45 +93,64 @@ func NewNLMRouterBusyToNetworkBuilder() NLMRouterBusyToNetworkBuilder {
 type _NLMRouterBusyToNetworkBuilder struct {
 	*_NLMRouterBusyToNetwork
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMRouterBusyToNetworkBuilder) = (*_NLMRouterBusyToNetworkBuilder)(nil)
 
-func (m *_NLMRouterBusyToNetworkBuilder) WithMandatoryFields(destinationNetworkAddresses []uint16) NLMRouterBusyToNetworkBuilder {
-	return m.WithDestinationNetworkAddresses(destinationNetworkAddresses...)
+func (b *_NLMRouterBusyToNetworkBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMRouterBusyToNetworkBuilder) WithDestinationNetworkAddresses(destinationNetworkAddresses ...uint16) NLMRouterBusyToNetworkBuilder {
-	m.DestinationNetworkAddresses = destinationNetworkAddresses
-	return m
+func (b *_NLMRouterBusyToNetworkBuilder) WithMandatoryFields(destinationNetworkAddresses []uint16) NLMRouterBusyToNetworkBuilder {
+	return b.WithDestinationNetworkAddresses(destinationNetworkAddresses...)
 }
 
-func (m *_NLMRouterBusyToNetworkBuilder) Build() (NLMRouterBusyToNetwork, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMRouterBusyToNetworkBuilder) WithDestinationNetworkAddresses(destinationNetworkAddresses ...uint16) NLMRouterBusyToNetworkBuilder {
+	b.DestinationNetworkAddresses = destinationNetworkAddresses
+	return b
+}
+
+func (b *_NLMRouterBusyToNetworkBuilder) Build() (NLMRouterBusyToNetwork, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMRouterBusyToNetwork.deepCopy(), nil
+	return b._NLMRouterBusyToNetwork.deepCopy(), nil
 }
 
-func (m *_NLMRouterBusyToNetworkBuilder) MustBuild() NLMRouterBusyToNetwork {
-	build, err := m.Build()
+func (b *_NLMRouterBusyToNetworkBuilder) MustBuild() NLMRouterBusyToNetwork {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMRouterBusyToNetworkBuilder) DeepCopy() any {
-	return m.CreateNLMRouterBusyToNetworkBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMRouterBusyToNetworkBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMRouterBusyToNetworkBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMRouterBusyToNetworkBuilder) DeepCopy() any {
+	_copy := b.CreateNLMRouterBusyToNetworkBuilder().(*_NLMRouterBusyToNetworkBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMRouterBusyToNetworkBuilder creates a NLMRouterBusyToNetworkBuilder
-func (m *_NLMRouterBusyToNetwork) CreateNLMRouterBusyToNetworkBuilder() NLMRouterBusyToNetworkBuilder {
-	if m == nil {
+func (b *_NLMRouterBusyToNetwork) CreateNLMRouterBusyToNetworkBuilder() NLMRouterBusyToNetworkBuilder {
+	if b == nil {
 		return NewNLMRouterBusyToNetworkBuilder()
 	}
-	return &_NLMRouterBusyToNetworkBuilder{_NLMRouterBusyToNetwork: m.deepCopy()}
+	return &_NLMRouterBusyToNetworkBuilder{_NLMRouterBusyToNetwork: b.deepCopy()}
 }
 
 ///////////////////////

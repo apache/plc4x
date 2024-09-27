@@ -103,63 +103,82 @@ func NewBACnetConstructedDataSubordinateNodeTypesBuilder() BACnetConstructedData
 type _BACnetConstructedDataSubordinateNodeTypesBuilder struct {
 	*_BACnetConstructedDataSubordinateNodeTypes
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSubordinateNodeTypesBuilder) = (*_BACnetConstructedDataSubordinateNodeTypesBuilder)(nil)
 
-func (m *_BACnetConstructedDataSubordinateNodeTypesBuilder) WithMandatoryFields(subordinateNodeTypes []BACnetNodeTypeTagged) BACnetConstructedDataSubordinateNodeTypesBuilder {
-	return m.WithSubordinateNodeTypes(subordinateNodeTypes...)
+func (b *_BACnetConstructedDataSubordinateNodeTypesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSubordinateNodeTypesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSubordinateNodeTypesBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataSubordinateNodeTypesBuilder) WithMandatoryFields(subordinateNodeTypes []BACnetNodeTypeTagged) BACnetConstructedDataSubordinateNodeTypesBuilder {
+	return b.WithSubordinateNodeTypes(subordinateNodeTypes...)
 }
 
-func (m *_BACnetConstructedDataSubordinateNodeTypesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSubordinateNodeTypesBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataSubordinateNodeTypesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSubordinateNodeTypesBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataSubordinateNodeTypesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSubordinateNodeTypesBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataSubordinateNodeTypesBuilder) WithSubordinateNodeTypes(subordinateNodeTypes ...BACnetNodeTypeTagged) BACnetConstructedDataSubordinateNodeTypesBuilder {
-	m.SubordinateNodeTypes = subordinateNodeTypes
-	return m
+func (b *_BACnetConstructedDataSubordinateNodeTypesBuilder) WithSubordinateNodeTypes(subordinateNodeTypes ...BACnetNodeTypeTagged) BACnetConstructedDataSubordinateNodeTypesBuilder {
+	b.SubordinateNodeTypes = subordinateNodeTypes
+	return b
 }
 
-func (m *_BACnetConstructedDataSubordinateNodeTypesBuilder) Build() (BACnetConstructedDataSubordinateNodeTypes, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataSubordinateNodeTypesBuilder) Build() (BACnetConstructedDataSubordinateNodeTypes, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSubordinateNodeTypes.deepCopy(), nil
+	return b._BACnetConstructedDataSubordinateNodeTypes.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSubordinateNodeTypesBuilder) MustBuild() BACnetConstructedDataSubordinateNodeTypes {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSubordinateNodeTypesBuilder) MustBuild() BACnetConstructedDataSubordinateNodeTypes {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSubordinateNodeTypesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSubordinateNodeTypesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSubordinateNodeTypesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSubordinateNodeTypesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSubordinateNodeTypesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSubordinateNodeTypesBuilder().(*_BACnetConstructedDataSubordinateNodeTypesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSubordinateNodeTypesBuilder creates a BACnetConstructedDataSubordinateNodeTypesBuilder
-func (m *_BACnetConstructedDataSubordinateNodeTypes) CreateBACnetConstructedDataSubordinateNodeTypesBuilder() BACnetConstructedDataSubordinateNodeTypesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSubordinateNodeTypes) CreateBACnetConstructedDataSubordinateNodeTypesBuilder() BACnetConstructedDataSubordinateNodeTypesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSubordinateNodeTypesBuilder()
 	}
-	return &_BACnetConstructedDataSubordinateNodeTypesBuilder{_BACnetConstructedDataSubordinateNodeTypes: m.deepCopy()}
+	return &_BACnetConstructedDataSubordinateNodeTypesBuilder{_BACnetConstructedDataSubordinateNodeTypes: b.deepCopy()}
 }
 
 ///////////////////////

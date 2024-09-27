@@ -90,10 +90,29 @@ type DF1SymbolBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() DF1SymbolBuilder
+	// AsDF1SymbolMessageFrame converts this build to a subType of DF1Symbol. It is always possible to return to current builder using Done()
+	AsDF1SymbolMessageFrame() interface {
+		DF1SymbolMessageFrameBuilder
+		Done() DF1SymbolBuilder
+	}
+	// AsDF1SymbolMessageFrameACK converts this build to a subType of DF1Symbol. It is always possible to return to current builder using Done()
+	AsDF1SymbolMessageFrameACK() interface {
+		DF1SymbolMessageFrameACKBuilder
+		Done() DF1SymbolBuilder
+	}
+	// AsDF1SymbolMessageFrameNAK converts this build to a subType of DF1Symbol. It is always possible to return to current builder using Done()
+	AsDF1SymbolMessageFrameNAK() interface {
+		DF1SymbolMessageFrameNAKBuilder
+		Done() DF1SymbolBuilder
+	}
 	// Build builds the DF1Symbol or returns an error if something is wrong
-	Build() (DF1SymbolContract, error)
+	PartialBuild() (DF1SymbolContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() DF1SymbolContract
+	PartialMustBuild() DF1SymbolContract
+	// Build builds the DF1Symbol or returns an error if something is wrong
+	Build() (DF1Symbol, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1Symbol
 }
 
 // NewDF1SymbolBuilder() creates a DF1SymbolBuilder
@@ -101,43 +120,125 @@ func NewDF1SymbolBuilder() DF1SymbolBuilder {
 	return &_DF1SymbolBuilder{_DF1Symbol: new(_DF1Symbol)}
 }
 
+type _DF1SymbolChildBuilder interface {
+	utils.Copyable
+	setParent(DF1SymbolContract)
+	buildForDF1Symbol() (DF1Symbol, error)
+}
+
 type _DF1SymbolBuilder struct {
 	*_DF1Symbol
+
+	childBuilder _DF1SymbolChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (DF1SymbolBuilder) = (*_DF1SymbolBuilder)(nil)
 
-func (m *_DF1SymbolBuilder) WithMandatoryFields() DF1SymbolBuilder {
-	return m
+func (b *_DF1SymbolBuilder) WithMandatoryFields() DF1SymbolBuilder {
+	return b
 }
 
-func (m *_DF1SymbolBuilder) Build() (DF1SymbolContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DF1SymbolBuilder) PartialBuild() (DF1SymbolContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DF1Symbol.deepCopy(), nil
+	return b._DF1Symbol.deepCopy(), nil
 }
 
-func (m *_DF1SymbolBuilder) MustBuild() DF1SymbolContract {
-	build, err := m.Build()
+func (b *_DF1SymbolBuilder) PartialMustBuild() DF1SymbolContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DF1SymbolBuilder) DeepCopy() any {
-	return m.CreateDF1SymbolBuilder()
+func (b *_DF1SymbolBuilder) AsDF1SymbolMessageFrame() interface {
+	DF1SymbolMessageFrameBuilder
+	Done() DF1SymbolBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DF1SymbolMessageFrameBuilder
+		Done() DF1SymbolBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDF1SymbolMessageFrameBuilder().(*_DF1SymbolMessageFrameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_DF1SymbolBuilder) AsDF1SymbolMessageFrameACK() interface {
+	DF1SymbolMessageFrameACKBuilder
+	Done() DF1SymbolBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DF1SymbolMessageFrameACKBuilder
+		Done() DF1SymbolBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDF1SymbolMessageFrameACKBuilder().(*_DF1SymbolMessageFrameACKBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_DF1SymbolBuilder) AsDF1SymbolMessageFrameNAK() interface {
+	DF1SymbolMessageFrameNAKBuilder
+	Done() DF1SymbolBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DF1SymbolMessageFrameNAKBuilder
+		Done() DF1SymbolBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDF1SymbolMessageFrameNAKBuilder().(*_DF1SymbolMessageFrameNAKBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_DF1SymbolBuilder) Build() (DF1Symbol, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForDF1Symbol()
+}
+
+func (b *_DF1SymbolBuilder) MustBuild() DF1Symbol {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DF1SymbolBuilder) DeepCopy() any {
+	_copy := b.CreateDF1SymbolBuilder().(*_DF1SymbolBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_DF1SymbolChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDF1SymbolBuilder creates a DF1SymbolBuilder
-func (m *_DF1Symbol) CreateDF1SymbolBuilder() DF1SymbolBuilder {
-	if m == nil {
+func (b *_DF1Symbol) CreateDF1SymbolBuilder() DF1SymbolBuilder {
+	if b == nil {
 		return NewDF1SymbolBuilder()
 	}
-	return &_DF1SymbolBuilder{_DF1Symbol: m.deepCopy()}
+	return &_DF1SymbolBuilder{_DF1Symbol: b.deepCopy()}
 }
 
 ///////////////////////

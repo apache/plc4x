@@ -93,45 +93,64 @@ func NewBACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder() BACnetConstructe
 type _BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder struct {
 	*_BACnetConstructedDataLifeSafetyZoneAlarmValues
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) = (*_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder)(nil)
 
-func (m *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) WithMandatoryFields(alarmValues []BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder {
-	return m.WithAlarmValues(alarmValues...)
+func (b *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) WithAlarmValues(alarmValues ...BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder {
-	m.AlarmValues = alarmValues
-	return m
+func (b *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) WithMandatoryFields(alarmValues []BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder {
+	return b.WithAlarmValues(alarmValues...)
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) Build() (BACnetConstructedDataLifeSafetyZoneAlarmValues, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) WithAlarmValues(alarmValues ...BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder {
+	b.AlarmValues = alarmValues
+	return b
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) Build() (BACnetConstructedDataLifeSafetyZoneAlarmValues, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLifeSafetyZoneAlarmValues.deepCopy(), nil
+	return b._BACnetConstructedDataLifeSafetyZoneAlarmValues.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) MustBuild() BACnetConstructedDataLifeSafetyZoneAlarmValues {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) MustBuild() BACnetConstructedDataLifeSafetyZoneAlarmValues {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder().(*_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder creates a BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder
-func (m *_BACnetConstructedDataLifeSafetyZoneAlarmValues) CreateBACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder() BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLifeSafetyZoneAlarmValues) CreateBACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder() BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder()
 	}
-	return &_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder{_BACnetConstructedDataLifeSafetyZoneAlarmValues: m.deepCopy()}
+	return &_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder{_BACnetConstructedDataLifeSafetyZoneAlarmValues: b.deepCopy()}
 }
 
 ///////////////////////

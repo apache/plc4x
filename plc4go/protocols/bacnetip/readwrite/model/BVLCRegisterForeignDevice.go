@@ -95,45 +95,64 @@ func NewBVLCRegisterForeignDeviceBuilder() BVLCRegisterForeignDeviceBuilder {
 type _BVLCRegisterForeignDeviceBuilder struct {
 	*_BVLCRegisterForeignDevice
 
+	parentBuilder *_BVLCBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BVLCRegisterForeignDeviceBuilder) = (*_BVLCRegisterForeignDeviceBuilder)(nil)
 
-func (m *_BVLCRegisterForeignDeviceBuilder) WithMandatoryFields(ttl uint16) BVLCRegisterForeignDeviceBuilder {
-	return m.WithTtl(ttl)
+func (b *_BVLCRegisterForeignDeviceBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
 }
 
-func (m *_BVLCRegisterForeignDeviceBuilder) WithTtl(ttl uint16) BVLCRegisterForeignDeviceBuilder {
-	m.Ttl = ttl
-	return m
+func (b *_BVLCRegisterForeignDeviceBuilder) WithMandatoryFields(ttl uint16) BVLCRegisterForeignDeviceBuilder {
+	return b.WithTtl(ttl)
 }
 
-func (m *_BVLCRegisterForeignDeviceBuilder) Build() (BVLCRegisterForeignDevice, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BVLCRegisterForeignDeviceBuilder) WithTtl(ttl uint16) BVLCRegisterForeignDeviceBuilder {
+	b.Ttl = ttl
+	return b
+}
+
+func (b *_BVLCRegisterForeignDeviceBuilder) Build() (BVLCRegisterForeignDevice, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BVLCRegisterForeignDevice.deepCopy(), nil
+	return b._BVLCRegisterForeignDevice.deepCopy(), nil
 }
 
-func (m *_BVLCRegisterForeignDeviceBuilder) MustBuild() BVLCRegisterForeignDevice {
-	build, err := m.Build()
+func (b *_BVLCRegisterForeignDeviceBuilder) MustBuild() BVLCRegisterForeignDevice {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BVLCRegisterForeignDeviceBuilder) DeepCopy() any {
-	return m.CreateBVLCRegisterForeignDeviceBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCRegisterForeignDeviceBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCRegisterForeignDeviceBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCRegisterForeignDeviceBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCRegisterForeignDeviceBuilder().(*_BVLCRegisterForeignDeviceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBVLCRegisterForeignDeviceBuilder creates a BVLCRegisterForeignDeviceBuilder
-func (m *_BVLCRegisterForeignDevice) CreateBVLCRegisterForeignDeviceBuilder() BVLCRegisterForeignDeviceBuilder {
-	if m == nil {
+func (b *_BVLCRegisterForeignDevice) CreateBVLCRegisterForeignDeviceBuilder() BVLCRegisterForeignDeviceBuilder {
+	if b == nil {
 		return NewBVLCRegisterForeignDeviceBuilder()
 	}
-	return &_BVLCRegisterForeignDeviceBuilder{_BVLCRegisterForeignDevice: m.deepCopy()}
+	return &_BVLCRegisterForeignDeviceBuilder{_BVLCRegisterForeignDevice: b.deepCopy()}
 }
 
 ///////////////////////

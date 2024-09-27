@@ -99,50 +99,69 @@ func NewVariantBooleanBuilder() VariantBooleanBuilder {
 type _VariantBooleanBuilder struct {
 	*_VariantBoolean
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantBooleanBuilder) = (*_VariantBooleanBuilder)(nil)
 
-func (m *_VariantBooleanBuilder) WithMandatoryFields(value []byte) VariantBooleanBuilder {
-	return m.WithValue(value...)
+func (b *_VariantBooleanBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantBooleanBuilder) WithOptionalArrayLength(arrayLength int32) VariantBooleanBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantBooleanBuilder) WithMandatoryFields(value []byte) VariantBooleanBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantBooleanBuilder) WithValue(value ...byte) VariantBooleanBuilder {
-	m.Value = value
-	return m
+func (b *_VariantBooleanBuilder) WithOptionalArrayLength(arrayLength int32) VariantBooleanBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantBooleanBuilder) Build() (VariantBoolean, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantBooleanBuilder) WithValue(value ...byte) VariantBooleanBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantBooleanBuilder) Build() (VariantBoolean, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantBoolean.deepCopy(), nil
+	return b._VariantBoolean.deepCopy(), nil
 }
 
-func (m *_VariantBooleanBuilder) MustBuild() VariantBoolean {
-	build, err := m.Build()
+func (b *_VariantBooleanBuilder) MustBuild() VariantBoolean {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantBooleanBuilder) DeepCopy() any {
-	return m.CreateVariantBooleanBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantBooleanBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantBooleanBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantBooleanBuilder) DeepCopy() any {
+	_copy := b.CreateVariantBooleanBuilder().(*_VariantBooleanBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantBooleanBuilder creates a VariantBooleanBuilder
-func (m *_VariantBoolean) CreateVariantBooleanBuilder() VariantBooleanBuilder {
-	if m == nil {
+func (b *_VariantBoolean) CreateVariantBooleanBuilder() VariantBooleanBuilder {
+	if b == nil {
 		return NewVariantBooleanBuilder()
 	}
-	return &_VariantBooleanBuilder{_VariantBoolean: m.deepCopy()}
+	return &_VariantBooleanBuilder{_VariantBoolean: b.deepCopy()}
 }
 
 ///////////////////////

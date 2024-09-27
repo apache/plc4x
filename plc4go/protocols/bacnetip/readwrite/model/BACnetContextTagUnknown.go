@@ -96,45 +96,64 @@ func NewBACnetContextTagUnknownBuilder() BACnetContextTagUnknownBuilder {
 type _BACnetContextTagUnknownBuilder struct {
 	*_BACnetContextTagUnknown
 
+	parentBuilder *_BACnetContextTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetContextTagUnknownBuilder) = (*_BACnetContextTagUnknownBuilder)(nil)
 
-func (m *_BACnetContextTagUnknownBuilder) WithMandatoryFields(unknownData []byte) BACnetContextTagUnknownBuilder {
-	return m.WithUnknownData(unknownData...)
+func (b *_BACnetContextTagUnknownBuilder) setParent(contract BACnetContextTagContract) {
+	b.BACnetContextTagContract = contract
 }
 
-func (m *_BACnetContextTagUnknownBuilder) WithUnknownData(unknownData ...byte) BACnetContextTagUnknownBuilder {
-	m.UnknownData = unknownData
-	return m
+func (b *_BACnetContextTagUnknownBuilder) WithMandatoryFields(unknownData []byte) BACnetContextTagUnknownBuilder {
+	return b.WithUnknownData(unknownData...)
 }
 
-func (m *_BACnetContextTagUnknownBuilder) Build() (BACnetContextTagUnknown, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetContextTagUnknownBuilder) WithUnknownData(unknownData ...byte) BACnetContextTagUnknownBuilder {
+	b.UnknownData = unknownData
+	return b
+}
+
+func (b *_BACnetContextTagUnknownBuilder) Build() (BACnetContextTagUnknown, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetContextTagUnknown.deepCopy(), nil
+	return b._BACnetContextTagUnknown.deepCopy(), nil
 }
 
-func (m *_BACnetContextTagUnknownBuilder) MustBuild() BACnetContextTagUnknown {
-	build, err := m.Build()
+func (b *_BACnetContextTagUnknownBuilder) MustBuild() BACnetContextTagUnknown {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetContextTagUnknownBuilder) DeepCopy() any {
-	return m.CreateBACnetContextTagUnknownBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetContextTagUnknownBuilder) Done() BACnetContextTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetContextTagUnknownBuilder) buildForBACnetContextTag() (BACnetContextTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetContextTagUnknownBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetContextTagUnknownBuilder().(*_BACnetContextTagUnknownBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetContextTagUnknownBuilder creates a BACnetContextTagUnknownBuilder
-func (m *_BACnetContextTagUnknown) CreateBACnetContextTagUnknownBuilder() BACnetContextTagUnknownBuilder {
-	if m == nil {
+func (b *_BACnetContextTagUnknown) CreateBACnetContextTagUnknownBuilder() BACnetContextTagUnknownBuilder {
+	if b == nil {
 		return NewBACnetContextTagUnknownBuilder()
 	}
-	return &_BACnetContextTagUnknownBuilder{_BACnetContextTagUnknown: m.deepCopy()}
+	return &_BACnetContextTagUnknownBuilder{_BACnetContextTagUnknown: b.deepCopy()}
 }
 
 ///////////////////////

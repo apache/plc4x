@@ -89,10 +89,29 @@ type ModbusADUBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ModbusADUBuilder
+	// AsModbusTcpADU converts this build to a subType of ModbusADU. It is always possible to return to current builder using Done()
+	AsModbusTcpADU() interface {
+		ModbusTcpADUBuilder
+		Done() ModbusADUBuilder
+	}
+	// AsModbusRtuADU converts this build to a subType of ModbusADU. It is always possible to return to current builder using Done()
+	AsModbusRtuADU() interface {
+		ModbusRtuADUBuilder
+		Done() ModbusADUBuilder
+	}
+	// AsModbusAsciiADU converts this build to a subType of ModbusADU. It is always possible to return to current builder using Done()
+	AsModbusAsciiADU() interface {
+		ModbusAsciiADUBuilder
+		Done() ModbusADUBuilder
+	}
 	// Build builds the ModbusADU or returns an error if something is wrong
-	Build() (ModbusADUContract, error)
+	PartialBuild() (ModbusADUContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() ModbusADUContract
+	PartialMustBuild() ModbusADUContract
+	// Build builds the ModbusADU or returns an error if something is wrong
+	Build() (ModbusADU, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusADU
 }
 
 // NewModbusADUBuilder() creates a ModbusADUBuilder
@@ -100,43 +119,125 @@ func NewModbusADUBuilder() ModbusADUBuilder {
 	return &_ModbusADUBuilder{_ModbusADU: new(_ModbusADU)}
 }
 
+type _ModbusADUChildBuilder interface {
+	utils.Copyable
+	setParent(ModbusADUContract)
+	buildForModbusADU() (ModbusADU, error)
+}
+
 type _ModbusADUBuilder struct {
 	*_ModbusADU
+
+	childBuilder _ModbusADUChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (ModbusADUBuilder) = (*_ModbusADUBuilder)(nil)
 
-func (m *_ModbusADUBuilder) WithMandatoryFields() ModbusADUBuilder {
-	return m
+func (b *_ModbusADUBuilder) WithMandatoryFields() ModbusADUBuilder {
+	return b
 }
 
-func (m *_ModbusADUBuilder) Build() (ModbusADUContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusADUBuilder) PartialBuild() (ModbusADUContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusADU.deepCopy(), nil
+	return b._ModbusADU.deepCopy(), nil
 }
 
-func (m *_ModbusADUBuilder) MustBuild() ModbusADUContract {
-	build, err := m.Build()
+func (b *_ModbusADUBuilder) PartialMustBuild() ModbusADUContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusADUBuilder) DeepCopy() any {
-	return m.CreateModbusADUBuilder()
+func (b *_ModbusADUBuilder) AsModbusTcpADU() interface {
+	ModbusTcpADUBuilder
+	Done() ModbusADUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusTcpADUBuilder
+		Done() ModbusADUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusTcpADUBuilder().(*_ModbusTcpADUBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusADUBuilder) AsModbusRtuADU() interface {
+	ModbusRtuADUBuilder
+	Done() ModbusADUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusRtuADUBuilder
+		Done() ModbusADUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusRtuADUBuilder().(*_ModbusRtuADUBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusADUBuilder) AsModbusAsciiADU() interface {
+	ModbusAsciiADUBuilder
+	Done() ModbusADUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ModbusAsciiADUBuilder
+		Done() ModbusADUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewModbusAsciiADUBuilder().(*_ModbusAsciiADUBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ModbusADUBuilder) Build() (ModbusADU, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForModbusADU()
+}
+
+func (b *_ModbusADUBuilder) MustBuild() ModbusADU {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ModbusADUBuilder) DeepCopy() any {
+	_copy := b.CreateModbusADUBuilder().(*_ModbusADUBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ModbusADUChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusADUBuilder creates a ModbusADUBuilder
-func (m *_ModbusADU) CreateModbusADUBuilder() ModbusADUBuilder {
-	if m == nil {
+func (b *_ModbusADU) CreateModbusADUBuilder() ModbusADUBuilder {
+	if b == nil {
 		return NewModbusADUBuilder()
 	}
-	return &_ModbusADUBuilder{_ModbusADU: m.deepCopy()}
+	return &_ModbusADUBuilder{_ModbusADU: b.deepCopy()}
 }
 
 ///////////////////////

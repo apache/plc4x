@@ -93,45 +93,64 @@ func NewBACnetConstructedDataRestartNotificationRecipientsBuilder() BACnetConstr
 type _BACnetConstructedDataRestartNotificationRecipientsBuilder struct {
 	*_BACnetConstructedDataRestartNotificationRecipients
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataRestartNotificationRecipientsBuilder) = (*_BACnetConstructedDataRestartNotificationRecipientsBuilder)(nil)
 
-func (m *_BACnetConstructedDataRestartNotificationRecipientsBuilder) WithMandatoryFields(restartNotificationRecipients []BACnetRecipient) BACnetConstructedDataRestartNotificationRecipientsBuilder {
-	return m.WithRestartNotificationRecipients(restartNotificationRecipients...)
+func (b *_BACnetConstructedDataRestartNotificationRecipientsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataRestartNotificationRecipientsBuilder) WithRestartNotificationRecipients(restartNotificationRecipients ...BACnetRecipient) BACnetConstructedDataRestartNotificationRecipientsBuilder {
-	m.RestartNotificationRecipients = restartNotificationRecipients
-	return m
+func (b *_BACnetConstructedDataRestartNotificationRecipientsBuilder) WithMandatoryFields(restartNotificationRecipients []BACnetRecipient) BACnetConstructedDataRestartNotificationRecipientsBuilder {
+	return b.WithRestartNotificationRecipients(restartNotificationRecipients...)
 }
 
-func (m *_BACnetConstructedDataRestartNotificationRecipientsBuilder) Build() (BACnetConstructedDataRestartNotificationRecipients, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataRestartNotificationRecipientsBuilder) WithRestartNotificationRecipients(restartNotificationRecipients ...BACnetRecipient) BACnetConstructedDataRestartNotificationRecipientsBuilder {
+	b.RestartNotificationRecipients = restartNotificationRecipients
+	return b
+}
+
+func (b *_BACnetConstructedDataRestartNotificationRecipientsBuilder) Build() (BACnetConstructedDataRestartNotificationRecipients, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataRestartNotificationRecipients.deepCopy(), nil
+	return b._BACnetConstructedDataRestartNotificationRecipients.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataRestartNotificationRecipientsBuilder) MustBuild() BACnetConstructedDataRestartNotificationRecipients {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataRestartNotificationRecipientsBuilder) MustBuild() BACnetConstructedDataRestartNotificationRecipients {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataRestartNotificationRecipientsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataRestartNotificationRecipientsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataRestartNotificationRecipientsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataRestartNotificationRecipientsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataRestartNotificationRecipientsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataRestartNotificationRecipientsBuilder().(*_BACnetConstructedDataRestartNotificationRecipientsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataRestartNotificationRecipientsBuilder creates a BACnetConstructedDataRestartNotificationRecipientsBuilder
-func (m *_BACnetConstructedDataRestartNotificationRecipients) CreateBACnetConstructedDataRestartNotificationRecipientsBuilder() BACnetConstructedDataRestartNotificationRecipientsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataRestartNotificationRecipients) CreateBACnetConstructedDataRestartNotificationRecipientsBuilder() BACnetConstructedDataRestartNotificationRecipientsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataRestartNotificationRecipientsBuilder()
 	}
-	return &_BACnetConstructedDataRestartNotificationRecipientsBuilder{_BACnetConstructedDataRestartNotificationRecipients: m.deepCopy()}
+	return &_BACnetConstructedDataRestartNotificationRecipientsBuilder{_BACnetConstructedDataRestartNotificationRecipients: b.deepCopy()}
 }
 
 ///////////////////////

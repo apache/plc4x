@@ -100,64 +100,83 @@ func NewBACnetConstructedDataPositiveIntegerValueDeadbandBuilder() BACnetConstru
 type _BACnetConstructedDataPositiveIntegerValueDeadbandBuilder struct {
 	*_BACnetConstructedDataPositiveIntegerValueDeadband
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) = (*_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder)(nil)
 
-func (m *_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) WithMandatoryFields(deadband BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueDeadbandBuilder {
-	return m.WithDeadband(deadband)
+func (b *_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) WithDeadband(deadband BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueDeadbandBuilder {
-	m.Deadband = deadband
-	return m
+func (b *_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) WithMandatoryFields(deadband BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueDeadbandBuilder {
+	return b.WithDeadband(deadband)
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) WithDeadbandBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueDeadbandBuilder {
-	builder := builderSupplier(m.Deadband.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) WithDeadband(deadband BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueDeadbandBuilder {
+	b.Deadband = deadband
+	return b
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) WithDeadbandBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueDeadbandBuilder {
+	builder := builderSupplier(b.Deadband.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.Deadband, err = builder.Build()
+	b.Deadband, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) Build() (BACnetConstructedDataPositiveIntegerValueDeadband, error) {
-	if m.Deadband == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) Build() (BACnetConstructedDataPositiveIntegerValueDeadband, error) {
+	if b.Deadband == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'deadband' not set"))
+		b.err.Append(errors.New("mandatory field 'deadband' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataPositiveIntegerValueDeadband.deepCopy(), nil
+	return b._BACnetConstructedDataPositiveIntegerValueDeadband.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueDeadband {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueDeadband {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataPositiveIntegerValueDeadbandBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPositiveIntegerValueDeadbandBuilder().(*_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataPositiveIntegerValueDeadbandBuilder creates a BACnetConstructedDataPositiveIntegerValueDeadbandBuilder
-func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) CreateBACnetConstructedDataPositiveIntegerValueDeadbandBuilder() BACnetConstructedDataPositiveIntegerValueDeadbandBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataPositiveIntegerValueDeadband) CreateBACnetConstructedDataPositiveIntegerValueDeadbandBuilder() BACnetConstructedDataPositiveIntegerValueDeadbandBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataPositiveIntegerValueDeadbandBuilder()
 	}
-	return &_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder{_BACnetConstructedDataPositiveIntegerValueDeadband: m.deepCopy()}
+	return &_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder{_BACnetConstructedDataPositiveIntegerValueDeadband: b.deepCopy()}
 }
 
 ///////////////////////

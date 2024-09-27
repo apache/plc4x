@@ -81,6 +81,8 @@ type TPKTPacketBuilder interface {
 	WithMandatoryFields(payload COTPPacket) TPKTPacketBuilder
 	// WithPayload adds Payload (property field)
 	WithPayload(COTPPacket) TPKTPacketBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(COTPPacketBuilder) COTPPacketBuilder) TPKTPacketBuilder
 	// Build builds the TPKTPacket or returns an error if something is wrong
 	Build() (TPKTPacket, error)
 	// MustBuild does the same as Build but panics on error
@@ -100,46 +102,63 @@ type _TPKTPacketBuilder struct {
 
 var _ (TPKTPacketBuilder) = (*_TPKTPacketBuilder)(nil)
 
-func (m *_TPKTPacketBuilder) WithMandatoryFields(payload COTPPacket) TPKTPacketBuilder {
-	return m.WithPayload(payload)
+func (b *_TPKTPacketBuilder) WithMandatoryFields(payload COTPPacket) TPKTPacketBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_TPKTPacketBuilder) WithPayload(payload COTPPacket) TPKTPacketBuilder {
-	m.Payload = payload
-	return m
+func (b *_TPKTPacketBuilder) WithPayload(payload COTPPacket) TPKTPacketBuilder {
+	b.Payload = payload
+	return b
 }
 
-func (m *_TPKTPacketBuilder) Build() (TPKTPacket, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_TPKTPacketBuilder) WithPayloadBuilder(builderSupplier func(COTPPacketBuilder) COTPPacketBuilder) TPKTPacketBuilder {
+	builder := builderSupplier(b.Payload.CreateCOTPPacketBuilder())
+	var err error
+	b.Payload, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.Wrap(err, "COTPPacketBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._TPKTPacket.deepCopy(), nil
+	return b
 }
 
-func (m *_TPKTPacketBuilder) MustBuild() TPKTPacket {
-	build, err := m.Build()
+func (b *_TPKTPacketBuilder) Build() (TPKTPacket, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TPKTPacket.deepCopy(), nil
+}
+
+func (b *_TPKTPacketBuilder) MustBuild() TPKTPacket {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TPKTPacketBuilder) DeepCopy() any {
-	return m.CreateTPKTPacketBuilder()
+func (b *_TPKTPacketBuilder) DeepCopy() any {
+	_copy := b.CreateTPKTPacketBuilder().(*_TPKTPacketBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTPKTPacketBuilder creates a TPKTPacketBuilder
-func (m *_TPKTPacket) CreateTPKTPacketBuilder() TPKTPacketBuilder {
-	if m == nil {
+func (b *_TPKTPacket) CreateTPKTPacketBuilder() TPKTPacketBuilder {
+	if b == nil {
 		return NewTPKTPacketBuilder()
 	}
-	return &_TPKTPacketBuilder{_TPKTPacket: m.deepCopy()}
+	return &_TPKTPacketBuilder{_TPKTPacket: b.deepCopy()}
 }
 
 ///////////////////////

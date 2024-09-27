@@ -85,40 +85,59 @@ func NewApduDataAdcReadBuilder() ApduDataAdcReadBuilder {
 type _ApduDataAdcReadBuilder struct {
 	*_ApduDataAdcRead
 
+	parentBuilder *_ApduDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataAdcReadBuilder) = (*_ApduDataAdcReadBuilder)(nil)
 
-func (m *_ApduDataAdcReadBuilder) WithMandatoryFields() ApduDataAdcReadBuilder {
-	return m
+func (b *_ApduDataAdcReadBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
 }
 
-func (m *_ApduDataAdcReadBuilder) Build() (ApduDataAdcRead, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataAdcReadBuilder) WithMandatoryFields() ApduDataAdcReadBuilder {
+	return b
+}
+
+func (b *_ApduDataAdcReadBuilder) Build() (ApduDataAdcRead, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataAdcRead.deepCopy(), nil
+	return b._ApduDataAdcRead.deepCopy(), nil
 }
 
-func (m *_ApduDataAdcReadBuilder) MustBuild() ApduDataAdcRead {
-	build, err := m.Build()
+func (b *_ApduDataAdcReadBuilder) MustBuild() ApduDataAdcRead {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataAdcReadBuilder) DeepCopy() any {
-	return m.CreateApduDataAdcReadBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataAdcReadBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataAdcReadBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataAdcReadBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataAdcReadBuilder().(*_ApduDataAdcReadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataAdcReadBuilder creates a ApduDataAdcReadBuilder
-func (m *_ApduDataAdcRead) CreateApduDataAdcReadBuilder() ApduDataAdcReadBuilder {
-	if m == nil {
+func (b *_ApduDataAdcRead) CreateApduDataAdcReadBuilder() ApduDataAdcReadBuilder {
+	if b == nil {
 		return NewApduDataAdcReadBuilder()
 	}
-	return &_ApduDataAdcReadBuilder{_ApduDataAdcRead: m.deepCopy()}
+	return &_ApduDataAdcReadBuilder{_ApduDataAdcRead: b.deepCopy()}
 }
 
 ///////////////////////

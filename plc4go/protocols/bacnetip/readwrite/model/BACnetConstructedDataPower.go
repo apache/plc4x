@@ -100,64 +100,83 @@ func NewBACnetConstructedDataPowerBuilder() BACnetConstructedDataPowerBuilder {
 type _BACnetConstructedDataPowerBuilder struct {
 	*_BACnetConstructedDataPower
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataPowerBuilder) = (*_BACnetConstructedDataPowerBuilder)(nil)
 
-func (m *_BACnetConstructedDataPowerBuilder) WithMandatoryFields(power BACnetApplicationTagReal) BACnetConstructedDataPowerBuilder {
-	return m.WithPower(power)
+func (b *_BACnetConstructedDataPowerBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataPowerBuilder) WithPower(power BACnetApplicationTagReal) BACnetConstructedDataPowerBuilder {
-	m.Power = power
-	return m
+func (b *_BACnetConstructedDataPowerBuilder) WithMandatoryFields(power BACnetApplicationTagReal) BACnetConstructedDataPowerBuilder {
+	return b.WithPower(power)
 }
 
-func (m *_BACnetConstructedDataPowerBuilder) WithPowerBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataPowerBuilder {
-	builder := builderSupplier(m.Power.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataPowerBuilder) WithPower(power BACnetApplicationTagReal) BACnetConstructedDataPowerBuilder {
+	b.Power = power
+	return b
+}
+
+func (b *_BACnetConstructedDataPowerBuilder) WithPowerBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataPowerBuilder {
+	builder := builderSupplier(b.Power.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.Power, err = builder.Build()
+	b.Power, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataPowerBuilder) Build() (BACnetConstructedDataPower, error) {
-	if m.Power == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataPowerBuilder) Build() (BACnetConstructedDataPower, error) {
+	if b.Power == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'power' not set"))
+		b.err.Append(errors.New("mandatory field 'power' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataPower.deepCopy(), nil
+	return b._BACnetConstructedDataPower.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataPowerBuilder) MustBuild() BACnetConstructedDataPower {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataPowerBuilder) MustBuild() BACnetConstructedDataPower {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataPowerBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataPowerBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPowerBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPowerBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPowerBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPowerBuilder().(*_BACnetConstructedDataPowerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataPowerBuilder creates a BACnetConstructedDataPowerBuilder
-func (m *_BACnetConstructedDataPower) CreateBACnetConstructedDataPowerBuilder() BACnetConstructedDataPowerBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataPower) CreateBACnetConstructedDataPowerBuilder() BACnetConstructedDataPowerBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataPowerBuilder()
 	}
-	return &_BACnetConstructedDataPowerBuilder{_BACnetConstructedDataPower: m.deepCopy()}
+	return &_BACnetConstructedDataPowerBuilder{_BACnetConstructedDataPower: b.deepCopy()}
 }
 
 ///////////////////////

@@ -85,40 +85,59 @@ func NewHistoryUpdateDetailsBuilder() HistoryUpdateDetailsBuilder {
 type _HistoryUpdateDetailsBuilder struct {
 	*_HistoryUpdateDetails
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (HistoryUpdateDetailsBuilder) = (*_HistoryUpdateDetailsBuilder)(nil)
 
-func (m *_HistoryUpdateDetailsBuilder) WithMandatoryFields() HistoryUpdateDetailsBuilder {
-	return m
+func (b *_HistoryUpdateDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_HistoryUpdateDetailsBuilder) Build() (HistoryUpdateDetails, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_HistoryUpdateDetailsBuilder) WithMandatoryFields() HistoryUpdateDetailsBuilder {
+	return b
+}
+
+func (b *_HistoryUpdateDetailsBuilder) Build() (HistoryUpdateDetails, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HistoryUpdateDetails.deepCopy(), nil
+	return b._HistoryUpdateDetails.deepCopy(), nil
 }
 
-func (m *_HistoryUpdateDetailsBuilder) MustBuild() HistoryUpdateDetails {
-	build, err := m.Build()
+func (b *_HistoryUpdateDetailsBuilder) MustBuild() HistoryUpdateDetails {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HistoryUpdateDetailsBuilder) DeepCopy() any {
-	return m.CreateHistoryUpdateDetailsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryUpdateDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryUpdateDetailsBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryUpdateDetailsBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryUpdateDetailsBuilder().(*_HistoryUpdateDetailsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHistoryUpdateDetailsBuilder creates a HistoryUpdateDetailsBuilder
-func (m *_HistoryUpdateDetails) CreateHistoryUpdateDetailsBuilder() HistoryUpdateDetailsBuilder {
-	if m == nil {
+func (b *_HistoryUpdateDetails) CreateHistoryUpdateDetailsBuilder() HistoryUpdateDetailsBuilder {
+	if b == nil {
 		return NewHistoryUpdateDetailsBuilder()
 	}
-	return &_HistoryUpdateDetailsBuilder{_HistoryUpdateDetails: m.deepCopy()}
+	return &_HistoryUpdateDetailsBuilder{_HistoryUpdateDetails: b.deepCopy()}
 }
 
 ///////////////////////

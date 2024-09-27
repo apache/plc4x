@@ -93,45 +93,64 @@ func NewBACnetConstructedDataTrendLogMultipleLogBufferBuilder() BACnetConstructe
 type _BACnetConstructedDataTrendLogMultipleLogBufferBuilder struct {
 	*_BACnetConstructedDataTrendLogMultipleLogBuffer
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataTrendLogMultipleLogBufferBuilder) = (*_BACnetConstructedDataTrendLogMultipleLogBufferBuilder)(nil)
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) WithMandatoryFields(floorText []BACnetLogMultipleRecord) BACnetConstructedDataTrendLogMultipleLogBufferBuilder {
-	return m.WithFloorText(floorText...)
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) WithFloorText(floorText ...BACnetLogMultipleRecord) BACnetConstructedDataTrendLogMultipleLogBufferBuilder {
-	m.FloorText = floorText
-	return m
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) WithMandatoryFields(floorText []BACnetLogMultipleRecord) BACnetConstructedDataTrendLogMultipleLogBufferBuilder {
+	return b.WithFloorText(floorText...)
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) Build() (BACnetConstructedDataTrendLogMultipleLogBuffer, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) WithFloorText(floorText ...BACnetLogMultipleRecord) BACnetConstructedDataTrendLogMultipleLogBufferBuilder {
+	b.FloorText = floorText
+	return b
+}
+
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) Build() (BACnetConstructedDataTrendLogMultipleLogBuffer, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataTrendLogMultipleLogBuffer.deepCopy(), nil
+	return b._BACnetConstructedDataTrendLogMultipleLogBuffer.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) MustBuild() BACnetConstructedDataTrendLogMultipleLogBuffer {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) MustBuild() BACnetConstructedDataTrendLogMultipleLogBuffer {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataTrendLogMultipleLogBufferBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTrendLogMultipleLogBufferBuilder().(*_BACnetConstructedDataTrendLogMultipleLogBufferBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataTrendLogMultipleLogBufferBuilder creates a BACnetConstructedDataTrendLogMultipleLogBufferBuilder
-func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) CreateBACnetConstructedDataTrendLogMultipleLogBufferBuilder() BACnetConstructedDataTrendLogMultipleLogBufferBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataTrendLogMultipleLogBuffer) CreateBACnetConstructedDataTrendLogMultipleLogBufferBuilder() BACnetConstructedDataTrendLogMultipleLogBufferBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataTrendLogMultipleLogBufferBuilder()
 	}
-	return &_BACnetConstructedDataTrendLogMultipleLogBufferBuilder{_BACnetConstructedDataTrendLogMultipleLogBuffer: m.deepCopy()}
+	return &_BACnetConstructedDataTrendLogMultipleLogBufferBuilder{_BACnetConstructedDataTrendLogMultipleLogBuffer: b.deepCopy()}
 }
 
 ///////////////////////

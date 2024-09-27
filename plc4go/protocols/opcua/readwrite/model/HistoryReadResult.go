@@ -120,112 +120,131 @@ func NewHistoryReadResultBuilder() HistoryReadResultBuilder {
 type _HistoryReadResultBuilder struct {
 	*_HistoryReadResult
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (HistoryReadResultBuilder) = (*_HistoryReadResultBuilder)(nil)
 
-func (m *_HistoryReadResultBuilder) WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, historyData ExtensionObject) HistoryReadResultBuilder {
-	return m.WithStatusCode(statusCode).WithContinuationPoint(continuationPoint).WithHistoryData(historyData)
+func (b *_HistoryReadResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_HistoryReadResultBuilder) WithStatusCode(statusCode StatusCode) HistoryReadResultBuilder {
-	m.StatusCode = statusCode
-	return m
+func (b *_HistoryReadResultBuilder) WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, historyData ExtensionObject) HistoryReadResultBuilder {
+	return b.WithStatusCode(statusCode).WithContinuationPoint(continuationPoint).WithHistoryData(historyData)
 }
 
-func (m *_HistoryReadResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) HistoryReadResultBuilder {
-	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+func (b *_HistoryReadResultBuilder) WithStatusCode(statusCode StatusCode) HistoryReadResultBuilder {
+	b.StatusCode = statusCode
+	return b
+}
+
+func (b *_HistoryReadResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) HistoryReadResultBuilder {
+	builder := builderSupplier(b.StatusCode.CreateStatusCodeBuilder())
 	var err error
-	m.StatusCode, err = builder.Build()
+	b.StatusCode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_HistoryReadResultBuilder) WithContinuationPoint(continuationPoint PascalByteString) HistoryReadResultBuilder {
-	m.ContinuationPoint = continuationPoint
-	return m
+func (b *_HistoryReadResultBuilder) WithContinuationPoint(continuationPoint PascalByteString) HistoryReadResultBuilder {
+	b.ContinuationPoint = continuationPoint
+	return b
 }
 
-func (m *_HistoryReadResultBuilder) WithContinuationPointBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) HistoryReadResultBuilder {
-	builder := builderSupplier(m.ContinuationPoint.CreatePascalByteStringBuilder())
+func (b *_HistoryReadResultBuilder) WithContinuationPointBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) HistoryReadResultBuilder {
+	builder := builderSupplier(b.ContinuationPoint.CreatePascalByteStringBuilder())
 	var err error
-	m.ContinuationPoint, err = builder.Build()
+	b.ContinuationPoint, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_HistoryReadResultBuilder) WithHistoryData(historyData ExtensionObject) HistoryReadResultBuilder {
-	m.HistoryData = historyData
-	return m
+func (b *_HistoryReadResultBuilder) WithHistoryData(historyData ExtensionObject) HistoryReadResultBuilder {
+	b.HistoryData = historyData
+	return b
 }
 
-func (m *_HistoryReadResultBuilder) WithHistoryDataBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) HistoryReadResultBuilder {
-	builder := builderSupplier(m.HistoryData.CreateExtensionObjectBuilder())
+func (b *_HistoryReadResultBuilder) WithHistoryDataBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) HistoryReadResultBuilder {
+	builder := builderSupplier(b.HistoryData.CreateExtensionObjectBuilder())
 	var err error
-	m.HistoryData, err = builder.Build()
+	b.HistoryData, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_HistoryReadResultBuilder) Build() (HistoryReadResult, error) {
-	if m.StatusCode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_HistoryReadResultBuilder) Build() (HistoryReadResult, error) {
+	if b.StatusCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
 	}
-	if m.ContinuationPoint == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ContinuationPoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'continuationPoint' not set"))
+		b.err.Append(errors.New("mandatory field 'continuationPoint' not set"))
 	}
-	if m.HistoryData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.HistoryData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'historyData' not set"))
+		b.err.Append(errors.New("mandatory field 'historyData' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HistoryReadResult.deepCopy(), nil
+	return b._HistoryReadResult.deepCopy(), nil
 }
 
-func (m *_HistoryReadResultBuilder) MustBuild() HistoryReadResult {
-	build, err := m.Build()
+func (b *_HistoryReadResultBuilder) MustBuild() HistoryReadResult {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HistoryReadResultBuilder) DeepCopy() any {
-	return m.CreateHistoryReadResultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryReadResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryReadResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryReadResultBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryReadResultBuilder().(*_HistoryReadResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHistoryReadResultBuilder creates a HistoryReadResultBuilder
-func (m *_HistoryReadResult) CreateHistoryReadResultBuilder() HistoryReadResultBuilder {
-	if m == nil {
+func (b *_HistoryReadResult) CreateHistoryReadResultBuilder() HistoryReadResultBuilder {
+	if b == nil {
 		return NewHistoryReadResultBuilder()
 	}
-	return &_HistoryReadResultBuilder{_HistoryReadResult: m.deepCopy()}
+	return &_HistoryReadResultBuilder{_HistoryReadResult: b.deepCopy()}
 }
 
 ///////////////////////

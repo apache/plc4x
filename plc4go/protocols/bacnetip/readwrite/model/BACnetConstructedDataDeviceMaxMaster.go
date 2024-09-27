@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDeviceMaxMasterBuilder() BACnetConstructedDataDevic
 type _BACnetConstructedDataDeviceMaxMasterBuilder struct {
 	*_BACnetConstructedDataDeviceMaxMaster
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDeviceMaxMasterBuilder) = (*_BACnetConstructedDataDeviceMaxMasterBuilder)(nil)
 
-func (m *_BACnetConstructedDataDeviceMaxMasterBuilder) WithMandatoryFields(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDeviceMaxMasterBuilder {
-	return m.WithMaxMaster(maxMaster)
+func (b *_BACnetConstructedDataDeviceMaxMasterBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDeviceMaxMasterBuilder) WithMaxMaster(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDeviceMaxMasterBuilder {
-	m.MaxMaster = maxMaster
-	return m
+func (b *_BACnetConstructedDataDeviceMaxMasterBuilder) WithMandatoryFields(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDeviceMaxMasterBuilder {
+	return b.WithMaxMaster(maxMaster)
 }
 
-func (m *_BACnetConstructedDataDeviceMaxMasterBuilder) WithMaxMasterBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDeviceMaxMasterBuilder {
-	builder := builderSupplier(m.MaxMaster.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataDeviceMaxMasterBuilder) WithMaxMaster(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDeviceMaxMasterBuilder {
+	b.MaxMaster = maxMaster
+	return b
+}
+
+func (b *_BACnetConstructedDataDeviceMaxMasterBuilder) WithMaxMasterBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDeviceMaxMasterBuilder {
+	builder := builderSupplier(b.MaxMaster.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.MaxMaster, err = builder.Build()
+	b.MaxMaster, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDeviceMaxMasterBuilder) Build() (BACnetConstructedDataDeviceMaxMaster, error) {
-	if m.MaxMaster == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDeviceMaxMasterBuilder) Build() (BACnetConstructedDataDeviceMaxMaster, error) {
+	if b.MaxMaster == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'maxMaster' not set"))
+		b.err.Append(errors.New("mandatory field 'maxMaster' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDeviceMaxMaster.deepCopy(), nil
+	return b._BACnetConstructedDataDeviceMaxMaster.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDeviceMaxMasterBuilder) MustBuild() BACnetConstructedDataDeviceMaxMaster {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDeviceMaxMasterBuilder) MustBuild() BACnetConstructedDataDeviceMaxMaster {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDeviceMaxMasterBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDeviceMaxMasterBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDeviceMaxMasterBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDeviceMaxMasterBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDeviceMaxMasterBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDeviceMaxMasterBuilder().(*_BACnetConstructedDataDeviceMaxMasterBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDeviceMaxMasterBuilder creates a BACnetConstructedDataDeviceMaxMasterBuilder
-func (m *_BACnetConstructedDataDeviceMaxMaster) CreateBACnetConstructedDataDeviceMaxMasterBuilder() BACnetConstructedDataDeviceMaxMasterBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDeviceMaxMaster) CreateBACnetConstructedDataDeviceMaxMasterBuilder() BACnetConstructedDataDeviceMaxMasterBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDeviceMaxMasterBuilder()
 	}
-	return &_BACnetConstructedDataDeviceMaxMasterBuilder{_BACnetConstructedDataDeviceMaxMaster: m.deepCopy()}
+	return &_BACnetConstructedDataDeviceMaxMasterBuilder{_BACnetConstructedDataDeviceMaxMaster: b.deepCopy()}
 }
 
 ///////////////////////

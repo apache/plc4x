@@ -85,40 +85,59 @@ func NewAdsInvalidResponseBuilder() AdsInvalidResponseBuilder {
 type _AdsInvalidResponseBuilder struct {
 	*_AdsInvalidResponse
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsInvalidResponseBuilder) = (*_AdsInvalidResponseBuilder)(nil)
 
-func (m *_AdsInvalidResponseBuilder) WithMandatoryFields() AdsInvalidResponseBuilder {
-	return m
+func (b *_AdsInvalidResponseBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_AdsInvalidResponseBuilder) Build() (AdsInvalidResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsInvalidResponseBuilder) WithMandatoryFields() AdsInvalidResponseBuilder {
+	return b
+}
+
+func (b *_AdsInvalidResponseBuilder) Build() (AdsInvalidResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsInvalidResponse.deepCopy(), nil
+	return b._AdsInvalidResponse.deepCopy(), nil
 }
 
-func (m *_AdsInvalidResponseBuilder) MustBuild() AdsInvalidResponse {
-	build, err := m.Build()
+func (b *_AdsInvalidResponseBuilder) MustBuild() AdsInvalidResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsInvalidResponseBuilder) DeepCopy() any {
-	return m.CreateAdsInvalidResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsInvalidResponseBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsInvalidResponseBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsInvalidResponseBuilder) DeepCopy() any {
+	_copy := b.CreateAdsInvalidResponseBuilder().(*_AdsInvalidResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsInvalidResponseBuilder creates a AdsInvalidResponseBuilder
-func (m *_AdsInvalidResponse) CreateAdsInvalidResponseBuilder() AdsInvalidResponseBuilder {
-	if m == nil {
+func (b *_AdsInvalidResponse) CreateAdsInvalidResponseBuilder() AdsInvalidResponseBuilder {
+	if b == nil {
 		return NewAdsInvalidResponseBuilder()
 	}
-	return &_AdsInvalidResponseBuilder{_AdsInvalidResponse: m.deepCopy()}
+	return &_AdsInvalidResponseBuilder{_AdsInvalidResponse: b.deepCopy()}
 }
 
 ///////////////////////

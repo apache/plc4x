@@ -93,45 +93,64 @@ func NewAdsDiscoveryBlockVersionBuilder() AdsDiscoveryBlockVersionBuilder {
 type _AdsDiscoveryBlockVersionBuilder struct {
 	*_AdsDiscoveryBlockVersion
 
+	parentBuilder *_AdsDiscoveryBlockBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsDiscoveryBlockVersionBuilder) = (*_AdsDiscoveryBlockVersionBuilder)(nil)
 
-func (m *_AdsDiscoveryBlockVersionBuilder) WithMandatoryFields(versionData []byte) AdsDiscoveryBlockVersionBuilder {
-	return m.WithVersionData(versionData...)
+func (b *_AdsDiscoveryBlockVersionBuilder) setParent(contract AdsDiscoveryBlockContract) {
+	b.AdsDiscoveryBlockContract = contract
 }
 
-func (m *_AdsDiscoveryBlockVersionBuilder) WithVersionData(versionData ...byte) AdsDiscoveryBlockVersionBuilder {
-	m.VersionData = versionData
-	return m
+func (b *_AdsDiscoveryBlockVersionBuilder) WithMandatoryFields(versionData []byte) AdsDiscoveryBlockVersionBuilder {
+	return b.WithVersionData(versionData...)
 }
 
-func (m *_AdsDiscoveryBlockVersionBuilder) Build() (AdsDiscoveryBlockVersion, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsDiscoveryBlockVersionBuilder) WithVersionData(versionData ...byte) AdsDiscoveryBlockVersionBuilder {
+	b.VersionData = versionData
+	return b
+}
+
+func (b *_AdsDiscoveryBlockVersionBuilder) Build() (AdsDiscoveryBlockVersion, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsDiscoveryBlockVersion.deepCopy(), nil
+	return b._AdsDiscoveryBlockVersion.deepCopy(), nil
 }
 
-func (m *_AdsDiscoveryBlockVersionBuilder) MustBuild() AdsDiscoveryBlockVersion {
-	build, err := m.Build()
+func (b *_AdsDiscoveryBlockVersionBuilder) MustBuild() AdsDiscoveryBlockVersion {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsDiscoveryBlockVersionBuilder) DeepCopy() any {
-	return m.CreateAdsDiscoveryBlockVersionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsDiscoveryBlockVersionBuilder) Done() AdsDiscoveryBlockBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsDiscoveryBlockVersionBuilder) buildForAdsDiscoveryBlock() (AdsDiscoveryBlock, error) {
+	return b.Build()
+}
+
+func (b *_AdsDiscoveryBlockVersionBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryBlockVersionBuilder().(*_AdsDiscoveryBlockVersionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsDiscoveryBlockVersionBuilder creates a AdsDiscoveryBlockVersionBuilder
-func (m *_AdsDiscoveryBlockVersion) CreateAdsDiscoveryBlockVersionBuilder() AdsDiscoveryBlockVersionBuilder {
-	if m == nil {
+func (b *_AdsDiscoveryBlockVersion) CreateAdsDiscoveryBlockVersionBuilder() AdsDiscoveryBlockVersionBuilder {
+	if b == nil {
 		return NewAdsDiscoveryBlockVersionBuilder()
 	}
-	return &_AdsDiscoveryBlockVersionBuilder{_AdsDiscoveryBlockVersion: m.deepCopy()}
+	return &_AdsDiscoveryBlockVersionBuilder{_AdsDiscoveryBlockVersion: b.deepCopy()}
 }
 
 ///////////////////////

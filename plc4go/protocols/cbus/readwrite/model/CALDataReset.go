@@ -85,40 +85,59 @@ func NewCALDataResetBuilder() CALDataResetBuilder {
 type _CALDataResetBuilder struct {
 	*_CALDataReset
 
+	parentBuilder *_CALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CALDataResetBuilder) = (*_CALDataResetBuilder)(nil)
 
-func (m *_CALDataResetBuilder) WithMandatoryFields() CALDataResetBuilder {
-	return m
+func (b *_CALDataResetBuilder) setParent(contract CALDataContract) {
+	b.CALDataContract = contract
 }
 
-func (m *_CALDataResetBuilder) Build() (CALDataReset, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CALDataResetBuilder) WithMandatoryFields() CALDataResetBuilder {
+	return b
+}
+
+func (b *_CALDataResetBuilder) Build() (CALDataReset, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CALDataReset.deepCopy(), nil
+	return b._CALDataReset.deepCopy(), nil
 }
 
-func (m *_CALDataResetBuilder) MustBuild() CALDataReset {
-	build, err := m.Build()
+func (b *_CALDataResetBuilder) MustBuild() CALDataReset {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CALDataResetBuilder) DeepCopy() any {
-	return m.CreateCALDataResetBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CALDataResetBuilder) Done() CALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CALDataResetBuilder) buildForCALData() (CALData, error) {
+	return b.Build()
+}
+
+func (b *_CALDataResetBuilder) DeepCopy() any {
+	_copy := b.CreateCALDataResetBuilder().(*_CALDataResetBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCALDataResetBuilder creates a CALDataResetBuilder
-func (m *_CALDataReset) CreateCALDataResetBuilder() CALDataResetBuilder {
-	if m == nil {
+func (b *_CALDataReset) CreateCALDataResetBuilder() CALDataResetBuilder {
+	if b == nil {
 		return NewCALDataResetBuilder()
 	}
-	return &_CALDataResetBuilder{_CALDataReset: m.deepCopy()}
+	return &_CALDataResetBuilder{_CALDataReset: b.deepCopy()}
 }
 
 ///////////////////////

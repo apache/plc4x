@@ -103,63 +103,82 @@ func NewBACnetConstructedDataSupportedFormatsBuilder() BACnetConstructedDataSupp
 type _BACnetConstructedDataSupportedFormatsBuilder struct {
 	*_BACnetConstructedDataSupportedFormats
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSupportedFormatsBuilder) = (*_BACnetConstructedDataSupportedFormatsBuilder)(nil)
 
-func (m *_BACnetConstructedDataSupportedFormatsBuilder) WithMandatoryFields(supportedFormats []BACnetAuthenticationFactorFormat) BACnetConstructedDataSupportedFormatsBuilder {
-	return m.WithSupportedFormats(supportedFormats...)
+func (b *_BACnetConstructedDataSupportedFormatsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSupportedFormatsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSupportedFormatsBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataSupportedFormatsBuilder) WithMandatoryFields(supportedFormats []BACnetAuthenticationFactorFormat) BACnetConstructedDataSupportedFormatsBuilder {
+	return b.WithSupportedFormats(supportedFormats...)
 }
 
-func (m *_BACnetConstructedDataSupportedFormatsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSupportedFormatsBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataSupportedFormatsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSupportedFormatsBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataSupportedFormatsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSupportedFormatsBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataSupportedFormatsBuilder) WithSupportedFormats(supportedFormats ...BACnetAuthenticationFactorFormat) BACnetConstructedDataSupportedFormatsBuilder {
-	m.SupportedFormats = supportedFormats
-	return m
+func (b *_BACnetConstructedDataSupportedFormatsBuilder) WithSupportedFormats(supportedFormats ...BACnetAuthenticationFactorFormat) BACnetConstructedDataSupportedFormatsBuilder {
+	b.SupportedFormats = supportedFormats
+	return b
 }
 
-func (m *_BACnetConstructedDataSupportedFormatsBuilder) Build() (BACnetConstructedDataSupportedFormats, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataSupportedFormatsBuilder) Build() (BACnetConstructedDataSupportedFormats, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSupportedFormats.deepCopy(), nil
+	return b._BACnetConstructedDataSupportedFormats.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSupportedFormatsBuilder) MustBuild() BACnetConstructedDataSupportedFormats {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSupportedFormatsBuilder) MustBuild() BACnetConstructedDataSupportedFormats {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSupportedFormatsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSupportedFormatsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSupportedFormatsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSupportedFormatsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSupportedFormatsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSupportedFormatsBuilder().(*_BACnetConstructedDataSupportedFormatsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSupportedFormatsBuilder creates a BACnetConstructedDataSupportedFormatsBuilder
-func (m *_BACnetConstructedDataSupportedFormats) CreateBACnetConstructedDataSupportedFormatsBuilder() BACnetConstructedDataSupportedFormatsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSupportedFormats) CreateBACnetConstructedDataSupportedFormatsBuilder() BACnetConstructedDataSupportedFormatsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSupportedFormatsBuilder()
 	}
-	return &_BACnetConstructedDataSupportedFormatsBuilder{_BACnetConstructedDataSupportedFormats: m.deepCopy()}
+	return &_BACnetConstructedDataSupportedFormatsBuilder{_BACnetConstructedDataSupportedFormats: b.deepCopy()}
 }
 
 ///////////////////////

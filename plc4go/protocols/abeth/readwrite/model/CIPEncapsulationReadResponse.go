@@ -87,6 +87,8 @@ type CIPEncapsulationReadResponseBuilder interface {
 	WithMandatoryFields(response DF1ResponseMessage) CIPEncapsulationReadResponseBuilder
 	// WithResponse adds Response (property field)
 	WithResponse(DF1ResponseMessage) CIPEncapsulationReadResponseBuilder
+	// WithResponseBuilder adds Response (property field) which is build by the builder
+	WithResponseBuilder(func(DF1ResponseMessageBuilder) DF1ResponseMessageBuilder) CIPEncapsulationReadResponseBuilder
 	// Build builds the CIPEncapsulationReadResponse or returns an error if something is wrong
 	Build() (CIPEncapsulationReadResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -101,51 +103,83 @@ func NewCIPEncapsulationReadResponseBuilder() CIPEncapsulationReadResponseBuilde
 type _CIPEncapsulationReadResponseBuilder struct {
 	*_CIPEncapsulationReadResponse
 
+	parentBuilder *_CIPEncapsulationPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CIPEncapsulationReadResponseBuilder) = (*_CIPEncapsulationReadResponseBuilder)(nil)
 
-func (m *_CIPEncapsulationReadResponseBuilder) WithMandatoryFields(response DF1ResponseMessage) CIPEncapsulationReadResponseBuilder {
-	return m.WithResponse(response)
+func (b *_CIPEncapsulationReadResponseBuilder) setParent(contract CIPEncapsulationPacketContract) {
+	b.CIPEncapsulationPacketContract = contract
 }
 
-func (m *_CIPEncapsulationReadResponseBuilder) WithResponse(response DF1ResponseMessage) CIPEncapsulationReadResponseBuilder {
-	m.Response = response
-	return m
+func (b *_CIPEncapsulationReadResponseBuilder) WithMandatoryFields(response DF1ResponseMessage) CIPEncapsulationReadResponseBuilder {
+	return b.WithResponse(response)
 }
 
-func (m *_CIPEncapsulationReadResponseBuilder) Build() (CIPEncapsulationReadResponse, error) {
-	if m.Response == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CIPEncapsulationReadResponseBuilder) WithResponse(response DF1ResponseMessage) CIPEncapsulationReadResponseBuilder {
+	b.Response = response
+	return b
+}
+
+func (b *_CIPEncapsulationReadResponseBuilder) WithResponseBuilder(builderSupplier func(DF1ResponseMessageBuilder) DF1ResponseMessageBuilder) CIPEncapsulationReadResponseBuilder {
+	builder := builderSupplier(b.Response.CreateDF1ResponseMessageBuilder())
+	var err error
+	b.Response, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'response' not set"))
+		b.err.Append(errors.Wrap(err, "DF1ResponseMessageBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._CIPEncapsulationReadResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_CIPEncapsulationReadResponseBuilder) MustBuild() CIPEncapsulationReadResponse {
-	build, err := m.Build()
+func (b *_CIPEncapsulationReadResponseBuilder) Build() (CIPEncapsulationReadResponse, error) {
+	if b.Response == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'response' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CIPEncapsulationReadResponse.deepCopy(), nil
+}
+
+func (b *_CIPEncapsulationReadResponseBuilder) MustBuild() CIPEncapsulationReadResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CIPEncapsulationReadResponseBuilder) DeepCopy() any {
-	return m.CreateCIPEncapsulationReadResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CIPEncapsulationReadResponseBuilder) Done() CIPEncapsulationPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CIPEncapsulationReadResponseBuilder) buildForCIPEncapsulationPacket() (CIPEncapsulationPacket, error) {
+	return b.Build()
+}
+
+func (b *_CIPEncapsulationReadResponseBuilder) DeepCopy() any {
+	_copy := b.CreateCIPEncapsulationReadResponseBuilder().(*_CIPEncapsulationReadResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCIPEncapsulationReadResponseBuilder creates a CIPEncapsulationReadResponseBuilder
-func (m *_CIPEncapsulationReadResponse) CreateCIPEncapsulationReadResponseBuilder() CIPEncapsulationReadResponseBuilder {
-	if m == nil {
+func (b *_CIPEncapsulationReadResponse) CreateCIPEncapsulationReadResponseBuilder() CIPEncapsulationReadResponseBuilder {
+	if b == nil {
 		return NewCIPEncapsulationReadResponseBuilder()
 	}
-	return &_CIPEncapsulationReadResponseBuilder{_CIPEncapsulationReadResponse: m.deepCopy()}
+	return &_CIPEncapsulationReadResponseBuilder{_CIPEncapsulationReadResponse: b.deepCopy()}
 }
 
 ///////////////////////

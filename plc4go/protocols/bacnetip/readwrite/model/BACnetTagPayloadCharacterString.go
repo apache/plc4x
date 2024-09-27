@@ -101,45 +101,49 @@ type _BACnetTagPayloadCharacterStringBuilder struct {
 
 var _ (BACnetTagPayloadCharacterStringBuilder) = (*_BACnetTagPayloadCharacterStringBuilder)(nil)
 
-func (m *_BACnetTagPayloadCharacterStringBuilder) WithMandatoryFields(encoding BACnetCharacterEncoding, value string) BACnetTagPayloadCharacterStringBuilder {
-	return m.WithEncoding(encoding).WithValue(value)
+func (b *_BACnetTagPayloadCharacterStringBuilder) WithMandatoryFields(encoding BACnetCharacterEncoding, value string) BACnetTagPayloadCharacterStringBuilder {
+	return b.WithEncoding(encoding).WithValue(value)
 }
 
-func (m *_BACnetTagPayloadCharacterStringBuilder) WithEncoding(encoding BACnetCharacterEncoding) BACnetTagPayloadCharacterStringBuilder {
-	m.Encoding = encoding
-	return m
+func (b *_BACnetTagPayloadCharacterStringBuilder) WithEncoding(encoding BACnetCharacterEncoding) BACnetTagPayloadCharacterStringBuilder {
+	b.Encoding = encoding
+	return b
 }
 
-func (m *_BACnetTagPayloadCharacterStringBuilder) WithValue(value string) BACnetTagPayloadCharacterStringBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetTagPayloadCharacterStringBuilder) WithValue(value string) BACnetTagPayloadCharacterStringBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetTagPayloadCharacterStringBuilder) Build() (BACnetTagPayloadCharacterString, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetTagPayloadCharacterStringBuilder) Build() (BACnetTagPayloadCharacterString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTagPayloadCharacterString.deepCopy(), nil
+	return b._BACnetTagPayloadCharacterString.deepCopy(), nil
 }
 
-func (m *_BACnetTagPayloadCharacterStringBuilder) MustBuild() BACnetTagPayloadCharacterString {
-	build, err := m.Build()
+func (b *_BACnetTagPayloadCharacterStringBuilder) MustBuild() BACnetTagPayloadCharacterString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTagPayloadCharacterStringBuilder) DeepCopy() any {
-	return m.CreateBACnetTagPayloadCharacterStringBuilder()
+func (b *_BACnetTagPayloadCharacterStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadCharacterStringBuilder().(*_BACnetTagPayloadCharacterStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTagPayloadCharacterStringBuilder creates a BACnetTagPayloadCharacterStringBuilder
-func (m *_BACnetTagPayloadCharacterString) CreateBACnetTagPayloadCharacterStringBuilder() BACnetTagPayloadCharacterStringBuilder {
-	if m == nil {
+func (b *_BACnetTagPayloadCharacterString) CreateBACnetTagPayloadCharacterStringBuilder() BACnetTagPayloadCharacterStringBuilder {
+	if b == nil {
 		return NewBACnetTagPayloadCharacterStringBuilder()
 	}
-	return &_BACnetTagPayloadCharacterStringBuilder{_BACnetTagPayloadCharacterString: m.deepCopy()}
+	return &_BACnetTagPayloadCharacterStringBuilder{_BACnetTagPayloadCharacterString: b.deepCopy()}
 }
 
 ///////////////////////

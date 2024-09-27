@@ -85,40 +85,59 @@ func NewS7MessageRequestBuilder() S7MessageRequestBuilder {
 type _S7MessageRequestBuilder struct {
 	*_S7MessageRequest
 
+	parentBuilder *_S7MessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7MessageRequestBuilder) = (*_S7MessageRequestBuilder)(nil)
 
-func (m *_S7MessageRequestBuilder) WithMandatoryFields() S7MessageRequestBuilder {
-	return m
+func (b *_S7MessageRequestBuilder) setParent(contract S7MessageContract) {
+	b.S7MessageContract = contract
 }
 
-func (m *_S7MessageRequestBuilder) Build() (S7MessageRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7MessageRequestBuilder) WithMandatoryFields() S7MessageRequestBuilder {
+	return b
+}
+
+func (b *_S7MessageRequestBuilder) Build() (S7MessageRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7MessageRequest.deepCopy(), nil
+	return b._S7MessageRequest.deepCopy(), nil
 }
 
-func (m *_S7MessageRequestBuilder) MustBuild() S7MessageRequest {
-	build, err := m.Build()
+func (b *_S7MessageRequestBuilder) MustBuild() S7MessageRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7MessageRequestBuilder) DeepCopy() any {
-	return m.CreateS7MessageRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7MessageRequestBuilder) Done() S7MessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7MessageRequestBuilder) buildForS7Message() (S7Message, error) {
+	return b.Build()
+}
+
+func (b *_S7MessageRequestBuilder) DeepCopy() any {
+	_copy := b.CreateS7MessageRequestBuilder().(*_S7MessageRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7MessageRequestBuilder creates a S7MessageRequestBuilder
-func (m *_S7MessageRequest) CreateS7MessageRequestBuilder() S7MessageRequestBuilder {
-	if m == nil {
+func (b *_S7MessageRequest) CreateS7MessageRequestBuilder() S7MessageRequestBuilder {
+	if b == nil {
 		return NewS7MessageRequestBuilder()
 	}
-	return &_S7MessageRequestBuilder{_S7MessageRequest: m.deepCopy()}
+	return &_S7MessageRequestBuilder{_S7MessageRequest: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataApplicationSoftwareVersionBuilder() BACnetConstruct
 type _BACnetConstructedDataApplicationSoftwareVersionBuilder struct {
 	*_BACnetConstructedDataApplicationSoftwareVersion
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataApplicationSoftwareVersionBuilder) = (*_BACnetConstructedDataApplicationSoftwareVersionBuilder)(nil)
 
-func (m *_BACnetConstructedDataApplicationSoftwareVersionBuilder) WithMandatoryFields(applicationSoftwareVersion BACnetApplicationTagCharacterString) BACnetConstructedDataApplicationSoftwareVersionBuilder {
-	return m.WithApplicationSoftwareVersion(applicationSoftwareVersion)
+func (b *_BACnetConstructedDataApplicationSoftwareVersionBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataApplicationSoftwareVersionBuilder) WithApplicationSoftwareVersion(applicationSoftwareVersion BACnetApplicationTagCharacterString) BACnetConstructedDataApplicationSoftwareVersionBuilder {
-	m.ApplicationSoftwareVersion = applicationSoftwareVersion
-	return m
+func (b *_BACnetConstructedDataApplicationSoftwareVersionBuilder) WithMandatoryFields(applicationSoftwareVersion BACnetApplicationTagCharacterString) BACnetConstructedDataApplicationSoftwareVersionBuilder {
+	return b.WithApplicationSoftwareVersion(applicationSoftwareVersion)
 }
 
-func (m *_BACnetConstructedDataApplicationSoftwareVersionBuilder) WithApplicationSoftwareVersionBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataApplicationSoftwareVersionBuilder {
-	builder := builderSupplier(m.ApplicationSoftwareVersion.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetConstructedDataApplicationSoftwareVersionBuilder) WithApplicationSoftwareVersion(applicationSoftwareVersion BACnetApplicationTagCharacterString) BACnetConstructedDataApplicationSoftwareVersionBuilder {
+	b.ApplicationSoftwareVersion = applicationSoftwareVersion
+	return b
+}
+
+func (b *_BACnetConstructedDataApplicationSoftwareVersionBuilder) WithApplicationSoftwareVersionBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataApplicationSoftwareVersionBuilder {
+	builder := builderSupplier(b.ApplicationSoftwareVersion.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.ApplicationSoftwareVersion, err = builder.Build()
+	b.ApplicationSoftwareVersion, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataApplicationSoftwareVersionBuilder) Build() (BACnetConstructedDataApplicationSoftwareVersion, error) {
-	if m.ApplicationSoftwareVersion == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataApplicationSoftwareVersionBuilder) Build() (BACnetConstructedDataApplicationSoftwareVersion, error) {
+	if b.ApplicationSoftwareVersion == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'applicationSoftwareVersion' not set"))
+		b.err.Append(errors.New("mandatory field 'applicationSoftwareVersion' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataApplicationSoftwareVersion.deepCopy(), nil
+	return b._BACnetConstructedDataApplicationSoftwareVersion.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataApplicationSoftwareVersionBuilder) MustBuild() BACnetConstructedDataApplicationSoftwareVersion {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataApplicationSoftwareVersionBuilder) MustBuild() BACnetConstructedDataApplicationSoftwareVersion {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataApplicationSoftwareVersionBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataApplicationSoftwareVersionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataApplicationSoftwareVersionBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataApplicationSoftwareVersionBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataApplicationSoftwareVersionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataApplicationSoftwareVersionBuilder().(*_BACnetConstructedDataApplicationSoftwareVersionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataApplicationSoftwareVersionBuilder creates a BACnetConstructedDataApplicationSoftwareVersionBuilder
-func (m *_BACnetConstructedDataApplicationSoftwareVersion) CreateBACnetConstructedDataApplicationSoftwareVersionBuilder() BACnetConstructedDataApplicationSoftwareVersionBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataApplicationSoftwareVersion) CreateBACnetConstructedDataApplicationSoftwareVersionBuilder() BACnetConstructedDataApplicationSoftwareVersionBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataApplicationSoftwareVersionBuilder()
 	}
-	return &_BACnetConstructedDataApplicationSoftwareVersionBuilder{_BACnetConstructedDataApplicationSoftwareVersion: m.deepCopy()}
+	return &_BACnetConstructedDataApplicationSoftwareVersionBuilder{_BACnetConstructedDataApplicationSoftwareVersion: b.deepCopy()}
 }
 
 ///////////////////////

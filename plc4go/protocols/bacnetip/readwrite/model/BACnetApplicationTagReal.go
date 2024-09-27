@@ -100,64 +100,83 @@ func NewBACnetApplicationTagRealBuilder() BACnetApplicationTagRealBuilder {
 type _BACnetApplicationTagRealBuilder struct {
 	*_BACnetApplicationTagReal
 
+	parentBuilder *_BACnetApplicationTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetApplicationTagRealBuilder) = (*_BACnetApplicationTagRealBuilder)(nil)
 
-func (m *_BACnetApplicationTagRealBuilder) WithMandatoryFields(payload BACnetTagPayloadReal) BACnetApplicationTagRealBuilder {
-	return m.WithPayload(payload)
+func (b *_BACnetApplicationTagRealBuilder) setParent(contract BACnetApplicationTagContract) {
+	b.BACnetApplicationTagContract = contract
 }
 
-func (m *_BACnetApplicationTagRealBuilder) WithPayload(payload BACnetTagPayloadReal) BACnetApplicationTagRealBuilder {
-	m.Payload = payload
-	return m
+func (b *_BACnetApplicationTagRealBuilder) WithMandatoryFields(payload BACnetTagPayloadReal) BACnetApplicationTagRealBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_BACnetApplicationTagRealBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadRealBuilder) BACnetTagPayloadRealBuilder) BACnetApplicationTagRealBuilder {
-	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadRealBuilder())
+func (b *_BACnetApplicationTagRealBuilder) WithPayload(payload BACnetTagPayloadReal) BACnetApplicationTagRealBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetApplicationTagRealBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadRealBuilder) BACnetTagPayloadRealBuilder) BACnetApplicationTagRealBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadRealBuilder())
 	var err error
-	m.Payload, err = builder.Build()
+	b.Payload, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagPayloadRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetApplicationTagRealBuilder) Build() (BACnetApplicationTagReal, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetApplicationTagRealBuilder) Build() (BACnetApplicationTagReal, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetApplicationTagReal.deepCopy(), nil
+	return b._BACnetApplicationTagReal.deepCopy(), nil
 }
 
-func (m *_BACnetApplicationTagRealBuilder) MustBuild() BACnetApplicationTagReal {
-	build, err := m.Build()
+func (b *_BACnetApplicationTagRealBuilder) MustBuild() BACnetApplicationTagReal {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetApplicationTagRealBuilder) DeepCopy() any {
-	return m.CreateBACnetApplicationTagRealBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetApplicationTagRealBuilder) Done() BACnetApplicationTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetApplicationTagRealBuilder) buildForBACnetApplicationTag() (BACnetApplicationTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetApplicationTagRealBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetApplicationTagRealBuilder().(*_BACnetApplicationTagRealBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetApplicationTagRealBuilder creates a BACnetApplicationTagRealBuilder
-func (m *_BACnetApplicationTagReal) CreateBACnetApplicationTagRealBuilder() BACnetApplicationTagRealBuilder {
-	if m == nil {
+func (b *_BACnetApplicationTagReal) CreateBACnetApplicationTagRealBuilder() BACnetApplicationTagRealBuilder {
+	if b == nil {
 		return NewBACnetApplicationTagRealBuilder()
 	}
-	return &_BACnetApplicationTagRealBuilder{_BACnetApplicationTagReal: m.deepCopy()}
+	return &_BACnetApplicationTagRealBuilder{_BACnetApplicationTagReal: b.deepCopy()}
 }
 
 ///////////////////////

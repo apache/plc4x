@@ -85,40 +85,59 @@ func NewUnionBuilder() UnionBuilder {
 type _UnionBuilder struct {
 	*_Union
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (UnionBuilder) = (*_UnionBuilder)(nil)
 
-func (m *_UnionBuilder) WithMandatoryFields() UnionBuilder {
-	return m
+func (b *_UnionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_UnionBuilder) Build() (Union, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_UnionBuilder) WithMandatoryFields() UnionBuilder {
+	return b
+}
+
+func (b *_UnionBuilder) Build() (Union, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Union.deepCopy(), nil
+	return b._Union.deepCopy(), nil
 }
 
-func (m *_UnionBuilder) MustBuild() Union {
-	build, err := m.Build()
+func (b *_UnionBuilder) MustBuild() Union {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_UnionBuilder) DeepCopy() any {
-	return m.CreateUnionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UnionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UnionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_UnionBuilder) DeepCopy() any {
+	_copy := b.CreateUnionBuilder().(*_UnionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateUnionBuilder creates a UnionBuilder
-func (m *_Union) CreateUnionBuilder() UnionBuilder {
-	if m == nil {
+func (b *_Union) CreateUnionBuilder() UnionBuilder {
+	if b == nil {
 		return NewUnionBuilder()
 	}
-	return &_UnionBuilder{_Union: m.deepCopy()}
+	return &_UnionBuilder{_Union: b.deepCopy()}
 }
 
 ///////////////////////

@@ -98,64 +98,83 @@ func NewBACnetLogRecordLogDatumRealValueBuilder() BACnetLogRecordLogDatumRealVal
 type _BACnetLogRecordLogDatumRealValueBuilder struct {
 	*_BACnetLogRecordLogDatumRealValue
 
+	parentBuilder *_BACnetLogRecordLogDatumBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetLogRecordLogDatumRealValueBuilder) = (*_BACnetLogRecordLogDatumRealValueBuilder)(nil)
 
-func (m *_BACnetLogRecordLogDatumRealValueBuilder) WithMandatoryFields(realValue BACnetContextTagReal) BACnetLogRecordLogDatumRealValueBuilder {
-	return m.WithRealValue(realValue)
+func (b *_BACnetLogRecordLogDatumRealValueBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
+	b.BACnetLogRecordLogDatumContract = contract
 }
 
-func (m *_BACnetLogRecordLogDatumRealValueBuilder) WithRealValue(realValue BACnetContextTagReal) BACnetLogRecordLogDatumRealValueBuilder {
-	m.RealValue = realValue
-	return m
+func (b *_BACnetLogRecordLogDatumRealValueBuilder) WithMandatoryFields(realValue BACnetContextTagReal) BACnetLogRecordLogDatumRealValueBuilder {
+	return b.WithRealValue(realValue)
 }
 
-func (m *_BACnetLogRecordLogDatumRealValueBuilder) WithRealValueBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLogRecordLogDatumRealValueBuilder {
-	builder := builderSupplier(m.RealValue.CreateBACnetContextTagRealBuilder())
+func (b *_BACnetLogRecordLogDatumRealValueBuilder) WithRealValue(realValue BACnetContextTagReal) BACnetLogRecordLogDatumRealValueBuilder {
+	b.RealValue = realValue
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumRealValueBuilder) WithRealValueBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLogRecordLogDatumRealValueBuilder {
+	builder := builderSupplier(b.RealValue.CreateBACnetContextTagRealBuilder())
 	var err error
-	m.RealValue, err = builder.Build()
+	b.RealValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogRecordLogDatumRealValueBuilder) Build() (BACnetLogRecordLogDatumRealValue, error) {
-	if m.RealValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLogRecordLogDatumRealValueBuilder) Build() (BACnetLogRecordLogDatumRealValue, error) {
+	if b.RealValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'realValue' not set"))
+		b.err.Append(errors.New("mandatory field 'realValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLogRecordLogDatumRealValue.deepCopy(), nil
+	return b._BACnetLogRecordLogDatumRealValue.deepCopy(), nil
 }
 
-func (m *_BACnetLogRecordLogDatumRealValueBuilder) MustBuild() BACnetLogRecordLogDatumRealValue {
-	build, err := m.Build()
+func (b *_BACnetLogRecordLogDatumRealValueBuilder) MustBuild() BACnetLogRecordLogDatumRealValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLogRecordLogDatumRealValueBuilder) DeepCopy() any {
-	return m.CreateBACnetLogRecordLogDatumRealValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogRecordLogDatumRealValueBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogRecordLogDatumRealValueBuilder) buildForBACnetLogRecordLogDatum() (BACnetLogRecordLogDatum, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogRecordLogDatumRealValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogRecordLogDatumRealValueBuilder().(*_BACnetLogRecordLogDatumRealValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLogRecordLogDatumRealValueBuilder creates a BACnetLogRecordLogDatumRealValueBuilder
-func (m *_BACnetLogRecordLogDatumRealValue) CreateBACnetLogRecordLogDatumRealValueBuilder() BACnetLogRecordLogDatumRealValueBuilder {
-	if m == nil {
+func (b *_BACnetLogRecordLogDatumRealValue) CreateBACnetLogRecordLogDatumRealValueBuilder() BACnetLogRecordLogDatumRealValueBuilder {
+	if b == nil {
 		return NewBACnetLogRecordLogDatumRealValueBuilder()
 	}
-	return &_BACnetLogRecordLogDatumRealValueBuilder{_BACnetLogRecordLogDatumRealValue: m.deepCopy()}
+	return &_BACnetLogRecordLogDatumRealValueBuilder{_BACnetLogRecordLogDatumRealValue: b.deepCopy()}
 }
 
 ///////////////////////

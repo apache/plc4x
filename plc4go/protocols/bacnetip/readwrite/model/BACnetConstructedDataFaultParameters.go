@@ -84,6 +84,8 @@ type BACnetConstructedDataFaultParametersBuilder interface {
 	WithMandatoryFields(faultParameters BACnetFaultParameter) BACnetConstructedDataFaultParametersBuilder
 	// WithFaultParameters adds FaultParameters (property field)
 	WithFaultParameters(BACnetFaultParameter) BACnetConstructedDataFaultParametersBuilder
+	// WithFaultParametersBuilder adds FaultParameters (property field) which is build by the builder
+	WithFaultParametersBuilder(func(BACnetFaultParameterBuilder) BACnetFaultParameterBuilder) BACnetConstructedDataFaultParametersBuilder
 	// Build builds the BACnetConstructedDataFaultParameters or returns an error if something is wrong
 	Build() (BACnetConstructedDataFaultParameters, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewBACnetConstructedDataFaultParametersBuilder() BACnetConstructedDataFault
 type _BACnetConstructedDataFaultParametersBuilder struct {
 	*_BACnetConstructedDataFaultParameters
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataFaultParametersBuilder) = (*_BACnetConstructedDataFaultParametersBuilder)(nil)
 
-func (m *_BACnetConstructedDataFaultParametersBuilder) WithMandatoryFields(faultParameters BACnetFaultParameter) BACnetConstructedDataFaultParametersBuilder {
-	return m.WithFaultParameters(faultParameters)
+func (b *_BACnetConstructedDataFaultParametersBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataFaultParametersBuilder) WithFaultParameters(faultParameters BACnetFaultParameter) BACnetConstructedDataFaultParametersBuilder {
-	m.FaultParameters = faultParameters
-	return m
+func (b *_BACnetConstructedDataFaultParametersBuilder) WithMandatoryFields(faultParameters BACnetFaultParameter) BACnetConstructedDataFaultParametersBuilder {
+	return b.WithFaultParameters(faultParameters)
 }
 
-func (m *_BACnetConstructedDataFaultParametersBuilder) Build() (BACnetConstructedDataFaultParameters, error) {
-	if m.FaultParameters == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataFaultParametersBuilder) WithFaultParameters(faultParameters BACnetFaultParameter) BACnetConstructedDataFaultParametersBuilder {
+	b.FaultParameters = faultParameters
+	return b
+}
+
+func (b *_BACnetConstructedDataFaultParametersBuilder) WithFaultParametersBuilder(builderSupplier func(BACnetFaultParameterBuilder) BACnetFaultParameterBuilder) BACnetConstructedDataFaultParametersBuilder {
+	builder := builderSupplier(b.FaultParameters.CreateBACnetFaultParameterBuilder())
+	var err error
+	b.FaultParameters, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'faultParameters' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetFaultParameterBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetConstructedDataFaultParameters.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetConstructedDataFaultParametersBuilder) MustBuild() BACnetConstructedDataFaultParameters {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataFaultParametersBuilder) Build() (BACnetConstructedDataFaultParameters, error) {
+	if b.FaultParameters == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'faultParameters' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataFaultParameters.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataFaultParametersBuilder) MustBuild() BACnetConstructedDataFaultParameters {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataFaultParametersBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataFaultParametersBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFaultParametersBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFaultParametersBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFaultParametersBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFaultParametersBuilder().(*_BACnetConstructedDataFaultParametersBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataFaultParametersBuilder creates a BACnetConstructedDataFaultParametersBuilder
-func (m *_BACnetConstructedDataFaultParameters) CreateBACnetConstructedDataFaultParametersBuilder() BACnetConstructedDataFaultParametersBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataFaultParameters) CreateBACnetConstructedDataFaultParametersBuilder() BACnetConstructedDataFaultParametersBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataFaultParametersBuilder()
 	}
-	return &_BACnetConstructedDataFaultParametersBuilder{_BACnetConstructedDataFaultParameters: m.deepCopy()}
+	return &_BACnetConstructedDataFaultParametersBuilder{_BACnetConstructedDataFaultParameters: b.deepCopy()}
 }
 
 ///////////////////////

@@ -99,50 +99,69 @@ func NewEventNotificationListBuilder() EventNotificationListBuilder {
 type _EventNotificationListBuilder struct {
 	*_EventNotificationList
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (EventNotificationListBuilder) = (*_EventNotificationListBuilder)(nil)
 
-func (m *_EventNotificationListBuilder) WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) EventNotificationListBuilder {
-	return m.WithNoOfEvents(noOfEvents).WithEvents(events...)
+func (b *_EventNotificationListBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_EventNotificationListBuilder) WithNoOfEvents(noOfEvents int32) EventNotificationListBuilder {
-	m.NoOfEvents = noOfEvents
-	return m
+func (b *_EventNotificationListBuilder) WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) EventNotificationListBuilder {
+	return b.WithNoOfEvents(noOfEvents).WithEvents(events...)
 }
 
-func (m *_EventNotificationListBuilder) WithEvents(events ...ExtensionObjectDefinition) EventNotificationListBuilder {
-	m.Events = events
-	return m
+func (b *_EventNotificationListBuilder) WithNoOfEvents(noOfEvents int32) EventNotificationListBuilder {
+	b.NoOfEvents = noOfEvents
+	return b
 }
 
-func (m *_EventNotificationListBuilder) Build() (EventNotificationList, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_EventNotificationListBuilder) WithEvents(events ...ExtensionObjectDefinition) EventNotificationListBuilder {
+	b.Events = events
+	return b
+}
+
+func (b *_EventNotificationListBuilder) Build() (EventNotificationList, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EventNotificationList.deepCopy(), nil
+	return b._EventNotificationList.deepCopy(), nil
 }
 
-func (m *_EventNotificationListBuilder) MustBuild() EventNotificationList {
-	build, err := m.Build()
+func (b *_EventNotificationListBuilder) MustBuild() EventNotificationList {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EventNotificationListBuilder) DeepCopy() any {
-	return m.CreateEventNotificationListBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EventNotificationListBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EventNotificationListBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_EventNotificationListBuilder) DeepCopy() any {
+	_copy := b.CreateEventNotificationListBuilder().(*_EventNotificationListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEventNotificationListBuilder creates a EventNotificationListBuilder
-func (m *_EventNotificationList) CreateEventNotificationListBuilder() EventNotificationListBuilder {
-	if m == nil {
+func (b *_EventNotificationList) CreateEventNotificationListBuilder() EventNotificationListBuilder {
+	if b == nil {
 		return NewEventNotificationListBuilder()
 	}
-	return &_EventNotificationListBuilder{_EventNotificationList: m.deepCopy()}
+	return &_EventNotificationListBuilder{_EventNotificationList: b.deepCopy()}
 }
 
 ///////////////////////

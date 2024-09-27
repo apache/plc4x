@@ -98,64 +98,83 @@ func NewExtensiblePayloadBuilder() ExtensiblePayloadBuilder {
 type _ExtensiblePayloadBuilder struct {
 	*_ExtensiblePayload
 
+	parentBuilder *_PayloadBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ExtensiblePayloadBuilder) = (*_ExtensiblePayloadBuilder)(nil)
 
-func (m *_ExtensiblePayloadBuilder) WithMandatoryFields(payload ExtensionObject) ExtensiblePayloadBuilder {
-	return m.WithPayload(payload)
+func (b *_ExtensiblePayloadBuilder) setParent(contract PayloadContract) {
+	b.PayloadContract = contract
 }
 
-func (m *_ExtensiblePayloadBuilder) WithPayload(payload ExtensionObject) ExtensiblePayloadBuilder {
-	m.Payload = payload
-	return m
+func (b *_ExtensiblePayloadBuilder) WithMandatoryFields(payload ExtensionObject) ExtensiblePayloadBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_ExtensiblePayloadBuilder) WithPayloadBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) ExtensiblePayloadBuilder {
-	builder := builderSupplier(m.Payload.CreateExtensionObjectBuilder())
+func (b *_ExtensiblePayloadBuilder) WithPayload(payload ExtensionObject) ExtensiblePayloadBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_ExtensiblePayloadBuilder) WithPayloadBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) ExtensiblePayloadBuilder {
+	builder := builderSupplier(b.Payload.CreateExtensionObjectBuilder())
 	var err error
-	m.Payload, err = builder.Build()
+	b.Payload, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ExtensiblePayloadBuilder) Build() (ExtensiblePayload, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ExtensiblePayloadBuilder) Build() (ExtensiblePayload, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ExtensiblePayload.deepCopy(), nil
+	return b._ExtensiblePayload.deepCopy(), nil
 }
 
-func (m *_ExtensiblePayloadBuilder) MustBuild() ExtensiblePayload {
-	build, err := m.Build()
+func (b *_ExtensiblePayloadBuilder) MustBuild() ExtensiblePayload {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ExtensiblePayloadBuilder) DeepCopy() any {
-	return m.CreateExtensiblePayloadBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ExtensiblePayloadBuilder) Done() PayloadBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ExtensiblePayloadBuilder) buildForPayload() (Payload, error) {
+	return b.Build()
+}
+
+func (b *_ExtensiblePayloadBuilder) DeepCopy() any {
+	_copy := b.CreateExtensiblePayloadBuilder().(*_ExtensiblePayloadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateExtensiblePayloadBuilder creates a ExtensiblePayloadBuilder
-func (m *_ExtensiblePayload) CreateExtensiblePayloadBuilder() ExtensiblePayloadBuilder {
-	if m == nil {
+func (b *_ExtensiblePayload) CreateExtensiblePayloadBuilder() ExtensiblePayloadBuilder {
+	if b == nil {
 		return NewExtensiblePayloadBuilder()
 	}
-	return &_ExtensiblePayloadBuilder{_ExtensiblePayload: m.deepCopy()}
+	return &_ExtensiblePayloadBuilder{_ExtensiblePayload: b.deepCopy()}
 }
 
 ///////////////////////

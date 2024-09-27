@@ -97,45 +97,64 @@ func NewMediaTransportControlDataShuffleOnOffBuilder() MediaTransportControlData
 type _MediaTransportControlDataShuffleOnOffBuilder struct {
 	*_MediaTransportControlDataShuffleOnOff
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataShuffleOnOffBuilder) = (*_MediaTransportControlDataShuffleOnOffBuilder)(nil)
 
-func (m *_MediaTransportControlDataShuffleOnOffBuilder) WithMandatoryFields(state byte) MediaTransportControlDataShuffleOnOffBuilder {
-	return m.WithState(state)
+func (b *_MediaTransportControlDataShuffleOnOffBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataShuffleOnOffBuilder) WithState(state byte) MediaTransportControlDataShuffleOnOffBuilder {
-	m.State = state
-	return m
+func (b *_MediaTransportControlDataShuffleOnOffBuilder) WithMandatoryFields(state byte) MediaTransportControlDataShuffleOnOffBuilder {
+	return b.WithState(state)
 }
 
-func (m *_MediaTransportControlDataShuffleOnOffBuilder) Build() (MediaTransportControlDataShuffleOnOff, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataShuffleOnOffBuilder) WithState(state byte) MediaTransportControlDataShuffleOnOffBuilder {
+	b.State = state
+	return b
+}
+
+func (b *_MediaTransportControlDataShuffleOnOffBuilder) Build() (MediaTransportControlDataShuffleOnOff, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataShuffleOnOff.deepCopy(), nil
+	return b._MediaTransportControlDataShuffleOnOff.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataShuffleOnOffBuilder) MustBuild() MediaTransportControlDataShuffleOnOff {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataShuffleOnOffBuilder) MustBuild() MediaTransportControlDataShuffleOnOff {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataShuffleOnOffBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataShuffleOnOffBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataShuffleOnOffBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataShuffleOnOffBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataShuffleOnOffBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataShuffleOnOffBuilder().(*_MediaTransportControlDataShuffleOnOffBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataShuffleOnOffBuilder creates a MediaTransportControlDataShuffleOnOffBuilder
-func (m *_MediaTransportControlDataShuffleOnOff) CreateMediaTransportControlDataShuffleOnOffBuilder() MediaTransportControlDataShuffleOnOffBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataShuffleOnOff) CreateMediaTransportControlDataShuffleOnOffBuilder() MediaTransportControlDataShuffleOnOffBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataShuffleOnOffBuilder()
 	}
-	return &_MediaTransportControlDataShuffleOnOffBuilder{_MediaTransportControlDataShuffleOnOff: m.deepCopy()}
+	return &_MediaTransportControlDataShuffleOnOffBuilder{_MediaTransportControlDataShuffleOnOff: b.deepCopy()}
 }
 
 ///////////////////////

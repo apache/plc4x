@@ -100,64 +100,83 @@ func NewBACnetConstructedDataNumberOfAuthenticationPoliciesBuilder() BACnetConst
 type _BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder struct {
 	*_BACnetConstructedDataNumberOfAuthenticationPolicies
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) = (*_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder)(nil)
 
-func (m *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) WithMandatoryFields(numberOfAuthenticationPolicies BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder {
-	return m.WithNumberOfAuthenticationPolicies(numberOfAuthenticationPolicies)
+func (b *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) WithNumberOfAuthenticationPolicies(numberOfAuthenticationPolicies BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder {
-	m.NumberOfAuthenticationPolicies = numberOfAuthenticationPolicies
-	return m
+func (b *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) WithMandatoryFields(numberOfAuthenticationPolicies BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder {
+	return b.WithNumberOfAuthenticationPolicies(numberOfAuthenticationPolicies)
 }
 
-func (m *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) WithNumberOfAuthenticationPoliciesBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder {
-	builder := builderSupplier(m.NumberOfAuthenticationPolicies.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) WithNumberOfAuthenticationPolicies(numberOfAuthenticationPolicies BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder {
+	b.NumberOfAuthenticationPolicies = numberOfAuthenticationPolicies
+	return b
+}
+
+func (b *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) WithNumberOfAuthenticationPoliciesBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder {
+	builder := builderSupplier(b.NumberOfAuthenticationPolicies.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfAuthenticationPolicies, err = builder.Build()
+	b.NumberOfAuthenticationPolicies, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) Build() (BACnetConstructedDataNumberOfAuthenticationPolicies, error) {
-	if m.NumberOfAuthenticationPolicies == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) Build() (BACnetConstructedDataNumberOfAuthenticationPolicies, error) {
+	if b.NumberOfAuthenticationPolicies == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'numberOfAuthenticationPolicies' not set"))
+		b.err.Append(errors.New("mandatory field 'numberOfAuthenticationPolicies' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataNumberOfAuthenticationPolicies.deepCopy(), nil
+	return b._BACnetConstructedDataNumberOfAuthenticationPolicies.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) MustBuild() BACnetConstructedDataNumberOfAuthenticationPolicies {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) MustBuild() BACnetConstructedDataNumberOfAuthenticationPolicies {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataNumberOfAuthenticationPoliciesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNumberOfAuthenticationPoliciesBuilder().(*_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataNumberOfAuthenticationPoliciesBuilder creates a BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder
-func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) CreateBACnetConstructedDataNumberOfAuthenticationPoliciesBuilder() BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataNumberOfAuthenticationPolicies) CreateBACnetConstructedDataNumberOfAuthenticationPoliciesBuilder() BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataNumberOfAuthenticationPoliciesBuilder()
 	}
-	return &_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder{_BACnetConstructedDataNumberOfAuthenticationPolicies: m.deepCopy()}
+	return &_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder{_BACnetConstructedDataNumberOfAuthenticationPolicies: b.deepCopy()}
 }
 
 ///////////////////////

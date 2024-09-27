@@ -84,6 +84,8 @@ type BACnetConstructedDataBinaryOutputInterfaceValueBuilder interface {
 	WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataBinaryOutputInterfaceValueBuilder
 	// WithInterfaceValue adds InterfaceValue (property field)
 	WithInterfaceValue(BACnetOptionalBinaryPV) BACnetConstructedDataBinaryOutputInterfaceValueBuilder
+	// WithInterfaceValueBuilder adds InterfaceValue (property field) which is build by the builder
+	WithInterfaceValueBuilder(func(BACnetOptionalBinaryPVBuilder) BACnetOptionalBinaryPVBuilder) BACnetConstructedDataBinaryOutputInterfaceValueBuilder
 	// Build builds the BACnetConstructedDataBinaryOutputInterfaceValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataBinaryOutputInterfaceValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewBACnetConstructedDataBinaryOutputInterfaceValueBuilder() BACnetConstruct
 type _BACnetConstructedDataBinaryOutputInterfaceValueBuilder struct {
 	*_BACnetConstructedDataBinaryOutputInterfaceValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBinaryOutputInterfaceValueBuilder) = (*_BACnetConstructedDataBinaryOutputInterfaceValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataBinaryOutputInterfaceValueBuilder) WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataBinaryOutputInterfaceValueBuilder {
-	return m.WithInterfaceValue(interfaceValue)
+func (b *_BACnetConstructedDataBinaryOutputInterfaceValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBinaryOutputInterfaceValueBuilder) WithInterfaceValue(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataBinaryOutputInterfaceValueBuilder {
-	m.InterfaceValue = interfaceValue
-	return m
+func (b *_BACnetConstructedDataBinaryOutputInterfaceValueBuilder) WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataBinaryOutputInterfaceValueBuilder {
+	return b.WithInterfaceValue(interfaceValue)
 }
 
-func (m *_BACnetConstructedDataBinaryOutputInterfaceValueBuilder) Build() (BACnetConstructedDataBinaryOutputInterfaceValue, error) {
-	if m.InterfaceValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBinaryOutputInterfaceValueBuilder) WithInterfaceValue(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataBinaryOutputInterfaceValueBuilder {
+	b.InterfaceValue = interfaceValue
+	return b
+}
+
+func (b *_BACnetConstructedDataBinaryOutputInterfaceValueBuilder) WithInterfaceValueBuilder(builderSupplier func(BACnetOptionalBinaryPVBuilder) BACnetOptionalBinaryPVBuilder) BACnetConstructedDataBinaryOutputInterfaceValueBuilder {
+	builder := builderSupplier(b.InterfaceValue.CreateBACnetOptionalBinaryPVBuilder())
+	var err error
+	b.InterfaceValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'interfaceValue' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetOptionalBinaryPVBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetConstructedDataBinaryOutputInterfaceValue.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetConstructedDataBinaryOutputInterfaceValueBuilder) MustBuild() BACnetConstructedDataBinaryOutputInterfaceValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBinaryOutputInterfaceValueBuilder) Build() (BACnetConstructedDataBinaryOutputInterfaceValue, error) {
+	if b.InterfaceValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'interfaceValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataBinaryOutputInterfaceValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataBinaryOutputInterfaceValueBuilder) MustBuild() BACnetConstructedDataBinaryOutputInterfaceValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBinaryOutputInterfaceValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBinaryOutputInterfaceValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBinaryOutputInterfaceValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBinaryOutputInterfaceValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBinaryOutputInterfaceValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBinaryOutputInterfaceValueBuilder().(*_BACnetConstructedDataBinaryOutputInterfaceValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBinaryOutputInterfaceValueBuilder creates a BACnetConstructedDataBinaryOutputInterfaceValueBuilder
-func (m *_BACnetConstructedDataBinaryOutputInterfaceValue) CreateBACnetConstructedDataBinaryOutputInterfaceValueBuilder() BACnetConstructedDataBinaryOutputInterfaceValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBinaryOutputInterfaceValue) CreateBACnetConstructedDataBinaryOutputInterfaceValueBuilder() BACnetConstructedDataBinaryOutputInterfaceValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBinaryOutputInterfaceValueBuilder()
 	}
-	return &_BACnetConstructedDataBinaryOutputInterfaceValueBuilder{_BACnetConstructedDataBinaryOutputInterfaceValue: m.deepCopy()}
+	return &_BACnetConstructedDataBinaryOutputInterfaceValueBuilder{_BACnetConstructedDataBinaryOutputInterfaceValue: b.deepCopy()}
 }
 
 ///////////////////////

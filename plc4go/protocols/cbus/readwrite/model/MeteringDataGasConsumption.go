@@ -93,45 +93,64 @@ func NewMeteringDataGasConsumptionBuilder() MeteringDataGasConsumptionBuilder {
 type _MeteringDataGasConsumptionBuilder struct {
 	*_MeteringDataGasConsumption
 
+	parentBuilder *_MeteringDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MeteringDataGasConsumptionBuilder) = (*_MeteringDataGasConsumptionBuilder)(nil)
 
-func (m *_MeteringDataGasConsumptionBuilder) WithMandatoryFields(mJ uint32) MeteringDataGasConsumptionBuilder {
-	return m.WithMJ(mJ)
+func (b *_MeteringDataGasConsumptionBuilder) setParent(contract MeteringDataContract) {
+	b.MeteringDataContract = contract
 }
 
-func (m *_MeteringDataGasConsumptionBuilder) WithMJ(mJ uint32) MeteringDataGasConsumptionBuilder {
-	m.MJ = mJ
-	return m
+func (b *_MeteringDataGasConsumptionBuilder) WithMandatoryFields(mJ uint32) MeteringDataGasConsumptionBuilder {
+	return b.WithMJ(mJ)
 }
 
-func (m *_MeteringDataGasConsumptionBuilder) Build() (MeteringDataGasConsumption, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MeteringDataGasConsumptionBuilder) WithMJ(mJ uint32) MeteringDataGasConsumptionBuilder {
+	b.MJ = mJ
+	return b
+}
+
+func (b *_MeteringDataGasConsumptionBuilder) Build() (MeteringDataGasConsumption, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MeteringDataGasConsumption.deepCopy(), nil
+	return b._MeteringDataGasConsumption.deepCopy(), nil
 }
 
-func (m *_MeteringDataGasConsumptionBuilder) MustBuild() MeteringDataGasConsumption {
-	build, err := m.Build()
+func (b *_MeteringDataGasConsumptionBuilder) MustBuild() MeteringDataGasConsumption {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MeteringDataGasConsumptionBuilder) DeepCopy() any {
-	return m.CreateMeteringDataGasConsumptionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MeteringDataGasConsumptionBuilder) Done() MeteringDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MeteringDataGasConsumptionBuilder) buildForMeteringData() (MeteringData, error) {
+	return b.Build()
+}
+
+func (b *_MeteringDataGasConsumptionBuilder) DeepCopy() any {
+	_copy := b.CreateMeteringDataGasConsumptionBuilder().(*_MeteringDataGasConsumptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMeteringDataGasConsumptionBuilder creates a MeteringDataGasConsumptionBuilder
-func (m *_MeteringDataGasConsumption) CreateMeteringDataGasConsumptionBuilder() MeteringDataGasConsumptionBuilder {
-	if m == nil {
+func (b *_MeteringDataGasConsumption) CreateMeteringDataGasConsumptionBuilder() MeteringDataGasConsumptionBuilder {
+	if b == nil {
 		return NewMeteringDataGasConsumptionBuilder()
 	}
-	return &_MeteringDataGasConsumptionBuilder{_MeteringDataGasConsumption: m.deepCopy()}
+	return &_MeteringDataGasConsumptionBuilder{_MeteringDataGasConsumption: b.deepCopy()}
 }
 
 ///////////////////////

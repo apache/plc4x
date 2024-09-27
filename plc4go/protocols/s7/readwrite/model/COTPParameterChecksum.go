@@ -93,45 +93,64 @@ func NewCOTPParameterChecksumBuilder() COTPParameterChecksumBuilder {
 type _COTPParameterChecksumBuilder struct {
 	*_COTPParameterChecksum
 
+	parentBuilder *_COTPParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (COTPParameterChecksumBuilder) = (*_COTPParameterChecksumBuilder)(nil)
 
-func (m *_COTPParameterChecksumBuilder) WithMandatoryFields(crc uint8) COTPParameterChecksumBuilder {
-	return m.WithCrc(crc)
+func (b *_COTPParameterChecksumBuilder) setParent(contract COTPParameterContract) {
+	b.COTPParameterContract = contract
 }
 
-func (m *_COTPParameterChecksumBuilder) WithCrc(crc uint8) COTPParameterChecksumBuilder {
-	m.Crc = crc
-	return m
+func (b *_COTPParameterChecksumBuilder) WithMandatoryFields(crc uint8) COTPParameterChecksumBuilder {
+	return b.WithCrc(crc)
 }
 
-func (m *_COTPParameterChecksumBuilder) Build() (COTPParameterChecksum, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_COTPParameterChecksumBuilder) WithCrc(crc uint8) COTPParameterChecksumBuilder {
+	b.Crc = crc
+	return b
+}
+
+func (b *_COTPParameterChecksumBuilder) Build() (COTPParameterChecksum, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._COTPParameterChecksum.deepCopy(), nil
+	return b._COTPParameterChecksum.deepCopy(), nil
 }
 
-func (m *_COTPParameterChecksumBuilder) MustBuild() COTPParameterChecksum {
-	build, err := m.Build()
+func (b *_COTPParameterChecksumBuilder) MustBuild() COTPParameterChecksum {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_COTPParameterChecksumBuilder) DeepCopy() any {
-	return m.CreateCOTPParameterChecksumBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_COTPParameterChecksumBuilder) Done() COTPParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_COTPParameterChecksumBuilder) buildForCOTPParameter() (COTPParameter, error) {
+	return b.Build()
+}
+
+func (b *_COTPParameterChecksumBuilder) DeepCopy() any {
+	_copy := b.CreateCOTPParameterChecksumBuilder().(*_COTPParameterChecksumBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCOTPParameterChecksumBuilder creates a COTPParameterChecksumBuilder
-func (m *_COTPParameterChecksum) CreateCOTPParameterChecksumBuilder() COTPParameterChecksumBuilder {
-	if m == nil {
+func (b *_COTPParameterChecksum) CreateCOTPParameterChecksumBuilder() COTPParameterChecksumBuilder {
+	if b == nil {
 		return NewCOTPParameterChecksumBuilder()
 	}
-	return &_COTPParameterChecksumBuilder{_COTPParameterChecksum: m.deepCopy()}
+	return &_COTPParameterChecksumBuilder{_COTPParameterChecksum: b.deepCopy()}
 }
 
 ///////////////////////

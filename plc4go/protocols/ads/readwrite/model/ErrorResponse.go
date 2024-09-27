@@ -85,40 +85,59 @@ func NewErrorResponseBuilder() ErrorResponseBuilder {
 type _ErrorResponseBuilder struct {
 	*_ErrorResponse
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ErrorResponseBuilder) = (*_ErrorResponseBuilder)(nil)
 
-func (m *_ErrorResponseBuilder) WithMandatoryFields() ErrorResponseBuilder {
-	return m
+func (b *_ErrorResponseBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_ErrorResponseBuilder) Build() (ErrorResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ErrorResponseBuilder) WithMandatoryFields() ErrorResponseBuilder {
+	return b
+}
+
+func (b *_ErrorResponseBuilder) Build() (ErrorResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ErrorResponse.deepCopy(), nil
+	return b._ErrorResponse.deepCopy(), nil
 }
 
-func (m *_ErrorResponseBuilder) MustBuild() ErrorResponse {
-	build, err := m.Build()
+func (b *_ErrorResponseBuilder) MustBuild() ErrorResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ErrorResponseBuilder) DeepCopy() any {
-	return m.CreateErrorResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ErrorResponseBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ErrorResponseBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_ErrorResponseBuilder) DeepCopy() any {
+	_copy := b.CreateErrorResponseBuilder().(*_ErrorResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateErrorResponseBuilder creates a ErrorResponseBuilder
-func (m *_ErrorResponse) CreateErrorResponseBuilder() ErrorResponseBuilder {
-	if m == nil {
+func (b *_ErrorResponse) CreateErrorResponseBuilder() ErrorResponseBuilder {
+	if b == nil {
 		return NewErrorResponseBuilder()
 	}
-	return &_ErrorResponseBuilder{_ErrorResponse: m.deepCopy()}
+	return &_ErrorResponseBuilder{_ErrorResponse: b.deepCopy()}
 }
 
 ///////////////////////

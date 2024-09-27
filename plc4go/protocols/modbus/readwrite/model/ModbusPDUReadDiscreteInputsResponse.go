@@ -93,45 +93,64 @@ func NewModbusPDUReadDiscreteInputsResponseBuilder() ModbusPDUReadDiscreteInputs
 type _ModbusPDUReadDiscreteInputsResponseBuilder struct {
 	*_ModbusPDUReadDiscreteInputsResponse
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUReadDiscreteInputsResponseBuilder) = (*_ModbusPDUReadDiscreteInputsResponseBuilder)(nil)
 
-func (m *_ModbusPDUReadDiscreteInputsResponseBuilder) WithMandatoryFields(value []byte) ModbusPDUReadDiscreteInputsResponseBuilder {
-	return m.WithValue(value...)
+func (b *_ModbusPDUReadDiscreteInputsResponseBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUReadDiscreteInputsResponseBuilder) WithValue(value ...byte) ModbusPDUReadDiscreteInputsResponseBuilder {
-	m.Value = value
-	return m
+func (b *_ModbusPDUReadDiscreteInputsResponseBuilder) WithMandatoryFields(value []byte) ModbusPDUReadDiscreteInputsResponseBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_ModbusPDUReadDiscreteInputsResponseBuilder) Build() (ModbusPDUReadDiscreteInputsResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUReadDiscreteInputsResponseBuilder) WithValue(value ...byte) ModbusPDUReadDiscreteInputsResponseBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ModbusPDUReadDiscreteInputsResponseBuilder) Build() (ModbusPDUReadDiscreteInputsResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUReadDiscreteInputsResponse.deepCopy(), nil
+	return b._ModbusPDUReadDiscreteInputsResponse.deepCopy(), nil
 }
 
-func (m *_ModbusPDUReadDiscreteInputsResponseBuilder) MustBuild() ModbusPDUReadDiscreteInputsResponse {
-	build, err := m.Build()
+func (b *_ModbusPDUReadDiscreteInputsResponseBuilder) MustBuild() ModbusPDUReadDiscreteInputsResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUReadDiscreteInputsResponseBuilder) DeepCopy() any {
-	return m.CreateModbusPDUReadDiscreteInputsResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUReadDiscreteInputsResponseBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUReadDiscreteInputsResponseBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUReadDiscreteInputsResponseBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUReadDiscreteInputsResponseBuilder().(*_ModbusPDUReadDiscreteInputsResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUReadDiscreteInputsResponseBuilder creates a ModbusPDUReadDiscreteInputsResponseBuilder
-func (m *_ModbusPDUReadDiscreteInputsResponse) CreateModbusPDUReadDiscreteInputsResponseBuilder() ModbusPDUReadDiscreteInputsResponseBuilder {
-	if m == nil {
+func (b *_ModbusPDUReadDiscreteInputsResponse) CreateModbusPDUReadDiscreteInputsResponseBuilder() ModbusPDUReadDiscreteInputsResponseBuilder {
+	if b == nil {
 		return NewModbusPDUReadDiscreteInputsResponseBuilder()
 	}
-	return &_ModbusPDUReadDiscreteInputsResponseBuilder{_ModbusPDUReadDiscreteInputsResponse: m.deepCopy()}
+	return &_ModbusPDUReadDiscreteInputsResponseBuilder{_ModbusPDUReadDiscreteInputsResponse: b.deepCopy()}
 }
 
 ///////////////////////

@@ -98,64 +98,83 @@ func NewBACnetPriorityValueNullBuilder() BACnetPriorityValueNullBuilder {
 type _BACnetPriorityValueNullBuilder struct {
 	*_BACnetPriorityValueNull
 
+	parentBuilder *_BACnetPriorityValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPriorityValueNullBuilder) = (*_BACnetPriorityValueNullBuilder)(nil)
 
-func (m *_BACnetPriorityValueNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetPriorityValueNullBuilder {
-	return m.WithNullValue(nullValue)
+func (b *_BACnetPriorityValueNullBuilder) setParent(contract BACnetPriorityValueContract) {
+	b.BACnetPriorityValueContract = contract
 }
 
-func (m *_BACnetPriorityValueNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetPriorityValueNullBuilder {
-	m.NullValue = nullValue
-	return m
+func (b *_BACnetPriorityValueNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetPriorityValueNullBuilder {
+	return b.WithNullValue(nullValue)
 }
 
-func (m *_BACnetPriorityValueNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetPriorityValueNullBuilder {
-	builder := builderSupplier(m.NullValue.CreateBACnetApplicationTagNullBuilder())
+func (b *_BACnetPriorityValueNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetPriorityValueNullBuilder {
+	b.NullValue = nullValue
+	return b
+}
+
+func (b *_BACnetPriorityValueNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetPriorityValueNullBuilder {
+	builder := builderSupplier(b.NullValue.CreateBACnetApplicationTagNullBuilder())
 	var err error
-	m.NullValue, err = builder.Build()
+	b.NullValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPriorityValueNullBuilder) Build() (BACnetPriorityValueNull, error) {
-	if m.NullValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPriorityValueNullBuilder) Build() (BACnetPriorityValueNull, error) {
+	if b.NullValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nullValue' not set"))
+		b.err.Append(errors.New("mandatory field 'nullValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPriorityValueNull.deepCopy(), nil
+	return b._BACnetPriorityValueNull.deepCopy(), nil
 }
 
-func (m *_BACnetPriorityValueNullBuilder) MustBuild() BACnetPriorityValueNull {
-	build, err := m.Build()
+func (b *_BACnetPriorityValueNullBuilder) MustBuild() BACnetPriorityValueNull {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPriorityValueNullBuilder) DeepCopy() any {
-	return m.CreateBACnetPriorityValueNullBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPriorityValueNullBuilder) Done() BACnetPriorityValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPriorityValueNullBuilder) buildForBACnetPriorityValue() (BACnetPriorityValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPriorityValueNullBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityValueNullBuilder().(*_BACnetPriorityValueNullBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPriorityValueNullBuilder creates a BACnetPriorityValueNullBuilder
-func (m *_BACnetPriorityValueNull) CreateBACnetPriorityValueNullBuilder() BACnetPriorityValueNullBuilder {
-	if m == nil {
+func (b *_BACnetPriorityValueNull) CreateBACnetPriorityValueNullBuilder() BACnetPriorityValueNullBuilder {
+	if b == nil {
 		return NewBACnetPriorityValueNullBuilder()
 	}
-	return &_BACnetPriorityValueNullBuilder{_BACnetPriorityValueNull: m.deepCopy()}
+	return &_BACnetPriorityValueNullBuilder{_BACnetPriorityValueNull: b.deepCopy()}
 }
 
 ///////////////////////

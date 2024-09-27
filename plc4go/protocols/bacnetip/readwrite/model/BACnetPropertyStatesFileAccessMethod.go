@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesFileAccessMethodBuilder() BACnetPropertyStatesFileAc
 type _BACnetPropertyStatesFileAccessMethodBuilder struct {
 	*_BACnetPropertyStatesFileAccessMethod
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesFileAccessMethodBuilder) = (*_BACnetPropertyStatesFileAccessMethodBuilder)(nil)
 
-func (m *_BACnetPropertyStatesFileAccessMethodBuilder) WithMandatoryFields(fileAccessMethod BACnetFileAccessMethodTagged) BACnetPropertyStatesFileAccessMethodBuilder {
-	return m.WithFileAccessMethod(fileAccessMethod)
+func (b *_BACnetPropertyStatesFileAccessMethodBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesFileAccessMethodBuilder) WithFileAccessMethod(fileAccessMethod BACnetFileAccessMethodTagged) BACnetPropertyStatesFileAccessMethodBuilder {
-	m.FileAccessMethod = fileAccessMethod
-	return m
+func (b *_BACnetPropertyStatesFileAccessMethodBuilder) WithMandatoryFields(fileAccessMethod BACnetFileAccessMethodTagged) BACnetPropertyStatesFileAccessMethodBuilder {
+	return b.WithFileAccessMethod(fileAccessMethod)
 }
 
-func (m *_BACnetPropertyStatesFileAccessMethodBuilder) WithFileAccessMethodBuilder(builderSupplier func(BACnetFileAccessMethodTaggedBuilder) BACnetFileAccessMethodTaggedBuilder) BACnetPropertyStatesFileAccessMethodBuilder {
-	builder := builderSupplier(m.FileAccessMethod.CreateBACnetFileAccessMethodTaggedBuilder())
+func (b *_BACnetPropertyStatesFileAccessMethodBuilder) WithFileAccessMethod(fileAccessMethod BACnetFileAccessMethodTagged) BACnetPropertyStatesFileAccessMethodBuilder {
+	b.FileAccessMethod = fileAccessMethod
+	return b
+}
+
+func (b *_BACnetPropertyStatesFileAccessMethodBuilder) WithFileAccessMethodBuilder(builderSupplier func(BACnetFileAccessMethodTaggedBuilder) BACnetFileAccessMethodTaggedBuilder) BACnetPropertyStatesFileAccessMethodBuilder {
+	builder := builderSupplier(b.FileAccessMethod.CreateBACnetFileAccessMethodTaggedBuilder())
 	var err error
-	m.FileAccessMethod, err = builder.Build()
+	b.FileAccessMethod, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetFileAccessMethodTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetFileAccessMethodTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesFileAccessMethodBuilder) Build() (BACnetPropertyStatesFileAccessMethod, error) {
-	if m.FileAccessMethod == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesFileAccessMethodBuilder) Build() (BACnetPropertyStatesFileAccessMethod, error) {
+	if b.FileAccessMethod == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'fileAccessMethod' not set"))
+		b.err.Append(errors.New("mandatory field 'fileAccessMethod' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesFileAccessMethod.deepCopy(), nil
+	return b._BACnetPropertyStatesFileAccessMethod.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesFileAccessMethodBuilder) MustBuild() BACnetPropertyStatesFileAccessMethod {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesFileAccessMethodBuilder) MustBuild() BACnetPropertyStatesFileAccessMethod {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesFileAccessMethodBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesFileAccessMethodBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesFileAccessMethodBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesFileAccessMethodBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesFileAccessMethodBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesFileAccessMethodBuilder().(*_BACnetPropertyStatesFileAccessMethodBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesFileAccessMethodBuilder creates a BACnetPropertyStatesFileAccessMethodBuilder
-func (m *_BACnetPropertyStatesFileAccessMethod) CreateBACnetPropertyStatesFileAccessMethodBuilder() BACnetPropertyStatesFileAccessMethodBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesFileAccessMethod) CreateBACnetPropertyStatesFileAccessMethodBuilder() BACnetPropertyStatesFileAccessMethodBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesFileAccessMethodBuilder()
 	}
-	return &_BACnetPropertyStatesFileAccessMethodBuilder{_BACnetPropertyStatesFileAccessMethod: m.deepCopy()}
+	return &_BACnetPropertyStatesFileAccessMethodBuilder{_BACnetPropertyStatesFileAccessMethod: b.deepCopy()}
 }
 
 ///////////////////////

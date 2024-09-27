@@ -85,40 +85,59 @@ func NewS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder() S7Payloa
 type _S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder struct {
 	*_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder)(nil)
 
-func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) WithMandatoryFields() S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder {
-	return m
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) Build() (S7PayloadUserDataItemCyclicServicesUnsubscribeResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) WithMandatoryFields() S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder {
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) Build() (S7PayloadUserDataItemCyclicServicesUnsubscribeResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadUserDataItemCyclicServicesUnsubscribeResponse.deepCopy(), nil
+	return b._S7PayloadUserDataItemCyclicServicesUnsubscribeResponse.deepCopy(), nil
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesUnsubscribeResponse {
-	build, err := m.Build()
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesUnsubscribeResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) DeepCopy() any {
-	return m.CreateS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder().(*_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder creates a S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder
-func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) CreateS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder() S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder {
-	if m == nil {
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) CreateS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder() S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder {
+	if b == nil {
 		return NewS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder()
 	}
-	return &_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder{_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse: m.deepCopy()}
+	return &_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder{_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse: b.deepCopy()}
 }
 
 ///////////////////////

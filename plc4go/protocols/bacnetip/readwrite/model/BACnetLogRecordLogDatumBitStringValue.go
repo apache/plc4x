@@ -98,64 +98,83 @@ func NewBACnetLogRecordLogDatumBitStringValueBuilder() BACnetLogRecordLogDatumBi
 type _BACnetLogRecordLogDatumBitStringValueBuilder struct {
 	*_BACnetLogRecordLogDatumBitStringValue
 
+	parentBuilder *_BACnetLogRecordLogDatumBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetLogRecordLogDatumBitStringValueBuilder) = (*_BACnetLogRecordLogDatumBitStringValueBuilder)(nil)
 
-func (m *_BACnetLogRecordLogDatumBitStringValueBuilder) WithMandatoryFields(bitStringValue BACnetContextTagBitString) BACnetLogRecordLogDatumBitStringValueBuilder {
-	return m.WithBitStringValue(bitStringValue)
+func (b *_BACnetLogRecordLogDatumBitStringValueBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
+	b.BACnetLogRecordLogDatumContract = contract
 }
 
-func (m *_BACnetLogRecordLogDatumBitStringValueBuilder) WithBitStringValue(bitStringValue BACnetContextTagBitString) BACnetLogRecordLogDatumBitStringValueBuilder {
-	m.BitStringValue = bitStringValue
-	return m
+func (b *_BACnetLogRecordLogDatumBitStringValueBuilder) WithMandatoryFields(bitStringValue BACnetContextTagBitString) BACnetLogRecordLogDatumBitStringValueBuilder {
+	return b.WithBitStringValue(bitStringValue)
 }
 
-func (m *_BACnetLogRecordLogDatumBitStringValueBuilder) WithBitStringValueBuilder(builderSupplier func(BACnetContextTagBitStringBuilder) BACnetContextTagBitStringBuilder) BACnetLogRecordLogDatumBitStringValueBuilder {
-	builder := builderSupplier(m.BitStringValue.CreateBACnetContextTagBitStringBuilder())
+func (b *_BACnetLogRecordLogDatumBitStringValueBuilder) WithBitStringValue(bitStringValue BACnetContextTagBitString) BACnetLogRecordLogDatumBitStringValueBuilder {
+	b.BitStringValue = bitStringValue
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumBitStringValueBuilder) WithBitStringValueBuilder(builderSupplier func(BACnetContextTagBitStringBuilder) BACnetContextTagBitStringBuilder) BACnetLogRecordLogDatumBitStringValueBuilder {
+	builder := builderSupplier(b.BitStringValue.CreateBACnetContextTagBitStringBuilder())
 	var err error
-	m.BitStringValue, err = builder.Build()
+	b.BitStringValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagBitStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBitStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogRecordLogDatumBitStringValueBuilder) Build() (BACnetLogRecordLogDatumBitStringValue, error) {
-	if m.BitStringValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLogRecordLogDatumBitStringValueBuilder) Build() (BACnetLogRecordLogDatumBitStringValue, error) {
+	if b.BitStringValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'bitStringValue' not set"))
+		b.err.Append(errors.New("mandatory field 'bitStringValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLogRecordLogDatumBitStringValue.deepCopy(), nil
+	return b._BACnetLogRecordLogDatumBitStringValue.deepCopy(), nil
 }
 
-func (m *_BACnetLogRecordLogDatumBitStringValueBuilder) MustBuild() BACnetLogRecordLogDatumBitStringValue {
-	build, err := m.Build()
+func (b *_BACnetLogRecordLogDatumBitStringValueBuilder) MustBuild() BACnetLogRecordLogDatumBitStringValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLogRecordLogDatumBitStringValueBuilder) DeepCopy() any {
-	return m.CreateBACnetLogRecordLogDatumBitStringValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogRecordLogDatumBitStringValueBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogRecordLogDatumBitStringValueBuilder) buildForBACnetLogRecordLogDatum() (BACnetLogRecordLogDatum, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogRecordLogDatumBitStringValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogRecordLogDatumBitStringValueBuilder().(*_BACnetLogRecordLogDatumBitStringValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLogRecordLogDatumBitStringValueBuilder creates a BACnetLogRecordLogDatumBitStringValueBuilder
-func (m *_BACnetLogRecordLogDatumBitStringValue) CreateBACnetLogRecordLogDatumBitStringValueBuilder() BACnetLogRecordLogDatumBitStringValueBuilder {
-	if m == nil {
+func (b *_BACnetLogRecordLogDatumBitStringValue) CreateBACnetLogRecordLogDatumBitStringValueBuilder() BACnetLogRecordLogDatumBitStringValueBuilder {
+	if b == nil {
 		return NewBACnetLogRecordLogDatumBitStringValueBuilder()
 	}
-	return &_BACnetLogRecordLogDatumBitStringValueBuilder{_BACnetLogRecordLogDatumBitStringValue: m.deepCopy()}
+	return &_BACnetLogRecordLogDatumBitStringValueBuilder{_BACnetLogRecordLogDatumBitStringValue: b.deepCopy()}
 }
 
 ///////////////////////

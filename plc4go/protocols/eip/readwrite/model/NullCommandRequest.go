@@ -85,40 +85,59 @@ func NewNullCommandRequestBuilder() NullCommandRequestBuilder {
 type _NullCommandRequestBuilder struct {
 	*_NullCommandRequest
 
+	parentBuilder *_EipPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NullCommandRequestBuilder) = (*_NullCommandRequestBuilder)(nil)
 
-func (m *_NullCommandRequestBuilder) WithMandatoryFields() NullCommandRequestBuilder {
-	return m
+func (b *_NullCommandRequestBuilder) setParent(contract EipPacketContract) {
+	b.EipPacketContract = contract
 }
 
-func (m *_NullCommandRequestBuilder) Build() (NullCommandRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NullCommandRequestBuilder) WithMandatoryFields() NullCommandRequestBuilder {
+	return b
+}
+
+func (b *_NullCommandRequestBuilder) Build() (NullCommandRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NullCommandRequest.deepCopy(), nil
+	return b._NullCommandRequest.deepCopy(), nil
 }
 
-func (m *_NullCommandRequestBuilder) MustBuild() NullCommandRequest {
-	build, err := m.Build()
+func (b *_NullCommandRequestBuilder) MustBuild() NullCommandRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NullCommandRequestBuilder) DeepCopy() any {
-	return m.CreateNullCommandRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NullCommandRequestBuilder) Done() EipPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NullCommandRequestBuilder) buildForEipPacket() (EipPacket, error) {
+	return b.Build()
+}
+
+func (b *_NullCommandRequestBuilder) DeepCopy() any {
+	_copy := b.CreateNullCommandRequestBuilder().(*_NullCommandRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNullCommandRequestBuilder creates a NullCommandRequestBuilder
-func (m *_NullCommandRequest) CreateNullCommandRequestBuilder() NullCommandRequestBuilder {
-	if m == nil {
+func (b *_NullCommandRequest) CreateNullCommandRequestBuilder() NullCommandRequestBuilder {
+	if b == nil {
 		return NewNullCommandRequestBuilder()
 	}
-	return &_NullCommandRequestBuilder{_NullCommandRequest: m.deepCopy()}
+	return &_NullCommandRequestBuilder{_NullCommandRequest: b.deepCopy()}
 }
 
 ///////////////////////

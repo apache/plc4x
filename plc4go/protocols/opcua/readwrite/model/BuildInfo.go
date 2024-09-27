@@ -148,165 +148,184 @@ func NewBuildInfoBuilder() BuildInfoBuilder {
 type _BuildInfoBuilder struct {
 	*_BuildInfo
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BuildInfoBuilder) = (*_BuildInfoBuilder)(nil)
 
-func (m *_BuildInfoBuilder) WithMandatoryFields(productUri PascalString, manufacturerName PascalString, productName PascalString, softwareVersion PascalString, buildNumber PascalString, buildDate int64) BuildInfoBuilder {
-	return m.WithProductUri(productUri).WithManufacturerName(manufacturerName).WithProductName(productName).WithSoftwareVersion(softwareVersion).WithBuildNumber(buildNumber).WithBuildDate(buildDate)
+func (b *_BuildInfoBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_BuildInfoBuilder) WithProductUri(productUri PascalString) BuildInfoBuilder {
-	m.ProductUri = productUri
-	return m
+func (b *_BuildInfoBuilder) WithMandatoryFields(productUri PascalString, manufacturerName PascalString, productName PascalString, softwareVersion PascalString, buildNumber PascalString, buildDate int64) BuildInfoBuilder {
+	return b.WithProductUri(productUri).WithManufacturerName(manufacturerName).WithProductName(productName).WithSoftwareVersion(softwareVersion).WithBuildNumber(buildNumber).WithBuildDate(buildDate)
 }
 
-func (m *_BuildInfoBuilder) WithProductUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder {
-	builder := builderSupplier(m.ProductUri.CreatePascalStringBuilder())
+func (b *_BuildInfoBuilder) WithProductUri(productUri PascalString) BuildInfoBuilder {
+	b.ProductUri = productUri
+	return b
+}
+
+func (b *_BuildInfoBuilder) WithProductUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder {
+	builder := builderSupplier(b.ProductUri.CreatePascalStringBuilder())
 	var err error
-	m.ProductUri, err = builder.Build()
+	b.ProductUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BuildInfoBuilder) WithManufacturerName(manufacturerName PascalString) BuildInfoBuilder {
-	m.ManufacturerName = manufacturerName
-	return m
+func (b *_BuildInfoBuilder) WithManufacturerName(manufacturerName PascalString) BuildInfoBuilder {
+	b.ManufacturerName = manufacturerName
+	return b
 }
 
-func (m *_BuildInfoBuilder) WithManufacturerNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder {
-	builder := builderSupplier(m.ManufacturerName.CreatePascalStringBuilder())
+func (b *_BuildInfoBuilder) WithManufacturerNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder {
+	builder := builderSupplier(b.ManufacturerName.CreatePascalStringBuilder())
 	var err error
-	m.ManufacturerName, err = builder.Build()
+	b.ManufacturerName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BuildInfoBuilder) WithProductName(productName PascalString) BuildInfoBuilder {
-	m.ProductName = productName
-	return m
+func (b *_BuildInfoBuilder) WithProductName(productName PascalString) BuildInfoBuilder {
+	b.ProductName = productName
+	return b
 }
 
-func (m *_BuildInfoBuilder) WithProductNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder {
-	builder := builderSupplier(m.ProductName.CreatePascalStringBuilder())
+func (b *_BuildInfoBuilder) WithProductNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder {
+	builder := builderSupplier(b.ProductName.CreatePascalStringBuilder())
 	var err error
-	m.ProductName, err = builder.Build()
+	b.ProductName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BuildInfoBuilder) WithSoftwareVersion(softwareVersion PascalString) BuildInfoBuilder {
-	m.SoftwareVersion = softwareVersion
-	return m
+func (b *_BuildInfoBuilder) WithSoftwareVersion(softwareVersion PascalString) BuildInfoBuilder {
+	b.SoftwareVersion = softwareVersion
+	return b
 }
 
-func (m *_BuildInfoBuilder) WithSoftwareVersionBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder {
-	builder := builderSupplier(m.SoftwareVersion.CreatePascalStringBuilder())
+func (b *_BuildInfoBuilder) WithSoftwareVersionBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder {
+	builder := builderSupplier(b.SoftwareVersion.CreatePascalStringBuilder())
 	var err error
-	m.SoftwareVersion, err = builder.Build()
+	b.SoftwareVersion, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BuildInfoBuilder) WithBuildNumber(buildNumber PascalString) BuildInfoBuilder {
-	m.BuildNumber = buildNumber
-	return m
+func (b *_BuildInfoBuilder) WithBuildNumber(buildNumber PascalString) BuildInfoBuilder {
+	b.BuildNumber = buildNumber
+	return b
 }
 
-func (m *_BuildInfoBuilder) WithBuildNumberBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder {
-	builder := builderSupplier(m.BuildNumber.CreatePascalStringBuilder())
+func (b *_BuildInfoBuilder) WithBuildNumberBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder {
+	builder := builderSupplier(b.BuildNumber.CreatePascalStringBuilder())
 	var err error
-	m.BuildNumber, err = builder.Build()
+	b.BuildNumber, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BuildInfoBuilder) WithBuildDate(buildDate int64) BuildInfoBuilder {
-	m.BuildDate = buildDate
-	return m
+func (b *_BuildInfoBuilder) WithBuildDate(buildDate int64) BuildInfoBuilder {
+	b.BuildDate = buildDate
+	return b
 }
 
-func (m *_BuildInfoBuilder) Build() (BuildInfo, error) {
-	if m.ProductUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BuildInfoBuilder) Build() (BuildInfo, error) {
+	if b.ProductUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'productUri' not set"))
+		b.err.Append(errors.New("mandatory field 'productUri' not set"))
 	}
-	if m.ManufacturerName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ManufacturerName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'manufacturerName' not set"))
+		b.err.Append(errors.New("mandatory field 'manufacturerName' not set"))
 	}
-	if m.ProductName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ProductName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'productName' not set"))
+		b.err.Append(errors.New("mandatory field 'productName' not set"))
 	}
-	if m.SoftwareVersion == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.SoftwareVersion == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'softwareVersion' not set"))
+		b.err.Append(errors.New("mandatory field 'softwareVersion' not set"))
 	}
-	if m.BuildNumber == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.BuildNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'buildNumber' not set"))
+		b.err.Append(errors.New("mandatory field 'buildNumber' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BuildInfo.deepCopy(), nil
+	return b._BuildInfo.deepCopy(), nil
 }
 
-func (m *_BuildInfoBuilder) MustBuild() BuildInfo {
-	build, err := m.Build()
+func (b *_BuildInfoBuilder) MustBuild() BuildInfo {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BuildInfoBuilder) DeepCopy() any {
-	return m.CreateBuildInfoBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BuildInfoBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BuildInfoBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_BuildInfoBuilder) DeepCopy() any {
+	_copy := b.CreateBuildInfoBuilder().(*_BuildInfoBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBuildInfoBuilder creates a BuildInfoBuilder
-func (m *_BuildInfo) CreateBuildInfoBuilder() BuildInfoBuilder {
-	if m == nil {
+func (b *_BuildInfo) CreateBuildInfoBuilder() BuildInfoBuilder {
+	if b == nil {
 		return NewBuildInfoBuilder()
 	}
-	return &_BuildInfoBuilder{_BuildInfo: m.deepCopy()}
+	return &_BuildInfoBuilder{_BuildInfo: b.deepCopy()}
 }
 
 ///////////////////////

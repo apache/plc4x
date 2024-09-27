@@ -85,10 +85,19 @@ type DF1RequestCommandBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() DF1RequestCommandBuilder
+	// AsDF1RequestProtectedTypedLogicalRead converts this build to a subType of DF1RequestCommand. It is always possible to return to current builder using Done()
+	AsDF1RequestProtectedTypedLogicalRead() interface {
+		DF1RequestProtectedTypedLogicalReadBuilder
+		Done() DF1RequestCommandBuilder
+	}
 	// Build builds the DF1RequestCommand or returns an error if something is wrong
-	Build() (DF1RequestCommandContract, error)
+	PartialBuild() (DF1RequestCommandContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() DF1RequestCommandContract
+	PartialMustBuild() DF1RequestCommandContract
+	// Build builds the DF1RequestCommand or returns an error if something is wrong
+	Build() (DF1RequestCommand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1RequestCommand
 }
 
 // NewDF1RequestCommandBuilder() creates a DF1RequestCommandBuilder
@@ -96,43 +105,93 @@ func NewDF1RequestCommandBuilder() DF1RequestCommandBuilder {
 	return &_DF1RequestCommandBuilder{_DF1RequestCommand: new(_DF1RequestCommand)}
 }
 
+type _DF1RequestCommandChildBuilder interface {
+	utils.Copyable
+	setParent(DF1RequestCommandContract)
+	buildForDF1RequestCommand() (DF1RequestCommand, error)
+}
+
 type _DF1RequestCommandBuilder struct {
 	*_DF1RequestCommand
+
+	childBuilder _DF1RequestCommandChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (DF1RequestCommandBuilder) = (*_DF1RequestCommandBuilder)(nil)
 
-func (m *_DF1RequestCommandBuilder) WithMandatoryFields() DF1RequestCommandBuilder {
-	return m
+func (b *_DF1RequestCommandBuilder) WithMandatoryFields() DF1RequestCommandBuilder {
+	return b
 }
 
-func (m *_DF1RequestCommandBuilder) Build() (DF1RequestCommandContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DF1RequestCommandBuilder) PartialBuild() (DF1RequestCommandContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DF1RequestCommand.deepCopy(), nil
+	return b._DF1RequestCommand.deepCopy(), nil
 }
 
-func (m *_DF1RequestCommandBuilder) MustBuild() DF1RequestCommandContract {
-	build, err := m.Build()
+func (b *_DF1RequestCommandBuilder) PartialMustBuild() DF1RequestCommandContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DF1RequestCommandBuilder) DeepCopy() any {
-	return m.CreateDF1RequestCommandBuilder()
+func (b *_DF1RequestCommandBuilder) AsDF1RequestProtectedTypedLogicalRead() interface {
+	DF1RequestProtectedTypedLogicalReadBuilder
+	Done() DF1RequestCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DF1RequestProtectedTypedLogicalReadBuilder
+		Done() DF1RequestCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDF1RequestProtectedTypedLogicalReadBuilder().(*_DF1RequestProtectedTypedLogicalReadBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_DF1RequestCommandBuilder) Build() (DF1RequestCommand, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForDF1RequestCommand()
+}
+
+func (b *_DF1RequestCommandBuilder) MustBuild() DF1RequestCommand {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DF1RequestCommandBuilder) DeepCopy() any {
+	_copy := b.CreateDF1RequestCommandBuilder().(*_DF1RequestCommandBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_DF1RequestCommandChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDF1RequestCommandBuilder creates a DF1RequestCommandBuilder
-func (m *_DF1RequestCommand) CreateDF1RequestCommandBuilder() DF1RequestCommandBuilder {
-	if m == nil {
+func (b *_DF1RequestCommand) CreateDF1RequestCommandBuilder() DF1RequestCommandBuilder {
+	if b == nil {
 		return NewDF1RequestCommandBuilder()
 	}
-	return &_DF1RequestCommandBuilder{_DF1RequestCommand: m.deepCopy()}
+	return &_DF1RequestCommandBuilder{_DF1RequestCommand: b.deepCopy()}
 }
 
 ///////////////////////

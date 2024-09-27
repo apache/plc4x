@@ -85,40 +85,59 @@ func NewApduDataAdcResponseBuilder() ApduDataAdcResponseBuilder {
 type _ApduDataAdcResponseBuilder struct {
 	*_ApduDataAdcResponse
 
+	parentBuilder *_ApduDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataAdcResponseBuilder) = (*_ApduDataAdcResponseBuilder)(nil)
 
-func (m *_ApduDataAdcResponseBuilder) WithMandatoryFields() ApduDataAdcResponseBuilder {
-	return m
+func (b *_ApduDataAdcResponseBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
 }
 
-func (m *_ApduDataAdcResponseBuilder) Build() (ApduDataAdcResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataAdcResponseBuilder) WithMandatoryFields() ApduDataAdcResponseBuilder {
+	return b
+}
+
+func (b *_ApduDataAdcResponseBuilder) Build() (ApduDataAdcResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataAdcResponse.deepCopy(), nil
+	return b._ApduDataAdcResponse.deepCopy(), nil
 }
 
-func (m *_ApduDataAdcResponseBuilder) MustBuild() ApduDataAdcResponse {
-	build, err := m.Build()
+func (b *_ApduDataAdcResponseBuilder) MustBuild() ApduDataAdcResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataAdcResponseBuilder) DeepCopy() any {
-	return m.CreateApduDataAdcResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataAdcResponseBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataAdcResponseBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataAdcResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataAdcResponseBuilder().(*_ApduDataAdcResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataAdcResponseBuilder creates a ApduDataAdcResponseBuilder
-func (m *_ApduDataAdcResponse) CreateApduDataAdcResponseBuilder() ApduDataAdcResponseBuilder {
-	if m == nil {
+func (b *_ApduDataAdcResponse) CreateApduDataAdcResponseBuilder() ApduDataAdcResponseBuilder {
+	if b == nil {
 		return NewApduDataAdcResponseBuilder()
 	}
-	return &_ApduDataAdcResponseBuilder{_ApduDataAdcResponse: m.deepCopy()}
+	return &_ApduDataAdcResponseBuilder{_ApduDataAdcResponse: b.deepCopy()}
 }
 
 ///////////////////////

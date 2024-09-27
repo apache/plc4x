@@ -98,64 +98,83 @@ func NewBACnetServiceAckCreateObjectBuilder() BACnetServiceAckCreateObjectBuilde
 type _BACnetServiceAckCreateObjectBuilder struct {
 	*_BACnetServiceAckCreateObject
 
+	parentBuilder *_BACnetServiceAckBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetServiceAckCreateObjectBuilder) = (*_BACnetServiceAckCreateObjectBuilder)(nil)
 
-func (m *_BACnetServiceAckCreateObjectBuilder) WithMandatoryFields(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetServiceAckCreateObjectBuilder {
-	return m.WithObjectIdentifier(objectIdentifier)
+func (b *_BACnetServiceAckCreateObjectBuilder) setParent(contract BACnetServiceAckContract) {
+	b.BACnetServiceAckContract = contract
 }
 
-func (m *_BACnetServiceAckCreateObjectBuilder) WithObjectIdentifier(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetServiceAckCreateObjectBuilder {
-	m.ObjectIdentifier = objectIdentifier
-	return m
+func (b *_BACnetServiceAckCreateObjectBuilder) WithMandatoryFields(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetServiceAckCreateObjectBuilder {
+	return b.WithObjectIdentifier(objectIdentifier)
 }
 
-func (m *_BACnetServiceAckCreateObjectBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetServiceAckCreateObjectBuilder {
-	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
+func (b *_BACnetServiceAckCreateObjectBuilder) WithObjectIdentifier(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetServiceAckCreateObjectBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
+}
+
+func (b *_BACnetServiceAckCreateObjectBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetServiceAckCreateObjectBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
 	var err error
-	m.ObjectIdentifier, err = builder.Build()
+	b.ObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckCreateObjectBuilder) Build() (BACnetServiceAckCreateObject, error) {
-	if m.ObjectIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetServiceAckCreateObjectBuilder) Build() (BACnetServiceAckCreateObject, error) {
+	if b.ObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetServiceAckCreateObject.deepCopy(), nil
+	return b._BACnetServiceAckCreateObject.deepCopy(), nil
 }
 
-func (m *_BACnetServiceAckCreateObjectBuilder) MustBuild() BACnetServiceAckCreateObject {
-	build, err := m.Build()
+func (b *_BACnetServiceAckCreateObjectBuilder) MustBuild() BACnetServiceAckCreateObject {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetServiceAckCreateObjectBuilder) DeepCopy() any {
-	return m.CreateBACnetServiceAckCreateObjectBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetServiceAckCreateObjectBuilder) Done() BACnetServiceAckBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetServiceAckCreateObjectBuilder) buildForBACnetServiceAck() (BACnetServiceAck, error) {
+	return b.Build()
+}
+
+func (b *_BACnetServiceAckCreateObjectBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetServiceAckCreateObjectBuilder().(*_BACnetServiceAckCreateObjectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetServiceAckCreateObjectBuilder creates a BACnetServiceAckCreateObjectBuilder
-func (m *_BACnetServiceAckCreateObject) CreateBACnetServiceAckCreateObjectBuilder() BACnetServiceAckCreateObjectBuilder {
-	if m == nil {
+func (b *_BACnetServiceAckCreateObject) CreateBACnetServiceAckCreateObjectBuilder() BACnetServiceAckCreateObjectBuilder {
+	if b == nil {
 		return NewBACnetServiceAckCreateObjectBuilder()
 	}
-	return &_BACnetServiceAckCreateObjectBuilder{_BACnetServiceAckCreateObject: m.deepCopy()}
+	return &_BACnetServiceAckCreateObjectBuilder{_BACnetServiceAckCreateObject: b.deepCopy()}
 }
 
 ///////////////////////

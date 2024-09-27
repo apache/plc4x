@@ -100,64 +100,83 @@ func NewBACnetConstructedDataBitStringValueRelinquishDefaultBuilder() BACnetCons
 type _BACnetConstructedDataBitStringValueRelinquishDefaultBuilder struct {
 	*_BACnetConstructedDataBitStringValueRelinquishDefault
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) = (*_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder)(nil)
 
-func (m *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetApplicationTagBitString) BACnetConstructedDataBitStringValueRelinquishDefaultBuilder {
-	return m.WithRelinquishDefault(relinquishDefault)
+func (b *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetApplicationTagBitString) BACnetConstructedDataBitStringValueRelinquishDefaultBuilder {
-	m.RelinquishDefault = relinquishDefault
-	return m
+func (b *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetApplicationTagBitString) BACnetConstructedDataBitStringValueRelinquishDefaultBuilder {
+	return b.WithRelinquishDefault(relinquishDefault)
 }
 
-func (m *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetConstructedDataBitStringValueRelinquishDefaultBuilder {
-	builder := builderSupplier(m.RelinquishDefault.CreateBACnetApplicationTagBitStringBuilder())
+func (b *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetApplicationTagBitString) BACnetConstructedDataBitStringValueRelinquishDefaultBuilder {
+	b.RelinquishDefault = relinquishDefault
+	return b
+}
+
+func (b *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetConstructedDataBitStringValueRelinquishDefaultBuilder {
+	builder := builderSupplier(b.RelinquishDefault.CreateBACnetApplicationTagBitStringBuilder())
 	var err error
-	m.RelinquishDefault, err = builder.Build()
+	b.RelinquishDefault, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) Build() (BACnetConstructedDataBitStringValueRelinquishDefault, error) {
-	if m.RelinquishDefault == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) Build() (BACnetConstructedDataBitStringValueRelinquishDefault, error) {
+	if b.RelinquishDefault == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
+		b.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBitStringValueRelinquishDefault.deepCopy(), nil
+	return b._BACnetConstructedDataBitStringValueRelinquishDefault.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataBitStringValueRelinquishDefault {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataBitStringValueRelinquishDefault {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBitStringValueRelinquishDefaultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBitStringValueRelinquishDefaultBuilder().(*_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBitStringValueRelinquishDefaultBuilder creates a BACnetConstructedDataBitStringValueRelinquishDefaultBuilder
-func (m *_BACnetConstructedDataBitStringValueRelinquishDefault) CreateBACnetConstructedDataBitStringValueRelinquishDefaultBuilder() BACnetConstructedDataBitStringValueRelinquishDefaultBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBitStringValueRelinquishDefault) CreateBACnetConstructedDataBitStringValueRelinquishDefaultBuilder() BACnetConstructedDataBitStringValueRelinquishDefaultBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBitStringValueRelinquishDefaultBuilder()
 	}
-	return &_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder{_BACnetConstructedDataBitStringValueRelinquishDefault: m.deepCopy()}
+	return &_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder{_BACnetConstructedDataBitStringValueRelinquishDefault: b.deepCopy()}
 }
 
 ///////////////////////

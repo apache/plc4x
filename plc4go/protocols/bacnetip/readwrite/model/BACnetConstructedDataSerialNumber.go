@@ -100,64 +100,83 @@ func NewBACnetConstructedDataSerialNumberBuilder() BACnetConstructedDataSerialNu
 type _BACnetConstructedDataSerialNumberBuilder struct {
 	*_BACnetConstructedDataSerialNumber
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSerialNumberBuilder) = (*_BACnetConstructedDataSerialNumberBuilder)(nil)
 
-func (m *_BACnetConstructedDataSerialNumberBuilder) WithMandatoryFields(serialNumber BACnetApplicationTagCharacterString) BACnetConstructedDataSerialNumberBuilder {
-	return m.WithSerialNumber(serialNumber)
+func (b *_BACnetConstructedDataSerialNumberBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSerialNumberBuilder) WithSerialNumber(serialNumber BACnetApplicationTagCharacterString) BACnetConstructedDataSerialNumberBuilder {
-	m.SerialNumber = serialNumber
-	return m
+func (b *_BACnetConstructedDataSerialNumberBuilder) WithMandatoryFields(serialNumber BACnetApplicationTagCharacterString) BACnetConstructedDataSerialNumberBuilder {
+	return b.WithSerialNumber(serialNumber)
 }
 
-func (m *_BACnetConstructedDataSerialNumberBuilder) WithSerialNumberBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataSerialNumberBuilder {
-	builder := builderSupplier(m.SerialNumber.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetConstructedDataSerialNumberBuilder) WithSerialNumber(serialNumber BACnetApplicationTagCharacterString) BACnetConstructedDataSerialNumberBuilder {
+	b.SerialNumber = serialNumber
+	return b
+}
+
+func (b *_BACnetConstructedDataSerialNumberBuilder) WithSerialNumberBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataSerialNumberBuilder {
+	builder := builderSupplier(b.SerialNumber.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.SerialNumber, err = builder.Build()
+	b.SerialNumber, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataSerialNumberBuilder) Build() (BACnetConstructedDataSerialNumber, error) {
-	if m.SerialNumber == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataSerialNumberBuilder) Build() (BACnetConstructedDataSerialNumber, error) {
+	if b.SerialNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'serialNumber' not set"))
+		b.err.Append(errors.New("mandatory field 'serialNumber' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSerialNumber.deepCopy(), nil
+	return b._BACnetConstructedDataSerialNumber.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSerialNumberBuilder) MustBuild() BACnetConstructedDataSerialNumber {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSerialNumberBuilder) MustBuild() BACnetConstructedDataSerialNumber {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSerialNumberBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSerialNumberBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSerialNumberBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSerialNumberBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSerialNumberBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSerialNumberBuilder().(*_BACnetConstructedDataSerialNumberBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSerialNumberBuilder creates a BACnetConstructedDataSerialNumberBuilder
-func (m *_BACnetConstructedDataSerialNumber) CreateBACnetConstructedDataSerialNumberBuilder() BACnetConstructedDataSerialNumberBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSerialNumber) CreateBACnetConstructedDataSerialNumberBuilder() BACnetConstructedDataSerialNumberBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSerialNumberBuilder()
 	}
-	return &_BACnetConstructedDataSerialNumberBuilder{_BACnetConstructedDataSerialNumber: m.deepCopy()}
+	return &_BACnetConstructedDataSerialNumberBuilder{_BACnetConstructedDataSerialNumber: b.deepCopy()}
 }
 
 ///////////////////////

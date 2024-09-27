@@ -100,64 +100,83 @@ func NewBACnetContextTagSignedIntegerBuilder() BACnetContextTagSignedIntegerBuil
 type _BACnetContextTagSignedIntegerBuilder struct {
 	*_BACnetContextTagSignedInteger
 
+	parentBuilder *_BACnetContextTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetContextTagSignedIntegerBuilder) = (*_BACnetContextTagSignedIntegerBuilder)(nil)
 
-func (m *_BACnetContextTagSignedIntegerBuilder) WithMandatoryFields(payload BACnetTagPayloadSignedInteger) BACnetContextTagSignedIntegerBuilder {
-	return m.WithPayload(payload)
+func (b *_BACnetContextTagSignedIntegerBuilder) setParent(contract BACnetContextTagContract) {
+	b.BACnetContextTagContract = contract
 }
 
-func (m *_BACnetContextTagSignedIntegerBuilder) WithPayload(payload BACnetTagPayloadSignedInteger) BACnetContextTagSignedIntegerBuilder {
-	m.Payload = payload
-	return m
+func (b *_BACnetContextTagSignedIntegerBuilder) WithMandatoryFields(payload BACnetTagPayloadSignedInteger) BACnetContextTagSignedIntegerBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_BACnetContextTagSignedIntegerBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadSignedIntegerBuilder) BACnetTagPayloadSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder {
-	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadSignedIntegerBuilder())
+func (b *_BACnetContextTagSignedIntegerBuilder) WithPayload(payload BACnetTagPayloadSignedInteger) BACnetContextTagSignedIntegerBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetContextTagSignedIntegerBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadSignedIntegerBuilder) BACnetTagPayloadSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadSignedIntegerBuilder())
 	var err error
-	m.Payload, err = builder.Build()
+	b.Payload, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagPayloadSignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadSignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetContextTagSignedIntegerBuilder) Build() (BACnetContextTagSignedInteger, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetContextTagSignedIntegerBuilder) Build() (BACnetContextTagSignedInteger, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetContextTagSignedInteger.deepCopy(), nil
+	return b._BACnetContextTagSignedInteger.deepCopy(), nil
 }
 
-func (m *_BACnetContextTagSignedIntegerBuilder) MustBuild() BACnetContextTagSignedInteger {
-	build, err := m.Build()
+func (b *_BACnetContextTagSignedIntegerBuilder) MustBuild() BACnetContextTagSignedInteger {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetContextTagSignedIntegerBuilder) DeepCopy() any {
-	return m.CreateBACnetContextTagSignedIntegerBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetContextTagSignedIntegerBuilder) Done() BACnetContextTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetContextTagSignedIntegerBuilder) buildForBACnetContextTag() (BACnetContextTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetContextTagSignedIntegerBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetContextTagSignedIntegerBuilder().(*_BACnetContextTagSignedIntegerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetContextTagSignedIntegerBuilder creates a BACnetContextTagSignedIntegerBuilder
-func (m *_BACnetContextTagSignedInteger) CreateBACnetContextTagSignedIntegerBuilder() BACnetContextTagSignedIntegerBuilder {
-	if m == nil {
+func (b *_BACnetContextTagSignedInteger) CreateBACnetContextTagSignedIntegerBuilder() BACnetContextTagSignedIntegerBuilder {
+	if b == nil {
 		return NewBACnetContextTagSignedIntegerBuilder()
 	}
-	return &_BACnetContextTagSignedIntegerBuilder{_BACnetContextTagSignedInteger: m.deepCopy()}
+	return &_BACnetContextTagSignedIntegerBuilder{_BACnetContextTagSignedInteger: b.deepCopy()}
 }
 
 ///////////////////////

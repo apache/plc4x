@@ -110,74 +110,93 @@ func NewViewDescriptionBuilder() ViewDescriptionBuilder {
 type _ViewDescriptionBuilder struct {
 	*_ViewDescription
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ViewDescriptionBuilder) = (*_ViewDescriptionBuilder)(nil)
 
-func (m *_ViewDescriptionBuilder) WithMandatoryFields(viewId NodeId, timestamp int64, viewVersion uint32) ViewDescriptionBuilder {
-	return m.WithViewId(viewId).WithTimestamp(timestamp).WithViewVersion(viewVersion)
+func (b *_ViewDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ViewDescriptionBuilder) WithViewId(viewId NodeId) ViewDescriptionBuilder {
-	m.ViewId = viewId
-	return m
+func (b *_ViewDescriptionBuilder) WithMandatoryFields(viewId NodeId, timestamp int64, viewVersion uint32) ViewDescriptionBuilder {
+	return b.WithViewId(viewId).WithTimestamp(timestamp).WithViewVersion(viewVersion)
 }
 
-func (m *_ViewDescriptionBuilder) WithViewIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ViewDescriptionBuilder {
-	builder := builderSupplier(m.ViewId.CreateNodeIdBuilder())
+func (b *_ViewDescriptionBuilder) WithViewId(viewId NodeId) ViewDescriptionBuilder {
+	b.ViewId = viewId
+	return b
+}
+
+func (b *_ViewDescriptionBuilder) WithViewIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ViewDescriptionBuilder {
+	builder := builderSupplier(b.ViewId.CreateNodeIdBuilder())
 	var err error
-	m.ViewId, err = builder.Build()
+	b.ViewId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ViewDescriptionBuilder) WithTimestamp(timestamp int64) ViewDescriptionBuilder {
-	m.Timestamp = timestamp
-	return m
+func (b *_ViewDescriptionBuilder) WithTimestamp(timestamp int64) ViewDescriptionBuilder {
+	b.Timestamp = timestamp
+	return b
 }
 
-func (m *_ViewDescriptionBuilder) WithViewVersion(viewVersion uint32) ViewDescriptionBuilder {
-	m.ViewVersion = viewVersion
-	return m
+func (b *_ViewDescriptionBuilder) WithViewVersion(viewVersion uint32) ViewDescriptionBuilder {
+	b.ViewVersion = viewVersion
+	return b
 }
 
-func (m *_ViewDescriptionBuilder) Build() (ViewDescription, error) {
-	if m.ViewId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ViewDescriptionBuilder) Build() (ViewDescription, error) {
+	if b.ViewId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'viewId' not set"))
+		b.err.Append(errors.New("mandatory field 'viewId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ViewDescription.deepCopy(), nil
+	return b._ViewDescription.deepCopy(), nil
 }
 
-func (m *_ViewDescriptionBuilder) MustBuild() ViewDescription {
-	build, err := m.Build()
+func (b *_ViewDescriptionBuilder) MustBuild() ViewDescription {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ViewDescriptionBuilder) DeepCopy() any {
-	return m.CreateViewDescriptionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ViewDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ViewDescriptionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ViewDescriptionBuilder) DeepCopy() any {
+	_copy := b.CreateViewDescriptionBuilder().(*_ViewDescriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateViewDescriptionBuilder creates a ViewDescriptionBuilder
-func (m *_ViewDescription) CreateViewDescriptionBuilder() ViewDescriptionBuilder {
-	if m == nil {
+func (b *_ViewDescription) CreateViewDescriptionBuilder() ViewDescriptionBuilder {
+	if b == nil {
 		return NewViewDescriptionBuilder()
 	}
-	return &_ViewDescriptionBuilder{_ViewDescription: m.deepCopy()}
+	return &_ViewDescriptionBuilder{_ViewDescription: b.deepCopy()}
 }
 
 ///////////////////////

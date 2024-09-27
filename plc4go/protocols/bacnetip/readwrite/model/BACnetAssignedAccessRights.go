@@ -105,83 +105,87 @@ type _BACnetAssignedAccessRightsBuilder struct {
 
 var _ (BACnetAssignedAccessRightsBuilder) = (*_BACnetAssignedAccessRightsBuilder)(nil)
 
-func (m *_BACnetAssignedAccessRightsBuilder) WithMandatoryFields(assignedAccessRights BACnetDeviceObjectReferenceEnclosed, enable BACnetContextTagBoolean) BACnetAssignedAccessRightsBuilder {
-	return m.WithAssignedAccessRights(assignedAccessRights).WithEnable(enable)
+func (b *_BACnetAssignedAccessRightsBuilder) WithMandatoryFields(assignedAccessRights BACnetDeviceObjectReferenceEnclosed, enable BACnetContextTagBoolean) BACnetAssignedAccessRightsBuilder {
+	return b.WithAssignedAccessRights(assignedAccessRights).WithEnable(enable)
 }
 
-func (m *_BACnetAssignedAccessRightsBuilder) WithAssignedAccessRights(assignedAccessRights BACnetDeviceObjectReferenceEnclosed) BACnetAssignedAccessRightsBuilder {
-	m.AssignedAccessRights = assignedAccessRights
-	return m
+func (b *_BACnetAssignedAccessRightsBuilder) WithAssignedAccessRights(assignedAccessRights BACnetDeviceObjectReferenceEnclosed) BACnetAssignedAccessRightsBuilder {
+	b.AssignedAccessRights = assignedAccessRights
+	return b
 }
 
-func (m *_BACnetAssignedAccessRightsBuilder) WithAssignedAccessRightsBuilder(builderSupplier func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetAssignedAccessRightsBuilder {
-	builder := builderSupplier(m.AssignedAccessRights.CreateBACnetDeviceObjectReferenceEnclosedBuilder())
+func (b *_BACnetAssignedAccessRightsBuilder) WithAssignedAccessRightsBuilder(builderSupplier func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetAssignedAccessRightsBuilder {
+	builder := builderSupplier(b.AssignedAccessRights.CreateBACnetDeviceObjectReferenceEnclosedBuilder())
 	var err error
-	m.AssignedAccessRights, err = builder.Build()
+	b.AssignedAccessRights, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAssignedAccessRightsBuilder) WithEnable(enable BACnetContextTagBoolean) BACnetAssignedAccessRightsBuilder {
-	m.Enable = enable
-	return m
+func (b *_BACnetAssignedAccessRightsBuilder) WithEnable(enable BACnetContextTagBoolean) BACnetAssignedAccessRightsBuilder {
+	b.Enable = enable
+	return b
 }
 
-func (m *_BACnetAssignedAccessRightsBuilder) WithEnableBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetAssignedAccessRightsBuilder {
-	builder := builderSupplier(m.Enable.CreateBACnetContextTagBooleanBuilder())
+func (b *_BACnetAssignedAccessRightsBuilder) WithEnableBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetAssignedAccessRightsBuilder {
+	builder := builderSupplier(b.Enable.CreateBACnetContextTagBooleanBuilder())
 	var err error
-	m.Enable, err = builder.Build()
+	b.Enable, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAssignedAccessRightsBuilder) Build() (BACnetAssignedAccessRights, error) {
-	if m.AssignedAccessRights == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAssignedAccessRightsBuilder) Build() (BACnetAssignedAccessRights, error) {
+	if b.AssignedAccessRights == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'assignedAccessRights' not set"))
+		b.err.Append(errors.New("mandatory field 'assignedAccessRights' not set"))
 	}
-	if m.Enable == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Enable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'enable' not set"))
+		b.err.Append(errors.New("mandatory field 'enable' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAssignedAccessRights.deepCopy(), nil
+	return b._BACnetAssignedAccessRights.deepCopy(), nil
 }
 
-func (m *_BACnetAssignedAccessRightsBuilder) MustBuild() BACnetAssignedAccessRights {
-	build, err := m.Build()
+func (b *_BACnetAssignedAccessRightsBuilder) MustBuild() BACnetAssignedAccessRights {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAssignedAccessRightsBuilder) DeepCopy() any {
-	return m.CreateBACnetAssignedAccessRightsBuilder()
+func (b *_BACnetAssignedAccessRightsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAssignedAccessRightsBuilder().(*_BACnetAssignedAccessRightsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAssignedAccessRightsBuilder creates a BACnetAssignedAccessRightsBuilder
-func (m *_BACnetAssignedAccessRights) CreateBACnetAssignedAccessRightsBuilder() BACnetAssignedAccessRightsBuilder {
-	if m == nil {
+func (b *_BACnetAssignedAccessRights) CreateBACnetAssignedAccessRightsBuilder() BACnetAssignedAccessRightsBuilder {
+	if b == nil {
 		return NewBACnetAssignedAccessRightsBuilder()
 	}
-	return &_BACnetAssignedAccessRightsBuilder{_BACnetAssignedAccessRights: m.deepCopy()}
+	return &_BACnetAssignedAccessRightsBuilder{_BACnetAssignedAccessRights: b.deepCopy()}
 }
 
 ///////////////////////

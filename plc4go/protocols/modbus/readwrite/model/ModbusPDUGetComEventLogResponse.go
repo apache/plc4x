@@ -111,60 +111,79 @@ func NewModbusPDUGetComEventLogResponseBuilder() ModbusPDUGetComEventLogResponse
 type _ModbusPDUGetComEventLogResponseBuilder struct {
 	*_ModbusPDUGetComEventLogResponse
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUGetComEventLogResponseBuilder) = (*_ModbusPDUGetComEventLogResponseBuilder)(nil)
 
-func (m *_ModbusPDUGetComEventLogResponseBuilder) WithMandatoryFields(status uint16, eventCount uint16, messageCount uint16, events []byte) ModbusPDUGetComEventLogResponseBuilder {
-	return m.WithStatus(status).WithEventCount(eventCount).WithMessageCount(messageCount).WithEvents(events...)
+func (b *_ModbusPDUGetComEventLogResponseBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUGetComEventLogResponseBuilder) WithStatus(status uint16) ModbusPDUGetComEventLogResponseBuilder {
-	m.Status = status
-	return m
+func (b *_ModbusPDUGetComEventLogResponseBuilder) WithMandatoryFields(status uint16, eventCount uint16, messageCount uint16, events []byte) ModbusPDUGetComEventLogResponseBuilder {
+	return b.WithStatus(status).WithEventCount(eventCount).WithMessageCount(messageCount).WithEvents(events...)
 }
 
-func (m *_ModbusPDUGetComEventLogResponseBuilder) WithEventCount(eventCount uint16) ModbusPDUGetComEventLogResponseBuilder {
-	m.EventCount = eventCount
-	return m
+func (b *_ModbusPDUGetComEventLogResponseBuilder) WithStatus(status uint16) ModbusPDUGetComEventLogResponseBuilder {
+	b.Status = status
+	return b
 }
 
-func (m *_ModbusPDUGetComEventLogResponseBuilder) WithMessageCount(messageCount uint16) ModbusPDUGetComEventLogResponseBuilder {
-	m.MessageCount = messageCount
-	return m
+func (b *_ModbusPDUGetComEventLogResponseBuilder) WithEventCount(eventCount uint16) ModbusPDUGetComEventLogResponseBuilder {
+	b.EventCount = eventCount
+	return b
 }
 
-func (m *_ModbusPDUGetComEventLogResponseBuilder) WithEvents(events ...byte) ModbusPDUGetComEventLogResponseBuilder {
-	m.Events = events
-	return m
+func (b *_ModbusPDUGetComEventLogResponseBuilder) WithMessageCount(messageCount uint16) ModbusPDUGetComEventLogResponseBuilder {
+	b.MessageCount = messageCount
+	return b
 }
 
-func (m *_ModbusPDUGetComEventLogResponseBuilder) Build() (ModbusPDUGetComEventLogResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUGetComEventLogResponseBuilder) WithEvents(events ...byte) ModbusPDUGetComEventLogResponseBuilder {
+	b.Events = events
+	return b
+}
+
+func (b *_ModbusPDUGetComEventLogResponseBuilder) Build() (ModbusPDUGetComEventLogResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUGetComEventLogResponse.deepCopy(), nil
+	return b._ModbusPDUGetComEventLogResponse.deepCopy(), nil
 }
 
-func (m *_ModbusPDUGetComEventLogResponseBuilder) MustBuild() ModbusPDUGetComEventLogResponse {
-	build, err := m.Build()
+func (b *_ModbusPDUGetComEventLogResponseBuilder) MustBuild() ModbusPDUGetComEventLogResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUGetComEventLogResponseBuilder) DeepCopy() any {
-	return m.CreateModbusPDUGetComEventLogResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUGetComEventLogResponseBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUGetComEventLogResponseBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUGetComEventLogResponseBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUGetComEventLogResponseBuilder().(*_ModbusPDUGetComEventLogResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUGetComEventLogResponseBuilder creates a ModbusPDUGetComEventLogResponseBuilder
-func (m *_ModbusPDUGetComEventLogResponse) CreateModbusPDUGetComEventLogResponseBuilder() ModbusPDUGetComEventLogResponseBuilder {
-	if m == nil {
+func (b *_ModbusPDUGetComEventLogResponse) CreateModbusPDUGetComEventLogResponseBuilder() ModbusPDUGetComEventLogResponseBuilder {
+	if b == nil {
 		return NewModbusPDUGetComEventLogResponseBuilder()
 	}
-	return &_ModbusPDUGetComEventLogResponseBuilder{_ModbusPDUGetComEventLogResponse: m.deepCopy()}
+	return &_ModbusPDUGetComEventLogResponseBuilder{_ModbusPDUGetComEventLogResponse: b.deepCopy()}
 }
 
 ///////////////////////

@@ -85,40 +85,59 @@ func NewBACnetConstructedDataOctetstringValueAllBuilder() BACnetConstructedDataO
 type _BACnetConstructedDataOctetstringValueAllBuilder struct {
 	*_BACnetConstructedDataOctetstringValueAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataOctetstringValueAllBuilder) = (*_BACnetConstructedDataOctetstringValueAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataOctetstringValueAllBuilder) WithMandatoryFields() BACnetConstructedDataOctetstringValueAllBuilder {
-	return m
+func (b *_BACnetConstructedDataOctetstringValueAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataOctetstringValueAllBuilder) Build() (BACnetConstructedDataOctetstringValueAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataOctetstringValueAllBuilder) WithMandatoryFields() BACnetConstructedDataOctetstringValueAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataOctetstringValueAllBuilder) Build() (BACnetConstructedDataOctetstringValueAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataOctetstringValueAll.deepCopy(), nil
+	return b._BACnetConstructedDataOctetstringValueAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataOctetstringValueAllBuilder) MustBuild() BACnetConstructedDataOctetstringValueAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataOctetstringValueAllBuilder) MustBuild() BACnetConstructedDataOctetstringValueAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataOctetstringValueAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataOctetstringValueAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataOctetstringValueAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataOctetstringValueAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataOctetstringValueAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataOctetstringValueAllBuilder().(*_BACnetConstructedDataOctetstringValueAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataOctetstringValueAllBuilder creates a BACnetConstructedDataOctetstringValueAllBuilder
-func (m *_BACnetConstructedDataOctetstringValueAll) CreateBACnetConstructedDataOctetstringValueAllBuilder() BACnetConstructedDataOctetstringValueAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataOctetstringValueAll) CreateBACnetConstructedDataOctetstringValueAllBuilder() BACnetConstructedDataOctetstringValueAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataOctetstringValueAllBuilder()
 	}
-	return &_BACnetConstructedDataOctetstringValueAllBuilder{_BACnetConstructedDataOctetstringValueAll: m.deepCopy()}
+	return &_BACnetConstructedDataOctetstringValueAllBuilder{_BACnetConstructedDataOctetstringValueAll: b.deepCopy()}
 }
 
 ///////////////////////

@@ -101,6 +101,8 @@ type ConnectionResponseBuilder interface {
 	WithOptionalHpaiDataEndpointBuilder(func(HPAIDataEndpointBuilder) HPAIDataEndpointBuilder) ConnectionResponseBuilder
 	// WithConnectionResponseDataBlock adds ConnectionResponseDataBlock (property field)
 	WithOptionalConnectionResponseDataBlock(ConnectionResponseDataBlock) ConnectionResponseBuilder
+	// WithOptionalConnectionResponseDataBlockBuilder adds ConnectionResponseDataBlock (property field) which is build by the builder
+	WithOptionalConnectionResponseDataBlockBuilder(func(ConnectionResponseDataBlockBuilder) ConnectionResponseDataBlockBuilder) ConnectionResponseBuilder
 	// Build builds the ConnectionResponse or returns an error if something is wrong
 	Build() (ConnectionResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -115,73 +117,105 @@ func NewConnectionResponseBuilder() ConnectionResponseBuilder {
 type _ConnectionResponseBuilder struct {
 	*_ConnectionResponse
 
+	parentBuilder *_KnxNetIpMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ConnectionResponseBuilder) = (*_ConnectionResponseBuilder)(nil)
 
-func (m *_ConnectionResponseBuilder) WithMandatoryFields(communicationChannelId uint8, status Status) ConnectionResponseBuilder {
-	return m.WithCommunicationChannelId(communicationChannelId).WithStatus(status)
+func (b *_ConnectionResponseBuilder) setParent(contract KnxNetIpMessageContract) {
+	b.KnxNetIpMessageContract = contract
 }
 
-func (m *_ConnectionResponseBuilder) WithCommunicationChannelId(communicationChannelId uint8) ConnectionResponseBuilder {
-	m.CommunicationChannelId = communicationChannelId
-	return m
+func (b *_ConnectionResponseBuilder) WithMandatoryFields(communicationChannelId uint8, status Status) ConnectionResponseBuilder {
+	return b.WithCommunicationChannelId(communicationChannelId).WithStatus(status)
 }
 
-func (m *_ConnectionResponseBuilder) WithStatus(status Status) ConnectionResponseBuilder {
-	m.Status = status
-	return m
+func (b *_ConnectionResponseBuilder) WithCommunicationChannelId(communicationChannelId uint8) ConnectionResponseBuilder {
+	b.CommunicationChannelId = communicationChannelId
+	return b
 }
 
-func (m *_ConnectionResponseBuilder) WithOptionalHpaiDataEndpoint(hpaiDataEndpoint HPAIDataEndpoint) ConnectionResponseBuilder {
-	m.HpaiDataEndpoint = hpaiDataEndpoint
-	return m
+func (b *_ConnectionResponseBuilder) WithStatus(status Status) ConnectionResponseBuilder {
+	b.Status = status
+	return b
 }
 
-func (m *_ConnectionResponseBuilder) WithOptionalHpaiDataEndpointBuilder(builderSupplier func(HPAIDataEndpointBuilder) HPAIDataEndpointBuilder) ConnectionResponseBuilder {
-	builder := builderSupplier(m.HpaiDataEndpoint.CreateHPAIDataEndpointBuilder())
+func (b *_ConnectionResponseBuilder) WithOptionalHpaiDataEndpoint(hpaiDataEndpoint HPAIDataEndpoint) ConnectionResponseBuilder {
+	b.HpaiDataEndpoint = hpaiDataEndpoint
+	return b
+}
+
+func (b *_ConnectionResponseBuilder) WithOptionalHpaiDataEndpointBuilder(builderSupplier func(HPAIDataEndpointBuilder) HPAIDataEndpointBuilder) ConnectionResponseBuilder {
+	builder := builderSupplier(b.HpaiDataEndpoint.CreateHPAIDataEndpointBuilder())
 	var err error
-	m.HpaiDataEndpoint, err = builder.Build()
+	b.HpaiDataEndpoint, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HPAIDataEndpointBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HPAIDataEndpointBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ConnectionResponseBuilder) WithOptionalConnectionResponseDataBlock(connectionResponseDataBlock ConnectionResponseDataBlock) ConnectionResponseBuilder {
-	m.ConnectionResponseDataBlock = connectionResponseDataBlock
-	return m
+func (b *_ConnectionResponseBuilder) WithOptionalConnectionResponseDataBlock(connectionResponseDataBlock ConnectionResponseDataBlock) ConnectionResponseBuilder {
+	b.ConnectionResponseDataBlock = connectionResponseDataBlock
+	return b
 }
 
-func (m *_ConnectionResponseBuilder) Build() (ConnectionResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ConnectionResponseBuilder) WithOptionalConnectionResponseDataBlockBuilder(builderSupplier func(ConnectionResponseDataBlockBuilder) ConnectionResponseDataBlockBuilder) ConnectionResponseBuilder {
+	builder := builderSupplier(b.ConnectionResponseDataBlock.CreateConnectionResponseDataBlockBuilder())
+	var err error
+	b.ConnectionResponseDataBlock, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ConnectionResponseDataBlockBuilder failed"))
 	}
-	return m._ConnectionResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_ConnectionResponseBuilder) MustBuild() ConnectionResponse {
-	build, err := m.Build()
+func (b *_ConnectionResponseBuilder) Build() (ConnectionResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ConnectionResponse.deepCopy(), nil
+}
+
+func (b *_ConnectionResponseBuilder) MustBuild() ConnectionResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ConnectionResponseBuilder) DeepCopy() any {
-	return m.CreateConnectionResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ConnectionResponseBuilder) Done() KnxNetIpMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ConnectionResponseBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, error) {
+	return b.Build()
+}
+
+func (b *_ConnectionResponseBuilder) DeepCopy() any {
+	_copy := b.CreateConnectionResponseBuilder().(*_ConnectionResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateConnectionResponseBuilder creates a ConnectionResponseBuilder
-func (m *_ConnectionResponse) CreateConnectionResponseBuilder() ConnectionResponseBuilder {
-	if m == nil {
+func (b *_ConnectionResponse) CreateConnectionResponseBuilder() ConnectionResponseBuilder {
+	if b == nil {
 		return NewConnectionResponseBuilder()
 	}
-	return &_ConnectionResponseBuilder{_ConnectionResponse: m.deepCopy()}
+	return &_ConnectionResponseBuilder{_ConnectionResponse: b.deepCopy()}
 }
 
 ///////////////////////

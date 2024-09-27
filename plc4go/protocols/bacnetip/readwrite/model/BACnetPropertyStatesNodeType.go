@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesNodeTypeBuilder() BACnetPropertyStatesNodeTypeBuilde
 type _BACnetPropertyStatesNodeTypeBuilder struct {
 	*_BACnetPropertyStatesNodeType
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesNodeTypeBuilder) = (*_BACnetPropertyStatesNodeTypeBuilder)(nil)
 
-func (m *_BACnetPropertyStatesNodeTypeBuilder) WithMandatoryFields(nodeType BACnetNodeTypeTagged) BACnetPropertyStatesNodeTypeBuilder {
-	return m.WithNodeType(nodeType)
+func (b *_BACnetPropertyStatesNodeTypeBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesNodeTypeBuilder) WithNodeType(nodeType BACnetNodeTypeTagged) BACnetPropertyStatesNodeTypeBuilder {
-	m.NodeType = nodeType
-	return m
+func (b *_BACnetPropertyStatesNodeTypeBuilder) WithMandatoryFields(nodeType BACnetNodeTypeTagged) BACnetPropertyStatesNodeTypeBuilder {
+	return b.WithNodeType(nodeType)
 }
 
-func (m *_BACnetPropertyStatesNodeTypeBuilder) WithNodeTypeBuilder(builderSupplier func(BACnetNodeTypeTaggedBuilder) BACnetNodeTypeTaggedBuilder) BACnetPropertyStatesNodeTypeBuilder {
-	builder := builderSupplier(m.NodeType.CreateBACnetNodeTypeTaggedBuilder())
+func (b *_BACnetPropertyStatesNodeTypeBuilder) WithNodeType(nodeType BACnetNodeTypeTagged) BACnetPropertyStatesNodeTypeBuilder {
+	b.NodeType = nodeType
+	return b
+}
+
+func (b *_BACnetPropertyStatesNodeTypeBuilder) WithNodeTypeBuilder(builderSupplier func(BACnetNodeTypeTaggedBuilder) BACnetNodeTypeTaggedBuilder) BACnetPropertyStatesNodeTypeBuilder {
+	builder := builderSupplier(b.NodeType.CreateBACnetNodeTypeTaggedBuilder())
 	var err error
-	m.NodeType, err = builder.Build()
+	b.NodeType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetNodeTypeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetNodeTypeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesNodeTypeBuilder) Build() (BACnetPropertyStatesNodeType, error) {
-	if m.NodeType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesNodeTypeBuilder) Build() (BACnetPropertyStatesNodeType, error) {
+	if b.NodeType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nodeType' not set"))
+		b.err.Append(errors.New("mandatory field 'nodeType' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesNodeType.deepCopy(), nil
+	return b._BACnetPropertyStatesNodeType.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesNodeTypeBuilder) MustBuild() BACnetPropertyStatesNodeType {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesNodeTypeBuilder) MustBuild() BACnetPropertyStatesNodeType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesNodeTypeBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesNodeTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesNodeTypeBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesNodeTypeBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesNodeTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesNodeTypeBuilder().(*_BACnetPropertyStatesNodeTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesNodeTypeBuilder creates a BACnetPropertyStatesNodeTypeBuilder
-func (m *_BACnetPropertyStatesNodeType) CreateBACnetPropertyStatesNodeTypeBuilder() BACnetPropertyStatesNodeTypeBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesNodeType) CreateBACnetPropertyStatesNodeTypeBuilder() BACnetPropertyStatesNodeTypeBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesNodeTypeBuilder()
 	}
-	return &_BACnetPropertyStatesNodeTypeBuilder{_BACnetPropertyStatesNodeType: m.deepCopy()}
+	return &_BACnetPropertyStatesNodeTypeBuilder{_BACnetPropertyStatesNodeType: b.deepCopy()}
 }
 
 ///////////////////////

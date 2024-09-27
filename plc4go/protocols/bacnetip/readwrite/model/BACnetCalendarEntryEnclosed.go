@@ -93,6 +93,8 @@ type BACnetCalendarEntryEnclosedBuilder interface {
 	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetCalendarEntryEnclosedBuilder
 	// WithCalendarEntry adds CalendarEntry (property field)
 	WithCalendarEntry(BACnetCalendarEntry) BACnetCalendarEntryEnclosedBuilder
+	// WithCalendarEntryBuilder adds CalendarEntry (property field) which is build by the builder
+	WithCalendarEntryBuilder(func(BACnetCalendarEntryBuilder) BACnetCalendarEntryBuilder) BACnetCalendarEntryEnclosedBuilder
 	// WithClosingTag adds ClosingTag (property field)
 	WithClosingTag(BACnetClosingTag) BACnetCalendarEntryEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
@@ -116,94 +118,111 @@ type _BACnetCalendarEntryEnclosedBuilder struct {
 
 var _ (BACnetCalendarEntryEnclosedBuilder) = (*_BACnetCalendarEntryEnclosedBuilder)(nil)
 
-func (m *_BACnetCalendarEntryEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, calendarEntry BACnetCalendarEntry, closingTag BACnetClosingTag) BACnetCalendarEntryEnclosedBuilder {
-	return m.WithOpeningTag(openingTag).WithCalendarEntry(calendarEntry).WithClosingTag(closingTag)
+func (b *_BACnetCalendarEntryEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, calendarEntry BACnetCalendarEntry, closingTag BACnetClosingTag) BACnetCalendarEntryEnclosedBuilder {
+	return b.WithOpeningTag(openingTag).WithCalendarEntry(calendarEntry).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetCalendarEntryEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetCalendarEntryEnclosedBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetCalendarEntryEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetCalendarEntryEnclosedBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetCalendarEntryEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetCalendarEntryEnclosedBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetCalendarEntryEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetCalendarEntryEnclosedBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetCalendarEntryEnclosedBuilder) WithCalendarEntry(calendarEntry BACnetCalendarEntry) BACnetCalendarEntryEnclosedBuilder {
-	m.CalendarEntry = calendarEntry
-	return m
+func (b *_BACnetCalendarEntryEnclosedBuilder) WithCalendarEntry(calendarEntry BACnetCalendarEntry) BACnetCalendarEntryEnclosedBuilder {
+	b.CalendarEntry = calendarEntry
+	return b
 }
 
-func (m *_BACnetCalendarEntryEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetCalendarEntryEnclosedBuilder {
-	m.ClosingTag = closingTag
-	return m
-}
-
-func (m *_BACnetCalendarEntryEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetCalendarEntryEnclosedBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetCalendarEntryEnclosedBuilder) WithCalendarEntryBuilder(builderSupplier func(BACnetCalendarEntryBuilder) BACnetCalendarEntryBuilder) BACnetCalendarEntryEnclosedBuilder {
+	builder := builderSupplier(b.CalendarEntry.CreateBACnetCalendarEntryBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.CalendarEntry, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetCalendarEntryBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetCalendarEntryEnclosedBuilder) Build() (BACnetCalendarEntryEnclosed, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
-	}
-	if m.CalendarEntry == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'calendarEntry' not set"))
-	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetCalendarEntryEnclosed.deepCopy(), nil
+func (b *_BACnetCalendarEntryEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetCalendarEntryEnclosedBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetCalendarEntryEnclosedBuilder) MustBuild() BACnetCalendarEntryEnclosed {
-	build, err := m.Build()
+func (b *_BACnetCalendarEntryEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetCalendarEntryEnclosedBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCalendarEntryEnclosedBuilder) Build() (BACnetCalendarEntryEnclosed, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.CalendarEntry == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'calendarEntry' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetCalendarEntryEnclosed.deepCopy(), nil
+}
+
+func (b *_BACnetCalendarEntryEnclosedBuilder) MustBuild() BACnetCalendarEntryEnclosed {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetCalendarEntryEnclosedBuilder) DeepCopy() any {
-	return m.CreateBACnetCalendarEntryEnclosedBuilder()
+func (b *_BACnetCalendarEntryEnclosedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetCalendarEntryEnclosedBuilder().(*_BACnetCalendarEntryEnclosedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetCalendarEntryEnclosedBuilder creates a BACnetCalendarEntryEnclosedBuilder
-func (m *_BACnetCalendarEntryEnclosed) CreateBACnetCalendarEntryEnclosedBuilder() BACnetCalendarEntryEnclosedBuilder {
-	if m == nil {
+func (b *_BACnetCalendarEntryEnclosed) CreateBACnetCalendarEntryEnclosedBuilder() BACnetCalendarEntryEnclosedBuilder {
+	if b == nil {
 		return NewBACnetCalendarEntryEnclosedBuilder()
 	}
-	return &_BACnetCalendarEntryEnclosedBuilder{_BACnetCalendarEntryEnclosed: m.deepCopy()}
+	return &_BACnetCalendarEntryEnclosedBuilder{_BACnetCalendarEntryEnclosed: b.deepCopy()}
 }
 
 ///////////////////////

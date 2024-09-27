@@ -93,45 +93,64 @@ func NewNLMReservedBuilder() NLMReservedBuilder {
 type _NLMReservedBuilder struct {
 	*_NLMReserved
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMReservedBuilder) = (*_NLMReservedBuilder)(nil)
 
-func (m *_NLMReservedBuilder) WithMandatoryFields(unknownBytes []byte) NLMReservedBuilder {
-	return m.WithUnknownBytes(unknownBytes...)
+func (b *_NLMReservedBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMReservedBuilder) WithUnknownBytes(unknownBytes ...byte) NLMReservedBuilder {
-	m.UnknownBytes = unknownBytes
-	return m
+func (b *_NLMReservedBuilder) WithMandatoryFields(unknownBytes []byte) NLMReservedBuilder {
+	return b.WithUnknownBytes(unknownBytes...)
 }
 
-func (m *_NLMReservedBuilder) Build() (NLMReserved, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMReservedBuilder) WithUnknownBytes(unknownBytes ...byte) NLMReservedBuilder {
+	b.UnknownBytes = unknownBytes
+	return b
+}
+
+func (b *_NLMReservedBuilder) Build() (NLMReserved, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMReserved.deepCopy(), nil
+	return b._NLMReserved.deepCopy(), nil
 }
 
-func (m *_NLMReservedBuilder) MustBuild() NLMReserved {
-	build, err := m.Build()
+func (b *_NLMReservedBuilder) MustBuild() NLMReserved {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMReservedBuilder) DeepCopy() any {
-	return m.CreateNLMReservedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMReservedBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMReservedBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMReservedBuilder) DeepCopy() any {
+	_copy := b.CreateNLMReservedBuilder().(*_NLMReservedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMReservedBuilder creates a NLMReservedBuilder
-func (m *_NLMReserved) CreateNLMReservedBuilder() NLMReservedBuilder {
-	if m == nil {
+func (b *_NLMReserved) CreateNLMReservedBuilder() NLMReservedBuilder {
+	if b == nil {
 		return NewNLMReservedBuilder()
 	}
-	return &_NLMReservedBuilder{_NLMReserved: m.deepCopy()}
+	return &_NLMReservedBuilder{_NLMReserved: b.deepCopy()}
 }
 
 ///////////////////////

@@ -111,60 +111,79 @@ func NewPubSubConfigurationRefDataTypeBuilder() PubSubConfigurationRefDataTypeBu
 type _PubSubConfigurationRefDataTypeBuilder struct {
 	*_PubSubConfigurationRefDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (PubSubConfigurationRefDataTypeBuilder) = (*_PubSubConfigurationRefDataTypeBuilder)(nil)
 
-func (m *_PubSubConfigurationRefDataTypeBuilder) WithMandatoryFields(configurationMask PubSubConfigurationRefMask, elementIndex uint16, connectionIndex uint16, groupIndex uint16) PubSubConfigurationRefDataTypeBuilder {
-	return m.WithConfigurationMask(configurationMask).WithElementIndex(elementIndex).WithConnectionIndex(connectionIndex).WithGroupIndex(groupIndex)
+func (b *_PubSubConfigurationRefDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_PubSubConfigurationRefDataTypeBuilder) WithConfigurationMask(configurationMask PubSubConfigurationRefMask) PubSubConfigurationRefDataTypeBuilder {
-	m.ConfigurationMask = configurationMask
-	return m
+func (b *_PubSubConfigurationRefDataTypeBuilder) WithMandatoryFields(configurationMask PubSubConfigurationRefMask, elementIndex uint16, connectionIndex uint16, groupIndex uint16) PubSubConfigurationRefDataTypeBuilder {
+	return b.WithConfigurationMask(configurationMask).WithElementIndex(elementIndex).WithConnectionIndex(connectionIndex).WithGroupIndex(groupIndex)
 }
 
-func (m *_PubSubConfigurationRefDataTypeBuilder) WithElementIndex(elementIndex uint16) PubSubConfigurationRefDataTypeBuilder {
-	m.ElementIndex = elementIndex
-	return m
+func (b *_PubSubConfigurationRefDataTypeBuilder) WithConfigurationMask(configurationMask PubSubConfigurationRefMask) PubSubConfigurationRefDataTypeBuilder {
+	b.ConfigurationMask = configurationMask
+	return b
 }
 
-func (m *_PubSubConfigurationRefDataTypeBuilder) WithConnectionIndex(connectionIndex uint16) PubSubConfigurationRefDataTypeBuilder {
-	m.ConnectionIndex = connectionIndex
-	return m
+func (b *_PubSubConfigurationRefDataTypeBuilder) WithElementIndex(elementIndex uint16) PubSubConfigurationRefDataTypeBuilder {
+	b.ElementIndex = elementIndex
+	return b
 }
 
-func (m *_PubSubConfigurationRefDataTypeBuilder) WithGroupIndex(groupIndex uint16) PubSubConfigurationRefDataTypeBuilder {
-	m.GroupIndex = groupIndex
-	return m
+func (b *_PubSubConfigurationRefDataTypeBuilder) WithConnectionIndex(connectionIndex uint16) PubSubConfigurationRefDataTypeBuilder {
+	b.ConnectionIndex = connectionIndex
+	return b
 }
 
-func (m *_PubSubConfigurationRefDataTypeBuilder) Build() (PubSubConfigurationRefDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_PubSubConfigurationRefDataTypeBuilder) WithGroupIndex(groupIndex uint16) PubSubConfigurationRefDataTypeBuilder {
+	b.GroupIndex = groupIndex
+	return b
+}
+
+func (b *_PubSubConfigurationRefDataTypeBuilder) Build() (PubSubConfigurationRefDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._PubSubConfigurationRefDataType.deepCopy(), nil
+	return b._PubSubConfigurationRefDataType.deepCopy(), nil
 }
 
-func (m *_PubSubConfigurationRefDataTypeBuilder) MustBuild() PubSubConfigurationRefDataType {
-	build, err := m.Build()
+func (b *_PubSubConfigurationRefDataTypeBuilder) MustBuild() PubSubConfigurationRefDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PubSubConfigurationRefDataTypeBuilder) DeepCopy() any {
-	return m.CreatePubSubConfigurationRefDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PubSubConfigurationRefDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PubSubConfigurationRefDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PubSubConfigurationRefDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreatePubSubConfigurationRefDataTypeBuilder().(*_PubSubConfigurationRefDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePubSubConfigurationRefDataTypeBuilder creates a PubSubConfigurationRefDataTypeBuilder
-func (m *_PubSubConfigurationRefDataType) CreatePubSubConfigurationRefDataTypeBuilder() PubSubConfigurationRefDataTypeBuilder {
-	if m == nil {
+func (b *_PubSubConfigurationRefDataType) CreatePubSubConfigurationRefDataTypeBuilder() PubSubConfigurationRefDataTypeBuilder {
+	if b == nil {
 		return NewPubSubConfigurationRefDataTypeBuilder()
 	}
-	return &_PubSubConfigurationRefDataTypeBuilder{_PubSubConfigurationRefDataType: m.deepCopy()}
+	return &_PubSubConfigurationRefDataTypeBuilder{_PubSubConfigurationRefDataType: b.deepCopy()}
 }
 
 ///////////////////////

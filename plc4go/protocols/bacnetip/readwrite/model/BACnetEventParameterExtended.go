@@ -142,160 +142,179 @@ func NewBACnetEventParameterExtendedBuilder() BACnetEventParameterExtendedBuilde
 type _BACnetEventParameterExtendedBuilder struct {
 	*_BACnetEventParameterExtended
 
+	parentBuilder *_BACnetEventParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetEventParameterExtendedBuilder) = (*_BACnetEventParameterExtendedBuilder)(nil)
 
-func (m *_BACnetEventParameterExtendedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, vendorId BACnetVendorIdTagged, extendedEventType BACnetContextTagUnsignedInteger, parameters BACnetEventParameterExtendedParameters, closingTag BACnetClosingTag) BACnetEventParameterExtendedBuilder {
-	return m.WithOpeningTag(openingTag).WithVendorId(vendorId).WithExtendedEventType(extendedEventType).WithParameters(parameters).WithClosingTag(closingTag)
+func (b *_BACnetEventParameterExtendedBuilder) setParent(contract BACnetEventParameterContract) {
+	b.BACnetEventParameterContract = contract
 }
 
-func (m *_BACnetEventParameterExtendedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterExtendedBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetEventParameterExtendedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, vendorId BACnetVendorIdTagged, extendedEventType BACnetContextTagUnsignedInteger, parameters BACnetEventParameterExtendedParameters, closingTag BACnetClosingTag) BACnetEventParameterExtendedBuilder {
+	return b.WithOpeningTag(openingTag).WithVendorId(vendorId).WithExtendedEventType(extendedEventType).WithParameters(parameters).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetEventParameterExtendedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterExtendedBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetEventParameterExtendedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterExtendedBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterExtendedBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterExtendedBuilder) WithVendorId(vendorId BACnetVendorIdTagged) BACnetEventParameterExtendedBuilder {
-	m.VendorId = vendorId
-	return m
+func (b *_BACnetEventParameterExtendedBuilder) WithVendorId(vendorId BACnetVendorIdTagged) BACnetEventParameterExtendedBuilder {
+	b.VendorId = vendorId
+	return b
 }
 
-func (m *_BACnetEventParameterExtendedBuilder) WithVendorIdBuilder(builderSupplier func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetEventParameterExtendedBuilder {
-	builder := builderSupplier(m.VendorId.CreateBACnetVendorIdTaggedBuilder())
+func (b *_BACnetEventParameterExtendedBuilder) WithVendorIdBuilder(builderSupplier func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetEventParameterExtendedBuilder {
+	builder := builderSupplier(b.VendorId.CreateBACnetVendorIdTaggedBuilder())
 	var err error
-	m.VendorId, err = builder.Build()
+	b.VendorId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterExtendedBuilder) WithExtendedEventType(extendedEventType BACnetContextTagUnsignedInteger) BACnetEventParameterExtendedBuilder {
-	m.ExtendedEventType = extendedEventType
-	return m
+func (b *_BACnetEventParameterExtendedBuilder) WithExtendedEventType(extendedEventType BACnetContextTagUnsignedInteger) BACnetEventParameterExtendedBuilder {
+	b.ExtendedEventType = extendedEventType
+	return b
 }
 
-func (m *_BACnetEventParameterExtendedBuilder) WithExtendedEventTypeBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventParameterExtendedBuilder {
-	builder := builderSupplier(m.ExtendedEventType.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetEventParameterExtendedBuilder) WithExtendedEventTypeBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventParameterExtendedBuilder {
+	builder := builderSupplier(b.ExtendedEventType.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.ExtendedEventType, err = builder.Build()
+	b.ExtendedEventType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterExtendedBuilder) WithParameters(parameters BACnetEventParameterExtendedParameters) BACnetEventParameterExtendedBuilder {
-	m.Parameters = parameters
-	return m
+func (b *_BACnetEventParameterExtendedBuilder) WithParameters(parameters BACnetEventParameterExtendedParameters) BACnetEventParameterExtendedBuilder {
+	b.Parameters = parameters
+	return b
 }
 
-func (m *_BACnetEventParameterExtendedBuilder) WithParametersBuilder(builderSupplier func(BACnetEventParameterExtendedParametersBuilder) BACnetEventParameterExtendedParametersBuilder) BACnetEventParameterExtendedBuilder {
-	builder := builderSupplier(m.Parameters.CreateBACnetEventParameterExtendedParametersBuilder())
+func (b *_BACnetEventParameterExtendedBuilder) WithParametersBuilder(builderSupplier func(BACnetEventParameterExtendedParametersBuilder) BACnetEventParameterExtendedParametersBuilder) BACnetEventParameterExtendedBuilder {
+	builder := builderSupplier(b.Parameters.CreateBACnetEventParameterExtendedParametersBuilder())
 	var err error
-	m.Parameters, err = builder.Build()
+	b.Parameters, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventParameterExtendedParametersBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventParameterExtendedParametersBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterExtendedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterExtendedBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetEventParameterExtendedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterExtendedBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetEventParameterExtendedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterExtendedBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetEventParameterExtendedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterExtendedBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterExtendedBuilder) Build() (BACnetEventParameterExtended, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetEventParameterExtendedBuilder) Build() (BACnetEventParameterExtended, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.VendorId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.VendorId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'vendorId' not set"))
+		b.err.Append(errors.New("mandatory field 'vendorId' not set"))
 	}
-	if m.ExtendedEventType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ExtendedEventType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'extendedEventType' not set"))
+		b.err.Append(errors.New("mandatory field 'extendedEventType' not set"))
 	}
-	if m.Parameters == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Parameters == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'parameters' not set"))
+		b.err.Append(errors.New("mandatory field 'parameters' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetEventParameterExtended.deepCopy(), nil
+	return b._BACnetEventParameterExtended.deepCopy(), nil
 }
 
-func (m *_BACnetEventParameterExtendedBuilder) MustBuild() BACnetEventParameterExtended {
-	build, err := m.Build()
+func (b *_BACnetEventParameterExtendedBuilder) MustBuild() BACnetEventParameterExtended {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetEventParameterExtendedBuilder) DeepCopy() any {
-	return m.CreateBACnetEventParameterExtendedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetEventParameterExtendedBuilder) Done() BACnetEventParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetEventParameterExtendedBuilder) buildForBACnetEventParameter() (BACnetEventParameter, error) {
+	return b.Build()
+}
+
+func (b *_BACnetEventParameterExtendedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventParameterExtendedBuilder().(*_BACnetEventParameterExtendedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetEventParameterExtendedBuilder creates a BACnetEventParameterExtendedBuilder
-func (m *_BACnetEventParameterExtended) CreateBACnetEventParameterExtendedBuilder() BACnetEventParameterExtendedBuilder {
-	if m == nil {
+func (b *_BACnetEventParameterExtended) CreateBACnetEventParameterExtendedBuilder() BACnetEventParameterExtendedBuilder {
+	if b == nil {
 		return NewBACnetEventParameterExtendedBuilder()
 	}
-	return &_BACnetEventParameterExtendedBuilder{_BACnetEventParameterExtended: m.deepCopy()}
+	return &_BACnetEventParameterExtendedBuilder{_BACnetEventParameterExtended: b.deepCopy()}
 }
 
 ///////////////////////

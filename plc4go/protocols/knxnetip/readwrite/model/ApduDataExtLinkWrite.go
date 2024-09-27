@@ -85,40 +85,59 @@ func NewApduDataExtLinkWriteBuilder() ApduDataExtLinkWriteBuilder {
 type _ApduDataExtLinkWriteBuilder struct {
 	*_ApduDataExtLinkWrite
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtLinkWriteBuilder) = (*_ApduDataExtLinkWriteBuilder)(nil)
 
-func (m *_ApduDataExtLinkWriteBuilder) WithMandatoryFields() ApduDataExtLinkWriteBuilder {
-	return m
+func (b *_ApduDataExtLinkWriteBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtLinkWriteBuilder) Build() (ApduDataExtLinkWrite, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtLinkWriteBuilder) WithMandatoryFields() ApduDataExtLinkWriteBuilder {
+	return b
+}
+
+func (b *_ApduDataExtLinkWriteBuilder) Build() (ApduDataExtLinkWrite, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtLinkWrite.deepCopy(), nil
+	return b._ApduDataExtLinkWrite.deepCopy(), nil
 }
 
-func (m *_ApduDataExtLinkWriteBuilder) MustBuild() ApduDataExtLinkWrite {
-	build, err := m.Build()
+func (b *_ApduDataExtLinkWriteBuilder) MustBuild() ApduDataExtLinkWrite {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtLinkWriteBuilder) DeepCopy() any {
-	return m.CreateApduDataExtLinkWriteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtLinkWriteBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtLinkWriteBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtLinkWriteBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtLinkWriteBuilder().(*_ApduDataExtLinkWriteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtLinkWriteBuilder creates a ApduDataExtLinkWriteBuilder
-func (m *_ApduDataExtLinkWrite) CreateApduDataExtLinkWriteBuilder() ApduDataExtLinkWriteBuilder {
-	if m == nil {
+func (b *_ApduDataExtLinkWrite) CreateApduDataExtLinkWriteBuilder() ApduDataExtLinkWriteBuilder {
+	if b == nil {
 		return NewApduDataExtLinkWriteBuilder()
 	}
-	return &_ApduDataExtLinkWriteBuilder{_ApduDataExtLinkWrite: m.deepCopy()}
+	return &_ApduDataExtLinkWriteBuilder{_ApduDataExtLinkWrite: b.deepCopy()}
 }
 
 ///////////////////////

@@ -85,40 +85,59 @@ func NewBACnetConstructedDataAccessZoneAllBuilder() BACnetConstructedDataAccessZ
 type _BACnetConstructedDataAccessZoneAllBuilder struct {
 	*_BACnetConstructedDataAccessZoneAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccessZoneAllBuilder) = (*_BACnetConstructedDataAccessZoneAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccessZoneAllBuilder) WithMandatoryFields() BACnetConstructedDataAccessZoneAllBuilder {
-	return m
+func (b *_BACnetConstructedDataAccessZoneAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccessZoneAllBuilder) Build() (BACnetConstructedDataAccessZoneAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataAccessZoneAllBuilder) WithMandatoryFields() BACnetConstructedDataAccessZoneAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataAccessZoneAllBuilder) Build() (BACnetConstructedDataAccessZoneAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAccessZoneAll.deepCopy(), nil
+	return b._BACnetConstructedDataAccessZoneAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAccessZoneAllBuilder) MustBuild() BACnetConstructedDataAccessZoneAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccessZoneAllBuilder) MustBuild() BACnetConstructedDataAccessZoneAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccessZoneAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccessZoneAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccessZoneAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccessZoneAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccessZoneAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccessZoneAllBuilder().(*_BACnetConstructedDataAccessZoneAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccessZoneAllBuilder creates a BACnetConstructedDataAccessZoneAllBuilder
-func (m *_BACnetConstructedDataAccessZoneAll) CreateBACnetConstructedDataAccessZoneAllBuilder() BACnetConstructedDataAccessZoneAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccessZoneAll) CreateBACnetConstructedDataAccessZoneAllBuilder() BACnetConstructedDataAccessZoneAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccessZoneAllBuilder()
 	}
-	return &_BACnetConstructedDataAccessZoneAllBuilder{_BACnetConstructedDataAccessZoneAll: m.deepCopy()}
+	return &_BACnetConstructedDataAccessZoneAllBuilder{_BACnetConstructedDataAccessZoneAll: b.deepCopy()}
 }
 
 ///////////////////////

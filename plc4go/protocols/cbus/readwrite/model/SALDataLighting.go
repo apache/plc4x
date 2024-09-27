@@ -82,6 +82,8 @@ type SALDataLightingBuilder interface {
 	WithMandatoryFields(lightingData LightingData) SALDataLightingBuilder
 	// WithLightingData adds LightingData (property field)
 	WithLightingData(LightingData) SALDataLightingBuilder
+	// WithLightingDataBuilder adds LightingData (property field) which is build by the builder
+	WithLightingDataBuilder(func(LightingDataBuilder) LightingDataBuilder) SALDataLightingBuilder
 	// Build builds the SALDataLighting or returns an error if something is wrong
 	Build() (SALDataLighting, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewSALDataLightingBuilder() SALDataLightingBuilder {
 type _SALDataLightingBuilder struct {
 	*_SALDataLighting
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataLightingBuilder) = (*_SALDataLightingBuilder)(nil)
 
-func (m *_SALDataLightingBuilder) WithMandatoryFields(lightingData LightingData) SALDataLightingBuilder {
-	return m.WithLightingData(lightingData)
+func (b *_SALDataLightingBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataLightingBuilder) WithLightingData(lightingData LightingData) SALDataLightingBuilder {
-	m.LightingData = lightingData
-	return m
+func (b *_SALDataLightingBuilder) WithMandatoryFields(lightingData LightingData) SALDataLightingBuilder {
+	return b.WithLightingData(lightingData)
 }
 
-func (m *_SALDataLightingBuilder) Build() (SALDataLighting, error) {
-	if m.LightingData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SALDataLightingBuilder) WithLightingData(lightingData LightingData) SALDataLightingBuilder {
+	b.LightingData = lightingData
+	return b
+}
+
+func (b *_SALDataLightingBuilder) WithLightingDataBuilder(builderSupplier func(LightingDataBuilder) LightingDataBuilder) SALDataLightingBuilder {
+	builder := builderSupplier(b.LightingData.CreateLightingDataBuilder())
+	var err error
+	b.LightingData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'lightingData' not set"))
+		b.err.Append(errors.Wrap(err, "LightingDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._SALDataLighting.deepCopy(), nil
+	return b
 }
 
-func (m *_SALDataLightingBuilder) MustBuild() SALDataLighting {
-	build, err := m.Build()
+func (b *_SALDataLightingBuilder) Build() (SALDataLighting, error) {
+	if b.LightingData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'lightingData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataLighting.deepCopy(), nil
+}
+
+func (b *_SALDataLightingBuilder) MustBuild() SALDataLighting {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataLightingBuilder) DeepCopy() any {
-	return m.CreateSALDataLightingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataLightingBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataLightingBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataLightingBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataLightingBuilder().(*_SALDataLightingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataLightingBuilder creates a SALDataLightingBuilder
-func (m *_SALDataLighting) CreateSALDataLightingBuilder() SALDataLightingBuilder {
-	if m == nil {
+func (b *_SALDataLighting) CreateSALDataLightingBuilder() SALDataLightingBuilder {
+	if b == nil {
 		return NewSALDataLightingBuilder()
 	}
-	return &_SALDataLightingBuilder{_SALDataLighting: m.deepCopy()}
+	return &_SALDataLightingBuilder{_SALDataLighting: b.deepCopy()}
 }
 
 ///////////////////////

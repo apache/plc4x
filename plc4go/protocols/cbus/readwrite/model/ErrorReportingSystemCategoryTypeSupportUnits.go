@@ -93,45 +93,64 @@ func NewErrorReportingSystemCategoryTypeSupportUnitsBuilder() ErrorReportingSyst
 type _ErrorReportingSystemCategoryTypeSupportUnitsBuilder struct {
 	*_ErrorReportingSystemCategoryTypeSupportUnits
 
+	parentBuilder *_ErrorReportingSystemCategoryTypeBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ErrorReportingSystemCategoryTypeSupportUnitsBuilder) = (*_ErrorReportingSystemCategoryTypeSupportUnitsBuilder)(nil)
 
-func (m *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForSupportUnits) ErrorReportingSystemCategoryTypeSupportUnitsBuilder {
-	return m.WithCategoryForType(categoryForType)
+func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) setParent(contract ErrorReportingSystemCategoryTypeContract) {
+	b.ErrorReportingSystemCategoryTypeContract = contract
 }
 
-func (m *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) WithCategoryForType(categoryForType ErrorReportingSystemCategoryTypeForSupportUnits) ErrorReportingSystemCategoryTypeSupportUnitsBuilder {
-	m.CategoryForType = categoryForType
-	return m
+func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForSupportUnits) ErrorReportingSystemCategoryTypeSupportUnitsBuilder {
+	return b.WithCategoryForType(categoryForType)
 }
 
-func (m *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) Build() (ErrorReportingSystemCategoryTypeSupportUnits, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) WithCategoryForType(categoryForType ErrorReportingSystemCategoryTypeForSupportUnits) ErrorReportingSystemCategoryTypeSupportUnitsBuilder {
+	b.CategoryForType = categoryForType
+	return b
+}
+
+func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) Build() (ErrorReportingSystemCategoryTypeSupportUnits, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ErrorReportingSystemCategoryTypeSupportUnits.deepCopy(), nil
+	return b._ErrorReportingSystemCategoryTypeSupportUnits.deepCopy(), nil
 }
 
-func (m *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) MustBuild() ErrorReportingSystemCategoryTypeSupportUnits {
-	build, err := m.Build()
+func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) MustBuild() ErrorReportingSystemCategoryTypeSupportUnits {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) DeepCopy() any {
-	return m.CreateErrorReportingSystemCategoryTypeSupportUnitsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) Done() ErrorReportingSystemCategoryTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) buildForErrorReportingSystemCategoryType() (ErrorReportingSystemCategoryType, error) {
+	return b.Build()
+}
+
+func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) DeepCopy() any {
+	_copy := b.CreateErrorReportingSystemCategoryTypeSupportUnitsBuilder().(*_ErrorReportingSystemCategoryTypeSupportUnitsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateErrorReportingSystemCategoryTypeSupportUnitsBuilder creates a ErrorReportingSystemCategoryTypeSupportUnitsBuilder
-func (m *_ErrorReportingSystemCategoryTypeSupportUnits) CreateErrorReportingSystemCategoryTypeSupportUnitsBuilder() ErrorReportingSystemCategoryTypeSupportUnitsBuilder {
-	if m == nil {
+func (b *_ErrorReportingSystemCategoryTypeSupportUnits) CreateErrorReportingSystemCategoryTypeSupportUnitsBuilder() ErrorReportingSystemCategoryTypeSupportUnitsBuilder {
+	if b == nil {
 		return NewErrorReportingSystemCategoryTypeSupportUnitsBuilder()
 	}
-	return &_ErrorReportingSystemCategoryTypeSupportUnitsBuilder{_ErrorReportingSystemCategoryTypeSupportUnits: m.deepCopy()}
+	return &_ErrorReportingSystemCategoryTypeSupportUnitsBuilder{_ErrorReportingSystemCategoryTypeSupportUnits: b.deepCopy()}
 }
 
 ///////////////////////

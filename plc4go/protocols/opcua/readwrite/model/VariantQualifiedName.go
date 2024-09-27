@@ -99,50 +99,69 @@ func NewVariantQualifiedNameBuilder() VariantQualifiedNameBuilder {
 type _VariantQualifiedNameBuilder struct {
 	*_VariantQualifiedName
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantQualifiedNameBuilder) = (*_VariantQualifiedNameBuilder)(nil)
 
-func (m *_VariantQualifiedNameBuilder) WithMandatoryFields(value []QualifiedName) VariantQualifiedNameBuilder {
-	return m.WithValue(value...)
+func (b *_VariantQualifiedNameBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantQualifiedNameBuilder) WithOptionalArrayLength(arrayLength int32) VariantQualifiedNameBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantQualifiedNameBuilder) WithMandatoryFields(value []QualifiedName) VariantQualifiedNameBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantQualifiedNameBuilder) WithValue(value ...QualifiedName) VariantQualifiedNameBuilder {
-	m.Value = value
-	return m
+func (b *_VariantQualifiedNameBuilder) WithOptionalArrayLength(arrayLength int32) VariantQualifiedNameBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantQualifiedNameBuilder) Build() (VariantQualifiedName, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantQualifiedNameBuilder) WithValue(value ...QualifiedName) VariantQualifiedNameBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantQualifiedNameBuilder) Build() (VariantQualifiedName, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantQualifiedName.deepCopy(), nil
+	return b._VariantQualifiedName.deepCopy(), nil
 }
 
-func (m *_VariantQualifiedNameBuilder) MustBuild() VariantQualifiedName {
-	build, err := m.Build()
+func (b *_VariantQualifiedNameBuilder) MustBuild() VariantQualifiedName {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantQualifiedNameBuilder) DeepCopy() any {
-	return m.CreateVariantQualifiedNameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantQualifiedNameBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantQualifiedNameBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantQualifiedNameBuilder) DeepCopy() any {
+	_copy := b.CreateVariantQualifiedNameBuilder().(*_VariantQualifiedNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantQualifiedNameBuilder creates a VariantQualifiedNameBuilder
-func (m *_VariantQualifiedName) CreateVariantQualifiedNameBuilder() VariantQualifiedNameBuilder {
-	if m == nil {
+func (b *_VariantQualifiedName) CreateVariantQualifiedNameBuilder() VariantQualifiedNameBuilder {
+	if b == nil {
 		return NewVariantQualifiedNameBuilder()
 	}
-	return &_VariantQualifiedNameBuilder{_VariantQualifiedName: m.deepCopy()}
+	return &_VariantQualifiedNameBuilder{_VariantQualifiedName: b.deepCopy()}
 }
 
 ///////////////////////

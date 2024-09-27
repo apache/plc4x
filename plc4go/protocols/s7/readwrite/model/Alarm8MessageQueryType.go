@@ -115,65 +115,69 @@ type _Alarm8MessageQueryTypeBuilder struct {
 
 var _ (Alarm8MessageQueryTypeBuilder) = (*_Alarm8MessageQueryTypeBuilder)(nil)
 
-func (m *_Alarm8MessageQueryTypeBuilder) WithMandatoryFields(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, byteCount uint16, messageObjects []AlarmMessageObjectQueryType) Alarm8MessageQueryTypeBuilder {
-	return m.WithFunctionId(functionId).WithNumberOfObjects(numberOfObjects).WithReturnCode(returnCode).WithTransportSize(transportSize).WithByteCount(byteCount).WithMessageObjects(messageObjects...)
+func (b *_Alarm8MessageQueryTypeBuilder) WithMandatoryFields(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, byteCount uint16, messageObjects []AlarmMessageObjectQueryType) Alarm8MessageQueryTypeBuilder {
+	return b.WithFunctionId(functionId).WithNumberOfObjects(numberOfObjects).WithReturnCode(returnCode).WithTransportSize(transportSize).WithByteCount(byteCount).WithMessageObjects(messageObjects...)
 }
 
-func (m *_Alarm8MessageQueryTypeBuilder) WithFunctionId(functionId uint8) Alarm8MessageQueryTypeBuilder {
-	m.FunctionId = functionId
-	return m
+func (b *_Alarm8MessageQueryTypeBuilder) WithFunctionId(functionId uint8) Alarm8MessageQueryTypeBuilder {
+	b.FunctionId = functionId
+	return b
 }
 
-func (m *_Alarm8MessageQueryTypeBuilder) WithNumberOfObjects(numberOfObjects uint8) Alarm8MessageQueryTypeBuilder {
-	m.NumberOfObjects = numberOfObjects
-	return m
+func (b *_Alarm8MessageQueryTypeBuilder) WithNumberOfObjects(numberOfObjects uint8) Alarm8MessageQueryTypeBuilder {
+	b.NumberOfObjects = numberOfObjects
+	return b
 }
 
-func (m *_Alarm8MessageQueryTypeBuilder) WithReturnCode(returnCode DataTransportErrorCode) Alarm8MessageQueryTypeBuilder {
-	m.ReturnCode = returnCode
-	return m
+func (b *_Alarm8MessageQueryTypeBuilder) WithReturnCode(returnCode DataTransportErrorCode) Alarm8MessageQueryTypeBuilder {
+	b.ReturnCode = returnCode
+	return b
 }
 
-func (m *_Alarm8MessageQueryTypeBuilder) WithTransportSize(transportSize DataTransportSize) Alarm8MessageQueryTypeBuilder {
-	m.TransportSize = transportSize
-	return m
+func (b *_Alarm8MessageQueryTypeBuilder) WithTransportSize(transportSize DataTransportSize) Alarm8MessageQueryTypeBuilder {
+	b.TransportSize = transportSize
+	return b
 }
 
-func (m *_Alarm8MessageQueryTypeBuilder) WithByteCount(byteCount uint16) Alarm8MessageQueryTypeBuilder {
-	m.ByteCount = byteCount
-	return m
+func (b *_Alarm8MessageQueryTypeBuilder) WithByteCount(byteCount uint16) Alarm8MessageQueryTypeBuilder {
+	b.ByteCount = byteCount
+	return b
 }
 
-func (m *_Alarm8MessageQueryTypeBuilder) WithMessageObjects(messageObjects ...AlarmMessageObjectQueryType) Alarm8MessageQueryTypeBuilder {
-	m.MessageObjects = messageObjects
-	return m
+func (b *_Alarm8MessageQueryTypeBuilder) WithMessageObjects(messageObjects ...AlarmMessageObjectQueryType) Alarm8MessageQueryTypeBuilder {
+	b.MessageObjects = messageObjects
+	return b
 }
 
-func (m *_Alarm8MessageQueryTypeBuilder) Build() (Alarm8MessageQueryType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_Alarm8MessageQueryTypeBuilder) Build() (Alarm8MessageQueryType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Alarm8MessageQueryType.deepCopy(), nil
+	return b._Alarm8MessageQueryType.deepCopy(), nil
 }
 
-func (m *_Alarm8MessageQueryTypeBuilder) MustBuild() Alarm8MessageQueryType {
-	build, err := m.Build()
+func (b *_Alarm8MessageQueryTypeBuilder) MustBuild() Alarm8MessageQueryType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_Alarm8MessageQueryTypeBuilder) DeepCopy() any {
-	return m.CreateAlarm8MessageQueryTypeBuilder()
+func (b *_Alarm8MessageQueryTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAlarm8MessageQueryTypeBuilder().(*_Alarm8MessageQueryTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAlarm8MessageQueryTypeBuilder creates a Alarm8MessageQueryTypeBuilder
-func (m *_Alarm8MessageQueryType) CreateAlarm8MessageQueryTypeBuilder() Alarm8MessageQueryTypeBuilder {
-	if m == nil {
+func (b *_Alarm8MessageQueryType) CreateAlarm8MessageQueryTypeBuilder() Alarm8MessageQueryTypeBuilder {
+	if b == nil {
 		return NewAlarm8MessageQueryTypeBuilder()
 	}
-	return &_Alarm8MessageQueryTypeBuilder{_Alarm8MessageQueryType: m.deepCopy()}
+	return &_Alarm8MessageQueryTypeBuilder{_Alarm8MessageQueryType: b.deepCopy()}
 }
 
 ///////////////////////

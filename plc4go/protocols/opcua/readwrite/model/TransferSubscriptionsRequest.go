@@ -96,6 +96,8 @@ type TransferSubscriptionsRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32, sendInitialValues bool) TransferSubscriptionsRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) TransferSubscriptionsRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) TransferSubscriptionsRequestBuilder
 	// WithNoOfSubscriptionIds adds NoOfSubscriptionIds (property field)
 	WithNoOfSubscriptionIds(int32) TransferSubscriptionsRequestBuilder
 	// WithSubscriptionIds adds SubscriptionIds (property field)
@@ -116,66 +118,98 @@ func NewTransferSubscriptionsRequestBuilder() TransferSubscriptionsRequestBuilde
 type _TransferSubscriptionsRequestBuilder struct {
 	*_TransferSubscriptionsRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TransferSubscriptionsRequestBuilder) = (*_TransferSubscriptionsRequestBuilder)(nil)
 
-func (m *_TransferSubscriptionsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32, sendInitialValues bool) TransferSubscriptionsRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithNoOfSubscriptionIds(noOfSubscriptionIds).WithSubscriptionIds(subscriptionIds...).WithSendInitialValues(sendInitialValues)
+func (b *_TransferSubscriptionsRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_TransferSubscriptionsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) TransferSubscriptionsRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_TransferSubscriptionsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32, sendInitialValues bool) TransferSubscriptionsRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNoOfSubscriptionIds(noOfSubscriptionIds).WithSubscriptionIds(subscriptionIds...).WithSendInitialValues(sendInitialValues)
 }
 
-func (m *_TransferSubscriptionsRequestBuilder) WithNoOfSubscriptionIds(noOfSubscriptionIds int32) TransferSubscriptionsRequestBuilder {
-	m.NoOfSubscriptionIds = noOfSubscriptionIds
-	return m
+func (b *_TransferSubscriptionsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) TransferSubscriptionsRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_TransferSubscriptionsRequestBuilder) WithSubscriptionIds(subscriptionIds ...uint32) TransferSubscriptionsRequestBuilder {
-	m.SubscriptionIds = subscriptionIds
-	return m
-}
-
-func (m *_TransferSubscriptionsRequestBuilder) WithSendInitialValues(sendInitialValues bool) TransferSubscriptionsRequestBuilder {
-	m.SendInitialValues = sendInitialValues
-	return m
-}
-
-func (m *_TransferSubscriptionsRequestBuilder) Build() (TransferSubscriptionsRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_TransferSubscriptionsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) TransferSubscriptionsRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._TransferSubscriptionsRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_TransferSubscriptionsRequestBuilder) MustBuild() TransferSubscriptionsRequest {
-	build, err := m.Build()
+func (b *_TransferSubscriptionsRequestBuilder) WithNoOfSubscriptionIds(noOfSubscriptionIds int32) TransferSubscriptionsRequestBuilder {
+	b.NoOfSubscriptionIds = noOfSubscriptionIds
+	return b
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) WithSubscriptionIds(subscriptionIds ...uint32) TransferSubscriptionsRequestBuilder {
+	b.SubscriptionIds = subscriptionIds
+	return b
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) WithSendInitialValues(sendInitialValues bool) TransferSubscriptionsRequestBuilder {
+	b.SendInitialValues = sendInitialValues
+	return b
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) Build() (TransferSubscriptionsRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TransferSubscriptionsRequest.deepCopy(), nil
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) MustBuild() TransferSubscriptionsRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TransferSubscriptionsRequestBuilder) DeepCopy() any {
-	return m.CreateTransferSubscriptionsRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TransferSubscriptionsRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) DeepCopy() any {
+	_copy := b.CreateTransferSubscriptionsRequestBuilder().(*_TransferSubscriptionsRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTransferSubscriptionsRequestBuilder creates a TransferSubscriptionsRequestBuilder
-func (m *_TransferSubscriptionsRequest) CreateTransferSubscriptionsRequestBuilder() TransferSubscriptionsRequestBuilder {
-	if m == nil {
+func (b *_TransferSubscriptionsRequest) CreateTransferSubscriptionsRequestBuilder() TransferSubscriptionsRequestBuilder {
+	if b == nil {
 		return NewTransferSubscriptionsRequestBuilder()
 	}
-	return &_TransferSubscriptionsRequestBuilder{_TransferSubscriptionsRequest: m.deepCopy()}
+	return &_TransferSubscriptionsRequestBuilder{_TransferSubscriptionsRequest: b.deepCopy()}
 }
 
 ///////////////////////

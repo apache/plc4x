@@ -85,40 +85,59 @@ func NewSecurityDataLineCutAlarmRaisedBuilder() SecurityDataLineCutAlarmRaisedBu
 type _SecurityDataLineCutAlarmRaisedBuilder struct {
 	*_SecurityDataLineCutAlarmRaised
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataLineCutAlarmRaisedBuilder) = (*_SecurityDataLineCutAlarmRaisedBuilder)(nil)
 
-func (m *_SecurityDataLineCutAlarmRaisedBuilder) WithMandatoryFields() SecurityDataLineCutAlarmRaisedBuilder {
-	return m
+func (b *_SecurityDataLineCutAlarmRaisedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataLineCutAlarmRaisedBuilder) Build() (SecurityDataLineCutAlarmRaised, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataLineCutAlarmRaisedBuilder) WithMandatoryFields() SecurityDataLineCutAlarmRaisedBuilder {
+	return b
+}
+
+func (b *_SecurityDataLineCutAlarmRaisedBuilder) Build() (SecurityDataLineCutAlarmRaised, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataLineCutAlarmRaised.deepCopy(), nil
+	return b._SecurityDataLineCutAlarmRaised.deepCopy(), nil
 }
 
-func (m *_SecurityDataLineCutAlarmRaisedBuilder) MustBuild() SecurityDataLineCutAlarmRaised {
-	build, err := m.Build()
+func (b *_SecurityDataLineCutAlarmRaisedBuilder) MustBuild() SecurityDataLineCutAlarmRaised {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataLineCutAlarmRaisedBuilder) DeepCopy() any {
-	return m.CreateSecurityDataLineCutAlarmRaisedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataLineCutAlarmRaisedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataLineCutAlarmRaisedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataLineCutAlarmRaisedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataLineCutAlarmRaisedBuilder().(*_SecurityDataLineCutAlarmRaisedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataLineCutAlarmRaisedBuilder creates a SecurityDataLineCutAlarmRaisedBuilder
-func (m *_SecurityDataLineCutAlarmRaised) CreateSecurityDataLineCutAlarmRaisedBuilder() SecurityDataLineCutAlarmRaisedBuilder {
-	if m == nil {
+func (b *_SecurityDataLineCutAlarmRaised) CreateSecurityDataLineCutAlarmRaisedBuilder() SecurityDataLineCutAlarmRaisedBuilder {
+	if b == nil {
 		return NewSecurityDataLineCutAlarmRaisedBuilder()
 	}
-	return &_SecurityDataLineCutAlarmRaisedBuilder{_SecurityDataLineCutAlarmRaised: m.deepCopy()}
+	return &_SecurityDataLineCutAlarmRaisedBuilder{_SecurityDataLineCutAlarmRaised: b.deepCopy()}
 }
 
 ///////////////////////

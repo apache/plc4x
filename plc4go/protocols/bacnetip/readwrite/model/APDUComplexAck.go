@@ -123,6 +123,8 @@ type APDUComplexAckBuilder interface {
 	WithOptionalProposedWindowSize(uint8) APDUComplexAckBuilder
 	// WithServiceAck adds ServiceAck (property field)
 	WithOptionalServiceAck(BACnetServiceAck) APDUComplexAckBuilder
+	// WithOptionalServiceAckBuilder adds ServiceAck (property field) which is build by the builder
+	WithOptionalServiceAckBuilder(func(BACnetServiceAckBuilder) BACnetServiceAckBuilder) APDUComplexAckBuilder
 	// WithSegmentServiceChoice adds SegmentServiceChoice (property field)
 	WithOptionalSegmentServiceChoice(BACnetConfirmedServiceChoice) APDUComplexAckBuilder
 	// WithSegment adds Segment (property field)
@@ -141,80 +143,112 @@ func NewAPDUComplexAckBuilder() APDUComplexAckBuilder {
 type _APDUComplexAckBuilder struct {
 	*_APDUComplexAck
 
+	parentBuilder *_APDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (APDUComplexAckBuilder) = (*_APDUComplexAckBuilder)(nil)
 
-func (m *_APDUComplexAckBuilder) WithMandatoryFields(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, segment []byte) APDUComplexAckBuilder {
-	return m.WithSegmentedMessage(segmentedMessage).WithMoreFollows(moreFollows).WithOriginalInvokeId(originalInvokeId).WithSegment(segment...)
+func (b *_APDUComplexAckBuilder) setParent(contract APDUContract) {
+	b.APDUContract = contract
 }
 
-func (m *_APDUComplexAckBuilder) WithSegmentedMessage(segmentedMessage bool) APDUComplexAckBuilder {
-	m.SegmentedMessage = segmentedMessage
-	return m
+func (b *_APDUComplexAckBuilder) WithMandatoryFields(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, segment []byte) APDUComplexAckBuilder {
+	return b.WithSegmentedMessage(segmentedMessage).WithMoreFollows(moreFollows).WithOriginalInvokeId(originalInvokeId).WithSegment(segment...)
 }
 
-func (m *_APDUComplexAckBuilder) WithMoreFollows(moreFollows bool) APDUComplexAckBuilder {
-	m.MoreFollows = moreFollows
-	return m
+func (b *_APDUComplexAckBuilder) WithSegmentedMessage(segmentedMessage bool) APDUComplexAckBuilder {
+	b.SegmentedMessage = segmentedMessage
+	return b
 }
 
-func (m *_APDUComplexAckBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDUComplexAckBuilder {
-	m.OriginalInvokeId = originalInvokeId
-	return m
+func (b *_APDUComplexAckBuilder) WithMoreFollows(moreFollows bool) APDUComplexAckBuilder {
+	b.MoreFollows = moreFollows
+	return b
 }
 
-func (m *_APDUComplexAckBuilder) WithOptionalSequenceNumber(sequenceNumber uint8) APDUComplexAckBuilder {
-	m.SequenceNumber = &sequenceNumber
-	return m
+func (b *_APDUComplexAckBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDUComplexAckBuilder {
+	b.OriginalInvokeId = originalInvokeId
+	return b
 }
 
-func (m *_APDUComplexAckBuilder) WithOptionalProposedWindowSize(proposedWindowSize uint8) APDUComplexAckBuilder {
-	m.ProposedWindowSize = &proposedWindowSize
-	return m
+func (b *_APDUComplexAckBuilder) WithOptionalSequenceNumber(sequenceNumber uint8) APDUComplexAckBuilder {
+	b.SequenceNumber = &sequenceNumber
+	return b
 }
 
-func (m *_APDUComplexAckBuilder) WithOptionalServiceAck(serviceAck BACnetServiceAck) APDUComplexAckBuilder {
-	m.ServiceAck = serviceAck
-	return m
+func (b *_APDUComplexAckBuilder) WithOptionalProposedWindowSize(proposedWindowSize uint8) APDUComplexAckBuilder {
+	b.ProposedWindowSize = &proposedWindowSize
+	return b
 }
 
-func (m *_APDUComplexAckBuilder) WithOptionalSegmentServiceChoice(segmentServiceChoice BACnetConfirmedServiceChoice) APDUComplexAckBuilder {
-	m.SegmentServiceChoice = &segmentServiceChoice
-	return m
+func (b *_APDUComplexAckBuilder) WithOptionalServiceAck(serviceAck BACnetServiceAck) APDUComplexAckBuilder {
+	b.ServiceAck = serviceAck
+	return b
 }
 
-func (m *_APDUComplexAckBuilder) WithSegment(segment ...byte) APDUComplexAckBuilder {
-	m.Segment = segment
-	return m
-}
-
-func (m *_APDUComplexAckBuilder) Build() (APDUComplexAck, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_APDUComplexAckBuilder) WithOptionalServiceAckBuilder(builderSupplier func(BACnetServiceAckBuilder) BACnetServiceAckBuilder) APDUComplexAckBuilder {
+	builder := builderSupplier(b.ServiceAck.CreateBACnetServiceAckBuilder())
+	var err error
+	b.ServiceAck, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetServiceAckBuilder failed"))
 	}
-	return m._APDUComplexAck.deepCopy(), nil
+	return b
 }
 
-func (m *_APDUComplexAckBuilder) MustBuild() APDUComplexAck {
-	build, err := m.Build()
+func (b *_APDUComplexAckBuilder) WithOptionalSegmentServiceChoice(segmentServiceChoice BACnetConfirmedServiceChoice) APDUComplexAckBuilder {
+	b.SegmentServiceChoice = &segmentServiceChoice
+	return b
+}
+
+func (b *_APDUComplexAckBuilder) WithSegment(segment ...byte) APDUComplexAckBuilder {
+	b.Segment = segment
+	return b
+}
+
+func (b *_APDUComplexAckBuilder) Build() (APDUComplexAck, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._APDUComplexAck.deepCopy(), nil
+}
+
+func (b *_APDUComplexAckBuilder) MustBuild() APDUComplexAck {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_APDUComplexAckBuilder) DeepCopy() any {
-	return m.CreateAPDUComplexAckBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_APDUComplexAckBuilder) Done() APDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_APDUComplexAckBuilder) buildForAPDU() (APDU, error) {
+	return b.Build()
+}
+
+func (b *_APDUComplexAckBuilder) DeepCopy() any {
+	_copy := b.CreateAPDUComplexAckBuilder().(*_APDUComplexAckBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAPDUComplexAckBuilder creates a APDUComplexAckBuilder
-func (m *_APDUComplexAck) CreateAPDUComplexAckBuilder() APDUComplexAckBuilder {
-	if m == nil {
+func (b *_APDUComplexAck) CreateAPDUComplexAckBuilder() APDUComplexAckBuilder {
+	if b == nil {
 		return NewAPDUComplexAckBuilder()
 	}
-	return &_APDUComplexAckBuilder{_APDUComplexAck: m.deepCopy()}
+	return &_APDUComplexAckBuilder{_APDUComplexAck: b.deepCopy()}
 }
 
 ///////////////////////

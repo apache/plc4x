@@ -98,64 +98,83 @@ func NewBACnetPropertyStateActionUnknownBuilder() BACnetPropertyStateActionUnkno
 type _BACnetPropertyStateActionUnknownBuilder struct {
 	*_BACnetPropertyStateActionUnknown
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStateActionUnknownBuilder) = (*_BACnetPropertyStateActionUnknownBuilder)(nil)
 
-func (m *_BACnetPropertyStateActionUnknownBuilder) WithMandatoryFields(unknownValue BACnetContextTagUnknown) BACnetPropertyStateActionUnknownBuilder {
-	return m.WithUnknownValue(unknownValue)
+func (b *_BACnetPropertyStateActionUnknownBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStateActionUnknownBuilder) WithUnknownValue(unknownValue BACnetContextTagUnknown) BACnetPropertyStateActionUnknownBuilder {
-	m.UnknownValue = unknownValue
-	return m
+func (b *_BACnetPropertyStateActionUnknownBuilder) WithMandatoryFields(unknownValue BACnetContextTagUnknown) BACnetPropertyStateActionUnknownBuilder {
+	return b.WithUnknownValue(unknownValue)
 }
 
-func (m *_BACnetPropertyStateActionUnknownBuilder) WithUnknownValueBuilder(builderSupplier func(BACnetContextTagUnknownBuilder) BACnetContextTagUnknownBuilder) BACnetPropertyStateActionUnknownBuilder {
-	builder := builderSupplier(m.UnknownValue.CreateBACnetContextTagUnknownBuilder())
+func (b *_BACnetPropertyStateActionUnknownBuilder) WithUnknownValue(unknownValue BACnetContextTagUnknown) BACnetPropertyStateActionUnknownBuilder {
+	b.UnknownValue = unknownValue
+	return b
+}
+
+func (b *_BACnetPropertyStateActionUnknownBuilder) WithUnknownValueBuilder(builderSupplier func(BACnetContextTagUnknownBuilder) BACnetContextTagUnknownBuilder) BACnetPropertyStateActionUnknownBuilder {
+	builder := builderSupplier(b.UnknownValue.CreateBACnetContextTagUnknownBuilder())
 	var err error
-	m.UnknownValue, err = builder.Build()
+	b.UnknownValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnknownBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnknownBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStateActionUnknownBuilder) Build() (BACnetPropertyStateActionUnknown, error) {
-	if m.UnknownValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStateActionUnknownBuilder) Build() (BACnetPropertyStateActionUnknown, error) {
+	if b.UnknownValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'unknownValue' not set"))
+		b.err.Append(errors.New("mandatory field 'unknownValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStateActionUnknown.deepCopy(), nil
+	return b._BACnetPropertyStateActionUnknown.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStateActionUnknownBuilder) MustBuild() BACnetPropertyStateActionUnknown {
-	build, err := m.Build()
+func (b *_BACnetPropertyStateActionUnknownBuilder) MustBuild() BACnetPropertyStateActionUnknown {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStateActionUnknownBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStateActionUnknownBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStateActionUnknownBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStateActionUnknownBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStateActionUnknownBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStateActionUnknownBuilder().(*_BACnetPropertyStateActionUnknownBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStateActionUnknownBuilder creates a BACnetPropertyStateActionUnknownBuilder
-func (m *_BACnetPropertyStateActionUnknown) CreateBACnetPropertyStateActionUnknownBuilder() BACnetPropertyStateActionUnknownBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStateActionUnknown) CreateBACnetPropertyStateActionUnknownBuilder() BACnetPropertyStateActionUnknownBuilder {
+	if b == nil {
 		return NewBACnetPropertyStateActionUnknownBuilder()
 	}
-	return &_BACnetPropertyStateActionUnknownBuilder{_BACnetPropertyStateActionUnknown: m.deepCopy()}
+	return &_BACnetPropertyStateActionUnknownBuilder{_BACnetPropertyStateActionUnknown: b.deepCopy()}
 }
 
 ///////////////////////

@@ -93,45 +93,64 @@ func NewBACnetConstructedDataEntryPointsBuilder() BACnetConstructedDataEntryPoin
 type _BACnetConstructedDataEntryPointsBuilder struct {
 	*_BACnetConstructedDataEntryPoints
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataEntryPointsBuilder) = (*_BACnetConstructedDataEntryPointsBuilder)(nil)
 
-func (m *_BACnetConstructedDataEntryPointsBuilder) WithMandatoryFields(entryPoints []BACnetDeviceObjectReference) BACnetConstructedDataEntryPointsBuilder {
-	return m.WithEntryPoints(entryPoints...)
+func (b *_BACnetConstructedDataEntryPointsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataEntryPointsBuilder) WithEntryPoints(entryPoints ...BACnetDeviceObjectReference) BACnetConstructedDataEntryPointsBuilder {
-	m.EntryPoints = entryPoints
-	return m
+func (b *_BACnetConstructedDataEntryPointsBuilder) WithMandatoryFields(entryPoints []BACnetDeviceObjectReference) BACnetConstructedDataEntryPointsBuilder {
+	return b.WithEntryPoints(entryPoints...)
 }
 
-func (m *_BACnetConstructedDataEntryPointsBuilder) Build() (BACnetConstructedDataEntryPoints, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataEntryPointsBuilder) WithEntryPoints(entryPoints ...BACnetDeviceObjectReference) BACnetConstructedDataEntryPointsBuilder {
+	b.EntryPoints = entryPoints
+	return b
+}
+
+func (b *_BACnetConstructedDataEntryPointsBuilder) Build() (BACnetConstructedDataEntryPoints, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataEntryPoints.deepCopy(), nil
+	return b._BACnetConstructedDataEntryPoints.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataEntryPointsBuilder) MustBuild() BACnetConstructedDataEntryPoints {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataEntryPointsBuilder) MustBuild() BACnetConstructedDataEntryPoints {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataEntryPointsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataEntryPointsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEntryPointsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEntryPointsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEntryPointsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEntryPointsBuilder().(*_BACnetConstructedDataEntryPointsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataEntryPointsBuilder creates a BACnetConstructedDataEntryPointsBuilder
-func (m *_BACnetConstructedDataEntryPoints) CreateBACnetConstructedDataEntryPointsBuilder() BACnetConstructedDataEntryPointsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataEntryPoints) CreateBACnetConstructedDataEntryPointsBuilder() BACnetConstructedDataEntryPointsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataEntryPointsBuilder()
 	}
-	return &_BACnetConstructedDataEntryPointsBuilder{_BACnetConstructedDataEntryPoints: m.deepCopy()}
+	return &_BACnetConstructedDataEntryPointsBuilder{_BACnetConstructedDataEntryPoints: b.deepCopy()}
 }
 
 ///////////////////////

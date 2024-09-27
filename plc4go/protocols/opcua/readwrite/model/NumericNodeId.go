@@ -95,45 +95,49 @@ type _NumericNodeIdBuilder struct {
 
 var _ (NumericNodeIdBuilder) = (*_NumericNodeIdBuilder)(nil)
 
-func (m *_NumericNodeIdBuilder) WithMandatoryFields(namespaceIndex uint16, identifier uint32) NumericNodeIdBuilder {
-	return m.WithNamespaceIndex(namespaceIndex).WithIdentifier(identifier)
+func (b *_NumericNodeIdBuilder) WithMandatoryFields(namespaceIndex uint16, identifier uint32) NumericNodeIdBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithIdentifier(identifier)
 }
 
-func (m *_NumericNodeIdBuilder) WithNamespaceIndex(namespaceIndex uint16) NumericNodeIdBuilder {
-	m.NamespaceIndex = namespaceIndex
-	return m
+func (b *_NumericNodeIdBuilder) WithNamespaceIndex(namespaceIndex uint16) NumericNodeIdBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
 }
 
-func (m *_NumericNodeIdBuilder) WithIdentifier(identifier uint32) NumericNodeIdBuilder {
-	m.Identifier = identifier
-	return m
+func (b *_NumericNodeIdBuilder) WithIdentifier(identifier uint32) NumericNodeIdBuilder {
+	b.Identifier = identifier
+	return b
 }
 
-func (m *_NumericNodeIdBuilder) Build() (NumericNodeId, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NumericNodeIdBuilder) Build() (NumericNodeId, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NumericNodeId.deepCopy(), nil
+	return b._NumericNodeId.deepCopy(), nil
 }
 
-func (m *_NumericNodeIdBuilder) MustBuild() NumericNodeId {
-	build, err := m.Build()
+func (b *_NumericNodeIdBuilder) MustBuild() NumericNodeId {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NumericNodeIdBuilder) DeepCopy() any {
-	return m.CreateNumericNodeIdBuilder()
+func (b *_NumericNodeIdBuilder) DeepCopy() any {
+	_copy := b.CreateNumericNodeIdBuilder().(*_NumericNodeIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNumericNodeIdBuilder creates a NumericNodeIdBuilder
-func (m *_NumericNodeId) CreateNumericNodeIdBuilder() NumericNodeIdBuilder {
-	if m == nil {
+func (b *_NumericNodeId) CreateNumericNodeIdBuilder() NumericNodeIdBuilder {
+	if b == nil {
 		return NewNumericNodeIdBuilder()
 	}
-	return &_NumericNodeIdBuilder{_NumericNodeId: m.deepCopy()}
+	return &_NumericNodeIdBuilder{_NumericNodeId: b.deepCopy()}
 }
 
 ///////////////////////

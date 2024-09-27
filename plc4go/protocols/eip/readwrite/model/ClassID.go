@@ -99,50 +99,69 @@ func NewClassIDBuilder() ClassIDBuilder {
 type _ClassIDBuilder struct {
 	*_ClassID
 
+	parentBuilder *_LogicalSegmentTypeBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ClassIDBuilder) = (*_ClassIDBuilder)(nil)
 
-func (m *_ClassIDBuilder) WithMandatoryFields(format uint8, segmentClass uint8) ClassIDBuilder {
-	return m.WithFormat(format).WithSegmentClass(segmentClass)
+func (b *_ClassIDBuilder) setParent(contract LogicalSegmentTypeContract) {
+	b.LogicalSegmentTypeContract = contract
 }
 
-func (m *_ClassIDBuilder) WithFormat(format uint8) ClassIDBuilder {
-	m.Format = format
-	return m
+func (b *_ClassIDBuilder) WithMandatoryFields(format uint8, segmentClass uint8) ClassIDBuilder {
+	return b.WithFormat(format).WithSegmentClass(segmentClass)
 }
 
-func (m *_ClassIDBuilder) WithSegmentClass(segmentClass uint8) ClassIDBuilder {
-	m.SegmentClass = segmentClass
-	return m
+func (b *_ClassIDBuilder) WithFormat(format uint8) ClassIDBuilder {
+	b.Format = format
+	return b
 }
 
-func (m *_ClassIDBuilder) Build() (ClassID, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ClassIDBuilder) WithSegmentClass(segmentClass uint8) ClassIDBuilder {
+	b.SegmentClass = segmentClass
+	return b
+}
+
+func (b *_ClassIDBuilder) Build() (ClassID, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ClassID.deepCopy(), nil
+	return b._ClassID.deepCopy(), nil
 }
 
-func (m *_ClassIDBuilder) MustBuild() ClassID {
-	build, err := m.Build()
+func (b *_ClassIDBuilder) MustBuild() ClassID {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ClassIDBuilder) DeepCopy() any {
-	return m.CreateClassIDBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ClassIDBuilder) Done() LogicalSegmentTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ClassIDBuilder) buildForLogicalSegmentType() (LogicalSegmentType, error) {
+	return b.Build()
+}
+
+func (b *_ClassIDBuilder) DeepCopy() any {
+	_copy := b.CreateClassIDBuilder().(*_ClassIDBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateClassIDBuilder creates a ClassIDBuilder
-func (m *_ClassID) CreateClassIDBuilder() ClassIDBuilder {
-	if m == nil {
+func (b *_ClassID) CreateClassIDBuilder() ClassIDBuilder {
+	if b == nil {
 		return NewClassIDBuilder()
 	}
-	return &_ClassIDBuilder{_ClassID: m.deepCopy()}
+	return &_ClassIDBuilder{_ClassID: b.deepCopy()}
 }
 
 ///////////////////////

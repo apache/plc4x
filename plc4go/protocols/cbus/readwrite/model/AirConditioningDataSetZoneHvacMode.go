@@ -145,152 +145,171 @@ func NewAirConditioningDataSetZoneHvacModeBuilder() AirConditioningDataSetZoneHv
 type _AirConditioningDataSetZoneHvacModeBuilder struct {
 	*_AirConditioningDataSetZoneHvacMode
 
+	parentBuilder *_AirConditioningDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AirConditioningDataSetZoneHvacModeBuilder) = (*_AirConditioningDataSetZoneHvacModeBuilder)(nil)
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, hvacModeAndFlags HVACModeAndFlags, hvacType HVACType) AirConditioningDataSetZoneHvacModeBuilder {
-	return m.WithZoneGroup(zoneGroup).WithZoneList(zoneList).WithHvacModeAndFlags(hvacModeAndFlags).WithHvacType(hvacType)
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) setParent(contract AirConditioningDataContract) {
+	b.AirConditioningDataContract = contract
 }
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataSetZoneHvacModeBuilder {
-	m.ZoneGroup = zoneGroup
-	return m
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, hvacModeAndFlags HVACModeAndFlags, hvacType HVACType) AirConditioningDataSetZoneHvacModeBuilder {
+	return b.WithZoneGroup(zoneGroup).WithZoneList(zoneList).WithHvacModeAndFlags(hvacModeAndFlags).WithHvacType(hvacType)
 }
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) WithZoneList(zoneList HVACZoneList) AirConditioningDataSetZoneHvacModeBuilder {
-	m.ZoneList = zoneList
-	return m
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataSetZoneHvacModeBuilder {
+	b.ZoneGroup = zoneGroup
+	return b
 }
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) WithZoneListBuilder(builderSupplier func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataSetZoneHvacModeBuilder {
-	builder := builderSupplier(m.ZoneList.CreateHVACZoneListBuilder())
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) WithZoneList(zoneList HVACZoneList) AirConditioningDataSetZoneHvacModeBuilder {
+	b.ZoneList = zoneList
+	return b
+}
+
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) WithZoneListBuilder(builderSupplier func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataSetZoneHvacModeBuilder {
+	builder := builderSupplier(b.ZoneList.CreateHVACZoneListBuilder())
 	var err error
-	m.ZoneList, err = builder.Build()
+	b.ZoneList, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) WithHvacModeAndFlags(hvacModeAndFlags HVACModeAndFlags) AirConditioningDataSetZoneHvacModeBuilder {
-	m.HvacModeAndFlags = hvacModeAndFlags
-	return m
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) WithHvacModeAndFlags(hvacModeAndFlags HVACModeAndFlags) AirConditioningDataSetZoneHvacModeBuilder {
+	b.HvacModeAndFlags = hvacModeAndFlags
+	return b
 }
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) WithHvacModeAndFlagsBuilder(builderSupplier func(HVACModeAndFlagsBuilder) HVACModeAndFlagsBuilder) AirConditioningDataSetZoneHvacModeBuilder {
-	builder := builderSupplier(m.HvacModeAndFlags.CreateHVACModeAndFlagsBuilder())
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) WithHvacModeAndFlagsBuilder(builderSupplier func(HVACModeAndFlagsBuilder) HVACModeAndFlagsBuilder) AirConditioningDataSetZoneHvacModeBuilder {
+	builder := builderSupplier(b.HvacModeAndFlags.CreateHVACModeAndFlagsBuilder())
 	var err error
-	m.HvacModeAndFlags, err = builder.Build()
+	b.HvacModeAndFlags, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACModeAndFlagsBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACModeAndFlagsBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) WithHvacType(hvacType HVACType) AirConditioningDataSetZoneHvacModeBuilder {
-	m.HvacType = hvacType
-	return m
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) WithHvacType(hvacType HVACType) AirConditioningDataSetZoneHvacModeBuilder {
+	b.HvacType = hvacType
+	return b
 }
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) WithOptionalLevel(level HVACTemperature) AirConditioningDataSetZoneHvacModeBuilder {
-	m.Level = level
-	return m
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) WithOptionalLevel(level HVACTemperature) AirConditioningDataSetZoneHvacModeBuilder {
+	b.Level = level
+	return b
 }
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) WithOptionalLevelBuilder(builderSupplier func(HVACTemperatureBuilder) HVACTemperatureBuilder) AirConditioningDataSetZoneHvacModeBuilder {
-	builder := builderSupplier(m.Level.CreateHVACTemperatureBuilder())
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) WithOptionalLevelBuilder(builderSupplier func(HVACTemperatureBuilder) HVACTemperatureBuilder) AirConditioningDataSetZoneHvacModeBuilder {
+	builder := builderSupplier(b.Level.CreateHVACTemperatureBuilder())
 	var err error
-	m.Level, err = builder.Build()
+	b.Level, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACTemperatureBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACTemperatureBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) WithOptionalRawLevel(rawLevel HVACRawLevels) AirConditioningDataSetZoneHvacModeBuilder {
-	m.RawLevel = rawLevel
-	return m
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) WithOptionalRawLevel(rawLevel HVACRawLevels) AirConditioningDataSetZoneHvacModeBuilder {
+	b.RawLevel = rawLevel
+	return b
 }
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) WithOptionalRawLevelBuilder(builderSupplier func(HVACRawLevelsBuilder) HVACRawLevelsBuilder) AirConditioningDataSetZoneHvacModeBuilder {
-	builder := builderSupplier(m.RawLevel.CreateHVACRawLevelsBuilder())
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) WithOptionalRawLevelBuilder(builderSupplier func(HVACRawLevelsBuilder) HVACRawLevelsBuilder) AirConditioningDataSetZoneHvacModeBuilder {
+	builder := builderSupplier(b.RawLevel.CreateHVACRawLevelsBuilder())
 	var err error
-	m.RawLevel, err = builder.Build()
+	b.RawLevel, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACRawLevelsBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACRawLevelsBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) WithOptionalAuxLevel(auxLevel HVACAuxiliaryLevel) AirConditioningDataSetZoneHvacModeBuilder {
-	m.AuxLevel = auxLevel
-	return m
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) WithOptionalAuxLevel(auxLevel HVACAuxiliaryLevel) AirConditioningDataSetZoneHvacModeBuilder {
+	b.AuxLevel = auxLevel
+	return b
 }
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) WithOptionalAuxLevelBuilder(builderSupplier func(HVACAuxiliaryLevelBuilder) HVACAuxiliaryLevelBuilder) AirConditioningDataSetZoneHvacModeBuilder {
-	builder := builderSupplier(m.AuxLevel.CreateHVACAuxiliaryLevelBuilder())
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) WithOptionalAuxLevelBuilder(builderSupplier func(HVACAuxiliaryLevelBuilder) HVACAuxiliaryLevelBuilder) AirConditioningDataSetZoneHvacModeBuilder {
+	builder := builderSupplier(b.AuxLevel.CreateHVACAuxiliaryLevelBuilder())
 	var err error
-	m.AuxLevel, err = builder.Build()
+	b.AuxLevel, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACAuxiliaryLevelBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACAuxiliaryLevelBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) Build() (AirConditioningDataSetZoneHvacMode, error) {
-	if m.ZoneList == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) Build() (AirConditioningDataSetZoneHvacMode, error) {
+	if b.ZoneList == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'zoneList' not set"))
+		b.err.Append(errors.New("mandatory field 'zoneList' not set"))
 	}
-	if m.HvacModeAndFlags == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.HvacModeAndFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'hvacModeAndFlags' not set"))
+		b.err.Append(errors.New("mandatory field 'hvacModeAndFlags' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AirConditioningDataSetZoneHvacMode.deepCopy(), nil
+	return b._AirConditioningDataSetZoneHvacMode.deepCopy(), nil
 }
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) MustBuild() AirConditioningDataSetZoneHvacMode {
-	build, err := m.Build()
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) MustBuild() AirConditioningDataSetZoneHvacMode {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AirConditioningDataSetZoneHvacModeBuilder) DeepCopy() any {
-	return m.CreateAirConditioningDataSetZoneHvacModeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) Done() AirConditioningDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) buildForAirConditioningData() (AirConditioningData, error) {
+	return b.Build()
+}
+
+func (b *_AirConditioningDataSetZoneHvacModeBuilder) DeepCopy() any {
+	_copy := b.CreateAirConditioningDataSetZoneHvacModeBuilder().(*_AirConditioningDataSetZoneHvacModeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAirConditioningDataSetZoneHvacModeBuilder creates a AirConditioningDataSetZoneHvacModeBuilder
-func (m *_AirConditioningDataSetZoneHvacMode) CreateAirConditioningDataSetZoneHvacModeBuilder() AirConditioningDataSetZoneHvacModeBuilder {
-	if m == nil {
+func (b *_AirConditioningDataSetZoneHvacMode) CreateAirConditioningDataSetZoneHvacModeBuilder() AirConditioningDataSetZoneHvacModeBuilder {
+	if b == nil {
 		return NewAirConditioningDataSetZoneHvacModeBuilder()
 	}
-	return &_AirConditioningDataSetZoneHvacModeBuilder{_AirConditioningDataSetZoneHvacMode: m.deepCopy()}
+	return &_AirConditioningDataSetZoneHvacModeBuilder{_AirConditioningDataSetZoneHvacMode: b.deepCopy()}
 }
 
 ///////////////////////

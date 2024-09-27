@@ -98,6 +98,8 @@ type BrowseNextResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) BrowseNextResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) BrowseNextResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowseNextResponseBuilder
 	// WithNoOfResults adds NoOfResults (property field)
 	WithNoOfResults(int32) BrowseNextResponseBuilder
 	// WithResults adds Results (property field)
@@ -120,71 +122,103 @@ func NewBrowseNextResponseBuilder() BrowseNextResponseBuilder {
 type _BrowseNextResponseBuilder struct {
 	*_BrowseNextResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BrowseNextResponseBuilder) = (*_BrowseNextResponseBuilder)(nil)
 
-func (m *_BrowseNextResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) BrowseNextResponseBuilder {
-	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_BrowseNextResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_BrowseNextResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) BrowseNextResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_BrowseNextResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) BrowseNextResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (m *_BrowseNextResponseBuilder) WithNoOfResults(noOfResults int32) BrowseNextResponseBuilder {
-	m.NoOfResults = noOfResults
-	return m
+func (b *_BrowseNextResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) BrowseNextResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
 }
 
-func (m *_BrowseNextResponseBuilder) WithResults(results ...ExtensionObjectDefinition) BrowseNextResponseBuilder {
-	m.Results = results
-	return m
-}
-
-func (m *_BrowseNextResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) BrowseNextResponseBuilder {
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
-	return m
-}
-
-func (m *_BrowseNextResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) BrowseNextResponseBuilder {
-	m.DiagnosticInfos = diagnosticInfos
-	return m
-}
-
-func (m *_BrowseNextResponseBuilder) Build() (BrowseNextResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BrowseNextResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowseNextResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BrowseNextResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_BrowseNextResponseBuilder) MustBuild() BrowseNextResponse {
-	build, err := m.Build()
+func (b *_BrowseNextResponseBuilder) WithNoOfResults(noOfResults int32) BrowseNextResponseBuilder {
+	b.NoOfResults = noOfResults
+	return b
+}
+
+func (b *_BrowseNextResponseBuilder) WithResults(results ...ExtensionObjectDefinition) BrowseNextResponseBuilder {
+	b.Results = results
+	return b
+}
+
+func (b *_BrowseNextResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) BrowseNextResponseBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_BrowseNextResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) BrowseNextResponseBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_BrowseNextResponseBuilder) Build() (BrowseNextResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BrowseNextResponse.deepCopy(), nil
+}
+
+func (b *_BrowseNextResponseBuilder) MustBuild() BrowseNextResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BrowseNextResponseBuilder) DeepCopy() any {
-	return m.CreateBrowseNextResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BrowseNextResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BrowseNextResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_BrowseNextResponseBuilder) DeepCopy() any {
+	_copy := b.CreateBrowseNextResponseBuilder().(*_BrowseNextResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBrowseNextResponseBuilder creates a BrowseNextResponseBuilder
-func (m *_BrowseNextResponse) CreateBrowseNextResponseBuilder() BrowseNextResponseBuilder {
-	if m == nil {
+func (b *_BrowseNextResponse) CreateBrowseNextResponseBuilder() BrowseNextResponseBuilder {
+	if b == nil {
 		return NewBrowseNextResponseBuilder()
 	}
-	return &_BrowseNextResponseBuilder{_BrowseNextResponse: m.deepCopy()}
+	return &_BrowseNextResponseBuilder{_BrowseNextResponse: b.deepCopy()}
 }
 
 ///////////////////////

@@ -93,45 +93,64 @@ func NewKnxNetIpTunnelingBuilder() KnxNetIpTunnelingBuilder {
 type _KnxNetIpTunnelingBuilder struct {
 	*_KnxNetIpTunneling
 
+	parentBuilder *_ServiceIdBuilder
+
 	err *utils.MultiError
 }
 
 var _ (KnxNetIpTunnelingBuilder) = (*_KnxNetIpTunnelingBuilder)(nil)
 
-func (m *_KnxNetIpTunnelingBuilder) WithMandatoryFields(version uint8) KnxNetIpTunnelingBuilder {
-	return m.WithVersion(version)
+func (b *_KnxNetIpTunnelingBuilder) setParent(contract ServiceIdContract) {
+	b.ServiceIdContract = contract
 }
 
-func (m *_KnxNetIpTunnelingBuilder) WithVersion(version uint8) KnxNetIpTunnelingBuilder {
-	m.Version = version
-	return m
+func (b *_KnxNetIpTunnelingBuilder) WithMandatoryFields(version uint8) KnxNetIpTunnelingBuilder {
+	return b.WithVersion(version)
 }
 
-func (m *_KnxNetIpTunnelingBuilder) Build() (KnxNetIpTunneling, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_KnxNetIpTunnelingBuilder) WithVersion(version uint8) KnxNetIpTunnelingBuilder {
+	b.Version = version
+	return b
+}
+
+func (b *_KnxNetIpTunnelingBuilder) Build() (KnxNetIpTunneling, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._KnxNetIpTunneling.deepCopy(), nil
+	return b._KnxNetIpTunneling.deepCopy(), nil
 }
 
-func (m *_KnxNetIpTunnelingBuilder) MustBuild() KnxNetIpTunneling {
-	build, err := m.Build()
+func (b *_KnxNetIpTunnelingBuilder) MustBuild() KnxNetIpTunneling {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_KnxNetIpTunnelingBuilder) DeepCopy() any {
-	return m.CreateKnxNetIpTunnelingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_KnxNetIpTunnelingBuilder) Done() ServiceIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_KnxNetIpTunnelingBuilder) buildForServiceId() (ServiceId, error) {
+	return b.Build()
+}
+
+func (b *_KnxNetIpTunnelingBuilder) DeepCopy() any {
+	_copy := b.CreateKnxNetIpTunnelingBuilder().(*_KnxNetIpTunnelingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateKnxNetIpTunnelingBuilder creates a KnxNetIpTunnelingBuilder
-func (m *_KnxNetIpTunneling) CreateKnxNetIpTunnelingBuilder() KnxNetIpTunnelingBuilder {
-	if m == nil {
+func (b *_KnxNetIpTunneling) CreateKnxNetIpTunnelingBuilder() KnxNetIpTunnelingBuilder {
+	if b == nil {
 		return NewKnxNetIpTunnelingBuilder()
 	}
-	return &_KnxNetIpTunnelingBuilder{_KnxNetIpTunneling: m.deepCopy()}
+	return &_KnxNetIpTunnelingBuilder{_KnxNetIpTunneling: b.deepCopy()}
 }
 
 ///////////////////////

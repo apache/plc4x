@@ -85,40 +85,59 @@ func NewSysexCommandStringDataBuilder() SysexCommandStringDataBuilder {
 type _SysexCommandStringDataBuilder struct {
 	*_SysexCommandStringData
 
+	parentBuilder *_SysexCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SysexCommandStringDataBuilder) = (*_SysexCommandStringDataBuilder)(nil)
 
-func (m *_SysexCommandStringDataBuilder) WithMandatoryFields() SysexCommandStringDataBuilder {
-	return m
+func (b *_SysexCommandStringDataBuilder) setParent(contract SysexCommandContract) {
+	b.SysexCommandContract = contract
 }
 
-func (m *_SysexCommandStringDataBuilder) Build() (SysexCommandStringData, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SysexCommandStringDataBuilder) WithMandatoryFields() SysexCommandStringDataBuilder {
+	return b
+}
+
+func (b *_SysexCommandStringDataBuilder) Build() (SysexCommandStringData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SysexCommandStringData.deepCopy(), nil
+	return b._SysexCommandStringData.deepCopy(), nil
 }
 
-func (m *_SysexCommandStringDataBuilder) MustBuild() SysexCommandStringData {
-	build, err := m.Build()
+func (b *_SysexCommandStringDataBuilder) MustBuild() SysexCommandStringData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SysexCommandStringDataBuilder) DeepCopy() any {
-	return m.CreateSysexCommandStringDataBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SysexCommandStringDataBuilder) Done() SysexCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SysexCommandStringDataBuilder) buildForSysexCommand() (SysexCommand, error) {
+	return b.Build()
+}
+
+func (b *_SysexCommandStringDataBuilder) DeepCopy() any {
+	_copy := b.CreateSysexCommandStringDataBuilder().(*_SysexCommandStringDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSysexCommandStringDataBuilder creates a SysexCommandStringDataBuilder
-func (m *_SysexCommandStringData) CreateSysexCommandStringDataBuilder() SysexCommandStringDataBuilder {
-	if m == nil {
+func (b *_SysexCommandStringData) CreateSysexCommandStringDataBuilder() SysexCommandStringDataBuilder {
+	if b == nil {
 		return NewSysexCommandStringDataBuilder()
 	}
-	return &_SysexCommandStringDataBuilder{_SysexCommandStringData: m.deepCopy()}
+	return &_SysexCommandStringDataBuilder{_SysexCommandStringData: b.deepCopy()}
 }
 
 ///////////////////////

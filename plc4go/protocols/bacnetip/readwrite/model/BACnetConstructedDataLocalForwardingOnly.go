@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLocalForwardingOnlyBuilder() BACnetConstructedDataL
 type _BACnetConstructedDataLocalForwardingOnlyBuilder struct {
 	*_BACnetConstructedDataLocalForwardingOnly
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLocalForwardingOnlyBuilder) = (*_BACnetConstructedDataLocalForwardingOnlyBuilder)(nil)
 
-func (m *_BACnetConstructedDataLocalForwardingOnlyBuilder) WithMandatoryFields(localForwardingOnly BACnetApplicationTagBoolean) BACnetConstructedDataLocalForwardingOnlyBuilder {
-	return m.WithLocalForwardingOnly(localForwardingOnly)
+func (b *_BACnetConstructedDataLocalForwardingOnlyBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLocalForwardingOnlyBuilder) WithLocalForwardingOnly(localForwardingOnly BACnetApplicationTagBoolean) BACnetConstructedDataLocalForwardingOnlyBuilder {
-	m.LocalForwardingOnly = localForwardingOnly
-	return m
+func (b *_BACnetConstructedDataLocalForwardingOnlyBuilder) WithMandatoryFields(localForwardingOnly BACnetApplicationTagBoolean) BACnetConstructedDataLocalForwardingOnlyBuilder {
+	return b.WithLocalForwardingOnly(localForwardingOnly)
 }
 
-func (m *_BACnetConstructedDataLocalForwardingOnlyBuilder) WithLocalForwardingOnlyBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataLocalForwardingOnlyBuilder {
-	builder := builderSupplier(m.LocalForwardingOnly.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataLocalForwardingOnlyBuilder) WithLocalForwardingOnly(localForwardingOnly BACnetApplicationTagBoolean) BACnetConstructedDataLocalForwardingOnlyBuilder {
+	b.LocalForwardingOnly = localForwardingOnly
+	return b
+}
+
+func (b *_BACnetConstructedDataLocalForwardingOnlyBuilder) WithLocalForwardingOnlyBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataLocalForwardingOnlyBuilder {
+	builder := builderSupplier(b.LocalForwardingOnly.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.LocalForwardingOnly, err = builder.Build()
+	b.LocalForwardingOnly, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLocalForwardingOnlyBuilder) Build() (BACnetConstructedDataLocalForwardingOnly, error) {
-	if m.LocalForwardingOnly == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLocalForwardingOnlyBuilder) Build() (BACnetConstructedDataLocalForwardingOnly, error) {
+	if b.LocalForwardingOnly == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'localForwardingOnly' not set"))
+		b.err.Append(errors.New("mandatory field 'localForwardingOnly' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLocalForwardingOnly.deepCopy(), nil
+	return b._BACnetConstructedDataLocalForwardingOnly.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLocalForwardingOnlyBuilder) MustBuild() BACnetConstructedDataLocalForwardingOnly {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLocalForwardingOnlyBuilder) MustBuild() BACnetConstructedDataLocalForwardingOnly {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLocalForwardingOnlyBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLocalForwardingOnlyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLocalForwardingOnlyBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLocalForwardingOnlyBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLocalForwardingOnlyBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLocalForwardingOnlyBuilder().(*_BACnetConstructedDataLocalForwardingOnlyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLocalForwardingOnlyBuilder creates a BACnetConstructedDataLocalForwardingOnlyBuilder
-func (m *_BACnetConstructedDataLocalForwardingOnly) CreateBACnetConstructedDataLocalForwardingOnlyBuilder() BACnetConstructedDataLocalForwardingOnlyBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLocalForwardingOnly) CreateBACnetConstructedDataLocalForwardingOnlyBuilder() BACnetConstructedDataLocalForwardingOnlyBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLocalForwardingOnlyBuilder()
 	}
-	return &_BACnetConstructedDataLocalForwardingOnlyBuilder{_BACnetConstructedDataLocalForwardingOnly: m.deepCopy()}
+	return &_BACnetConstructedDataLocalForwardingOnlyBuilder{_BACnetConstructedDataLocalForwardingOnly: b.deepCopy()}
 }
 
 ///////////////////////

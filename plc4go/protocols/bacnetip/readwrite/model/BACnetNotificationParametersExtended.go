@@ -142,160 +142,179 @@ func NewBACnetNotificationParametersExtendedBuilder() BACnetNotificationParamete
 type _BACnetNotificationParametersExtendedBuilder struct {
 	*_BACnetNotificationParametersExtended
 
+	parentBuilder *_BACnetNotificationParametersBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersExtendedBuilder) = (*_BACnetNotificationParametersExtendedBuilder)(nil)
 
-func (m *_BACnetNotificationParametersExtendedBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, vendorId BACnetVendorIdTagged, extendedEventType BACnetContextTagUnsignedInteger, parameters BACnetNotificationParametersExtendedParameters, innerClosingTag BACnetClosingTag) BACnetNotificationParametersExtendedBuilder {
-	return m.WithInnerOpeningTag(innerOpeningTag).WithVendorId(vendorId).WithExtendedEventType(extendedEventType).WithParameters(parameters).WithInnerClosingTag(innerClosingTag)
+func (b *_BACnetNotificationParametersExtendedBuilder) setParent(contract BACnetNotificationParametersContract) {
+	b.BACnetNotificationParametersContract = contract
 }
 
-func (m *_BACnetNotificationParametersExtendedBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersExtendedBuilder {
-	m.InnerOpeningTag = innerOpeningTag
-	return m
+func (b *_BACnetNotificationParametersExtendedBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, vendorId BACnetVendorIdTagged, extendedEventType BACnetContextTagUnsignedInteger, parameters BACnetNotificationParametersExtendedParameters, innerClosingTag BACnetClosingTag) BACnetNotificationParametersExtendedBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithVendorId(vendorId).WithExtendedEventType(extendedEventType).WithParameters(parameters).WithInnerClosingTag(innerClosingTag)
 }
 
-func (m *_BACnetNotificationParametersExtendedBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersExtendedBuilder {
-	builder := builderSupplier(m.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetNotificationParametersExtendedBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersExtendedBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersExtendedBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersExtendedBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.InnerOpeningTag, err = builder.Build()
+	b.InnerOpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedBuilder) WithVendorId(vendorId BACnetVendorIdTagged) BACnetNotificationParametersExtendedBuilder {
-	m.VendorId = vendorId
-	return m
+func (b *_BACnetNotificationParametersExtendedBuilder) WithVendorId(vendorId BACnetVendorIdTagged) BACnetNotificationParametersExtendedBuilder {
+	b.VendorId = vendorId
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedBuilder) WithVendorIdBuilder(builderSupplier func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetNotificationParametersExtendedBuilder {
-	builder := builderSupplier(m.VendorId.CreateBACnetVendorIdTaggedBuilder())
+func (b *_BACnetNotificationParametersExtendedBuilder) WithVendorIdBuilder(builderSupplier func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetNotificationParametersExtendedBuilder {
+	builder := builderSupplier(b.VendorId.CreateBACnetVendorIdTaggedBuilder())
 	var err error
-	m.VendorId, err = builder.Build()
+	b.VendorId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedBuilder) WithExtendedEventType(extendedEventType BACnetContextTagUnsignedInteger) BACnetNotificationParametersExtendedBuilder {
-	m.ExtendedEventType = extendedEventType
-	return m
+func (b *_BACnetNotificationParametersExtendedBuilder) WithExtendedEventType(extendedEventType BACnetContextTagUnsignedInteger) BACnetNotificationParametersExtendedBuilder {
+	b.ExtendedEventType = extendedEventType
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedBuilder) WithExtendedEventTypeBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersExtendedBuilder {
-	builder := builderSupplier(m.ExtendedEventType.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetNotificationParametersExtendedBuilder) WithExtendedEventTypeBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersExtendedBuilder {
+	builder := builderSupplier(b.ExtendedEventType.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.ExtendedEventType, err = builder.Build()
+	b.ExtendedEventType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedBuilder) WithParameters(parameters BACnetNotificationParametersExtendedParameters) BACnetNotificationParametersExtendedBuilder {
-	m.Parameters = parameters
-	return m
+func (b *_BACnetNotificationParametersExtendedBuilder) WithParameters(parameters BACnetNotificationParametersExtendedParameters) BACnetNotificationParametersExtendedBuilder {
+	b.Parameters = parameters
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedBuilder) WithParametersBuilder(builderSupplier func(BACnetNotificationParametersExtendedParametersBuilder) BACnetNotificationParametersExtendedParametersBuilder) BACnetNotificationParametersExtendedBuilder {
-	builder := builderSupplier(m.Parameters.CreateBACnetNotificationParametersExtendedParametersBuilder())
+func (b *_BACnetNotificationParametersExtendedBuilder) WithParametersBuilder(builderSupplier func(BACnetNotificationParametersExtendedParametersBuilder) BACnetNotificationParametersExtendedParametersBuilder) BACnetNotificationParametersExtendedBuilder {
+	builder := builderSupplier(b.Parameters.CreateBACnetNotificationParametersExtendedParametersBuilder())
 	var err error
-	m.Parameters, err = builder.Build()
+	b.Parameters, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetNotificationParametersExtendedParametersBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetNotificationParametersExtendedParametersBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersExtendedBuilder {
-	m.InnerClosingTag = innerClosingTag
-	return m
+func (b *_BACnetNotificationParametersExtendedBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersExtendedBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersExtendedBuilder {
-	builder := builderSupplier(m.InnerClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetNotificationParametersExtendedBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersExtendedBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.InnerClosingTag, err = builder.Build()
+	b.InnerClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedBuilder) Build() (BACnetNotificationParametersExtended, error) {
-	if m.InnerOpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNotificationParametersExtendedBuilder) Build() (BACnetNotificationParametersExtended, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
 	}
-	if m.VendorId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.VendorId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'vendorId' not set"))
+		b.err.Append(errors.New("mandatory field 'vendorId' not set"))
 	}
-	if m.ExtendedEventType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ExtendedEventType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'extendedEventType' not set"))
+		b.err.Append(errors.New("mandatory field 'extendedEventType' not set"))
 	}
-	if m.Parameters == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Parameters == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'parameters' not set"))
+		b.err.Append(errors.New("mandatory field 'parameters' not set"))
 	}
-	if m.InnerClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNotificationParametersExtended.deepCopy(), nil
+	return b._BACnetNotificationParametersExtended.deepCopy(), nil
 }
 
-func (m *_BACnetNotificationParametersExtendedBuilder) MustBuild() BACnetNotificationParametersExtended {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersExtendedBuilder) MustBuild() BACnetNotificationParametersExtended {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersExtendedBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersExtendedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersExtendedBuilder) Done() BACnetNotificationParametersBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersExtendedBuilder) buildForBACnetNotificationParameters() (BACnetNotificationParameters, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersExtendedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersExtendedBuilder().(*_BACnetNotificationParametersExtendedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersExtendedBuilder creates a BACnetNotificationParametersExtendedBuilder
-func (m *_BACnetNotificationParametersExtended) CreateBACnetNotificationParametersExtendedBuilder() BACnetNotificationParametersExtendedBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersExtended) CreateBACnetNotificationParametersExtendedBuilder() BACnetNotificationParametersExtendedBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersExtendedBuilder()
 	}
-	return &_BACnetNotificationParametersExtendedBuilder{_BACnetNotificationParametersExtended: m.deepCopy()}
+	return &_BACnetNotificationParametersExtendedBuilder{_BACnetNotificationParametersExtended: b.deepCopy()}
 }
 
 ///////////////////////

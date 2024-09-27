@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesEscalatorOperationDirectionBuilder() BACnetPropertyS
 type _BACnetPropertyStatesEscalatorOperationDirectionBuilder struct {
 	*_BACnetPropertyStatesEscalatorOperationDirection
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesEscalatorOperationDirectionBuilder) = (*_BACnetPropertyStatesEscalatorOperationDirectionBuilder)(nil)
 
-func (m *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) WithMandatoryFields(escalatorOperationDirection BACnetEscalatorOperationDirectionTagged) BACnetPropertyStatesEscalatorOperationDirectionBuilder {
-	return m.WithEscalatorOperationDirection(escalatorOperationDirection)
+func (b *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) WithEscalatorOperationDirection(escalatorOperationDirection BACnetEscalatorOperationDirectionTagged) BACnetPropertyStatesEscalatorOperationDirectionBuilder {
-	m.EscalatorOperationDirection = escalatorOperationDirection
-	return m
+func (b *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) WithMandatoryFields(escalatorOperationDirection BACnetEscalatorOperationDirectionTagged) BACnetPropertyStatesEscalatorOperationDirectionBuilder {
+	return b.WithEscalatorOperationDirection(escalatorOperationDirection)
 }
 
-func (m *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) WithEscalatorOperationDirectionBuilder(builderSupplier func(BACnetEscalatorOperationDirectionTaggedBuilder) BACnetEscalatorOperationDirectionTaggedBuilder) BACnetPropertyStatesEscalatorOperationDirectionBuilder {
-	builder := builderSupplier(m.EscalatorOperationDirection.CreateBACnetEscalatorOperationDirectionTaggedBuilder())
+func (b *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) WithEscalatorOperationDirection(escalatorOperationDirection BACnetEscalatorOperationDirectionTagged) BACnetPropertyStatesEscalatorOperationDirectionBuilder {
+	b.EscalatorOperationDirection = escalatorOperationDirection
+	return b
+}
+
+func (b *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) WithEscalatorOperationDirectionBuilder(builderSupplier func(BACnetEscalatorOperationDirectionTaggedBuilder) BACnetEscalatorOperationDirectionTaggedBuilder) BACnetPropertyStatesEscalatorOperationDirectionBuilder {
+	builder := builderSupplier(b.EscalatorOperationDirection.CreateBACnetEscalatorOperationDirectionTaggedBuilder())
 	var err error
-	m.EscalatorOperationDirection, err = builder.Build()
+	b.EscalatorOperationDirection, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEscalatorOperationDirectionTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEscalatorOperationDirectionTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) Build() (BACnetPropertyStatesEscalatorOperationDirection, error) {
-	if m.EscalatorOperationDirection == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) Build() (BACnetPropertyStatesEscalatorOperationDirection, error) {
+	if b.EscalatorOperationDirection == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'escalatorOperationDirection' not set"))
+		b.err.Append(errors.New("mandatory field 'escalatorOperationDirection' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesEscalatorOperationDirection.deepCopy(), nil
+	return b._BACnetPropertyStatesEscalatorOperationDirection.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) MustBuild() BACnetPropertyStatesEscalatorOperationDirection {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) MustBuild() BACnetPropertyStatesEscalatorOperationDirection {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesEscalatorOperationDirectionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesEscalatorOperationDirectionBuilder().(*_BACnetPropertyStatesEscalatorOperationDirectionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesEscalatorOperationDirectionBuilder creates a BACnetPropertyStatesEscalatorOperationDirectionBuilder
-func (m *_BACnetPropertyStatesEscalatorOperationDirection) CreateBACnetPropertyStatesEscalatorOperationDirectionBuilder() BACnetPropertyStatesEscalatorOperationDirectionBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesEscalatorOperationDirection) CreateBACnetPropertyStatesEscalatorOperationDirectionBuilder() BACnetPropertyStatesEscalatorOperationDirectionBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesEscalatorOperationDirectionBuilder()
 	}
-	return &_BACnetPropertyStatesEscalatorOperationDirectionBuilder{_BACnetPropertyStatesEscalatorOperationDirection: m.deepCopy()}
+	return &_BACnetPropertyStatesEscalatorOperationDirectionBuilder{_BACnetPropertyStatesEscalatorOperationDirection: b.deepCopy()}
 }
 
 ///////////////////////

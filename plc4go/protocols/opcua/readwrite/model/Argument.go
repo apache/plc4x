@@ -138,127 +138,146 @@ func NewArgumentBuilder() ArgumentBuilder {
 type _ArgumentBuilder struct {
 	*_Argument
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ArgumentBuilder) = (*_ArgumentBuilder)(nil)
 
-func (m *_ArgumentBuilder) WithMandatoryFields(name PascalString, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, description LocalizedText) ArgumentBuilder {
-	return m.WithName(name).WithDataType(dataType).WithValueRank(valueRank).WithNoOfArrayDimensions(noOfArrayDimensions).WithArrayDimensions(arrayDimensions...).WithDescription(description)
+func (b *_ArgumentBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ArgumentBuilder) WithName(name PascalString) ArgumentBuilder {
-	m.Name = name
-	return m
+func (b *_ArgumentBuilder) WithMandatoryFields(name PascalString, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, description LocalizedText) ArgumentBuilder {
+	return b.WithName(name).WithDataType(dataType).WithValueRank(valueRank).WithNoOfArrayDimensions(noOfArrayDimensions).WithArrayDimensions(arrayDimensions...).WithDescription(description)
 }
 
-func (m *_ArgumentBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ArgumentBuilder {
-	builder := builderSupplier(m.Name.CreatePascalStringBuilder())
+func (b *_ArgumentBuilder) WithName(name PascalString) ArgumentBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_ArgumentBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ArgumentBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
 	var err error
-	m.Name, err = builder.Build()
+	b.Name, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ArgumentBuilder) WithDataType(dataType NodeId) ArgumentBuilder {
-	m.DataType = dataType
-	return m
+func (b *_ArgumentBuilder) WithDataType(dataType NodeId) ArgumentBuilder {
+	b.DataType = dataType
+	return b
 }
 
-func (m *_ArgumentBuilder) WithDataTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ArgumentBuilder {
-	builder := builderSupplier(m.DataType.CreateNodeIdBuilder())
+func (b *_ArgumentBuilder) WithDataTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ArgumentBuilder {
+	builder := builderSupplier(b.DataType.CreateNodeIdBuilder())
 	var err error
-	m.DataType, err = builder.Build()
+	b.DataType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ArgumentBuilder) WithValueRank(valueRank int32) ArgumentBuilder {
-	m.ValueRank = valueRank
-	return m
+func (b *_ArgumentBuilder) WithValueRank(valueRank int32) ArgumentBuilder {
+	b.ValueRank = valueRank
+	return b
 }
 
-func (m *_ArgumentBuilder) WithNoOfArrayDimensions(noOfArrayDimensions int32) ArgumentBuilder {
-	m.NoOfArrayDimensions = noOfArrayDimensions
-	return m
+func (b *_ArgumentBuilder) WithNoOfArrayDimensions(noOfArrayDimensions int32) ArgumentBuilder {
+	b.NoOfArrayDimensions = noOfArrayDimensions
+	return b
 }
 
-func (m *_ArgumentBuilder) WithArrayDimensions(arrayDimensions ...uint32) ArgumentBuilder {
-	m.ArrayDimensions = arrayDimensions
-	return m
+func (b *_ArgumentBuilder) WithArrayDimensions(arrayDimensions ...uint32) ArgumentBuilder {
+	b.ArrayDimensions = arrayDimensions
+	return b
 }
 
-func (m *_ArgumentBuilder) WithDescription(description LocalizedText) ArgumentBuilder {
-	m.Description = description
-	return m
+func (b *_ArgumentBuilder) WithDescription(description LocalizedText) ArgumentBuilder {
+	b.Description = description
+	return b
 }
 
-func (m *_ArgumentBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ArgumentBuilder {
-	builder := builderSupplier(m.Description.CreateLocalizedTextBuilder())
+func (b *_ArgumentBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ArgumentBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
 	var err error
-	m.Description, err = builder.Build()
+	b.Description, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ArgumentBuilder) Build() (Argument, error) {
-	if m.Name == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ArgumentBuilder) Build() (Argument, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'name' not set"))
+		b.err.Append(errors.New("mandatory field 'name' not set"))
 	}
-	if m.DataType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.DataType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dataType' not set"))
+		b.err.Append(errors.New("mandatory field 'dataType' not set"))
 	}
-	if m.Description == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'description' not set"))
+		b.err.Append(errors.New("mandatory field 'description' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Argument.deepCopy(), nil
+	return b._Argument.deepCopy(), nil
 }
 
-func (m *_ArgumentBuilder) MustBuild() Argument {
-	build, err := m.Build()
+func (b *_ArgumentBuilder) MustBuild() Argument {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ArgumentBuilder) DeepCopy() any {
-	return m.CreateArgumentBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ArgumentBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ArgumentBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ArgumentBuilder) DeepCopy() any {
+	_copy := b.CreateArgumentBuilder().(*_ArgumentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateArgumentBuilder creates a ArgumentBuilder
-func (m *_Argument) CreateArgumentBuilder() ArgumentBuilder {
-	if m == nil {
+func (b *_Argument) CreateArgumentBuilder() ArgumentBuilder {
+	if b == nil {
 		return NewArgumentBuilder()
 	}
-	return &_ArgumentBuilder{_Argument: m.deepCopy()}
+	return &_ArgumentBuilder{_Argument: b.deepCopy()}
 }
 
 ///////////////////////

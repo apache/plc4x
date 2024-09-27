@@ -100,64 +100,83 @@ func NewBACnetConstructedDataCountBuilder() BACnetConstructedDataCountBuilder {
 type _BACnetConstructedDataCountBuilder struct {
 	*_BACnetConstructedDataCount
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCountBuilder) = (*_BACnetConstructedDataCountBuilder)(nil)
 
-func (m *_BACnetConstructedDataCountBuilder) WithMandatoryFields(count BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCountBuilder {
-	return m.WithCount(count)
+func (b *_BACnetConstructedDataCountBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCountBuilder) WithCount(count BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCountBuilder {
-	m.Count = count
-	return m
+func (b *_BACnetConstructedDataCountBuilder) WithMandatoryFields(count BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCountBuilder {
+	return b.WithCount(count)
 }
 
-func (m *_BACnetConstructedDataCountBuilder) WithCountBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCountBuilder {
-	builder := builderSupplier(m.Count.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataCountBuilder) WithCount(count BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCountBuilder {
+	b.Count = count
+	return b
+}
+
+func (b *_BACnetConstructedDataCountBuilder) WithCountBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCountBuilder {
+	builder := builderSupplier(b.Count.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.Count, err = builder.Build()
+	b.Count, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataCountBuilder) Build() (BACnetConstructedDataCount, error) {
-	if m.Count == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataCountBuilder) Build() (BACnetConstructedDataCount, error) {
+	if b.Count == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'count' not set"))
+		b.err.Append(errors.New("mandatory field 'count' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCount.deepCopy(), nil
+	return b._BACnetConstructedDataCount.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCountBuilder) MustBuild() BACnetConstructedDataCount {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCountBuilder) MustBuild() BACnetConstructedDataCount {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCountBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCountBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCountBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCountBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCountBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCountBuilder().(*_BACnetConstructedDataCountBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCountBuilder creates a BACnetConstructedDataCountBuilder
-func (m *_BACnetConstructedDataCount) CreateBACnetConstructedDataCountBuilder() BACnetConstructedDataCountBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCount) CreateBACnetConstructedDataCountBuilder() BACnetConstructedDataCountBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCountBuilder()
 	}
-	return &_BACnetConstructedDataCountBuilder{_BACnetConstructedDataCount: m.deepCopy()}
+	return &_BACnetConstructedDataCountBuilder{_BACnetConstructedDataCount: b.deepCopy()}
 }
 
 ///////////////////////

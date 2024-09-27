@@ -85,40 +85,59 @@ func NewTDataConnectedIndBuilder() TDataConnectedIndBuilder {
 type _TDataConnectedIndBuilder struct {
 	*_TDataConnectedInd
 
+	parentBuilder *_CEMIBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TDataConnectedIndBuilder) = (*_TDataConnectedIndBuilder)(nil)
 
-func (m *_TDataConnectedIndBuilder) WithMandatoryFields() TDataConnectedIndBuilder {
-	return m
+func (b *_TDataConnectedIndBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
 }
 
-func (m *_TDataConnectedIndBuilder) Build() (TDataConnectedInd, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TDataConnectedIndBuilder) WithMandatoryFields() TDataConnectedIndBuilder {
+	return b
+}
+
+func (b *_TDataConnectedIndBuilder) Build() (TDataConnectedInd, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TDataConnectedInd.deepCopy(), nil
+	return b._TDataConnectedInd.deepCopy(), nil
 }
 
-func (m *_TDataConnectedIndBuilder) MustBuild() TDataConnectedInd {
-	build, err := m.Build()
+func (b *_TDataConnectedIndBuilder) MustBuild() TDataConnectedInd {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TDataConnectedIndBuilder) DeepCopy() any {
-	return m.CreateTDataConnectedIndBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TDataConnectedIndBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TDataConnectedIndBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_TDataConnectedIndBuilder) DeepCopy() any {
+	_copy := b.CreateTDataConnectedIndBuilder().(*_TDataConnectedIndBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTDataConnectedIndBuilder creates a TDataConnectedIndBuilder
-func (m *_TDataConnectedInd) CreateTDataConnectedIndBuilder() TDataConnectedIndBuilder {
-	if m == nil {
+func (b *_TDataConnectedInd) CreateTDataConnectedIndBuilder() TDataConnectedIndBuilder {
+	if b == nil {
 		return NewTDataConnectedIndBuilder()
 	}
-	return &_TDataConnectedIndBuilder{_TDataConnectedInd: m.deepCopy()}
+	return &_TDataConnectedIndBuilder{_TDataConnectedInd: b.deepCopy()}
 }
 
 ///////////////////////

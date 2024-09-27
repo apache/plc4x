@@ -98,64 +98,83 @@ func NewBACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder() BA
 type _BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder struct {
 	*_BACnetNotificationParametersChangeOfValueNewValueChangedBits
 
+	parentBuilder *_BACnetNotificationParametersChangeOfValueNewValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) = (*_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder)(nil)
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) WithMandatoryFields(changedBits BACnetContextTagBitString) BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder {
-	return m.WithChangedBits(changedBits)
+func (b *_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) setParent(contract BACnetNotificationParametersChangeOfValueNewValueContract) {
+	b.BACnetNotificationParametersChangeOfValueNewValueContract = contract
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) WithChangedBits(changedBits BACnetContextTagBitString) BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder {
-	m.ChangedBits = changedBits
-	return m
+func (b *_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) WithMandatoryFields(changedBits BACnetContextTagBitString) BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder {
+	return b.WithChangedBits(changedBits)
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) WithChangedBitsBuilder(builderSupplier func(BACnetContextTagBitStringBuilder) BACnetContextTagBitStringBuilder) BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder {
-	builder := builderSupplier(m.ChangedBits.CreateBACnetContextTagBitStringBuilder())
+func (b *_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) WithChangedBits(changedBits BACnetContextTagBitString) BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder {
+	b.ChangedBits = changedBits
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) WithChangedBitsBuilder(builderSupplier func(BACnetContextTagBitStringBuilder) BACnetContextTagBitStringBuilder) BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder {
+	builder := builderSupplier(b.ChangedBits.CreateBACnetContextTagBitStringBuilder())
 	var err error
-	m.ChangedBits, err = builder.Build()
+	b.ChangedBits, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagBitStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBitStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) Build() (BACnetNotificationParametersChangeOfValueNewValueChangedBits, error) {
-	if m.ChangedBits == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) Build() (BACnetNotificationParametersChangeOfValueNewValueChangedBits, error) {
+	if b.ChangedBits == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'changedBits' not set"))
+		b.err.Append(errors.New("mandatory field 'changedBits' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNotificationParametersChangeOfValueNewValueChangedBits.deepCopy(), nil
+	return b._BACnetNotificationParametersChangeOfValueNewValueChangedBits.deepCopy(), nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) MustBuild() BACnetNotificationParametersChangeOfValueNewValueChangedBits {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) MustBuild() BACnetNotificationParametersChangeOfValueNewValueChangedBits {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) Done() BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) buildForBACnetNotificationParametersChangeOfValueNewValue() (BACnetNotificationParametersChangeOfValueNewValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder().(*_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder creates a BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder
-func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) CreateBACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder() BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) CreateBACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder() BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder()
 	}
-	return &_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder{_BACnetNotificationParametersChangeOfValueNewValueChangedBits: m.deepCopy()}
+	return &_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder{_BACnetNotificationParametersChangeOfValueNewValueChangedBits: b.deepCopy()}
 }
 
 ///////////////////////

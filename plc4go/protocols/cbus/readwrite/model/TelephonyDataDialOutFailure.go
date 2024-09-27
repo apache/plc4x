@@ -93,45 +93,64 @@ func NewTelephonyDataDialOutFailureBuilder() TelephonyDataDialOutFailureBuilder 
 type _TelephonyDataDialOutFailureBuilder struct {
 	*_TelephonyDataDialOutFailure
 
+	parentBuilder *_TelephonyDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TelephonyDataDialOutFailureBuilder) = (*_TelephonyDataDialOutFailureBuilder)(nil)
 
-func (m *_TelephonyDataDialOutFailureBuilder) WithMandatoryFields(reason DialOutFailureReason) TelephonyDataDialOutFailureBuilder {
-	return m.WithReason(reason)
+func (b *_TelephonyDataDialOutFailureBuilder) setParent(contract TelephonyDataContract) {
+	b.TelephonyDataContract = contract
 }
 
-func (m *_TelephonyDataDialOutFailureBuilder) WithReason(reason DialOutFailureReason) TelephonyDataDialOutFailureBuilder {
-	m.Reason = reason
-	return m
+func (b *_TelephonyDataDialOutFailureBuilder) WithMandatoryFields(reason DialOutFailureReason) TelephonyDataDialOutFailureBuilder {
+	return b.WithReason(reason)
 }
 
-func (m *_TelephonyDataDialOutFailureBuilder) Build() (TelephonyDataDialOutFailure, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TelephonyDataDialOutFailureBuilder) WithReason(reason DialOutFailureReason) TelephonyDataDialOutFailureBuilder {
+	b.Reason = reason
+	return b
+}
+
+func (b *_TelephonyDataDialOutFailureBuilder) Build() (TelephonyDataDialOutFailure, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TelephonyDataDialOutFailure.deepCopy(), nil
+	return b._TelephonyDataDialOutFailure.deepCopy(), nil
 }
 
-func (m *_TelephonyDataDialOutFailureBuilder) MustBuild() TelephonyDataDialOutFailure {
-	build, err := m.Build()
+func (b *_TelephonyDataDialOutFailureBuilder) MustBuild() TelephonyDataDialOutFailure {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TelephonyDataDialOutFailureBuilder) DeepCopy() any {
-	return m.CreateTelephonyDataDialOutFailureBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TelephonyDataDialOutFailureBuilder) Done() TelephonyDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TelephonyDataDialOutFailureBuilder) buildForTelephonyData() (TelephonyData, error) {
+	return b.Build()
+}
+
+func (b *_TelephonyDataDialOutFailureBuilder) DeepCopy() any {
+	_copy := b.CreateTelephonyDataDialOutFailureBuilder().(*_TelephonyDataDialOutFailureBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTelephonyDataDialOutFailureBuilder creates a TelephonyDataDialOutFailureBuilder
-func (m *_TelephonyDataDialOutFailure) CreateTelephonyDataDialOutFailureBuilder() TelephonyDataDialOutFailureBuilder {
-	if m == nil {
+func (b *_TelephonyDataDialOutFailure) CreateTelephonyDataDialOutFailureBuilder() TelephonyDataDialOutFailureBuilder {
+	if b == nil {
 		return NewTelephonyDataDialOutFailureBuilder()
 	}
-	return &_TelephonyDataDialOutFailureBuilder{_TelephonyDataDialOutFailure: m.deepCopy()}
+	return &_TelephonyDataDialOutFailureBuilder{_TelephonyDataDialOutFailure: b.deepCopy()}
 }
 
 ///////////////////////

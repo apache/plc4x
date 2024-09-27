@@ -100,64 +100,83 @@ func NewBACnetConstructedDataIntegerValueLowLimitBuilder() BACnetConstructedData
 type _BACnetConstructedDataIntegerValueLowLimitBuilder struct {
 	*_BACnetConstructedDataIntegerValueLowLimit
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataIntegerValueLowLimitBuilder) = (*_BACnetConstructedDataIntegerValueLowLimitBuilder)(nil)
 
-func (m *_BACnetConstructedDataIntegerValueLowLimitBuilder) WithMandatoryFields(lowLimit BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueLowLimitBuilder {
-	return m.WithLowLimit(lowLimit)
+func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataIntegerValueLowLimitBuilder) WithLowLimit(lowLimit BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueLowLimitBuilder {
-	m.LowLimit = lowLimit
-	return m
+func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) WithMandatoryFields(lowLimit BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueLowLimitBuilder {
+	return b.WithLowLimit(lowLimit)
 }
 
-func (m *_BACnetConstructedDataIntegerValueLowLimitBuilder) WithLowLimitBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataIntegerValueLowLimitBuilder {
-	builder := builderSupplier(m.LowLimit.CreateBACnetApplicationTagSignedIntegerBuilder())
+func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) WithLowLimit(lowLimit BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueLowLimitBuilder {
+	b.LowLimit = lowLimit
+	return b
+}
+
+func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) WithLowLimitBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataIntegerValueLowLimitBuilder {
+	builder := builderSupplier(b.LowLimit.CreateBACnetApplicationTagSignedIntegerBuilder())
 	var err error
-	m.LowLimit, err = builder.Build()
+	b.LowLimit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataIntegerValueLowLimitBuilder) Build() (BACnetConstructedDataIntegerValueLowLimit, error) {
-	if m.LowLimit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) Build() (BACnetConstructedDataIntegerValueLowLimit, error) {
+	if b.LowLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lowLimit' not set"))
+		b.err.Append(errors.New("mandatory field 'lowLimit' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataIntegerValueLowLimit.deepCopy(), nil
+	return b._BACnetConstructedDataIntegerValueLowLimit.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataIntegerValueLowLimitBuilder) MustBuild() BACnetConstructedDataIntegerValueLowLimit {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) MustBuild() BACnetConstructedDataIntegerValueLowLimit {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataIntegerValueLowLimitBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataIntegerValueLowLimitBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIntegerValueLowLimitBuilder().(*_BACnetConstructedDataIntegerValueLowLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataIntegerValueLowLimitBuilder creates a BACnetConstructedDataIntegerValueLowLimitBuilder
-func (m *_BACnetConstructedDataIntegerValueLowLimit) CreateBACnetConstructedDataIntegerValueLowLimitBuilder() BACnetConstructedDataIntegerValueLowLimitBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataIntegerValueLowLimit) CreateBACnetConstructedDataIntegerValueLowLimitBuilder() BACnetConstructedDataIntegerValueLowLimitBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataIntegerValueLowLimitBuilder()
 	}
-	return &_BACnetConstructedDataIntegerValueLowLimitBuilder{_BACnetConstructedDataIntegerValueLowLimit: m.deepCopy()}
+	return &_BACnetConstructedDataIntegerValueLowLimitBuilder{_BACnetConstructedDataIntegerValueLowLimit: b.deepCopy()}
 }
 
 ///////////////////////

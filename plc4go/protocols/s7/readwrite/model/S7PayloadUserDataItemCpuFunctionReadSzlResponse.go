@@ -93,45 +93,64 @@ func NewS7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder() S7PayloadUserDa
 type _S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder struct {
 	*_S7PayloadUserDataItemCpuFunctionReadSzlResponse
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) = (*_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder)(nil)
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) WithMandatoryFields(items []byte) S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder {
-	return m.WithItems(items...)
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) WithItems(items ...byte) S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder {
-	m.Items = items
-	return m
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) WithMandatoryFields(items []byte) S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder {
+	return b.WithItems(items...)
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionReadSzlResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) WithItems(items ...byte) S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionReadSzlResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadUserDataItemCpuFunctionReadSzlResponse.deepCopy(), nil
+	return b._S7PayloadUserDataItemCpuFunctionReadSzlResponse.deepCopy(), nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionReadSzlResponse {
-	build, err := m.Build()
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionReadSzlResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) DeepCopy() any {
-	return m.CreateS7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder creates a S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) CreateS7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder() S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder {
-	if m == nil {
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) CreateS7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder() S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder {
+	if b == nil {
 		return NewS7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder()
 	}
-	return &_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder{_S7PayloadUserDataItemCpuFunctionReadSzlResponse: m.deepCopy()}
+	return &_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder{_S7PayloadUserDataItemCpuFunctionReadSzlResponse: b.deepCopy()}
 }
 
 ///////////////////////

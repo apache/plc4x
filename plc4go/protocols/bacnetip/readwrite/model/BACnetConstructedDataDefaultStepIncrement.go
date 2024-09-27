@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDefaultStepIncrementBuilder() BACnetConstructedData
 type _BACnetConstructedDataDefaultStepIncrementBuilder struct {
 	*_BACnetConstructedDataDefaultStepIncrement
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDefaultStepIncrementBuilder) = (*_BACnetConstructedDataDefaultStepIncrementBuilder)(nil)
 
-func (m *_BACnetConstructedDataDefaultStepIncrementBuilder) WithMandatoryFields(defaultStepIncrement BACnetApplicationTagReal) BACnetConstructedDataDefaultStepIncrementBuilder {
-	return m.WithDefaultStepIncrement(defaultStepIncrement)
+func (b *_BACnetConstructedDataDefaultStepIncrementBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDefaultStepIncrementBuilder) WithDefaultStepIncrement(defaultStepIncrement BACnetApplicationTagReal) BACnetConstructedDataDefaultStepIncrementBuilder {
-	m.DefaultStepIncrement = defaultStepIncrement
-	return m
+func (b *_BACnetConstructedDataDefaultStepIncrementBuilder) WithMandatoryFields(defaultStepIncrement BACnetApplicationTagReal) BACnetConstructedDataDefaultStepIncrementBuilder {
+	return b.WithDefaultStepIncrement(defaultStepIncrement)
 }
 
-func (m *_BACnetConstructedDataDefaultStepIncrementBuilder) WithDefaultStepIncrementBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDefaultStepIncrementBuilder {
-	builder := builderSupplier(m.DefaultStepIncrement.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataDefaultStepIncrementBuilder) WithDefaultStepIncrement(defaultStepIncrement BACnetApplicationTagReal) BACnetConstructedDataDefaultStepIncrementBuilder {
+	b.DefaultStepIncrement = defaultStepIncrement
+	return b
+}
+
+func (b *_BACnetConstructedDataDefaultStepIncrementBuilder) WithDefaultStepIncrementBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDefaultStepIncrementBuilder {
+	builder := builderSupplier(b.DefaultStepIncrement.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.DefaultStepIncrement, err = builder.Build()
+	b.DefaultStepIncrement, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDefaultStepIncrementBuilder) Build() (BACnetConstructedDataDefaultStepIncrement, error) {
-	if m.DefaultStepIncrement == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDefaultStepIncrementBuilder) Build() (BACnetConstructedDataDefaultStepIncrement, error) {
+	if b.DefaultStepIncrement == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'defaultStepIncrement' not set"))
+		b.err.Append(errors.New("mandatory field 'defaultStepIncrement' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDefaultStepIncrement.deepCopy(), nil
+	return b._BACnetConstructedDataDefaultStepIncrement.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDefaultStepIncrementBuilder) MustBuild() BACnetConstructedDataDefaultStepIncrement {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDefaultStepIncrementBuilder) MustBuild() BACnetConstructedDataDefaultStepIncrement {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDefaultStepIncrementBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDefaultStepIncrementBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDefaultStepIncrementBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDefaultStepIncrementBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDefaultStepIncrementBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDefaultStepIncrementBuilder().(*_BACnetConstructedDataDefaultStepIncrementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDefaultStepIncrementBuilder creates a BACnetConstructedDataDefaultStepIncrementBuilder
-func (m *_BACnetConstructedDataDefaultStepIncrement) CreateBACnetConstructedDataDefaultStepIncrementBuilder() BACnetConstructedDataDefaultStepIncrementBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDefaultStepIncrement) CreateBACnetConstructedDataDefaultStepIncrementBuilder() BACnetConstructedDataDefaultStepIncrementBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDefaultStepIncrementBuilder()
 	}
-	return &_BACnetConstructedDataDefaultStepIncrementBuilder{_BACnetConstructedDataDefaultStepIncrement: m.deepCopy()}
+	return &_BACnetConstructedDataDefaultStepIncrementBuilder{_BACnetConstructedDataDefaultStepIncrement: b.deepCopy()}
 }
 
 ///////////////////////

@@ -79,6 +79,8 @@ type BACnetLogDataLogDataEntryAnyValueBuilder interface {
 	WithMandatoryFields() BACnetLogDataLogDataEntryAnyValueBuilder
 	// WithAnyValue adds AnyValue (property field)
 	WithOptionalAnyValue(BACnetConstructedData) BACnetLogDataLogDataEntryAnyValueBuilder
+	// WithOptionalAnyValueBuilder adds AnyValue (property field) which is build by the builder
+	WithOptionalAnyValueBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetLogDataLogDataEntryAnyValueBuilder
 	// Build builds the BACnetLogDataLogDataEntryAnyValue or returns an error if something is wrong
 	Build() (BACnetLogDataLogDataEntryAnyValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -93,45 +95,77 @@ func NewBACnetLogDataLogDataEntryAnyValueBuilder() BACnetLogDataLogDataEntryAnyV
 type _BACnetLogDataLogDataEntryAnyValueBuilder struct {
 	*_BACnetLogDataLogDataEntryAnyValue
 
+	parentBuilder *_BACnetLogDataLogDataEntryBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetLogDataLogDataEntryAnyValueBuilder) = (*_BACnetLogDataLogDataEntryAnyValueBuilder)(nil)
 
-func (m *_BACnetLogDataLogDataEntryAnyValueBuilder) WithMandatoryFields() BACnetLogDataLogDataEntryAnyValueBuilder {
-	return m
+func (b *_BACnetLogDataLogDataEntryAnyValueBuilder) setParent(contract BACnetLogDataLogDataEntryContract) {
+	b.BACnetLogDataLogDataEntryContract = contract
 }
 
-func (m *_BACnetLogDataLogDataEntryAnyValueBuilder) WithOptionalAnyValue(anyValue BACnetConstructedData) BACnetLogDataLogDataEntryAnyValueBuilder {
-	m.AnyValue = anyValue
-	return m
+func (b *_BACnetLogDataLogDataEntryAnyValueBuilder) WithMandatoryFields() BACnetLogDataLogDataEntryAnyValueBuilder {
+	return b
 }
 
-func (m *_BACnetLogDataLogDataEntryAnyValueBuilder) Build() (BACnetLogDataLogDataEntryAnyValue, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetLogDataLogDataEntryAnyValueBuilder) WithOptionalAnyValue(anyValue BACnetConstructedData) BACnetLogDataLogDataEntryAnyValueBuilder {
+	b.AnyValue = anyValue
+	return b
+}
+
+func (b *_BACnetLogDataLogDataEntryAnyValueBuilder) WithOptionalAnyValueBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetLogDataLogDataEntryAnyValueBuilder {
+	builder := builderSupplier(b.AnyValue.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.AnyValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
-	return m._BACnetLogDataLogDataEntryAnyValue.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetLogDataLogDataEntryAnyValueBuilder) MustBuild() BACnetLogDataLogDataEntryAnyValue {
-	build, err := m.Build()
+func (b *_BACnetLogDataLogDataEntryAnyValueBuilder) Build() (BACnetLogDataLogDataEntryAnyValue, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLogDataLogDataEntryAnyValue.deepCopy(), nil
+}
+
+func (b *_BACnetLogDataLogDataEntryAnyValueBuilder) MustBuild() BACnetLogDataLogDataEntryAnyValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLogDataLogDataEntryAnyValueBuilder) DeepCopy() any {
-	return m.CreateBACnetLogDataLogDataEntryAnyValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogDataLogDataEntryAnyValueBuilder) Done() BACnetLogDataLogDataEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogDataLogDataEntryAnyValueBuilder) buildForBACnetLogDataLogDataEntry() (BACnetLogDataLogDataEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogDataLogDataEntryAnyValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogDataLogDataEntryAnyValueBuilder().(*_BACnetLogDataLogDataEntryAnyValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLogDataLogDataEntryAnyValueBuilder creates a BACnetLogDataLogDataEntryAnyValueBuilder
-func (m *_BACnetLogDataLogDataEntryAnyValue) CreateBACnetLogDataLogDataEntryAnyValueBuilder() BACnetLogDataLogDataEntryAnyValueBuilder {
-	if m == nil {
+func (b *_BACnetLogDataLogDataEntryAnyValue) CreateBACnetLogDataLogDataEntryAnyValueBuilder() BACnetLogDataLogDataEntryAnyValueBuilder {
+	if b == nil {
 		return NewBACnetLogDataLogDataEntryAnyValueBuilder()
 	}
-	return &_BACnetLogDataLogDataEntryAnyValueBuilder{_BACnetLogDataLogDataEntryAnyValue: m.deepCopy()}
+	return &_BACnetLogDataLogDataEntryAnyValueBuilder{_BACnetLogDataLogDataEntryAnyValue: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataRepresentsBuilder() BACnetConstructedDataRepresents
 type _BACnetConstructedDataRepresentsBuilder struct {
 	*_BACnetConstructedDataRepresents
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataRepresentsBuilder) = (*_BACnetConstructedDataRepresentsBuilder)(nil)
 
-func (m *_BACnetConstructedDataRepresentsBuilder) WithMandatoryFields(represents BACnetDeviceObjectReference) BACnetConstructedDataRepresentsBuilder {
-	return m.WithRepresents(represents)
+func (b *_BACnetConstructedDataRepresentsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataRepresentsBuilder) WithRepresents(represents BACnetDeviceObjectReference) BACnetConstructedDataRepresentsBuilder {
-	m.Represents = represents
-	return m
+func (b *_BACnetConstructedDataRepresentsBuilder) WithMandatoryFields(represents BACnetDeviceObjectReference) BACnetConstructedDataRepresentsBuilder {
+	return b.WithRepresents(represents)
 }
 
-func (m *_BACnetConstructedDataRepresentsBuilder) WithRepresentsBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataRepresentsBuilder {
-	builder := builderSupplier(m.Represents.CreateBACnetDeviceObjectReferenceBuilder())
+func (b *_BACnetConstructedDataRepresentsBuilder) WithRepresents(represents BACnetDeviceObjectReference) BACnetConstructedDataRepresentsBuilder {
+	b.Represents = represents
+	return b
+}
+
+func (b *_BACnetConstructedDataRepresentsBuilder) WithRepresentsBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataRepresentsBuilder {
+	builder := builderSupplier(b.Represents.CreateBACnetDeviceObjectReferenceBuilder())
 	var err error
-	m.Represents, err = builder.Build()
+	b.Represents, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataRepresentsBuilder) Build() (BACnetConstructedDataRepresents, error) {
-	if m.Represents == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataRepresentsBuilder) Build() (BACnetConstructedDataRepresents, error) {
+	if b.Represents == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'represents' not set"))
+		b.err.Append(errors.New("mandatory field 'represents' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataRepresents.deepCopy(), nil
+	return b._BACnetConstructedDataRepresents.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataRepresentsBuilder) MustBuild() BACnetConstructedDataRepresents {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataRepresentsBuilder) MustBuild() BACnetConstructedDataRepresents {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataRepresentsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataRepresentsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataRepresentsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataRepresentsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataRepresentsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataRepresentsBuilder().(*_BACnetConstructedDataRepresentsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataRepresentsBuilder creates a BACnetConstructedDataRepresentsBuilder
-func (m *_BACnetConstructedDataRepresents) CreateBACnetConstructedDataRepresentsBuilder() BACnetConstructedDataRepresentsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataRepresents) CreateBACnetConstructedDataRepresentsBuilder() BACnetConstructedDataRepresentsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataRepresentsBuilder()
 	}
-	return &_BACnetConstructedDataRepresentsBuilder{_BACnetConstructedDataRepresents: m.deepCopy()}
+	return &_BACnetConstructedDataRepresentsBuilder{_BACnetConstructedDataRepresents: b.deepCopy()}
 }
 
 ///////////////////////

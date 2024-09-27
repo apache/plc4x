@@ -169,166 +169,185 @@ func NewDataSetWriterDataTypeBuilder() DataSetWriterDataTypeBuilder {
 type _DataSetWriterDataTypeBuilder struct {
 	*_DataSetWriterDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DataSetWriterDataTypeBuilder) = (*_DataSetWriterDataTypeBuilder)(nil)
 
-func (m *_DataSetWriterDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, dataSetWriterId uint16, dataSetFieldContentMask DataSetFieldContentMask, keyFrameCount uint32, dataSetName PascalString, noOfDataSetWriterProperties int32, dataSetWriterProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, messageSettings ExtensionObject) DataSetWriterDataTypeBuilder {
-	return m.WithName(name).WithEnabled(enabled).WithDataSetWriterId(dataSetWriterId).WithDataSetFieldContentMask(dataSetFieldContentMask).WithKeyFrameCount(keyFrameCount).WithDataSetName(dataSetName).WithNoOfDataSetWriterProperties(noOfDataSetWriterProperties).WithDataSetWriterProperties(dataSetWriterProperties...).WithTransportSettings(transportSettings).WithMessageSettings(messageSettings)
+func (b *_DataSetWriterDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_DataSetWriterDataTypeBuilder) WithName(name PascalString) DataSetWriterDataTypeBuilder {
-	m.Name = name
-	return m
+func (b *_DataSetWriterDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, dataSetWriterId uint16, dataSetFieldContentMask DataSetFieldContentMask, keyFrameCount uint32, dataSetName PascalString, noOfDataSetWriterProperties int32, dataSetWriterProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, messageSettings ExtensionObject) DataSetWriterDataTypeBuilder {
+	return b.WithName(name).WithEnabled(enabled).WithDataSetWriterId(dataSetWriterId).WithDataSetFieldContentMask(dataSetFieldContentMask).WithKeyFrameCount(keyFrameCount).WithDataSetName(dataSetName).WithNoOfDataSetWriterProperties(noOfDataSetWriterProperties).WithDataSetWriterProperties(dataSetWriterProperties...).WithTransportSettings(transportSettings).WithMessageSettings(messageSettings)
 }
 
-func (m *_DataSetWriterDataTypeBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) DataSetWriterDataTypeBuilder {
-	builder := builderSupplier(m.Name.CreatePascalStringBuilder())
+func (b *_DataSetWriterDataTypeBuilder) WithName(name PascalString) DataSetWriterDataTypeBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_DataSetWriterDataTypeBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) DataSetWriterDataTypeBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
 	var err error
-	m.Name, err = builder.Build()
+	b.Name, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_DataSetWriterDataTypeBuilder) WithEnabled(enabled bool) DataSetWriterDataTypeBuilder {
-	m.Enabled = enabled
-	return m
+func (b *_DataSetWriterDataTypeBuilder) WithEnabled(enabled bool) DataSetWriterDataTypeBuilder {
+	b.Enabled = enabled
+	return b
 }
 
-func (m *_DataSetWriterDataTypeBuilder) WithDataSetWriterId(dataSetWriterId uint16) DataSetWriterDataTypeBuilder {
-	m.DataSetWriterId = dataSetWriterId
-	return m
+func (b *_DataSetWriterDataTypeBuilder) WithDataSetWriterId(dataSetWriterId uint16) DataSetWriterDataTypeBuilder {
+	b.DataSetWriterId = dataSetWriterId
+	return b
 }
 
-func (m *_DataSetWriterDataTypeBuilder) WithDataSetFieldContentMask(dataSetFieldContentMask DataSetFieldContentMask) DataSetWriterDataTypeBuilder {
-	m.DataSetFieldContentMask = dataSetFieldContentMask
-	return m
+func (b *_DataSetWriterDataTypeBuilder) WithDataSetFieldContentMask(dataSetFieldContentMask DataSetFieldContentMask) DataSetWriterDataTypeBuilder {
+	b.DataSetFieldContentMask = dataSetFieldContentMask
+	return b
 }
 
-func (m *_DataSetWriterDataTypeBuilder) WithKeyFrameCount(keyFrameCount uint32) DataSetWriterDataTypeBuilder {
-	m.KeyFrameCount = keyFrameCount
-	return m
+func (b *_DataSetWriterDataTypeBuilder) WithKeyFrameCount(keyFrameCount uint32) DataSetWriterDataTypeBuilder {
+	b.KeyFrameCount = keyFrameCount
+	return b
 }
 
-func (m *_DataSetWriterDataTypeBuilder) WithDataSetName(dataSetName PascalString) DataSetWriterDataTypeBuilder {
-	m.DataSetName = dataSetName
-	return m
+func (b *_DataSetWriterDataTypeBuilder) WithDataSetName(dataSetName PascalString) DataSetWriterDataTypeBuilder {
+	b.DataSetName = dataSetName
+	return b
 }
 
-func (m *_DataSetWriterDataTypeBuilder) WithDataSetNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) DataSetWriterDataTypeBuilder {
-	builder := builderSupplier(m.DataSetName.CreatePascalStringBuilder())
+func (b *_DataSetWriterDataTypeBuilder) WithDataSetNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) DataSetWriterDataTypeBuilder {
+	builder := builderSupplier(b.DataSetName.CreatePascalStringBuilder())
 	var err error
-	m.DataSetName, err = builder.Build()
+	b.DataSetName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_DataSetWriterDataTypeBuilder) WithNoOfDataSetWriterProperties(noOfDataSetWriterProperties int32) DataSetWriterDataTypeBuilder {
-	m.NoOfDataSetWriterProperties = noOfDataSetWriterProperties
-	return m
+func (b *_DataSetWriterDataTypeBuilder) WithNoOfDataSetWriterProperties(noOfDataSetWriterProperties int32) DataSetWriterDataTypeBuilder {
+	b.NoOfDataSetWriterProperties = noOfDataSetWriterProperties
+	return b
 }
 
-func (m *_DataSetWriterDataTypeBuilder) WithDataSetWriterProperties(dataSetWriterProperties ...ExtensionObjectDefinition) DataSetWriterDataTypeBuilder {
-	m.DataSetWriterProperties = dataSetWriterProperties
-	return m
+func (b *_DataSetWriterDataTypeBuilder) WithDataSetWriterProperties(dataSetWriterProperties ...ExtensionObjectDefinition) DataSetWriterDataTypeBuilder {
+	b.DataSetWriterProperties = dataSetWriterProperties
+	return b
 }
 
-func (m *_DataSetWriterDataTypeBuilder) WithTransportSettings(transportSettings ExtensionObject) DataSetWriterDataTypeBuilder {
-	m.TransportSettings = transportSettings
-	return m
+func (b *_DataSetWriterDataTypeBuilder) WithTransportSettings(transportSettings ExtensionObject) DataSetWriterDataTypeBuilder {
+	b.TransportSettings = transportSettings
+	return b
 }
 
-func (m *_DataSetWriterDataTypeBuilder) WithTransportSettingsBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) DataSetWriterDataTypeBuilder {
-	builder := builderSupplier(m.TransportSettings.CreateExtensionObjectBuilder())
+func (b *_DataSetWriterDataTypeBuilder) WithTransportSettingsBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) DataSetWriterDataTypeBuilder {
+	builder := builderSupplier(b.TransportSettings.CreateExtensionObjectBuilder())
 	var err error
-	m.TransportSettings, err = builder.Build()
+	b.TransportSettings, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_DataSetWriterDataTypeBuilder) WithMessageSettings(messageSettings ExtensionObject) DataSetWriterDataTypeBuilder {
-	m.MessageSettings = messageSettings
-	return m
+func (b *_DataSetWriterDataTypeBuilder) WithMessageSettings(messageSettings ExtensionObject) DataSetWriterDataTypeBuilder {
+	b.MessageSettings = messageSettings
+	return b
 }
 
-func (m *_DataSetWriterDataTypeBuilder) WithMessageSettingsBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) DataSetWriterDataTypeBuilder {
-	builder := builderSupplier(m.MessageSettings.CreateExtensionObjectBuilder())
+func (b *_DataSetWriterDataTypeBuilder) WithMessageSettingsBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) DataSetWriterDataTypeBuilder {
+	builder := builderSupplier(b.MessageSettings.CreateExtensionObjectBuilder())
 	var err error
-	m.MessageSettings, err = builder.Build()
+	b.MessageSettings, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_DataSetWriterDataTypeBuilder) Build() (DataSetWriterDataType, error) {
-	if m.Name == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_DataSetWriterDataTypeBuilder) Build() (DataSetWriterDataType, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'name' not set"))
+		b.err.Append(errors.New("mandatory field 'name' not set"))
 	}
-	if m.DataSetName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.DataSetName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dataSetName' not set"))
+		b.err.Append(errors.New("mandatory field 'dataSetName' not set"))
 	}
-	if m.TransportSettings == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TransportSettings == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'transportSettings' not set"))
+		b.err.Append(errors.New("mandatory field 'transportSettings' not set"))
 	}
-	if m.MessageSettings == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.MessageSettings == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'messageSettings' not set"))
+		b.err.Append(errors.New("mandatory field 'messageSettings' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DataSetWriterDataType.deepCopy(), nil
+	return b._DataSetWriterDataType.deepCopy(), nil
 }
 
-func (m *_DataSetWriterDataTypeBuilder) MustBuild() DataSetWriterDataType {
-	build, err := m.Build()
+func (b *_DataSetWriterDataTypeBuilder) MustBuild() DataSetWriterDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DataSetWriterDataTypeBuilder) DeepCopy() any {
-	return m.CreateDataSetWriterDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DataSetWriterDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DataSetWriterDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DataSetWriterDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateDataSetWriterDataTypeBuilder().(*_DataSetWriterDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDataSetWriterDataTypeBuilder creates a DataSetWriterDataTypeBuilder
-func (m *_DataSetWriterDataType) CreateDataSetWriterDataTypeBuilder() DataSetWriterDataTypeBuilder {
-	if m == nil {
+func (b *_DataSetWriterDataType) CreateDataSetWriterDataTypeBuilder() DataSetWriterDataTypeBuilder {
+	if b == nil {
 		return NewDataSetWriterDataTypeBuilder()
 	}
-	return &_DataSetWriterDataTypeBuilder{_DataSetWriterDataType: m.deepCopy()}
+	return &_DataSetWriterDataTypeBuilder{_DataSetWriterDataType: b.deepCopy()}
 }
 
 ///////////////////////

@@ -88,6 +88,8 @@ type CALDataReplyBuilder interface {
 	WithParamNo(Parameter) CALDataReplyBuilder
 	// WithParameterValue adds ParameterValue (property field)
 	WithParameterValue(ParameterValue) CALDataReplyBuilder
+	// WithParameterValueBuilder adds ParameterValue (property field) which is build by the builder
+	WithParameterValueBuilder(func(ParameterValueBuilder) ParameterValueBuilder) CALDataReplyBuilder
 	// Build builds the CALDataReply or returns an error if something is wrong
 	Build() (CALDataReply, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,56 +104,88 @@ func NewCALDataReplyBuilder() CALDataReplyBuilder {
 type _CALDataReplyBuilder struct {
 	*_CALDataReply
 
+	parentBuilder *_CALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CALDataReplyBuilder) = (*_CALDataReplyBuilder)(nil)
 
-func (m *_CALDataReplyBuilder) WithMandatoryFields(paramNo Parameter, parameterValue ParameterValue) CALDataReplyBuilder {
-	return m.WithParamNo(paramNo).WithParameterValue(parameterValue)
+func (b *_CALDataReplyBuilder) setParent(contract CALDataContract) {
+	b.CALDataContract = contract
 }
 
-func (m *_CALDataReplyBuilder) WithParamNo(paramNo Parameter) CALDataReplyBuilder {
-	m.ParamNo = paramNo
-	return m
+func (b *_CALDataReplyBuilder) WithMandatoryFields(paramNo Parameter, parameterValue ParameterValue) CALDataReplyBuilder {
+	return b.WithParamNo(paramNo).WithParameterValue(parameterValue)
 }
 
-func (m *_CALDataReplyBuilder) WithParameterValue(parameterValue ParameterValue) CALDataReplyBuilder {
-	m.ParameterValue = parameterValue
-	return m
+func (b *_CALDataReplyBuilder) WithParamNo(paramNo Parameter) CALDataReplyBuilder {
+	b.ParamNo = paramNo
+	return b
 }
 
-func (m *_CALDataReplyBuilder) Build() (CALDataReply, error) {
-	if m.ParameterValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CALDataReplyBuilder) WithParameterValue(parameterValue ParameterValue) CALDataReplyBuilder {
+	b.ParameterValue = parameterValue
+	return b
+}
+
+func (b *_CALDataReplyBuilder) WithParameterValueBuilder(builderSupplier func(ParameterValueBuilder) ParameterValueBuilder) CALDataReplyBuilder {
+	builder := builderSupplier(b.ParameterValue.CreateParameterValueBuilder())
+	var err error
+	b.ParameterValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'parameterValue' not set"))
+		b.err.Append(errors.Wrap(err, "ParameterValueBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._CALDataReply.deepCopy(), nil
+	return b
 }
 
-func (m *_CALDataReplyBuilder) MustBuild() CALDataReply {
-	build, err := m.Build()
+func (b *_CALDataReplyBuilder) Build() (CALDataReply, error) {
+	if b.ParameterValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'parameterValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CALDataReply.deepCopy(), nil
+}
+
+func (b *_CALDataReplyBuilder) MustBuild() CALDataReply {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CALDataReplyBuilder) DeepCopy() any {
-	return m.CreateCALDataReplyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CALDataReplyBuilder) Done() CALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CALDataReplyBuilder) buildForCALData() (CALData, error) {
+	return b.Build()
+}
+
+func (b *_CALDataReplyBuilder) DeepCopy() any {
+	_copy := b.CreateCALDataReplyBuilder().(*_CALDataReplyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCALDataReplyBuilder creates a CALDataReplyBuilder
-func (m *_CALDataReply) CreateCALDataReplyBuilder() CALDataReplyBuilder {
-	if m == nil {
+func (b *_CALDataReply) CreateCALDataReplyBuilder() CALDataReplyBuilder {
+	if b == nil {
 		return NewCALDataReplyBuilder()
 	}
-	return &_CALDataReplyBuilder{_CALDataReply: m.deepCopy()}
+	return &_CALDataReplyBuilder{_CALDataReply: b.deepCopy()}
 }
 
 ///////////////////////

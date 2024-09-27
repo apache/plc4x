@@ -100,64 +100,83 @@ func NewTunnelingResponseBuilder() TunnelingResponseBuilder {
 type _TunnelingResponseBuilder struct {
 	*_TunnelingResponse
 
+	parentBuilder *_KnxNetIpMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TunnelingResponseBuilder) = (*_TunnelingResponseBuilder)(nil)
 
-func (m *_TunnelingResponseBuilder) WithMandatoryFields(tunnelingResponseDataBlock TunnelingResponseDataBlock) TunnelingResponseBuilder {
-	return m.WithTunnelingResponseDataBlock(tunnelingResponseDataBlock)
+func (b *_TunnelingResponseBuilder) setParent(contract KnxNetIpMessageContract) {
+	b.KnxNetIpMessageContract = contract
 }
 
-func (m *_TunnelingResponseBuilder) WithTunnelingResponseDataBlock(tunnelingResponseDataBlock TunnelingResponseDataBlock) TunnelingResponseBuilder {
-	m.TunnelingResponseDataBlock = tunnelingResponseDataBlock
-	return m
+func (b *_TunnelingResponseBuilder) WithMandatoryFields(tunnelingResponseDataBlock TunnelingResponseDataBlock) TunnelingResponseBuilder {
+	return b.WithTunnelingResponseDataBlock(tunnelingResponseDataBlock)
 }
 
-func (m *_TunnelingResponseBuilder) WithTunnelingResponseDataBlockBuilder(builderSupplier func(TunnelingResponseDataBlockBuilder) TunnelingResponseDataBlockBuilder) TunnelingResponseBuilder {
-	builder := builderSupplier(m.TunnelingResponseDataBlock.CreateTunnelingResponseDataBlockBuilder())
+func (b *_TunnelingResponseBuilder) WithTunnelingResponseDataBlock(tunnelingResponseDataBlock TunnelingResponseDataBlock) TunnelingResponseBuilder {
+	b.TunnelingResponseDataBlock = tunnelingResponseDataBlock
+	return b
+}
+
+func (b *_TunnelingResponseBuilder) WithTunnelingResponseDataBlockBuilder(builderSupplier func(TunnelingResponseDataBlockBuilder) TunnelingResponseDataBlockBuilder) TunnelingResponseBuilder {
+	builder := builderSupplier(b.TunnelingResponseDataBlock.CreateTunnelingResponseDataBlockBuilder())
 	var err error
-	m.TunnelingResponseDataBlock, err = builder.Build()
+	b.TunnelingResponseDataBlock, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "TunnelingResponseDataBlockBuilder failed"))
+		b.err.Append(errors.Wrap(err, "TunnelingResponseDataBlockBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_TunnelingResponseBuilder) Build() (TunnelingResponse, error) {
-	if m.TunnelingResponseDataBlock == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_TunnelingResponseBuilder) Build() (TunnelingResponse, error) {
+	if b.TunnelingResponseDataBlock == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'tunnelingResponseDataBlock' not set"))
+		b.err.Append(errors.New("mandatory field 'tunnelingResponseDataBlock' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TunnelingResponse.deepCopy(), nil
+	return b._TunnelingResponse.deepCopy(), nil
 }
 
-func (m *_TunnelingResponseBuilder) MustBuild() TunnelingResponse {
-	build, err := m.Build()
+func (b *_TunnelingResponseBuilder) MustBuild() TunnelingResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TunnelingResponseBuilder) DeepCopy() any {
-	return m.CreateTunnelingResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TunnelingResponseBuilder) Done() KnxNetIpMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TunnelingResponseBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, error) {
+	return b.Build()
+}
+
+func (b *_TunnelingResponseBuilder) DeepCopy() any {
+	_copy := b.CreateTunnelingResponseBuilder().(*_TunnelingResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTunnelingResponseBuilder creates a TunnelingResponseBuilder
-func (m *_TunnelingResponse) CreateTunnelingResponseBuilder() TunnelingResponseBuilder {
-	if m == nil {
+func (b *_TunnelingResponse) CreateTunnelingResponseBuilder() TunnelingResponseBuilder {
+	if b == nil {
 		return NewTunnelingResponseBuilder()
 	}
-	return &_TunnelingResponseBuilder{_TunnelingResponse: m.deepCopy()}
+	return &_TunnelingResponseBuilder{_TunnelingResponse: b.deepCopy()}
 }
 
 ///////////////////////

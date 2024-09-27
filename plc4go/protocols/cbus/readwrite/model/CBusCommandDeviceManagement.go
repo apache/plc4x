@@ -102,50 +102,69 @@ func NewCBusCommandDeviceManagementBuilder() CBusCommandDeviceManagementBuilder 
 type _CBusCommandDeviceManagementBuilder struct {
 	*_CBusCommandDeviceManagement
 
+	parentBuilder *_CBusCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CBusCommandDeviceManagementBuilder) = (*_CBusCommandDeviceManagementBuilder)(nil)
 
-func (m *_CBusCommandDeviceManagementBuilder) WithMandatoryFields(paramNo Parameter, parameterValue byte) CBusCommandDeviceManagementBuilder {
-	return m.WithParamNo(paramNo).WithParameterValue(parameterValue)
+func (b *_CBusCommandDeviceManagementBuilder) setParent(contract CBusCommandContract) {
+	b.CBusCommandContract = contract
 }
 
-func (m *_CBusCommandDeviceManagementBuilder) WithParamNo(paramNo Parameter) CBusCommandDeviceManagementBuilder {
-	m.ParamNo = paramNo
-	return m
+func (b *_CBusCommandDeviceManagementBuilder) WithMandatoryFields(paramNo Parameter, parameterValue byte) CBusCommandDeviceManagementBuilder {
+	return b.WithParamNo(paramNo).WithParameterValue(parameterValue)
 }
 
-func (m *_CBusCommandDeviceManagementBuilder) WithParameterValue(parameterValue byte) CBusCommandDeviceManagementBuilder {
-	m.ParameterValue = parameterValue
-	return m
+func (b *_CBusCommandDeviceManagementBuilder) WithParamNo(paramNo Parameter) CBusCommandDeviceManagementBuilder {
+	b.ParamNo = paramNo
+	return b
 }
 
-func (m *_CBusCommandDeviceManagementBuilder) Build() (CBusCommandDeviceManagement, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CBusCommandDeviceManagementBuilder) WithParameterValue(parameterValue byte) CBusCommandDeviceManagementBuilder {
+	b.ParameterValue = parameterValue
+	return b
+}
+
+func (b *_CBusCommandDeviceManagementBuilder) Build() (CBusCommandDeviceManagement, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CBusCommandDeviceManagement.deepCopy(), nil
+	return b._CBusCommandDeviceManagement.deepCopy(), nil
 }
 
-func (m *_CBusCommandDeviceManagementBuilder) MustBuild() CBusCommandDeviceManagement {
-	build, err := m.Build()
+func (b *_CBusCommandDeviceManagementBuilder) MustBuild() CBusCommandDeviceManagement {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CBusCommandDeviceManagementBuilder) DeepCopy() any {
-	return m.CreateCBusCommandDeviceManagementBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CBusCommandDeviceManagementBuilder) Done() CBusCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CBusCommandDeviceManagementBuilder) buildForCBusCommand() (CBusCommand, error) {
+	return b.Build()
+}
+
+func (b *_CBusCommandDeviceManagementBuilder) DeepCopy() any {
+	_copy := b.CreateCBusCommandDeviceManagementBuilder().(*_CBusCommandDeviceManagementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCBusCommandDeviceManagementBuilder creates a CBusCommandDeviceManagementBuilder
-func (m *_CBusCommandDeviceManagement) CreateCBusCommandDeviceManagementBuilder() CBusCommandDeviceManagementBuilder {
-	if m == nil {
+func (b *_CBusCommandDeviceManagement) CreateCBusCommandDeviceManagementBuilder() CBusCommandDeviceManagementBuilder {
+	if b == nil {
 		return NewCBusCommandDeviceManagementBuilder()
 	}
-	return &_CBusCommandDeviceManagementBuilder{_CBusCommandDeviceManagement: m.deepCopy()}
+	return &_CBusCommandDeviceManagementBuilder{_CBusCommandDeviceManagement: b.deepCopy()}
 }
 
 ///////////////////////

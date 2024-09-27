@@ -121,98 +121,117 @@ func NewPriorityMappingEntryTypeBuilder() PriorityMappingEntryTypeBuilder {
 type _PriorityMappingEntryTypeBuilder struct {
 	*_PriorityMappingEntryType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (PriorityMappingEntryTypeBuilder) = (*_PriorityMappingEntryTypeBuilder)(nil)
 
-func (m *_PriorityMappingEntryTypeBuilder) WithMandatoryFields(mappingUri PascalString, priorityLabel PascalString, priorityValue_PCP uint8, priorityValue_DSCP uint32) PriorityMappingEntryTypeBuilder {
-	return m.WithMappingUri(mappingUri).WithPriorityLabel(priorityLabel).WithPriorityValue_PCP(priorityValue_PCP).WithPriorityValue_DSCP(priorityValue_DSCP)
+func (b *_PriorityMappingEntryTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_PriorityMappingEntryTypeBuilder) WithMappingUri(mappingUri PascalString) PriorityMappingEntryTypeBuilder {
-	m.MappingUri = mappingUri
-	return m
+func (b *_PriorityMappingEntryTypeBuilder) WithMandatoryFields(mappingUri PascalString, priorityLabel PascalString, priorityValue_PCP uint8, priorityValue_DSCP uint32) PriorityMappingEntryTypeBuilder {
+	return b.WithMappingUri(mappingUri).WithPriorityLabel(priorityLabel).WithPriorityValue_PCP(priorityValue_PCP).WithPriorityValue_DSCP(priorityValue_DSCP)
 }
 
-func (m *_PriorityMappingEntryTypeBuilder) WithMappingUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PriorityMappingEntryTypeBuilder {
-	builder := builderSupplier(m.MappingUri.CreatePascalStringBuilder())
+func (b *_PriorityMappingEntryTypeBuilder) WithMappingUri(mappingUri PascalString) PriorityMappingEntryTypeBuilder {
+	b.MappingUri = mappingUri
+	return b
+}
+
+func (b *_PriorityMappingEntryTypeBuilder) WithMappingUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PriorityMappingEntryTypeBuilder {
+	builder := builderSupplier(b.MappingUri.CreatePascalStringBuilder())
 	var err error
-	m.MappingUri, err = builder.Build()
+	b.MappingUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PriorityMappingEntryTypeBuilder) WithPriorityLabel(priorityLabel PascalString) PriorityMappingEntryTypeBuilder {
-	m.PriorityLabel = priorityLabel
-	return m
+func (b *_PriorityMappingEntryTypeBuilder) WithPriorityLabel(priorityLabel PascalString) PriorityMappingEntryTypeBuilder {
+	b.PriorityLabel = priorityLabel
+	return b
 }
 
-func (m *_PriorityMappingEntryTypeBuilder) WithPriorityLabelBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PriorityMappingEntryTypeBuilder {
-	builder := builderSupplier(m.PriorityLabel.CreatePascalStringBuilder())
+func (b *_PriorityMappingEntryTypeBuilder) WithPriorityLabelBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PriorityMappingEntryTypeBuilder {
+	builder := builderSupplier(b.PriorityLabel.CreatePascalStringBuilder())
 	var err error
-	m.PriorityLabel, err = builder.Build()
+	b.PriorityLabel, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PriorityMappingEntryTypeBuilder) WithPriorityValue_PCP(priorityValue_PCP uint8) PriorityMappingEntryTypeBuilder {
-	m.PriorityValue_PCP = priorityValue_PCP
-	return m
+func (b *_PriorityMappingEntryTypeBuilder) WithPriorityValue_PCP(priorityValue_PCP uint8) PriorityMappingEntryTypeBuilder {
+	b.PriorityValue_PCP = priorityValue_PCP
+	return b
 }
 
-func (m *_PriorityMappingEntryTypeBuilder) WithPriorityValue_DSCP(priorityValue_DSCP uint32) PriorityMappingEntryTypeBuilder {
-	m.PriorityValue_DSCP = priorityValue_DSCP
-	return m
+func (b *_PriorityMappingEntryTypeBuilder) WithPriorityValue_DSCP(priorityValue_DSCP uint32) PriorityMappingEntryTypeBuilder {
+	b.PriorityValue_DSCP = priorityValue_DSCP
+	return b
 }
 
-func (m *_PriorityMappingEntryTypeBuilder) Build() (PriorityMappingEntryType, error) {
-	if m.MappingUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_PriorityMappingEntryTypeBuilder) Build() (PriorityMappingEntryType, error) {
+	if b.MappingUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'mappingUri' not set"))
+		b.err.Append(errors.New("mandatory field 'mappingUri' not set"))
 	}
-	if m.PriorityLabel == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.PriorityLabel == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'priorityLabel' not set"))
+		b.err.Append(errors.New("mandatory field 'priorityLabel' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._PriorityMappingEntryType.deepCopy(), nil
+	return b._PriorityMappingEntryType.deepCopy(), nil
 }
 
-func (m *_PriorityMappingEntryTypeBuilder) MustBuild() PriorityMappingEntryType {
-	build, err := m.Build()
+func (b *_PriorityMappingEntryTypeBuilder) MustBuild() PriorityMappingEntryType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PriorityMappingEntryTypeBuilder) DeepCopy() any {
-	return m.CreatePriorityMappingEntryTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PriorityMappingEntryTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PriorityMappingEntryTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PriorityMappingEntryTypeBuilder) DeepCopy() any {
+	_copy := b.CreatePriorityMappingEntryTypeBuilder().(*_PriorityMappingEntryTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePriorityMappingEntryTypeBuilder creates a PriorityMappingEntryTypeBuilder
-func (m *_PriorityMappingEntryType) CreatePriorityMappingEntryTypeBuilder() PriorityMappingEntryTypeBuilder {
-	if m == nil {
+func (b *_PriorityMappingEntryType) CreatePriorityMappingEntryTypeBuilder() PriorityMappingEntryTypeBuilder {
+	if b == nil {
 		return NewPriorityMappingEntryTypeBuilder()
 	}
-	return &_PriorityMappingEntryTypeBuilder{_PriorityMappingEntryType: m.deepCopy()}
+	return &_PriorityMappingEntryTypeBuilder{_PriorityMappingEntryType: b.deepCopy()}
 }
 
 ///////////////////////

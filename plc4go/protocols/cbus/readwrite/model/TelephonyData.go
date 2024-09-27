@@ -99,10 +99,74 @@ type TelephonyDataBuilder interface {
 	WithCommandTypeContainer(TelephonyCommandTypeContainer) TelephonyDataBuilder
 	// WithArgument adds Argument (property field)
 	WithArgument(byte) TelephonyDataBuilder
+	// AsTelephonyDataLineOnHook converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
+	AsTelephonyDataLineOnHook() interface {
+		TelephonyDataLineOnHookBuilder
+		Done() TelephonyDataBuilder
+	}
+	// AsTelephonyDataLineOffHook converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
+	AsTelephonyDataLineOffHook() interface {
+		TelephonyDataLineOffHookBuilder
+		Done() TelephonyDataBuilder
+	}
+	// AsTelephonyDataDialOutFailure converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
+	AsTelephonyDataDialOutFailure() interface {
+		TelephonyDataDialOutFailureBuilder
+		Done() TelephonyDataBuilder
+	}
+	// AsTelephonyDataDialInFailure converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
+	AsTelephonyDataDialInFailure() interface {
+		TelephonyDataDialInFailureBuilder
+		Done() TelephonyDataBuilder
+	}
+	// AsTelephonyDataRinging converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
+	AsTelephonyDataRinging() interface {
+		TelephonyDataRingingBuilder
+		Done() TelephonyDataBuilder
+	}
+	// AsTelephonyDataRecallLastNumber converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
+	AsTelephonyDataRecallLastNumber() interface {
+		TelephonyDataRecallLastNumberBuilder
+		Done() TelephonyDataBuilder
+	}
+	// AsTelephonyDataInternetConnectionRequestMade converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
+	AsTelephonyDataInternetConnectionRequestMade() interface {
+		TelephonyDataInternetConnectionRequestMadeBuilder
+		Done() TelephonyDataBuilder
+	}
+	// AsTelephonyDataIsolateSecondaryOutlet converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
+	AsTelephonyDataIsolateSecondaryOutlet() interface {
+		TelephonyDataIsolateSecondaryOutletBuilder
+		Done() TelephonyDataBuilder
+	}
+	// AsTelephonyDataRecallLastNumberRequest converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
+	AsTelephonyDataRecallLastNumberRequest() interface {
+		TelephonyDataRecallLastNumberRequestBuilder
+		Done() TelephonyDataBuilder
+	}
+	// AsTelephonyDataRejectIncomingCall converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
+	AsTelephonyDataRejectIncomingCall() interface {
+		TelephonyDataRejectIncomingCallBuilder
+		Done() TelephonyDataBuilder
+	}
+	// AsTelephonyDataDivert converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
+	AsTelephonyDataDivert() interface {
+		TelephonyDataDivertBuilder
+		Done() TelephonyDataBuilder
+	}
+	// AsTelephonyDataClearDiversion converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
+	AsTelephonyDataClearDiversion() interface {
+		TelephonyDataClearDiversionBuilder
+		Done() TelephonyDataBuilder
+	}
 	// Build builds the TelephonyData or returns an error if something is wrong
-	Build() (TelephonyDataContract, error)
+	PartialBuild() (TelephonyDataContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() TelephonyDataContract
+	PartialMustBuild() TelephonyDataContract
+	// Build builds the TelephonyData or returns an error if something is wrong
+	Build() (TelephonyData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TelephonyData
 }
 
 // NewTelephonyDataBuilder() creates a TelephonyDataBuilder
@@ -110,53 +174,279 @@ func NewTelephonyDataBuilder() TelephonyDataBuilder {
 	return &_TelephonyDataBuilder{_TelephonyData: new(_TelephonyData)}
 }
 
+type _TelephonyDataChildBuilder interface {
+	utils.Copyable
+	setParent(TelephonyDataContract)
+	buildForTelephonyData() (TelephonyData, error)
+}
+
 type _TelephonyDataBuilder struct {
 	*_TelephonyData
+
+	childBuilder _TelephonyDataChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (TelephonyDataBuilder) = (*_TelephonyDataBuilder)(nil)
 
-func (m *_TelephonyDataBuilder) WithMandatoryFields(commandTypeContainer TelephonyCommandTypeContainer, argument byte) TelephonyDataBuilder {
-	return m.WithCommandTypeContainer(commandTypeContainer).WithArgument(argument)
+func (b *_TelephonyDataBuilder) WithMandatoryFields(commandTypeContainer TelephonyCommandTypeContainer, argument byte) TelephonyDataBuilder {
+	return b.WithCommandTypeContainer(commandTypeContainer).WithArgument(argument)
 }
 
-func (m *_TelephonyDataBuilder) WithCommandTypeContainer(commandTypeContainer TelephonyCommandTypeContainer) TelephonyDataBuilder {
-	m.CommandTypeContainer = commandTypeContainer
-	return m
+func (b *_TelephonyDataBuilder) WithCommandTypeContainer(commandTypeContainer TelephonyCommandTypeContainer) TelephonyDataBuilder {
+	b.CommandTypeContainer = commandTypeContainer
+	return b
 }
 
-func (m *_TelephonyDataBuilder) WithArgument(argument byte) TelephonyDataBuilder {
-	m.Argument = argument
-	return m
+func (b *_TelephonyDataBuilder) WithArgument(argument byte) TelephonyDataBuilder {
+	b.Argument = argument
+	return b
 }
 
-func (m *_TelephonyDataBuilder) Build() (TelephonyDataContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TelephonyDataBuilder) PartialBuild() (TelephonyDataContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TelephonyData.deepCopy(), nil
+	return b._TelephonyData.deepCopy(), nil
 }
 
-func (m *_TelephonyDataBuilder) MustBuild() TelephonyDataContract {
-	build, err := m.Build()
+func (b *_TelephonyDataBuilder) PartialMustBuild() TelephonyDataContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TelephonyDataBuilder) DeepCopy() any {
-	return m.CreateTelephonyDataBuilder()
+func (b *_TelephonyDataBuilder) AsTelephonyDataLineOnHook() interface {
+	TelephonyDataLineOnHookBuilder
+	Done() TelephonyDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TelephonyDataLineOnHookBuilder
+		Done() TelephonyDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTelephonyDataLineOnHookBuilder().(*_TelephonyDataLineOnHookBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TelephonyDataBuilder) AsTelephonyDataLineOffHook() interface {
+	TelephonyDataLineOffHookBuilder
+	Done() TelephonyDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TelephonyDataLineOffHookBuilder
+		Done() TelephonyDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTelephonyDataLineOffHookBuilder().(*_TelephonyDataLineOffHookBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TelephonyDataBuilder) AsTelephonyDataDialOutFailure() interface {
+	TelephonyDataDialOutFailureBuilder
+	Done() TelephonyDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TelephonyDataDialOutFailureBuilder
+		Done() TelephonyDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTelephonyDataDialOutFailureBuilder().(*_TelephonyDataDialOutFailureBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TelephonyDataBuilder) AsTelephonyDataDialInFailure() interface {
+	TelephonyDataDialInFailureBuilder
+	Done() TelephonyDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TelephonyDataDialInFailureBuilder
+		Done() TelephonyDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTelephonyDataDialInFailureBuilder().(*_TelephonyDataDialInFailureBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TelephonyDataBuilder) AsTelephonyDataRinging() interface {
+	TelephonyDataRingingBuilder
+	Done() TelephonyDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TelephonyDataRingingBuilder
+		Done() TelephonyDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTelephonyDataRingingBuilder().(*_TelephonyDataRingingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TelephonyDataBuilder) AsTelephonyDataRecallLastNumber() interface {
+	TelephonyDataRecallLastNumberBuilder
+	Done() TelephonyDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TelephonyDataRecallLastNumberBuilder
+		Done() TelephonyDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTelephonyDataRecallLastNumberBuilder().(*_TelephonyDataRecallLastNumberBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TelephonyDataBuilder) AsTelephonyDataInternetConnectionRequestMade() interface {
+	TelephonyDataInternetConnectionRequestMadeBuilder
+	Done() TelephonyDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TelephonyDataInternetConnectionRequestMadeBuilder
+		Done() TelephonyDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTelephonyDataInternetConnectionRequestMadeBuilder().(*_TelephonyDataInternetConnectionRequestMadeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TelephonyDataBuilder) AsTelephonyDataIsolateSecondaryOutlet() interface {
+	TelephonyDataIsolateSecondaryOutletBuilder
+	Done() TelephonyDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TelephonyDataIsolateSecondaryOutletBuilder
+		Done() TelephonyDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTelephonyDataIsolateSecondaryOutletBuilder().(*_TelephonyDataIsolateSecondaryOutletBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TelephonyDataBuilder) AsTelephonyDataRecallLastNumberRequest() interface {
+	TelephonyDataRecallLastNumberRequestBuilder
+	Done() TelephonyDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TelephonyDataRecallLastNumberRequestBuilder
+		Done() TelephonyDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTelephonyDataRecallLastNumberRequestBuilder().(*_TelephonyDataRecallLastNumberRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TelephonyDataBuilder) AsTelephonyDataRejectIncomingCall() interface {
+	TelephonyDataRejectIncomingCallBuilder
+	Done() TelephonyDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TelephonyDataRejectIncomingCallBuilder
+		Done() TelephonyDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTelephonyDataRejectIncomingCallBuilder().(*_TelephonyDataRejectIncomingCallBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TelephonyDataBuilder) AsTelephonyDataDivert() interface {
+	TelephonyDataDivertBuilder
+	Done() TelephonyDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TelephonyDataDivertBuilder
+		Done() TelephonyDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTelephonyDataDivertBuilder().(*_TelephonyDataDivertBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TelephonyDataBuilder) AsTelephonyDataClearDiversion() interface {
+	TelephonyDataClearDiversionBuilder
+	Done() TelephonyDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TelephonyDataClearDiversionBuilder
+		Done() TelephonyDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTelephonyDataClearDiversionBuilder().(*_TelephonyDataClearDiversionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TelephonyDataBuilder) Build() (TelephonyData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForTelephonyData()
+}
+
+func (b *_TelephonyDataBuilder) MustBuild() TelephonyData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_TelephonyDataBuilder) DeepCopy() any {
+	_copy := b.CreateTelephonyDataBuilder().(*_TelephonyDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_TelephonyDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTelephonyDataBuilder creates a TelephonyDataBuilder
-func (m *_TelephonyData) CreateTelephonyDataBuilder() TelephonyDataBuilder {
-	if m == nil {
+func (b *_TelephonyData) CreateTelephonyDataBuilder() TelephonyDataBuilder {
+	if b == nil {
 		return NewTelephonyDataBuilder()
 	}
-	return &_TelephonyDataBuilder{_TelephonyData: m.deepCopy()}
+	return &_TelephonyDataBuilder{_TelephonyData: b.deepCopy()}
 }
 
 ///////////////////////

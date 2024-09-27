@@ -103,63 +103,82 @@ func NewBACnetConstructedDataBitTextBuilder() BACnetConstructedDataBitTextBuilde
 type _BACnetConstructedDataBitTextBuilder struct {
 	*_BACnetConstructedDataBitText
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBitTextBuilder) = (*_BACnetConstructedDataBitTextBuilder)(nil)
 
-func (m *_BACnetConstructedDataBitTextBuilder) WithMandatoryFields(bitText []BACnetApplicationTagCharacterString) BACnetConstructedDataBitTextBuilder {
-	return m.WithBitText(bitText...)
+func (b *_BACnetConstructedDataBitTextBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBitTextBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBitTextBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataBitTextBuilder) WithMandatoryFields(bitText []BACnetApplicationTagCharacterString) BACnetConstructedDataBitTextBuilder {
+	return b.WithBitText(bitText...)
 }
 
-func (m *_BACnetConstructedDataBitTextBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBitTextBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataBitTextBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBitTextBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataBitTextBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBitTextBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBitTextBuilder) WithBitText(bitText ...BACnetApplicationTagCharacterString) BACnetConstructedDataBitTextBuilder {
-	m.BitText = bitText
-	return m
+func (b *_BACnetConstructedDataBitTextBuilder) WithBitText(bitText ...BACnetApplicationTagCharacterString) BACnetConstructedDataBitTextBuilder {
+	b.BitText = bitText
+	return b
 }
 
-func (m *_BACnetConstructedDataBitTextBuilder) Build() (BACnetConstructedDataBitText, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataBitTextBuilder) Build() (BACnetConstructedDataBitText, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBitText.deepCopy(), nil
+	return b._BACnetConstructedDataBitText.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBitTextBuilder) MustBuild() BACnetConstructedDataBitText {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBitTextBuilder) MustBuild() BACnetConstructedDataBitText {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBitTextBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBitTextBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBitTextBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBitTextBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBitTextBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBitTextBuilder().(*_BACnetConstructedDataBitTextBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBitTextBuilder creates a BACnetConstructedDataBitTextBuilder
-func (m *_BACnetConstructedDataBitText) CreateBACnetConstructedDataBitTextBuilder() BACnetConstructedDataBitTextBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBitText) CreateBACnetConstructedDataBitTextBuilder() BACnetConstructedDataBitTextBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBitTextBuilder()
 	}
-	return &_BACnetConstructedDataBitTextBuilder{_BACnetConstructedDataBitText: m.deepCopy()}
+	return &_BACnetConstructedDataBitTextBuilder{_BACnetConstructedDataBitText: b.deepCopy()}
 }
 
 ///////////////////////

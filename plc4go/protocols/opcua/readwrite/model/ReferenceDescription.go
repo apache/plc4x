@@ -156,170 +156,189 @@ func NewReferenceDescriptionBuilder() ReferenceDescriptionBuilder {
 type _ReferenceDescriptionBuilder struct {
 	*_ReferenceDescription
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ReferenceDescriptionBuilder) = (*_ReferenceDescriptionBuilder)(nil)
 
-func (m *_ReferenceDescriptionBuilder) WithMandatoryFields(referenceTypeId NodeId, isForward bool, nodeId ExpandedNodeId, browseName QualifiedName, displayName LocalizedText, nodeClass NodeClass, typeDefinition ExpandedNodeId) ReferenceDescriptionBuilder {
-	return m.WithReferenceTypeId(referenceTypeId).WithIsForward(isForward).WithNodeId(nodeId).WithBrowseName(browseName).WithDisplayName(displayName).WithNodeClass(nodeClass).WithTypeDefinition(typeDefinition)
+func (b *_ReferenceDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ReferenceDescriptionBuilder) WithReferenceTypeId(referenceTypeId NodeId) ReferenceDescriptionBuilder {
-	m.ReferenceTypeId = referenceTypeId
-	return m
+func (b *_ReferenceDescriptionBuilder) WithMandatoryFields(referenceTypeId NodeId, isForward bool, nodeId ExpandedNodeId, browseName QualifiedName, displayName LocalizedText, nodeClass NodeClass, typeDefinition ExpandedNodeId) ReferenceDescriptionBuilder {
+	return b.WithReferenceTypeId(referenceTypeId).WithIsForward(isForward).WithNodeId(nodeId).WithBrowseName(browseName).WithDisplayName(displayName).WithNodeClass(nodeClass).WithTypeDefinition(typeDefinition)
 }
 
-func (m *_ReferenceDescriptionBuilder) WithReferenceTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ReferenceDescriptionBuilder {
-	builder := builderSupplier(m.ReferenceTypeId.CreateNodeIdBuilder())
+func (b *_ReferenceDescriptionBuilder) WithReferenceTypeId(referenceTypeId NodeId) ReferenceDescriptionBuilder {
+	b.ReferenceTypeId = referenceTypeId
+	return b
+}
+
+func (b *_ReferenceDescriptionBuilder) WithReferenceTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ReferenceDescriptionBuilder {
+	builder := builderSupplier(b.ReferenceTypeId.CreateNodeIdBuilder())
 	var err error
-	m.ReferenceTypeId, err = builder.Build()
+	b.ReferenceTypeId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ReferenceDescriptionBuilder) WithIsForward(isForward bool) ReferenceDescriptionBuilder {
-	m.IsForward = isForward
-	return m
+func (b *_ReferenceDescriptionBuilder) WithIsForward(isForward bool) ReferenceDescriptionBuilder {
+	b.IsForward = isForward
+	return b
 }
 
-func (m *_ReferenceDescriptionBuilder) WithNodeId(nodeId ExpandedNodeId) ReferenceDescriptionBuilder {
-	m.NodeId = nodeId
-	return m
+func (b *_ReferenceDescriptionBuilder) WithNodeId(nodeId ExpandedNodeId) ReferenceDescriptionBuilder {
+	b.NodeId = nodeId
+	return b
 }
 
-func (m *_ReferenceDescriptionBuilder) WithNodeIdBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ReferenceDescriptionBuilder {
-	builder := builderSupplier(m.NodeId.CreateExpandedNodeIdBuilder())
+func (b *_ReferenceDescriptionBuilder) WithNodeIdBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ReferenceDescriptionBuilder {
+	builder := builderSupplier(b.NodeId.CreateExpandedNodeIdBuilder())
 	var err error
-	m.NodeId, err = builder.Build()
+	b.NodeId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ReferenceDescriptionBuilder) WithBrowseName(browseName QualifiedName) ReferenceDescriptionBuilder {
-	m.BrowseName = browseName
-	return m
+func (b *_ReferenceDescriptionBuilder) WithBrowseName(browseName QualifiedName) ReferenceDescriptionBuilder {
+	b.BrowseName = browseName
+	return b
 }
 
-func (m *_ReferenceDescriptionBuilder) WithBrowseNameBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) ReferenceDescriptionBuilder {
-	builder := builderSupplier(m.BrowseName.CreateQualifiedNameBuilder())
+func (b *_ReferenceDescriptionBuilder) WithBrowseNameBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) ReferenceDescriptionBuilder {
+	builder := builderSupplier(b.BrowseName.CreateQualifiedNameBuilder())
 	var err error
-	m.BrowseName, err = builder.Build()
+	b.BrowseName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ReferenceDescriptionBuilder) WithDisplayName(displayName LocalizedText) ReferenceDescriptionBuilder {
-	m.DisplayName = displayName
-	return m
+func (b *_ReferenceDescriptionBuilder) WithDisplayName(displayName LocalizedText) ReferenceDescriptionBuilder {
+	b.DisplayName = displayName
+	return b
 }
 
-func (m *_ReferenceDescriptionBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ReferenceDescriptionBuilder {
-	builder := builderSupplier(m.DisplayName.CreateLocalizedTextBuilder())
+func (b *_ReferenceDescriptionBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ReferenceDescriptionBuilder {
+	builder := builderSupplier(b.DisplayName.CreateLocalizedTextBuilder())
 	var err error
-	m.DisplayName, err = builder.Build()
+	b.DisplayName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ReferenceDescriptionBuilder) WithNodeClass(nodeClass NodeClass) ReferenceDescriptionBuilder {
-	m.NodeClass = nodeClass
-	return m
+func (b *_ReferenceDescriptionBuilder) WithNodeClass(nodeClass NodeClass) ReferenceDescriptionBuilder {
+	b.NodeClass = nodeClass
+	return b
 }
 
-func (m *_ReferenceDescriptionBuilder) WithTypeDefinition(typeDefinition ExpandedNodeId) ReferenceDescriptionBuilder {
-	m.TypeDefinition = typeDefinition
-	return m
+func (b *_ReferenceDescriptionBuilder) WithTypeDefinition(typeDefinition ExpandedNodeId) ReferenceDescriptionBuilder {
+	b.TypeDefinition = typeDefinition
+	return b
 }
 
-func (m *_ReferenceDescriptionBuilder) WithTypeDefinitionBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ReferenceDescriptionBuilder {
-	builder := builderSupplier(m.TypeDefinition.CreateExpandedNodeIdBuilder())
+func (b *_ReferenceDescriptionBuilder) WithTypeDefinitionBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ReferenceDescriptionBuilder {
+	builder := builderSupplier(b.TypeDefinition.CreateExpandedNodeIdBuilder())
 	var err error
-	m.TypeDefinition, err = builder.Build()
+	b.TypeDefinition, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ReferenceDescriptionBuilder) Build() (ReferenceDescription, error) {
-	if m.ReferenceTypeId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ReferenceDescriptionBuilder) Build() (ReferenceDescription, error) {
+	if b.ReferenceTypeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
+		b.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
 	}
-	if m.NodeId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nodeId' not set"))
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
 	}
-	if m.BrowseName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.BrowseName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'browseName' not set"))
+		b.err.Append(errors.New("mandatory field 'browseName' not set"))
 	}
-	if m.DisplayName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.DisplayName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'displayName' not set"))
+		b.err.Append(errors.New("mandatory field 'displayName' not set"))
 	}
-	if m.TypeDefinition == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TypeDefinition == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'typeDefinition' not set"))
+		b.err.Append(errors.New("mandatory field 'typeDefinition' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ReferenceDescription.deepCopy(), nil
+	return b._ReferenceDescription.deepCopy(), nil
 }
 
-func (m *_ReferenceDescriptionBuilder) MustBuild() ReferenceDescription {
-	build, err := m.Build()
+func (b *_ReferenceDescriptionBuilder) MustBuild() ReferenceDescription {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ReferenceDescriptionBuilder) DeepCopy() any {
-	return m.CreateReferenceDescriptionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ReferenceDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ReferenceDescriptionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ReferenceDescriptionBuilder) DeepCopy() any {
+	_copy := b.CreateReferenceDescriptionBuilder().(*_ReferenceDescriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateReferenceDescriptionBuilder creates a ReferenceDescriptionBuilder
-func (m *_ReferenceDescription) CreateReferenceDescriptionBuilder() ReferenceDescriptionBuilder {
-	if m == nil {
+func (b *_ReferenceDescription) CreateReferenceDescriptionBuilder() ReferenceDescriptionBuilder {
+	if b == nil {
 		return NewReferenceDescriptionBuilder()
 	}
-	return &_ReferenceDescriptionBuilder{_ReferenceDescription: m.deepCopy()}
+	return &_ReferenceDescriptionBuilder{_ReferenceDescription: b.deepCopy()}
 }
 
 ///////////////////////

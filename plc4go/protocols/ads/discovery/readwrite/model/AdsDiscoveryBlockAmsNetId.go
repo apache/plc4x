@@ -101,64 +101,83 @@ func NewAdsDiscoveryBlockAmsNetIdBuilder() AdsDiscoveryBlockAmsNetIdBuilder {
 type _AdsDiscoveryBlockAmsNetIdBuilder struct {
 	*_AdsDiscoveryBlockAmsNetId
 
+	parentBuilder *_AdsDiscoveryBlockBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsDiscoveryBlockAmsNetIdBuilder) = (*_AdsDiscoveryBlockAmsNetIdBuilder)(nil)
 
-func (m *_AdsDiscoveryBlockAmsNetIdBuilder) WithMandatoryFields(amsNetId AmsNetId) AdsDiscoveryBlockAmsNetIdBuilder {
-	return m.WithAmsNetId(amsNetId)
+func (b *_AdsDiscoveryBlockAmsNetIdBuilder) setParent(contract AdsDiscoveryBlockContract) {
+	b.AdsDiscoveryBlockContract = contract
 }
 
-func (m *_AdsDiscoveryBlockAmsNetIdBuilder) WithAmsNetId(amsNetId AmsNetId) AdsDiscoveryBlockAmsNetIdBuilder {
-	m.AmsNetId = amsNetId
-	return m
+func (b *_AdsDiscoveryBlockAmsNetIdBuilder) WithMandatoryFields(amsNetId AmsNetId) AdsDiscoveryBlockAmsNetIdBuilder {
+	return b.WithAmsNetId(amsNetId)
 }
 
-func (m *_AdsDiscoveryBlockAmsNetIdBuilder) WithAmsNetIdBuilder(builderSupplier func(AmsNetIdBuilder) AmsNetIdBuilder) AdsDiscoveryBlockAmsNetIdBuilder {
-	builder := builderSupplier(m.AmsNetId.CreateAmsNetIdBuilder())
+func (b *_AdsDiscoveryBlockAmsNetIdBuilder) WithAmsNetId(amsNetId AmsNetId) AdsDiscoveryBlockAmsNetIdBuilder {
+	b.AmsNetId = amsNetId
+	return b
+}
+
+func (b *_AdsDiscoveryBlockAmsNetIdBuilder) WithAmsNetIdBuilder(builderSupplier func(AmsNetIdBuilder) AmsNetIdBuilder) AdsDiscoveryBlockAmsNetIdBuilder {
+	builder := builderSupplier(b.AmsNetId.CreateAmsNetIdBuilder())
 	var err error
-	m.AmsNetId, err = builder.Build()
+	b.AmsNetId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AmsNetIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AmsNetIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AdsDiscoveryBlockAmsNetIdBuilder) Build() (AdsDiscoveryBlockAmsNetId, error) {
-	if m.AmsNetId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AdsDiscoveryBlockAmsNetIdBuilder) Build() (AdsDiscoveryBlockAmsNetId, error) {
+	if b.AmsNetId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'amsNetId' not set"))
+		b.err.Append(errors.New("mandatory field 'amsNetId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsDiscoveryBlockAmsNetId.deepCopy(), nil
+	return b._AdsDiscoveryBlockAmsNetId.deepCopy(), nil
 }
 
-func (m *_AdsDiscoveryBlockAmsNetIdBuilder) MustBuild() AdsDiscoveryBlockAmsNetId {
-	build, err := m.Build()
+func (b *_AdsDiscoveryBlockAmsNetIdBuilder) MustBuild() AdsDiscoveryBlockAmsNetId {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsDiscoveryBlockAmsNetIdBuilder) DeepCopy() any {
-	return m.CreateAdsDiscoveryBlockAmsNetIdBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsDiscoveryBlockAmsNetIdBuilder) Done() AdsDiscoveryBlockBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsDiscoveryBlockAmsNetIdBuilder) buildForAdsDiscoveryBlock() (AdsDiscoveryBlock, error) {
+	return b.Build()
+}
+
+func (b *_AdsDiscoveryBlockAmsNetIdBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryBlockAmsNetIdBuilder().(*_AdsDiscoveryBlockAmsNetIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsDiscoveryBlockAmsNetIdBuilder creates a AdsDiscoveryBlockAmsNetIdBuilder
-func (m *_AdsDiscoveryBlockAmsNetId) CreateAdsDiscoveryBlockAmsNetIdBuilder() AdsDiscoveryBlockAmsNetIdBuilder {
-	if m == nil {
+func (b *_AdsDiscoveryBlockAmsNetId) CreateAdsDiscoveryBlockAmsNetIdBuilder() AdsDiscoveryBlockAmsNetIdBuilder {
+	if b == nil {
 		return NewAdsDiscoveryBlockAmsNetIdBuilder()
 	}
-	return &_AdsDiscoveryBlockAmsNetIdBuilder{_AdsDiscoveryBlockAmsNetId: m.deepCopy()}
+	return &_AdsDiscoveryBlockAmsNetIdBuilder{_AdsDiscoveryBlockAmsNetId: b.deepCopy()}
 }
 
 ///////////////////////

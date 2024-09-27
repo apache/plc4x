@@ -93,45 +93,64 @@ func NewTriggerControlDataTriggerEventBuilder() TriggerControlDataTriggerEventBu
 type _TriggerControlDataTriggerEventBuilder struct {
 	*_TriggerControlDataTriggerEvent
 
+	parentBuilder *_TriggerControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TriggerControlDataTriggerEventBuilder) = (*_TriggerControlDataTriggerEventBuilder)(nil)
 
-func (m *_TriggerControlDataTriggerEventBuilder) WithMandatoryFields(actionSelector byte) TriggerControlDataTriggerEventBuilder {
-	return m.WithActionSelector(actionSelector)
+func (b *_TriggerControlDataTriggerEventBuilder) setParent(contract TriggerControlDataContract) {
+	b.TriggerControlDataContract = contract
 }
 
-func (m *_TriggerControlDataTriggerEventBuilder) WithActionSelector(actionSelector byte) TriggerControlDataTriggerEventBuilder {
-	m.ActionSelector = actionSelector
-	return m
+func (b *_TriggerControlDataTriggerEventBuilder) WithMandatoryFields(actionSelector byte) TriggerControlDataTriggerEventBuilder {
+	return b.WithActionSelector(actionSelector)
 }
 
-func (m *_TriggerControlDataTriggerEventBuilder) Build() (TriggerControlDataTriggerEvent, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TriggerControlDataTriggerEventBuilder) WithActionSelector(actionSelector byte) TriggerControlDataTriggerEventBuilder {
+	b.ActionSelector = actionSelector
+	return b
+}
+
+func (b *_TriggerControlDataTriggerEventBuilder) Build() (TriggerControlDataTriggerEvent, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TriggerControlDataTriggerEvent.deepCopy(), nil
+	return b._TriggerControlDataTriggerEvent.deepCopy(), nil
 }
 
-func (m *_TriggerControlDataTriggerEventBuilder) MustBuild() TriggerControlDataTriggerEvent {
-	build, err := m.Build()
+func (b *_TriggerControlDataTriggerEventBuilder) MustBuild() TriggerControlDataTriggerEvent {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TriggerControlDataTriggerEventBuilder) DeepCopy() any {
-	return m.CreateTriggerControlDataTriggerEventBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TriggerControlDataTriggerEventBuilder) Done() TriggerControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TriggerControlDataTriggerEventBuilder) buildForTriggerControlData() (TriggerControlData, error) {
+	return b.Build()
+}
+
+func (b *_TriggerControlDataTriggerEventBuilder) DeepCopy() any {
+	_copy := b.CreateTriggerControlDataTriggerEventBuilder().(*_TriggerControlDataTriggerEventBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTriggerControlDataTriggerEventBuilder creates a TriggerControlDataTriggerEventBuilder
-func (m *_TriggerControlDataTriggerEvent) CreateTriggerControlDataTriggerEventBuilder() TriggerControlDataTriggerEventBuilder {
-	if m == nil {
+func (b *_TriggerControlDataTriggerEvent) CreateTriggerControlDataTriggerEventBuilder() TriggerControlDataTriggerEventBuilder {
+	if b == nil {
 		return NewTriggerControlDataTriggerEventBuilder()
 	}
-	return &_TriggerControlDataTriggerEventBuilder{_TriggerControlDataTriggerEvent: m.deepCopy()}
+	return &_TriggerControlDataTriggerEventBuilder{_TriggerControlDataTriggerEvent: b.deepCopy()}
 }
 
 ///////////////////////

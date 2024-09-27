@@ -106,82 +106,101 @@ func NewVTCloseErrorBuilder() VTCloseErrorBuilder {
 type _VTCloseErrorBuilder struct {
 	*_VTCloseError
 
+	parentBuilder *_BACnetErrorBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VTCloseErrorBuilder) = (*_VTCloseErrorBuilder)(nil)
 
-func (m *_VTCloseErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed) VTCloseErrorBuilder {
-	return m.WithErrorType(errorType)
+func (b *_VTCloseErrorBuilder) setParent(contract BACnetErrorContract) {
+	b.BACnetErrorContract = contract
 }
 
-func (m *_VTCloseErrorBuilder) WithErrorType(errorType ErrorEnclosed) VTCloseErrorBuilder {
-	m.ErrorType = errorType
-	return m
+func (b *_VTCloseErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed) VTCloseErrorBuilder {
+	return b.WithErrorType(errorType)
 }
 
-func (m *_VTCloseErrorBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) VTCloseErrorBuilder {
-	builder := builderSupplier(m.ErrorType.CreateErrorEnclosedBuilder())
+func (b *_VTCloseErrorBuilder) WithErrorType(errorType ErrorEnclosed) VTCloseErrorBuilder {
+	b.ErrorType = errorType
+	return b
+}
+
+func (b *_VTCloseErrorBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) VTCloseErrorBuilder {
+	builder := builderSupplier(b.ErrorType.CreateErrorEnclosedBuilder())
 	var err error
-	m.ErrorType, err = builder.Build()
+	b.ErrorType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_VTCloseErrorBuilder) WithOptionalListOfVtSessionIdentifiers(listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers) VTCloseErrorBuilder {
-	m.ListOfVtSessionIdentifiers = listOfVtSessionIdentifiers
-	return m
+func (b *_VTCloseErrorBuilder) WithOptionalListOfVtSessionIdentifiers(listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers) VTCloseErrorBuilder {
+	b.ListOfVtSessionIdentifiers = listOfVtSessionIdentifiers
+	return b
 }
 
-func (m *_VTCloseErrorBuilder) WithOptionalListOfVtSessionIdentifiersBuilder(builderSupplier func(VTCloseErrorListOfVTSessionIdentifiersBuilder) VTCloseErrorListOfVTSessionIdentifiersBuilder) VTCloseErrorBuilder {
-	builder := builderSupplier(m.ListOfVtSessionIdentifiers.CreateVTCloseErrorListOfVTSessionIdentifiersBuilder())
+func (b *_VTCloseErrorBuilder) WithOptionalListOfVtSessionIdentifiersBuilder(builderSupplier func(VTCloseErrorListOfVTSessionIdentifiersBuilder) VTCloseErrorListOfVTSessionIdentifiersBuilder) VTCloseErrorBuilder {
+	builder := builderSupplier(b.ListOfVtSessionIdentifiers.CreateVTCloseErrorListOfVTSessionIdentifiersBuilder())
 	var err error
-	m.ListOfVtSessionIdentifiers, err = builder.Build()
+	b.ListOfVtSessionIdentifiers, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "VTCloseErrorListOfVTSessionIdentifiersBuilder failed"))
+		b.err.Append(errors.Wrap(err, "VTCloseErrorListOfVTSessionIdentifiersBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_VTCloseErrorBuilder) Build() (VTCloseError, error) {
-	if m.ErrorType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_VTCloseErrorBuilder) Build() (VTCloseError, error) {
+	if b.ErrorType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'errorType' not set"))
+		b.err.Append(errors.New("mandatory field 'errorType' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VTCloseError.deepCopy(), nil
+	return b._VTCloseError.deepCopy(), nil
 }
 
-func (m *_VTCloseErrorBuilder) MustBuild() VTCloseError {
-	build, err := m.Build()
+func (b *_VTCloseErrorBuilder) MustBuild() VTCloseError {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VTCloseErrorBuilder) DeepCopy() any {
-	return m.CreateVTCloseErrorBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VTCloseErrorBuilder) Done() BACnetErrorBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VTCloseErrorBuilder) buildForBACnetError() (BACnetError, error) {
+	return b.Build()
+}
+
+func (b *_VTCloseErrorBuilder) DeepCopy() any {
+	_copy := b.CreateVTCloseErrorBuilder().(*_VTCloseErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVTCloseErrorBuilder creates a VTCloseErrorBuilder
-func (m *_VTCloseError) CreateVTCloseErrorBuilder() VTCloseErrorBuilder {
-	if m == nil {
+func (b *_VTCloseError) CreateVTCloseErrorBuilder() VTCloseErrorBuilder {
+	if b == nil {
 		return NewVTCloseErrorBuilder()
 	}
-	return &_VTCloseErrorBuilder{_VTCloseError: m.deepCopy()}
+	return &_VTCloseErrorBuilder{_VTCloseError: b.deepCopy()}
 }
 
 ///////////////////////

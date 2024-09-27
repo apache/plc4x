@@ -83,35 +83,39 @@ type _DecimalStringBuilder struct {
 
 var _ (DecimalStringBuilder) = (*_DecimalStringBuilder)(nil)
 
-func (m *_DecimalStringBuilder) WithMandatoryFields() DecimalStringBuilder {
-	return m
+func (b *_DecimalStringBuilder) WithMandatoryFields() DecimalStringBuilder {
+	return b
 }
 
-func (m *_DecimalStringBuilder) Build() (DecimalString, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DecimalStringBuilder) Build() (DecimalString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DecimalString.deepCopy(), nil
+	return b._DecimalString.deepCopy(), nil
 }
 
-func (m *_DecimalStringBuilder) MustBuild() DecimalString {
-	build, err := m.Build()
+func (b *_DecimalStringBuilder) MustBuild() DecimalString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DecimalStringBuilder) DeepCopy() any {
-	return m.CreateDecimalStringBuilder()
+func (b *_DecimalStringBuilder) DeepCopy() any {
+	_copy := b.CreateDecimalStringBuilder().(*_DecimalStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDecimalStringBuilder creates a DecimalStringBuilder
-func (m *_DecimalString) CreateDecimalStringBuilder() DecimalStringBuilder {
-	if m == nil {
+func (b *_DecimalString) CreateDecimalStringBuilder() DecimalStringBuilder {
+	if b == nil {
 		return NewDecimalStringBuilder()
 	}
-	return &_DecimalStringBuilder{_DecimalString: m.deepCopy()}
+	return &_DecimalStringBuilder{_DecimalString: b.deepCopy()}
 }
 
 ///////////////////////

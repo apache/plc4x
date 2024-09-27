@@ -116,79 +116,98 @@ func NewLightingDataLabelBuilder() LightingDataLabelBuilder {
 type _LightingDataLabelBuilder struct {
 	*_LightingDataLabel
 
+	parentBuilder *_LightingDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LightingDataLabelBuilder) = (*_LightingDataLabelBuilder)(nil)
 
-func (m *_LightingDataLabelBuilder) WithMandatoryFields(group byte, labelOptions LightingLabelOptions, data []byte) LightingDataLabelBuilder {
-	return m.WithGroup(group).WithLabelOptions(labelOptions).WithData(data...)
+func (b *_LightingDataLabelBuilder) setParent(contract LightingDataContract) {
+	b.LightingDataContract = contract
 }
 
-func (m *_LightingDataLabelBuilder) WithGroup(group byte) LightingDataLabelBuilder {
-	m.Group = group
-	return m
+func (b *_LightingDataLabelBuilder) WithMandatoryFields(group byte, labelOptions LightingLabelOptions, data []byte) LightingDataLabelBuilder {
+	return b.WithGroup(group).WithLabelOptions(labelOptions).WithData(data...)
 }
 
-func (m *_LightingDataLabelBuilder) WithLabelOptions(labelOptions LightingLabelOptions) LightingDataLabelBuilder {
-	m.LabelOptions = labelOptions
-	return m
+func (b *_LightingDataLabelBuilder) WithGroup(group byte) LightingDataLabelBuilder {
+	b.Group = group
+	return b
 }
 
-func (m *_LightingDataLabelBuilder) WithLabelOptionsBuilder(builderSupplier func(LightingLabelOptionsBuilder) LightingLabelOptionsBuilder) LightingDataLabelBuilder {
-	builder := builderSupplier(m.LabelOptions.CreateLightingLabelOptionsBuilder())
+func (b *_LightingDataLabelBuilder) WithLabelOptions(labelOptions LightingLabelOptions) LightingDataLabelBuilder {
+	b.LabelOptions = labelOptions
+	return b
+}
+
+func (b *_LightingDataLabelBuilder) WithLabelOptionsBuilder(builderSupplier func(LightingLabelOptionsBuilder) LightingLabelOptionsBuilder) LightingDataLabelBuilder {
+	builder := builderSupplier(b.LabelOptions.CreateLightingLabelOptionsBuilder())
 	var err error
-	m.LabelOptions, err = builder.Build()
+	b.LabelOptions, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "LightingLabelOptionsBuilder failed"))
+		b.err.Append(errors.Wrap(err, "LightingLabelOptionsBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_LightingDataLabelBuilder) WithOptionalLanguage(language Language) LightingDataLabelBuilder {
-	m.Language = &language
-	return m
+func (b *_LightingDataLabelBuilder) WithOptionalLanguage(language Language) LightingDataLabelBuilder {
+	b.Language = &language
+	return b
 }
 
-func (m *_LightingDataLabelBuilder) WithData(data ...byte) LightingDataLabelBuilder {
-	m.Data = data
-	return m
+func (b *_LightingDataLabelBuilder) WithData(data ...byte) LightingDataLabelBuilder {
+	b.Data = data
+	return b
 }
 
-func (m *_LightingDataLabelBuilder) Build() (LightingDataLabel, error) {
-	if m.LabelOptions == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_LightingDataLabelBuilder) Build() (LightingDataLabel, error) {
+	if b.LabelOptions == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'labelOptions' not set"))
+		b.err.Append(errors.New("mandatory field 'labelOptions' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LightingDataLabel.deepCopy(), nil
+	return b._LightingDataLabel.deepCopy(), nil
 }
 
-func (m *_LightingDataLabelBuilder) MustBuild() LightingDataLabel {
-	build, err := m.Build()
+func (b *_LightingDataLabelBuilder) MustBuild() LightingDataLabel {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LightingDataLabelBuilder) DeepCopy() any {
-	return m.CreateLightingDataLabelBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LightingDataLabelBuilder) Done() LightingDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LightingDataLabelBuilder) buildForLightingData() (LightingData, error) {
+	return b.Build()
+}
+
+func (b *_LightingDataLabelBuilder) DeepCopy() any {
+	_copy := b.CreateLightingDataLabelBuilder().(*_LightingDataLabelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLightingDataLabelBuilder creates a LightingDataLabelBuilder
-func (m *_LightingDataLabel) CreateLightingDataLabelBuilder() LightingDataLabelBuilder {
-	if m == nil {
+func (b *_LightingDataLabel) CreateLightingDataLabelBuilder() LightingDataLabelBuilder {
+	if b == nil {
 		return NewLightingDataLabelBuilder()
 	}
-	return &_LightingDataLabelBuilder{_LightingDataLabel: m.deepCopy()}
+	return &_LightingDataLabelBuilder{_LightingDataLabel: b.deepCopy()}
 }
 
 ///////////////////////

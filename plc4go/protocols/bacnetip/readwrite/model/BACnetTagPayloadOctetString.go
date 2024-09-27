@@ -93,40 +93,44 @@ type _BACnetTagPayloadOctetStringBuilder struct {
 
 var _ (BACnetTagPayloadOctetStringBuilder) = (*_BACnetTagPayloadOctetStringBuilder)(nil)
 
-func (m *_BACnetTagPayloadOctetStringBuilder) WithMandatoryFields(octets []byte) BACnetTagPayloadOctetStringBuilder {
-	return m.WithOctets(octets...)
+func (b *_BACnetTagPayloadOctetStringBuilder) WithMandatoryFields(octets []byte) BACnetTagPayloadOctetStringBuilder {
+	return b.WithOctets(octets...)
 }
 
-func (m *_BACnetTagPayloadOctetStringBuilder) WithOctets(octets ...byte) BACnetTagPayloadOctetStringBuilder {
-	m.Octets = octets
-	return m
+func (b *_BACnetTagPayloadOctetStringBuilder) WithOctets(octets ...byte) BACnetTagPayloadOctetStringBuilder {
+	b.Octets = octets
+	return b
 }
 
-func (m *_BACnetTagPayloadOctetStringBuilder) Build() (BACnetTagPayloadOctetString, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetTagPayloadOctetStringBuilder) Build() (BACnetTagPayloadOctetString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTagPayloadOctetString.deepCopy(), nil
+	return b._BACnetTagPayloadOctetString.deepCopy(), nil
 }
 
-func (m *_BACnetTagPayloadOctetStringBuilder) MustBuild() BACnetTagPayloadOctetString {
-	build, err := m.Build()
+func (b *_BACnetTagPayloadOctetStringBuilder) MustBuild() BACnetTagPayloadOctetString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTagPayloadOctetStringBuilder) DeepCopy() any {
-	return m.CreateBACnetTagPayloadOctetStringBuilder()
+func (b *_BACnetTagPayloadOctetStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadOctetStringBuilder().(*_BACnetTagPayloadOctetStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTagPayloadOctetStringBuilder creates a BACnetTagPayloadOctetStringBuilder
-func (m *_BACnetTagPayloadOctetString) CreateBACnetTagPayloadOctetStringBuilder() BACnetTagPayloadOctetStringBuilder {
-	if m == nil {
+func (b *_BACnetTagPayloadOctetString) CreateBACnetTagPayloadOctetStringBuilder() BACnetTagPayloadOctetStringBuilder {
+	if b == nil {
 		return NewBACnetTagPayloadOctetStringBuilder()
 	}
-	return &_BACnetTagPayloadOctetStringBuilder{_BACnetTagPayloadOctetString: m.deepCopy()}
+	return &_BACnetTagPayloadOctetStringBuilder{_BACnetTagPayloadOctetString: b.deepCopy()}
 }
 
 ///////////////////////

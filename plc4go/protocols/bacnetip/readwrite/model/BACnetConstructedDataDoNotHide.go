@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDoNotHideBuilder() BACnetConstructedDataDoNotHideBu
 type _BACnetConstructedDataDoNotHideBuilder struct {
 	*_BACnetConstructedDataDoNotHide
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDoNotHideBuilder) = (*_BACnetConstructedDataDoNotHideBuilder)(nil)
 
-func (m *_BACnetConstructedDataDoNotHideBuilder) WithMandatoryFields(doNotHide BACnetApplicationTagBoolean) BACnetConstructedDataDoNotHideBuilder {
-	return m.WithDoNotHide(doNotHide)
+func (b *_BACnetConstructedDataDoNotHideBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDoNotHideBuilder) WithDoNotHide(doNotHide BACnetApplicationTagBoolean) BACnetConstructedDataDoNotHideBuilder {
-	m.DoNotHide = doNotHide
-	return m
+func (b *_BACnetConstructedDataDoNotHideBuilder) WithMandatoryFields(doNotHide BACnetApplicationTagBoolean) BACnetConstructedDataDoNotHideBuilder {
+	return b.WithDoNotHide(doNotHide)
 }
 
-func (m *_BACnetConstructedDataDoNotHideBuilder) WithDoNotHideBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataDoNotHideBuilder {
-	builder := builderSupplier(m.DoNotHide.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataDoNotHideBuilder) WithDoNotHide(doNotHide BACnetApplicationTagBoolean) BACnetConstructedDataDoNotHideBuilder {
+	b.DoNotHide = doNotHide
+	return b
+}
+
+func (b *_BACnetConstructedDataDoNotHideBuilder) WithDoNotHideBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataDoNotHideBuilder {
+	builder := builderSupplier(b.DoNotHide.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.DoNotHide, err = builder.Build()
+	b.DoNotHide, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDoNotHideBuilder) Build() (BACnetConstructedDataDoNotHide, error) {
-	if m.DoNotHide == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDoNotHideBuilder) Build() (BACnetConstructedDataDoNotHide, error) {
+	if b.DoNotHide == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'doNotHide' not set"))
+		b.err.Append(errors.New("mandatory field 'doNotHide' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDoNotHide.deepCopy(), nil
+	return b._BACnetConstructedDataDoNotHide.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDoNotHideBuilder) MustBuild() BACnetConstructedDataDoNotHide {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDoNotHideBuilder) MustBuild() BACnetConstructedDataDoNotHide {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDoNotHideBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDoNotHideBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDoNotHideBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDoNotHideBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDoNotHideBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDoNotHideBuilder().(*_BACnetConstructedDataDoNotHideBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDoNotHideBuilder creates a BACnetConstructedDataDoNotHideBuilder
-func (m *_BACnetConstructedDataDoNotHide) CreateBACnetConstructedDataDoNotHideBuilder() BACnetConstructedDataDoNotHideBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDoNotHide) CreateBACnetConstructedDataDoNotHideBuilder() BACnetConstructedDataDoNotHideBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDoNotHideBuilder()
 	}
-	return &_BACnetConstructedDataDoNotHideBuilder{_BACnetConstructedDataDoNotHide: m.deepCopy()}
+	return &_BACnetConstructedDataDoNotHideBuilder{_BACnetConstructedDataDoNotHide: b.deepCopy()}
 }
 
 ///////////////////////

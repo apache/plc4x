@@ -85,40 +85,59 @@ func NewSetAttributeAllRequestBuilder() SetAttributeAllRequestBuilder {
 type _SetAttributeAllRequestBuilder struct {
 	*_SetAttributeAllRequest
 
+	parentBuilder *_CipServiceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SetAttributeAllRequestBuilder) = (*_SetAttributeAllRequestBuilder)(nil)
 
-func (m *_SetAttributeAllRequestBuilder) WithMandatoryFields() SetAttributeAllRequestBuilder {
-	return m
+func (b *_SetAttributeAllRequestBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
 }
 
-func (m *_SetAttributeAllRequestBuilder) Build() (SetAttributeAllRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SetAttributeAllRequestBuilder) WithMandatoryFields() SetAttributeAllRequestBuilder {
+	return b
+}
+
+func (b *_SetAttributeAllRequestBuilder) Build() (SetAttributeAllRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SetAttributeAllRequest.deepCopy(), nil
+	return b._SetAttributeAllRequest.deepCopy(), nil
 }
 
-func (m *_SetAttributeAllRequestBuilder) MustBuild() SetAttributeAllRequest {
-	build, err := m.Build()
+func (b *_SetAttributeAllRequestBuilder) MustBuild() SetAttributeAllRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SetAttributeAllRequestBuilder) DeepCopy() any {
-	return m.CreateSetAttributeAllRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SetAttributeAllRequestBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SetAttributeAllRequestBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_SetAttributeAllRequestBuilder) DeepCopy() any {
+	_copy := b.CreateSetAttributeAllRequestBuilder().(*_SetAttributeAllRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSetAttributeAllRequestBuilder creates a SetAttributeAllRequestBuilder
-func (m *_SetAttributeAllRequest) CreateSetAttributeAllRequestBuilder() SetAttributeAllRequestBuilder {
-	if m == nil {
+func (b *_SetAttributeAllRequest) CreateSetAttributeAllRequestBuilder() SetAttributeAllRequestBuilder {
+	if b == nil {
 		return NewSetAttributeAllRequestBuilder()
 	}
-	return &_SetAttributeAllRequestBuilder{_SetAttributeAllRequest: m.deepCopy()}
+	return &_SetAttributeAllRequestBuilder{_SetAttributeAllRequest: b.deepCopy()}
 }
 
 ///////////////////////

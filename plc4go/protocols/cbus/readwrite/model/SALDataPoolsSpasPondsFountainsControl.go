@@ -82,6 +82,8 @@ type SALDataPoolsSpasPondsFountainsControlBuilder interface {
 	WithMandatoryFields(poolsSpaPondsFountainsData LightingData) SALDataPoolsSpasPondsFountainsControlBuilder
 	// WithPoolsSpaPondsFountainsData adds PoolsSpaPondsFountainsData (property field)
 	WithPoolsSpaPondsFountainsData(LightingData) SALDataPoolsSpasPondsFountainsControlBuilder
+	// WithPoolsSpaPondsFountainsDataBuilder adds PoolsSpaPondsFountainsData (property field) which is build by the builder
+	WithPoolsSpaPondsFountainsDataBuilder(func(LightingDataBuilder) LightingDataBuilder) SALDataPoolsSpasPondsFountainsControlBuilder
 	// Build builds the SALDataPoolsSpasPondsFountainsControl or returns an error if something is wrong
 	Build() (SALDataPoolsSpasPondsFountainsControl, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewSALDataPoolsSpasPondsFountainsControlBuilder() SALDataPoolsSpasPondsFoun
 type _SALDataPoolsSpasPondsFountainsControlBuilder struct {
 	*_SALDataPoolsSpasPondsFountainsControl
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataPoolsSpasPondsFountainsControlBuilder) = (*_SALDataPoolsSpasPondsFountainsControlBuilder)(nil)
 
-func (m *_SALDataPoolsSpasPondsFountainsControlBuilder) WithMandatoryFields(poolsSpaPondsFountainsData LightingData) SALDataPoolsSpasPondsFountainsControlBuilder {
-	return m.WithPoolsSpaPondsFountainsData(poolsSpaPondsFountainsData)
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataPoolsSpasPondsFountainsControlBuilder) WithPoolsSpaPondsFountainsData(poolsSpaPondsFountainsData LightingData) SALDataPoolsSpasPondsFountainsControlBuilder {
-	m.PoolsSpaPondsFountainsData = poolsSpaPondsFountainsData
-	return m
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) WithMandatoryFields(poolsSpaPondsFountainsData LightingData) SALDataPoolsSpasPondsFountainsControlBuilder {
+	return b.WithPoolsSpaPondsFountainsData(poolsSpaPondsFountainsData)
 }
 
-func (m *_SALDataPoolsSpasPondsFountainsControlBuilder) Build() (SALDataPoolsSpasPondsFountainsControl, error) {
-	if m.PoolsSpaPondsFountainsData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) WithPoolsSpaPondsFountainsData(poolsSpaPondsFountainsData LightingData) SALDataPoolsSpasPondsFountainsControlBuilder {
+	b.PoolsSpaPondsFountainsData = poolsSpaPondsFountainsData
+	return b
+}
+
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) WithPoolsSpaPondsFountainsDataBuilder(builderSupplier func(LightingDataBuilder) LightingDataBuilder) SALDataPoolsSpasPondsFountainsControlBuilder {
+	builder := builderSupplier(b.PoolsSpaPondsFountainsData.CreateLightingDataBuilder())
+	var err error
+	b.PoolsSpaPondsFountainsData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'poolsSpaPondsFountainsData' not set"))
+		b.err.Append(errors.Wrap(err, "LightingDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._SALDataPoolsSpasPondsFountainsControl.deepCopy(), nil
+	return b
 }
 
-func (m *_SALDataPoolsSpasPondsFountainsControlBuilder) MustBuild() SALDataPoolsSpasPondsFountainsControl {
-	build, err := m.Build()
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) Build() (SALDataPoolsSpasPondsFountainsControl, error) {
+	if b.PoolsSpaPondsFountainsData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'poolsSpaPondsFountainsData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataPoolsSpasPondsFountainsControl.deepCopy(), nil
+}
+
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) MustBuild() SALDataPoolsSpasPondsFountainsControl {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataPoolsSpasPondsFountainsControlBuilder) DeepCopy() any {
-	return m.CreateSALDataPoolsSpasPondsFountainsControlBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataPoolsSpasPondsFountainsControlBuilder().(*_SALDataPoolsSpasPondsFountainsControlBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataPoolsSpasPondsFountainsControlBuilder creates a SALDataPoolsSpasPondsFountainsControlBuilder
-func (m *_SALDataPoolsSpasPondsFountainsControl) CreateSALDataPoolsSpasPondsFountainsControlBuilder() SALDataPoolsSpasPondsFountainsControlBuilder {
-	if m == nil {
+func (b *_SALDataPoolsSpasPondsFountainsControl) CreateSALDataPoolsSpasPondsFountainsControlBuilder() SALDataPoolsSpasPondsFountainsControlBuilder {
+	if b == nil {
 		return NewSALDataPoolsSpasPondsFountainsControlBuilder()
 	}
-	return &_SALDataPoolsSpasPondsFountainsControlBuilder{_SALDataPoolsSpasPondsFountainsControl: m.deepCopy()}
+	return &_SALDataPoolsSpasPondsFountainsControlBuilder{_SALDataPoolsSpasPondsFountainsControl: b.deepCopy()}
 }
 
 ///////////////////////

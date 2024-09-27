@@ -127,75 +127,79 @@ type _HVACZoneListBuilder struct {
 
 var _ (HVACZoneListBuilder) = (*_HVACZoneListBuilder)(nil)
 
-func (m *_HVACZoneListBuilder) WithMandatoryFields(expansion bool, zone6 bool, zone5 bool, zone4 bool, zone3 bool, zone2 bool, zone1 bool, zone0 bool) HVACZoneListBuilder {
-	return m.WithExpansion(expansion).WithZone6(zone6).WithZone5(zone5).WithZone4(zone4).WithZone3(zone3).WithZone2(zone2).WithZone1(zone1).WithZone0(zone0)
+func (b *_HVACZoneListBuilder) WithMandatoryFields(expansion bool, zone6 bool, zone5 bool, zone4 bool, zone3 bool, zone2 bool, zone1 bool, zone0 bool) HVACZoneListBuilder {
+	return b.WithExpansion(expansion).WithZone6(zone6).WithZone5(zone5).WithZone4(zone4).WithZone3(zone3).WithZone2(zone2).WithZone1(zone1).WithZone0(zone0)
 }
 
-func (m *_HVACZoneListBuilder) WithExpansion(expansion bool) HVACZoneListBuilder {
-	m.Expansion = expansion
-	return m
+func (b *_HVACZoneListBuilder) WithExpansion(expansion bool) HVACZoneListBuilder {
+	b.Expansion = expansion
+	return b
 }
 
-func (m *_HVACZoneListBuilder) WithZone6(zone6 bool) HVACZoneListBuilder {
-	m.Zone6 = zone6
-	return m
+func (b *_HVACZoneListBuilder) WithZone6(zone6 bool) HVACZoneListBuilder {
+	b.Zone6 = zone6
+	return b
 }
 
-func (m *_HVACZoneListBuilder) WithZone5(zone5 bool) HVACZoneListBuilder {
-	m.Zone5 = zone5
-	return m
+func (b *_HVACZoneListBuilder) WithZone5(zone5 bool) HVACZoneListBuilder {
+	b.Zone5 = zone5
+	return b
 }
 
-func (m *_HVACZoneListBuilder) WithZone4(zone4 bool) HVACZoneListBuilder {
-	m.Zone4 = zone4
-	return m
+func (b *_HVACZoneListBuilder) WithZone4(zone4 bool) HVACZoneListBuilder {
+	b.Zone4 = zone4
+	return b
 }
 
-func (m *_HVACZoneListBuilder) WithZone3(zone3 bool) HVACZoneListBuilder {
-	m.Zone3 = zone3
-	return m
+func (b *_HVACZoneListBuilder) WithZone3(zone3 bool) HVACZoneListBuilder {
+	b.Zone3 = zone3
+	return b
 }
 
-func (m *_HVACZoneListBuilder) WithZone2(zone2 bool) HVACZoneListBuilder {
-	m.Zone2 = zone2
-	return m
+func (b *_HVACZoneListBuilder) WithZone2(zone2 bool) HVACZoneListBuilder {
+	b.Zone2 = zone2
+	return b
 }
 
-func (m *_HVACZoneListBuilder) WithZone1(zone1 bool) HVACZoneListBuilder {
-	m.Zone1 = zone1
-	return m
+func (b *_HVACZoneListBuilder) WithZone1(zone1 bool) HVACZoneListBuilder {
+	b.Zone1 = zone1
+	return b
 }
 
-func (m *_HVACZoneListBuilder) WithZone0(zone0 bool) HVACZoneListBuilder {
-	m.Zone0 = zone0
-	return m
+func (b *_HVACZoneListBuilder) WithZone0(zone0 bool) HVACZoneListBuilder {
+	b.Zone0 = zone0
+	return b
 }
 
-func (m *_HVACZoneListBuilder) Build() (HVACZoneList, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_HVACZoneListBuilder) Build() (HVACZoneList, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HVACZoneList.deepCopy(), nil
+	return b._HVACZoneList.deepCopy(), nil
 }
 
-func (m *_HVACZoneListBuilder) MustBuild() HVACZoneList {
-	build, err := m.Build()
+func (b *_HVACZoneListBuilder) MustBuild() HVACZoneList {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HVACZoneListBuilder) DeepCopy() any {
-	return m.CreateHVACZoneListBuilder()
+func (b *_HVACZoneListBuilder) DeepCopy() any {
+	_copy := b.CreateHVACZoneListBuilder().(*_HVACZoneListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHVACZoneListBuilder creates a HVACZoneListBuilder
-func (m *_HVACZoneList) CreateHVACZoneListBuilder() HVACZoneListBuilder {
-	if m == nil {
+func (b *_HVACZoneList) CreateHVACZoneListBuilder() HVACZoneListBuilder {
+	if b == nil {
 		return NewHVACZoneListBuilder()
 	}
-	return &_HVACZoneListBuilder{_HVACZoneList: m.deepCopy()}
+	return &_HVACZoneListBuilder{_HVACZoneList: b.deepCopy()}
 }
 
 ///////////////////////

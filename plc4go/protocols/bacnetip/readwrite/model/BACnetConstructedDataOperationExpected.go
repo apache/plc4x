@@ -100,64 +100,83 @@ func NewBACnetConstructedDataOperationExpectedBuilder() BACnetConstructedDataOpe
 type _BACnetConstructedDataOperationExpectedBuilder struct {
 	*_BACnetConstructedDataOperationExpected
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataOperationExpectedBuilder) = (*_BACnetConstructedDataOperationExpectedBuilder)(nil)
 
-func (m *_BACnetConstructedDataOperationExpectedBuilder) WithMandatoryFields(lifeSafetyOperations BACnetLifeSafetyOperationTagged) BACnetConstructedDataOperationExpectedBuilder {
-	return m.WithLifeSafetyOperations(lifeSafetyOperations)
+func (b *_BACnetConstructedDataOperationExpectedBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataOperationExpectedBuilder) WithLifeSafetyOperations(lifeSafetyOperations BACnetLifeSafetyOperationTagged) BACnetConstructedDataOperationExpectedBuilder {
-	m.LifeSafetyOperations = lifeSafetyOperations
-	return m
+func (b *_BACnetConstructedDataOperationExpectedBuilder) WithMandatoryFields(lifeSafetyOperations BACnetLifeSafetyOperationTagged) BACnetConstructedDataOperationExpectedBuilder {
+	return b.WithLifeSafetyOperations(lifeSafetyOperations)
 }
 
-func (m *_BACnetConstructedDataOperationExpectedBuilder) WithLifeSafetyOperationsBuilder(builderSupplier func(BACnetLifeSafetyOperationTaggedBuilder) BACnetLifeSafetyOperationTaggedBuilder) BACnetConstructedDataOperationExpectedBuilder {
-	builder := builderSupplier(m.LifeSafetyOperations.CreateBACnetLifeSafetyOperationTaggedBuilder())
+func (b *_BACnetConstructedDataOperationExpectedBuilder) WithLifeSafetyOperations(lifeSafetyOperations BACnetLifeSafetyOperationTagged) BACnetConstructedDataOperationExpectedBuilder {
+	b.LifeSafetyOperations = lifeSafetyOperations
+	return b
+}
+
+func (b *_BACnetConstructedDataOperationExpectedBuilder) WithLifeSafetyOperationsBuilder(builderSupplier func(BACnetLifeSafetyOperationTaggedBuilder) BACnetLifeSafetyOperationTaggedBuilder) BACnetConstructedDataOperationExpectedBuilder {
+	builder := builderSupplier(b.LifeSafetyOperations.CreateBACnetLifeSafetyOperationTaggedBuilder())
 	var err error
-	m.LifeSafetyOperations, err = builder.Build()
+	b.LifeSafetyOperations, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLifeSafetyOperationTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLifeSafetyOperationTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataOperationExpectedBuilder) Build() (BACnetConstructedDataOperationExpected, error) {
-	if m.LifeSafetyOperations == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataOperationExpectedBuilder) Build() (BACnetConstructedDataOperationExpected, error) {
+	if b.LifeSafetyOperations == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lifeSafetyOperations' not set"))
+		b.err.Append(errors.New("mandatory field 'lifeSafetyOperations' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataOperationExpected.deepCopy(), nil
+	return b._BACnetConstructedDataOperationExpected.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataOperationExpectedBuilder) MustBuild() BACnetConstructedDataOperationExpected {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataOperationExpectedBuilder) MustBuild() BACnetConstructedDataOperationExpected {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataOperationExpectedBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataOperationExpectedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataOperationExpectedBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataOperationExpectedBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataOperationExpectedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataOperationExpectedBuilder().(*_BACnetConstructedDataOperationExpectedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataOperationExpectedBuilder creates a BACnetConstructedDataOperationExpectedBuilder
-func (m *_BACnetConstructedDataOperationExpected) CreateBACnetConstructedDataOperationExpectedBuilder() BACnetConstructedDataOperationExpectedBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataOperationExpected) CreateBACnetConstructedDataOperationExpectedBuilder() BACnetConstructedDataOperationExpectedBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataOperationExpectedBuilder()
 	}
-	return &_BACnetConstructedDataOperationExpectedBuilder{_BACnetConstructedDataOperationExpected: m.deepCopy()}
+	return &_BACnetConstructedDataOperationExpectedBuilder{_BACnetConstructedDataOperationExpected: b.deepCopy()}
 }
 
 ///////////////////////

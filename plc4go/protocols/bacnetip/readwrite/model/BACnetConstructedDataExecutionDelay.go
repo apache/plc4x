@@ -103,63 +103,82 @@ func NewBACnetConstructedDataExecutionDelayBuilder() BACnetConstructedDataExecut
 type _BACnetConstructedDataExecutionDelayBuilder struct {
 	*_BACnetConstructedDataExecutionDelay
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataExecutionDelayBuilder) = (*_BACnetConstructedDataExecutionDelayBuilder)(nil)
 
-func (m *_BACnetConstructedDataExecutionDelayBuilder) WithMandatoryFields(executionDelay []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataExecutionDelayBuilder {
-	return m.WithExecutionDelay(executionDelay...)
+func (b *_BACnetConstructedDataExecutionDelayBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataExecutionDelayBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataExecutionDelayBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataExecutionDelayBuilder) WithMandatoryFields(executionDelay []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataExecutionDelayBuilder {
+	return b.WithExecutionDelay(executionDelay...)
 }
 
-func (m *_BACnetConstructedDataExecutionDelayBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataExecutionDelayBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataExecutionDelayBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataExecutionDelayBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataExecutionDelayBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataExecutionDelayBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataExecutionDelayBuilder) WithExecutionDelay(executionDelay ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataExecutionDelayBuilder {
-	m.ExecutionDelay = executionDelay
-	return m
+func (b *_BACnetConstructedDataExecutionDelayBuilder) WithExecutionDelay(executionDelay ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataExecutionDelayBuilder {
+	b.ExecutionDelay = executionDelay
+	return b
 }
 
-func (m *_BACnetConstructedDataExecutionDelayBuilder) Build() (BACnetConstructedDataExecutionDelay, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataExecutionDelayBuilder) Build() (BACnetConstructedDataExecutionDelay, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataExecutionDelay.deepCopy(), nil
+	return b._BACnetConstructedDataExecutionDelay.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataExecutionDelayBuilder) MustBuild() BACnetConstructedDataExecutionDelay {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataExecutionDelayBuilder) MustBuild() BACnetConstructedDataExecutionDelay {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataExecutionDelayBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataExecutionDelayBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataExecutionDelayBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataExecutionDelayBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataExecutionDelayBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataExecutionDelayBuilder().(*_BACnetConstructedDataExecutionDelayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataExecutionDelayBuilder creates a BACnetConstructedDataExecutionDelayBuilder
-func (m *_BACnetConstructedDataExecutionDelay) CreateBACnetConstructedDataExecutionDelayBuilder() BACnetConstructedDataExecutionDelayBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataExecutionDelay) CreateBACnetConstructedDataExecutionDelayBuilder() BACnetConstructedDataExecutionDelayBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataExecutionDelayBuilder()
 	}
-	return &_BACnetConstructedDataExecutionDelayBuilder{_BACnetConstructedDataExecutionDelay: m.deepCopy()}
+	return &_BACnetConstructedDataExecutionDelayBuilder{_BACnetConstructedDataExecutionDelay: b.deepCopy()}
 }
 
 ///////////////////////

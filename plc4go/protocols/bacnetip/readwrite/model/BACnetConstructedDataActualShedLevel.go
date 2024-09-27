@@ -84,6 +84,8 @@ type BACnetConstructedDataActualShedLevelBuilder interface {
 	WithMandatoryFields(actualShedLevel BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder
 	// WithActualShedLevel adds ActualShedLevel (property field)
 	WithActualShedLevel(BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder
+	// WithActualShedLevelBuilder adds ActualShedLevel (property field) which is build by the builder
+	WithActualShedLevelBuilder(func(BACnetShedLevelBuilder) BACnetShedLevelBuilder) BACnetConstructedDataActualShedLevelBuilder
 	// Build builds the BACnetConstructedDataActualShedLevel or returns an error if something is wrong
 	Build() (BACnetConstructedDataActualShedLevel, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewBACnetConstructedDataActualShedLevelBuilder() BACnetConstructedDataActua
 type _BACnetConstructedDataActualShedLevelBuilder struct {
 	*_BACnetConstructedDataActualShedLevel
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataActualShedLevelBuilder) = (*_BACnetConstructedDataActualShedLevelBuilder)(nil)
 
-func (m *_BACnetConstructedDataActualShedLevelBuilder) WithMandatoryFields(actualShedLevel BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder {
-	return m.WithActualShedLevel(actualShedLevel)
+func (b *_BACnetConstructedDataActualShedLevelBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataActualShedLevelBuilder) WithActualShedLevel(actualShedLevel BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder {
-	m.ActualShedLevel = actualShedLevel
-	return m
+func (b *_BACnetConstructedDataActualShedLevelBuilder) WithMandatoryFields(actualShedLevel BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder {
+	return b.WithActualShedLevel(actualShedLevel)
 }
 
-func (m *_BACnetConstructedDataActualShedLevelBuilder) Build() (BACnetConstructedDataActualShedLevel, error) {
-	if m.ActualShedLevel == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataActualShedLevelBuilder) WithActualShedLevel(actualShedLevel BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder {
+	b.ActualShedLevel = actualShedLevel
+	return b
+}
+
+func (b *_BACnetConstructedDataActualShedLevelBuilder) WithActualShedLevelBuilder(builderSupplier func(BACnetShedLevelBuilder) BACnetShedLevelBuilder) BACnetConstructedDataActualShedLevelBuilder {
+	builder := builderSupplier(b.ActualShedLevel.CreateBACnetShedLevelBuilder())
+	var err error
+	b.ActualShedLevel, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'actualShedLevel' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetShedLevelBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetConstructedDataActualShedLevel.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetConstructedDataActualShedLevelBuilder) MustBuild() BACnetConstructedDataActualShedLevel {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataActualShedLevelBuilder) Build() (BACnetConstructedDataActualShedLevel, error) {
+	if b.ActualShedLevel == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'actualShedLevel' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataActualShedLevel.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataActualShedLevelBuilder) MustBuild() BACnetConstructedDataActualShedLevel {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataActualShedLevelBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataActualShedLevelBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataActualShedLevelBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataActualShedLevelBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataActualShedLevelBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataActualShedLevelBuilder().(*_BACnetConstructedDataActualShedLevelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataActualShedLevelBuilder creates a BACnetConstructedDataActualShedLevelBuilder
-func (m *_BACnetConstructedDataActualShedLevel) CreateBACnetConstructedDataActualShedLevelBuilder() BACnetConstructedDataActualShedLevelBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataActualShedLevel) CreateBACnetConstructedDataActualShedLevelBuilder() BACnetConstructedDataActualShedLevelBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataActualShedLevelBuilder()
 	}
-	return &_BACnetConstructedDataActualShedLevelBuilder{_BACnetConstructedDataActualShedLevel: m.deepCopy()}
+	return &_BACnetConstructedDataActualShedLevelBuilder{_BACnetConstructedDataActualShedLevel: b.deepCopy()}
 }
 
 ///////////////////////

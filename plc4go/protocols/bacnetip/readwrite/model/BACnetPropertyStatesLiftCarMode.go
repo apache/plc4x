@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesLiftCarModeBuilder() BACnetPropertyStatesLiftCarMode
 type _BACnetPropertyStatesLiftCarModeBuilder struct {
 	*_BACnetPropertyStatesLiftCarMode
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesLiftCarModeBuilder) = (*_BACnetPropertyStatesLiftCarModeBuilder)(nil)
 
-func (m *_BACnetPropertyStatesLiftCarModeBuilder) WithMandatoryFields(liftCarMode BACnetLiftCarModeTagged) BACnetPropertyStatesLiftCarModeBuilder {
-	return m.WithLiftCarMode(liftCarMode)
+func (b *_BACnetPropertyStatesLiftCarModeBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesLiftCarModeBuilder) WithLiftCarMode(liftCarMode BACnetLiftCarModeTagged) BACnetPropertyStatesLiftCarModeBuilder {
-	m.LiftCarMode = liftCarMode
-	return m
+func (b *_BACnetPropertyStatesLiftCarModeBuilder) WithMandatoryFields(liftCarMode BACnetLiftCarModeTagged) BACnetPropertyStatesLiftCarModeBuilder {
+	return b.WithLiftCarMode(liftCarMode)
 }
 
-func (m *_BACnetPropertyStatesLiftCarModeBuilder) WithLiftCarModeBuilder(builderSupplier func(BACnetLiftCarModeTaggedBuilder) BACnetLiftCarModeTaggedBuilder) BACnetPropertyStatesLiftCarModeBuilder {
-	builder := builderSupplier(m.LiftCarMode.CreateBACnetLiftCarModeTaggedBuilder())
+func (b *_BACnetPropertyStatesLiftCarModeBuilder) WithLiftCarMode(liftCarMode BACnetLiftCarModeTagged) BACnetPropertyStatesLiftCarModeBuilder {
+	b.LiftCarMode = liftCarMode
+	return b
+}
+
+func (b *_BACnetPropertyStatesLiftCarModeBuilder) WithLiftCarModeBuilder(builderSupplier func(BACnetLiftCarModeTaggedBuilder) BACnetLiftCarModeTaggedBuilder) BACnetPropertyStatesLiftCarModeBuilder {
+	builder := builderSupplier(b.LiftCarMode.CreateBACnetLiftCarModeTaggedBuilder())
 	var err error
-	m.LiftCarMode, err = builder.Build()
+	b.LiftCarMode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLiftCarModeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLiftCarModeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesLiftCarModeBuilder) Build() (BACnetPropertyStatesLiftCarMode, error) {
-	if m.LiftCarMode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesLiftCarModeBuilder) Build() (BACnetPropertyStatesLiftCarMode, error) {
+	if b.LiftCarMode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'liftCarMode' not set"))
+		b.err.Append(errors.New("mandatory field 'liftCarMode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesLiftCarMode.deepCopy(), nil
+	return b._BACnetPropertyStatesLiftCarMode.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesLiftCarModeBuilder) MustBuild() BACnetPropertyStatesLiftCarMode {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesLiftCarModeBuilder) MustBuild() BACnetPropertyStatesLiftCarMode {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesLiftCarModeBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesLiftCarModeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesLiftCarModeBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesLiftCarModeBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesLiftCarModeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesLiftCarModeBuilder().(*_BACnetPropertyStatesLiftCarModeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesLiftCarModeBuilder creates a BACnetPropertyStatesLiftCarModeBuilder
-func (m *_BACnetPropertyStatesLiftCarMode) CreateBACnetPropertyStatesLiftCarModeBuilder() BACnetPropertyStatesLiftCarModeBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesLiftCarMode) CreateBACnetPropertyStatesLiftCarModeBuilder() BACnetPropertyStatesLiftCarModeBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesLiftCarModeBuilder()
 	}
-	return &_BACnetPropertyStatesLiftCarModeBuilder{_BACnetPropertyStatesLiftCarMode: m.deepCopy()}
+	return &_BACnetPropertyStatesLiftCarModeBuilder{_BACnetPropertyStatesLiftCarMode: b.deepCopy()}
 }
 
 ///////////////////////

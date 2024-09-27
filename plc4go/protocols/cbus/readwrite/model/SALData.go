@@ -90,10 +90,131 @@ type SALDataBuilder interface {
 	WithMandatoryFields() SALDataBuilder
 	// WithSalData adds SalData (property field)
 	WithOptionalSalData(SALData) SALDataBuilder
+	// WithOptionalSalDataBuilder adds SalData (property field) which is build by the builder
+	WithOptionalSalDataBuilder(func(SALDataBuilder) SALDataBuilder) SALDataBuilder
+	// AsSALDataReserved converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataReserved() interface {
+		SALDataReservedBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataFreeUsage converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataFreeUsage() interface {
+		SALDataFreeUsageBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataTemperatureBroadcast converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataTemperatureBroadcast() interface {
+		SALDataTemperatureBroadcastBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataRoomControlSystem converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataRoomControlSystem() interface {
+		SALDataRoomControlSystemBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataLighting converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataLighting() interface {
+		SALDataLightingBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataVentilation converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataVentilation() interface {
+		SALDataVentilationBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataIrrigationControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataIrrigationControl() interface {
+		SALDataIrrigationControlBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataPoolsSpasPondsFountainsControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataPoolsSpasPondsFountainsControl() interface {
+		SALDataPoolsSpasPondsFountainsControlBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataHeating converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataHeating() interface {
+		SALDataHeatingBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataAirConditioning converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataAirConditioning() interface {
+		SALDataAirConditioningBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataTriggerControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataTriggerControl() interface {
+		SALDataTriggerControlBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataEnableControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataEnableControl() interface {
+		SALDataEnableControlBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataAudioAndVideo converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataAudioAndVideo() interface {
+		SALDataAudioAndVideoBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataSecurity converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataSecurity() interface {
+		SALDataSecurityBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataMetering converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataMetering() interface {
+		SALDataMeteringBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataAccessControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataAccessControl() interface {
+		SALDataAccessControlBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataClockAndTimekeeping converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataClockAndTimekeeping() interface {
+		SALDataClockAndTimekeepingBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataTelephonyStatusAndControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataTelephonyStatusAndControl() interface {
+		SALDataTelephonyStatusAndControlBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataMeasurement converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataMeasurement() interface {
+		SALDataMeasurementBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataTesting converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataTesting() interface {
+		SALDataTestingBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataMediaTransport converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataMediaTransport() interface {
+		SALDataMediaTransportBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataErrorReporting converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataErrorReporting() interface {
+		SALDataErrorReportingBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataHvacActuator converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataHvacActuator() interface {
+		SALDataHvacActuatorBuilder
+		Done() SALDataBuilder
+	}
 	// Build builds the SALData or returns an error if something is wrong
-	Build() (SALDataContract, error)
+	PartialBuild() (SALDataContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() SALDataContract
+	PartialMustBuild() SALDataContract
+	// Build builds the SALData or returns an error if something is wrong
+	Build() (SALData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALData
 }
 
 // NewSALDataBuilder() creates a SALDataBuilder
@@ -101,48 +222,463 @@ func NewSALDataBuilder() SALDataBuilder {
 	return &_SALDataBuilder{_SALData: new(_SALData)}
 }
 
+type _SALDataChildBuilder interface {
+	utils.Copyable
+	setParent(SALDataContract)
+	buildForSALData() (SALData, error)
+}
+
 type _SALDataBuilder struct {
 	*_SALData
+
+	childBuilder _SALDataChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (SALDataBuilder) = (*_SALDataBuilder)(nil)
 
-func (m *_SALDataBuilder) WithMandatoryFields() SALDataBuilder {
-	return m
+func (b *_SALDataBuilder) WithMandatoryFields() SALDataBuilder {
+	return b
 }
 
-func (m *_SALDataBuilder) WithOptionalSalData(salData SALData) SALDataBuilder {
-	m.SalData = salData
-	return m
+func (b *_SALDataBuilder) WithOptionalSalData(salData SALData) SALDataBuilder {
+	b.SalData = salData
+	return b
 }
 
-func (m *_SALDataBuilder) Build() (SALDataContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SALDataBuilder) WithOptionalSalDataBuilder(builderSupplier func(SALDataBuilder) SALDataBuilder) SALDataBuilder {
+	builder := builderSupplier(b.SalData.CreateSALDataBuilder())
+	var err error
+	b.SalData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "SALDataBuilder failed"))
 	}
-	return m._SALData.deepCopy(), nil
+	return b
 }
 
-func (m *_SALDataBuilder) MustBuild() SALDataContract {
-	build, err := m.Build()
+func (b *_SALDataBuilder) PartialBuild() (SALDataContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALData.deepCopy(), nil
+}
+
+func (b *_SALDataBuilder) PartialMustBuild() SALDataContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataBuilder) DeepCopy() any {
-	return m.CreateSALDataBuilder()
+func (b *_SALDataBuilder) AsSALDataReserved() interface {
+	SALDataReservedBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataReservedBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataReservedBuilder().(*_SALDataReservedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataFreeUsage() interface {
+	SALDataFreeUsageBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataFreeUsageBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataFreeUsageBuilder().(*_SALDataFreeUsageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataTemperatureBroadcast() interface {
+	SALDataTemperatureBroadcastBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataTemperatureBroadcastBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataTemperatureBroadcastBuilder().(*_SALDataTemperatureBroadcastBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataRoomControlSystem() interface {
+	SALDataRoomControlSystemBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataRoomControlSystemBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataRoomControlSystemBuilder().(*_SALDataRoomControlSystemBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataLighting() interface {
+	SALDataLightingBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataLightingBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataLightingBuilder().(*_SALDataLightingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataVentilation() interface {
+	SALDataVentilationBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataVentilationBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataVentilationBuilder().(*_SALDataVentilationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataIrrigationControl() interface {
+	SALDataIrrigationControlBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataIrrigationControlBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataIrrigationControlBuilder().(*_SALDataIrrigationControlBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataPoolsSpasPondsFountainsControl() interface {
+	SALDataPoolsSpasPondsFountainsControlBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataPoolsSpasPondsFountainsControlBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataPoolsSpasPondsFountainsControlBuilder().(*_SALDataPoolsSpasPondsFountainsControlBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataHeating() interface {
+	SALDataHeatingBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataHeatingBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataHeatingBuilder().(*_SALDataHeatingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataAirConditioning() interface {
+	SALDataAirConditioningBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataAirConditioningBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataAirConditioningBuilder().(*_SALDataAirConditioningBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataTriggerControl() interface {
+	SALDataTriggerControlBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataTriggerControlBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataTriggerControlBuilder().(*_SALDataTriggerControlBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataEnableControl() interface {
+	SALDataEnableControlBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataEnableControlBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataEnableControlBuilder().(*_SALDataEnableControlBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataAudioAndVideo() interface {
+	SALDataAudioAndVideoBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataAudioAndVideoBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataAudioAndVideoBuilder().(*_SALDataAudioAndVideoBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataSecurity() interface {
+	SALDataSecurityBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataSecurityBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataSecurityBuilder().(*_SALDataSecurityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataMetering() interface {
+	SALDataMeteringBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataMeteringBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataMeteringBuilder().(*_SALDataMeteringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataAccessControl() interface {
+	SALDataAccessControlBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataAccessControlBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataAccessControlBuilder().(*_SALDataAccessControlBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataClockAndTimekeeping() interface {
+	SALDataClockAndTimekeepingBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataClockAndTimekeepingBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataClockAndTimekeepingBuilder().(*_SALDataClockAndTimekeepingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataTelephonyStatusAndControl() interface {
+	SALDataTelephonyStatusAndControlBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataTelephonyStatusAndControlBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataTelephonyStatusAndControlBuilder().(*_SALDataTelephonyStatusAndControlBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataMeasurement() interface {
+	SALDataMeasurementBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataMeasurementBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataMeasurementBuilder().(*_SALDataMeasurementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataTesting() interface {
+	SALDataTestingBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataTestingBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataTestingBuilder().(*_SALDataTestingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataMediaTransport() interface {
+	SALDataMediaTransportBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataMediaTransportBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataMediaTransportBuilder().(*_SALDataMediaTransportBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataErrorReporting() interface {
+	SALDataErrorReportingBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataErrorReportingBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataErrorReportingBuilder().(*_SALDataErrorReportingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataHvacActuator() interface {
+	SALDataHvacActuatorBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataHvacActuatorBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataHvacActuatorBuilder().(*_SALDataHvacActuatorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) Build() (SALData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForSALData()
+}
+
+func (b *_SALDataBuilder) MustBuild() SALData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_SALDataBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataBuilder().(*_SALDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_SALDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataBuilder creates a SALDataBuilder
-func (m *_SALData) CreateSALDataBuilder() SALDataBuilder {
-	if m == nil {
+func (b *_SALData) CreateSALDataBuilder() SALDataBuilder {
+	if b == nil {
 		return NewSALDataBuilder()
 	}
-	return &_SALDataBuilder{_SALData: m.deepCopy()}
+	return &_SALDataBuilder{_SALData: b.deepCopy()}
 }
 
 ///////////////////////

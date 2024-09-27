@@ -98,64 +98,83 @@ func NewBACnetLogRecordLogDatumEnumeratedValueBuilder() BACnetLogRecordLogDatumE
 type _BACnetLogRecordLogDatumEnumeratedValueBuilder struct {
 	*_BACnetLogRecordLogDatumEnumeratedValue
 
+	parentBuilder *_BACnetLogRecordLogDatumBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetLogRecordLogDatumEnumeratedValueBuilder) = (*_BACnetLogRecordLogDatumEnumeratedValueBuilder)(nil)
 
-func (m *_BACnetLogRecordLogDatumEnumeratedValueBuilder) WithMandatoryFields(enumeratedValue BACnetContextTagEnumerated) BACnetLogRecordLogDatumEnumeratedValueBuilder {
-	return m.WithEnumeratedValue(enumeratedValue)
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
+	b.BACnetLogRecordLogDatumContract = contract
 }
 
-func (m *_BACnetLogRecordLogDatumEnumeratedValueBuilder) WithEnumeratedValue(enumeratedValue BACnetContextTagEnumerated) BACnetLogRecordLogDatumEnumeratedValueBuilder {
-	m.EnumeratedValue = enumeratedValue
-	return m
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) WithMandatoryFields(enumeratedValue BACnetContextTagEnumerated) BACnetLogRecordLogDatumEnumeratedValueBuilder {
+	return b.WithEnumeratedValue(enumeratedValue)
 }
 
-func (m *_BACnetLogRecordLogDatumEnumeratedValueBuilder) WithEnumeratedValueBuilder(builderSupplier func(BACnetContextTagEnumeratedBuilder) BACnetContextTagEnumeratedBuilder) BACnetLogRecordLogDatumEnumeratedValueBuilder {
-	builder := builderSupplier(m.EnumeratedValue.CreateBACnetContextTagEnumeratedBuilder())
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) WithEnumeratedValue(enumeratedValue BACnetContextTagEnumerated) BACnetLogRecordLogDatumEnumeratedValueBuilder {
+	b.EnumeratedValue = enumeratedValue
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) WithEnumeratedValueBuilder(builderSupplier func(BACnetContextTagEnumeratedBuilder) BACnetContextTagEnumeratedBuilder) BACnetLogRecordLogDatumEnumeratedValueBuilder {
+	builder := builderSupplier(b.EnumeratedValue.CreateBACnetContextTagEnumeratedBuilder())
 	var err error
-	m.EnumeratedValue, err = builder.Build()
+	b.EnumeratedValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagEnumeratedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagEnumeratedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogRecordLogDatumEnumeratedValueBuilder) Build() (BACnetLogRecordLogDatumEnumeratedValue, error) {
-	if m.EnumeratedValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) Build() (BACnetLogRecordLogDatumEnumeratedValue, error) {
+	if b.EnumeratedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
+		b.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLogRecordLogDatumEnumeratedValue.deepCopy(), nil
+	return b._BACnetLogRecordLogDatumEnumeratedValue.deepCopy(), nil
 }
 
-func (m *_BACnetLogRecordLogDatumEnumeratedValueBuilder) MustBuild() BACnetLogRecordLogDatumEnumeratedValue {
-	build, err := m.Build()
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) MustBuild() BACnetLogRecordLogDatumEnumeratedValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLogRecordLogDatumEnumeratedValueBuilder) DeepCopy() any {
-	return m.CreateBACnetLogRecordLogDatumEnumeratedValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) buildForBACnetLogRecordLogDatum() (BACnetLogRecordLogDatum, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogRecordLogDatumEnumeratedValueBuilder().(*_BACnetLogRecordLogDatumEnumeratedValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLogRecordLogDatumEnumeratedValueBuilder creates a BACnetLogRecordLogDatumEnumeratedValueBuilder
-func (m *_BACnetLogRecordLogDatumEnumeratedValue) CreateBACnetLogRecordLogDatumEnumeratedValueBuilder() BACnetLogRecordLogDatumEnumeratedValueBuilder {
-	if m == nil {
+func (b *_BACnetLogRecordLogDatumEnumeratedValue) CreateBACnetLogRecordLogDatumEnumeratedValueBuilder() BACnetLogRecordLogDatumEnumeratedValueBuilder {
+	if b == nil {
 		return NewBACnetLogRecordLogDatumEnumeratedValueBuilder()
 	}
-	return &_BACnetLogRecordLogDatumEnumeratedValueBuilder{_BACnetLogRecordLogDatumEnumeratedValue: m.deepCopy()}
+	return &_BACnetLogRecordLogDatumEnumeratedValueBuilder{_BACnetLogRecordLogDatumEnumeratedValue: b.deepCopy()}
 }
 
 ///////////////////////

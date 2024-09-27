@@ -109,6 +109,8 @@ type BACnetConfirmedServiceRequestAddListElementBuilder interface {
 	WithOptionalArrayIndexBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestAddListElementBuilder
 	// WithListOfElements adds ListOfElements (property field)
 	WithOptionalListOfElements(BACnetConstructedData) BACnetConfirmedServiceRequestAddListElementBuilder
+	// WithOptionalListOfElementsBuilder adds ListOfElements (property field) which is build by the builder
+	WithOptionalListOfElementsBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetConfirmedServiceRequestAddListElementBuilder
 	// Build builds the BACnetConfirmedServiceRequestAddListElement or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestAddListElement, error)
 	// MustBuild does the same as Build but panics on error
@@ -123,111 +125,143 @@ func NewBACnetConfirmedServiceRequestAddListElementBuilder() BACnetConfirmedServ
 type _BACnetConfirmedServiceRequestAddListElementBuilder struct {
 	*_BACnetConfirmedServiceRequestAddListElement
 
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestAddListElementBuilder) = (*_BACnetConfirmedServiceRequestAddListElementBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestAddListElementBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestAddListElementBuilder {
-	return m.WithObjectIdentifier(objectIdentifier).WithPropertyIdentifier(propertyIdentifier)
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestAddListElementBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestAddListElementBuilder {
-	m.ObjectIdentifier = objectIdentifier
-	return m
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestAddListElementBuilder {
+	return b.WithObjectIdentifier(objectIdentifier).WithPropertyIdentifier(propertyIdentifier)
 }
 
-func (m *_BACnetConfirmedServiceRequestAddListElementBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestAddListElementBuilder {
-	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestAddListElementBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestAddListElementBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
 	var err error
-	m.ObjectIdentifier, err = builder.Build()
+	b.ObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestAddListElementBuilder) WithPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestAddListElementBuilder {
-	m.PropertyIdentifier = propertyIdentifier
-	return m
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestAddListElementBuilder {
+	b.PropertyIdentifier = propertyIdentifier
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestAddListElementBuilder) WithPropertyIdentifierBuilder(builderSupplier func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetConfirmedServiceRequestAddListElementBuilder {
-	builder := builderSupplier(m.PropertyIdentifier.CreateBACnetPropertyIdentifierTaggedBuilder())
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithPropertyIdentifierBuilder(builderSupplier func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetConfirmedServiceRequestAddListElementBuilder {
+	builder := builderSupplier(b.PropertyIdentifier.CreateBACnetPropertyIdentifierTaggedBuilder())
 	var err error
-	m.PropertyIdentifier, err = builder.Build()
+	b.PropertyIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestAddListElementBuilder) WithOptionalArrayIndex(arrayIndex BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestAddListElementBuilder {
-	m.ArrayIndex = arrayIndex
-	return m
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithOptionalArrayIndex(arrayIndex BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestAddListElementBuilder {
+	b.ArrayIndex = arrayIndex
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestAddListElementBuilder) WithOptionalArrayIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestAddListElementBuilder {
-	builder := builderSupplier(m.ArrayIndex.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithOptionalArrayIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestAddListElementBuilder {
+	builder := builderSupplier(b.ArrayIndex.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.ArrayIndex, err = builder.Build()
+	b.ArrayIndex, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestAddListElementBuilder) WithOptionalListOfElements(listOfElements BACnetConstructedData) BACnetConfirmedServiceRequestAddListElementBuilder {
-	m.ListOfElements = listOfElements
-	return m
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithOptionalListOfElements(listOfElements BACnetConstructedData) BACnetConfirmedServiceRequestAddListElementBuilder {
+	b.ListOfElements = listOfElements
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestAddListElementBuilder) Build() (BACnetConfirmedServiceRequestAddListElement, error) {
-	if m.ObjectIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithOptionalListOfElementsBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetConfirmedServiceRequestAddListElementBuilder {
+	builder := builderSupplier(b.ListOfElements.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.ListOfElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
-	if m.PropertyIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'propertyIdentifier' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetConfirmedServiceRequestAddListElement.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestAddListElementBuilder) MustBuild() BACnetConfirmedServiceRequestAddListElement {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) Build() (BACnetConfirmedServiceRequestAddListElement, error) {
+	if b.ObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+	}
+	if b.PropertyIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'propertyIdentifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConfirmedServiceRequestAddListElement.deepCopy(), nil
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) MustBuild() BACnetConfirmedServiceRequestAddListElement {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestAddListElementBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestAddListElementBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestAddListElementBuilder().(*_BACnetConfirmedServiceRequestAddListElementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestAddListElementBuilder creates a BACnetConfirmedServiceRequestAddListElementBuilder
-func (m *_BACnetConfirmedServiceRequestAddListElement) CreateBACnetConfirmedServiceRequestAddListElementBuilder() BACnetConfirmedServiceRequestAddListElementBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestAddListElement) CreateBACnetConfirmedServiceRequestAddListElementBuilder() BACnetConfirmedServiceRequestAddListElementBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestAddListElementBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestAddListElementBuilder{_BACnetConfirmedServiceRequestAddListElement: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestAddListElementBuilder{_BACnetConfirmedServiceRequestAddListElement: b.deepCopy()}
 }
 
 ///////////////////////

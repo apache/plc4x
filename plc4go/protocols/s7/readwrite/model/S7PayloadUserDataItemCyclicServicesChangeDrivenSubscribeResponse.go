@@ -99,50 +99,69 @@ func NewS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder(
 type _S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder struct {
 	*_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) = (*_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder)(nil)
 
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) WithMandatoryFields(itemsCount uint16, items []AssociatedQueryValueType) S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder {
-	return m.WithItemsCount(itemsCount).WithItems(items...)
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) WithItemsCount(itemsCount uint16) S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder {
-	m.ItemsCount = itemsCount
-	return m
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) WithMandatoryFields(itemsCount uint16, items []AssociatedQueryValueType) S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder {
+	return b.WithItemsCount(itemsCount).WithItems(items...)
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) WithItems(items ...AssociatedQueryValueType) S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder {
-	m.Items = items
-	return m
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) WithItemsCount(itemsCount uint16) S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder {
+	b.ItemsCount = itemsCount
+	return b
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) Build() (S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) WithItems(items ...AssociatedQueryValueType) S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) Build() (S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse.deepCopy(), nil
+	return b._S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse.deepCopy(), nil
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse {
-	build, err := m.Build()
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) DeepCopy() any {
-	return m.CreateS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder().(*_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder creates a S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) CreateS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder() S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder {
-	if m == nil {
+func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) CreateS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder() S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder {
+	if b == nil {
 		return NewS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder()
 	}
-	return &_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder{_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse: m.deepCopy()}
+	return &_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder{_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse: b.deepCopy()}
 }
 
 ///////////////////////

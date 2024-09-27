@@ -98,6 +98,8 @@ type DeviceConfigurationRequestBuilder interface {
 	WithDeviceConfigurationRequestDataBlockBuilder(func(DeviceConfigurationRequestDataBlockBuilder) DeviceConfigurationRequestDataBlockBuilder) DeviceConfigurationRequestBuilder
 	// WithCemi adds Cemi (property field)
 	WithCemi(CEMI) DeviceConfigurationRequestBuilder
+	// WithCemiBuilder adds Cemi (property field) which is build by the builder
+	WithCemiBuilder(func(CEMIBuilder) CEMIBuilder) DeviceConfigurationRequestBuilder
 	// Build builds the DeviceConfigurationRequest or returns an error if something is wrong
 	Build() (DeviceConfigurationRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,75 +114,107 @@ func NewDeviceConfigurationRequestBuilder() DeviceConfigurationRequestBuilder {
 type _DeviceConfigurationRequestBuilder struct {
 	*_DeviceConfigurationRequest
 
+	parentBuilder *_KnxNetIpMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DeviceConfigurationRequestBuilder) = (*_DeviceConfigurationRequestBuilder)(nil)
 
-func (m *_DeviceConfigurationRequestBuilder) WithMandatoryFields(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI) DeviceConfigurationRequestBuilder {
-	return m.WithDeviceConfigurationRequestDataBlock(deviceConfigurationRequestDataBlock).WithCemi(cemi)
+func (b *_DeviceConfigurationRequestBuilder) setParent(contract KnxNetIpMessageContract) {
+	b.KnxNetIpMessageContract = contract
 }
 
-func (m *_DeviceConfigurationRequestBuilder) WithDeviceConfigurationRequestDataBlock(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock) DeviceConfigurationRequestBuilder {
-	m.DeviceConfigurationRequestDataBlock = deviceConfigurationRequestDataBlock
-	return m
+func (b *_DeviceConfigurationRequestBuilder) WithMandatoryFields(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI) DeviceConfigurationRequestBuilder {
+	return b.WithDeviceConfigurationRequestDataBlock(deviceConfigurationRequestDataBlock).WithCemi(cemi)
 }
 
-func (m *_DeviceConfigurationRequestBuilder) WithDeviceConfigurationRequestDataBlockBuilder(builderSupplier func(DeviceConfigurationRequestDataBlockBuilder) DeviceConfigurationRequestDataBlockBuilder) DeviceConfigurationRequestBuilder {
-	builder := builderSupplier(m.DeviceConfigurationRequestDataBlock.CreateDeviceConfigurationRequestDataBlockBuilder())
+func (b *_DeviceConfigurationRequestBuilder) WithDeviceConfigurationRequestDataBlock(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock) DeviceConfigurationRequestBuilder {
+	b.DeviceConfigurationRequestDataBlock = deviceConfigurationRequestDataBlock
+	return b
+}
+
+func (b *_DeviceConfigurationRequestBuilder) WithDeviceConfigurationRequestDataBlockBuilder(builderSupplier func(DeviceConfigurationRequestDataBlockBuilder) DeviceConfigurationRequestDataBlockBuilder) DeviceConfigurationRequestBuilder {
+	builder := builderSupplier(b.DeviceConfigurationRequestDataBlock.CreateDeviceConfigurationRequestDataBlockBuilder())
 	var err error
-	m.DeviceConfigurationRequestDataBlock, err = builder.Build()
+	b.DeviceConfigurationRequestDataBlock, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "DeviceConfigurationRequestDataBlockBuilder failed"))
+		b.err.Append(errors.Wrap(err, "DeviceConfigurationRequestDataBlockBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_DeviceConfigurationRequestBuilder) WithCemi(cemi CEMI) DeviceConfigurationRequestBuilder {
-	m.Cemi = cemi
-	return m
+func (b *_DeviceConfigurationRequestBuilder) WithCemi(cemi CEMI) DeviceConfigurationRequestBuilder {
+	b.Cemi = cemi
+	return b
 }
 
-func (m *_DeviceConfigurationRequestBuilder) Build() (DeviceConfigurationRequest, error) {
-	if m.DeviceConfigurationRequestDataBlock == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_DeviceConfigurationRequestBuilder) WithCemiBuilder(builderSupplier func(CEMIBuilder) CEMIBuilder) DeviceConfigurationRequestBuilder {
+	builder := builderSupplier(b.Cemi.CreateCEMIBuilder())
+	var err error
+	b.Cemi, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'deviceConfigurationRequestDataBlock' not set"))
+		b.err.Append(errors.Wrap(err, "CEMIBuilder failed"))
 	}
-	if m.Cemi == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'cemi' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._DeviceConfigurationRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_DeviceConfigurationRequestBuilder) MustBuild() DeviceConfigurationRequest {
-	build, err := m.Build()
+func (b *_DeviceConfigurationRequestBuilder) Build() (DeviceConfigurationRequest, error) {
+	if b.DeviceConfigurationRequestDataBlock == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'deviceConfigurationRequestDataBlock' not set"))
+	}
+	if b.Cemi == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'cemi' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DeviceConfigurationRequest.deepCopy(), nil
+}
+
+func (b *_DeviceConfigurationRequestBuilder) MustBuild() DeviceConfigurationRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DeviceConfigurationRequestBuilder) DeepCopy() any {
-	return m.CreateDeviceConfigurationRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DeviceConfigurationRequestBuilder) Done() KnxNetIpMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DeviceConfigurationRequestBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, error) {
+	return b.Build()
+}
+
+func (b *_DeviceConfigurationRequestBuilder) DeepCopy() any {
+	_copy := b.CreateDeviceConfigurationRequestBuilder().(*_DeviceConfigurationRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDeviceConfigurationRequestBuilder creates a DeviceConfigurationRequestBuilder
-func (m *_DeviceConfigurationRequest) CreateDeviceConfigurationRequestBuilder() DeviceConfigurationRequestBuilder {
-	if m == nil {
+func (b *_DeviceConfigurationRequest) CreateDeviceConfigurationRequestBuilder() DeviceConfigurationRequestBuilder {
+	if b == nil {
 		return NewDeviceConfigurationRequestBuilder()
 	}
-	return &_DeviceConfigurationRequestBuilder{_DeviceConfigurationRequest: m.deepCopy()}
+	return &_DeviceConfigurationRequestBuilder{_DeviceConfigurationRequest: b.deepCopy()}
 }
 
 ///////////////////////

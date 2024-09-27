@@ -82,6 +82,8 @@ type SALDataIrrigationControlBuilder interface {
 	WithMandatoryFields(irrigationControlData LightingData) SALDataIrrigationControlBuilder
 	// WithIrrigationControlData adds IrrigationControlData (property field)
 	WithIrrigationControlData(LightingData) SALDataIrrigationControlBuilder
+	// WithIrrigationControlDataBuilder adds IrrigationControlData (property field) which is build by the builder
+	WithIrrigationControlDataBuilder(func(LightingDataBuilder) LightingDataBuilder) SALDataIrrigationControlBuilder
 	// Build builds the SALDataIrrigationControl or returns an error if something is wrong
 	Build() (SALDataIrrigationControl, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewSALDataIrrigationControlBuilder() SALDataIrrigationControlBuilder {
 type _SALDataIrrigationControlBuilder struct {
 	*_SALDataIrrigationControl
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataIrrigationControlBuilder) = (*_SALDataIrrigationControlBuilder)(nil)
 
-func (m *_SALDataIrrigationControlBuilder) WithMandatoryFields(irrigationControlData LightingData) SALDataIrrigationControlBuilder {
-	return m.WithIrrigationControlData(irrigationControlData)
+func (b *_SALDataIrrigationControlBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataIrrigationControlBuilder) WithIrrigationControlData(irrigationControlData LightingData) SALDataIrrigationControlBuilder {
-	m.IrrigationControlData = irrigationControlData
-	return m
+func (b *_SALDataIrrigationControlBuilder) WithMandatoryFields(irrigationControlData LightingData) SALDataIrrigationControlBuilder {
+	return b.WithIrrigationControlData(irrigationControlData)
 }
 
-func (m *_SALDataIrrigationControlBuilder) Build() (SALDataIrrigationControl, error) {
-	if m.IrrigationControlData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SALDataIrrigationControlBuilder) WithIrrigationControlData(irrigationControlData LightingData) SALDataIrrigationControlBuilder {
+	b.IrrigationControlData = irrigationControlData
+	return b
+}
+
+func (b *_SALDataIrrigationControlBuilder) WithIrrigationControlDataBuilder(builderSupplier func(LightingDataBuilder) LightingDataBuilder) SALDataIrrigationControlBuilder {
+	builder := builderSupplier(b.IrrigationControlData.CreateLightingDataBuilder())
+	var err error
+	b.IrrigationControlData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'irrigationControlData' not set"))
+		b.err.Append(errors.Wrap(err, "LightingDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._SALDataIrrigationControl.deepCopy(), nil
+	return b
 }
 
-func (m *_SALDataIrrigationControlBuilder) MustBuild() SALDataIrrigationControl {
-	build, err := m.Build()
+func (b *_SALDataIrrigationControlBuilder) Build() (SALDataIrrigationControl, error) {
+	if b.IrrigationControlData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'irrigationControlData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataIrrigationControl.deepCopy(), nil
+}
+
+func (b *_SALDataIrrigationControlBuilder) MustBuild() SALDataIrrigationControl {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataIrrigationControlBuilder) DeepCopy() any {
-	return m.CreateSALDataIrrigationControlBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataIrrigationControlBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataIrrigationControlBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataIrrigationControlBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataIrrigationControlBuilder().(*_SALDataIrrigationControlBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataIrrigationControlBuilder creates a SALDataIrrigationControlBuilder
-func (m *_SALDataIrrigationControl) CreateSALDataIrrigationControlBuilder() SALDataIrrigationControlBuilder {
-	if m == nil {
+func (b *_SALDataIrrigationControl) CreateSALDataIrrigationControlBuilder() SALDataIrrigationControlBuilder {
+	if b == nil {
 		return NewSALDataIrrigationControlBuilder()
 	}
-	return &_SALDataIrrigationControlBuilder{_SALDataIrrigationControl: m.deepCopy()}
+	return &_SALDataIrrigationControlBuilder{_SALDataIrrigationControl: b.deepCopy()}
 }
 
 ///////////////////////

@@ -97,45 +97,64 @@ func NewMediaTransportControlDataNextPreviousTrackBuilder() MediaTransportContro
 type _MediaTransportControlDataNextPreviousTrackBuilder struct {
 	*_MediaTransportControlDataNextPreviousTrack
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataNextPreviousTrackBuilder) = (*_MediaTransportControlDataNextPreviousTrackBuilder)(nil)
 
-func (m *_MediaTransportControlDataNextPreviousTrackBuilder) WithMandatoryFields(operation byte) MediaTransportControlDataNextPreviousTrackBuilder {
-	return m.WithOperation(operation)
+func (b *_MediaTransportControlDataNextPreviousTrackBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataNextPreviousTrackBuilder) WithOperation(operation byte) MediaTransportControlDataNextPreviousTrackBuilder {
-	m.Operation = operation
-	return m
+func (b *_MediaTransportControlDataNextPreviousTrackBuilder) WithMandatoryFields(operation byte) MediaTransportControlDataNextPreviousTrackBuilder {
+	return b.WithOperation(operation)
 }
 
-func (m *_MediaTransportControlDataNextPreviousTrackBuilder) Build() (MediaTransportControlDataNextPreviousTrack, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataNextPreviousTrackBuilder) WithOperation(operation byte) MediaTransportControlDataNextPreviousTrackBuilder {
+	b.Operation = operation
+	return b
+}
+
+func (b *_MediaTransportControlDataNextPreviousTrackBuilder) Build() (MediaTransportControlDataNextPreviousTrack, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataNextPreviousTrack.deepCopy(), nil
+	return b._MediaTransportControlDataNextPreviousTrack.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataNextPreviousTrackBuilder) MustBuild() MediaTransportControlDataNextPreviousTrack {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataNextPreviousTrackBuilder) MustBuild() MediaTransportControlDataNextPreviousTrack {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataNextPreviousTrackBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataNextPreviousTrackBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataNextPreviousTrackBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataNextPreviousTrackBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataNextPreviousTrackBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataNextPreviousTrackBuilder().(*_MediaTransportControlDataNextPreviousTrackBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataNextPreviousTrackBuilder creates a MediaTransportControlDataNextPreviousTrackBuilder
-func (m *_MediaTransportControlDataNextPreviousTrack) CreateMediaTransportControlDataNextPreviousTrackBuilder() MediaTransportControlDataNextPreviousTrackBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataNextPreviousTrack) CreateMediaTransportControlDataNextPreviousTrackBuilder() MediaTransportControlDataNextPreviousTrackBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataNextPreviousTrackBuilder()
 	}
-	return &_MediaTransportControlDataNextPreviousTrackBuilder{_MediaTransportControlDataNextPreviousTrack: m.deepCopy()}
+	return &_MediaTransportControlDataNextPreviousTrackBuilder{_MediaTransportControlDataNextPreviousTrack: b.deepCopy()}
 }
 
 ///////////////////////

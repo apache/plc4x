@@ -81,6 +81,8 @@ type BACnetNameValueBuilder interface {
 	WithNameBuilder(func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetNameValueBuilder
 	// WithValue adds Value (property field)
 	WithOptionalValue(BACnetConstructedData) BACnetNameValueBuilder
+	// WithOptionalValueBuilder adds Value (property field) which is build by the builder
+	WithOptionalValueBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetNameValueBuilder
 	// Build builds the BACnetNameValue or returns an error if something is wrong
 	Build() (BACnetNameValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -100,64 +102,81 @@ type _BACnetNameValueBuilder struct {
 
 var _ (BACnetNameValueBuilder) = (*_BACnetNameValueBuilder)(nil)
 
-func (m *_BACnetNameValueBuilder) WithMandatoryFields(name BACnetContextTagCharacterString) BACnetNameValueBuilder {
-	return m.WithName(name)
+func (b *_BACnetNameValueBuilder) WithMandatoryFields(name BACnetContextTagCharacterString) BACnetNameValueBuilder {
+	return b.WithName(name)
 }
 
-func (m *_BACnetNameValueBuilder) WithName(name BACnetContextTagCharacterString) BACnetNameValueBuilder {
-	m.Name = name
-	return m
+func (b *_BACnetNameValueBuilder) WithName(name BACnetContextTagCharacterString) BACnetNameValueBuilder {
+	b.Name = name
+	return b
 }
 
-func (m *_BACnetNameValueBuilder) WithNameBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetNameValueBuilder {
-	builder := builderSupplier(m.Name.CreateBACnetContextTagCharacterStringBuilder())
+func (b *_BACnetNameValueBuilder) WithNameBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetNameValueBuilder {
+	builder := builderSupplier(b.Name.CreateBACnetContextTagCharacterStringBuilder())
 	var err error
-	m.Name, err = builder.Build()
+	b.Name, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNameValueBuilder) WithOptionalValue(value BACnetConstructedData) BACnetNameValueBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetNameValueBuilder) WithOptionalValue(value BACnetConstructedData) BACnetNameValueBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetNameValueBuilder) Build() (BACnetNameValue, error) {
-	if m.Name == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNameValueBuilder) WithOptionalValueBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetNameValueBuilder {
+	builder := builderSupplier(b.Value.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.Value, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'name' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetNameValue.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetNameValueBuilder) MustBuild() BACnetNameValue {
-	build, err := m.Build()
+func (b *_BACnetNameValueBuilder) Build() (BACnetNameValue, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetNameValue.deepCopy(), nil
+}
+
+func (b *_BACnetNameValueBuilder) MustBuild() BACnetNameValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNameValueBuilder) DeepCopy() any {
-	return m.CreateBACnetNameValueBuilder()
+func (b *_BACnetNameValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNameValueBuilder().(*_BACnetNameValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNameValueBuilder creates a BACnetNameValueBuilder
-func (m *_BACnetNameValue) CreateBACnetNameValueBuilder() BACnetNameValueBuilder {
-	if m == nil {
+func (b *_BACnetNameValue) CreateBACnetNameValueBuilder() BACnetNameValueBuilder {
+	if b == nil {
 		return NewBACnetNameValueBuilder()
 	}
-	return &_BACnetNameValueBuilder{_BACnetNameValue: m.deepCopy()}
+	return &_BACnetNameValueBuilder{_BACnetNameValue: b.deepCopy()}
 }
 
 ///////////////////////

@@ -121,65 +121,84 @@ func NewCALDataStatusExtendedBuilder() CALDataStatusExtendedBuilder {
 type _CALDataStatusExtendedBuilder struct {
 	*_CALDataStatusExtended
 
+	parentBuilder *_CALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CALDataStatusExtendedBuilder) = (*_CALDataStatusExtendedBuilder)(nil)
 
-func (m *_CALDataStatusExtendedBuilder) WithMandatoryFields(coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation) CALDataStatusExtendedBuilder {
-	return m.WithCoding(coding).WithApplication(application).WithBlockStart(blockStart).WithStatusBytes(statusBytes...).WithLevelInformation(levelInformation...)
+func (b *_CALDataStatusExtendedBuilder) setParent(contract CALDataContract) {
+	b.CALDataContract = contract
 }
 
-func (m *_CALDataStatusExtendedBuilder) WithCoding(coding StatusCoding) CALDataStatusExtendedBuilder {
-	m.Coding = coding
-	return m
+func (b *_CALDataStatusExtendedBuilder) WithMandatoryFields(coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation) CALDataStatusExtendedBuilder {
+	return b.WithCoding(coding).WithApplication(application).WithBlockStart(blockStart).WithStatusBytes(statusBytes...).WithLevelInformation(levelInformation...)
 }
 
-func (m *_CALDataStatusExtendedBuilder) WithApplication(application ApplicationIdContainer) CALDataStatusExtendedBuilder {
-	m.Application = application
-	return m
+func (b *_CALDataStatusExtendedBuilder) WithCoding(coding StatusCoding) CALDataStatusExtendedBuilder {
+	b.Coding = coding
+	return b
 }
 
-func (m *_CALDataStatusExtendedBuilder) WithBlockStart(blockStart uint8) CALDataStatusExtendedBuilder {
-	m.BlockStart = blockStart
-	return m
+func (b *_CALDataStatusExtendedBuilder) WithApplication(application ApplicationIdContainer) CALDataStatusExtendedBuilder {
+	b.Application = application
+	return b
 }
 
-func (m *_CALDataStatusExtendedBuilder) WithStatusBytes(statusBytes ...StatusByte) CALDataStatusExtendedBuilder {
-	m.StatusBytes = statusBytes
-	return m
+func (b *_CALDataStatusExtendedBuilder) WithBlockStart(blockStart uint8) CALDataStatusExtendedBuilder {
+	b.BlockStart = blockStart
+	return b
 }
 
-func (m *_CALDataStatusExtendedBuilder) WithLevelInformation(levelInformation ...LevelInformation) CALDataStatusExtendedBuilder {
-	m.LevelInformation = levelInformation
-	return m
+func (b *_CALDataStatusExtendedBuilder) WithStatusBytes(statusBytes ...StatusByte) CALDataStatusExtendedBuilder {
+	b.StatusBytes = statusBytes
+	return b
 }
 
-func (m *_CALDataStatusExtendedBuilder) Build() (CALDataStatusExtended, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CALDataStatusExtendedBuilder) WithLevelInformation(levelInformation ...LevelInformation) CALDataStatusExtendedBuilder {
+	b.LevelInformation = levelInformation
+	return b
+}
+
+func (b *_CALDataStatusExtendedBuilder) Build() (CALDataStatusExtended, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CALDataStatusExtended.deepCopy(), nil
+	return b._CALDataStatusExtended.deepCopy(), nil
 }
 
-func (m *_CALDataStatusExtendedBuilder) MustBuild() CALDataStatusExtended {
-	build, err := m.Build()
+func (b *_CALDataStatusExtendedBuilder) MustBuild() CALDataStatusExtended {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CALDataStatusExtendedBuilder) DeepCopy() any {
-	return m.CreateCALDataStatusExtendedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CALDataStatusExtendedBuilder) Done() CALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CALDataStatusExtendedBuilder) buildForCALData() (CALData, error) {
+	return b.Build()
+}
+
+func (b *_CALDataStatusExtendedBuilder) DeepCopy() any {
+	_copy := b.CreateCALDataStatusExtendedBuilder().(*_CALDataStatusExtendedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCALDataStatusExtendedBuilder creates a CALDataStatusExtendedBuilder
-func (m *_CALDataStatusExtended) CreateCALDataStatusExtendedBuilder() CALDataStatusExtendedBuilder {
-	if m == nil {
+func (b *_CALDataStatusExtended) CreateCALDataStatusExtendedBuilder() CALDataStatusExtendedBuilder {
+	if b == nil {
 		return NewCALDataStatusExtendedBuilder()
 	}
-	return &_CALDataStatusExtendedBuilder{_CALDataStatusExtended: m.deepCopy()}
+	return &_CALDataStatusExtendedBuilder{_CALDataStatusExtended: b.deepCopy()}
 }
 
 ///////////////////////

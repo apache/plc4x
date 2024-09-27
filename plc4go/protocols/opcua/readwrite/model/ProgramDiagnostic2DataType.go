@@ -208,215 +208,234 @@ func NewProgramDiagnostic2DataTypeBuilder() ProgramDiagnostic2DataTypeBuilder {
 type _ProgramDiagnostic2DataTypeBuilder struct {
 	*_ProgramDiagnostic2DataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ProgramDiagnostic2DataTypeBuilder) = (*_ProgramDiagnostic2DataTypeBuilder)(nil)
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithMandatoryFields(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, noOfLastMethodInputArguments int32, lastMethodInputArguments []ExtensionObjectDefinition, noOfLastMethodOutputArguments int32, lastMethodOutputArguments []ExtensionObjectDefinition, noOfLastMethodInputValues int32, lastMethodInputValues []Variant, noOfLastMethodOutputValues int32, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) ProgramDiagnostic2DataTypeBuilder {
-	return m.WithCreateSessionId(createSessionId).WithCreateClientName(createClientName).WithInvocationCreationTime(invocationCreationTime).WithLastTransitionTime(lastTransitionTime).WithLastMethodCall(lastMethodCall).WithLastMethodSessionId(lastMethodSessionId).WithNoOfLastMethodInputArguments(noOfLastMethodInputArguments).WithLastMethodInputArguments(lastMethodInputArguments...).WithNoOfLastMethodOutputArguments(noOfLastMethodOutputArguments).WithLastMethodOutputArguments(lastMethodOutputArguments...).WithNoOfLastMethodInputValues(noOfLastMethodInputValues).WithLastMethodInputValues(lastMethodInputValues...).WithNoOfLastMethodOutputValues(noOfLastMethodOutputValues).WithLastMethodOutputValues(lastMethodOutputValues...).WithLastMethodCallTime(lastMethodCallTime).WithLastMethodReturnStatus(lastMethodReturnStatus)
+func (b *_ProgramDiagnostic2DataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithCreateSessionId(createSessionId NodeId) ProgramDiagnostic2DataTypeBuilder {
-	m.CreateSessionId = createSessionId
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithMandatoryFields(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, noOfLastMethodInputArguments int32, lastMethodInputArguments []ExtensionObjectDefinition, noOfLastMethodOutputArguments int32, lastMethodOutputArguments []ExtensionObjectDefinition, noOfLastMethodInputValues int32, lastMethodInputValues []Variant, noOfLastMethodOutputValues int32, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) ProgramDiagnostic2DataTypeBuilder {
+	return b.WithCreateSessionId(createSessionId).WithCreateClientName(createClientName).WithInvocationCreationTime(invocationCreationTime).WithLastTransitionTime(lastTransitionTime).WithLastMethodCall(lastMethodCall).WithLastMethodSessionId(lastMethodSessionId).WithNoOfLastMethodInputArguments(noOfLastMethodInputArguments).WithLastMethodInputArguments(lastMethodInputArguments...).WithNoOfLastMethodOutputArguments(noOfLastMethodOutputArguments).WithLastMethodOutputArguments(lastMethodOutputArguments...).WithNoOfLastMethodInputValues(noOfLastMethodInputValues).WithLastMethodInputValues(lastMethodInputValues...).WithNoOfLastMethodOutputValues(noOfLastMethodOutputValues).WithLastMethodOutputValues(lastMethodOutputValues...).WithLastMethodCallTime(lastMethodCallTime).WithLastMethodReturnStatus(lastMethodReturnStatus)
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithCreateSessionIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ProgramDiagnostic2DataTypeBuilder {
-	builder := builderSupplier(m.CreateSessionId.CreateNodeIdBuilder())
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithCreateSessionId(createSessionId NodeId) ProgramDiagnostic2DataTypeBuilder {
+	b.CreateSessionId = createSessionId
+	return b
+}
+
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithCreateSessionIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ProgramDiagnostic2DataTypeBuilder {
+	builder := builderSupplier(b.CreateSessionId.CreateNodeIdBuilder())
 	var err error
-	m.CreateSessionId, err = builder.Build()
+	b.CreateSessionId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithCreateClientName(createClientName PascalString) ProgramDiagnostic2DataTypeBuilder {
-	m.CreateClientName = createClientName
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithCreateClientName(createClientName PascalString) ProgramDiagnostic2DataTypeBuilder {
+	b.CreateClientName = createClientName
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithCreateClientNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ProgramDiagnostic2DataTypeBuilder {
-	builder := builderSupplier(m.CreateClientName.CreatePascalStringBuilder())
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithCreateClientNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ProgramDiagnostic2DataTypeBuilder {
+	builder := builderSupplier(b.CreateClientName.CreatePascalStringBuilder())
 	var err error
-	m.CreateClientName, err = builder.Build()
+	b.CreateClientName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithInvocationCreationTime(invocationCreationTime int64) ProgramDiagnostic2DataTypeBuilder {
-	m.InvocationCreationTime = invocationCreationTime
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithInvocationCreationTime(invocationCreationTime int64) ProgramDiagnostic2DataTypeBuilder {
+	b.InvocationCreationTime = invocationCreationTime
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithLastTransitionTime(lastTransitionTime int64) ProgramDiagnostic2DataTypeBuilder {
-	m.LastTransitionTime = lastTransitionTime
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastTransitionTime(lastTransitionTime int64) ProgramDiagnostic2DataTypeBuilder {
+	b.LastTransitionTime = lastTransitionTime
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodCall(lastMethodCall PascalString) ProgramDiagnostic2DataTypeBuilder {
-	m.LastMethodCall = lastMethodCall
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodCall(lastMethodCall PascalString) ProgramDiagnostic2DataTypeBuilder {
+	b.LastMethodCall = lastMethodCall
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodCallBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ProgramDiagnostic2DataTypeBuilder {
-	builder := builderSupplier(m.LastMethodCall.CreatePascalStringBuilder())
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodCallBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ProgramDiagnostic2DataTypeBuilder {
+	builder := builderSupplier(b.LastMethodCall.CreatePascalStringBuilder())
 	var err error
-	m.LastMethodCall, err = builder.Build()
+	b.LastMethodCall, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodSessionId(lastMethodSessionId NodeId) ProgramDiagnostic2DataTypeBuilder {
-	m.LastMethodSessionId = lastMethodSessionId
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodSessionId(lastMethodSessionId NodeId) ProgramDiagnostic2DataTypeBuilder {
+	b.LastMethodSessionId = lastMethodSessionId
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodSessionIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ProgramDiagnostic2DataTypeBuilder {
-	builder := builderSupplier(m.LastMethodSessionId.CreateNodeIdBuilder())
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodSessionIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ProgramDiagnostic2DataTypeBuilder {
+	builder := builderSupplier(b.LastMethodSessionId.CreateNodeIdBuilder())
 	var err error
-	m.LastMethodSessionId, err = builder.Build()
+	b.LastMethodSessionId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodInputArguments(noOfLastMethodInputArguments int32) ProgramDiagnostic2DataTypeBuilder {
-	m.NoOfLastMethodInputArguments = noOfLastMethodInputArguments
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodInputArguments(noOfLastMethodInputArguments int32) ProgramDiagnostic2DataTypeBuilder {
+	b.NoOfLastMethodInputArguments = noOfLastMethodInputArguments
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodInputArguments(lastMethodInputArguments ...ExtensionObjectDefinition) ProgramDiagnostic2DataTypeBuilder {
-	m.LastMethodInputArguments = lastMethodInputArguments
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodInputArguments(lastMethodInputArguments ...ExtensionObjectDefinition) ProgramDiagnostic2DataTypeBuilder {
+	b.LastMethodInputArguments = lastMethodInputArguments
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodOutputArguments(noOfLastMethodOutputArguments int32) ProgramDiagnostic2DataTypeBuilder {
-	m.NoOfLastMethodOutputArguments = noOfLastMethodOutputArguments
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodOutputArguments(noOfLastMethodOutputArguments int32) ProgramDiagnostic2DataTypeBuilder {
+	b.NoOfLastMethodOutputArguments = noOfLastMethodOutputArguments
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodOutputArguments(lastMethodOutputArguments ...ExtensionObjectDefinition) ProgramDiagnostic2DataTypeBuilder {
-	m.LastMethodOutputArguments = lastMethodOutputArguments
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodOutputArguments(lastMethodOutputArguments ...ExtensionObjectDefinition) ProgramDiagnostic2DataTypeBuilder {
+	b.LastMethodOutputArguments = lastMethodOutputArguments
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodInputValues(noOfLastMethodInputValues int32) ProgramDiagnostic2DataTypeBuilder {
-	m.NoOfLastMethodInputValues = noOfLastMethodInputValues
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodInputValues(noOfLastMethodInputValues int32) ProgramDiagnostic2DataTypeBuilder {
+	b.NoOfLastMethodInputValues = noOfLastMethodInputValues
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodInputValues(lastMethodInputValues ...Variant) ProgramDiagnostic2DataTypeBuilder {
-	m.LastMethodInputValues = lastMethodInputValues
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodInputValues(lastMethodInputValues ...Variant) ProgramDiagnostic2DataTypeBuilder {
+	b.LastMethodInputValues = lastMethodInputValues
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodOutputValues(noOfLastMethodOutputValues int32) ProgramDiagnostic2DataTypeBuilder {
-	m.NoOfLastMethodOutputValues = noOfLastMethodOutputValues
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodOutputValues(noOfLastMethodOutputValues int32) ProgramDiagnostic2DataTypeBuilder {
+	b.NoOfLastMethodOutputValues = noOfLastMethodOutputValues
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodOutputValues(lastMethodOutputValues ...Variant) ProgramDiagnostic2DataTypeBuilder {
-	m.LastMethodOutputValues = lastMethodOutputValues
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodOutputValues(lastMethodOutputValues ...Variant) ProgramDiagnostic2DataTypeBuilder {
+	b.LastMethodOutputValues = lastMethodOutputValues
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodCallTime(lastMethodCallTime int64) ProgramDiagnostic2DataTypeBuilder {
-	m.LastMethodCallTime = lastMethodCallTime
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodCallTime(lastMethodCallTime int64) ProgramDiagnostic2DataTypeBuilder {
+	b.LastMethodCallTime = lastMethodCallTime
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodReturnStatus(lastMethodReturnStatus StatusCode) ProgramDiagnostic2DataTypeBuilder {
-	m.LastMethodReturnStatus = lastMethodReturnStatus
-	return m
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodReturnStatus(lastMethodReturnStatus StatusCode) ProgramDiagnostic2DataTypeBuilder {
+	b.LastMethodReturnStatus = lastMethodReturnStatus
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodReturnStatusBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) ProgramDiagnostic2DataTypeBuilder {
-	builder := builderSupplier(m.LastMethodReturnStatus.CreateStatusCodeBuilder())
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodReturnStatusBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) ProgramDiagnostic2DataTypeBuilder {
+	builder := builderSupplier(b.LastMethodReturnStatus.CreateStatusCodeBuilder())
 	var err error
-	m.LastMethodReturnStatus, err = builder.Build()
+	b.LastMethodReturnStatus, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) Build() (ProgramDiagnostic2DataType, error) {
-	if m.CreateSessionId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ProgramDiagnostic2DataTypeBuilder) Build() (ProgramDiagnostic2DataType, error) {
+	if b.CreateSessionId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'createSessionId' not set"))
+		b.err.Append(errors.New("mandatory field 'createSessionId' not set"))
 	}
-	if m.CreateClientName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.CreateClientName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'createClientName' not set"))
+		b.err.Append(errors.New("mandatory field 'createClientName' not set"))
 	}
-	if m.LastMethodCall == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.LastMethodCall == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lastMethodCall' not set"))
+		b.err.Append(errors.New("mandatory field 'lastMethodCall' not set"))
 	}
-	if m.LastMethodSessionId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.LastMethodSessionId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lastMethodSessionId' not set"))
+		b.err.Append(errors.New("mandatory field 'lastMethodSessionId' not set"))
 	}
-	if m.LastMethodReturnStatus == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.LastMethodReturnStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lastMethodReturnStatus' not set"))
+		b.err.Append(errors.New("mandatory field 'lastMethodReturnStatus' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ProgramDiagnostic2DataType.deepCopy(), nil
+	return b._ProgramDiagnostic2DataType.deepCopy(), nil
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) MustBuild() ProgramDiagnostic2DataType {
-	build, err := m.Build()
+func (b *_ProgramDiagnostic2DataTypeBuilder) MustBuild() ProgramDiagnostic2DataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ProgramDiagnostic2DataTypeBuilder) DeepCopy() any {
-	return m.CreateProgramDiagnostic2DataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ProgramDiagnostic2DataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ProgramDiagnostic2DataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ProgramDiagnostic2DataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateProgramDiagnostic2DataTypeBuilder().(*_ProgramDiagnostic2DataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateProgramDiagnostic2DataTypeBuilder creates a ProgramDiagnostic2DataTypeBuilder
-func (m *_ProgramDiagnostic2DataType) CreateProgramDiagnostic2DataTypeBuilder() ProgramDiagnostic2DataTypeBuilder {
-	if m == nil {
+func (b *_ProgramDiagnostic2DataType) CreateProgramDiagnostic2DataTypeBuilder() ProgramDiagnostic2DataTypeBuilder {
+	if b == nil {
 		return NewProgramDiagnostic2DataTypeBuilder()
 	}
-	return &_ProgramDiagnostic2DataTypeBuilder{_ProgramDiagnostic2DataType: m.deepCopy()}
+	return &_ProgramDiagnostic2DataTypeBuilder{_ProgramDiagnostic2DataType: b.deepCopy()}
 }
 
 ///////////////////////

@@ -82,6 +82,8 @@ type SALDataAirConditioningBuilder interface {
 	WithMandatoryFields(airConditioningData AirConditioningData) SALDataAirConditioningBuilder
 	// WithAirConditioningData adds AirConditioningData (property field)
 	WithAirConditioningData(AirConditioningData) SALDataAirConditioningBuilder
+	// WithAirConditioningDataBuilder adds AirConditioningData (property field) which is build by the builder
+	WithAirConditioningDataBuilder(func(AirConditioningDataBuilder) AirConditioningDataBuilder) SALDataAirConditioningBuilder
 	// Build builds the SALDataAirConditioning or returns an error if something is wrong
 	Build() (SALDataAirConditioning, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewSALDataAirConditioningBuilder() SALDataAirConditioningBuilder {
 type _SALDataAirConditioningBuilder struct {
 	*_SALDataAirConditioning
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataAirConditioningBuilder) = (*_SALDataAirConditioningBuilder)(nil)
 
-func (m *_SALDataAirConditioningBuilder) WithMandatoryFields(airConditioningData AirConditioningData) SALDataAirConditioningBuilder {
-	return m.WithAirConditioningData(airConditioningData)
+func (b *_SALDataAirConditioningBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataAirConditioningBuilder) WithAirConditioningData(airConditioningData AirConditioningData) SALDataAirConditioningBuilder {
-	m.AirConditioningData = airConditioningData
-	return m
+func (b *_SALDataAirConditioningBuilder) WithMandatoryFields(airConditioningData AirConditioningData) SALDataAirConditioningBuilder {
+	return b.WithAirConditioningData(airConditioningData)
 }
 
-func (m *_SALDataAirConditioningBuilder) Build() (SALDataAirConditioning, error) {
-	if m.AirConditioningData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SALDataAirConditioningBuilder) WithAirConditioningData(airConditioningData AirConditioningData) SALDataAirConditioningBuilder {
+	b.AirConditioningData = airConditioningData
+	return b
+}
+
+func (b *_SALDataAirConditioningBuilder) WithAirConditioningDataBuilder(builderSupplier func(AirConditioningDataBuilder) AirConditioningDataBuilder) SALDataAirConditioningBuilder {
+	builder := builderSupplier(b.AirConditioningData.CreateAirConditioningDataBuilder())
+	var err error
+	b.AirConditioningData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'airConditioningData' not set"))
+		b.err.Append(errors.Wrap(err, "AirConditioningDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._SALDataAirConditioning.deepCopy(), nil
+	return b
 }
 
-func (m *_SALDataAirConditioningBuilder) MustBuild() SALDataAirConditioning {
-	build, err := m.Build()
+func (b *_SALDataAirConditioningBuilder) Build() (SALDataAirConditioning, error) {
+	if b.AirConditioningData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'airConditioningData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataAirConditioning.deepCopy(), nil
+}
+
+func (b *_SALDataAirConditioningBuilder) MustBuild() SALDataAirConditioning {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataAirConditioningBuilder) DeepCopy() any {
-	return m.CreateSALDataAirConditioningBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataAirConditioningBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataAirConditioningBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataAirConditioningBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataAirConditioningBuilder().(*_SALDataAirConditioningBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataAirConditioningBuilder creates a SALDataAirConditioningBuilder
-func (m *_SALDataAirConditioning) CreateSALDataAirConditioningBuilder() SALDataAirConditioningBuilder {
-	if m == nil {
+func (b *_SALDataAirConditioning) CreateSALDataAirConditioningBuilder() SALDataAirConditioningBuilder {
+	if b == nil {
 		return NewSALDataAirConditioningBuilder()
 	}
-	return &_SALDataAirConditioningBuilder{_SALDataAirConditioning: m.deepCopy()}
+	return &_SALDataAirConditioningBuilder{_SALDataAirConditioning: b.deepCopy()}
 }
 
 ///////////////////////

@@ -85,40 +85,59 @@ func NewApduDataExtWriteRouterStatusRequestBuilder() ApduDataExtWriteRouterStatu
 type _ApduDataExtWriteRouterStatusRequestBuilder struct {
 	*_ApduDataExtWriteRouterStatusRequest
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtWriteRouterStatusRequestBuilder) = (*_ApduDataExtWriteRouterStatusRequestBuilder)(nil)
 
-func (m *_ApduDataExtWriteRouterStatusRequestBuilder) WithMandatoryFields() ApduDataExtWriteRouterStatusRequestBuilder {
-	return m
+func (b *_ApduDataExtWriteRouterStatusRequestBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtWriteRouterStatusRequestBuilder) Build() (ApduDataExtWriteRouterStatusRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtWriteRouterStatusRequestBuilder) WithMandatoryFields() ApduDataExtWriteRouterStatusRequestBuilder {
+	return b
+}
+
+func (b *_ApduDataExtWriteRouterStatusRequestBuilder) Build() (ApduDataExtWriteRouterStatusRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtWriteRouterStatusRequest.deepCopy(), nil
+	return b._ApduDataExtWriteRouterStatusRequest.deepCopy(), nil
 }
 
-func (m *_ApduDataExtWriteRouterStatusRequestBuilder) MustBuild() ApduDataExtWriteRouterStatusRequest {
-	build, err := m.Build()
+func (b *_ApduDataExtWriteRouterStatusRequestBuilder) MustBuild() ApduDataExtWriteRouterStatusRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtWriteRouterStatusRequestBuilder) DeepCopy() any {
-	return m.CreateApduDataExtWriteRouterStatusRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtWriteRouterStatusRequestBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtWriteRouterStatusRequestBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtWriteRouterStatusRequestBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtWriteRouterStatusRequestBuilder().(*_ApduDataExtWriteRouterStatusRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtWriteRouterStatusRequestBuilder creates a ApduDataExtWriteRouterStatusRequestBuilder
-func (m *_ApduDataExtWriteRouterStatusRequest) CreateApduDataExtWriteRouterStatusRequestBuilder() ApduDataExtWriteRouterStatusRequestBuilder {
-	if m == nil {
+func (b *_ApduDataExtWriteRouterStatusRequest) CreateApduDataExtWriteRouterStatusRequestBuilder() ApduDataExtWriteRouterStatusRequestBuilder {
+	if b == nil {
 		return NewApduDataExtWriteRouterStatusRequestBuilder()
 	}
-	return &_ApduDataExtWriteRouterStatusRequestBuilder{_ApduDataExtWriteRouterStatusRequest: m.deepCopy()}
+	return &_ApduDataExtWriteRouterStatusRequestBuilder{_ApduDataExtWriteRouterStatusRequest: b.deepCopy()}
 }
 
 ///////////////////////

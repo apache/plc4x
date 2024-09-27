@@ -99,50 +99,69 @@ func NewVariantXmlElementBuilder() VariantXmlElementBuilder {
 type _VariantXmlElementBuilder struct {
 	*_VariantXmlElement
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantXmlElementBuilder) = (*_VariantXmlElementBuilder)(nil)
 
-func (m *_VariantXmlElementBuilder) WithMandatoryFields(value []PascalString) VariantXmlElementBuilder {
-	return m.WithValue(value...)
+func (b *_VariantXmlElementBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantXmlElementBuilder) WithOptionalArrayLength(arrayLength int32) VariantXmlElementBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantXmlElementBuilder) WithMandatoryFields(value []PascalString) VariantXmlElementBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantXmlElementBuilder) WithValue(value ...PascalString) VariantXmlElementBuilder {
-	m.Value = value
-	return m
+func (b *_VariantXmlElementBuilder) WithOptionalArrayLength(arrayLength int32) VariantXmlElementBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantXmlElementBuilder) Build() (VariantXmlElement, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantXmlElementBuilder) WithValue(value ...PascalString) VariantXmlElementBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantXmlElementBuilder) Build() (VariantXmlElement, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantXmlElement.deepCopy(), nil
+	return b._VariantXmlElement.deepCopy(), nil
 }
 
-func (m *_VariantXmlElementBuilder) MustBuild() VariantXmlElement {
-	build, err := m.Build()
+func (b *_VariantXmlElementBuilder) MustBuild() VariantXmlElement {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantXmlElementBuilder) DeepCopy() any {
-	return m.CreateVariantXmlElementBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantXmlElementBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantXmlElementBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantXmlElementBuilder) DeepCopy() any {
+	_copy := b.CreateVariantXmlElementBuilder().(*_VariantXmlElementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantXmlElementBuilder creates a VariantXmlElementBuilder
-func (m *_VariantXmlElement) CreateVariantXmlElementBuilder() VariantXmlElementBuilder {
-	if m == nil {
+func (b *_VariantXmlElement) CreateVariantXmlElementBuilder() VariantXmlElementBuilder {
+	if b == nil {
 		return NewVariantXmlElementBuilder()
 	}
-	return &_VariantXmlElementBuilder{_VariantXmlElement: m.deepCopy()}
+	return &_VariantXmlElementBuilder{_VariantXmlElement: b.deepCopy()}
 }
 
 ///////////////////////

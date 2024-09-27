@@ -82,6 +82,8 @@ type SALDataAudioAndVideoBuilder interface {
 	WithMandatoryFields(audioVideoData LightingData) SALDataAudioAndVideoBuilder
 	// WithAudioVideoData adds AudioVideoData (property field)
 	WithAudioVideoData(LightingData) SALDataAudioAndVideoBuilder
+	// WithAudioVideoDataBuilder adds AudioVideoData (property field) which is build by the builder
+	WithAudioVideoDataBuilder(func(LightingDataBuilder) LightingDataBuilder) SALDataAudioAndVideoBuilder
 	// Build builds the SALDataAudioAndVideo or returns an error if something is wrong
 	Build() (SALDataAudioAndVideo, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewSALDataAudioAndVideoBuilder() SALDataAudioAndVideoBuilder {
 type _SALDataAudioAndVideoBuilder struct {
 	*_SALDataAudioAndVideo
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataAudioAndVideoBuilder) = (*_SALDataAudioAndVideoBuilder)(nil)
 
-func (m *_SALDataAudioAndVideoBuilder) WithMandatoryFields(audioVideoData LightingData) SALDataAudioAndVideoBuilder {
-	return m.WithAudioVideoData(audioVideoData)
+func (b *_SALDataAudioAndVideoBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataAudioAndVideoBuilder) WithAudioVideoData(audioVideoData LightingData) SALDataAudioAndVideoBuilder {
-	m.AudioVideoData = audioVideoData
-	return m
+func (b *_SALDataAudioAndVideoBuilder) WithMandatoryFields(audioVideoData LightingData) SALDataAudioAndVideoBuilder {
+	return b.WithAudioVideoData(audioVideoData)
 }
 
-func (m *_SALDataAudioAndVideoBuilder) Build() (SALDataAudioAndVideo, error) {
-	if m.AudioVideoData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SALDataAudioAndVideoBuilder) WithAudioVideoData(audioVideoData LightingData) SALDataAudioAndVideoBuilder {
+	b.AudioVideoData = audioVideoData
+	return b
+}
+
+func (b *_SALDataAudioAndVideoBuilder) WithAudioVideoDataBuilder(builderSupplier func(LightingDataBuilder) LightingDataBuilder) SALDataAudioAndVideoBuilder {
+	builder := builderSupplier(b.AudioVideoData.CreateLightingDataBuilder())
+	var err error
+	b.AudioVideoData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'audioVideoData' not set"))
+		b.err.Append(errors.Wrap(err, "LightingDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._SALDataAudioAndVideo.deepCopy(), nil
+	return b
 }
 
-func (m *_SALDataAudioAndVideoBuilder) MustBuild() SALDataAudioAndVideo {
-	build, err := m.Build()
+func (b *_SALDataAudioAndVideoBuilder) Build() (SALDataAudioAndVideo, error) {
+	if b.AudioVideoData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'audioVideoData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataAudioAndVideo.deepCopy(), nil
+}
+
+func (b *_SALDataAudioAndVideoBuilder) MustBuild() SALDataAudioAndVideo {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataAudioAndVideoBuilder) DeepCopy() any {
-	return m.CreateSALDataAudioAndVideoBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataAudioAndVideoBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataAudioAndVideoBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataAudioAndVideoBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataAudioAndVideoBuilder().(*_SALDataAudioAndVideoBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataAudioAndVideoBuilder creates a SALDataAudioAndVideoBuilder
-func (m *_SALDataAudioAndVideo) CreateSALDataAudioAndVideoBuilder() SALDataAudioAndVideoBuilder {
-	if m == nil {
+func (b *_SALDataAudioAndVideo) CreateSALDataAudioAndVideoBuilder() SALDataAudioAndVideoBuilder {
+	if b == nil {
 		return NewSALDataAudioAndVideoBuilder()
 	}
-	return &_SALDataAudioAndVideoBuilder{_SALDataAudioAndVideo: m.deepCopy()}
+	return &_SALDataAudioAndVideoBuilder{_SALDataAudioAndVideo: b.deepCopy()}
 }
 
 ///////////////////////

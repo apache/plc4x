@@ -104,69 +104,88 @@ func NewParameterValueInterfaceOptions2Builder() ParameterValueInterfaceOptions2
 type _ParameterValueInterfaceOptions2Builder struct {
 	*_ParameterValueInterfaceOptions2
 
+	parentBuilder *_ParameterValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ParameterValueInterfaceOptions2Builder) = (*_ParameterValueInterfaceOptions2Builder)(nil)
 
-func (m *_ParameterValueInterfaceOptions2Builder) WithMandatoryFields(value InterfaceOptions2, data []byte) ParameterValueInterfaceOptions2Builder {
-	return m.WithValue(value).WithData(data...)
+func (b *_ParameterValueInterfaceOptions2Builder) setParent(contract ParameterValueContract) {
+	b.ParameterValueContract = contract
 }
 
-func (m *_ParameterValueInterfaceOptions2Builder) WithValue(value InterfaceOptions2) ParameterValueInterfaceOptions2Builder {
-	m.Value = value
-	return m
+func (b *_ParameterValueInterfaceOptions2Builder) WithMandatoryFields(value InterfaceOptions2, data []byte) ParameterValueInterfaceOptions2Builder {
+	return b.WithValue(value).WithData(data...)
 }
 
-func (m *_ParameterValueInterfaceOptions2Builder) WithValueBuilder(builderSupplier func(InterfaceOptions2Builder) InterfaceOptions2Builder) ParameterValueInterfaceOptions2Builder {
-	builder := builderSupplier(m.Value.CreateInterfaceOptions2Builder())
+func (b *_ParameterValueInterfaceOptions2Builder) WithValue(value InterfaceOptions2) ParameterValueInterfaceOptions2Builder {
+	b.Value = value
+	return b
+}
+
+func (b *_ParameterValueInterfaceOptions2Builder) WithValueBuilder(builderSupplier func(InterfaceOptions2Builder) InterfaceOptions2Builder) ParameterValueInterfaceOptions2Builder {
+	builder := builderSupplier(b.Value.CreateInterfaceOptions2Builder())
 	var err error
-	m.Value, err = builder.Build()
+	b.Value, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "InterfaceOptions2Builder failed"))
+		b.err.Append(errors.Wrap(err, "InterfaceOptions2Builder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ParameterValueInterfaceOptions2Builder) WithData(data ...byte) ParameterValueInterfaceOptions2Builder {
-	m.Data = data
-	return m
+func (b *_ParameterValueInterfaceOptions2Builder) WithData(data ...byte) ParameterValueInterfaceOptions2Builder {
+	b.Data = data
+	return b
 }
 
-func (m *_ParameterValueInterfaceOptions2Builder) Build() (ParameterValueInterfaceOptions2, error) {
-	if m.Value == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ParameterValueInterfaceOptions2Builder) Build() (ParameterValueInterfaceOptions2, error) {
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'value' not set"))
+		b.err.Append(errors.New("mandatory field 'value' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ParameterValueInterfaceOptions2.deepCopy(), nil
+	return b._ParameterValueInterfaceOptions2.deepCopy(), nil
 }
 
-func (m *_ParameterValueInterfaceOptions2Builder) MustBuild() ParameterValueInterfaceOptions2 {
-	build, err := m.Build()
+func (b *_ParameterValueInterfaceOptions2Builder) MustBuild() ParameterValueInterfaceOptions2 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ParameterValueInterfaceOptions2Builder) DeepCopy() any {
-	return m.CreateParameterValueInterfaceOptions2Builder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ParameterValueInterfaceOptions2Builder) Done() ParameterValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ParameterValueInterfaceOptions2Builder) buildForParameterValue() (ParameterValue, error) {
+	return b.Build()
+}
+
+func (b *_ParameterValueInterfaceOptions2Builder) DeepCopy() any {
+	_copy := b.CreateParameterValueInterfaceOptions2Builder().(*_ParameterValueInterfaceOptions2Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateParameterValueInterfaceOptions2Builder creates a ParameterValueInterfaceOptions2Builder
-func (m *_ParameterValueInterfaceOptions2) CreateParameterValueInterfaceOptions2Builder() ParameterValueInterfaceOptions2Builder {
-	if m == nil {
+func (b *_ParameterValueInterfaceOptions2) CreateParameterValueInterfaceOptions2Builder() ParameterValueInterfaceOptions2Builder {
+	if b == nil {
 		return NewParameterValueInterfaceOptions2Builder()
 	}
-	return &_ParameterValueInterfaceOptions2Builder{_ParameterValueInterfaceOptions2: m.deepCopy()}
+	return &_ParameterValueInterfaceOptions2Builder{_ParameterValueInterfaceOptions2: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataInstallationIDBuilder() BACnetConstructedDataInstal
 type _BACnetConstructedDataInstallationIDBuilder struct {
 	*_BACnetConstructedDataInstallationID
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataInstallationIDBuilder) = (*_BACnetConstructedDataInstallationIDBuilder)(nil)
 
-func (m *_BACnetConstructedDataInstallationIDBuilder) WithMandatoryFields(installationId BACnetApplicationTagUnsignedInteger) BACnetConstructedDataInstallationIDBuilder {
-	return m.WithInstallationId(installationId)
+func (b *_BACnetConstructedDataInstallationIDBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataInstallationIDBuilder) WithInstallationId(installationId BACnetApplicationTagUnsignedInteger) BACnetConstructedDataInstallationIDBuilder {
-	m.InstallationId = installationId
-	return m
+func (b *_BACnetConstructedDataInstallationIDBuilder) WithMandatoryFields(installationId BACnetApplicationTagUnsignedInteger) BACnetConstructedDataInstallationIDBuilder {
+	return b.WithInstallationId(installationId)
 }
 
-func (m *_BACnetConstructedDataInstallationIDBuilder) WithInstallationIdBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataInstallationIDBuilder {
-	builder := builderSupplier(m.InstallationId.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataInstallationIDBuilder) WithInstallationId(installationId BACnetApplicationTagUnsignedInteger) BACnetConstructedDataInstallationIDBuilder {
+	b.InstallationId = installationId
+	return b
+}
+
+func (b *_BACnetConstructedDataInstallationIDBuilder) WithInstallationIdBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataInstallationIDBuilder {
+	builder := builderSupplier(b.InstallationId.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.InstallationId, err = builder.Build()
+	b.InstallationId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataInstallationIDBuilder) Build() (BACnetConstructedDataInstallationID, error) {
-	if m.InstallationId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataInstallationIDBuilder) Build() (BACnetConstructedDataInstallationID, error) {
+	if b.InstallationId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'installationId' not set"))
+		b.err.Append(errors.New("mandatory field 'installationId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataInstallationID.deepCopy(), nil
+	return b._BACnetConstructedDataInstallationID.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataInstallationIDBuilder) MustBuild() BACnetConstructedDataInstallationID {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataInstallationIDBuilder) MustBuild() BACnetConstructedDataInstallationID {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataInstallationIDBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataInstallationIDBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataInstallationIDBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataInstallationIDBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataInstallationIDBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataInstallationIDBuilder().(*_BACnetConstructedDataInstallationIDBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataInstallationIDBuilder creates a BACnetConstructedDataInstallationIDBuilder
-func (m *_BACnetConstructedDataInstallationID) CreateBACnetConstructedDataInstallationIDBuilder() BACnetConstructedDataInstallationIDBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataInstallationID) CreateBACnetConstructedDataInstallationIDBuilder() BACnetConstructedDataInstallationIDBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataInstallationIDBuilder()
 	}
-	return &_BACnetConstructedDataInstallationIDBuilder{_BACnetConstructedDataInstallationID: m.deepCopy()}
+	return &_BACnetConstructedDataInstallationIDBuilder{_BACnetConstructedDataInstallationID: b.deepCopy()}
 }
 
 ///////////////////////

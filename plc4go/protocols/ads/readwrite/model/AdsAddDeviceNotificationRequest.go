@@ -126,70 +126,89 @@ func NewAdsAddDeviceNotificationRequestBuilder() AdsAddDeviceNotificationRequest
 type _AdsAddDeviceNotificationRequestBuilder struct {
 	*_AdsAddDeviceNotificationRequest
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsAddDeviceNotificationRequestBuilder) = (*_AdsAddDeviceNotificationRequestBuilder)(nil)
 
-func (m *_AdsAddDeviceNotificationRequestBuilder) WithMandatoryFields(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode AdsTransMode, maxDelayInMs uint32, cycleTimeInMs uint32) AdsAddDeviceNotificationRequestBuilder {
-	return m.WithIndexGroup(indexGroup).WithIndexOffset(indexOffset).WithLength(length).WithTransmissionMode(transmissionMode).WithMaxDelayInMs(maxDelayInMs).WithCycleTimeInMs(cycleTimeInMs)
+func (b *_AdsAddDeviceNotificationRequestBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_AdsAddDeviceNotificationRequestBuilder) WithIndexGroup(indexGroup uint32) AdsAddDeviceNotificationRequestBuilder {
-	m.IndexGroup = indexGroup
-	return m
+func (b *_AdsAddDeviceNotificationRequestBuilder) WithMandatoryFields(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode AdsTransMode, maxDelayInMs uint32, cycleTimeInMs uint32) AdsAddDeviceNotificationRequestBuilder {
+	return b.WithIndexGroup(indexGroup).WithIndexOffset(indexOffset).WithLength(length).WithTransmissionMode(transmissionMode).WithMaxDelayInMs(maxDelayInMs).WithCycleTimeInMs(cycleTimeInMs)
 }
 
-func (m *_AdsAddDeviceNotificationRequestBuilder) WithIndexOffset(indexOffset uint32) AdsAddDeviceNotificationRequestBuilder {
-	m.IndexOffset = indexOffset
-	return m
+func (b *_AdsAddDeviceNotificationRequestBuilder) WithIndexGroup(indexGroup uint32) AdsAddDeviceNotificationRequestBuilder {
+	b.IndexGroup = indexGroup
+	return b
 }
 
-func (m *_AdsAddDeviceNotificationRequestBuilder) WithLength(length uint32) AdsAddDeviceNotificationRequestBuilder {
-	m.Length = length
-	return m
+func (b *_AdsAddDeviceNotificationRequestBuilder) WithIndexOffset(indexOffset uint32) AdsAddDeviceNotificationRequestBuilder {
+	b.IndexOffset = indexOffset
+	return b
 }
 
-func (m *_AdsAddDeviceNotificationRequestBuilder) WithTransmissionMode(transmissionMode AdsTransMode) AdsAddDeviceNotificationRequestBuilder {
-	m.TransmissionMode = transmissionMode
-	return m
+func (b *_AdsAddDeviceNotificationRequestBuilder) WithLength(length uint32) AdsAddDeviceNotificationRequestBuilder {
+	b.Length = length
+	return b
 }
 
-func (m *_AdsAddDeviceNotificationRequestBuilder) WithMaxDelayInMs(maxDelayInMs uint32) AdsAddDeviceNotificationRequestBuilder {
-	m.MaxDelayInMs = maxDelayInMs
-	return m
+func (b *_AdsAddDeviceNotificationRequestBuilder) WithTransmissionMode(transmissionMode AdsTransMode) AdsAddDeviceNotificationRequestBuilder {
+	b.TransmissionMode = transmissionMode
+	return b
 }
 
-func (m *_AdsAddDeviceNotificationRequestBuilder) WithCycleTimeInMs(cycleTimeInMs uint32) AdsAddDeviceNotificationRequestBuilder {
-	m.CycleTimeInMs = cycleTimeInMs
-	return m
+func (b *_AdsAddDeviceNotificationRequestBuilder) WithMaxDelayInMs(maxDelayInMs uint32) AdsAddDeviceNotificationRequestBuilder {
+	b.MaxDelayInMs = maxDelayInMs
+	return b
 }
 
-func (m *_AdsAddDeviceNotificationRequestBuilder) Build() (AdsAddDeviceNotificationRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsAddDeviceNotificationRequestBuilder) WithCycleTimeInMs(cycleTimeInMs uint32) AdsAddDeviceNotificationRequestBuilder {
+	b.CycleTimeInMs = cycleTimeInMs
+	return b
+}
+
+func (b *_AdsAddDeviceNotificationRequestBuilder) Build() (AdsAddDeviceNotificationRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsAddDeviceNotificationRequest.deepCopy(), nil
+	return b._AdsAddDeviceNotificationRequest.deepCopy(), nil
 }
 
-func (m *_AdsAddDeviceNotificationRequestBuilder) MustBuild() AdsAddDeviceNotificationRequest {
-	build, err := m.Build()
+func (b *_AdsAddDeviceNotificationRequestBuilder) MustBuild() AdsAddDeviceNotificationRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsAddDeviceNotificationRequestBuilder) DeepCopy() any {
-	return m.CreateAdsAddDeviceNotificationRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsAddDeviceNotificationRequestBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsAddDeviceNotificationRequestBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsAddDeviceNotificationRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAdsAddDeviceNotificationRequestBuilder().(*_AdsAddDeviceNotificationRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsAddDeviceNotificationRequestBuilder creates a AdsAddDeviceNotificationRequestBuilder
-func (m *_AdsAddDeviceNotificationRequest) CreateAdsAddDeviceNotificationRequestBuilder() AdsAddDeviceNotificationRequestBuilder {
-	if m == nil {
+func (b *_AdsAddDeviceNotificationRequest) CreateAdsAddDeviceNotificationRequestBuilder() AdsAddDeviceNotificationRequestBuilder {
+	if b == nil {
 		return NewAdsAddDeviceNotificationRequestBuilder()
 	}
-	return &_AdsAddDeviceNotificationRequestBuilder{_AdsAddDeviceNotificationRequest: m.deepCopy()}
+	return &_AdsAddDeviceNotificationRequestBuilder{_AdsAddDeviceNotificationRequest: b.deepCopy()}
 }
 
 ///////////////////////

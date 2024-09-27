@@ -103,63 +103,82 @@ func NewBACnetConstructedDataLogBufferBuilder() BACnetConstructedDataLogBufferBu
 type _BACnetConstructedDataLogBufferBuilder struct {
 	*_BACnetConstructedDataLogBuffer
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLogBufferBuilder) = (*_BACnetConstructedDataLogBufferBuilder)(nil)
 
-func (m *_BACnetConstructedDataLogBufferBuilder) WithMandatoryFields(floorText []BACnetLogRecord) BACnetConstructedDataLogBufferBuilder {
-	return m.WithFloorText(floorText...)
+func (b *_BACnetConstructedDataLogBufferBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLogBufferBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLogBufferBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataLogBufferBuilder) WithMandatoryFields(floorText []BACnetLogRecord) BACnetConstructedDataLogBufferBuilder {
+	return b.WithFloorText(floorText...)
 }
 
-func (m *_BACnetConstructedDataLogBufferBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLogBufferBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataLogBufferBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLogBufferBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataLogBufferBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLogBufferBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLogBufferBuilder) WithFloorText(floorText ...BACnetLogRecord) BACnetConstructedDataLogBufferBuilder {
-	m.FloorText = floorText
-	return m
+func (b *_BACnetConstructedDataLogBufferBuilder) WithFloorText(floorText ...BACnetLogRecord) BACnetConstructedDataLogBufferBuilder {
+	b.FloorText = floorText
+	return b
 }
 
-func (m *_BACnetConstructedDataLogBufferBuilder) Build() (BACnetConstructedDataLogBuffer, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataLogBufferBuilder) Build() (BACnetConstructedDataLogBuffer, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLogBuffer.deepCopy(), nil
+	return b._BACnetConstructedDataLogBuffer.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLogBufferBuilder) MustBuild() BACnetConstructedDataLogBuffer {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLogBufferBuilder) MustBuild() BACnetConstructedDataLogBuffer {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLogBufferBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLogBufferBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLogBufferBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLogBufferBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLogBufferBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLogBufferBuilder().(*_BACnetConstructedDataLogBufferBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLogBufferBuilder creates a BACnetConstructedDataLogBufferBuilder
-func (m *_BACnetConstructedDataLogBuffer) CreateBACnetConstructedDataLogBufferBuilder() BACnetConstructedDataLogBufferBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLogBuffer) CreateBACnetConstructedDataLogBufferBuilder() BACnetConstructedDataLogBufferBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLogBufferBuilder()
 	}
-	return &_BACnetConstructedDataLogBufferBuilder{_BACnetConstructedDataLogBuffer: m.deepCopy()}
+	return &_BACnetConstructedDataLogBufferBuilder{_BACnetConstructedDataLogBuffer: b.deepCopy()}
 }
 
 ///////////////////////

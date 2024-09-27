@@ -101,50 +101,69 @@ func NewBVLCDeleteForeignDeviceTableEntryBuilder() BVLCDeleteForeignDeviceTableE
 type _BVLCDeleteForeignDeviceTableEntryBuilder struct {
 	*_BVLCDeleteForeignDeviceTableEntry
 
+	parentBuilder *_BVLCBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BVLCDeleteForeignDeviceTableEntryBuilder) = (*_BVLCDeleteForeignDeviceTableEntryBuilder)(nil)
 
-func (m *_BVLCDeleteForeignDeviceTableEntryBuilder) WithMandatoryFields(ip []uint8, port uint16) BVLCDeleteForeignDeviceTableEntryBuilder {
-	return m.WithIp(ip...).WithPort(port)
+func (b *_BVLCDeleteForeignDeviceTableEntryBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
 }
 
-func (m *_BVLCDeleteForeignDeviceTableEntryBuilder) WithIp(ip ...uint8) BVLCDeleteForeignDeviceTableEntryBuilder {
-	m.Ip = ip
-	return m
+func (b *_BVLCDeleteForeignDeviceTableEntryBuilder) WithMandatoryFields(ip []uint8, port uint16) BVLCDeleteForeignDeviceTableEntryBuilder {
+	return b.WithIp(ip...).WithPort(port)
 }
 
-func (m *_BVLCDeleteForeignDeviceTableEntryBuilder) WithPort(port uint16) BVLCDeleteForeignDeviceTableEntryBuilder {
-	m.Port = port
-	return m
+func (b *_BVLCDeleteForeignDeviceTableEntryBuilder) WithIp(ip ...uint8) BVLCDeleteForeignDeviceTableEntryBuilder {
+	b.Ip = ip
+	return b
 }
 
-func (m *_BVLCDeleteForeignDeviceTableEntryBuilder) Build() (BVLCDeleteForeignDeviceTableEntry, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BVLCDeleteForeignDeviceTableEntryBuilder) WithPort(port uint16) BVLCDeleteForeignDeviceTableEntryBuilder {
+	b.Port = port
+	return b
+}
+
+func (b *_BVLCDeleteForeignDeviceTableEntryBuilder) Build() (BVLCDeleteForeignDeviceTableEntry, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BVLCDeleteForeignDeviceTableEntry.deepCopy(), nil
+	return b._BVLCDeleteForeignDeviceTableEntry.deepCopy(), nil
 }
 
-func (m *_BVLCDeleteForeignDeviceTableEntryBuilder) MustBuild() BVLCDeleteForeignDeviceTableEntry {
-	build, err := m.Build()
+func (b *_BVLCDeleteForeignDeviceTableEntryBuilder) MustBuild() BVLCDeleteForeignDeviceTableEntry {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BVLCDeleteForeignDeviceTableEntryBuilder) DeepCopy() any {
-	return m.CreateBVLCDeleteForeignDeviceTableEntryBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCDeleteForeignDeviceTableEntryBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCDeleteForeignDeviceTableEntryBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCDeleteForeignDeviceTableEntryBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCDeleteForeignDeviceTableEntryBuilder().(*_BVLCDeleteForeignDeviceTableEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBVLCDeleteForeignDeviceTableEntryBuilder creates a BVLCDeleteForeignDeviceTableEntryBuilder
-func (m *_BVLCDeleteForeignDeviceTableEntry) CreateBVLCDeleteForeignDeviceTableEntryBuilder() BVLCDeleteForeignDeviceTableEntryBuilder {
-	if m == nil {
+func (b *_BVLCDeleteForeignDeviceTableEntry) CreateBVLCDeleteForeignDeviceTableEntryBuilder() BVLCDeleteForeignDeviceTableEntryBuilder {
+	if b == nil {
 		return NewBVLCDeleteForeignDeviceTableEntryBuilder()
 	}
-	return &_BVLCDeleteForeignDeviceTableEntryBuilder{_BVLCDeleteForeignDeviceTableEntry: m.deepCopy()}
+	return &_BVLCDeleteForeignDeviceTableEntryBuilder{_BVLCDeleteForeignDeviceTableEntry: b.deepCopy()}
 }
 
 ///////////////////////

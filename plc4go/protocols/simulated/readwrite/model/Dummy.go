@@ -92,40 +92,44 @@ type _DummyBuilder struct {
 
 var _ (DummyBuilder) = (*_DummyBuilder)(nil)
 
-func (m *_DummyBuilder) WithMandatoryFields(dummy uint16) DummyBuilder {
-	return m.WithDummy(dummy)
+func (b *_DummyBuilder) WithMandatoryFields(dummy uint16) DummyBuilder {
+	return b.WithDummy(dummy)
 }
 
-func (m *_DummyBuilder) WithDummy(dummy uint16) DummyBuilder {
-	m.Dummy = dummy
-	return m
+func (b *_DummyBuilder) WithDummy(dummy uint16) DummyBuilder {
+	b.Dummy = dummy
+	return b
 }
 
-func (m *_DummyBuilder) Build() (Dummy, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DummyBuilder) Build() (Dummy, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Dummy.deepCopy(), nil
+	return b._Dummy.deepCopy(), nil
 }
 
-func (m *_DummyBuilder) MustBuild() Dummy {
-	build, err := m.Build()
+func (b *_DummyBuilder) MustBuild() Dummy {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DummyBuilder) DeepCopy() any {
-	return m.CreateDummyBuilder()
+func (b *_DummyBuilder) DeepCopy() any {
+	_copy := b.CreateDummyBuilder().(*_DummyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDummyBuilder creates a DummyBuilder
-func (m *_Dummy) CreateDummyBuilder() DummyBuilder {
-	if m == nil {
+func (b *_Dummy) CreateDummyBuilder() DummyBuilder {
+	if b == nil {
 		return NewDummyBuilder()
 	}
-	return &_DummyBuilder{_Dummy: m.deepCopy()}
+	return &_DummyBuilder{_Dummy: b.deepCopy()}
 }
 
 ///////////////////////

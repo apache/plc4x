@@ -99,50 +99,69 @@ func NewVariantDataValueBuilder() VariantDataValueBuilder {
 type _VariantDataValueBuilder struct {
 	*_VariantDataValue
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantDataValueBuilder) = (*_VariantDataValueBuilder)(nil)
 
-func (m *_VariantDataValueBuilder) WithMandatoryFields(value []DataValue) VariantDataValueBuilder {
-	return m.WithValue(value...)
+func (b *_VariantDataValueBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantDataValueBuilder) WithOptionalArrayLength(arrayLength int32) VariantDataValueBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantDataValueBuilder) WithMandatoryFields(value []DataValue) VariantDataValueBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantDataValueBuilder) WithValue(value ...DataValue) VariantDataValueBuilder {
-	m.Value = value
-	return m
+func (b *_VariantDataValueBuilder) WithOptionalArrayLength(arrayLength int32) VariantDataValueBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantDataValueBuilder) Build() (VariantDataValue, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantDataValueBuilder) WithValue(value ...DataValue) VariantDataValueBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantDataValueBuilder) Build() (VariantDataValue, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantDataValue.deepCopy(), nil
+	return b._VariantDataValue.deepCopy(), nil
 }
 
-func (m *_VariantDataValueBuilder) MustBuild() VariantDataValue {
-	build, err := m.Build()
+func (b *_VariantDataValueBuilder) MustBuild() VariantDataValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantDataValueBuilder) DeepCopy() any {
-	return m.CreateVariantDataValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantDataValueBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantDataValueBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantDataValueBuilder) DeepCopy() any {
+	_copy := b.CreateVariantDataValueBuilder().(*_VariantDataValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantDataValueBuilder creates a VariantDataValueBuilder
-func (m *_VariantDataValue) CreateVariantDataValueBuilder() VariantDataValueBuilder {
-	if m == nil {
+func (b *_VariantDataValue) CreateVariantDataValueBuilder() VariantDataValueBuilder {
+	if b == nil {
 		return NewVariantDataValueBuilder()
 	}
-	return &_VariantDataValueBuilder{_VariantDataValue: m.deepCopy()}
+	return &_VariantDataValueBuilder{_VariantDataValue: b.deepCopy()}
 }
 
 ///////////////////////

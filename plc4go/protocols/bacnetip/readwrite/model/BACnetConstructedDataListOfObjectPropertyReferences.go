@@ -93,45 +93,64 @@ func NewBACnetConstructedDataListOfObjectPropertyReferencesBuilder() BACnetConst
 type _BACnetConstructedDataListOfObjectPropertyReferencesBuilder struct {
 	*_BACnetConstructedDataListOfObjectPropertyReferences
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataListOfObjectPropertyReferencesBuilder) = (*_BACnetConstructedDataListOfObjectPropertyReferencesBuilder)(nil)
 
-func (m *_BACnetConstructedDataListOfObjectPropertyReferencesBuilder) WithMandatoryFields(references []BACnetDeviceObjectPropertyReference) BACnetConstructedDataListOfObjectPropertyReferencesBuilder {
-	return m.WithReferences(references...)
+func (b *_BACnetConstructedDataListOfObjectPropertyReferencesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataListOfObjectPropertyReferencesBuilder) WithReferences(references ...BACnetDeviceObjectPropertyReference) BACnetConstructedDataListOfObjectPropertyReferencesBuilder {
-	m.References = references
-	return m
+func (b *_BACnetConstructedDataListOfObjectPropertyReferencesBuilder) WithMandatoryFields(references []BACnetDeviceObjectPropertyReference) BACnetConstructedDataListOfObjectPropertyReferencesBuilder {
+	return b.WithReferences(references...)
 }
 
-func (m *_BACnetConstructedDataListOfObjectPropertyReferencesBuilder) Build() (BACnetConstructedDataListOfObjectPropertyReferences, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataListOfObjectPropertyReferencesBuilder) WithReferences(references ...BACnetDeviceObjectPropertyReference) BACnetConstructedDataListOfObjectPropertyReferencesBuilder {
+	b.References = references
+	return b
+}
+
+func (b *_BACnetConstructedDataListOfObjectPropertyReferencesBuilder) Build() (BACnetConstructedDataListOfObjectPropertyReferences, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataListOfObjectPropertyReferences.deepCopy(), nil
+	return b._BACnetConstructedDataListOfObjectPropertyReferences.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataListOfObjectPropertyReferencesBuilder) MustBuild() BACnetConstructedDataListOfObjectPropertyReferences {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataListOfObjectPropertyReferencesBuilder) MustBuild() BACnetConstructedDataListOfObjectPropertyReferences {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataListOfObjectPropertyReferencesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataListOfObjectPropertyReferencesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataListOfObjectPropertyReferencesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataListOfObjectPropertyReferencesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataListOfObjectPropertyReferencesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataListOfObjectPropertyReferencesBuilder().(*_BACnetConstructedDataListOfObjectPropertyReferencesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataListOfObjectPropertyReferencesBuilder creates a BACnetConstructedDataListOfObjectPropertyReferencesBuilder
-func (m *_BACnetConstructedDataListOfObjectPropertyReferences) CreateBACnetConstructedDataListOfObjectPropertyReferencesBuilder() BACnetConstructedDataListOfObjectPropertyReferencesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataListOfObjectPropertyReferences) CreateBACnetConstructedDataListOfObjectPropertyReferencesBuilder() BACnetConstructedDataListOfObjectPropertyReferencesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataListOfObjectPropertyReferencesBuilder()
 	}
-	return &_BACnetConstructedDataListOfObjectPropertyReferencesBuilder{_BACnetConstructedDataListOfObjectPropertyReferences: m.deepCopy()}
+	return &_BACnetConstructedDataListOfObjectPropertyReferencesBuilder{_BACnetConstructedDataListOfObjectPropertyReferences: b.deepCopy()}
 }
 
 ///////////////////////

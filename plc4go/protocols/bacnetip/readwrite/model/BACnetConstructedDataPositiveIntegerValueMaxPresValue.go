@@ -100,64 +100,83 @@ func NewBACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder() BACnetCon
 type _BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder struct {
 	*_BACnetConstructedDataPositiveIntegerValueMaxPresValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) = (*_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) WithMandatoryFields(maxPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder {
-	return m.WithMaxPresValue(maxPresValue)
+func (b *_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) WithMaxPresValue(maxPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder {
-	m.MaxPresValue = maxPresValue
-	return m
+func (b *_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) WithMandatoryFields(maxPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder {
+	return b.WithMaxPresValue(maxPresValue)
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) WithMaxPresValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder {
-	builder := builderSupplier(m.MaxPresValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) WithMaxPresValue(maxPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder {
+	b.MaxPresValue = maxPresValue
+	return b
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) WithMaxPresValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder {
+	builder := builderSupplier(b.MaxPresValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.MaxPresValue, err = builder.Build()
+	b.MaxPresValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) Build() (BACnetConstructedDataPositiveIntegerValueMaxPresValue, error) {
-	if m.MaxPresValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) Build() (BACnetConstructedDataPositiveIntegerValueMaxPresValue, error) {
+	if b.MaxPresValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'maxPresValue' not set"))
+		b.err.Append(errors.New("mandatory field 'maxPresValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataPositiveIntegerValueMaxPresValue.deepCopy(), nil
+	return b._BACnetConstructedDataPositiveIntegerValueMaxPresValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueMaxPresValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueMaxPresValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder().(*_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder creates a BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder
-func (m *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) CreateBACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder() BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataPositiveIntegerValueMaxPresValue) CreateBACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder() BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder()
 	}
-	return &_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder{_BACnetConstructedDataPositiveIntegerValueMaxPresValue: m.deepCopy()}
+	return &_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder{_BACnetConstructedDataPositiveIntegerValueMaxPresValue: b.deepCopy()}
 }
 
 ///////////////////////

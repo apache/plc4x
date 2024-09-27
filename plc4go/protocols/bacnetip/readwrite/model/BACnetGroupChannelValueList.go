@@ -113,88 +113,92 @@ type _BACnetGroupChannelValueListBuilder struct {
 
 var _ (BACnetGroupChannelValueListBuilder) = (*_BACnetGroupChannelValueListBuilder)(nil)
 
-func (m *_BACnetGroupChannelValueListBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfEventSummaries []BACnetEventSummary, closingTag BACnetClosingTag) BACnetGroupChannelValueListBuilder {
-	return m.WithOpeningTag(openingTag).WithListOfEventSummaries(listOfEventSummaries...).WithClosingTag(closingTag)
+func (b *_BACnetGroupChannelValueListBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfEventSummaries []BACnetEventSummary, closingTag BACnetClosingTag) BACnetGroupChannelValueListBuilder {
+	return b.WithOpeningTag(openingTag).WithListOfEventSummaries(listOfEventSummaries...).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetGroupChannelValueListBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetGroupChannelValueListBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetGroupChannelValueListBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetGroupChannelValueListBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetGroupChannelValueListBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetGroupChannelValueListBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetGroupChannelValueListBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetGroupChannelValueListBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetGroupChannelValueListBuilder) WithListOfEventSummaries(listOfEventSummaries ...BACnetEventSummary) BACnetGroupChannelValueListBuilder {
-	m.ListOfEventSummaries = listOfEventSummaries
-	return m
+func (b *_BACnetGroupChannelValueListBuilder) WithListOfEventSummaries(listOfEventSummaries ...BACnetEventSummary) BACnetGroupChannelValueListBuilder {
+	b.ListOfEventSummaries = listOfEventSummaries
+	return b
 }
 
-func (m *_BACnetGroupChannelValueListBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetGroupChannelValueListBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetGroupChannelValueListBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetGroupChannelValueListBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetGroupChannelValueListBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetGroupChannelValueListBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetGroupChannelValueListBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetGroupChannelValueListBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetGroupChannelValueListBuilder) Build() (BACnetGroupChannelValueList, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetGroupChannelValueListBuilder) Build() (BACnetGroupChannelValueList, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetGroupChannelValueList.deepCopy(), nil
+	return b._BACnetGroupChannelValueList.deepCopy(), nil
 }
 
-func (m *_BACnetGroupChannelValueListBuilder) MustBuild() BACnetGroupChannelValueList {
-	build, err := m.Build()
+func (b *_BACnetGroupChannelValueListBuilder) MustBuild() BACnetGroupChannelValueList {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetGroupChannelValueListBuilder) DeepCopy() any {
-	return m.CreateBACnetGroupChannelValueListBuilder()
+func (b *_BACnetGroupChannelValueListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetGroupChannelValueListBuilder().(*_BACnetGroupChannelValueListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetGroupChannelValueListBuilder creates a BACnetGroupChannelValueListBuilder
-func (m *_BACnetGroupChannelValueList) CreateBACnetGroupChannelValueListBuilder() BACnetGroupChannelValueListBuilder {
-	if m == nil {
+func (b *_BACnetGroupChannelValueList) CreateBACnetGroupChannelValueListBuilder() BACnetGroupChannelValueListBuilder {
+	if b == nil {
 		return NewBACnetGroupChannelValueListBuilder()
 	}
-	return &_BACnetGroupChannelValueListBuilder{_BACnetGroupChannelValueList: m.deepCopy()}
+	return &_BACnetGroupChannelValueListBuilder{_BACnetGroupChannelValueList: b.deepCopy()}
 }
 
 ///////////////////////

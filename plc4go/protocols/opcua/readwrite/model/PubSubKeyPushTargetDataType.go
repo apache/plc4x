@@ -151,6 +151,8 @@ type PubSubKeyPushTargetDataTypeBuilder interface {
 	WithSecurityPolicyUriBuilder(func(PascalStringBuilder) PascalStringBuilder) PubSubKeyPushTargetDataTypeBuilder
 	// WithUserTokenType adds UserTokenType (property field)
 	WithUserTokenType(ExtensionObjectDefinition) PubSubKeyPushTargetDataTypeBuilder
+	// WithUserTokenTypeBuilder adds UserTokenType (property field) which is build by the builder
+	WithUserTokenTypeBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) PubSubKeyPushTargetDataTypeBuilder
 	// WithRequestedKeyCount adds RequestedKeyCount (property field)
 	WithRequestedKeyCount(uint16) PubSubKeyPushTargetDataTypeBuilder
 	// WithRetryInterval adds RetryInterval (property field)
@@ -177,163 +179,195 @@ func NewPubSubKeyPushTargetDataTypeBuilder() PubSubKeyPushTargetDataTypeBuilder 
 type _PubSubKeyPushTargetDataTypeBuilder struct {
 	*_PubSubKeyPushTargetDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (PubSubKeyPushTargetDataTypeBuilder) = (*_PubSubKeyPushTargetDataTypeBuilder)(nil)
 
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithMandatoryFields(applicationUri PascalString, noOfPushTargetFolder int32, pushTargetFolder []PascalString, endpointUrl PascalString, securityPolicyUri PascalString, userTokenType ExtensionObjectDefinition, requestedKeyCount uint16, retryInterval float64, noOfPushTargetProperties int32, pushTargetProperties []ExtensionObjectDefinition, noOfSecurityGroups int32, securityGroups []PascalString) PubSubKeyPushTargetDataTypeBuilder {
-	return m.WithApplicationUri(applicationUri).WithNoOfPushTargetFolder(noOfPushTargetFolder).WithPushTargetFolder(pushTargetFolder...).WithEndpointUrl(endpointUrl).WithSecurityPolicyUri(securityPolicyUri).WithUserTokenType(userTokenType).WithRequestedKeyCount(requestedKeyCount).WithRetryInterval(retryInterval).WithNoOfPushTargetProperties(noOfPushTargetProperties).WithPushTargetProperties(pushTargetProperties...).WithNoOfSecurityGroups(noOfSecurityGroups).WithSecurityGroups(securityGroups...)
+func (b *_PubSubKeyPushTargetDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithApplicationUri(applicationUri PascalString) PubSubKeyPushTargetDataTypeBuilder {
-	m.ApplicationUri = applicationUri
-	return m
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithMandatoryFields(applicationUri PascalString, noOfPushTargetFolder int32, pushTargetFolder []PascalString, endpointUrl PascalString, securityPolicyUri PascalString, userTokenType ExtensionObjectDefinition, requestedKeyCount uint16, retryInterval float64, noOfPushTargetProperties int32, pushTargetProperties []ExtensionObjectDefinition, noOfSecurityGroups int32, securityGroups []PascalString) PubSubKeyPushTargetDataTypeBuilder {
+	return b.WithApplicationUri(applicationUri).WithNoOfPushTargetFolder(noOfPushTargetFolder).WithPushTargetFolder(pushTargetFolder...).WithEndpointUrl(endpointUrl).WithSecurityPolicyUri(securityPolicyUri).WithUserTokenType(userTokenType).WithRequestedKeyCount(requestedKeyCount).WithRetryInterval(retryInterval).WithNoOfPushTargetProperties(noOfPushTargetProperties).WithPushTargetProperties(pushTargetProperties...).WithNoOfSecurityGroups(noOfSecurityGroups).WithSecurityGroups(securityGroups...)
 }
 
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithApplicationUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PubSubKeyPushTargetDataTypeBuilder {
-	builder := builderSupplier(m.ApplicationUri.CreatePascalStringBuilder())
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithApplicationUri(applicationUri PascalString) PubSubKeyPushTargetDataTypeBuilder {
+	b.ApplicationUri = applicationUri
+	return b
+}
+
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithApplicationUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PubSubKeyPushTargetDataTypeBuilder {
+	builder := builderSupplier(b.ApplicationUri.CreatePascalStringBuilder())
 	var err error
-	m.ApplicationUri, err = builder.Build()
+	b.ApplicationUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithNoOfPushTargetFolder(noOfPushTargetFolder int32) PubSubKeyPushTargetDataTypeBuilder {
-	m.NoOfPushTargetFolder = noOfPushTargetFolder
-	return m
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithNoOfPushTargetFolder(noOfPushTargetFolder int32) PubSubKeyPushTargetDataTypeBuilder {
+	b.NoOfPushTargetFolder = noOfPushTargetFolder
+	return b
 }
 
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithPushTargetFolder(pushTargetFolder ...PascalString) PubSubKeyPushTargetDataTypeBuilder {
-	m.PushTargetFolder = pushTargetFolder
-	return m
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithPushTargetFolder(pushTargetFolder ...PascalString) PubSubKeyPushTargetDataTypeBuilder {
+	b.PushTargetFolder = pushTargetFolder
+	return b
 }
 
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithEndpointUrl(endpointUrl PascalString) PubSubKeyPushTargetDataTypeBuilder {
-	m.EndpointUrl = endpointUrl
-	return m
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithEndpointUrl(endpointUrl PascalString) PubSubKeyPushTargetDataTypeBuilder {
+	b.EndpointUrl = endpointUrl
+	return b
 }
 
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithEndpointUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PubSubKeyPushTargetDataTypeBuilder {
-	builder := builderSupplier(m.EndpointUrl.CreatePascalStringBuilder())
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithEndpointUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PubSubKeyPushTargetDataTypeBuilder {
+	builder := builderSupplier(b.EndpointUrl.CreatePascalStringBuilder())
 	var err error
-	m.EndpointUrl, err = builder.Build()
+	b.EndpointUrl, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithSecurityPolicyUri(securityPolicyUri PascalString) PubSubKeyPushTargetDataTypeBuilder {
-	m.SecurityPolicyUri = securityPolicyUri
-	return m
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithSecurityPolicyUri(securityPolicyUri PascalString) PubSubKeyPushTargetDataTypeBuilder {
+	b.SecurityPolicyUri = securityPolicyUri
+	return b
 }
 
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithSecurityPolicyUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PubSubKeyPushTargetDataTypeBuilder {
-	builder := builderSupplier(m.SecurityPolicyUri.CreatePascalStringBuilder())
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithSecurityPolicyUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PubSubKeyPushTargetDataTypeBuilder {
+	builder := builderSupplier(b.SecurityPolicyUri.CreatePascalStringBuilder())
 	var err error
-	m.SecurityPolicyUri, err = builder.Build()
+	b.SecurityPolicyUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithUserTokenType(userTokenType ExtensionObjectDefinition) PubSubKeyPushTargetDataTypeBuilder {
-	m.UserTokenType = userTokenType
-	return m
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithUserTokenType(userTokenType ExtensionObjectDefinition) PubSubKeyPushTargetDataTypeBuilder {
+	b.UserTokenType = userTokenType
+	return b
 }
 
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithRequestedKeyCount(requestedKeyCount uint16) PubSubKeyPushTargetDataTypeBuilder {
-	m.RequestedKeyCount = requestedKeyCount
-	return m
-}
-
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithRetryInterval(retryInterval float64) PubSubKeyPushTargetDataTypeBuilder {
-	m.RetryInterval = retryInterval
-	return m
-}
-
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithNoOfPushTargetProperties(noOfPushTargetProperties int32) PubSubKeyPushTargetDataTypeBuilder {
-	m.NoOfPushTargetProperties = noOfPushTargetProperties
-	return m
-}
-
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithPushTargetProperties(pushTargetProperties ...ExtensionObjectDefinition) PubSubKeyPushTargetDataTypeBuilder {
-	m.PushTargetProperties = pushTargetProperties
-	return m
-}
-
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithNoOfSecurityGroups(noOfSecurityGroups int32) PubSubKeyPushTargetDataTypeBuilder {
-	m.NoOfSecurityGroups = noOfSecurityGroups
-	return m
-}
-
-func (m *_PubSubKeyPushTargetDataTypeBuilder) WithSecurityGroups(securityGroups ...PascalString) PubSubKeyPushTargetDataTypeBuilder {
-	m.SecurityGroups = securityGroups
-	return m
-}
-
-func (m *_PubSubKeyPushTargetDataTypeBuilder) Build() (PubSubKeyPushTargetDataType, error) {
-	if m.ApplicationUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithUserTokenTypeBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) PubSubKeyPushTargetDataTypeBuilder {
+	builder := builderSupplier(b.UserTokenType.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.UserTokenType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'applicationUri' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.EndpointUrl == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
-	}
-	if m.SecurityPolicyUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
-	}
-	if m.UserTokenType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'userTokenType' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._PubSubKeyPushTargetDataType.deepCopy(), nil
+	return b
 }
 
-func (m *_PubSubKeyPushTargetDataTypeBuilder) MustBuild() PubSubKeyPushTargetDataType {
-	build, err := m.Build()
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithRequestedKeyCount(requestedKeyCount uint16) PubSubKeyPushTargetDataTypeBuilder {
+	b.RequestedKeyCount = requestedKeyCount
+	return b
+}
+
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithRetryInterval(retryInterval float64) PubSubKeyPushTargetDataTypeBuilder {
+	b.RetryInterval = retryInterval
+	return b
+}
+
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithNoOfPushTargetProperties(noOfPushTargetProperties int32) PubSubKeyPushTargetDataTypeBuilder {
+	b.NoOfPushTargetProperties = noOfPushTargetProperties
+	return b
+}
+
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithPushTargetProperties(pushTargetProperties ...ExtensionObjectDefinition) PubSubKeyPushTargetDataTypeBuilder {
+	b.PushTargetProperties = pushTargetProperties
+	return b
+}
+
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithNoOfSecurityGroups(noOfSecurityGroups int32) PubSubKeyPushTargetDataTypeBuilder {
+	b.NoOfSecurityGroups = noOfSecurityGroups
+	return b
+}
+
+func (b *_PubSubKeyPushTargetDataTypeBuilder) WithSecurityGroups(securityGroups ...PascalString) PubSubKeyPushTargetDataTypeBuilder {
+	b.SecurityGroups = securityGroups
+	return b
+}
+
+func (b *_PubSubKeyPushTargetDataTypeBuilder) Build() (PubSubKeyPushTargetDataType, error) {
+	if b.ApplicationUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'applicationUri' not set"))
+	}
+	if b.EndpointUrl == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
+	}
+	if b.SecurityPolicyUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
+	}
+	if b.UserTokenType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'userTokenType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PubSubKeyPushTargetDataType.deepCopy(), nil
+}
+
+func (b *_PubSubKeyPushTargetDataTypeBuilder) MustBuild() PubSubKeyPushTargetDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PubSubKeyPushTargetDataTypeBuilder) DeepCopy() any {
-	return m.CreatePubSubKeyPushTargetDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PubSubKeyPushTargetDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PubSubKeyPushTargetDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PubSubKeyPushTargetDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreatePubSubKeyPushTargetDataTypeBuilder().(*_PubSubKeyPushTargetDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePubSubKeyPushTargetDataTypeBuilder creates a PubSubKeyPushTargetDataTypeBuilder
-func (m *_PubSubKeyPushTargetDataType) CreatePubSubKeyPushTargetDataTypeBuilder() PubSubKeyPushTargetDataTypeBuilder {
-	if m == nil {
+func (b *_PubSubKeyPushTargetDataType) CreatePubSubKeyPushTargetDataTypeBuilder() PubSubKeyPushTargetDataTypeBuilder {
+	if b == nil {
 		return NewPubSubKeyPushTargetDataTypeBuilder()
 	}
-	return &_PubSubKeyPushTargetDataTypeBuilder{_PubSubKeyPushTargetDataType: m.deepCopy()}
+	return &_PubSubKeyPushTargetDataTypeBuilder{_PubSubKeyPushTargetDataType: b.deepCopy()}
 }
 
 ///////////////////////

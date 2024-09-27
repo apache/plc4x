@@ -105,83 +105,87 @@ type _BACnetAuthenticationPolicyListEntryBuilder struct {
 
 var _ (BACnetAuthenticationPolicyListEntryBuilder) = (*_BACnetAuthenticationPolicyListEntryBuilder)(nil)
 
-func (m *_BACnetAuthenticationPolicyListEntryBuilder) WithMandatoryFields(credentialDataInput BACnetDeviceObjectReferenceEnclosed, index BACnetContextTagUnsignedInteger) BACnetAuthenticationPolicyListEntryBuilder {
-	return m.WithCredentialDataInput(credentialDataInput).WithIndex(index)
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) WithMandatoryFields(credentialDataInput BACnetDeviceObjectReferenceEnclosed, index BACnetContextTagUnsignedInteger) BACnetAuthenticationPolicyListEntryBuilder {
+	return b.WithCredentialDataInput(credentialDataInput).WithIndex(index)
 }
 
-func (m *_BACnetAuthenticationPolicyListEntryBuilder) WithCredentialDataInput(credentialDataInput BACnetDeviceObjectReferenceEnclosed) BACnetAuthenticationPolicyListEntryBuilder {
-	m.CredentialDataInput = credentialDataInput
-	return m
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) WithCredentialDataInput(credentialDataInput BACnetDeviceObjectReferenceEnclosed) BACnetAuthenticationPolicyListEntryBuilder {
+	b.CredentialDataInput = credentialDataInput
+	return b
 }
 
-func (m *_BACnetAuthenticationPolicyListEntryBuilder) WithCredentialDataInputBuilder(builderSupplier func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetAuthenticationPolicyListEntryBuilder {
-	builder := builderSupplier(m.CredentialDataInput.CreateBACnetDeviceObjectReferenceEnclosedBuilder())
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) WithCredentialDataInputBuilder(builderSupplier func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetAuthenticationPolicyListEntryBuilder {
+	builder := builderSupplier(b.CredentialDataInput.CreateBACnetDeviceObjectReferenceEnclosedBuilder())
 	var err error
-	m.CredentialDataInput, err = builder.Build()
+	b.CredentialDataInput, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAuthenticationPolicyListEntryBuilder) WithIndex(index BACnetContextTagUnsignedInteger) BACnetAuthenticationPolicyListEntryBuilder {
-	m.Index = index
-	return m
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) WithIndex(index BACnetContextTagUnsignedInteger) BACnetAuthenticationPolicyListEntryBuilder {
+	b.Index = index
+	return b
 }
 
-func (m *_BACnetAuthenticationPolicyListEntryBuilder) WithIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetAuthenticationPolicyListEntryBuilder {
-	builder := builderSupplier(m.Index.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) WithIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetAuthenticationPolicyListEntryBuilder {
+	builder := builderSupplier(b.Index.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.Index, err = builder.Build()
+	b.Index, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAuthenticationPolicyListEntryBuilder) Build() (BACnetAuthenticationPolicyListEntry, error) {
-	if m.CredentialDataInput == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) Build() (BACnetAuthenticationPolicyListEntry, error) {
+	if b.CredentialDataInput == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'credentialDataInput' not set"))
+		b.err.Append(errors.New("mandatory field 'credentialDataInput' not set"))
 	}
-	if m.Index == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Index == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'index' not set"))
+		b.err.Append(errors.New("mandatory field 'index' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAuthenticationPolicyListEntry.deepCopy(), nil
+	return b._BACnetAuthenticationPolicyListEntry.deepCopy(), nil
 }
 
-func (m *_BACnetAuthenticationPolicyListEntryBuilder) MustBuild() BACnetAuthenticationPolicyListEntry {
-	build, err := m.Build()
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) MustBuild() BACnetAuthenticationPolicyListEntry {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAuthenticationPolicyListEntryBuilder) DeepCopy() any {
-	return m.CreateBACnetAuthenticationPolicyListEntryBuilder()
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAuthenticationPolicyListEntryBuilder().(*_BACnetAuthenticationPolicyListEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAuthenticationPolicyListEntryBuilder creates a BACnetAuthenticationPolicyListEntryBuilder
-func (m *_BACnetAuthenticationPolicyListEntry) CreateBACnetAuthenticationPolicyListEntryBuilder() BACnetAuthenticationPolicyListEntryBuilder {
-	if m == nil {
+func (b *_BACnetAuthenticationPolicyListEntry) CreateBACnetAuthenticationPolicyListEntryBuilder() BACnetAuthenticationPolicyListEntryBuilder {
+	if b == nil {
 		return NewBACnetAuthenticationPolicyListEntryBuilder()
 	}
-	return &_BACnetAuthenticationPolicyListEntryBuilder{_BACnetAuthenticationPolicyListEntry: m.deepCopy()}
+	return &_BACnetAuthenticationPolicyListEntryBuilder{_BACnetAuthenticationPolicyListEntry: b.deepCopy()}
 }
 
 ///////////////////////

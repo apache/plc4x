@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDoorAlarmStateBuilder() BACnetConstructedDataDoorAl
 type _BACnetConstructedDataDoorAlarmStateBuilder struct {
 	*_BACnetConstructedDataDoorAlarmState
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDoorAlarmStateBuilder) = (*_BACnetConstructedDataDoorAlarmStateBuilder)(nil)
 
-func (m *_BACnetConstructedDataDoorAlarmStateBuilder) WithMandatoryFields(doorAlarmState BACnetDoorAlarmStateTagged) BACnetConstructedDataDoorAlarmStateBuilder {
-	return m.WithDoorAlarmState(doorAlarmState)
+func (b *_BACnetConstructedDataDoorAlarmStateBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDoorAlarmStateBuilder) WithDoorAlarmState(doorAlarmState BACnetDoorAlarmStateTagged) BACnetConstructedDataDoorAlarmStateBuilder {
-	m.DoorAlarmState = doorAlarmState
-	return m
+func (b *_BACnetConstructedDataDoorAlarmStateBuilder) WithMandatoryFields(doorAlarmState BACnetDoorAlarmStateTagged) BACnetConstructedDataDoorAlarmStateBuilder {
+	return b.WithDoorAlarmState(doorAlarmState)
 }
 
-func (m *_BACnetConstructedDataDoorAlarmStateBuilder) WithDoorAlarmStateBuilder(builderSupplier func(BACnetDoorAlarmStateTaggedBuilder) BACnetDoorAlarmStateTaggedBuilder) BACnetConstructedDataDoorAlarmStateBuilder {
-	builder := builderSupplier(m.DoorAlarmState.CreateBACnetDoorAlarmStateTaggedBuilder())
+func (b *_BACnetConstructedDataDoorAlarmStateBuilder) WithDoorAlarmState(doorAlarmState BACnetDoorAlarmStateTagged) BACnetConstructedDataDoorAlarmStateBuilder {
+	b.DoorAlarmState = doorAlarmState
+	return b
+}
+
+func (b *_BACnetConstructedDataDoorAlarmStateBuilder) WithDoorAlarmStateBuilder(builderSupplier func(BACnetDoorAlarmStateTaggedBuilder) BACnetDoorAlarmStateTaggedBuilder) BACnetConstructedDataDoorAlarmStateBuilder {
+	builder := builderSupplier(b.DoorAlarmState.CreateBACnetDoorAlarmStateTaggedBuilder())
 	var err error
-	m.DoorAlarmState, err = builder.Build()
+	b.DoorAlarmState, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDoorAlarmStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDoorAlarmStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDoorAlarmStateBuilder) Build() (BACnetConstructedDataDoorAlarmState, error) {
-	if m.DoorAlarmState == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDoorAlarmStateBuilder) Build() (BACnetConstructedDataDoorAlarmState, error) {
+	if b.DoorAlarmState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'doorAlarmState' not set"))
+		b.err.Append(errors.New("mandatory field 'doorAlarmState' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDoorAlarmState.deepCopy(), nil
+	return b._BACnetConstructedDataDoorAlarmState.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDoorAlarmStateBuilder) MustBuild() BACnetConstructedDataDoorAlarmState {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDoorAlarmStateBuilder) MustBuild() BACnetConstructedDataDoorAlarmState {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDoorAlarmStateBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDoorAlarmStateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDoorAlarmStateBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDoorAlarmStateBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDoorAlarmStateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDoorAlarmStateBuilder().(*_BACnetConstructedDataDoorAlarmStateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDoorAlarmStateBuilder creates a BACnetConstructedDataDoorAlarmStateBuilder
-func (m *_BACnetConstructedDataDoorAlarmState) CreateBACnetConstructedDataDoorAlarmStateBuilder() BACnetConstructedDataDoorAlarmStateBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDoorAlarmState) CreateBACnetConstructedDataDoorAlarmStateBuilder() BACnetConstructedDataDoorAlarmStateBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDoorAlarmStateBuilder()
 	}
-	return &_BACnetConstructedDataDoorAlarmStateBuilder{_BACnetConstructedDataDoorAlarmState: m.deepCopy()}
+	return &_BACnetConstructedDataDoorAlarmStateBuilder{_BACnetConstructedDataDoorAlarmState: b.deepCopy()}
 }
 
 ///////////////////////

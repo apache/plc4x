@@ -98,45 +98,64 @@ func NewBVLCWriteBroadcastDistributionTableBuilder() BVLCWriteBroadcastDistribut
 type _BVLCWriteBroadcastDistributionTableBuilder struct {
 	*_BVLCWriteBroadcastDistributionTable
 
+	parentBuilder *_BVLCBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BVLCWriteBroadcastDistributionTableBuilder) = (*_BVLCWriteBroadcastDistributionTableBuilder)(nil)
 
-func (m *_BVLCWriteBroadcastDistributionTableBuilder) WithMandatoryFields(table []BVLCBroadcastDistributionTableEntry) BVLCWriteBroadcastDistributionTableBuilder {
-	return m.WithTable(table...)
+func (b *_BVLCWriteBroadcastDistributionTableBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
 }
 
-func (m *_BVLCWriteBroadcastDistributionTableBuilder) WithTable(table ...BVLCBroadcastDistributionTableEntry) BVLCWriteBroadcastDistributionTableBuilder {
-	m.Table = table
-	return m
+func (b *_BVLCWriteBroadcastDistributionTableBuilder) WithMandatoryFields(table []BVLCBroadcastDistributionTableEntry) BVLCWriteBroadcastDistributionTableBuilder {
+	return b.WithTable(table...)
 }
 
-func (m *_BVLCWriteBroadcastDistributionTableBuilder) Build() (BVLCWriteBroadcastDistributionTable, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BVLCWriteBroadcastDistributionTableBuilder) WithTable(table ...BVLCBroadcastDistributionTableEntry) BVLCWriteBroadcastDistributionTableBuilder {
+	b.Table = table
+	return b
+}
+
+func (b *_BVLCWriteBroadcastDistributionTableBuilder) Build() (BVLCWriteBroadcastDistributionTable, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BVLCWriteBroadcastDistributionTable.deepCopy(), nil
+	return b._BVLCWriteBroadcastDistributionTable.deepCopy(), nil
 }
 
-func (m *_BVLCWriteBroadcastDistributionTableBuilder) MustBuild() BVLCWriteBroadcastDistributionTable {
-	build, err := m.Build()
+func (b *_BVLCWriteBroadcastDistributionTableBuilder) MustBuild() BVLCWriteBroadcastDistributionTable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BVLCWriteBroadcastDistributionTableBuilder) DeepCopy() any {
-	return m.CreateBVLCWriteBroadcastDistributionTableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCWriteBroadcastDistributionTableBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCWriteBroadcastDistributionTableBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCWriteBroadcastDistributionTableBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCWriteBroadcastDistributionTableBuilder().(*_BVLCWriteBroadcastDistributionTableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBVLCWriteBroadcastDistributionTableBuilder creates a BVLCWriteBroadcastDistributionTableBuilder
-func (m *_BVLCWriteBroadcastDistributionTable) CreateBVLCWriteBroadcastDistributionTableBuilder() BVLCWriteBroadcastDistributionTableBuilder {
-	if m == nil {
+func (b *_BVLCWriteBroadcastDistributionTable) CreateBVLCWriteBroadcastDistributionTableBuilder() BVLCWriteBroadcastDistributionTableBuilder {
+	if b == nil {
 		return NewBVLCWriteBroadcastDistributionTableBuilder()
 	}
-	return &_BVLCWriteBroadcastDistributionTableBuilder{_BVLCWriteBroadcastDistributionTable: m.deepCopy()}
+	return &_BVLCWriteBroadcastDistributionTableBuilder{_BVLCWriteBroadcastDistributionTable: b.deepCopy()}
 }
 
 ///////////////////////

@@ -99,50 +99,69 @@ func NewApduDataDeviceDescriptorResponseBuilder() ApduDataDeviceDescriptorRespon
 type _ApduDataDeviceDescriptorResponseBuilder struct {
 	*_ApduDataDeviceDescriptorResponse
 
+	parentBuilder *_ApduDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataDeviceDescriptorResponseBuilder) = (*_ApduDataDeviceDescriptorResponseBuilder)(nil)
 
-func (m *_ApduDataDeviceDescriptorResponseBuilder) WithMandatoryFields(descriptorType uint8, data []byte) ApduDataDeviceDescriptorResponseBuilder {
-	return m.WithDescriptorType(descriptorType).WithData(data...)
+func (b *_ApduDataDeviceDescriptorResponseBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
 }
 
-func (m *_ApduDataDeviceDescriptorResponseBuilder) WithDescriptorType(descriptorType uint8) ApduDataDeviceDescriptorResponseBuilder {
-	m.DescriptorType = descriptorType
-	return m
+func (b *_ApduDataDeviceDescriptorResponseBuilder) WithMandatoryFields(descriptorType uint8, data []byte) ApduDataDeviceDescriptorResponseBuilder {
+	return b.WithDescriptorType(descriptorType).WithData(data...)
 }
 
-func (m *_ApduDataDeviceDescriptorResponseBuilder) WithData(data ...byte) ApduDataDeviceDescriptorResponseBuilder {
-	m.Data = data
-	return m
+func (b *_ApduDataDeviceDescriptorResponseBuilder) WithDescriptorType(descriptorType uint8) ApduDataDeviceDescriptorResponseBuilder {
+	b.DescriptorType = descriptorType
+	return b
 }
 
-func (m *_ApduDataDeviceDescriptorResponseBuilder) Build() (ApduDataDeviceDescriptorResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataDeviceDescriptorResponseBuilder) WithData(data ...byte) ApduDataDeviceDescriptorResponseBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ApduDataDeviceDescriptorResponseBuilder) Build() (ApduDataDeviceDescriptorResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataDeviceDescriptorResponse.deepCopy(), nil
+	return b._ApduDataDeviceDescriptorResponse.deepCopy(), nil
 }
 
-func (m *_ApduDataDeviceDescriptorResponseBuilder) MustBuild() ApduDataDeviceDescriptorResponse {
-	build, err := m.Build()
+func (b *_ApduDataDeviceDescriptorResponseBuilder) MustBuild() ApduDataDeviceDescriptorResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataDeviceDescriptorResponseBuilder) DeepCopy() any {
-	return m.CreateApduDataDeviceDescriptorResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataDeviceDescriptorResponseBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataDeviceDescriptorResponseBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataDeviceDescriptorResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataDeviceDescriptorResponseBuilder().(*_ApduDataDeviceDescriptorResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataDeviceDescriptorResponseBuilder creates a ApduDataDeviceDescriptorResponseBuilder
-func (m *_ApduDataDeviceDescriptorResponse) CreateApduDataDeviceDescriptorResponseBuilder() ApduDataDeviceDescriptorResponseBuilder {
-	if m == nil {
+func (b *_ApduDataDeviceDescriptorResponse) CreateApduDataDeviceDescriptorResponseBuilder() ApduDataDeviceDescriptorResponseBuilder {
+	if b == nil {
 		return NewApduDataDeviceDescriptorResponseBuilder()
 	}
-	return &_ApduDataDeviceDescriptorResponseBuilder{_ApduDataDeviceDescriptorResponse: m.deepCopy()}
+	return &_ApduDataDeviceDescriptorResponseBuilder{_ApduDataDeviceDescriptorResponse: b.deepCopy()}
 }
 
 ///////////////////////

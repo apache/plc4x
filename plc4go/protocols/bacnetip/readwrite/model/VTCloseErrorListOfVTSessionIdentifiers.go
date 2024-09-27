@@ -113,88 +113,92 @@ type _VTCloseErrorListOfVTSessionIdentifiersBuilder struct {
 
 var _ (VTCloseErrorListOfVTSessionIdentifiersBuilder) = (*_VTCloseErrorListOfVTSessionIdentifiersBuilder)(nil)
 
-func (m *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag) VTCloseErrorListOfVTSessionIdentifiersBuilder {
-	return m.WithOpeningTag(openingTag).WithListOfVtSessionIdentifiers(listOfVtSessionIdentifiers...).WithClosingTag(closingTag)
+func (b *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag) VTCloseErrorListOfVTSessionIdentifiersBuilder {
+	return b.WithOpeningTag(openingTag).WithListOfVtSessionIdentifiers(listOfVtSessionIdentifiers...).WithClosingTag(closingTag)
 }
 
-func (m *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithOpeningTag(openingTag BACnetOpeningTag) VTCloseErrorListOfVTSessionIdentifiersBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithOpeningTag(openingTag BACnetOpeningTag) VTCloseErrorListOfVTSessionIdentifiersBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) VTCloseErrorListOfVTSessionIdentifiersBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) VTCloseErrorListOfVTSessionIdentifiersBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithListOfVtSessionIdentifiers(listOfVtSessionIdentifiers ...BACnetApplicationTagUnsignedInteger) VTCloseErrorListOfVTSessionIdentifiersBuilder {
-	m.ListOfVtSessionIdentifiers = listOfVtSessionIdentifiers
-	return m
+func (b *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithListOfVtSessionIdentifiers(listOfVtSessionIdentifiers ...BACnetApplicationTagUnsignedInteger) VTCloseErrorListOfVTSessionIdentifiersBuilder {
+	b.ListOfVtSessionIdentifiers = listOfVtSessionIdentifiers
+	return b
 }
 
-func (m *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithClosingTag(closingTag BACnetClosingTag) VTCloseErrorListOfVTSessionIdentifiersBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithClosingTag(closingTag BACnetClosingTag) VTCloseErrorListOfVTSessionIdentifiersBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) VTCloseErrorListOfVTSessionIdentifiersBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) VTCloseErrorListOfVTSessionIdentifiersBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_VTCloseErrorListOfVTSessionIdentifiersBuilder) Build() (VTCloseErrorListOfVTSessionIdentifiers, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_VTCloseErrorListOfVTSessionIdentifiersBuilder) Build() (VTCloseErrorListOfVTSessionIdentifiers, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VTCloseErrorListOfVTSessionIdentifiers.deepCopy(), nil
+	return b._VTCloseErrorListOfVTSessionIdentifiers.deepCopy(), nil
 }
 
-func (m *_VTCloseErrorListOfVTSessionIdentifiersBuilder) MustBuild() VTCloseErrorListOfVTSessionIdentifiers {
-	build, err := m.Build()
+func (b *_VTCloseErrorListOfVTSessionIdentifiersBuilder) MustBuild() VTCloseErrorListOfVTSessionIdentifiers {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VTCloseErrorListOfVTSessionIdentifiersBuilder) DeepCopy() any {
-	return m.CreateVTCloseErrorListOfVTSessionIdentifiersBuilder()
+func (b *_VTCloseErrorListOfVTSessionIdentifiersBuilder) DeepCopy() any {
+	_copy := b.CreateVTCloseErrorListOfVTSessionIdentifiersBuilder().(*_VTCloseErrorListOfVTSessionIdentifiersBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVTCloseErrorListOfVTSessionIdentifiersBuilder creates a VTCloseErrorListOfVTSessionIdentifiersBuilder
-func (m *_VTCloseErrorListOfVTSessionIdentifiers) CreateVTCloseErrorListOfVTSessionIdentifiersBuilder() VTCloseErrorListOfVTSessionIdentifiersBuilder {
-	if m == nil {
+func (b *_VTCloseErrorListOfVTSessionIdentifiers) CreateVTCloseErrorListOfVTSessionIdentifiersBuilder() VTCloseErrorListOfVTSessionIdentifiersBuilder {
+	if b == nil {
 		return NewVTCloseErrorListOfVTSessionIdentifiersBuilder()
 	}
-	return &_VTCloseErrorListOfVTSessionIdentifiersBuilder{_VTCloseErrorListOfVTSessionIdentifiers: m.deepCopy()}
+	return &_VTCloseErrorListOfVTSessionIdentifiersBuilder{_VTCloseErrorListOfVTSessionIdentifiers: b.deepCopy()}
 }
 
 ///////////////////////

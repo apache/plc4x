@@ -98,64 +98,83 @@ func NewBACnetSpecialEventPeriodCalendarEntryBuilder() BACnetSpecialEventPeriodC
 type _BACnetSpecialEventPeriodCalendarEntryBuilder struct {
 	*_BACnetSpecialEventPeriodCalendarEntry
 
+	parentBuilder *_BACnetSpecialEventPeriodBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetSpecialEventPeriodCalendarEntryBuilder) = (*_BACnetSpecialEventPeriodCalendarEntryBuilder)(nil)
 
-func (m *_BACnetSpecialEventPeriodCalendarEntryBuilder) WithMandatoryFields(calendarEntry BACnetCalendarEntryEnclosed) BACnetSpecialEventPeriodCalendarEntryBuilder {
-	return m.WithCalendarEntry(calendarEntry)
+func (b *_BACnetSpecialEventPeriodCalendarEntryBuilder) setParent(contract BACnetSpecialEventPeriodContract) {
+	b.BACnetSpecialEventPeriodContract = contract
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarEntryBuilder) WithCalendarEntry(calendarEntry BACnetCalendarEntryEnclosed) BACnetSpecialEventPeriodCalendarEntryBuilder {
-	m.CalendarEntry = calendarEntry
-	return m
+func (b *_BACnetSpecialEventPeriodCalendarEntryBuilder) WithMandatoryFields(calendarEntry BACnetCalendarEntryEnclosed) BACnetSpecialEventPeriodCalendarEntryBuilder {
+	return b.WithCalendarEntry(calendarEntry)
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarEntryBuilder) WithCalendarEntryBuilder(builderSupplier func(BACnetCalendarEntryEnclosedBuilder) BACnetCalendarEntryEnclosedBuilder) BACnetSpecialEventPeriodCalendarEntryBuilder {
-	builder := builderSupplier(m.CalendarEntry.CreateBACnetCalendarEntryEnclosedBuilder())
+func (b *_BACnetSpecialEventPeriodCalendarEntryBuilder) WithCalendarEntry(calendarEntry BACnetCalendarEntryEnclosed) BACnetSpecialEventPeriodCalendarEntryBuilder {
+	b.CalendarEntry = calendarEntry
+	return b
+}
+
+func (b *_BACnetSpecialEventPeriodCalendarEntryBuilder) WithCalendarEntryBuilder(builderSupplier func(BACnetCalendarEntryEnclosedBuilder) BACnetCalendarEntryEnclosedBuilder) BACnetSpecialEventPeriodCalendarEntryBuilder {
+	builder := builderSupplier(b.CalendarEntry.CreateBACnetCalendarEntryEnclosedBuilder())
 	var err error
-	m.CalendarEntry, err = builder.Build()
+	b.CalendarEntry, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetCalendarEntryEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetCalendarEntryEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarEntryBuilder) Build() (BACnetSpecialEventPeriodCalendarEntry, error) {
-	if m.CalendarEntry == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetSpecialEventPeriodCalendarEntryBuilder) Build() (BACnetSpecialEventPeriodCalendarEntry, error) {
+	if b.CalendarEntry == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'calendarEntry' not set"))
+		b.err.Append(errors.New("mandatory field 'calendarEntry' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetSpecialEventPeriodCalendarEntry.deepCopy(), nil
+	return b._BACnetSpecialEventPeriodCalendarEntry.deepCopy(), nil
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarEntryBuilder) MustBuild() BACnetSpecialEventPeriodCalendarEntry {
-	build, err := m.Build()
+func (b *_BACnetSpecialEventPeriodCalendarEntryBuilder) MustBuild() BACnetSpecialEventPeriodCalendarEntry {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarEntryBuilder) DeepCopy() any {
-	return m.CreateBACnetSpecialEventPeriodCalendarEntryBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetSpecialEventPeriodCalendarEntryBuilder) Done() BACnetSpecialEventPeriodBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetSpecialEventPeriodCalendarEntryBuilder) buildForBACnetSpecialEventPeriod() (BACnetSpecialEventPeriod, error) {
+	return b.Build()
+}
+
+func (b *_BACnetSpecialEventPeriodCalendarEntryBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetSpecialEventPeriodCalendarEntryBuilder().(*_BACnetSpecialEventPeriodCalendarEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetSpecialEventPeriodCalendarEntryBuilder creates a BACnetSpecialEventPeriodCalendarEntryBuilder
-func (m *_BACnetSpecialEventPeriodCalendarEntry) CreateBACnetSpecialEventPeriodCalendarEntryBuilder() BACnetSpecialEventPeriodCalendarEntryBuilder {
-	if m == nil {
+func (b *_BACnetSpecialEventPeriodCalendarEntry) CreateBACnetSpecialEventPeriodCalendarEntryBuilder() BACnetSpecialEventPeriodCalendarEntryBuilder {
+	if b == nil {
 		return NewBACnetSpecialEventPeriodCalendarEntryBuilder()
 	}
-	return &_BACnetSpecialEventPeriodCalendarEntryBuilder{_BACnetSpecialEventPeriodCalendarEntry: m.deepCopy()}
+	return &_BACnetSpecialEventPeriodCalendarEntryBuilder{_BACnetSpecialEventPeriodCalendarEntry: b.deepCopy()}
 }
 
 ///////////////////////

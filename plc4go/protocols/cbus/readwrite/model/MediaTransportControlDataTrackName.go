@@ -93,45 +93,64 @@ func NewMediaTransportControlDataTrackNameBuilder() MediaTransportControlDataTra
 type _MediaTransportControlDataTrackNameBuilder struct {
 	*_MediaTransportControlDataTrackName
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataTrackNameBuilder) = (*_MediaTransportControlDataTrackNameBuilder)(nil)
 
-func (m *_MediaTransportControlDataTrackNameBuilder) WithMandatoryFields(trackName string) MediaTransportControlDataTrackNameBuilder {
-	return m.WithTrackName(trackName)
+func (b *_MediaTransportControlDataTrackNameBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataTrackNameBuilder) WithTrackName(trackName string) MediaTransportControlDataTrackNameBuilder {
-	m.TrackName = trackName
-	return m
+func (b *_MediaTransportControlDataTrackNameBuilder) WithMandatoryFields(trackName string) MediaTransportControlDataTrackNameBuilder {
+	return b.WithTrackName(trackName)
 }
 
-func (m *_MediaTransportControlDataTrackNameBuilder) Build() (MediaTransportControlDataTrackName, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataTrackNameBuilder) WithTrackName(trackName string) MediaTransportControlDataTrackNameBuilder {
+	b.TrackName = trackName
+	return b
+}
+
+func (b *_MediaTransportControlDataTrackNameBuilder) Build() (MediaTransportControlDataTrackName, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataTrackName.deepCopy(), nil
+	return b._MediaTransportControlDataTrackName.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataTrackNameBuilder) MustBuild() MediaTransportControlDataTrackName {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataTrackNameBuilder) MustBuild() MediaTransportControlDataTrackName {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataTrackNameBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataTrackNameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataTrackNameBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataTrackNameBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataTrackNameBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataTrackNameBuilder().(*_MediaTransportControlDataTrackNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataTrackNameBuilder creates a MediaTransportControlDataTrackNameBuilder
-func (m *_MediaTransportControlDataTrackName) CreateMediaTransportControlDataTrackNameBuilder() MediaTransportControlDataTrackNameBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataTrackName) CreateMediaTransportControlDataTrackNameBuilder() MediaTransportControlDataTrackNameBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataTrackNameBuilder()
 	}
-	return &_MediaTransportControlDataTrackNameBuilder{_MediaTransportControlDataTrackName: m.deepCopy()}
+	return &_MediaTransportControlDataTrackNameBuilder{_MediaTransportControlDataTrackName: b.deepCopy()}
 }
 
 ///////////////////////

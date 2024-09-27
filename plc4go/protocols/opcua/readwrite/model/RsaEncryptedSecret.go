@@ -83,35 +83,39 @@ type _RsaEncryptedSecretBuilder struct {
 
 var _ (RsaEncryptedSecretBuilder) = (*_RsaEncryptedSecretBuilder)(nil)
 
-func (m *_RsaEncryptedSecretBuilder) WithMandatoryFields() RsaEncryptedSecretBuilder {
-	return m
+func (b *_RsaEncryptedSecretBuilder) WithMandatoryFields() RsaEncryptedSecretBuilder {
+	return b
 }
 
-func (m *_RsaEncryptedSecretBuilder) Build() (RsaEncryptedSecret, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_RsaEncryptedSecretBuilder) Build() (RsaEncryptedSecret, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._RsaEncryptedSecret.deepCopy(), nil
+	return b._RsaEncryptedSecret.deepCopy(), nil
 }
 
-func (m *_RsaEncryptedSecretBuilder) MustBuild() RsaEncryptedSecret {
-	build, err := m.Build()
+func (b *_RsaEncryptedSecretBuilder) MustBuild() RsaEncryptedSecret {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RsaEncryptedSecretBuilder) DeepCopy() any {
-	return m.CreateRsaEncryptedSecretBuilder()
+func (b *_RsaEncryptedSecretBuilder) DeepCopy() any {
+	_copy := b.CreateRsaEncryptedSecretBuilder().(*_RsaEncryptedSecretBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRsaEncryptedSecretBuilder creates a RsaEncryptedSecretBuilder
-func (m *_RsaEncryptedSecret) CreateRsaEncryptedSecretBuilder() RsaEncryptedSecretBuilder {
-	if m == nil {
+func (b *_RsaEncryptedSecret) CreateRsaEncryptedSecretBuilder() RsaEncryptedSecretBuilder {
+	if b == nil {
 		return NewRsaEncryptedSecretBuilder()
 	}
-	return &_RsaEncryptedSecretBuilder{_RsaEncryptedSecret: m.deepCopy()}
+	return &_RsaEncryptedSecretBuilder{_RsaEncryptedSecret: b.deepCopy()}
 }
 
 ///////////////////////

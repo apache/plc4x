@@ -128,119 +128,123 @@ type _BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder struct {
 
 var _ (BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) = (*_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, closingTag BACnetClosingTag) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
-	return m.WithOpeningTag(openingTag).WithClosingTag(closingTag)
+func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, closingTag BACnetClosingTag) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
+	return b.WithOpeningTag(openingTag).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithOptionalRawObjectType(rawObjectType BACnetContextTagEnumerated) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
-	m.RawObjectType = rawObjectType
-	return m
+func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithOptionalRawObjectType(rawObjectType BACnetContextTagEnumerated) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
+	b.RawObjectType = rawObjectType
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithOptionalRawObjectTypeBuilder(builderSupplier func(BACnetContextTagEnumeratedBuilder) BACnetContextTagEnumeratedBuilder) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
-	builder := builderSupplier(m.RawObjectType.CreateBACnetContextTagEnumeratedBuilder())
+func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithOptionalRawObjectTypeBuilder(builderSupplier func(BACnetContextTagEnumeratedBuilder) BACnetContextTagEnumeratedBuilder) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
+	builder := builderSupplier(b.RawObjectType.CreateBACnetContextTagEnumeratedBuilder())
 	var err error
-	m.RawObjectType, err = builder.Build()
+	b.RawObjectType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagEnumeratedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagEnumeratedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithOptionalObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
-	m.ObjectIdentifier = objectIdentifier
-	return m
+func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithOptionalObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithOptionalObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
-	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithOptionalObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
 	var err error
-	m.ObjectIdentifier, err = builder.Build()
+	b.ObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) Build() (BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) Build() (BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestCreateObjectObjectSpecifier.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestCreateObjectObjectSpecifier.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) MustBuild() BACnetConfirmedServiceRequestCreateObjectObjectSpecifier {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) MustBuild() BACnetConfirmedServiceRequestCreateObjectObjectSpecifier {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder()
+func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder().(*_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder creates a BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) CreateBACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder() BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) CreateBACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder() BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder{_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder{_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataGroupModeBuilder() BACnetConstructedDataGroupModeBu
 type _BACnetConstructedDataGroupModeBuilder struct {
 	*_BACnetConstructedDataGroupMode
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataGroupModeBuilder) = (*_BACnetConstructedDataGroupModeBuilder)(nil)
 
-func (m *_BACnetConstructedDataGroupModeBuilder) WithMandatoryFields(groupMode BACnetLiftGroupModeTagged) BACnetConstructedDataGroupModeBuilder {
-	return m.WithGroupMode(groupMode)
+func (b *_BACnetConstructedDataGroupModeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataGroupModeBuilder) WithGroupMode(groupMode BACnetLiftGroupModeTagged) BACnetConstructedDataGroupModeBuilder {
-	m.GroupMode = groupMode
-	return m
+func (b *_BACnetConstructedDataGroupModeBuilder) WithMandatoryFields(groupMode BACnetLiftGroupModeTagged) BACnetConstructedDataGroupModeBuilder {
+	return b.WithGroupMode(groupMode)
 }
 
-func (m *_BACnetConstructedDataGroupModeBuilder) WithGroupModeBuilder(builderSupplier func(BACnetLiftGroupModeTaggedBuilder) BACnetLiftGroupModeTaggedBuilder) BACnetConstructedDataGroupModeBuilder {
-	builder := builderSupplier(m.GroupMode.CreateBACnetLiftGroupModeTaggedBuilder())
+func (b *_BACnetConstructedDataGroupModeBuilder) WithGroupMode(groupMode BACnetLiftGroupModeTagged) BACnetConstructedDataGroupModeBuilder {
+	b.GroupMode = groupMode
+	return b
+}
+
+func (b *_BACnetConstructedDataGroupModeBuilder) WithGroupModeBuilder(builderSupplier func(BACnetLiftGroupModeTaggedBuilder) BACnetLiftGroupModeTaggedBuilder) BACnetConstructedDataGroupModeBuilder {
+	builder := builderSupplier(b.GroupMode.CreateBACnetLiftGroupModeTaggedBuilder())
 	var err error
-	m.GroupMode, err = builder.Build()
+	b.GroupMode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLiftGroupModeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLiftGroupModeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataGroupModeBuilder) Build() (BACnetConstructedDataGroupMode, error) {
-	if m.GroupMode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataGroupModeBuilder) Build() (BACnetConstructedDataGroupMode, error) {
+	if b.GroupMode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'groupMode' not set"))
+		b.err.Append(errors.New("mandatory field 'groupMode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataGroupMode.deepCopy(), nil
+	return b._BACnetConstructedDataGroupMode.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataGroupModeBuilder) MustBuild() BACnetConstructedDataGroupMode {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataGroupModeBuilder) MustBuild() BACnetConstructedDataGroupMode {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataGroupModeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataGroupModeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataGroupModeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataGroupModeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataGroupModeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataGroupModeBuilder().(*_BACnetConstructedDataGroupModeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataGroupModeBuilder creates a BACnetConstructedDataGroupModeBuilder
-func (m *_BACnetConstructedDataGroupMode) CreateBACnetConstructedDataGroupModeBuilder() BACnetConstructedDataGroupModeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataGroupMode) CreateBACnetConstructedDataGroupModeBuilder() BACnetConstructedDataGroupModeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataGroupModeBuilder()
 	}
-	return &_BACnetConstructedDataGroupModeBuilder{_BACnetConstructedDataGroupMode: m.deepCopy()}
+	return &_BACnetConstructedDataGroupModeBuilder{_BACnetConstructedDataGroupMode: b.deepCopy()}
 }
 
 ///////////////////////

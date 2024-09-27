@@ -90,6 +90,8 @@ type CallRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) CallRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) CallRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CallRequestBuilder
 	// WithNoOfMethodsToCall adds NoOfMethodsToCall (property field)
 	WithNoOfMethodsToCall(int32) CallRequestBuilder
 	// WithMethodsToCall adds MethodsToCall (property field)
@@ -108,61 +110,93 @@ func NewCallRequestBuilder() CallRequestBuilder {
 type _CallRequestBuilder struct {
 	*_CallRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CallRequestBuilder) = (*_CallRequestBuilder)(nil)
 
-func (m *_CallRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) CallRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithNoOfMethodsToCall(noOfMethodsToCall).WithMethodsToCall(methodsToCall...)
+func (b *_CallRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_CallRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CallRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_CallRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) CallRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNoOfMethodsToCall(noOfMethodsToCall).WithMethodsToCall(methodsToCall...)
 }
 
-func (m *_CallRequestBuilder) WithNoOfMethodsToCall(noOfMethodsToCall int32) CallRequestBuilder {
-	m.NoOfMethodsToCall = noOfMethodsToCall
-	return m
+func (b *_CallRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CallRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_CallRequestBuilder) WithMethodsToCall(methodsToCall ...ExtensionObjectDefinition) CallRequestBuilder {
-	m.MethodsToCall = methodsToCall
-	return m
-}
-
-func (m *_CallRequestBuilder) Build() (CallRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CallRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CallRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._CallRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_CallRequestBuilder) MustBuild() CallRequest {
-	build, err := m.Build()
+func (b *_CallRequestBuilder) WithNoOfMethodsToCall(noOfMethodsToCall int32) CallRequestBuilder {
+	b.NoOfMethodsToCall = noOfMethodsToCall
+	return b
+}
+
+func (b *_CallRequestBuilder) WithMethodsToCall(methodsToCall ...ExtensionObjectDefinition) CallRequestBuilder {
+	b.MethodsToCall = methodsToCall
+	return b
+}
+
+func (b *_CallRequestBuilder) Build() (CallRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CallRequest.deepCopy(), nil
+}
+
+func (b *_CallRequestBuilder) MustBuild() CallRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CallRequestBuilder) DeepCopy() any {
-	return m.CreateCallRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CallRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CallRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_CallRequestBuilder) DeepCopy() any {
+	_copy := b.CreateCallRequestBuilder().(*_CallRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCallRequestBuilder creates a CallRequestBuilder
-func (m *_CallRequest) CreateCallRequestBuilder() CallRequestBuilder {
-	if m == nil {
+func (b *_CallRequest) CreateCallRequestBuilder() CallRequestBuilder {
+	if b == nil {
 		return NewCallRequestBuilder()
 	}
-	return &_CallRequestBuilder{_CallRequest: m.deepCopy()}
+	return &_CallRequestBuilder{_CallRequest: b.deepCopy()}
 }
 
 ///////////////////////

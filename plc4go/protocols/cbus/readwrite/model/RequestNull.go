@@ -90,40 +90,59 @@ func NewRequestNullBuilder() RequestNullBuilder {
 type _RequestNullBuilder struct {
 	*_RequestNull
 
+	parentBuilder *_RequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RequestNullBuilder) = (*_RequestNullBuilder)(nil)
 
-func (m *_RequestNullBuilder) WithMandatoryFields() RequestNullBuilder {
-	return m
+func (b *_RequestNullBuilder) setParent(contract RequestContract) {
+	b.RequestContract = contract
 }
 
-func (m *_RequestNullBuilder) Build() (RequestNull, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_RequestNullBuilder) WithMandatoryFields() RequestNullBuilder {
+	return b
+}
+
+func (b *_RequestNullBuilder) Build() (RequestNull, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._RequestNull.deepCopy(), nil
+	return b._RequestNull.deepCopy(), nil
 }
 
-func (m *_RequestNullBuilder) MustBuild() RequestNull {
-	build, err := m.Build()
+func (b *_RequestNullBuilder) MustBuild() RequestNull {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RequestNullBuilder) DeepCopy() any {
-	return m.CreateRequestNullBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RequestNullBuilder) Done() RequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RequestNullBuilder) buildForRequest() (Request, error) {
+	return b.Build()
+}
+
+func (b *_RequestNullBuilder) DeepCopy() any {
+	_copy := b.CreateRequestNullBuilder().(*_RequestNullBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRequestNullBuilder creates a RequestNullBuilder
-func (m *_RequestNull) CreateRequestNullBuilder() RequestNullBuilder {
-	if m == nil {
+func (b *_RequestNull) CreateRequestNullBuilder() RequestNullBuilder {
+	if b == nil {
 		return NewRequestNullBuilder()
 	}
-	return &_RequestNullBuilder{_RequestNull: m.deepCopy()}
+	return &_RequestNullBuilder{_RequestNull: b.deepCopy()}
 }
 
 ///////////////////////

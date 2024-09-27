@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAttemptedSamplesBuilder() BACnetConstructedDataAtte
 type _BACnetConstructedDataAttemptedSamplesBuilder struct {
 	*_BACnetConstructedDataAttemptedSamples
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAttemptedSamplesBuilder) = (*_BACnetConstructedDataAttemptedSamplesBuilder)(nil)
 
-func (m *_BACnetConstructedDataAttemptedSamplesBuilder) WithMandatoryFields(attemptedSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAttemptedSamplesBuilder {
-	return m.WithAttemptedSamples(attemptedSamples)
+func (b *_BACnetConstructedDataAttemptedSamplesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAttemptedSamplesBuilder) WithAttemptedSamples(attemptedSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAttemptedSamplesBuilder {
-	m.AttemptedSamples = attemptedSamples
-	return m
+func (b *_BACnetConstructedDataAttemptedSamplesBuilder) WithMandatoryFields(attemptedSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAttemptedSamplesBuilder {
+	return b.WithAttemptedSamples(attemptedSamples)
 }
 
-func (m *_BACnetConstructedDataAttemptedSamplesBuilder) WithAttemptedSamplesBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAttemptedSamplesBuilder {
-	builder := builderSupplier(m.AttemptedSamples.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataAttemptedSamplesBuilder) WithAttemptedSamples(attemptedSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAttemptedSamplesBuilder {
+	b.AttemptedSamples = attemptedSamples
+	return b
+}
+
+func (b *_BACnetConstructedDataAttemptedSamplesBuilder) WithAttemptedSamplesBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAttemptedSamplesBuilder {
+	builder := builderSupplier(b.AttemptedSamples.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.AttemptedSamples, err = builder.Build()
+	b.AttemptedSamples, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAttemptedSamplesBuilder) Build() (BACnetConstructedDataAttemptedSamples, error) {
-	if m.AttemptedSamples == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAttemptedSamplesBuilder) Build() (BACnetConstructedDataAttemptedSamples, error) {
+	if b.AttemptedSamples == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'attemptedSamples' not set"))
+		b.err.Append(errors.New("mandatory field 'attemptedSamples' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAttemptedSamples.deepCopy(), nil
+	return b._BACnetConstructedDataAttemptedSamples.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAttemptedSamplesBuilder) MustBuild() BACnetConstructedDataAttemptedSamples {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAttemptedSamplesBuilder) MustBuild() BACnetConstructedDataAttemptedSamples {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAttemptedSamplesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAttemptedSamplesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAttemptedSamplesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAttemptedSamplesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAttemptedSamplesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAttemptedSamplesBuilder().(*_BACnetConstructedDataAttemptedSamplesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAttemptedSamplesBuilder creates a BACnetConstructedDataAttemptedSamplesBuilder
-func (m *_BACnetConstructedDataAttemptedSamples) CreateBACnetConstructedDataAttemptedSamplesBuilder() BACnetConstructedDataAttemptedSamplesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAttemptedSamples) CreateBACnetConstructedDataAttemptedSamplesBuilder() BACnetConstructedDataAttemptedSamplesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAttemptedSamplesBuilder()
 	}
-	return &_BACnetConstructedDataAttemptedSamplesBuilder{_BACnetConstructedDataAttemptedSamples: m.deepCopy()}
+	return &_BACnetConstructedDataAttemptedSamplesBuilder{_BACnetConstructedDataAttemptedSamples: b.deepCopy()}
 }
 
 ///////////////////////

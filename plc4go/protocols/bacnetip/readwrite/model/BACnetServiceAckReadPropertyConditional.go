@@ -96,45 +96,64 @@ func NewBACnetServiceAckReadPropertyConditionalBuilder() BACnetServiceAckReadPro
 type _BACnetServiceAckReadPropertyConditionalBuilder struct {
 	*_BACnetServiceAckReadPropertyConditional
 
+	parentBuilder *_BACnetServiceAckBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetServiceAckReadPropertyConditionalBuilder) = (*_BACnetServiceAckReadPropertyConditionalBuilder)(nil)
 
-func (m *_BACnetServiceAckReadPropertyConditionalBuilder) WithMandatoryFields(bytesOfRemovedService []byte) BACnetServiceAckReadPropertyConditionalBuilder {
-	return m.WithBytesOfRemovedService(bytesOfRemovedService...)
+func (b *_BACnetServiceAckReadPropertyConditionalBuilder) setParent(contract BACnetServiceAckContract) {
+	b.BACnetServiceAckContract = contract
 }
 
-func (m *_BACnetServiceAckReadPropertyConditionalBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetServiceAckReadPropertyConditionalBuilder {
-	m.BytesOfRemovedService = bytesOfRemovedService
-	return m
+func (b *_BACnetServiceAckReadPropertyConditionalBuilder) WithMandatoryFields(bytesOfRemovedService []byte) BACnetServiceAckReadPropertyConditionalBuilder {
+	return b.WithBytesOfRemovedService(bytesOfRemovedService...)
 }
 
-func (m *_BACnetServiceAckReadPropertyConditionalBuilder) Build() (BACnetServiceAckReadPropertyConditional, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetServiceAckReadPropertyConditionalBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetServiceAckReadPropertyConditionalBuilder {
+	b.BytesOfRemovedService = bytesOfRemovedService
+	return b
+}
+
+func (b *_BACnetServiceAckReadPropertyConditionalBuilder) Build() (BACnetServiceAckReadPropertyConditional, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetServiceAckReadPropertyConditional.deepCopy(), nil
+	return b._BACnetServiceAckReadPropertyConditional.deepCopy(), nil
 }
 
-func (m *_BACnetServiceAckReadPropertyConditionalBuilder) MustBuild() BACnetServiceAckReadPropertyConditional {
-	build, err := m.Build()
+func (b *_BACnetServiceAckReadPropertyConditionalBuilder) MustBuild() BACnetServiceAckReadPropertyConditional {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetServiceAckReadPropertyConditionalBuilder) DeepCopy() any {
-	return m.CreateBACnetServiceAckReadPropertyConditionalBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetServiceAckReadPropertyConditionalBuilder) Done() BACnetServiceAckBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetServiceAckReadPropertyConditionalBuilder) buildForBACnetServiceAck() (BACnetServiceAck, error) {
+	return b.Build()
+}
+
+func (b *_BACnetServiceAckReadPropertyConditionalBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetServiceAckReadPropertyConditionalBuilder().(*_BACnetServiceAckReadPropertyConditionalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetServiceAckReadPropertyConditionalBuilder creates a BACnetServiceAckReadPropertyConditionalBuilder
-func (m *_BACnetServiceAckReadPropertyConditional) CreateBACnetServiceAckReadPropertyConditionalBuilder() BACnetServiceAckReadPropertyConditionalBuilder {
-	if m == nil {
+func (b *_BACnetServiceAckReadPropertyConditional) CreateBACnetServiceAckReadPropertyConditionalBuilder() BACnetServiceAckReadPropertyConditionalBuilder {
+	if b == nil {
 		return NewBACnetServiceAckReadPropertyConditionalBuilder()
 	}
-	return &_BACnetServiceAckReadPropertyConditionalBuilder{_BACnetServiceAckReadPropertyConditional: m.deepCopy()}
+	return &_BACnetServiceAckReadPropertyConditionalBuilder{_BACnetServiceAckReadPropertyConditional: b.deepCopy()}
 }
 
 ///////////////////////

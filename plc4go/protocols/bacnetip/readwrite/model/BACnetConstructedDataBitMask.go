@@ -100,64 +100,83 @@ func NewBACnetConstructedDataBitMaskBuilder() BACnetConstructedDataBitMaskBuilde
 type _BACnetConstructedDataBitMaskBuilder struct {
 	*_BACnetConstructedDataBitMask
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBitMaskBuilder) = (*_BACnetConstructedDataBitMaskBuilder)(nil)
 
-func (m *_BACnetConstructedDataBitMaskBuilder) WithMandatoryFields(bitString BACnetApplicationTagBitString) BACnetConstructedDataBitMaskBuilder {
-	return m.WithBitString(bitString)
+func (b *_BACnetConstructedDataBitMaskBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBitMaskBuilder) WithBitString(bitString BACnetApplicationTagBitString) BACnetConstructedDataBitMaskBuilder {
-	m.BitString = bitString
-	return m
+func (b *_BACnetConstructedDataBitMaskBuilder) WithMandatoryFields(bitString BACnetApplicationTagBitString) BACnetConstructedDataBitMaskBuilder {
+	return b.WithBitString(bitString)
 }
 
-func (m *_BACnetConstructedDataBitMaskBuilder) WithBitStringBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetConstructedDataBitMaskBuilder {
-	builder := builderSupplier(m.BitString.CreateBACnetApplicationTagBitStringBuilder())
+func (b *_BACnetConstructedDataBitMaskBuilder) WithBitString(bitString BACnetApplicationTagBitString) BACnetConstructedDataBitMaskBuilder {
+	b.BitString = bitString
+	return b
+}
+
+func (b *_BACnetConstructedDataBitMaskBuilder) WithBitStringBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetConstructedDataBitMaskBuilder {
+	builder := builderSupplier(b.BitString.CreateBACnetApplicationTagBitStringBuilder())
 	var err error
-	m.BitString, err = builder.Build()
+	b.BitString, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBitMaskBuilder) Build() (BACnetConstructedDataBitMask, error) {
-	if m.BitString == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBitMaskBuilder) Build() (BACnetConstructedDataBitMask, error) {
+	if b.BitString == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'bitString' not set"))
+		b.err.Append(errors.New("mandatory field 'bitString' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBitMask.deepCopy(), nil
+	return b._BACnetConstructedDataBitMask.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBitMaskBuilder) MustBuild() BACnetConstructedDataBitMask {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBitMaskBuilder) MustBuild() BACnetConstructedDataBitMask {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBitMaskBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBitMaskBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBitMaskBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBitMaskBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBitMaskBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBitMaskBuilder().(*_BACnetConstructedDataBitMaskBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBitMaskBuilder creates a BACnetConstructedDataBitMaskBuilder
-func (m *_BACnetConstructedDataBitMask) CreateBACnetConstructedDataBitMaskBuilder() BACnetConstructedDataBitMaskBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBitMask) CreateBACnetConstructedDataBitMaskBuilder() BACnetConstructedDataBitMaskBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBitMaskBuilder()
 	}
-	return &_BACnetConstructedDataBitMaskBuilder{_BACnetConstructedDataBitMask: m.deepCopy()}
+	return &_BACnetConstructedDataBitMaskBuilder{_BACnetConstructedDataBitMask: b.deepCopy()}
 }
 
 ///////////////////////

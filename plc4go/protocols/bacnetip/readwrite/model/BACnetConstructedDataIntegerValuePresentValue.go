@@ -100,64 +100,83 @@ func NewBACnetConstructedDataIntegerValuePresentValueBuilder() BACnetConstructed
 type _BACnetConstructedDataIntegerValuePresentValueBuilder struct {
 	*_BACnetConstructedDataIntegerValuePresentValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataIntegerValuePresentValueBuilder) = (*_BACnetConstructedDataIntegerValuePresentValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataIntegerValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValuePresentValueBuilder {
-	return m.WithPresentValue(presentValue)
+func (b *_BACnetConstructedDataIntegerValuePresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataIntegerValuePresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValuePresentValueBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetConstructedDataIntegerValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValuePresentValueBuilder {
+	return b.WithPresentValue(presentValue)
 }
 
-func (m *_BACnetConstructedDataIntegerValuePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataIntegerValuePresentValueBuilder {
-	builder := builderSupplier(m.PresentValue.CreateBACnetApplicationTagSignedIntegerBuilder())
+func (b *_BACnetConstructedDataIntegerValuePresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValuePresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataIntegerValuePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataIntegerValuePresentValueBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetApplicationTagSignedIntegerBuilder())
 	var err error
-	m.PresentValue, err = builder.Build()
+	b.PresentValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataIntegerValuePresentValueBuilder) Build() (BACnetConstructedDataIntegerValuePresentValue, error) {
-	if m.PresentValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataIntegerValuePresentValueBuilder) Build() (BACnetConstructedDataIntegerValuePresentValue, error) {
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataIntegerValuePresentValue.deepCopy(), nil
+	return b._BACnetConstructedDataIntegerValuePresentValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataIntegerValuePresentValueBuilder) MustBuild() BACnetConstructedDataIntegerValuePresentValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataIntegerValuePresentValueBuilder) MustBuild() BACnetConstructedDataIntegerValuePresentValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataIntegerValuePresentValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataIntegerValuePresentValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIntegerValuePresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIntegerValuePresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIntegerValuePresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIntegerValuePresentValueBuilder().(*_BACnetConstructedDataIntegerValuePresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataIntegerValuePresentValueBuilder creates a BACnetConstructedDataIntegerValuePresentValueBuilder
-func (m *_BACnetConstructedDataIntegerValuePresentValue) CreateBACnetConstructedDataIntegerValuePresentValueBuilder() BACnetConstructedDataIntegerValuePresentValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataIntegerValuePresentValue) CreateBACnetConstructedDataIntegerValuePresentValueBuilder() BACnetConstructedDataIntegerValuePresentValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataIntegerValuePresentValueBuilder()
 	}
-	return &_BACnetConstructedDataIntegerValuePresentValueBuilder{_BACnetConstructedDataIntegerValuePresentValue: m.deepCopy()}
+	return &_BACnetConstructedDataIntegerValuePresentValueBuilder{_BACnetConstructedDataIntegerValuePresentValue: b.deepCopy()}
 }
 
 ///////////////////////

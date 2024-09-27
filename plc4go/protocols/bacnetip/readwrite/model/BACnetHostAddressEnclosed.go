@@ -93,6 +93,8 @@ type BACnetHostAddressEnclosedBuilder interface {
 	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetHostAddressEnclosedBuilder
 	// WithHostAddress adds HostAddress (property field)
 	WithHostAddress(BACnetHostAddress) BACnetHostAddressEnclosedBuilder
+	// WithHostAddressBuilder adds HostAddress (property field) which is build by the builder
+	WithHostAddressBuilder(func(BACnetHostAddressBuilder) BACnetHostAddressBuilder) BACnetHostAddressEnclosedBuilder
 	// WithClosingTag adds ClosingTag (property field)
 	WithClosingTag(BACnetClosingTag) BACnetHostAddressEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
@@ -116,94 +118,111 @@ type _BACnetHostAddressEnclosedBuilder struct {
 
 var _ (BACnetHostAddressEnclosedBuilder) = (*_BACnetHostAddressEnclosedBuilder)(nil)
 
-func (m *_BACnetHostAddressEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, hostAddress BACnetHostAddress, closingTag BACnetClosingTag) BACnetHostAddressEnclosedBuilder {
-	return m.WithOpeningTag(openingTag).WithHostAddress(hostAddress).WithClosingTag(closingTag)
+func (b *_BACnetHostAddressEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, hostAddress BACnetHostAddress, closingTag BACnetClosingTag) BACnetHostAddressEnclosedBuilder {
+	return b.WithOpeningTag(openingTag).WithHostAddress(hostAddress).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetHostAddressEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetHostAddressEnclosedBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetHostAddressEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetHostAddressEnclosedBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetHostAddressEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetHostAddressEnclosedBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetHostAddressEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetHostAddressEnclosedBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetHostAddressEnclosedBuilder) WithHostAddress(hostAddress BACnetHostAddress) BACnetHostAddressEnclosedBuilder {
-	m.HostAddress = hostAddress
-	return m
+func (b *_BACnetHostAddressEnclosedBuilder) WithHostAddress(hostAddress BACnetHostAddress) BACnetHostAddressEnclosedBuilder {
+	b.HostAddress = hostAddress
+	return b
 }
 
-func (m *_BACnetHostAddressEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetHostAddressEnclosedBuilder {
-	m.ClosingTag = closingTag
-	return m
-}
-
-func (m *_BACnetHostAddressEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetHostAddressEnclosedBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetHostAddressEnclosedBuilder) WithHostAddressBuilder(builderSupplier func(BACnetHostAddressBuilder) BACnetHostAddressBuilder) BACnetHostAddressEnclosedBuilder {
+	builder := builderSupplier(b.HostAddress.CreateBACnetHostAddressBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.HostAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetHostAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetHostAddressEnclosedBuilder) Build() (BACnetHostAddressEnclosed, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
-	}
-	if m.HostAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'hostAddress' not set"))
-	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetHostAddressEnclosed.deepCopy(), nil
+func (b *_BACnetHostAddressEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetHostAddressEnclosedBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetHostAddressEnclosedBuilder) MustBuild() BACnetHostAddressEnclosed {
-	build, err := m.Build()
+func (b *_BACnetHostAddressEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetHostAddressEnclosedBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetHostAddressEnclosedBuilder) Build() (BACnetHostAddressEnclosed, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.HostAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'hostAddress' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetHostAddressEnclosed.deepCopy(), nil
+}
+
+func (b *_BACnetHostAddressEnclosedBuilder) MustBuild() BACnetHostAddressEnclosed {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetHostAddressEnclosedBuilder) DeepCopy() any {
-	return m.CreateBACnetHostAddressEnclosedBuilder()
+func (b *_BACnetHostAddressEnclosedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetHostAddressEnclosedBuilder().(*_BACnetHostAddressEnclosedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetHostAddressEnclosedBuilder creates a BACnetHostAddressEnclosedBuilder
-func (m *_BACnetHostAddressEnclosed) CreateBACnetHostAddressEnclosedBuilder() BACnetHostAddressEnclosedBuilder {
-	if m == nil {
+func (b *_BACnetHostAddressEnclosed) CreateBACnetHostAddressEnclosedBuilder() BACnetHostAddressEnclosedBuilder {
+	if b == nil {
 		return NewBACnetHostAddressEnclosedBuilder()
 	}
-	return &_BACnetHostAddressEnclosedBuilder{_BACnetHostAddressEnclosed: m.deepCopy()}
+	return &_BACnetHostAddressEnclosedBuilder{_BACnetHostAddressEnclosed: b.deepCopy()}
 }
 
 ///////////////////////

@@ -98,64 +98,83 @@ func NewBACnetTimerStateChangeValueEnumeratedBuilder() BACnetTimerStateChangeVal
 type _BACnetTimerStateChangeValueEnumeratedBuilder struct {
 	*_BACnetTimerStateChangeValueEnumerated
 
+	parentBuilder *_BACnetTimerStateChangeValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetTimerStateChangeValueEnumeratedBuilder) = (*_BACnetTimerStateChangeValueEnumeratedBuilder)(nil)
 
-func (m *_BACnetTimerStateChangeValueEnumeratedBuilder) WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetTimerStateChangeValueEnumeratedBuilder {
-	return m.WithEnumeratedValue(enumeratedValue)
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
+	b.BACnetTimerStateChangeValueContract = contract
 }
 
-func (m *_BACnetTimerStateChangeValueEnumeratedBuilder) WithEnumeratedValue(enumeratedValue BACnetApplicationTagEnumerated) BACnetTimerStateChangeValueEnumeratedBuilder {
-	m.EnumeratedValue = enumeratedValue
-	return m
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetTimerStateChangeValueEnumeratedBuilder {
+	return b.WithEnumeratedValue(enumeratedValue)
 }
 
-func (m *_BACnetTimerStateChangeValueEnumeratedBuilder) WithEnumeratedValueBuilder(builderSupplier func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetTimerStateChangeValueEnumeratedBuilder {
-	builder := builderSupplier(m.EnumeratedValue.CreateBACnetApplicationTagEnumeratedBuilder())
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) WithEnumeratedValue(enumeratedValue BACnetApplicationTagEnumerated) BACnetTimerStateChangeValueEnumeratedBuilder {
+	b.EnumeratedValue = enumeratedValue
+	return b
+}
+
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) WithEnumeratedValueBuilder(builderSupplier func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetTimerStateChangeValueEnumeratedBuilder {
+	builder := builderSupplier(b.EnumeratedValue.CreateBACnetApplicationTagEnumeratedBuilder())
 	var err error
-	m.EnumeratedValue, err = builder.Build()
+	b.EnumeratedValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetTimerStateChangeValueEnumeratedBuilder) Build() (BACnetTimerStateChangeValueEnumerated, error) {
-	if m.EnumeratedValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) Build() (BACnetTimerStateChangeValueEnumerated, error) {
+	if b.EnumeratedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
+		b.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTimerStateChangeValueEnumerated.deepCopy(), nil
+	return b._BACnetTimerStateChangeValueEnumerated.deepCopy(), nil
 }
 
-func (m *_BACnetTimerStateChangeValueEnumeratedBuilder) MustBuild() BACnetTimerStateChangeValueEnumerated {
-	build, err := m.Build()
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) MustBuild() BACnetTimerStateChangeValueEnumerated {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTimerStateChangeValueEnumeratedBuilder) DeepCopy() any {
-	return m.CreateBACnetTimerStateChangeValueEnumeratedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) buildForBACnetTimerStateChangeValue() (BACnetTimerStateChangeValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimerStateChangeValueEnumeratedBuilder().(*_BACnetTimerStateChangeValueEnumeratedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTimerStateChangeValueEnumeratedBuilder creates a BACnetTimerStateChangeValueEnumeratedBuilder
-func (m *_BACnetTimerStateChangeValueEnumerated) CreateBACnetTimerStateChangeValueEnumeratedBuilder() BACnetTimerStateChangeValueEnumeratedBuilder {
-	if m == nil {
+func (b *_BACnetTimerStateChangeValueEnumerated) CreateBACnetTimerStateChangeValueEnumeratedBuilder() BACnetTimerStateChangeValueEnumeratedBuilder {
+	if b == nil {
 		return NewBACnetTimerStateChangeValueEnumeratedBuilder()
 	}
-	return &_BACnetTimerStateChangeValueEnumeratedBuilder{_BACnetTimerStateChangeValueEnumerated: m.deepCopy()}
+	return &_BACnetTimerStateChangeValueEnumeratedBuilder{_BACnetTimerStateChangeValueEnumerated: b.deepCopy()}
 }
 
 ///////////////////////

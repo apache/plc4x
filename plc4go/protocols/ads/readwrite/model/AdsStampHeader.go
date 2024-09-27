@@ -100,50 +100,54 @@ type _AdsStampHeaderBuilder struct {
 
 var _ (AdsStampHeaderBuilder) = (*_AdsStampHeaderBuilder)(nil)
 
-func (m *_AdsStampHeaderBuilder) WithMandatoryFields(timestamp uint64, samples uint32, adsNotificationSamples []AdsNotificationSample) AdsStampHeaderBuilder {
-	return m.WithTimestamp(timestamp).WithSamples(samples).WithAdsNotificationSamples(adsNotificationSamples...)
+func (b *_AdsStampHeaderBuilder) WithMandatoryFields(timestamp uint64, samples uint32, adsNotificationSamples []AdsNotificationSample) AdsStampHeaderBuilder {
+	return b.WithTimestamp(timestamp).WithSamples(samples).WithAdsNotificationSamples(adsNotificationSamples...)
 }
 
-func (m *_AdsStampHeaderBuilder) WithTimestamp(timestamp uint64) AdsStampHeaderBuilder {
-	m.Timestamp = timestamp
-	return m
+func (b *_AdsStampHeaderBuilder) WithTimestamp(timestamp uint64) AdsStampHeaderBuilder {
+	b.Timestamp = timestamp
+	return b
 }
 
-func (m *_AdsStampHeaderBuilder) WithSamples(samples uint32) AdsStampHeaderBuilder {
-	m.Samples = samples
-	return m
+func (b *_AdsStampHeaderBuilder) WithSamples(samples uint32) AdsStampHeaderBuilder {
+	b.Samples = samples
+	return b
 }
 
-func (m *_AdsStampHeaderBuilder) WithAdsNotificationSamples(adsNotificationSamples ...AdsNotificationSample) AdsStampHeaderBuilder {
-	m.AdsNotificationSamples = adsNotificationSamples
-	return m
+func (b *_AdsStampHeaderBuilder) WithAdsNotificationSamples(adsNotificationSamples ...AdsNotificationSample) AdsStampHeaderBuilder {
+	b.AdsNotificationSamples = adsNotificationSamples
+	return b
 }
 
-func (m *_AdsStampHeaderBuilder) Build() (AdsStampHeader, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsStampHeaderBuilder) Build() (AdsStampHeader, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsStampHeader.deepCopy(), nil
+	return b._AdsStampHeader.deepCopy(), nil
 }
 
-func (m *_AdsStampHeaderBuilder) MustBuild() AdsStampHeader {
-	build, err := m.Build()
+func (b *_AdsStampHeaderBuilder) MustBuild() AdsStampHeader {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsStampHeaderBuilder) DeepCopy() any {
-	return m.CreateAdsStampHeaderBuilder()
+func (b *_AdsStampHeaderBuilder) DeepCopy() any {
+	_copy := b.CreateAdsStampHeaderBuilder().(*_AdsStampHeaderBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsStampHeaderBuilder creates a AdsStampHeaderBuilder
-func (m *_AdsStampHeader) CreateAdsStampHeaderBuilder() AdsStampHeaderBuilder {
-	if m == nil {
+func (b *_AdsStampHeader) CreateAdsStampHeaderBuilder() AdsStampHeaderBuilder {
+	if b == nil {
 		return NewAdsStampHeaderBuilder()
 	}
-	return &_AdsStampHeaderBuilder{_AdsStampHeader: m.deepCopy()}
+	return &_AdsStampHeaderBuilder{_AdsStampHeader: b.deepCopy()}
 }
 
 ///////////////////////

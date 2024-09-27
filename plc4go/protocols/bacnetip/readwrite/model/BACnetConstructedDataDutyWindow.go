@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDutyWindowBuilder() BACnetConstructedDataDutyWindow
 type _BACnetConstructedDataDutyWindowBuilder struct {
 	*_BACnetConstructedDataDutyWindow
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDutyWindowBuilder) = (*_BACnetConstructedDataDutyWindowBuilder)(nil)
 
-func (m *_BACnetConstructedDataDutyWindowBuilder) WithMandatoryFields(dutyWindow BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDutyWindowBuilder {
-	return m.WithDutyWindow(dutyWindow)
+func (b *_BACnetConstructedDataDutyWindowBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDutyWindowBuilder) WithDutyWindow(dutyWindow BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDutyWindowBuilder {
-	m.DutyWindow = dutyWindow
-	return m
+func (b *_BACnetConstructedDataDutyWindowBuilder) WithMandatoryFields(dutyWindow BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDutyWindowBuilder {
+	return b.WithDutyWindow(dutyWindow)
 }
 
-func (m *_BACnetConstructedDataDutyWindowBuilder) WithDutyWindowBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDutyWindowBuilder {
-	builder := builderSupplier(m.DutyWindow.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataDutyWindowBuilder) WithDutyWindow(dutyWindow BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDutyWindowBuilder {
+	b.DutyWindow = dutyWindow
+	return b
+}
+
+func (b *_BACnetConstructedDataDutyWindowBuilder) WithDutyWindowBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDutyWindowBuilder {
+	builder := builderSupplier(b.DutyWindow.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.DutyWindow, err = builder.Build()
+	b.DutyWindow, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDutyWindowBuilder) Build() (BACnetConstructedDataDutyWindow, error) {
-	if m.DutyWindow == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDutyWindowBuilder) Build() (BACnetConstructedDataDutyWindow, error) {
+	if b.DutyWindow == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dutyWindow' not set"))
+		b.err.Append(errors.New("mandatory field 'dutyWindow' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDutyWindow.deepCopy(), nil
+	return b._BACnetConstructedDataDutyWindow.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDutyWindowBuilder) MustBuild() BACnetConstructedDataDutyWindow {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDutyWindowBuilder) MustBuild() BACnetConstructedDataDutyWindow {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDutyWindowBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDutyWindowBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDutyWindowBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDutyWindowBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDutyWindowBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDutyWindowBuilder().(*_BACnetConstructedDataDutyWindowBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDutyWindowBuilder creates a BACnetConstructedDataDutyWindowBuilder
-func (m *_BACnetConstructedDataDutyWindow) CreateBACnetConstructedDataDutyWindowBuilder() BACnetConstructedDataDutyWindowBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDutyWindow) CreateBACnetConstructedDataDutyWindowBuilder() BACnetConstructedDataDutyWindowBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDutyWindowBuilder()
 	}
-	return &_BACnetConstructedDataDutyWindowBuilder{_BACnetConstructedDataDutyWindow: m.deepCopy()}
+	return &_BACnetConstructedDataDutyWindowBuilder{_BACnetConstructedDataDutyWindow: b.deepCopy()}
 }
 
 ///////////////////////

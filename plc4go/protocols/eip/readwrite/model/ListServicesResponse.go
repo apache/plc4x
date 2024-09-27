@@ -93,45 +93,64 @@ func NewListServicesResponseBuilder() ListServicesResponseBuilder {
 type _ListServicesResponseBuilder struct {
 	*_ListServicesResponse
 
+	parentBuilder *_EipPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ListServicesResponseBuilder) = (*_ListServicesResponseBuilder)(nil)
 
-func (m *_ListServicesResponseBuilder) WithMandatoryFields(typeIds []TypeId) ListServicesResponseBuilder {
-	return m.WithTypeIds(typeIds...)
+func (b *_ListServicesResponseBuilder) setParent(contract EipPacketContract) {
+	b.EipPacketContract = contract
 }
 
-func (m *_ListServicesResponseBuilder) WithTypeIds(typeIds ...TypeId) ListServicesResponseBuilder {
-	m.TypeIds = typeIds
-	return m
+func (b *_ListServicesResponseBuilder) WithMandatoryFields(typeIds []TypeId) ListServicesResponseBuilder {
+	return b.WithTypeIds(typeIds...)
 }
 
-func (m *_ListServicesResponseBuilder) Build() (ListServicesResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ListServicesResponseBuilder) WithTypeIds(typeIds ...TypeId) ListServicesResponseBuilder {
+	b.TypeIds = typeIds
+	return b
+}
+
+func (b *_ListServicesResponseBuilder) Build() (ListServicesResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ListServicesResponse.deepCopy(), nil
+	return b._ListServicesResponse.deepCopy(), nil
 }
 
-func (m *_ListServicesResponseBuilder) MustBuild() ListServicesResponse {
-	build, err := m.Build()
+func (b *_ListServicesResponseBuilder) MustBuild() ListServicesResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ListServicesResponseBuilder) DeepCopy() any {
-	return m.CreateListServicesResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ListServicesResponseBuilder) Done() EipPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ListServicesResponseBuilder) buildForEipPacket() (EipPacket, error) {
+	return b.Build()
+}
+
+func (b *_ListServicesResponseBuilder) DeepCopy() any {
+	_copy := b.CreateListServicesResponseBuilder().(*_ListServicesResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateListServicesResponseBuilder creates a ListServicesResponseBuilder
-func (m *_ListServicesResponse) CreateListServicesResponseBuilder() ListServicesResponseBuilder {
-	if m == nil {
+func (b *_ListServicesResponse) CreateListServicesResponseBuilder() ListServicesResponseBuilder {
+	if b == nil {
 		return NewListServicesResponseBuilder()
 	}
-	return &_ListServicesResponseBuilder{_ListServicesResponse: m.deepCopy()}
+	return &_ListServicesResponseBuilder{_ListServicesResponse: b.deepCopy()}
 }
 
 ///////////////////////

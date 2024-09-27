@@ -85,40 +85,59 @@ func NewReaderGroupTransportDataTypeBuilder() ReaderGroupTransportDataTypeBuilde
 type _ReaderGroupTransportDataTypeBuilder struct {
 	*_ReaderGroupTransportDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ReaderGroupTransportDataTypeBuilder) = (*_ReaderGroupTransportDataTypeBuilder)(nil)
 
-func (m *_ReaderGroupTransportDataTypeBuilder) WithMandatoryFields() ReaderGroupTransportDataTypeBuilder {
-	return m
+func (b *_ReaderGroupTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ReaderGroupTransportDataTypeBuilder) Build() (ReaderGroupTransportDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ReaderGroupTransportDataTypeBuilder) WithMandatoryFields() ReaderGroupTransportDataTypeBuilder {
+	return b
+}
+
+func (b *_ReaderGroupTransportDataTypeBuilder) Build() (ReaderGroupTransportDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ReaderGroupTransportDataType.deepCopy(), nil
+	return b._ReaderGroupTransportDataType.deepCopy(), nil
 }
 
-func (m *_ReaderGroupTransportDataTypeBuilder) MustBuild() ReaderGroupTransportDataType {
-	build, err := m.Build()
+func (b *_ReaderGroupTransportDataTypeBuilder) MustBuild() ReaderGroupTransportDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ReaderGroupTransportDataTypeBuilder) DeepCopy() any {
-	return m.CreateReaderGroupTransportDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ReaderGroupTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ReaderGroupTransportDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ReaderGroupTransportDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateReaderGroupTransportDataTypeBuilder().(*_ReaderGroupTransportDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateReaderGroupTransportDataTypeBuilder creates a ReaderGroupTransportDataTypeBuilder
-func (m *_ReaderGroupTransportDataType) CreateReaderGroupTransportDataTypeBuilder() ReaderGroupTransportDataTypeBuilder {
-	if m == nil {
+func (b *_ReaderGroupTransportDataType) CreateReaderGroupTransportDataTypeBuilder() ReaderGroupTransportDataTypeBuilder {
+	if b == nil {
 		return NewReaderGroupTransportDataTypeBuilder()
 	}
-	return &_ReaderGroupTransportDataTypeBuilder{_ReaderGroupTransportDataType: m.deepCopy()}
+	return &_ReaderGroupTransportDataTypeBuilder{_ReaderGroupTransportDataType: b.deepCopy()}
 }
 
 ///////////////////////

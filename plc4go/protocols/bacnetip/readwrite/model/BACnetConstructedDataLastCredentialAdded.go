@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLastCredentialAddedBuilder() BACnetConstructedDataL
 type _BACnetConstructedDataLastCredentialAddedBuilder struct {
 	*_BACnetConstructedDataLastCredentialAdded
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLastCredentialAddedBuilder) = (*_BACnetConstructedDataLastCredentialAddedBuilder)(nil)
 
-func (m *_BACnetConstructedDataLastCredentialAddedBuilder) WithMandatoryFields(lastCredentialAdded BACnetDeviceObjectReference) BACnetConstructedDataLastCredentialAddedBuilder {
-	return m.WithLastCredentialAdded(lastCredentialAdded)
+func (b *_BACnetConstructedDataLastCredentialAddedBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLastCredentialAddedBuilder) WithLastCredentialAdded(lastCredentialAdded BACnetDeviceObjectReference) BACnetConstructedDataLastCredentialAddedBuilder {
-	m.LastCredentialAdded = lastCredentialAdded
-	return m
+func (b *_BACnetConstructedDataLastCredentialAddedBuilder) WithMandatoryFields(lastCredentialAdded BACnetDeviceObjectReference) BACnetConstructedDataLastCredentialAddedBuilder {
+	return b.WithLastCredentialAdded(lastCredentialAdded)
 }
 
-func (m *_BACnetConstructedDataLastCredentialAddedBuilder) WithLastCredentialAddedBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataLastCredentialAddedBuilder {
-	builder := builderSupplier(m.LastCredentialAdded.CreateBACnetDeviceObjectReferenceBuilder())
+func (b *_BACnetConstructedDataLastCredentialAddedBuilder) WithLastCredentialAdded(lastCredentialAdded BACnetDeviceObjectReference) BACnetConstructedDataLastCredentialAddedBuilder {
+	b.LastCredentialAdded = lastCredentialAdded
+	return b
+}
+
+func (b *_BACnetConstructedDataLastCredentialAddedBuilder) WithLastCredentialAddedBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataLastCredentialAddedBuilder {
+	builder := builderSupplier(b.LastCredentialAdded.CreateBACnetDeviceObjectReferenceBuilder())
 	var err error
-	m.LastCredentialAdded, err = builder.Build()
+	b.LastCredentialAdded, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLastCredentialAddedBuilder) Build() (BACnetConstructedDataLastCredentialAdded, error) {
-	if m.LastCredentialAdded == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLastCredentialAddedBuilder) Build() (BACnetConstructedDataLastCredentialAdded, error) {
+	if b.LastCredentialAdded == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lastCredentialAdded' not set"))
+		b.err.Append(errors.New("mandatory field 'lastCredentialAdded' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLastCredentialAdded.deepCopy(), nil
+	return b._BACnetConstructedDataLastCredentialAdded.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLastCredentialAddedBuilder) MustBuild() BACnetConstructedDataLastCredentialAdded {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLastCredentialAddedBuilder) MustBuild() BACnetConstructedDataLastCredentialAdded {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLastCredentialAddedBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLastCredentialAddedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLastCredentialAddedBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLastCredentialAddedBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLastCredentialAddedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLastCredentialAddedBuilder().(*_BACnetConstructedDataLastCredentialAddedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLastCredentialAddedBuilder creates a BACnetConstructedDataLastCredentialAddedBuilder
-func (m *_BACnetConstructedDataLastCredentialAdded) CreateBACnetConstructedDataLastCredentialAddedBuilder() BACnetConstructedDataLastCredentialAddedBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLastCredentialAdded) CreateBACnetConstructedDataLastCredentialAddedBuilder() BACnetConstructedDataLastCredentialAddedBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLastCredentialAddedBuilder()
 	}
-	return &_BACnetConstructedDataLastCredentialAddedBuilder{_BACnetConstructedDataLastCredentialAdded: m.deepCopy()}
+	return &_BACnetConstructedDataLastCredentialAddedBuilder{_BACnetConstructedDataLastCredentialAdded: b.deepCopy()}
 }
 
 ///////////////////////

@@ -98,64 +98,83 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder(
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
 
+	parentBuilder *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder)(nil)
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) WithMandatoryFields(booleanValue BACnetApplicationTagBoolean) BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder {
-	return m.WithBooleanValue(booleanValue)
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) setParent(contract BACnetNotificationParametersChangeOfDiscreteValueNewValueContract) {
+	b.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract = contract
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) WithBooleanValue(booleanValue BACnetApplicationTagBoolean) BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder {
-	m.BooleanValue = booleanValue
-	return m
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) WithMandatoryFields(booleanValue BACnetApplicationTagBoolean) BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder {
+	return b.WithBooleanValue(booleanValue)
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) WithBooleanValueBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder {
-	builder := builderSupplier(m.BooleanValue.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) WithBooleanValue(booleanValue BACnetApplicationTagBoolean) BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder {
+	b.BooleanValue = booleanValue
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) WithBooleanValueBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder {
+	builder := builderSupplier(b.BooleanValue.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.BooleanValue, err = builder.Build()
+	b.BooleanValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean, error) {
-	if m.BooleanValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean, error) {
+	if b.BooleanValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'booleanValue' not set"))
+		b.err.Append(errors.New("mandatory field 'booleanValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean.deepCopy(), nil
+	return b._BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean.deepCopy(), nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) buildForBACnetNotificationParametersChangeOfDiscreteValueNewValue() (BACnetNotificationParametersChangeOfDiscreteValueNewValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder()
 	}
-	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean: m.deepCopy()}
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean: b.deepCopy()}
 }
 
 ///////////////////////

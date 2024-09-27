@@ -85,40 +85,59 @@ func NewAccessControlDataCloseAccessPointBuilder() AccessControlDataCloseAccessP
 type _AccessControlDataCloseAccessPointBuilder struct {
 	*_AccessControlDataCloseAccessPoint
 
+	parentBuilder *_AccessControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AccessControlDataCloseAccessPointBuilder) = (*_AccessControlDataCloseAccessPointBuilder)(nil)
 
-func (m *_AccessControlDataCloseAccessPointBuilder) WithMandatoryFields() AccessControlDataCloseAccessPointBuilder {
-	return m
+func (b *_AccessControlDataCloseAccessPointBuilder) setParent(contract AccessControlDataContract) {
+	b.AccessControlDataContract = contract
 }
 
-func (m *_AccessControlDataCloseAccessPointBuilder) Build() (AccessControlDataCloseAccessPoint, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AccessControlDataCloseAccessPointBuilder) WithMandatoryFields() AccessControlDataCloseAccessPointBuilder {
+	return b
+}
+
+func (b *_AccessControlDataCloseAccessPointBuilder) Build() (AccessControlDataCloseAccessPoint, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AccessControlDataCloseAccessPoint.deepCopy(), nil
+	return b._AccessControlDataCloseAccessPoint.deepCopy(), nil
 }
 
-func (m *_AccessControlDataCloseAccessPointBuilder) MustBuild() AccessControlDataCloseAccessPoint {
-	build, err := m.Build()
+func (b *_AccessControlDataCloseAccessPointBuilder) MustBuild() AccessControlDataCloseAccessPoint {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AccessControlDataCloseAccessPointBuilder) DeepCopy() any {
-	return m.CreateAccessControlDataCloseAccessPointBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AccessControlDataCloseAccessPointBuilder) Done() AccessControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AccessControlDataCloseAccessPointBuilder) buildForAccessControlData() (AccessControlData, error) {
+	return b.Build()
+}
+
+func (b *_AccessControlDataCloseAccessPointBuilder) DeepCopy() any {
+	_copy := b.CreateAccessControlDataCloseAccessPointBuilder().(*_AccessControlDataCloseAccessPointBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAccessControlDataCloseAccessPointBuilder creates a AccessControlDataCloseAccessPointBuilder
-func (m *_AccessControlDataCloseAccessPoint) CreateAccessControlDataCloseAccessPointBuilder() AccessControlDataCloseAccessPointBuilder {
-	if m == nil {
+func (b *_AccessControlDataCloseAccessPoint) CreateAccessControlDataCloseAccessPointBuilder() AccessControlDataCloseAccessPointBuilder {
+	if b == nil {
 		return NewAccessControlDataCloseAccessPointBuilder()
 	}
-	return &_AccessControlDataCloseAccessPointBuilder{_AccessControlDataCloseAccessPoint: m.deepCopy()}
+	return &_AccessControlDataCloseAccessPointBuilder{_AccessControlDataCloseAccessPoint: b.deepCopy()}
 }
 
 ///////////////////////

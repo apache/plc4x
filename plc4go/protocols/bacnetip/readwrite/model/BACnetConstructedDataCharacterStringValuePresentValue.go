@@ -100,64 +100,83 @@ func NewBACnetConstructedDataCharacterStringValuePresentValueBuilder() BACnetCon
 type _BACnetConstructedDataCharacterStringValuePresentValueBuilder struct {
 	*_BACnetConstructedDataCharacterStringValuePresentValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCharacterStringValuePresentValueBuilder) = (*_BACnetConstructedDataCharacterStringValuePresentValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagCharacterString) BACnetConstructedDataCharacterStringValuePresentValueBuilder {
-	return m.WithPresentValue(presentValue)
+func (b *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagCharacterString) BACnetConstructedDataCharacterStringValuePresentValueBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagCharacterString) BACnetConstructedDataCharacterStringValuePresentValueBuilder {
+	return b.WithPresentValue(presentValue)
 }
 
-func (m *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataCharacterStringValuePresentValueBuilder {
-	builder := builderSupplier(m.PresentValue.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagCharacterString) BACnetConstructedDataCharacterStringValuePresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataCharacterStringValuePresentValueBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.PresentValue, err = builder.Build()
+	b.PresentValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) Build() (BACnetConstructedDataCharacterStringValuePresentValue, error) {
-	if m.PresentValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) Build() (BACnetConstructedDataCharacterStringValuePresentValue, error) {
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCharacterStringValuePresentValue.deepCopy(), nil
+	return b._BACnetConstructedDataCharacterStringValuePresentValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) MustBuild() BACnetConstructedDataCharacterStringValuePresentValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) MustBuild() BACnetConstructedDataCharacterStringValuePresentValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCharacterStringValuePresentValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCharacterStringValuePresentValueBuilder().(*_BACnetConstructedDataCharacterStringValuePresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCharacterStringValuePresentValueBuilder creates a BACnetConstructedDataCharacterStringValuePresentValueBuilder
-func (m *_BACnetConstructedDataCharacterStringValuePresentValue) CreateBACnetConstructedDataCharacterStringValuePresentValueBuilder() BACnetConstructedDataCharacterStringValuePresentValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCharacterStringValuePresentValue) CreateBACnetConstructedDataCharacterStringValuePresentValueBuilder() BACnetConstructedDataCharacterStringValuePresentValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCharacterStringValuePresentValueBuilder()
 	}
-	return &_BACnetConstructedDataCharacterStringValuePresentValueBuilder{_BACnetConstructedDataCharacterStringValuePresentValue: m.deepCopy()}
+	return &_BACnetConstructedDataCharacterStringValuePresentValueBuilder{_BACnetConstructedDataCharacterStringValuePresentValue: b.deepCopy()}
 }
 
 ///////////////////////

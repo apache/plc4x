@@ -98,6 +98,8 @@ type AddReferencesResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) AddReferencesResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) AddReferencesResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AddReferencesResponseBuilder
 	// WithNoOfResults adds NoOfResults (property field)
 	WithNoOfResults(int32) AddReferencesResponseBuilder
 	// WithResults adds Results (property field)
@@ -120,71 +122,103 @@ func NewAddReferencesResponseBuilder() AddReferencesResponseBuilder {
 type _AddReferencesResponseBuilder struct {
 	*_AddReferencesResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AddReferencesResponseBuilder) = (*_AddReferencesResponseBuilder)(nil)
 
-func (m *_AddReferencesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) AddReferencesResponseBuilder {
-	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_AddReferencesResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_AddReferencesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) AddReferencesResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_AddReferencesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) AddReferencesResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (m *_AddReferencesResponseBuilder) WithNoOfResults(noOfResults int32) AddReferencesResponseBuilder {
-	m.NoOfResults = noOfResults
-	return m
+func (b *_AddReferencesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) AddReferencesResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
 }
 
-func (m *_AddReferencesResponseBuilder) WithResults(results ...StatusCode) AddReferencesResponseBuilder {
-	m.Results = results
-	return m
-}
-
-func (m *_AddReferencesResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) AddReferencesResponseBuilder {
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
-	return m
-}
-
-func (m *_AddReferencesResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) AddReferencesResponseBuilder {
-	m.DiagnosticInfos = diagnosticInfos
-	return m
-}
-
-func (m *_AddReferencesResponseBuilder) Build() (AddReferencesResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AddReferencesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AddReferencesResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._AddReferencesResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_AddReferencesResponseBuilder) MustBuild() AddReferencesResponse {
-	build, err := m.Build()
+func (b *_AddReferencesResponseBuilder) WithNoOfResults(noOfResults int32) AddReferencesResponseBuilder {
+	b.NoOfResults = noOfResults
+	return b
+}
+
+func (b *_AddReferencesResponseBuilder) WithResults(results ...StatusCode) AddReferencesResponseBuilder {
+	b.Results = results
+	return b
+}
+
+func (b *_AddReferencesResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) AddReferencesResponseBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_AddReferencesResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) AddReferencesResponseBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_AddReferencesResponseBuilder) Build() (AddReferencesResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AddReferencesResponse.deepCopy(), nil
+}
+
+func (b *_AddReferencesResponseBuilder) MustBuild() AddReferencesResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AddReferencesResponseBuilder) DeepCopy() any {
-	return m.CreateAddReferencesResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AddReferencesResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AddReferencesResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AddReferencesResponseBuilder) DeepCopy() any {
+	_copy := b.CreateAddReferencesResponseBuilder().(*_AddReferencesResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAddReferencesResponseBuilder creates a AddReferencesResponseBuilder
-func (m *_AddReferencesResponse) CreateAddReferencesResponseBuilder() AddReferencesResponseBuilder {
-	if m == nil {
+func (b *_AddReferencesResponse) CreateAddReferencesResponseBuilder() AddReferencesResponseBuilder {
+	if b == nil {
 		return NewAddReferencesResponseBuilder()
 	}
-	return &_AddReferencesResponseBuilder{_AddReferencesResponse: m.deepCopy()}
+	return &_AddReferencesResponseBuilder{_AddReferencesResponse: b.deepCopy()}
 }
 
 ///////////////////////

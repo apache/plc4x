@@ -93,45 +93,64 @@ func NewAirConditioningDataRefreshBuilder() AirConditioningDataRefreshBuilder {
 type _AirConditioningDataRefreshBuilder struct {
 	*_AirConditioningDataRefresh
 
+	parentBuilder *_AirConditioningDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AirConditioningDataRefreshBuilder) = (*_AirConditioningDataRefreshBuilder)(nil)
 
-func (m *_AirConditioningDataRefreshBuilder) WithMandatoryFields(zoneGroup byte) AirConditioningDataRefreshBuilder {
-	return m.WithZoneGroup(zoneGroup)
+func (b *_AirConditioningDataRefreshBuilder) setParent(contract AirConditioningDataContract) {
+	b.AirConditioningDataContract = contract
 }
 
-func (m *_AirConditioningDataRefreshBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataRefreshBuilder {
-	m.ZoneGroup = zoneGroup
-	return m
+func (b *_AirConditioningDataRefreshBuilder) WithMandatoryFields(zoneGroup byte) AirConditioningDataRefreshBuilder {
+	return b.WithZoneGroup(zoneGroup)
 }
 
-func (m *_AirConditioningDataRefreshBuilder) Build() (AirConditioningDataRefresh, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AirConditioningDataRefreshBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataRefreshBuilder {
+	b.ZoneGroup = zoneGroup
+	return b
+}
+
+func (b *_AirConditioningDataRefreshBuilder) Build() (AirConditioningDataRefresh, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AirConditioningDataRefresh.deepCopy(), nil
+	return b._AirConditioningDataRefresh.deepCopy(), nil
 }
 
-func (m *_AirConditioningDataRefreshBuilder) MustBuild() AirConditioningDataRefresh {
-	build, err := m.Build()
+func (b *_AirConditioningDataRefreshBuilder) MustBuild() AirConditioningDataRefresh {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AirConditioningDataRefreshBuilder) DeepCopy() any {
-	return m.CreateAirConditioningDataRefreshBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AirConditioningDataRefreshBuilder) Done() AirConditioningDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AirConditioningDataRefreshBuilder) buildForAirConditioningData() (AirConditioningData, error) {
+	return b.Build()
+}
+
+func (b *_AirConditioningDataRefreshBuilder) DeepCopy() any {
+	_copy := b.CreateAirConditioningDataRefreshBuilder().(*_AirConditioningDataRefreshBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAirConditioningDataRefreshBuilder creates a AirConditioningDataRefreshBuilder
-func (m *_AirConditioningDataRefresh) CreateAirConditioningDataRefreshBuilder() AirConditioningDataRefreshBuilder {
-	if m == nil {
+func (b *_AirConditioningDataRefresh) CreateAirConditioningDataRefreshBuilder() AirConditioningDataRefreshBuilder {
+	if b == nil {
 		return NewAirConditioningDataRefreshBuilder()
 	}
-	return &_AirConditioningDataRefreshBuilder{_AirConditioningDataRefresh: m.deepCopy()}
+	return &_AirConditioningDataRefreshBuilder{_AirConditioningDataRefresh: b.deepCopy()}
 }
 
 ///////////////////////

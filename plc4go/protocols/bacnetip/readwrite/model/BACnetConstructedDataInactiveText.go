@@ -100,64 +100,83 @@ func NewBACnetConstructedDataInactiveTextBuilder() BACnetConstructedDataInactive
 type _BACnetConstructedDataInactiveTextBuilder struct {
 	*_BACnetConstructedDataInactiveText
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataInactiveTextBuilder) = (*_BACnetConstructedDataInactiveTextBuilder)(nil)
 
-func (m *_BACnetConstructedDataInactiveTextBuilder) WithMandatoryFields(inactiveText BACnetApplicationTagCharacterString) BACnetConstructedDataInactiveTextBuilder {
-	return m.WithInactiveText(inactiveText)
+func (b *_BACnetConstructedDataInactiveTextBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataInactiveTextBuilder) WithInactiveText(inactiveText BACnetApplicationTagCharacterString) BACnetConstructedDataInactiveTextBuilder {
-	m.InactiveText = inactiveText
-	return m
+func (b *_BACnetConstructedDataInactiveTextBuilder) WithMandatoryFields(inactiveText BACnetApplicationTagCharacterString) BACnetConstructedDataInactiveTextBuilder {
+	return b.WithInactiveText(inactiveText)
 }
 
-func (m *_BACnetConstructedDataInactiveTextBuilder) WithInactiveTextBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataInactiveTextBuilder {
-	builder := builderSupplier(m.InactiveText.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetConstructedDataInactiveTextBuilder) WithInactiveText(inactiveText BACnetApplicationTagCharacterString) BACnetConstructedDataInactiveTextBuilder {
+	b.InactiveText = inactiveText
+	return b
+}
+
+func (b *_BACnetConstructedDataInactiveTextBuilder) WithInactiveTextBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataInactiveTextBuilder {
+	builder := builderSupplier(b.InactiveText.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.InactiveText, err = builder.Build()
+	b.InactiveText, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataInactiveTextBuilder) Build() (BACnetConstructedDataInactiveText, error) {
-	if m.InactiveText == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataInactiveTextBuilder) Build() (BACnetConstructedDataInactiveText, error) {
+	if b.InactiveText == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'inactiveText' not set"))
+		b.err.Append(errors.New("mandatory field 'inactiveText' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataInactiveText.deepCopy(), nil
+	return b._BACnetConstructedDataInactiveText.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataInactiveTextBuilder) MustBuild() BACnetConstructedDataInactiveText {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataInactiveTextBuilder) MustBuild() BACnetConstructedDataInactiveText {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataInactiveTextBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataInactiveTextBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataInactiveTextBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataInactiveTextBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataInactiveTextBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataInactiveTextBuilder().(*_BACnetConstructedDataInactiveTextBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataInactiveTextBuilder creates a BACnetConstructedDataInactiveTextBuilder
-func (m *_BACnetConstructedDataInactiveText) CreateBACnetConstructedDataInactiveTextBuilder() BACnetConstructedDataInactiveTextBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataInactiveText) CreateBACnetConstructedDataInactiveTextBuilder() BACnetConstructedDataInactiveTextBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataInactiveTextBuilder()
 	}
-	return &_BACnetConstructedDataInactiveTextBuilder{_BACnetConstructedDataInactiveText: m.deepCopy()}
+	return &_BACnetConstructedDataInactiveTextBuilder{_BACnetConstructedDataInactiveText: b.deepCopy()}
 }
 
 ///////////////////////

@@ -99,50 +99,69 @@ func NewVariantUInt16Builder() VariantUInt16Builder {
 type _VariantUInt16Builder struct {
 	*_VariantUInt16
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantUInt16Builder) = (*_VariantUInt16Builder)(nil)
 
-func (m *_VariantUInt16Builder) WithMandatoryFields(value []uint16) VariantUInt16Builder {
-	return m.WithValue(value...)
+func (b *_VariantUInt16Builder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantUInt16Builder) WithOptionalArrayLength(arrayLength int32) VariantUInt16Builder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantUInt16Builder) WithMandatoryFields(value []uint16) VariantUInt16Builder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantUInt16Builder) WithValue(value ...uint16) VariantUInt16Builder {
-	m.Value = value
-	return m
+func (b *_VariantUInt16Builder) WithOptionalArrayLength(arrayLength int32) VariantUInt16Builder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantUInt16Builder) Build() (VariantUInt16, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantUInt16Builder) WithValue(value ...uint16) VariantUInt16Builder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantUInt16Builder) Build() (VariantUInt16, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantUInt16.deepCopy(), nil
+	return b._VariantUInt16.deepCopy(), nil
 }
 
-func (m *_VariantUInt16Builder) MustBuild() VariantUInt16 {
-	build, err := m.Build()
+func (b *_VariantUInt16Builder) MustBuild() VariantUInt16 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantUInt16Builder) DeepCopy() any {
-	return m.CreateVariantUInt16Builder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantUInt16Builder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantUInt16Builder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantUInt16Builder) DeepCopy() any {
+	_copy := b.CreateVariantUInt16Builder().(*_VariantUInt16Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantUInt16Builder creates a VariantUInt16Builder
-func (m *_VariantUInt16) CreateVariantUInt16Builder() VariantUInt16Builder {
-	if m == nil {
+func (b *_VariantUInt16) CreateVariantUInt16Builder() VariantUInt16Builder {
+	if b == nil {
 		return NewVariantUInt16Builder()
 	}
-	return &_VariantUInt16Builder{_VariantUInt16: m.deepCopy()}
+	return &_VariantUInt16Builder{_VariantUInt16: b.deepCopy()}
 }
 
 ///////////////////////

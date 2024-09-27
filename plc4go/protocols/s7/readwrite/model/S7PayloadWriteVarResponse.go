@@ -93,45 +93,64 @@ func NewS7PayloadWriteVarResponseBuilder() S7PayloadWriteVarResponseBuilder {
 type _S7PayloadWriteVarResponseBuilder struct {
 	*_S7PayloadWriteVarResponse
 
+	parentBuilder *_S7PayloadBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadWriteVarResponseBuilder) = (*_S7PayloadWriteVarResponseBuilder)(nil)
 
-func (m *_S7PayloadWriteVarResponseBuilder) WithMandatoryFields(items []S7VarPayloadStatusItem) S7PayloadWriteVarResponseBuilder {
-	return m.WithItems(items...)
+func (b *_S7PayloadWriteVarResponseBuilder) setParent(contract S7PayloadContract) {
+	b.S7PayloadContract = contract
 }
 
-func (m *_S7PayloadWriteVarResponseBuilder) WithItems(items ...S7VarPayloadStatusItem) S7PayloadWriteVarResponseBuilder {
-	m.Items = items
-	return m
+func (b *_S7PayloadWriteVarResponseBuilder) WithMandatoryFields(items []S7VarPayloadStatusItem) S7PayloadWriteVarResponseBuilder {
+	return b.WithItems(items...)
 }
 
-func (m *_S7PayloadWriteVarResponseBuilder) Build() (S7PayloadWriteVarResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7PayloadWriteVarResponseBuilder) WithItems(items ...S7VarPayloadStatusItem) S7PayloadWriteVarResponseBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_S7PayloadWriteVarResponseBuilder) Build() (S7PayloadWriteVarResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadWriteVarResponse.deepCopy(), nil
+	return b._S7PayloadWriteVarResponse.deepCopy(), nil
 }
 
-func (m *_S7PayloadWriteVarResponseBuilder) MustBuild() S7PayloadWriteVarResponse {
-	build, err := m.Build()
+func (b *_S7PayloadWriteVarResponseBuilder) MustBuild() S7PayloadWriteVarResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadWriteVarResponseBuilder) DeepCopy() any {
-	return m.CreateS7PayloadWriteVarResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadWriteVarResponseBuilder) Done() S7PayloadBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadWriteVarResponseBuilder) buildForS7Payload() (S7Payload, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadWriteVarResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadWriteVarResponseBuilder().(*_S7PayloadWriteVarResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadWriteVarResponseBuilder creates a S7PayloadWriteVarResponseBuilder
-func (m *_S7PayloadWriteVarResponse) CreateS7PayloadWriteVarResponseBuilder() S7PayloadWriteVarResponseBuilder {
-	if m == nil {
+func (b *_S7PayloadWriteVarResponse) CreateS7PayloadWriteVarResponseBuilder() S7PayloadWriteVarResponseBuilder {
+	if b == nil {
 		return NewS7PayloadWriteVarResponseBuilder()
 	}
-	return &_S7PayloadWriteVarResponseBuilder{_S7PayloadWriteVarResponse: m.deepCopy()}
+	return &_S7PayloadWriteVarResponseBuilder{_S7PayloadWriteVarResponse: b.deepCopy()}
 }
 
 ///////////////////////

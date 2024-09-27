@@ -88,35 +88,39 @@ type _OpcuaConstantsBuilder struct {
 
 var _ (OpcuaConstantsBuilder) = (*_OpcuaConstantsBuilder)(nil)
 
-func (m *_OpcuaConstantsBuilder) WithMandatoryFields() OpcuaConstantsBuilder {
-	return m
+func (b *_OpcuaConstantsBuilder) WithMandatoryFields() OpcuaConstantsBuilder {
+	return b
 }
 
-func (m *_OpcuaConstantsBuilder) Build() (OpcuaConstants, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_OpcuaConstantsBuilder) Build() (OpcuaConstants, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._OpcuaConstants.deepCopy(), nil
+	return b._OpcuaConstants.deepCopy(), nil
 }
 
-func (m *_OpcuaConstantsBuilder) MustBuild() OpcuaConstants {
-	build, err := m.Build()
+func (b *_OpcuaConstantsBuilder) MustBuild() OpcuaConstants {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_OpcuaConstantsBuilder) DeepCopy() any {
-	return m.CreateOpcuaConstantsBuilder()
+func (b *_OpcuaConstantsBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaConstantsBuilder().(*_OpcuaConstantsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateOpcuaConstantsBuilder creates a OpcuaConstantsBuilder
-func (m *_OpcuaConstants) CreateOpcuaConstantsBuilder() OpcuaConstantsBuilder {
-	if m == nil {
+func (b *_OpcuaConstants) CreateOpcuaConstantsBuilder() OpcuaConstantsBuilder {
+	if b == nil {
 		return NewOpcuaConstantsBuilder()
 	}
-	return &_OpcuaConstantsBuilder{_OpcuaConstants: m.deepCopy()}
+	return &_OpcuaConstantsBuilder{_OpcuaConstants: b.deepCopy()}
 }
 
 ///////////////////////

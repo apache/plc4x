@@ -85,40 +85,59 @@ func NewNullEipConnectionResponseBuilder() NullEipConnectionResponseBuilder {
 type _NullEipConnectionResponseBuilder struct {
 	*_NullEipConnectionResponse
 
+	parentBuilder *_EipPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NullEipConnectionResponseBuilder) = (*_NullEipConnectionResponseBuilder)(nil)
 
-func (m *_NullEipConnectionResponseBuilder) WithMandatoryFields() NullEipConnectionResponseBuilder {
-	return m
+func (b *_NullEipConnectionResponseBuilder) setParent(contract EipPacketContract) {
+	b.EipPacketContract = contract
 }
 
-func (m *_NullEipConnectionResponseBuilder) Build() (NullEipConnectionResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NullEipConnectionResponseBuilder) WithMandatoryFields() NullEipConnectionResponseBuilder {
+	return b
+}
+
+func (b *_NullEipConnectionResponseBuilder) Build() (NullEipConnectionResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NullEipConnectionResponse.deepCopy(), nil
+	return b._NullEipConnectionResponse.deepCopy(), nil
 }
 
-func (m *_NullEipConnectionResponseBuilder) MustBuild() NullEipConnectionResponse {
-	build, err := m.Build()
+func (b *_NullEipConnectionResponseBuilder) MustBuild() NullEipConnectionResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NullEipConnectionResponseBuilder) DeepCopy() any {
-	return m.CreateNullEipConnectionResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NullEipConnectionResponseBuilder) Done() EipPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NullEipConnectionResponseBuilder) buildForEipPacket() (EipPacket, error) {
+	return b.Build()
+}
+
+func (b *_NullEipConnectionResponseBuilder) DeepCopy() any {
+	_copy := b.CreateNullEipConnectionResponseBuilder().(*_NullEipConnectionResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNullEipConnectionResponseBuilder creates a NullEipConnectionResponseBuilder
-func (m *_NullEipConnectionResponse) CreateNullEipConnectionResponseBuilder() NullEipConnectionResponseBuilder {
-	if m == nil {
+func (b *_NullEipConnectionResponse) CreateNullEipConnectionResponseBuilder() NullEipConnectionResponseBuilder {
+	if b == nil {
 		return NewNullEipConnectionResponseBuilder()
 	}
-	return &_NullEipConnectionResponseBuilder{_NullEipConnectionResponse: m.deepCopy()}
+	return &_NullEipConnectionResponseBuilder{_NullEipConnectionResponse: b.deepCopy()}
 }
 
 ///////////////////////

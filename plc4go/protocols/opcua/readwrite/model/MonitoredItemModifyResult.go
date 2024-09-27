@@ -121,98 +121,117 @@ func NewMonitoredItemModifyResultBuilder() MonitoredItemModifyResultBuilder {
 type _MonitoredItemModifyResultBuilder struct {
 	*_MonitoredItemModifyResult
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MonitoredItemModifyResultBuilder) = (*_MonitoredItemModifyResultBuilder)(nil)
 
-func (m *_MonitoredItemModifyResultBuilder) WithMandatoryFields(statusCode StatusCode, revisedSamplingInterval float64, revisedQueueSize uint32, filterResult ExtensionObject) MonitoredItemModifyResultBuilder {
-	return m.WithStatusCode(statusCode).WithRevisedSamplingInterval(revisedSamplingInterval).WithRevisedQueueSize(revisedQueueSize).WithFilterResult(filterResult)
+func (b *_MonitoredItemModifyResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_MonitoredItemModifyResultBuilder) WithStatusCode(statusCode StatusCode) MonitoredItemModifyResultBuilder {
-	m.StatusCode = statusCode
-	return m
+func (b *_MonitoredItemModifyResultBuilder) WithMandatoryFields(statusCode StatusCode, revisedSamplingInterval float64, revisedQueueSize uint32, filterResult ExtensionObject) MonitoredItemModifyResultBuilder {
+	return b.WithStatusCode(statusCode).WithRevisedSamplingInterval(revisedSamplingInterval).WithRevisedQueueSize(revisedQueueSize).WithFilterResult(filterResult)
 }
 
-func (m *_MonitoredItemModifyResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) MonitoredItemModifyResultBuilder {
-	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+func (b *_MonitoredItemModifyResultBuilder) WithStatusCode(statusCode StatusCode) MonitoredItemModifyResultBuilder {
+	b.StatusCode = statusCode
+	return b
+}
+
+func (b *_MonitoredItemModifyResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) MonitoredItemModifyResultBuilder {
+	builder := builderSupplier(b.StatusCode.CreateStatusCodeBuilder())
 	var err error
-	m.StatusCode, err = builder.Build()
+	b.StatusCode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_MonitoredItemModifyResultBuilder) WithRevisedSamplingInterval(revisedSamplingInterval float64) MonitoredItemModifyResultBuilder {
-	m.RevisedSamplingInterval = revisedSamplingInterval
-	return m
+func (b *_MonitoredItemModifyResultBuilder) WithRevisedSamplingInterval(revisedSamplingInterval float64) MonitoredItemModifyResultBuilder {
+	b.RevisedSamplingInterval = revisedSamplingInterval
+	return b
 }
 
-func (m *_MonitoredItemModifyResultBuilder) WithRevisedQueueSize(revisedQueueSize uint32) MonitoredItemModifyResultBuilder {
-	m.RevisedQueueSize = revisedQueueSize
-	return m
+func (b *_MonitoredItemModifyResultBuilder) WithRevisedQueueSize(revisedQueueSize uint32) MonitoredItemModifyResultBuilder {
+	b.RevisedQueueSize = revisedQueueSize
+	return b
 }
 
-func (m *_MonitoredItemModifyResultBuilder) WithFilterResult(filterResult ExtensionObject) MonitoredItemModifyResultBuilder {
-	m.FilterResult = filterResult
-	return m
+func (b *_MonitoredItemModifyResultBuilder) WithFilterResult(filterResult ExtensionObject) MonitoredItemModifyResultBuilder {
+	b.FilterResult = filterResult
+	return b
 }
 
-func (m *_MonitoredItemModifyResultBuilder) WithFilterResultBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) MonitoredItemModifyResultBuilder {
-	builder := builderSupplier(m.FilterResult.CreateExtensionObjectBuilder())
+func (b *_MonitoredItemModifyResultBuilder) WithFilterResultBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) MonitoredItemModifyResultBuilder {
+	builder := builderSupplier(b.FilterResult.CreateExtensionObjectBuilder())
 	var err error
-	m.FilterResult, err = builder.Build()
+	b.FilterResult, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_MonitoredItemModifyResultBuilder) Build() (MonitoredItemModifyResult, error) {
-	if m.StatusCode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_MonitoredItemModifyResultBuilder) Build() (MonitoredItemModifyResult, error) {
+	if b.StatusCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
 	}
-	if m.FilterResult == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.FilterResult == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'filterResult' not set"))
+		b.err.Append(errors.New("mandatory field 'filterResult' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MonitoredItemModifyResult.deepCopy(), nil
+	return b._MonitoredItemModifyResult.deepCopy(), nil
 }
 
-func (m *_MonitoredItemModifyResultBuilder) MustBuild() MonitoredItemModifyResult {
-	build, err := m.Build()
+func (b *_MonitoredItemModifyResultBuilder) MustBuild() MonitoredItemModifyResult {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MonitoredItemModifyResultBuilder) DeepCopy() any {
-	return m.CreateMonitoredItemModifyResultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MonitoredItemModifyResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MonitoredItemModifyResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_MonitoredItemModifyResultBuilder) DeepCopy() any {
+	_copy := b.CreateMonitoredItemModifyResultBuilder().(*_MonitoredItemModifyResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMonitoredItemModifyResultBuilder creates a MonitoredItemModifyResultBuilder
-func (m *_MonitoredItemModifyResult) CreateMonitoredItemModifyResultBuilder() MonitoredItemModifyResultBuilder {
-	if m == nil {
+func (b *_MonitoredItemModifyResult) CreateMonitoredItemModifyResultBuilder() MonitoredItemModifyResultBuilder {
+	if b == nil {
 		return NewMonitoredItemModifyResultBuilder()
 	}
-	return &_MonitoredItemModifyResultBuilder{_MonitoredItemModifyResult: m.deepCopy()}
+	return &_MonitoredItemModifyResultBuilder{_MonitoredItemModifyResult: b.deepCopy()}
 }
 
 ///////////////////////

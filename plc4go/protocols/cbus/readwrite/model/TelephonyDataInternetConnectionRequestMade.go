@@ -85,40 +85,59 @@ func NewTelephonyDataInternetConnectionRequestMadeBuilder() TelephonyDataInterne
 type _TelephonyDataInternetConnectionRequestMadeBuilder struct {
 	*_TelephonyDataInternetConnectionRequestMade
 
+	parentBuilder *_TelephonyDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TelephonyDataInternetConnectionRequestMadeBuilder) = (*_TelephonyDataInternetConnectionRequestMadeBuilder)(nil)
 
-func (m *_TelephonyDataInternetConnectionRequestMadeBuilder) WithMandatoryFields() TelephonyDataInternetConnectionRequestMadeBuilder {
-	return m
+func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) setParent(contract TelephonyDataContract) {
+	b.TelephonyDataContract = contract
 }
 
-func (m *_TelephonyDataInternetConnectionRequestMadeBuilder) Build() (TelephonyDataInternetConnectionRequestMade, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) WithMandatoryFields() TelephonyDataInternetConnectionRequestMadeBuilder {
+	return b
+}
+
+func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) Build() (TelephonyDataInternetConnectionRequestMade, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TelephonyDataInternetConnectionRequestMade.deepCopy(), nil
+	return b._TelephonyDataInternetConnectionRequestMade.deepCopy(), nil
 }
 
-func (m *_TelephonyDataInternetConnectionRequestMadeBuilder) MustBuild() TelephonyDataInternetConnectionRequestMade {
-	build, err := m.Build()
+func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) MustBuild() TelephonyDataInternetConnectionRequestMade {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TelephonyDataInternetConnectionRequestMadeBuilder) DeepCopy() any {
-	return m.CreateTelephonyDataInternetConnectionRequestMadeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) Done() TelephonyDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) buildForTelephonyData() (TelephonyData, error) {
+	return b.Build()
+}
+
+func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) DeepCopy() any {
+	_copy := b.CreateTelephonyDataInternetConnectionRequestMadeBuilder().(*_TelephonyDataInternetConnectionRequestMadeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTelephonyDataInternetConnectionRequestMadeBuilder creates a TelephonyDataInternetConnectionRequestMadeBuilder
-func (m *_TelephonyDataInternetConnectionRequestMade) CreateTelephonyDataInternetConnectionRequestMadeBuilder() TelephonyDataInternetConnectionRequestMadeBuilder {
-	if m == nil {
+func (b *_TelephonyDataInternetConnectionRequestMade) CreateTelephonyDataInternetConnectionRequestMadeBuilder() TelephonyDataInternetConnectionRequestMadeBuilder {
+	if b == nil {
 		return NewTelephonyDataInternetConnectionRequestMadeBuilder()
 	}
-	return &_TelephonyDataInternetConnectionRequestMadeBuilder{_TelephonyDataInternetConnectionRequestMade: m.deepCopy()}
+	return &_TelephonyDataInternetConnectionRequestMadeBuilder{_TelephonyDataInternetConnectionRequestMade: b.deepCopy()}
 }
 
 ///////////////////////

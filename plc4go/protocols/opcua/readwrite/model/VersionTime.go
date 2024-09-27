@@ -83,35 +83,39 @@ type _VersionTimeBuilder struct {
 
 var _ (VersionTimeBuilder) = (*_VersionTimeBuilder)(nil)
 
-func (m *_VersionTimeBuilder) WithMandatoryFields() VersionTimeBuilder {
-	return m
+func (b *_VersionTimeBuilder) WithMandatoryFields() VersionTimeBuilder {
+	return b
 }
 
-func (m *_VersionTimeBuilder) Build() (VersionTime, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VersionTimeBuilder) Build() (VersionTime, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VersionTime.deepCopy(), nil
+	return b._VersionTime.deepCopy(), nil
 }
 
-func (m *_VersionTimeBuilder) MustBuild() VersionTime {
-	build, err := m.Build()
+func (b *_VersionTimeBuilder) MustBuild() VersionTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VersionTimeBuilder) DeepCopy() any {
-	return m.CreateVersionTimeBuilder()
+func (b *_VersionTimeBuilder) DeepCopy() any {
+	_copy := b.CreateVersionTimeBuilder().(*_VersionTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVersionTimeBuilder creates a VersionTimeBuilder
-func (m *_VersionTime) CreateVersionTimeBuilder() VersionTimeBuilder {
-	if m == nil {
+func (b *_VersionTime) CreateVersionTimeBuilder() VersionTimeBuilder {
+	if b == nil {
 		return NewVersionTimeBuilder()
 	}
-	return &_VersionTimeBuilder{_VersionTime: m.deepCopy()}
+	return &_VersionTimeBuilder{_VersionTime: b.deepCopy()}
 }
 
 ///////////////////////

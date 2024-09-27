@@ -104,69 +104,88 @@ func NewRolePermissionTypeBuilder() RolePermissionTypeBuilder {
 type _RolePermissionTypeBuilder struct {
 	*_RolePermissionType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RolePermissionTypeBuilder) = (*_RolePermissionTypeBuilder)(nil)
 
-func (m *_RolePermissionTypeBuilder) WithMandatoryFields(roleId NodeId, permissions PermissionType) RolePermissionTypeBuilder {
-	return m.WithRoleId(roleId).WithPermissions(permissions)
+func (b *_RolePermissionTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_RolePermissionTypeBuilder) WithRoleId(roleId NodeId) RolePermissionTypeBuilder {
-	m.RoleId = roleId
-	return m
+func (b *_RolePermissionTypeBuilder) WithMandatoryFields(roleId NodeId, permissions PermissionType) RolePermissionTypeBuilder {
+	return b.WithRoleId(roleId).WithPermissions(permissions)
 }
 
-func (m *_RolePermissionTypeBuilder) WithRoleIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) RolePermissionTypeBuilder {
-	builder := builderSupplier(m.RoleId.CreateNodeIdBuilder())
+func (b *_RolePermissionTypeBuilder) WithRoleId(roleId NodeId) RolePermissionTypeBuilder {
+	b.RoleId = roleId
+	return b
+}
+
+func (b *_RolePermissionTypeBuilder) WithRoleIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) RolePermissionTypeBuilder {
+	builder := builderSupplier(b.RoleId.CreateNodeIdBuilder())
 	var err error
-	m.RoleId, err = builder.Build()
+	b.RoleId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RolePermissionTypeBuilder) WithPermissions(permissions PermissionType) RolePermissionTypeBuilder {
-	m.Permissions = permissions
-	return m
+func (b *_RolePermissionTypeBuilder) WithPermissions(permissions PermissionType) RolePermissionTypeBuilder {
+	b.Permissions = permissions
+	return b
 }
 
-func (m *_RolePermissionTypeBuilder) Build() (RolePermissionType, error) {
-	if m.RoleId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_RolePermissionTypeBuilder) Build() (RolePermissionType, error) {
+	if b.RoleId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'roleId' not set"))
+		b.err.Append(errors.New("mandatory field 'roleId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._RolePermissionType.deepCopy(), nil
+	return b._RolePermissionType.deepCopy(), nil
 }
 
-func (m *_RolePermissionTypeBuilder) MustBuild() RolePermissionType {
-	build, err := m.Build()
+func (b *_RolePermissionTypeBuilder) MustBuild() RolePermissionType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RolePermissionTypeBuilder) DeepCopy() any {
-	return m.CreateRolePermissionTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RolePermissionTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RolePermissionTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_RolePermissionTypeBuilder) DeepCopy() any {
+	_copy := b.CreateRolePermissionTypeBuilder().(*_RolePermissionTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRolePermissionTypeBuilder creates a RolePermissionTypeBuilder
-func (m *_RolePermissionType) CreateRolePermissionTypeBuilder() RolePermissionTypeBuilder {
-	if m == nil {
+func (b *_RolePermissionType) CreateRolePermissionTypeBuilder() RolePermissionTypeBuilder {
+	if b == nil {
 		return NewRolePermissionTypeBuilder()
 	}
-	return &_RolePermissionTypeBuilder{_RolePermissionType: m.deepCopy()}
+	return &_RolePermissionTypeBuilder{_RolePermissionType: b.deepCopy()}
 }
 
 ///////////////////////

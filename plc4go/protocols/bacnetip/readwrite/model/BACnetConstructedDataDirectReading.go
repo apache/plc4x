@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDirectReadingBuilder() BACnetConstructedDataDirectR
 type _BACnetConstructedDataDirectReadingBuilder struct {
 	*_BACnetConstructedDataDirectReading
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDirectReadingBuilder) = (*_BACnetConstructedDataDirectReadingBuilder)(nil)
 
-func (m *_BACnetConstructedDataDirectReadingBuilder) WithMandatoryFields(directReading BACnetApplicationTagReal) BACnetConstructedDataDirectReadingBuilder {
-	return m.WithDirectReading(directReading)
+func (b *_BACnetConstructedDataDirectReadingBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDirectReadingBuilder) WithDirectReading(directReading BACnetApplicationTagReal) BACnetConstructedDataDirectReadingBuilder {
-	m.DirectReading = directReading
-	return m
+func (b *_BACnetConstructedDataDirectReadingBuilder) WithMandatoryFields(directReading BACnetApplicationTagReal) BACnetConstructedDataDirectReadingBuilder {
+	return b.WithDirectReading(directReading)
 }
 
-func (m *_BACnetConstructedDataDirectReadingBuilder) WithDirectReadingBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDirectReadingBuilder {
-	builder := builderSupplier(m.DirectReading.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataDirectReadingBuilder) WithDirectReading(directReading BACnetApplicationTagReal) BACnetConstructedDataDirectReadingBuilder {
+	b.DirectReading = directReading
+	return b
+}
+
+func (b *_BACnetConstructedDataDirectReadingBuilder) WithDirectReadingBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDirectReadingBuilder {
+	builder := builderSupplier(b.DirectReading.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.DirectReading, err = builder.Build()
+	b.DirectReading, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDirectReadingBuilder) Build() (BACnetConstructedDataDirectReading, error) {
-	if m.DirectReading == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDirectReadingBuilder) Build() (BACnetConstructedDataDirectReading, error) {
+	if b.DirectReading == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'directReading' not set"))
+		b.err.Append(errors.New("mandatory field 'directReading' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDirectReading.deepCopy(), nil
+	return b._BACnetConstructedDataDirectReading.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDirectReadingBuilder) MustBuild() BACnetConstructedDataDirectReading {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDirectReadingBuilder) MustBuild() BACnetConstructedDataDirectReading {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDirectReadingBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDirectReadingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDirectReadingBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDirectReadingBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDirectReadingBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDirectReadingBuilder().(*_BACnetConstructedDataDirectReadingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDirectReadingBuilder creates a BACnetConstructedDataDirectReadingBuilder
-func (m *_BACnetConstructedDataDirectReading) CreateBACnetConstructedDataDirectReadingBuilder() BACnetConstructedDataDirectReadingBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDirectReading) CreateBACnetConstructedDataDirectReadingBuilder() BACnetConstructedDataDirectReadingBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDirectReadingBuilder()
 	}
-	return &_BACnetConstructedDataDirectReadingBuilder{_BACnetConstructedDataDirectReading: m.deepCopy()}
+	return &_BACnetConstructedDataDirectReadingBuilder{_BACnetConstructedDataDirectReading: b.deepCopy()}
 }
 
 ///////////////////////

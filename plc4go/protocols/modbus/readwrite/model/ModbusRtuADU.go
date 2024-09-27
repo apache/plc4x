@@ -90,6 +90,8 @@ type ModbusRtuADUBuilder interface {
 	WithAddress(uint8) ModbusRtuADUBuilder
 	// WithPdu adds Pdu (property field)
 	WithPdu(ModbusPDU) ModbusRtuADUBuilder
+	// WithPduBuilder adds Pdu (property field) which is build by the builder
+	WithPduBuilder(func(ModbusPDUBuilder) ModbusPDUBuilder) ModbusRtuADUBuilder
 	// Build builds the ModbusRtuADU or returns an error if something is wrong
 	Build() (ModbusRtuADU, error)
 	// MustBuild does the same as Build but panics on error
@@ -104,56 +106,88 @@ func NewModbusRtuADUBuilder() ModbusRtuADUBuilder {
 type _ModbusRtuADUBuilder struct {
 	*_ModbusRtuADU
 
+	parentBuilder *_ModbusADUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusRtuADUBuilder) = (*_ModbusRtuADUBuilder)(nil)
 
-func (m *_ModbusRtuADUBuilder) WithMandatoryFields(address uint8, pdu ModbusPDU) ModbusRtuADUBuilder {
-	return m.WithAddress(address).WithPdu(pdu)
+func (b *_ModbusRtuADUBuilder) setParent(contract ModbusADUContract) {
+	b.ModbusADUContract = contract
 }
 
-func (m *_ModbusRtuADUBuilder) WithAddress(address uint8) ModbusRtuADUBuilder {
-	m.Address = address
-	return m
+func (b *_ModbusRtuADUBuilder) WithMandatoryFields(address uint8, pdu ModbusPDU) ModbusRtuADUBuilder {
+	return b.WithAddress(address).WithPdu(pdu)
 }
 
-func (m *_ModbusRtuADUBuilder) WithPdu(pdu ModbusPDU) ModbusRtuADUBuilder {
-	m.Pdu = pdu
-	return m
+func (b *_ModbusRtuADUBuilder) WithAddress(address uint8) ModbusRtuADUBuilder {
+	b.Address = address
+	return b
 }
 
-func (m *_ModbusRtuADUBuilder) Build() (ModbusRtuADU, error) {
-	if m.Pdu == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ModbusRtuADUBuilder) WithPdu(pdu ModbusPDU) ModbusRtuADUBuilder {
+	b.Pdu = pdu
+	return b
+}
+
+func (b *_ModbusRtuADUBuilder) WithPduBuilder(builderSupplier func(ModbusPDUBuilder) ModbusPDUBuilder) ModbusRtuADUBuilder {
+	builder := builderSupplier(b.Pdu.CreateModbusPDUBuilder())
+	var err error
+	b.Pdu, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'pdu' not set"))
+		b.err.Append(errors.Wrap(err, "ModbusPDUBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._ModbusRtuADU.deepCopy(), nil
+	return b
 }
 
-func (m *_ModbusRtuADUBuilder) MustBuild() ModbusRtuADU {
-	build, err := m.Build()
+func (b *_ModbusRtuADUBuilder) Build() (ModbusRtuADU, error) {
+	if b.Pdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'pdu' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ModbusRtuADU.deepCopy(), nil
+}
+
+func (b *_ModbusRtuADUBuilder) MustBuild() ModbusRtuADU {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusRtuADUBuilder) DeepCopy() any {
-	return m.CreateModbusRtuADUBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusRtuADUBuilder) Done() ModbusADUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusRtuADUBuilder) buildForModbusADU() (ModbusADU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusRtuADUBuilder) DeepCopy() any {
+	_copy := b.CreateModbusRtuADUBuilder().(*_ModbusRtuADUBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusRtuADUBuilder creates a ModbusRtuADUBuilder
-func (m *_ModbusRtuADU) CreateModbusRtuADUBuilder() ModbusRtuADUBuilder {
-	if m == nil {
+func (b *_ModbusRtuADU) CreateModbusRtuADUBuilder() ModbusRtuADUBuilder {
+	if b == nil {
 		return NewModbusRtuADUBuilder()
 	}
-	return &_ModbusRtuADUBuilder{_ModbusRtuADU: m.deepCopy()}
+	return &_ModbusRtuADUBuilder{_ModbusRtuADU: b.deepCopy()}
 }
 
 ///////////////////////

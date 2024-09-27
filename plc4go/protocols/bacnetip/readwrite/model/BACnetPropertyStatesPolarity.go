@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesPolarityBuilder() BACnetPropertyStatesPolarityBuilde
 type _BACnetPropertyStatesPolarityBuilder struct {
 	*_BACnetPropertyStatesPolarity
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesPolarityBuilder) = (*_BACnetPropertyStatesPolarityBuilder)(nil)
 
-func (m *_BACnetPropertyStatesPolarityBuilder) WithMandatoryFields(polarity BACnetPolarityTagged) BACnetPropertyStatesPolarityBuilder {
-	return m.WithPolarity(polarity)
+func (b *_BACnetPropertyStatesPolarityBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesPolarityBuilder) WithPolarity(polarity BACnetPolarityTagged) BACnetPropertyStatesPolarityBuilder {
-	m.Polarity = polarity
-	return m
+func (b *_BACnetPropertyStatesPolarityBuilder) WithMandatoryFields(polarity BACnetPolarityTagged) BACnetPropertyStatesPolarityBuilder {
+	return b.WithPolarity(polarity)
 }
 
-func (m *_BACnetPropertyStatesPolarityBuilder) WithPolarityBuilder(builderSupplier func(BACnetPolarityTaggedBuilder) BACnetPolarityTaggedBuilder) BACnetPropertyStatesPolarityBuilder {
-	builder := builderSupplier(m.Polarity.CreateBACnetPolarityTaggedBuilder())
+func (b *_BACnetPropertyStatesPolarityBuilder) WithPolarity(polarity BACnetPolarityTagged) BACnetPropertyStatesPolarityBuilder {
+	b.Polarity = polarity
+	return b
+}
+
+func (b *_BACnetPropertyStatesPolarityBuilder) WithPolarityBuilder(builderSupplier func(BACnetPolarityTaggedBuilder) BACnetPolarityTaggedBuilder) BACnetPropertyStatesPolarityBuilder {
+	builder := builderSupplier(b.Polarity.CreateBACnetPolarityTaggedBuilder())
 	var err error
-	m.Polarity, err = builder.Build()
+	b.Polarity, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetPolarityTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetPolarityTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesPolarityBuilder) Build() (BACnetPropertyStatesPolarity, error) {
-	if m.Polarity == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesPolarityBuilder) Build() (BACnetPropertyStatesPolarity, error) {
+	if b.Polarity == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'polarity' not set"))
+		b.err.Append(errors.New("mandatory field 'polarity' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesPolarity.deepCopy(), nil
+	return b._BACnetPropertyStatesPolarity.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesPolarityBuilder) MustBuild() BACnetPropertyStatesPolarity {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesPolarityBuilder) MustBuild() BACnetPropertyStatesPolarity {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesPolarityBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesPolarityBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesPolarityBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesPolarityBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesPolarityBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesPolarityBuilder().(*_BACnetPropertyStatesPolarityBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesPolarityBuilder creates a BACnetPropertyStatesPolarityBuilder
-func (m *_BACnetPropertyStatesPolarity) CreateBACnetPropertyStatesPolarityBuilder() BACnetPropertyStatesPolarityBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesPolarity) CreateBACnetPropertyStatesPolarityBuilder() BACnetPropertyStatesPolarityBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesPolarityBuilder()
 	}
-	return &_BACnetPropertyStatesPolarityBuilder{_BACnetPropertyStatesPolarity: m.deepCopy()}
+	return &_BACnetPropertyStatesPolarityBuilder{_BACnetPropertyStatesPolarity: b.deepCopy()}
 }
 
 ///////////////////////

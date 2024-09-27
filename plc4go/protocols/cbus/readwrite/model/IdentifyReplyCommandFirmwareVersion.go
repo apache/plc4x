@@ -93,45 +93,64 @@ func NewIdentifyReplyCommandFirmwareVersionBuilder() IdentifyReplyCommandFirmwar
 type _IdentifyReplyCommandFirmwareVersionBuilder struct {
 	*_IdentifyReplyCommandFirmwareVersion
 
+	parentBuilder *_IdentifyReplyCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (IdentifyReplyCommandFirmwareVersionBuilder) = (*_IdentifyReplyCommandFirmwareVersionBuilder)(nil)
 
-func (m *_IdentifyReplyCommandFirmwareVersionBuilder) WithMandatoryFields(firmwareVersion string) IdentifyReplyCommandFirmwareVersionBuilder {
-	return m.WithFirmwareVersion(firmwareVersion)
+func (b *_IdentifyReplyCommandFirmwareVersionBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
 }
 
-func (m *_IdentifyReplyCommandFirmwareVersionBuilder) WithFirmwareVersion(firmwareVersion string) IdentifyReplyCommandFirmwareVersionBuilder {
-	m.FirmwareVersion = firmwareVersion
-	return m
+func (b *_IdentifyReplyCommandFirmwareVersionBuilder) WithMandatoryFields(firmwareVersion string) IdentifyReplyCommandFirmwareVersionBuilder {
+	return b.WithFirmwareVersion(firmwareVersion)
 }
 
-func (m *_IdentifyReplyCommandFirmwareVersionBuilder) Build() (IdentifyReplyCommandFirmwareVersion, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IdentifyReplyCommandFirmwareVersionBuilder) WithFirmwareVersion(firmwareVersion string) IdentifyReplyCommandFirmwareVersionBuilder {
+	b.FirmwareVersion = firmwareVersion
+	return b
+}
+
+func (b *_IdentifyReplyCommandFirmwareVersionBuilder) Build() (IdentifyReplyCommandFirmwareVersion, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommandFirmwareVersion.deepCopy(), nil
+	return b._IdentifyReplyCommandFirmwareVersion.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandFirmwareVersionBuilder) MustBuild() IdentifyReplyCommandFirmwareVersion {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandFirmwareVersionBuilder) MustBuild() IdentifyReplyCommandFirmwareVersion {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandFirmwareVersionBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandFirmwareVersionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandFirmwareVersionBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandFirmwareVersionBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandFirmwareVersionBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandFirmwareVersionBuilder().(*_IdentifyReplyCommandFirmwareVersionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandFirmwareVersionBuilder creates a IdentifyReplyCommandFirmwareVersionBuilder
-func (m *_IdentifyReplyCommandFirmwareVersion) CreateIdentifyReplyCommandFirmwareVersionBuilder() IdentifyReplyCommandFirmwareVersionBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommandFirmwareVersion) CreateIdentifyReplyCommandFirmwareVersionBuilder() IdentifyReplyCommandFirmwareVersionBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandFirmwareVersionBuilder()
 	}
-	return &_IdentifyReplyCommandFirmwareVersionBuilder{_IdentifyReplyCommandFirmwareVersion: m.deepCopy()}
+	return &_IdentifyReplyCommandFirmwareVersionBuilder{_IdentifyReplyCommandFirmwareVersion: b.deepCopy()}
 }
 
 ///////////////////////

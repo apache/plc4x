@@ -85,40 +85,59 @@ func NewBACnetApplicationTagNullBuilder() BACnetApplicationTagNullBuilder {
 type _BACnetApplicationTagNullBuilder struct {
 	*_BACnetApplicationTagNull
 
+	parentBuilder *_BACnetApplicationTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetApplicationTagNullBuilder) = (*_BACnetApplicationTagNullBuilder)(nil)
 
-func (m *_BACnetApplicationTagNullBuilder) WithMandatoryFields() BACnetApplicationTagNullBuilder {
-	return m
+func (b *_BACnetApplicationTagNullBuilder) setParent(contract BACnetApplicationTagContract) {
+	b.BACnetApplicationTagContract = contract
 }
 
-func (m *_BACnetApplicationTagNullBuilder) Build() (BACnetApplicationTagNull, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetApplicationTagNullBuilder) WithMandatoryFields() BACnetApplicationTagNullBuilder {
+	return b
+}
+
+func (b *_BACnetApplicationTagNullBuilder) Build() (BACnetApplicationTagNull, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetApplicationTagNull.deepCopy(), nil
+	return b._BACnetApplicationTagNull.deepCopy(), nil
 }
 
-func (m *_BACnetApplicationTagNullBuilder) MustBuild() BACnetApplicationTagNull {
-	build, err := m.Build()
+func (b *_BACnetApplicationTagNullBuilder) MustBuild() BACnetApplicationTagNull {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetApplicationTagNullBuilder) DeepCopy() any {
-	return m.CreateBACnetApplicationTagNullBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetApplicationTagNullBuilder) Done() BACnetApplicationTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetApplicationTagNullBuilder) buildForBACnetApplicationTag() (BACnetApplicationTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetApplicationTagNullBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetApplicationTagNullBuilder().(*_BACnetApplicationTagNullBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetApplicationTagNullBuilder creates a BACnetApplicationTagNullBuilder
-func (m *_BACnetApplicationTagNull) CreateBACnetApplicationTagNullBuilder() BACnetApplicationTagNullBuilder {
-	if m == nil {
+func (b *_BACnetApplicationTagNull) CreateBACnetApplicationTagNullBuilder() BACnetApplicationTagNullBuilder {
+	if b == nil {
 		return NewBACnetApplicationTagNullBuilder()
 	}
-	return &_BACnetApplicationTagNullBuilder{_BACnetApplicationTagNull: m.deepCopy()}
+	return &_BACnetApplicationTagNullBuilder{_BACnetApplicationTagNull: b.deepCopy()}
 }
 
 ///////////////////////

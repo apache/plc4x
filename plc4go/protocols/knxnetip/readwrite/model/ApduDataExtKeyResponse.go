@@ -85,40 +85,59 @@ func NewApduDataExtKeyResponseBuilder() ApduDataExtKeyResponseBuilder {
 type _ApduDataExtKeyResponseBuilder struct {
 	*_ApduDataExtKeyResponse
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtKeyResponseBuilder) = (*_ApduDataExtKeyResponseBuilder)(nil)
 
-func (m *_ApduDataExtKeyResponseBuilder) WithMandatoryFields() ApduDataExtKeyResponseBuilder {
-	return m
+func (b *_ApduDataExtKeyResponseBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtKeyResponseBuilder) Build() (ApduDataExtKeyResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtKeyResponseBuilder) WithMandatoryFields() ApduDataExtKeyResponseBuilder {
+	return b
+}
+
+func (b *_ApduDataExtKeyResponseBuilder) Build() (ApduDataExtKeyResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtKeyResponse.deepCopy(), nil
+	return b._ApduDataExtKeyResponse.deepCopy(), nil
 }
 
-func (m *_ApduDataExtKeyResponseBuilder) MustBuild() ApduDataExtKeyResponse {
-	build, err := m.Build()
+func (b *_ApduDataExtKeyResponseBuilder) MustBuild() ApduDataExtKeyResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtKeyResponseBuilder) DeepCopy() any {
-	return m.CreateApduDataExtKeyResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtKeyResponseBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtKeyResponseBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtKeyResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtKeyResponseBuilder().(*_ApduDataExtKeyResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtKeyResponseBuilder creates a ApduDataExtKeyResponseBuilder
-func (m *_ApduDataExtKeyResponse) CreateApduDataExtKeyResponseBuilder() ApduDataExtKeyResponseBuilder {
-	if m == nil {
+func (b *_ApduDataExtKeyResponse) CreateApduDataExtKeyResponseBuilder() ApduDataExtKeyResponseBuilder {
+	if b == nil {
 		return NewApduDataExtKeyResponseBuilder()
 	}
-	return &_ApduDataExtKeyResponseBuilder{_ApduDataExtKeyResponse: m.deepCopy()}
+	return &_ApduDataExtKeyResponseBuilder{_ApduDataExtKeyResponse: b.deepCopy()}
 }
 
 ///////////////////////

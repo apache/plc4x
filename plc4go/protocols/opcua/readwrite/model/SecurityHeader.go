@@ -95,45 +95,49 @@ type _SecurityHeaderBuilder struct {
 
 var _ (SecurityHeaderBuilder) = (*_SecurityHeaderBuilder)(nil)
 
-func (m *_SecurityHeaderBuilder) WithMandatoryFields(secureChannelId uint32, secureTokenId uint32) SecurityHeaderBuilder {
-	return m.WithSecureChannelId(secureChannelId).WithSecureTokenId(secureTokenId)
+func (b *_SecurityHeaderBuilder) WithMandatoryFields(secureChannelId uint32, secureTokenId uint32) SecurityHeaderBuilder {
+	return b.WithSecureChannelId(secureChannelId).WithSecureTokenId(secureTokenId)
 }
 
-func (m *_SecurityHeaderBuilder) WithSecureChannelId(secureChannelId uint32) SecurityHeaderBuilder {
-	m.SecureChannelId = secureChannelId
-	return m
+func (b *_SecurityHeaderBuilder) WithSecureChannelId(secureChannelId uint32) SecurityHeaderBuilder {
+	b.SecureChannelId = secureChannelId
+	return b
 }
 
-func (m *_SecurityHeaderBuilder) WithSecureTokenId(secureTokenId uint32) SecurityHeaderBuilder {
-	m.SecureTokenId = secureTokenId
-	return m
+func (b *_SecurityHeaderBuilder) WithSecureTokenId(secureTokenId uint32) SecurityHeaderBuilder {
+	b.SecureTokenId = secureTokenId
+	return b
 }
 
-func (m *_SecurityHeaderBuilder) Build() (SecurityHeader, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityHeaderBuilder) Build() (SecurityHeader, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityHeader.deepCopy(), nil
+	return b._SecurityHeader.deepCopy(), nil
 }
 
-func (m *_SecurityHeaderBuilder) MustBuild() SecurityHeader {
-	build, err := m.Build()
+func (b *_SecurityHeaderBuilder) MustBuild() SecurityHeader {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityHeaderBuilder) DeepCopy() any {
-	return m.CreateSecurityHeaderBuilder()
+func (b *_SecurityHeaderBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityHeaderBuilder().(*_SecurityHeaderBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityHeaderBuilder creates a SecurityHeaderBuilder
-func (m *_SecurityHeader) CreateSecurityHeaderBuilder() SecurityHeaderBuilder {
-	if m == nil {
+func (b *_SecurityHeader) CreateSecurityHeaderBuilder() SecurityHeaderBuilder {
+	if b == nil {
 		return NewSecurityHeaderBuilder()
 	}
-	return &_SecurityHeaderBuilder{_SecurityHeader: m.deepCopy()}
+	return &_SecurityHeaderBuilder{_SecurityHeader: b.deepCopy()}
 }
 
 ///////////////////////

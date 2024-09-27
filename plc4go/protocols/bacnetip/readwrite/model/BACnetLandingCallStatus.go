@@ -87,6 +87,8 @@ type BACnetLandingCallStatusBuilder interface {
 	WithFloorNumberBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLandingCallStatusBuilder
 	// WithCommand adds Command (property field)
 	WithCommand(BACnetLandingCallStatusCommand) BACnetLandingCallStatusBuilder
+	// WithCommandBuilder adds Command (property field) which is build by the builder
+	WithCommandBuilder(func(BACnetLandingCallStatusCommandBuilder) BACnetLandingCallStatusCommandBuilder) BACnetLandingCallStatusBuilder
 	// WithFloorText adds FloorText (property field)
 	WithOptionalFloorText(BACnetContextTagCharacterString) BACnetLandingCallStatusBuilder
 	// WithOptionalFloorTextBuilder adds FloorText (property field) which is build by the builder
@@ -110,88 +112,105 @@ type _BACnetLandingCallStatusBuilder struct {
 
 var _ (BACnetLandingCallStatusBuilder) = (*_BACnetLandingCallStatusBuilder)(nil)
 
-func (m *_BACnetLandingCallStatusBuilder) WithMandatoryFields(floorNumber BACnetContextTagUnsignedInteger, command BACnetLandingCallStatusCommand) BACnetLandingCallStatusBuilder {
-	return m.WithFloorNumber(floorNumber).WithCommand(command)
+func (b *_BACnetLandingCallStatusBuilder) WithMandatoryFields(floorNumber BACnetContextTagUnsignedInteger, command BACnetLandingCallStatusCommand) BACnetLandingCallStatusBuilder {
+	return b.WithFloorNumber(floorNumber).WithCommand(command)
 }
 
-func (m *_BACnetLandingCallStatusBuilder) WithFloorNumber(floorNumber BACnetContextTagUnsignedInteger) BACnetLandingCallStatusBuilder {
-	m.FloorNumber = floorNumber
-	return m
+func (b *_BACnetLandingCallStatusBuilder) WithFloorNumber(floorNumber BACnetContextTagUnsignedInteger) BACnetLandingCallStatusBuilder {
+	b.FloorNumber = floorNumber
+	return b
 }
 
-func (m *_BACnetLandingCallStatusBuilder) WithFloorNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLandingCallStatusBuilder {
-	builder := builderSupplier(m.FloorNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetLandingCallStatusBuilder) WithFloorNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLandingCallStatusBuilder {
+	builder := builderSupplier(b.FloorNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.FloorNumber, err = builder.Build()
+	b.FloorNumber, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLandingCallStatusBuilder) WithCommand(command BACnetLandingCallStatusCommand) BACnetLandingCallStatusBuilder {
-	m.Command = command
-	return m
+func (b *_BACnetLandingCallStatusBuilder) WithCommand(command BACnetLandingCallStatusCommand) BACnetLandingCallStatusBuilder {
+	b.Command = command
+	return b
 }
 
-func (m *_BACnetLandingCallStatusBuilder) WithOptionalFloorText(floorText BACnetContextTagCharacterString) BACnetLandingCallStatusBuilder {
-	m.FloorText = floorText
-	return m
-}
-
-func (m *_BACnetLandingCallStatusBuilder) WithOptionalFloorTextBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetLandingCallStatusBuilder {
-	builder := builderSupplier(m.FloorText.CreateBACnetContextTagCharacterStringBuilder())
+func (b *_BACnetLandingCallStatusBuilder) WithCommandBuilder(builderSupplier func(BACnetLandingCallStatusCommandBuilder) BACnetLandingCallStatusCommandBuilder) BACnetLandingCallStatusBuilder {
+	builder := builderSupplier(b.Command.CreateBACnetLandingCallStatusCommandBuilder())
 	var err error
-	m.FloorText, err = builder.Build()
+	b.Command, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLandingCallStatusCommandBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLandingCallStatusBuilder) Build() (BACnetLandingCallStatus, error) {
-	if m.FloorNumber == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'floorNumber' not set"))
-	}
-	if m.Command == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'command' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetLandingCallStatus.deepCopy(), nil
+func (b *_BACnetLandingCallStatusBuilder) WithOptionalFloorText(floorText BACnetContextTagCharacterString) BACnetLandingCallStatusBuilder {
+	b.FloorText = floorText
+	return b
 }
 
-func (m *_BACnetLandingCallStatusBuilder) MustBuild() BACnetLandingCallStatus {
-	build, err := m.Build()
+func (b *_BACnetLandingCallStatusBuilder) WithOptionalFloorTextBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetLandingCallStatusBuilder {
+	builder := builderSupplier(b.FloorText.CreateBACnetContextTagCharacterStringBuilder())
+	var err error
+	b.FloorText, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLandingCallStatusBuilder) Build() (BACnetLandingCallStatus, error) {
+	if b.FloorNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'floorNumber' not set"))
+	}
+	if b.Command == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'command' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLandingCallStatus.deepCopy(), nil
+}
+
+func (b *_BACnetLandingCallStatusBuilder) MustBuild() BACnetLandingCallStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLandingCallStatusBuilder) DeepCopy() any {
-	return m.CreateBACnetLandingCallStatusBuilder()
+func (b *_BACnetLandingCallStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLandingCallStatusBuilder().(*_BACnetLandingCallStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLandingCallStatusBuilder creates a BACnetLandingCallStatusBuilder
-func (m *_BACnetLandingCallStatus) CreateBACnetLandingCallStatusBuilder() BACnetLandingCallStatusBuilder {
-	if m == nil {
+func (b *_BACnetLandingCallStatus) CreateBACnetLandingCallStatusBuilder() BACnetLandingCallStatusBuilder {
+	if b == nil {
 		return NewBACnetLandingCallStatusBuilder()
 	}
-	return &_BACnetLandingCallStatusBuilder{_BACnetLandingCallStatus: m.deepCopy()}
+	return &_BACnetLandingCallStatusBuilder{_BACnetLandingCallStatus: b.deepCopy()}
 }
 
 ///////////////////////

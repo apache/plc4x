@@ -100,64 +100,83 @@ func NewBACnetConstructedDataChangesPendingBuilder() BACnetConstructedDataChange
 type _BACnetConstructedDataChangesPendingBuilder struct {
 	*_BACnetConstructedDataChangesPending
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataChangesPendingBuilder) = (*_BACnetConstructedDataChangesPendingBuilder)(nil)
 
-func (m *_BACnetConstructedDataChangesPendingBuilder) WithMandatoryFields(changesPending BACnetApplicationTagBoolean) BACnetConstructedDataChangesPendingBuilder {
-	return m.WithChangesPending(changesPending)
+func (b *_BACnetConstructedDataChangesPendingBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataChangesPendingBuilder) WithChangesPending(changesPending BACnetApplicationTagBoolean) BACnetConstructedDataChangesPendingBuilder {
-	m.ChangesPending = changesPending
-	return m
+func (b *_BACnetConstructedDataChangesPendingBuilder) WithMandatoryFields(changesPending BACnetApplicationTagBoolean) BACnetConstructedDataChangesPendingBuilder {
+	return b.WithChangesPending(changesPending)
 }
 
-func (m *_BACnetConstructedDataChangesPendingBuilder) WithChangesPendingBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataChangesPendingBuilder {
-	builder := builderSupplier(m.ChangesPending.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataChangesPendingBuilder) WithChangesPending(changesPending BACnetApplicationTagBoolean) BACnetConstructedDataChangesPendingBuilder {
+	b.ChangesPending = changesPending
+	return b
+}
+
+func (b *_BACnetConstructedDataChangesPendingBuilder) WithChangesPendingBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataChangesPendingBuilder {
+	builder := builderSupplier(b.ChangesPending.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.ChangesPending, err = builder.Build()
+	b.ChangesPending, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataChangesPendingBuilder) Build() (BACnetConstructedDataChangesPending, error) {
-	if m.ChangesPending == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataChangesPendingBuilder) Build() (BACnetConstructedDataChangesPending, error) {
+	if b.ChangesPending == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'changesPending' not set"))
+		b.err.Append(errors.New("mandatory field 'changesPending' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataChangesPending.deepCopy(), nil
+	return b._BACnetConstructedDataChangesPending.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataChangesPendingBuilder) MustBuild() BACnetConstructedDataChangesPending {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataChangesPendingBuilder) MustBuild() BACnetConstructedDataChangesPending {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataChangesPendingBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataChangesPendingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataChangesPendingBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataChangesPendingBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataChangesPendingBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataChangesPendingBuilder().(*_BACnetConstructedDataChangesPendingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataChangesPendingBuilder creates a BACnetConstructedDataChangesPendingBuilder
-func (m *_BACnetConstructedDataChangesPending) CreateBACnetConstructedDataChangesPendingBuilder() BACnetConstructedDataChangesPendingBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataChangesPending) CreateBACnetConstructedDataChangesPendingBuilder() BACnetConstructedDataChangesPendingBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataChangesPendingBuilder()
 	}
-	return &_BACnetConstructedDataChangesPendingBuilder{_BACnetConstructedDataChangesPending: m.deepCopy()}
+	return &_BACnetConstructedDataChangesPendingBuilder{_BACnetConstructedDataChangesPending: b.deepCopy()}
 }
 
 ///////////////////////

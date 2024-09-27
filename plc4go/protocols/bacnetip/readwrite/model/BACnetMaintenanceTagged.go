@@ -111,69 +111,73 @@ type _BACnetMaintenanceTaggedBuilder struct {
 
 var _ (BACnetMaintenanceTaggedBuilder) = (*_BACnetMaintenanceTaggedBuilder)(nil)
 
-func (m *_BACnetMaintenanceTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetMaintenance, proprietaryValue uint32) BACnetMaintenanceTaggedBuilder {
-	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetMaintenanceTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetMaintenance, proprietaryValue uint32) BACnetMaintenanceTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_BACnetMaintenanceTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetMaintenanceTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetMaintenanceTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetMaintenanceTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetMaintenanceTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetMaintenanceTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetMaintenanceTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetMaintenanceTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetMaintenanceTaggedBuilder) WithValue(value BACnetMaintenance) BACnetMaintenanceTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetMaintenanceTaggedBuilder) WithValue(value BACnetMaintenance) BACnetMaintenanceTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetMaintenanceTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetMaintenanceTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetMaintenanceTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetMaintenanceTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetMaintenanceTaggedBuilder) Build() (BACnetMaintenanceTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetMaintenanceTaggedBuilder) Build() (BACnetMaintenanceTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetMaintenanceTagged.deepCopy(), nil
+	return b._BACnetMaintenanceTagged.deepCopy(), nil
 }
 
-func (m *_BACnetMaintenanceTaggedBuilder) MustBuild() BACnetMaintenanceTagged {
-	build, err := m.Build()
+func (b *_BACnetMaintenanceTaggedBuilder) MustBuild() BACnetMaintenanceTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetMaintenanceTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetMaintenanceTaggedBuilder()
+func (b *_BACnetMaintenanceTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetMaintenanceTaggedBuilder().(*_BACnetMaintenanceTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetMaintenanceTaggedBuilder creates a BACnetMaintenanceTaggedBuilder
-func (m *_BACnetMaintenanceTagged) CreateBACnetMaintenanceTaggedBuilder() BACnetMaintenanceTaggedBuilder {
-	if m == nil {
+func (b *_BACnetMaintenanceTagged) CreateBACnetMaintenanceTaggedBuilder() BACnetMaintenanceTaggedBuilder {
+	if b == nil {
 		return NewBACnetMaintenanceTaggedBuilder()
 	}
-	return &_BACnetMaintenanceTaggedBuilder{_BACnetMaintenanceTagged: m.deepCopy()}
+	return &_BACnetMaintenanceTaggedBuilder{_BACnetMaintenanceTagged: b.deepCopy()}
 }
 
 ///////////////////////

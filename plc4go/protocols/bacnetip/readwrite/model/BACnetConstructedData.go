@@ -129,10 +129,3299 @@ type BACnetConstructedDataBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetConstructedDataBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConstructedDataBuilder
+	// AsBACnetConstructedDataAbsenteeLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAbsenteeLimit() interface {
+		BACnetConstructedDataAbsenteeLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAcceptedModes converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAcceptedModes() interface {
+		BACnetConstructedDataAcceptedModesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessAlarmEvents converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessAlarmEvents() interface {
+		BACnetConstructedDataAccessAlarmEventsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessDoors converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessDoors() interface {
+		BACnetConstructedDataAccessDoorsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessEvent converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessEvent() interface {
+		BACnetConstructedDataAccessEventBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessEventAuthenticationFactor converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessEventAuthenticationFactor() interface {
+		BACnetConstructedDataAccessEventAuthenticationFactorBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessEventCredential converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessEventCredential() interface {
+		BACnetConstructedDataAccessEventCredentialBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessEventTag converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessEventTag() interface {
+		BACnetConstructedDataAccessEventTagBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessEventTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessEventTime() interface {
+		BACnetConstructedDataAccessEventTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessTransactionEvents converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessTransactionEvents() interface {
+		BACnetConstructedDataAccessTransactionEventsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccompaniment converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccompaniment() interface {
+		BACnetConstructedDataAccompanimentBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccompanimentTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccompanimentTime() interface {
+		BACnetConstructedDataAccompanimentTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAckRequired converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAckRequired() interface {
+		BACnetConstructedDataAckRequiredBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAckedTransitions converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAckedTransitions() interface {
+		BACnetConstructedDataAckedTransitionsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLoopAction converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLoopAction() interface {
+		BACnetConstructedDataLoopActionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCommandAction converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCommandAction() interface {
+		BACnetConstructedDataCommandActionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAction converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAction() interface {
+		BACnetConstructedDataActionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataActionText converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataActionText() interface {
+		BACnetConstructedDataActionTextBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataActivationTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataActivationTime() interface {
+		BACnetConstructedDataActivationTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataActiveAuthenticationPolicy converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataActiveAuthenticationPolicy() interface {
+		BACnetConstructedDataActiveAuthenticationPolicyBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataActiveCOVMultipleSubscriptions converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataActiveCOVMultipleSubscriptions() interface {
+		BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataActiveCOVSubscriptions converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataActiveCOVSubscriptions() interface {
+		BACnetConstructedDataActiveCOVSubscriptionsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataActiveText converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataActiveText() interface {
+		BACnetConstructedDataActiveTextBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataActiveVTSessions converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataActiveVTSessions() interface {
+		BACnetConstructedDataActiveVTSessionsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataActualShedLevel converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataActualShedLevel() interface {
+		BACnetConstructedDataActualShedLevelBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessZoneAdjustValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessZoneAdjustValue() interface {
+		BACnetConstructedDataAccessZoneAdjustValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPulseConverterAdjustValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPulseConverterAdjustValue() interface {
+		BACnetConstructedDataPulseConverterAdjustValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAdjustValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAdjustValue() interface {
+		BACnetConstructedDataAdjustValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAlarmValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAlarmValue() interface {
+		BACnetConstructedDataAlarmValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessDoorAlarmValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessDoorAlarmValues() interface {
+		BACnetConstructedDataAccessDoorAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessZoneAlarmValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessZoneAlarmValues() interface {
+		BACnetConstructedDataAccessZoneAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBitStringValueAlarmValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBitStringValueAlarmValues() interface {
+		BACnetConstructedDataBitStringValueAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCharacterStringValueAlarmValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCharacterStringValueAlarmValues() interface {
+		BACnetConstructedDataCharacterStringValueAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLifeSafetyPointAlarmValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLifeSafetyPointAlarmValues() interface {
+		BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLifeSafetyZoneAlarmValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLifeSafetyZoneAlarmValues() interface {
+		BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMultiStateInputAlarmValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMultiStateInputAlarmValues() interface {
+		BACnetConstructedDataMultiStateInputAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMultiStateValueAlarmValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMultiStateValueAlarmValues() interface {
+		BACnetConstructedDataMultiStateValueAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimerAlarmValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimerAlarmValues() interface {
+		BACnetConstructedDataTimerAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAlarmValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAlarmValues() interface {
+		BACnetConstructedDataAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAlignIntervals converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAlignIntervals() interface {
+		BACnetConstructedDataAlignIntervalsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessCredentialAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessCredentialAll() interface {
+		BACnetConstructedDataAccessCredentialAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessDoorAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessDoorAll() interface {
+		BACnetConstructedDataAccessDoorAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessPointAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessPointAll() interface {
+		BACnetConstructedDataAccessPointAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessRightsAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessRightsAll() interface {
+		BACnetConstructedDataAccessRightsAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessUserAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessUserAll() interface {
+		BACnetConstructedDataAccessUserAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessZoneAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessZoneAll() interface {
+		BACnetConstructedDataAccessZoneAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccumulatorAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccumulatorAll() interface {
+		BACnetConstructedDataAccumulatorAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAlertEnrollmentAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAlertEnrollmentAll() interface {
+		BACnetConstructedDataAlertEnrollmentAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogInputAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogInputAll() interface {
+		BACnetConstructedDataAnalogInputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogOutputAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogOutputAll() interface {
+		BACnetConstructedDataAnalogOutputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogValueAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogValueAll() interface {
+		BACnetConstructedDataAnalogValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAveragingAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAveragingAll() interface {
+		BACnetConstructedDataAveragingAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBinaryInputAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBinaryInputAll() interface {
+		BACnetConstructedDataBinaryInputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBinaryLightingOutputAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBinaryLightingOutputAll() interface {
+		BACnetConstructedDataBinaryLightingOutputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBinaryOutputAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBinaryOutputAll() interface {
+		BACnetConstructedDataBinaryOutputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBinaryValueAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBinaryValueAll() interface {
+		BACnetConstructedDataBinaryValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBitstringValueAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBitstringValueAll() interface {
+		BACnetConstructedDataBitstringValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCalendarAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCalendarAll() interface {
+		BACnetConstructedDataCalendarAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataChannelAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataChannelAll() interface {
+		BACnetConstructedDataChannelAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCharacterstringValueAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCharacterstringValueAll() interface {
+		BACnetConstructedDataCharacterstringValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCommandAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCommandAll() interface {
+		BACnetConstructedDataCommandAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCredentialDataInputAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCredentialDataInputAll() interface {
+		BACnetConstructedDataCredentialDataInputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDatepatternValueAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDatepatternValueAll() interface {
+		BACnetConstructedDataDatepatternValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDateValueAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDateValueAll() interface {
+		BACnetConstructedDataDateValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDatetimepatternValueAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDatetimepatternValueAll() interface {
+		BACnetConstructedDataDatetimepatternValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDatetimeValueAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDatetimeValueAll() interface {
+		BACnetConstructedDataDatetimeValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDeviceAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDeviceAll() interface {
+		BACnetConstructedDataDeviceAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataElevatorGroupAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataElevatorGroupAll() interface {
+		BACnetConstructedDataElevatorGroupAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEscalatorAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEscalatorAll() interface {
+		BACnetConstructedDataEscalatorAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEventEnrollmentAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEventEnrollmentAll() interface {
+		BACnetConstructedDataEventEnrollmentAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEventLogAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEventLogAll() interface {
+		BACnetConstructedDataEventLogAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFileAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFileAll() interface {
+		BACnetConstructedDataFileAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataGlobalGroupAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataGlobalGroupAll() interface {
+		BACnetConstructedDataGlobalGroupAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataGroupAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataGroupAll() interface {
+		BACnetConstructedDataGroupAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIntegerValueAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIntegerValueAll() interface {
+		BACnetConstructedDataIntegerValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLargeAnalogValueAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLargeAnalogValueAll() interface {
+		BACnetConstructedDataLargeAnalogValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLifeSafetyPointAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLifeSafetyPointAll() interface {
+		BACnetConstructedDataLifeSafetyPointAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLifeSafetyZoneAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLifeSafetyZoneAll() interface {
+		BACnetConstructedDataLifeSafetyZoneAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLiftAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLiftAll() interface {
+		BACnetConstructedDataLiftAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLightingOutputAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLightingOutputAll() interface {
+		BACnetConstructedDataLightingOutputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLoadControlAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLoadControlAll() interface {
+		BACnetConstructedDataLoadControlAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLoopAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLoopAll() interface {
+		BACnetConstructedDataLoopAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMultiStateInputAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMultiStateInputAll() interface {
+		BACnetConstructedDataMultiStateInputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMultiStateOutputAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMultiStateOutputAll() interface {
+		BACnetConstructedDataMultiStateOutputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMultiStateValueAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMultiStateValueAll() interface {
+		BACnetConstructedDataMultiStateValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNetworkPortAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNetworkPortAll() interface {
+		BACnetConstructedDataNetworkPortAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNetworkSecurityAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNetworkSecurityAll() interface {
+		BACnetConstructedDataNetworkSecurityAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNotificationClassAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNotificationClassAll() interface {
+		BACnetConstructedDataNotificationClassAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNotificationForwarderAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNotificationForwarderAll() interface {
+		BACnetConstructedDataNotificationForwarderAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOctetstringValueAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOctetstringValueAll() interface {
+		BACnetConstructedDataOctetstringValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPositiveIntegerValueAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPositiveIntegerValueAll() interface {
+		BACnetConstructedDataPositiveIntegerValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataProgramAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataProgramAll() interface {
+		BACnetConstructedDataProgramAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPulseConverterAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPulseConverterAll() interface {
+		BACnetConstructedDataPulseConverterAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataScheduleAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataScheduleAll() interface {
+		BACnetConstructedDataScheduleAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataStructuredViewAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataStructuredViewAll() interface {
+		BACnetConstructedDataStructuredViewAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimepatternValueAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimepatternValueAll() interface {
+		BACnetConstructedDataTimepatternValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimeValueAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimeValueAll() interface {
+		BACnetConstructedDataTimeValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimerAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimerAll() interface {
+		BACnetConstructedDataTimerAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTrendLogAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTrendLogAll() interface {
+		BACnetConstructedDataTrendLogAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTrendLogMultipleAll converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTrendLogMultipleAll() interface {
+		BACnetConstructedDataTrendLogMultipleAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAllWritesSuccessful converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAllWritesSuccessful() interface {
+		BACnetConstructedDataAllWritesSuccessfulBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAllowGroupDelayInhibit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAllowGroupDelayInhibit() interface {
+		BACnetConstructedDataAllowGroupDelayInhibitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAPDULength converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAPDULength() interface {
+		BACnetConstructedDataAPDULengthBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAPDUSegmentTimeout converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAPDUSegmentTimeout() interface {
+		BACnetConstructedDataAPDUSegmentTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAPDUTimeout converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAPDUTimeout() interface {
+		BACnetConstructedDataAPDUTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataApplicationSoftwareVersion converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataApplicationSoftwareVersion() interface {
+		BACnetConstructedDataApplicationSoftwareVersionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataArchive converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataArchive() interface {
+		BACnetConstructedDataArchiveBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAssignedAccessRights converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAssignedAccessRights() interface {
+		BACnetConstructedDataAssignedAccessRightsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAssignedLandingCalls converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAssignedLandingCalls() interface {
+		BACnetConstructedDataAssignedLandingCallsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAttemptedSamples converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAttemptedSamples() interface {
+		BACnetConstructedDataAttemptedSamplesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAuthenticationFactors converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAuthenticationFactors() interface {
+		BACnetConstructedDataAuthenticationFactorsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAuthenticationPolicyList converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAuthenticationPolicyList() interface {
+		BACnetConstructedDataAuthenticationPolicyListBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAuthenticationPolicyNames converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAuthenticationPolicyNames() interface {
+		BACnetConstructedDataAuthenticationPolicyNamesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAuthenticationStatus converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAuthenticationStatus() interface {
+		BACnetConstructedDataAuthenticationStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAuthorizationExemptions converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAuthorizationExemptions() interface {
+		BACnetConstructedDataAuthorizationExemptionsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAuthorizationMode converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAuthorizationMode() interface {
+		BACnetConstructedDataAuthorizationModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAutoSlaveDiscovery converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAutoSlaveDiscovery() interface {
+		BACnetConstructedDataAutoSlaveDiscoveryBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAverageValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAverageValue() interface {
+		BACnetConstructedDataAverageValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBackupAndRestoreState converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBackupAndRestoreState() interface {
+		BACnetConstructedDataBackupAndRestoreStateBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBackupFailureTimeout converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBackupFailureTimeout() interface {
+		BACnetConstructedDataBackupFailureTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBackupPreparationTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBackupPreparationTime() interface {
+		BACnetConstructedDataBackupPreparationTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBACnetIPGlobalAddress converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBACnetIPGlobalAddress() interface {
+		BACnetConstructedDataBACnetIPGlobalAddressBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBACnetIPMode converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBACnetIPMode() interface {
+		BACnetConstructedDataBACnetIPModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBACnetIPMulticastAddress converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBACnetIPMulticastAddress() interface {
+		BACnetConstructedDataBACnetIPMulticastAddressBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBACnetIPNATTraversal converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBACnetIPNATTraversal() interface {
+		BACnetConstructedDataBACnetIPNATTraversalBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBACnetIPUDPPort converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBACnetIPUDPPort() interface {
+		BACnetConstructedDataBACnetIPUDPPortBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBACnetIPv6Mode converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBACnetIPv6Mode() interface {
+		BACnetConstructedDataBACnetIPv6ModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBACnetIPv6UDPPort converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBACnetIPv6UDPPort() interface {
+		BACnetConstructedDataBACnetIPv6UDPPortBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBACnetIPv6MulticastAddress converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBACnetIPv6MulticastAddress() interface {
+		BACnetConstructedDataBACnetIPv6MulticastAddressBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBaseDeviceSecurityPolicy converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBaseDeviceSecurityPolicy() interface {
+		BACnetConstructedDataBaseDeviceSecurityPolicyBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBBMDAcceptFDRegistrations converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBBMDAcceptFDRegistrations() interface {
+		BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBBMDBroadcastDistributionTable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBBMDBroadcastDistributionTable() interface {
+		BACnetConstructedDataBBMDBroadcastDistributionTableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBBMDForeignDeviceTable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBBMDForeignDeviceTable() interface {
+		BACnetConstructedDataBBMDForeignDeviceTableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBelongsTo converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBelongsTo() interface {
+		BACnetConstructedDataBelongsToBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBias converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBias() interface {
+		BACnetConstructedDataBiasBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBitMask converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBitMask() interface {
+		BACnetConstructedDataBitMaskBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBitText converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBitText() interface {
+		BACnetConstructedDataBitTextBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBlinkWarnEnable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBlinkWarnEnable() interface {
+		BACnetConstructedDataBlinkWarnEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBufferSize converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBufferSize() interface {
+		BACnetConstructedDataBufferSizeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCarAssignedDirection converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCarAssignedDirection() interface {
+		BACnetConstructedDataCarAssignedDirectionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCarDoorCommand converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCarDoorCommand() interface {
+		BACnetConstructedDataCarDoorCommandBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCarDoorStatus converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCarDoorStatus() interface {
+		BACnetConstructedDataCarDoorStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCarDoorText converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCarDoorText() interface {
+		BACnetConstructedDataCarDoorTextBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCarDoorZone converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCarDoorZone() interface {
+		BACnetConstructedDataCarDoorZoneBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCarDriveStatus converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCarDriveStatus() interface {
+		BACnetConstructedDataCarDriveStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCarLoad converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCarLoad() interface {
+		BACnetConstructedDataCarLoadBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCarLoadUnits converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCarLoadUnits() interface {
+		BACnetConstructedDataCarLoadUnitsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCarMode converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCarMode() interface {
+		BACnetConstructedDataCarModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCarMovingDirection converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCarMovingDirection() interface {
+		BACnetConstructedDataCarMovingDirectionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCarPosition converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCarPosition() interface {
+		BACnetConstructedDataCarPositionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataChangeOfStateCount converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataChangeOfStateCount() interface {
+		BACnetConstructedDataChangeOfStateCountBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataChangeOfStateTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataChangeOfStateTime() interface {
+		BACnetConstructedDataChangeOfStateTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataChangesPending converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataChangesPending() interface {
+		BACnetConstructedDataChangesPendingBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataChannelNumber converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataChannelNumber() interface {
+		BACnetConstructedDataChannelNumberBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataClientCOVIncrement converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataClientCOVIncrement() interface {
+		BACnetConstructedDataClientCOVIncrementBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCommand converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCommand() interface {
+		BACnetConstructedDataCommandBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCommandTimeArray converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCommandTimeArray() interface {
+		BACnetConstructedDataCommandTimeArrayBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataConfigurationFiles converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataConfigurationFiles() interface {
+		BACnetConstructedDataConfigurationFilesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataControlGroups converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataControlGroups() interface {
+		BACnetConstructedDataControlGroupsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataControlledVariableReference converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataControlledVariableReference() interface {
+		BACnetConstructedDataControlledVariableReferenceBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataControlledVariableUnits converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataControlledVariableUnits() interface {
+		BACnetConstructedDataControlledVariableUnitsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataControlledVariableValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataControlledVariableValue() interface {
+		BACnetConstructedDataControlledVariableValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCount converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCount() interface {
+		BACnetConstructedDataCountBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCountBeforeChange converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCountBeforeChange() interface {
+		BACnetConstructedDataCountBeforeChangeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCountChangeTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCountChangeTime() interface {
+		BACnetConstructedDataCountChangeTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIntegerValueCOVIncrement converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIntegerValueCOVIncrement() interface {
+		BACnetConstructedDataIntegerValueCOVIncrementBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLargeAnalogValueCOVIncrement converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLargeAnalogValueCOVIncrement() interface {
+		BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPositiveIntegerValueCOVIncrement converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPositiveIntegerValueCOVIncrement() interface {
+		BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCOVIncrement converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCOVIncrement() interface {
+		BACnetConstructedDataCOVIncrementBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCOVPeriod converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCOVPeriod() interface {
+		BACnetConstructedDataCOVPeriodBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCOVResubscriptionInterval converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCOVResubscriptionInterval() interface {
+		BACnetConstructedDataCOVResubscriptionIntervalBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCOVUPeriod converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCOVUPeriod() interface {
+		BACnetConstructedDataCOVUPeriodBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCOVURecipients converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCOVURecipients() interface {
+		BACnetConstructedDataCOVURecipientsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCredentialDisable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCredentialDisable() interface {
+		BACnetConstructedDataCredentialDisableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCredentialStatus converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCredentialStatus() interface {
+		BACnetConstructedDataCredentialStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCredentials converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCredentials() interface {
+		BACnetConstructedDataCredentialsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCredentialsInZone converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCredentialsInZone() interface {
+		BACnetConstructedDataCredentialsInZoneBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCurrentCommandPriority converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCurrentCommandPriority() interface {
+		BACnetConstructedDataCurrentCommandPriorityBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDatabaseRevision converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDatabaseRevision() interface {
+		BACnetConstructedDataDatabaseRevisionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDateList converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDateList() interface {
+		BACnetConstructedDataDateListBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDaylightSavingsStatus converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDaylightSavingsStatus() interface {
+		BACnetConstructedDataDaylightSavingsStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDaysRemaining converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDaysRemaining() interface {
+		BACnetConstructedDataDaysRemainingBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIntegerValueDeadband converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIntegerValueDeadband() interface {
+		BACnetConstructedDataIntegerValueDeadbandBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLargeAnalogValueDeadband converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLargeAnalogValueDeadband() interface {
+		BACnetConstructedDataLargeAnalogValueDeadbandBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPositiveIntegerValueDeadband converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPositiveIntegerValueDeadband() interface {
+		BACnetConstructedDataPositiveIntegerValueDeadbandBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDeadband converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDeadband() interface {
+		BACnetConstructedDataDeadbandBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDefaultFadeTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDefaultFadeTime() interface {
+		BACnetConstructedDataDefaultFadeTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDefaultRampRate converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDefaultRampRate() interface {
+		BACnetConstructedDataDefaultRampRateBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDefaultStepIncrement converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDefaultStepIncrement() interface {
+		BACnetConstructedDataDefaultStepIncrementBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDefaultSubordinateRelationship converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDefaultSubordinateRelationship() interface {
+		BACnetConstructedDataDefaultSubordinateRelationshipBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDefaultTimeout converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDefaultTimeout() interface {
+		BACnetConstructedDataDefaultTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDeployedProfileLocation converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDeployedProfileLocation() interface {
+		BACnetConstructedDataDeployedProfileLocationBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDerivativeConstant converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDerivativeConstant() interface {
+		BACnetConstructedDataDerivativeConstantBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDerivativeConstantUnits converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDerivativeConstantUnits() interface {
+		BACnetConstructedDataDerivativeConstantUnitsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDescription converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDescription() interface {
+		BACnetConstructedDataDescriptionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDescriptionOfHalt converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDescriptionOfHalt() interface {
+		BACnetConstructedDataDescriptionOfHaltBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDeviceAddressBinding converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDeviceAddressBinding() interface {
+		BACnetConstructedDataDeviceAddressBindingBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDeviceType converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDeviceType() interface {
+		BACnetConstructedDataDeviceTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDirectReading converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDirectReading() interface {
+		BACnetConstructedDataDirectReadingBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDistributionKeyRevision converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDistributionKeyRevision() interface {
+		BACnetConstructedDataDistributionKeyRevisionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDoNotHide converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDoNotHide() interface {
+		BACnetConstructedDataDoNotHideBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDoorAlarmState converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDoorAlarmState() interface {
+		BACnetConstructedDataDoorAlarmStateBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDoorExtendedPulseTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDoorExtendedPulseTime() interface {
+		BACnetConstructedDataDoorExtendedPulseTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDoorMembers converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDoorMembers() interface {
+		BACnetConstructedDataDoorMembersBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDoorOpenTooLongTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDoorOpenTooLongTime() interface {
+		BACnetConstructedDataDoorOpenTooLongTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDoorPulseTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDoorPulseTime() interface {
+		BACnetConstructedDataDoorPulseTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDoorStatus converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDoorStatus() interface {
+		BACnetConstructedDataDoorStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDoorUnlockDelayTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDoorUnlockDelayTime() interface {
+		BACnetConstructedDataDoorUnlockDelayTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDutyWindow converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDutyWindow() interface {
+		BACnetConstructedDataDutyWindowBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEffectivePeriod converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEffectivePeriod() interface {
+		BACnetConstructedDataEffectivePeriodBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEgressActive converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEgressActive() interface {
+		BACnetConstructedDataEgressActiveBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEgressTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEgressTime() interface {
+		BACnetConstructedDataEgressTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataElapsedActiveTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataElapsedActiveTime() interface {
+		BACnetConstructedDataElapsedActiveTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataElevatorGroup converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataElevatorGroup() interface {
+		BACnetConstructedDataElevatorGroupBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEnable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEnable() interface {
+		BACnetConstructedDataEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEnergyMeter converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEnergyMeter() interface {
+		BACnetConstructedDataEnergyMeterBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEnergyMeterRef converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEnergyMeterRef() interface {
+		BACnetConstructedDataEnergyMeterRefBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEntryPoints converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEntryPoints() interface {
+		BACnetConstructedDataEntryPointsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataErrorLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataErrorLimit() interface {
+		BACnetConstructedDataErrorLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEscalatorMode converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEscalatorMode() interface {
+		BACnetConstructedDataEscalatorModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEventAlgorithmInhibit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEventAlgorithmInhibit() interface {
+		BACnetConstructedDataEventAlgorithmInhibitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEventAlgorithmInhibitRef converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEventAlgorithmInhibitRef() interface {
+		BACnetConstructedDataEventAlgorithmInhibitRefBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEventDetectionEnable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEventDetectionEnable() interface {
+		BACnetConstructedDataEventDetectionEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEventEnable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEventEnable() interface {
+		BACnetConstructedDataEventEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEventMessageTexts converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEventMessageTexts() interface {
+		BACnetConstructedDataEventMessageTextsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEventMessageTextsConfig converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEventMessageTextsConfig() interface {
+		BACnetConstructedDataEventMessageTextsConfigBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEventParameters converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEventParameters() interface {
+		BACnetConstructedDataEventParametersBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEventState converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEventState() interface {
+		BACnetConstructedDataEventStateBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEventTimeStamps converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEventTimeStamps() interface {
+		BACnetConstructedDataEventTimeStampsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEventType converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEventType() interface {
+		BACnetConstructedDataEventTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataExceptionSchedule converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataExceptionSchedule() interface {
+		BACnetConstructedDataExceptionScheduleBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataExecutionDelay converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataExecutionDelay() interface {
+		BACnetConstructedDataExecutionDelayBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataExitPoints converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataExitPoints() interface {
+		BACnetConstructedDataExitPointsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataExpectedShedLevel converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataExpectedShedLevel() interface {
+		BACnetConstructedDataExpectedShedLevelBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataExpirationTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataExpirationTime() interface {
+		BACnetConstructedDataExpirationTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataExtendedTimeEnable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataExtendedTimeEnable() interface {
+		BACnetConstructedDataExtendedTimeEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFailedAttemptEvents converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFailedAttemptEvents() interface {
+		BACnetConstructedDataFailedAttemptEventsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFailedAttempts converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFailedAttempts() interface {
+		BACnetConstructedDataFailedAttemptsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFailedAttemptsTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFailedAttemptsTime() interface {
+		BACnetConstructedDataFailedAttemptsTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccumulatorFaultHighLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccumulatorFaultHighLimit() interface {
+		BACnetConstructedDataAccumulatorFaultHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogInputFaultHighLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogInputFaultHighLimit() interface {
+		BACnetConstructedDataAnalogInputFaultHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogValueFaultHighLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogValueFaultHighLimit() interface {
+		BACnetConstructedDataAnalogValueFaultHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIntegerValueFaultHighLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIntegerValueFaultHighLimit() interface {
+		BACnetConstructedDataIntegerValueFaultHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLargeAnalogValueFaultHighLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLargeAnalogValueFaultHighLimit() interface {
+		BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPositiveIntegerValueFaultHighLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPositiveIntegerValueFaultHighLimit() interface {
+		BACnetConstructedDataPositiveIntegerValueFaultHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFaultHighLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFaultHighLimit() interface {
+		BACnetConstructedDataFaultHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccumulatorFaultLowLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccumulatorFaultLowLimit() interface {
+		BACnetConstructedDataAccumulatorFaultLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogInputFaultLowLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogInputFaultLowLimit() interface {
+		BACnetConstructedDataAnalogInputFaultLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogValueFaultLowLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogValueFaultLowLimit() interface {
+		BACnetConstructedDataAnalogValueFaultLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLargeAnalogValueFaultLowLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLargeAnalogValueFaultLowLimit() interface {
+		BACnetConstructedDataLargeAnalogValueFaultLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIntegerValueFaultLowLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIntegerValueFaultLowLimit() interface {
+		BACnetConstructedDataIntegerValueFaultLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPositiveIntegerValueFaultLowLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPositiveIntegerValueFaultLowLimit() interface {
+		BACnetConstructedDataPositiveIntegerValueFaultLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFaultLowLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFaultLowLimit() interface {
+		BACnetConstructedDataFaultLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFaultParameters converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFaultParameters() interface {
+		BACnetConstructedDataFaultParametersBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEscalatorFaultSignals converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEscalatorFaultSignals() interface {
+		BACnetConstructedDataEscalatorFaultSignalsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLiftFaultSignals converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLiftFaultSignals() interface {
+		BACnetConstructedDataLiftFaultSignalsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFaultSignals converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFaultSignals() interface {
+		BACnetConstructedDataFaultSignalsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFaultType converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFaultType() interface {
+		BACnetConstructedDataFaultTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessDoorFaultValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessDoorFaultValues() interface {
+		BACnetConstructedDataAccessDoorFaultValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCharacterStringValueFaultValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCharacterStringValueFaultValues() interface {
+		BACnetConstructedDataCharacterStringValueFaultValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLifeSafetyPointFaultValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLifeSafetyPointFaultValues() interface {
+		BACnetConstructedDataLifeSafetyPointFaultValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLifeSafetyZoneFaultValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLifeSafetyZoneFaultValues() interface {
+		BACnetConstructedDataLifeSafetyZoneFaultValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMultiStateInputFaultValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMultiStateInputFaultValues() interface {
+		BACnetConstructedDataMultiStateInputFaultValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMultiStateValueFaultValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMultiStateValueFaultValues() interface {
+		BACnetConstructedDataMultiStateValueFaultValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFaultValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFaultValues() interface {
+		BACnetConstructedDataFaultValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFDBBMDAddress converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFDBBMDAddress() interface {
+		BACnetConstructedDataFDBBMDAddressBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFDSubscriptionLifetime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFDSubscriptionLifetime() interface {
+		BACnetConstructedDataFDSubscriptionLifetimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBinaryLightingOutputFeedbackValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBinaryLightingOutputFeedbackValue() interface {
+		BACnetConstructedDataBinaryLightingOutputFeedbackValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBinaryOutputFeedbackValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBinaryOutputFeedbackValue() interface {
+		BACnetConstructedDataBinaryOutputFeedbackValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLightingOutputFeedbackValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLightingOutputFeedbackValue() interface {
+		BACnetConstructedDataLightingOutputFeedbackValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMultiStateOutputFeedbackValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMultiStateOutputFeedbackValue() interface {
+		BACnetConstructedDataMultiStateOutputFeedbackValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFileAccessMethod converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFileAccessMethod() interface {
+		BACnetConstructedDataFileAccessMethodBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFileSize converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFileSize() interface {
+		BACnetConstructedDataFileSizeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFileType converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFileType() interface {
+		BACnetConstructedDataFileTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFirmwareRevision converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFirmwareRevision() interface {
+		BACnetConstructedDataFirmwareRevisionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFloorText converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFloorText() interface {
+		BACnetConstructedDataFloorTextBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFullDutyBaseline converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFullDutyBaseline() interface {
+		BACnetConstructedDataFullDutyBaselineBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataGlobalIdentifier converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataGlobalIdentifier() interface {
+		BACnetConstructedDataGlobalIdentifierBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataGroupID converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataGroupID() interface {
+		BACnetConstructedDataGroupIDBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataGroupMemberNames converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataGroupMemberNames() interface {
+		BACnetConstructedDataGroupMemberNamesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataGlobalGroupGroupMembers converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataGlobalGroupGroupMembers() interface {
+		BACnetConstructedDataGlobalGroupGroupMembersBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataElevatorGroupGroupMembers converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataElevatorGroupGroupMembers() interface {
+		BACnetConstructedDataElevatorGroupGroupMembersBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataGroupMembers converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataGroupMembers() interface {
+		BACnetConstructedDataGroupMembersBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataGroupMode converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataGroupMode() interface {
+		BACnetConstructedDataGroupModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccumulatorHighLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccumulatorHighLimit() interface {
+		BACnetConstructedDataAccumulatorHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLargeAnalogValueHighLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLargeAnalogValueHighLimit() interface {
+		BACnetConstructedDataLargeAnalogValueHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIntegerValueHighLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIntegerValueHighLimit() interface {
+		BACnetConstructedDataIntegerValueHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPositiveIntegerValueHighLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPositiveIntegerValueHighLimit() interface {
+		BACnetConstructedDataPositiveIntegerValueHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataHighLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataHighLimit() interface {
+		BACnetConstructedDataHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataHigherDeck converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataHigherDeck() interface {
+		BACnetConstructedDataHigherDeckBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataInProcess converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataInProcess() interface {
+		BACnetConstructedDataInProcessBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataInProgress converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataInProgress() interface {
+		BACnetConstructedDataInProgressBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataInactiveText converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataInactiveText() interface {
+		BACnetConstructedDataInactiveTextBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataInitialTimeout converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataInitialTimeout() interface {
+		BACnetConstructedDataInitialTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataInputReference converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataInputReference() interface {
+		BACnetConstructedDataInputReferenceBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataInstallationID converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataInstallationID() interface {
+		BACnetConstructedDataInstallationIDBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataInstanceOf converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataInstanceOf() interface {
+		BACnetConstructedDataInstanceOfBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataInstantaneousPower converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataInstantaneousPower() interface {
+		BACnetConstructedDataInstantaneousPowerBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIntegralConstant converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIntegralConstant() interface {
+		BACnetConstructedDataIntegralConstantBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIntegralConstantUnits converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIntegralConstantUnits() interface {
+		BACnetConstructedDataIntegralConstantUnitsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogInputInterfaceValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogInputInterfaceValue() interface {
+		BACnetConstructedDataAnalogInputInterfaceValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogOutputInterfaceValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogOutputInterfaceValue() interface {
+		BACnetConstructedDataAnalogOutputInterfaceValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBinaryInputInterfaceValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBinaryInputInterfaceValue() interface {
+		BACnetConstructedDataBinaryInputInterfaceValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBinaryOutputInterfaceValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBinaryOutputInterfaceValue() interface {
+		BACnetConstructedDataBinaryOutputInterfaceValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMultiStateInputInterfaceValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMultiStateInputInterfaceValue() interface {
+		BACnetConstructedDataMultiStateInputInterfaceValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMultiStateOutputInterfaceValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMultiStateOutputInterfaceValue() interface {
+		BACnetConstructedDataMultiStateOutputInterfaceValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIntervalOffset converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIntervalOffset() interface {
+		BACnetConstructedDataIntervalOffsetBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPAddress converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPAddress() interface {
+		BACnetConstructedDataIPAddressBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPDefaultGateway converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPDefaultGateway() interface {
+		BACnetConstructedDataIPDefaultGatewayBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPDHCPEnable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPDHCPEnable() interface {
+		BACnetConstructedDataIPDHCPEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPDHCPLeaseTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPDHCPLeaseTime() interface {
+		BACnetConstructedDataIPDHCPLeaseTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPDHCPLeaseTimeRemaining converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPDHCPLeaseTimeRemaining() interface {
+		BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPDHCPServer converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPDHCPServer() interface {
+		BACnetConstructedDataIPDHCPServerBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPDNSServer converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPDNSServer() interface {
+		BACnetConstructedDataIPDNSServerBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPSubnetMask converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPSubnetMask() interface {
+		BACnetConstructedDataIPSubnetMaskBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPv6Address converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPv6Address() interface {
+		BACnetConstructedDataIPv6AddressBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPv6AutoAddressingEnable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPv6AutoAddressingEnable() interface {
+		BACnetConstructedDataIPv6AutoAddressingEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPv6DefaultGateway converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPv6DefaultGateway() interface {
+		BACnetConstructedDataIPv6DefaultGatewayBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPv6DHCPLeaseTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPv6DHCPLeaseTime() interface {
+		BACnetConstructedDataIPv6DHCPLeaseTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPv6DHCPLeaseTimeRemaining converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPv6DHCPLeaseTimeRemaining() interface {
+		BACnetConstructedDataIPv6DHCPLeaseTimeRemainingBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPv6DHCPServer converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPv6DHCPServer() interface {
+		BACnetConstructedDataIPv6DHCPServerBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPv6DNSServer converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPv6DNSServer() interface {
+		BACnetConstructedDataIPv6DNSServerBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPv6PrefixLength converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPv6PrefixLength() interface {
+		BACnetConstructedDataIPv6PrefixLengthBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIPv6ZoneIndex converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIPv6ZoneIndex() interface {
+		BACnetConstructedDataIPv6ZoneIndexBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIsUTC converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIsUTC() interface {
+		BACnetConstructedDataIsUTCBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataKeySets converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataKeySets() interface {
+		BACnetConstructedDataKeySetsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLandingCallControl converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLandingCallControl() interface {
+		BACnetConstructedDataLandingCallControlBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLandingCalls converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLandingCalls() interface {
+		BACnetConstructedDataLandingCallsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLandingDoorStatus converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLandingDoorStatus() interface {
+		BACnetConstructedDataLandingDoorStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLastAccessEvent converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLastAccessEvent() interface {
+		BACnetConstructedDataLastAccessEventBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLastAccessPoint converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLastAccessPoint() interface {
+		BACnetConstructedDataLastAccessPointBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLastCommandTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLastCommandTime() interface {
+		BACnetConstructedDataLastCommandTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLastCredentialAdded converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLastCredentialAdded() interface {
+		BACnetConstructedDataLastCredentialAddedBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLastCredentialAddedTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLastCredentialAddedTime() interface {
+		BACnetConstructedDataLastCredentialAddedTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLastCredentialRemoved converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLastCredentialRemoved() interface {
+		BACnetConstructedDataLastCredentialRemovedBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLastCredentialRemovedTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLastCredentialRemovedTime() interface {
+		BACnetConstructedDataLastCredentialRemovedTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLastKeyServer converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLastKeyServer() interface {
+		BACnetConstructedDataLastKeyServerBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLastNotifyRecord converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLastNotifyRecord() interface {
+		BACnetConstructedDataLastNotifyRecordBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLastPriority converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLastPriority() interface {
+		BACnetConstructedDataLastPriorityBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLastRestartReason converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLastRestartReason() interface {
+		BACnetConstructedDataLastRestartReasonBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLastRestoreTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLastRestoreTime() interface {
+		BACnetConstructedDataLastRestoreTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLastStateChange converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLastStateChange() interface {
+		BACnetConstructedDataLastStateChangeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLastUseTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLastUseTime() interface {
+		BACnetConstructedDataLastUseTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLifeSafetyAlarmValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLifeSafetyAlarmValues() interface {
+		BACnetConstructedDataLifeSafetyAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLightingCommand converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLightingCommand() interface {
+		BACnetConstructedDataLightingCommandBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLightingCommandDefaultPriority converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLightingCommandDefaultPriority() interface {
+		BACnetConstructedDataLightingCommandDefaultPriorityBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLimitEnable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLimitEnable() interface {
+		BACnetConstructedDataLimitEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLimitMonitoringInterval converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLimitMonitoringInterval() interface {
+		BACnetConstructedDataLimitMonitoringIntervalBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLinkSpeed converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLinkSpeed() interface {
+		BACnetConstructedDataLinkSpeedBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLinkSpeedAutonegotiate converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLinkSpeedAutonegotiate() interface {
+		BACnetConstructedDataLinkSpeedAutonegotiateBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLinkSpeeds converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLinkSpeeds() interface {
+		BACnetConstructedDataLinkSpeedsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataListOfGroupMembers converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataListOfGroupMembers() interface {
+		BACnetConstructedDataListOfGroupMembersBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataChannelListOfObjectPropertyReferences converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataChannelListOfObjectPropertyReferences() interface {
+		BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataListOfObjectPropertyReferences converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataListOfObjectPropertyReferences() interface {
+		BACnetConstructedDataListOfObjectPropertyReferencesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLocalDate converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLocalDate() interface {
+		BACnetConstructedDataLocalDateBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLocalForwardingOnly converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLocalForwardingOnly() interface {
+		BACnetConstructedDataLocalForwardingOnlyBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLocalTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLocalTime() interface {
+		BACnetConstructedDataLocalTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLocation converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLocation() interface {
+		BACnetConstructedDataLocationBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLockStatus converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLockStatus() interface {
+		BACnetConstructedDataLockStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLockout converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLockout() interface {
+		BACnetConstructedDataLockoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLockoutRelinquishTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLockoutRelinquishTime() interface {
+		BACnetConstructedDataLockoutRelinquishTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataEventLogLogBuffer converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataEventLogLogBuffer() interface {
+		BACnetConstructedDataEventLogLogBufferBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTrendLogLogBuffer converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTrendLogLogBuffer() interface {
+		BACnetConstructedDataTrendLogLogBufferBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTrendLogMultipleLogBuffer converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTrendLogMultipleLogBuffer() interface {
+		BACnetConstructedDataTrendLogMultipleLogBufferBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLogBuffer converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLogBuffer() interface {
+		BACnetConstructedDataLogBufferBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTrendLogLogDeviceObjectProperty converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTrendLogLogDeviceObjectProperty() interface {
+		BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty() interface {
+		BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLogDeviceObjectProperty converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLogDeviceObjectProperty() interface {
+		BACnetConstructedDataLogDeviceObjectPropertyBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLogInterval converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLogInterval() interface {
+		BACnetConstructedDataLogIntervalBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLoggingObject converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLoggingObject() interface {
+		BACnetConstructedDataLoggingObjectBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLoggingRecord converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLoggingRecord() interface {
+		BACnetConstructedDataLoggingRecordBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLoggingType converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLoggingType() interface {
+		BACnetConstructedDataLoggingTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLowDiffLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLowDiffLimit() interface {
+		BACnetConstructedDataLowDiffLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccumulatorLowLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccumulatorLowLimit() interface {
+		BACnetConstructedDataAccumulatorLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLargeAnalogValueLowLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLargeAnalogValueLowLimit() interface {
+		BACnetConstructedDataLargeAnalogValueLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIntegerValueLowLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIntegerValueLowLimit() interface {
+		BACnetConstructedDataIntegerValueLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPositiveIntegerValueLowLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPositiveIntegerValueLowLimit() interface {
+		BACnetConstructedDataPositiveIntegerValueLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLowLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLowLimit() interface {
+		BACnetConstructedDataLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLowerDeck converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLowerDeck() interface {
+		BACnetConstructedDataLowerDeckBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMACAddress converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMACAddress() interface {
+		BACnetConstructedDataMACAddressBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMachineRoomID converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMachineRoomID() interface {
+		BACnetConstructedDataMachineRoomIDBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLifeSafetyZoneMaintenanceRequired converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLifeSafetyZoneMaintenanceRequired() interface {
+		BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMaintenanceRequired converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMaintenanceRequired() interface {
+		BACnetConstructedDataMaintenanceRequiredBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMakingCarCall converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMakingCarCall() interface {
+		BACnetConstructedDataMakingCarCallBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataManipulatedVariableReference converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataManipulatedVariableReference() interface {
+		BACnetConstructedDataManipulatedVariableReferenceBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataManualSlaveAddressBinding converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataManualSlaveAddressBinding() interface {
+		BACnetConstructedDataManualSlaveAddressBindingBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMaskedAlarmValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMaskedAlarmValues() interface {
+		BACnetConstructedDataMaskedAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMaxActualValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMaxActualValue() interface {
+		BACnetConstructedDataMaxActualValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMaxAPDULengthAccepted converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMaxAPDULengthAccepted() interface {
+		BACnetConstructedDataMaxAPDULengthAcceptedBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMaxFailedAttempts converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMaxFailedAttempts() interface {
+		BACnetConstructedDataMaxFailedAttemptsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDeviceMaxInfoFrames converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDeviceMaxInfoFrames() interface {
+		BACnetConstructedDataDeviceMaxInfoFramesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNetworkPortMaxInfoFrames converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNetworkPortMaxInfoFrames() interface {
+		BACnetConstructedDataNetworkPortMaxInfoFramesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMaxInfoFrames converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMaxInfoFrames() interface {
+		BACnetConstructedDataMaxInfoFramesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDeviceMaxMaster converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDeviceMaxMaster() interface {
+		BACnetConstructedDataDeviceMaxMasterBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNetworkPortMaxMaster converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNetworkPortMaxMaster() interface {
+		BACnetConstructedDataNetworkPortMaxMasterBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMaxMaster converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMaxMaster() interface {
+		BACnetConstructedDataMaxMasterBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccumulatorMaxPresValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccumulatorMaxPresValue() interface {
+		BACnetConstructedDataAccumulatorMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogInputMaxPresValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogInputMaxPresValue() interface {
+		BACnetConstructedDataAnalogInputMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogOutputMaxPresValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogOutputMaxPresValue() interface {
+		BACnetConstructedDataAnalogOutputMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogValueMaxPresValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogValueMaxPresValue() interface {
+		BACnetConstructedDataAnalogValueMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLargeAnalogValueMaxPresValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLargeAnalogValueMaxPresValue() interface {
+		BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIntegerValueMaxPresValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIntegerValueMaxPresValue() interface {
+		BACnetConstructedDataIntegerValueMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPositiveIntegerValueMaxPresValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPositiveIntegerValueMaxPresValue() interface {
+		BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimerMaxPresValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimerMaxPresValue() interface {
+		BACnetConstructedDataTimerMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMaxPresValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMaxPresValue() interface {
+		BACnetConstructedDataMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMaxSegmentsAccepted converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMaxSegmentsAccepted() interface {
+		BACnetConstructedDataMaxSegmentsAcceptedBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMaximumOutput converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMaximumOutput() interface {
+		BACnetConstructedDataMaximumOutputBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMaximumValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMaximumValue() interface {
+		BACnetConstructedDataMaximumValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMaximumValueTimestamp converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMaximumValueTimestamp() interface {
+		BACnetConstructedDataMaximumValueTimestampBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMemberOf converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMemberOf() interface {
+		BACnetConstructedDataMemberOfBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMemberStatusFlags converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMemberStatusFlags() interface {
+		BACnetConstructedDataMemberStatusFlagsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMembers converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMembers() interface {
+		BACnetConstructedDataMembersBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMinActualValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMinActualValue() interface {
+		BACnetConstructedDataMinActualValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccumulatorMinPresValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccumulatorMinPresValue() interface {
+		BACnetConstructedDataAccumulatorMinPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIntegerValueMinPresValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIntegerValueMinPresValue() interface {
+		BACnetConstructedDataIntegerValueMinPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPositiveIntegerValueMinPresValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPositiveIntegerValueMinPresValue() interface {
+		BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLargeAnalogValueMinPresValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLargeAnalogValueMinPresValue() interface {
+		BACnetConstructedDataLargeAnalogValueMinPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimerMinPresValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimerMinPresValue() interface {
+		BACnetConstructedDataTimerMinPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMinPresValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMinPresValue() interface {
+		BACnetConstructedDataMinPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMinimumOffTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMinimumOffTime() interface {
+		BACnetConstructedDataMinimumOffTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMinimumOnTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMinimumOnTime() interface {
+		BACnetConstructedDataMinimumOnTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMinimumOutput converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMinimumOutput() interface {
+		BACnetConstructedDataMinimumOutputBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMinimumValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMinimumValue() interface {
+		BACnetConstructedDataMinimumValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMinimumValueTimestamp converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMinimumValueTimestamp() interface {
+		BACnetConstructedDataMinimumValueTimestampBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMode converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMode() interface {
+		BACnetConstructedDataModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataModelName converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataModelName() interface {
+		BACnetConstructedDataModelNameBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataModificationDate converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataModificationDate() interface {
+		BACnetConstructedDataModificationDateBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMusterPoint converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMusterPoint() interface {
+		BACnetConstructedDataMusterPointBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNegativeAccessRules converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNegativeAccessRules() interface {
+		BACnetConstructedDataNegativeAccessRulesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNetworkAccessSecurityPolicies converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNetworkAccessSecurityPolicies() interface {
+		BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNetworkInterfaceName converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNetworkInterfaceName() interface {
+		BACnetConstructedDataNetworkInterfaceNameBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNetworkNumber converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNetworkNumber() interface {
+		BACnetConstructedDataNetworkNumberBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNetworkNumberQuality converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNetworkNumberQuality() interface {
+		BACnetConstructedDataNetworkNumberQualityBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNetworkType converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNetworkType() interface {
+		BACnetConstructedDataNetworkTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNextStoppingFloor converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNextStoppingFloor() interface {
+		BACnetConstructedDataNextStoppingFloorBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNodeSubtype converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNodeSubtype() interface {
+		BACnetConstructedDataNodeSubtypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNodeType converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNodeType() interface {
+		BACnetConstructedDataNodeTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNotificationClass converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNotificationClass() interface {
+		BACnetConstructedDataNotificationClassBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNotificationThreshold converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNotificationThreshold() interface {
+		BACnetConstructedDataNotificationThresholdBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNotifyType converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNotifyType() interface {
+		BACnetConstructedDataNotifyTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNumberOfAPDURetries converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNumberOfAPDURetries() interface {
+		BACnetConstructedDataNumberOfAPDURetriesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNumberOfAuthenticationPolicies converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNumberOfAuthenticationPolicies() interface {
+		BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataNumberOfStates converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataNumberOfStates() interface {
+		BACnetConstructedDataNumberOfStatesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataObjectIdentifier converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataObjectIdentifier() interface {
+		BACnetConstructedDataObjectIdentifierBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataObjectList converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataObjectList() interface {
+		BACnetConstructedDataObjectListBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataObjectName converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataObjectName() interface {
+		BACnetConstructedDataObjectNameBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataObjectPropertyReference converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataObjectPropertyReference() interface {
+		BACnetConstructedDataObjectPropertyReferenceBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataObjectType converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataObjectType() interface {
+		BACnetConstructedDataObjectTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOccupancyCount converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOccupancyCount() interface {
+		BACnetConstructedDataOccupancyCountBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOccupancyCountAdjust converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOccupancyCountAdjust() interface {
+		BACnetConstructedDataOccupancyCountAdjustBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOccupancyCountEnable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOccupancyCountEnable() interface {
+		BACnetConstructedDataOccupancyCountEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOccupancyLowerLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOccupancyLowerLimit() interface {
+		BACnetConstructedDataOccupancyLowerLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOccupancyLowerLimitEnforced converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOccupancyLowerLimitEnforced() interface {
+		BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOccupancyState converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOccupancyState() interface {
+		BACnetConstructedDataOccupancyStateBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOccupancyUpperLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOccupancyUpperLimit() interface {
+		BACnetConstructedDataOccupancyUpperLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOccupancyUpperLimitEnforced converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOccupancyUpperLimitEnforced() interface {
+		BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOperationDirection converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOperationDirection() interface {
+		BACnetConstructedDataOperationDirectionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOperationExpected converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOperationExpected() interface {
+		BACnetConstructedDataOperationExpectedBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOptional converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOptional() interface {
+		BACnetConstructedDataOptionalBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOutOfService converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOutOfService() interface {
+		BACnetConstructedDataOutOfServiceBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOutputUnits converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOutputUnits() interface {
+		BACnetConstructedDataOutputUnitsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPacketReorderTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPacketReorderTime() interface {
+		BACnetConstructedDataPacketReorderTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPassbackMode converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPassbackMode() interface {
+		BACnetConstructedDataPassbackModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPassbackTimeout converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPassbackTimeout() interface {
+		BACnetConstructedDataPassbackTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPassengerAlarm converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPassengerAlarm() interface {
+		BACnetConstructedDataPassengerAlarmBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPolarity converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPolarity() interface {
+		BACnetConstructedDataPolarityBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPortFilter converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPortFilter() interface {
+		BACnetConstructedDataPortFilterBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPositiveAccessRules converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPositiveAccessRules() interface {
+		BACnetConstructedDataPositiveAccessRulesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPower converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPower() interface {
+		BACnetConstructedDataPowerBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPowerMode converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPowerMode() interface {
+		BACnetConstructedDataPowerModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPrescale converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPrescale() interface {
+		BACnetConstructedDataPrescaleBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessDoorPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessDoorPresentValue() interface {
+		BACnetConstructedDataAccessDoorPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAlertEnrollmentPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAlertEnrollmentPresentValue() interface {
+		BACnetConstructedDataAlertEnrollmentPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogInputPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogInputPresentValue() interface {
+		BACnetConstructedDataAnalogInputPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogOutputPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogOutputPresentValue() interface {
+		BACnetConstructedDataAnalogOutputPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogValuePresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogValuePresentValue() interface {
+		BACnetConstructedDataAnalogValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBinaryInputPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBinaryInputPresentValue() interface {
+		BACnetConstructedDataBinaryInputPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBinaryOutputPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBinaryOutputPresentValue() interface {
+		BACnetConstructedDataBinaryOutputPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBinaryValuePresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBinaryValuePresentValue() interface {
+		BACnetConstructedDataBinaryValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBinaryLightingOutputPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBinaryLightingOutputPresentValue() interface {
+		BACnetConstructedDataBinaryLightingOutputPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBitStringValuePresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBitStringValuePresentValue() interface {
+		BACnetConstructedDataBitStringValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCalendarPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCalendarPresentValue() interface {
+		BACnetConstructedDataCalendarPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataChannelPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataChannelPresentValue() interface {
+		BACnetConstructedDataChannelPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCharacterStringValuePresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCharacterStringValuePresentValue() interface {
+		BACnetConstructedDataCharacterStringValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCredentialDataInputPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCredentialDataInputPresentValue() interface {
+		BACnetConstructedDataCredentialDataInputPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDateValuePresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDateValuePresentValue() interface {
+		BACnetConstructedDataDateValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDatePatternValuePresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDatePatternValuePresentValue() interface {
+		BACnetConstructedDataDatePatternValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDateTimeValuePresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDateTimeValuePresentValue() interface {
+		BACnetConstructedDataDateTimeValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDateTimePatternValuePresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDateTimePatternValuePresentValue() interface {
+		BACnetConstructedDataDateTimePatternValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIntegerValuePresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIntegerValuePresentValue() interface {
+		BACnetConstructedDataIntegerValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLargeAnalogValuePresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLargeAnalogValuePresentValue() interface {
+		BACnetConstructedDataLargeAnalogValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLightingOutputPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLightingOutputPresentValue() interface {
+		BACnetConstructedDataLightingOutputPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLifeSafetyPointPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLifeSafetyPointPresentValue() interface {
+		BACnetConstructedDataLifeSafetyPointPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLifeSafetyZonePresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLifeSafetyZonePresentValue() interface {
+		BACnetConstructedDataLifeSafetyZonePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLoadControlPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLoadControlPresentValue() interface {
+		BACnetConstructedDataLoadControlPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLoopPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLoopPresentValue() interface {
+		BACnetConstructedDataLoopPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPulseConverterPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPulseConverterPresentValue() interface {
+		BACnetConstructedDataPulseConverterPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataGroupPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataGroupPresentValue() interface {
+		BACnetConstructedDataGroupPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataGlobalGroupPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataGlobalGroupPresentValue() interface {
+		BACnetConstructedDataGlobalGroupPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOctetStringValuePresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOctetStringValuePresentValue() interface {
+		BACnetConstructedDataOctetStringValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSchedulePresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSchedulePresentValue() interface {
+		BACnetConstructedDataSchedulePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimeValuePresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimeValuePresentValue() interface {
+		BACnetConstructedDataTimeValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimePatternValuePresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimePatternValuePresentValue() interface {
+		BACnetConstructedDataTimePatternValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPresentValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPresentValue() interface {
+		BACnetConstructedDataPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPriority converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPriority() interface {
+		BACnetConstructedDataPriorityBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPriorityArray converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPriorityArray() interface {
+		BACnetConstructedDataPriorityArrayBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPriorityForWriting converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPriorityForWriting() interface {
+		BACnetConstructedDataPriorityForWritingBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataProcessIdentifier converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataProcessIdentifier() interface {
+		BACnetConstructedDataProcessIdentifierBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataProcessIdentifierFilter converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataProcessIdentifierFilter() interface {
+		BACnetConstructedDataProcessIdentifierFilterBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataProfileLocation converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataProfileLocation() interface {
+		BACnetConstructedDataProfileLocationBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataProfileName converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataProfileName() interface {
+		BACnetConstructedDataProfileNameBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataProgramChange converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataProgramChange() interface {
+		BACnetConstructedDataProgramChangeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataProgramLocation converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataProgramLocation() interface {
+		BACnetConstructedDataProgramLocationBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataProgramState converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataProgramState() interface {
+		BACnetConstructedDataProgramStateBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPropertyList converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPropertyList() interface {
+		BACnetConstructedDataPropertyListBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataProportionalConstant converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataProportionalConstant() interface {
+		BACnetConstructedDataProportionalConstantBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataProportionalConstantUnits converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataProportionalConstantUnits() interface {
+		BACnetConstructedDataProportionalConstantUnitsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataProtocolLevel converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataProtocolLevel() interface {
+		BACnetConstructedDataProtocolLevelBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataProtocolObjectTypesSupported converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataProtocolObjectTypesSupported() interface {
+		BACnetConstructedDataProtocolObjectTypesSupportedBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataProtocolRevision converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataProtocolRevision() interface {
+		BACnetConstructedDataProtocolRevisionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataProtocolServicesSupported converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataProtocolServicesSupported() interface {
+		BACnetConstructedDataProtocolServicesSupportedBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataProtocolVersion converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataProtocolVersion() interface {
+		BACnetConstructedDataProtocolVersionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPulseRate converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPulseRate() interface {
+		BACnetConstructedDataPulseRateBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataReadOnly converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataReadOnly() interface {
+		BACnetConstructedDataReadOnlyBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataReasonForDisable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataReasonForDisable() interface {
+		BACnetConstructedDataReasonForDisableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataReasonForHalt converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataReasonForHalt() interface {
+		BACnetConstructedDataReasonForHaltBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataRecipientList converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataRecipientList() interface {
+		BACnetConstructedDataRecipientListBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataFileRecordCount converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataFileRecordCount() interface {
+		BACnetConstructedDataFileRecordCountBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataRecordCount converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataRecordCount() interface {
+		BACnetConstructedDataRecordCountBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataRecordsSinceNotification converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataRecordsSinceNotification() interface {
+		BACnetConstructedDataRecordsSinceNotificationBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataReferencePort converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataReferencePort() interface {
+		BACnetConstructedDataReferencePortBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataRegisteredCarCall converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataRegisteredCarCall() interface {
+		BACnetConstructedDataRegisteredCarCallBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataReliability converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataReliability() interface {
+		BACnetConstructedDataReliabilityBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataReliabilityEvaluationInhibit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataReliabilityEvaluationInhibit() interface {
+		BACnetConstructedDataReliabilityEvaluationInhibitBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAccessDoorRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAccessDoorRelinquishDefault() interface {
+		BACnetConstructedDataAccessDoorRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogOutputRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogOutputRelinquishDefault() interface {
+		BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataAnalogValueRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataAnalogValueRelinquishDefault() interface {
+		BACnetConstructedDataAnalogValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBinaryOutputRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBinaryOutputRelinquishDefault() interface {
+		BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBinaryValueRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBinaryValueRelinquishDefault() interface {
+		BACnetConstructedDataBinaryValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBinaryLightingOutputRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBinaryLightingOutputRelinquishDefault() interface {
+		BACnetConstructedDataBinaryLightingOutputRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataBitStringValueRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataBitStringValueRelinquishDefault() interface {
+		BACnetConstructedDataBitStringValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCharacterStringValueRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCharacterStringValueRelinquishDefault() interface {
+		BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDateValueRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDateValueRelinquishDefault() interface {
+		BACnetConstructedDataDateValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDatePatternValueRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDatePatternValueRelinquishDefault() interface {
+		BACnetConstructedDataDatePatternValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDateTimeValueRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDateTimeValueRelinquishDefault() interface {
+		BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataDateTimePatternValueRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataDateTimePatternValueRelinquishDefault() interface {
+		BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLargeAnalogValueRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLargeAnalogValueRelinquishDefault() interface {
+		BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLightingOutputRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLightingOutputRelinquishDefault() interface {
+		BACnetConstructedDataLightingOutputRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimePatternValueRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimePatternValueRelinquishDefault() interface {
+		BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimeValueRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimeValueRelinquishDefault() interface {
+		BACnetConstructedDataTimeValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIntegerValueRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIntegerValueRelinquishDefault() interface {
+		BACnetConstructedDataIntegerValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataOctetStringValueRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataOctetStringValueRelinquishDefault() interface {
+		BACnetConstructedDataOctetStringValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPositiveIntegerValueRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPositiveIntegerValueRelinquishDefault() interface {
+		BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMultiStateOutputRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMultiStateOutputRelinquishDefault() interface {
+		BACnetConstructedDataMultiStateOutputRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataMultiStateValueRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataMultiStateValueRelinquishDefault() interface {
+		BACnetConstructedDataMultiStateValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataRelinquishDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataRelinquishDefault() interface {
+		BACnetConstructedDataRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataRepresents converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataRepresents() interface {
+		BACnetConstructedDataRepresentsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataRequestedShedLevel converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataRequestedShedLevel() interface {
+		BACnetConstructedDataRequestedShedLevelBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataRequestedUpdateInterval converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataRequestedUpdateInterval() interface {
+		BACnetConstructedDataRequestedUpdateIntervalBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataRequired converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataRequired() interface {
+		BACnetConstructedDataRequiredBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLargeAnalogValueResolution converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLargeAnalogValueResolution() interface {
+		BACnetConstructedDataLargeAnalogValueResolutionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataIntegerValueResolution converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataIntegerValueResolution() interface {
+		BACnetConstructedDataIntegerValueResolutionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataPositiveIntegerValueResolution converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataPositiveIntegerValueResolution() interface {
+		BACnetConstructedDataPositiveIntegerValueResolutionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimerResolution converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimerResolution() interface {
+		BACnetConstructedDataTimerResolutionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataResolution converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataResolution() interface {
+		BACnetConstructedDataResolutionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataRestartNotificationRecipients converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataRestartNotificationRecipients() interface {
+		BACnetConstructedDataRestartNotificationRecipientsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataRestoreCompletionTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataRestoreCompletionTime() interface {
+		BACnetConstructedDataRestoreCompletionTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataRestorePreparationTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataRestorePreparationTime() interface {
+		BACnetConstructedDataRestorePreparationTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataRoutingTable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataRoutingTable() interface {
+		BACnetConstructedDataRoutingTableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataScale converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataScale() interface {
+		BACnetConstructedDataScaleBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataScaleFactor converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataScaleFactor() interface {
+		BACnetConstructedDataScaleFactorBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataScheduleDefault converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataScheduleDefault() interface {
+		BACnetConstructedDataScheduleDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSecuredStatus converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSecuredStatus() interface {
+		BACnetConstructedDataSecuredStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSecurityPDUTimeout converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSecurityPDUTimeout() interface {
+		BACnetConstructedDataSecurityPDUTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSecurityTimeWindow converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSecurityTimeWindow() interface {
+		BACnetConstructedDataSecurityTimeWindowBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSegmentationSupported converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSegmentationSupported() interface {
+		BACnetConstructedDataSegmentationSupportedBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSerialNumber converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSerialNumber() interface {
+		BACnetConstructedDataSerialNumberBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSetpoint converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSetpoint() interface {
+		BACnetConstructedDataSetpointBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSetpointReference converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSetpointReference() interface {
+		BACnetConstructedDataSetpointReferenceBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSetting converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSetting() interface {
+		BACnetConstructedDataSettingBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataShedDuration converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataShedDuration() interface {
+		BACnetConstructedDataShedDurationBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataShedLevelDescriptions converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataShedLevelDescriptions() interface {
+		BACnetConstructedDataShedLevelDescriptionsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataShedLevels converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataShedLevels() interface {
+		BACnetConstructedDataShedLevelsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSilenced converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSilenced() interface {
+		BACnetConstructedDataSilencedBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSlaveAddressBinding converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSlaveAddressBinding() interface {
+		BACnetConstructedDataSlaveAddressBindingBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSlaveProxyEnable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSlaveProxyEnable() interface {
+		BACnetConstructedDataSlaveProxyEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataStartTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataStartTime() interface {
+		BACnetConstructedDataStartTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataStateChangeValues converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataStateChangeValues() interface {
+		BACnetConstructedDataStateChangeValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataStateDescription converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataStateDescription() interface {
+		BACnetConstructedDataStateDescriptionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataStateText converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataStateText() interface {
+		BACnetConstructedDataStateTextBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataStatusFlags converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataStatusFlags() interface {
+		BACnetConstructedDataStatusFlagsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataStopTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataStopTime() interface {
+		BACnetConstructedDataStopTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataStopWhenFull converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataStopWhenFull() interface {
+		BACnetConstructedDataStopWhenFullBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataStrikeCount converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataStrikeCount() interface {
+		BACnetConstructedDataStrikeCountBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataStructuredObjectList converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataStructuredObjectList() interface {
+		BACnetConstructedDataStructuredObjectListBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSubordinateAnnotations converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSubordinateAnnotations() interface {
+		BACnetConstructedDataSubordinateAnnotationsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSubordinateList converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSubordinateList() interface {
+		BACnetConstructedDataSubordinateListBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSubordinateNodeTypes converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSubordinateNodeTypes() interface {
+		BACnetConstructedDataSubordinateNodeTypesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSubordinateRelationships converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSubordinateRelationships() interface {
+		BACnetConstructedDataSubordinateRelationshipsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSubordinateTags converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSubordinateTags() interface {
+		BACnetConstructedDataSubordinateTagsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSubscribedRecipients converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSubscribedRecipients() interface {
+		BACnetConstructedDataSubscribedRecipientsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSupportedFormatClasses converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSupportedFormatClasses() interface {
+		BACnetConstructedDataSupportedFormatClassesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSupportedFormats converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSupportedFormats() interface {
+		BACnetConstructedDataSupportedFormatsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSupportedSecurityAlgorithms converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSupportedSecurityAlgorithms() interface {
+		BACnetConstructedDataSupportedSecurityAlgorithmsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataSystemStatus converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataSystemStatus() interface {
+		BACnetConstructedDataSystemStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTags converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTags() interface {
+		BACnetConstructedDataTagsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataThreatAuthority converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataThreatAuthority() interface {
+		BACnetConstructedDataThreatAuthorityBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataThreatLevel converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataThreatLevel() interface {
+		BACnetConstructedDataThreatLevelBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimeDelay converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimeDelay() interface {
+		BACnetConstructedDataTimeDelayBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimeDelayNormal converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimeDelayNormal() interface {
+		BACnetConstructedDataTimeDelayNormalBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimeOfActiveTimeReset converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimeOfActiveTimeReset() interface {
+		BACnetConstructedDataTimeOfActiveTimeResetBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimeOfDeviceRestart converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimeOfDeviceRestart() interface {
+		BACnetConstructedDataTimeOfDeviceRestartBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimeOfStateCountReset converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimeOfStateCountReset() interface {
+		BACnetConstructedDataTimeOfStateCountResetBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimeOfStrikeCountReset converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimeOfStrikeCountReset() interface {
+		BACnetConstructedDataTimeOfStrikeCountResetBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimeSynchronizationInterval converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimeSynchronizationInterval() interface {
+		BACnetConstructedDataTimeSynchronizationIntervalBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimeSynchronizationRecipients converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimeSynchronizationRecipients() interface {
+		BACnetConstructedDataTimeSynchronizationRecipientsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimerRunning converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimerRunning() interface {
+		BACnetConstructedDataTimerRunningBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTimerState converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTimerState() interface {
+		BACnetConstructedDataTimerStateBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTotalRecordCount converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTotalRecordCount() interface {
+		BACnetConstructedDataTotalRecordCountBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTraceFlag converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTraceFlag() interface {
+		BACnetConstructedDataTraceFlagBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataLightingOutputTrackingValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataLightingOutputTrackingValue() interface {
+		BACnetConstructedDataLightingOutputTrackingValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTrackingValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTrackingValue() interface {
+		BACnetConstructedDataTrackingValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTransactionNotificationClass converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTransactionNotificationClass() interface {
+		BACnetConstructedDataTransactionNotificationClassBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTransition converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTransition() interface {
+		BACnetConstructedDataTransitionBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataTrigger converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataTrigger() interface {
+		BACnetConstructedDataTriggerBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataUnits converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataUnits() interface {
+		BACnetConstructedDataUnitsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataUpdateInterval converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataUpdateInterval() interface {
+		BACnetConstructedDataUpdateIntervalBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataUpdateKeySetTimeout converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataUpdateKeySetTimeout() interface {
+		BACnetConstructedDataUpdateKeySetTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataCredentialDataInputUpdateTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataCredentialDataInputUpdateTime() interface {
+		BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataUpdateTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataUpdateTime() interface {
+		BACnetConstructedDataUpdateTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataUserExternalIdentifier converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataUserExternalIdentifier() interface {
+		BACnetConstructedDataUserExternalIdentifierBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataUserInformationReference converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataUserInformationReference() interface {
+		BACnetConstructedDataUserInformationReferenceBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataUserName converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataUserName() interface {
+		BACnetConstructedDataUserNameBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataUserType converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataUserType() interface {
+		BACnetConstructedDataUserTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataUsesRemaining converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataUsesRemaining() interface {
+		BACnetConstructedDataUsesRemainingBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataUTCOffset converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataUTCOffset() interface {
+		BACnetConstructedDataUTCOffsetBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataUTCTimeSynchronizationRecipients converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataUTCTimeSynchronizationRecipients() interface {
+		BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataValidSamples converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataValidSamples() interface {
+		BACnetConstructedDataValidSamplesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataValueBeforeChange converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataValueBeforeChange() interface {
+		BACnetConstructedDataValueBeforeChangeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataValueChangeTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataValueChangeTime() interface {
+		BACnetConstructedDataValueChangeTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataValueSet converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataValueSet() interface {
+		BACnetConstructedDataValueSetBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataValueSource converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataValueSource() interface {
+		BACnetConstructedDataValueSourceBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataValueSourceArray converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataValueSourceArray() interface {
+		BACnetConstructedDataValueSourceArrayBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataVarianceValue converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataVarianceValue() interface {
+		BACnetConstructedDataVarianceValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataVendorIdentifier converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataVendorIdentifier() interface {
+		BACnetConstructedDataVendorIdentifierBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataVendorName converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataVendorName() interface {
+		BACnetConstructedDataVendorNameBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataVerificationTime converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataVerificationTime() interface {
+		BACnetConstructedDataVerificationTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataVirtualMACAddressTable converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataVirtualMACAddressTable() interface {
+		BACnetConstructedDataVirtualMACAddressTableBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataVTClassesSupported converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataVTClassesSupported() interface {
+		BACnetConstructedDataVTClassesSupportedBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataWeeklySchedule converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataWeeklySchedule() interface {
+		BACnetConstructedDataWeeklyScheduleBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataWindowInterval converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataWindowInterval() interface {
+		BACnetConstructedDataWindowIntervalBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataWindowSamples converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataWindowSamples() interface {
+		BACnetConstructedDataWindowSamplesBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataWriteStatus converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataWriteStatus() interface {
+		BACnetConstructedDataWriteStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataZoneFrom converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataZoneFrom() interface {
+		BACnetConstructedDataZoneFromBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataZoneMembers converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataZoneMembers() interface {
+		BACnetConstructedDataZoneMembersBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataZoneTo converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataZoneTo() interface {
+		BACnetConstructedDataZoneToBuilder
+		Done() BACnetConstructedDataBuilder
+	}
+	// AsBACnetConstructedDataUnspecified converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
+	AsBACnetConstructedDataUnspecified() interface {
+		BACnetConstructedDataUnspecifiedBuilder
+		Done() BACnetConstructedDataBuilder
+	}
 	// Build builds the BACnetConstructedData or returns an error if something is wrong
-	Build() (BACnetConstructedDataContract, error)
+	PartialBuild() (BACnetConstructedDataContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetConstructedDataContract
+	PartialMustBuild() BACnetConstructedDataContract
+	// Build builds the BACnetConstructedData or returns an error if something is wrong
+	Build() (BACnetConstructedData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedData
 }
 
 // NewBACnetConstructedDataBuilder() creates a BACnetConstructedDataBuilder
@@ -140,115 +3429,10661 @@ func NewBACnetConstructedDataBuilder() BACnetConstructedDataBuilder {
 	return &_BACnetConstructedDataBuilder{_BACnetConstructedData: new(_BACnetConstructedData)}
 }
 
+type _BACnetConstructedDataChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetConstructedDataContract)
+	buildForBACnetConstructedData() (BACnetConstructedData, error)
+}
+
 type _BACnetConstructedDataBuilder struct {
 	*_BACnetConstructedData
+
+	childBuilder _BACnetConstructedDataChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBuilder) = (*_BACnetConstructedDataBuilder)(nil)
 
-func (m *_BACnetConstructedDataBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetConstructedDataBuilder {
-	return m.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+func (b *_BACnetConstructedDataBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetConstructedDataBuilder {
+	return b.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetConstructedDataBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetConstructedDataBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetConstructedDataBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetConstructedDataBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetConstructedDataBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetConstructedDataBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetConstructedDataBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetConstructedDataBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetConstructedDataBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetConstructedDataBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetConstructedDataBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetConstructedDataBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConstructedDataBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetConstructedDataBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConstructedDataBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetConstructedDataBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetConstructedDataBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetConstructedDataBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetConstructedDataBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConstructedDataBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetConstructedDataBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConstructedDataBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBuilder) Build() (BACnetConstructedDataContract, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBuilder) PartialBuild() (BACnetConstructedDataContract, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedData.deepCopy(), nil
+	return b._BACnetConstructedData.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBuilder) MustBuild() BACnetConstructedDataContract {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBuilder) PartialMustBuild() BACnetConstructedDataContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBuilder()
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAbsenteeLimit() interface {
+	BACnetConstructedDataAbsenteeLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAbsenteeLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAbsenteeLimitBuilder().(*_BACnetConstructedDataAbsenteeLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAcceptedModes() interface {
+	BACnetConstructedDataAcceptedModesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAcceptedModesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAcceptedModesBuilder().(*_BACnetConstructedDataAcceptedModesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessAlarmEvents() interface {
+	BACnetConstructedDataAccessAlarmEventsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessAlarmEventsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessAlarmEventsBuilder().(*_BACnetConstructedDataAccessAlarmEventsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessDoors() interface {
+	BACnetConstructedDataAccessDoorsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessDoorsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessDoorsBuilder().(*_BACnetConstructedDataAccessDoorsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessEvent() interface {
+	BACnetConstructedDataAccessEventBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessEventBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessEventBuilder().(*_BACnetConstructedDataAccessEventBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessEventAuthenticationFactor() interface {
+	BACnetConstructedDataAccessEventAuthenticationFactorBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessEventAuthenticationFactorBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessEventAuthenticationFactorBuilder().(*_BACnetConstructedDataAccessEventAuthenticationFactorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessEventCredential() interface {
+	BACnetConstructedDataAccessEventCredentialBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessEventCredentialBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessEventCredentialBuilder().(*_BACnetConstructedDataAccessEventCredentialBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessEventTag() interface {
+	BACnetConstructedDataAccessEventTagBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessEventTagBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessEventTagBuilder().(*_BACnetConstructedDataAccessEventTagBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessEventTime() interface {
+	BACnetConstructedDataAccessEventTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessEventTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessEventTimeBuilder().(*_BACnetConstructedDataAccessEventTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessTransactionEvents() interface {
+	BACnetConstructedDataAccessTransactionEventsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessTransactionEventsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessTransactionEventsBuilder().(*_BACnetConstructedDataAccessTransactionEventsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccompaniment() interface {
+	BACnetConstructedDataAccompanimentBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccompanimentBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccompanimentBuilder().(*_BACnetConstructedDataAccompanimentBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccompanimentTime() interface {
+	BACnetConstructedDataAccompanimentTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccompanimentTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccompanimentTimeBuilder().(*_BACnetConstructedDataAccompanimentTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAckRequired() interface {
+	BACnetConstructedDataAckRequiredBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAckRequiredBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAckRequiredBuilder().(*_BACnetConstructedDataAckRequiredBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAckedTransitions() interface {
+	BACnetConstructedDataAckedTransitionsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAckedTransitionsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAckedTransitionsBuilder().(*_BACnetConstructedDataAckedTransitionsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLoopAction() interface {
+	BACnetConstructedDataLoopActionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLoopActionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLoopActionBuilder().(*_BACnetConstructedDataLoopActionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCommandAction() interface {
+	BACnetConstructedDataCommandActionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCommandActionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCommandActionBuilder().(*_BACnetConstructedDataCommandActionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAction() interface {
+	BACnetConstructedDataActionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataActionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataActionBuilder().(*_BACnetConstructedDataActionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataActionText() interface {
+	BACnetConstructedDataActionTextBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataActionTextBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataActionTextBuilder().(*_BACnetConstructedDataActionTextBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataActivationTime() interface {
+	BACnetConstructedDataActivationTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataActivationTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataActivationTimeBuilder().(*_BACnetConstructedDataActivationTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataActiveAuthenticationPolicy() interface {
+	BACnetConstructedDataActiveAuthenticationPolicyBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataActiveAuthenticationPolicyBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataActiveAuthenticationPolicyBuilder().(*_BACnetConstructedDataActiveAuthenticationPolicyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataActiveCOVMultipleSubscriptions() interface {
+	BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder().(*_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataActiveCOVSubscriptions() interface {
+	BACnetConstructedDataActiveCOVSubscriptionsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataActiveCOVSubscriptionsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataActiveCOVSubscriptionsBuilder().(*_BACnetConstructedDataActiveCOVSubscriptionsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataActiveText() interface {
+	BACnetConstructedDataActiveTextBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataActiveTextBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataActiveTextBuilder().(*_BACnetConstructedDataActiveTextBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataActiveVTSessions() interface {
+	BACnetConstructedDataActiveVTSessionsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataActiveVTSessionsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataActiveVTSessionsBuilder().(*_BACnetConstructedDataActiveVTSessionsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataActualShedLevel() interface {
+	BACnetConstructedDataActualShedLevelBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataActualShedLevelBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataActualShedLevelBuilder().(*_BACnetConstructedDataActualShedLevelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessZoneAdjustValue() interface {
+	BACnetConstructedDataAccessZoneAdjustValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessZoneAdjustValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessZoneAdjustValueBuilder().(*_BACnetConstructedDataAccessZoneAdjustValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPulseConverterAdjustValue() interface {
+	BACnetConstructedDataPulseConverterAdjustValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPulseConverterAdjustValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPulseConverterAdjustValueBuilder().(*_BACnetConstructedDataPulseConverterAdjustValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAdjustValue() interface {
+	BACnetConstructedDataAdjustValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAdjustValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAdjustValueBuilder().(*_BACnetConstructedDataAdjustValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAlarmValue() interface {
+	BACnetConstructedDataAlarmValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAlarmValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAlarmValueBuilder().(*_BACnetConstructedDataAlarmValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessDoorAlarmValues() interface {
+	BACnetConstructedDataAccessDoorAlarmValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessDoorAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessDoorAlarmValuesBuilder().(*_BACnetConstructedDataAccessDoorAlarmValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessZoneAlarmValues() interface {
+	BACnetConstructedDataAccessZoneAlarmValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessZoneAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessZoneAlarmValuesBuilder().(*_BACnetConstructedDataAccessZoneAlarmValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBitStringValueAlarmValues() interface {
+	BACnetConstructedDataBitStringValueAlarmValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBitStringValueAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBitStringValueAlarmValuesBuilder().(*_BACnetConstructedDataBitStringValueAlarmValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCharacterStringValueAlarmValues() interface {
+	BACnetConstructedDataCharacterStringValueAlarmValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCharacterStringValueAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCharacterStringValueAlarmValuesBuilder().(*_BACnetConstructedDataCharacterStringValueAlarmValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLifeSafetyPointAlarmValues() interface {
+	BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLifeSafetyPointAlarmValuesBuilder().(*_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLifeSafetyZoneAlarmValues() interface {
+	BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder().(*_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMultiStateInputAlarmValues() interface {
+	BACnetConstructedDataMultiStateInputAlarmValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMultiStateInputAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMultiStateInputAlarmValuesBuilder().(*_BACnetConstructedDataMultiStateInputAlarmValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMultiStateValueAlarmValues() interface {
+	BACnetConstructedDataMultiStateValueAlarmValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMultiStateValueAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMultiStateValueAlarmValuesBuilder().(*_BACnetConstructedDataMultiStateValueAlarmValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimerAlarmValues() interface {
+	BACnetConstructedDataTimerAlarmValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimerAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimerAlarmValuesBuilder().(*_BACnetConstructedDataTimerAlarmValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAlarmValues() interface {
+	BACnetConstructedDataAlarmValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAlarmValuesBuilder().(*_BACnetConstructedDataAlarmValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAlignIntervals() interface {
+	BACnetConstructedDataAlignIntervalsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAlignIntervalsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAlignIntervalsBuilder().(*_BACnetConstructedDataAlignIntervalsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessCredentialAll() interface {
+	BACnetConstructedDataAccessCredentialAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessCredentialAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessCredentialAllBuilder().(*_BACnetConstructedDataAccessCredentialAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessDoorAll() interface {
+	BACnetConstructedDataAccessDoorAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessDoorAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessDoorAllBuilder().(*_BACnetConstructedDataAccessDoorAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessPointAll() interface {
+	BACnetConstructedDataAccessPointAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessPointAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessPointAllBuilder().(*_BACnetConstructedDataAccessPointAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessRightsAll() interface {
+	BACnetConstructedDataAccessRightsAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessRightsAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessRightsAllBuilder().(*_BACnetConstructedDataAccessRightsAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessUserAll() interface {
+	BACnetConstructedDataAccessUserAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessUserAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessUserAllBuilder().(*_BACnetConstructedDataAccessUserAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessZoneAll() interface {
+	BACnetConstructedDataAccessZoneAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessZoneAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessZoneAllBuilder().(*_BACnetConstructedDataAccessZoneAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccumulatorAll() interface {
+	BACnetConstructedDataAccumulatorAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccumulatorAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccumulatorAllBuilder().(*_BACnetConstructedDataAccumulatorAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAlertEnrollmentAll() interface {
+	BACnetConstructedDataAlertEnrollmentAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAlertEnrollmentAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAlertEnrollmentAllBuilder().(*_BACnetConstructedDataAlertEnrollmentAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogInputAll() interface {
+	BACnetConstructedDataAnalogInputAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogInputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogInputAllBuilder().(*_BACnetConstructedDataAnalogInputAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogOutputAll() interface {
+	BACnetConstructedDataAnalogOutputAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogOutputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogOutputAllBuilder().(*_BACnetConstructedDataAnalogOutputAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogValueAll() interface {
+	BACnetConstructedDataAnalogValueAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogValueAllBuilder().(*_BACnetConstructedDataAnalogValueAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAveragingAll() interface {
+	BACnetConstructedDataAveragingAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAveragingAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAveragingAllBuilder().(*_BACnetConstructedDataAveragingAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBinaryInputAll() interface {
+	BACnetConstructedDataBinaryInputAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBinaryInputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBinaryInputAllBuilder().(*_BACnetConstructedDataBinaryInputAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBinaryLightingOutputAll() interface {
+	BACnetConstructedDataBinaryLightingOutputAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBinaryLightingOutputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBinaryLightingOutputAllBuilder().(*_BACnetConstructedDataBinaryLightingOutputAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBinaryOutputAll() interface {
+	BACnetConstructedDataBinaryOutputAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBinaryOutputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBinaryOutputAllBuilder().(*_BACnetConstructedDataBinaryOutputAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBinaryValueAll() interface {
+	BACnetConstructedDataBinaryValueAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBinaryValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBinaryValueAllBuilder().(*_BACnetConstructedDataBinaryValueAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBitstringValueAll() interface {
+	BACnetConstructedDataBitstringValueAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBitstringValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBitstringValueAllBuilder().(*_BACnetConstructedDataBitstringValueAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCalendarAll() interface {
+	BACnetConstructedDataCalendarAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCalendarAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCalendarAllBuilder().(*_BACnetConstructedDataCalendarAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataChannelAll() interface {
+	BACnetConstructedDataChannelAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataChannelAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataChannelAllBuilder().(*_BACnetConstructedDataChannelAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCharacterstringValueAll() interface {
+	BACnetConstructedDataCharacterstringValueAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCharacterstringValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCharacterstringValueAllBuilder().(*_BACnetConstructedDataCharacterstringValueAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCommandAll() interface {
+	BACnetConstructedDataCommandAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCommandAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCommandAllBuilder().(*_BACnetConstructedDataCommandAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCredentialDataInputAll() interface {
+	BACnetConstructedDataCredentialDataInputAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCredentialDataInputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCredentialDataInputAllBuilder().(*_BACnetConstructedDataCredentialDataInputAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDatepatternValueAll() interface {
+	BACnetConstructedDataDatepatternValueAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDatepatternValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDatepatternValueAllBuilder().(*_BACnetConstructedDataDatepatternValueAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDateValueAll() interface {
+	BACnetConstructedDataDateValueAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDateValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDateValueAllBuilder().(*_BACnetConstructedDataDateValueAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDatetimepatternValueAll() interface {
+	BACnetConstructedDataDatetimepatternValueAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDatetimepatternValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDatetimepatternValueAllBuilder().(*_BACnetConstructedDataDatetimepatternValueAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDatetimeValueAll() interface {
+	BACnetConstructedDataDatetimeValueAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDatetimeValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDatetimeValueAllBuilder().(*_BACnetConstructedDataDatetimeValueAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDeviceAll() interface {
+	BACnetConstructedDataDeviceAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDeviceAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDeviceAllBuilder().(*_BACnetConstructedDataDeviceAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataElevatorGroupAll() interface {
+	BACnetConstructedDataElevatorGroupAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataElevatorGroupAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataElevatorGroupAllBuilder().(*_BACnetConstructedDataElevatorGroupAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEscalatorAll() interface {
+	BACnetConstructedDataEscalatorAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEscalatorAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEscalatorAllBuilder().(*_BACnetConstructedDataEscalatorAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEventEnrollmentAll() interface {
+	BACnetConstructedDataEventEnrollmentAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEventEnrollmentAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEventEnrollmentAllBuilder().(*_BACnetConstructedDataEventEnrollmentAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEventLogAll() interface {
+	BACnetConstructedDataEventLogAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEventLogAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEventLogAllBuilder().(*_BACnetConstructedDataEventLogAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFileAll() interface {
+	BACnetConstructedDataFileAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFileAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFileAllBuilder().(*_BACnetConstructedDataFileAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataGlobalGroupAll() interface {
+	BACnetConstructedDataGlobalGroupAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataGlobalGroupAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataGlobalGroupAllBuilder().(*_BACnetConstructedDataGlobalGroupAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataGroupAll() interface {
+	BACnetConstructedDataGroupAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataGroupAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataGroupAllBuilder().(*_BACnetConstructedDataGroupAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIntegerValueAll() interface {
+	BACnetConstructedDataIntegerValueAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIntegerValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIntegerValueAllBuilder().(*_BACnetConstructedDataIntegerValueAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLargeAnalogValueAll() interface {
+	BACnetConstructedDataLargeAnalogValueAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLargeAnalogValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLargeAnalogValueAllBuilder().(*_BACnetConstructedDataLargeAnalogValueAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLifeSafetyPointAll() interface {
+	BACnetConstructedDataLifeSafetyPointAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLifeSafetyPointAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLifeSafetyPointAllBuilder().(*_BACnetConstructedDataLifeSafetyPointAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLifeSafetyZoneAll() interface {
+	BACnetConstructedDataLifeSafetyZoneAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLifeSafetyZoneAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLifeSafetyZoneAllBuilder().(*_BACnetConstructedDataLifeSafetyZoneAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLiftAll() interface {
+	BACnetConstructedDataLiftAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLiftAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLiftAllBuilder().(*_BACnetConstructedDataLiftAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLightingOutputAll() interface {
+	BACnetConstructedDataLightingOutputAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLightingOutputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLightingOutputAllBuilder().(*_BACnetConstructedDataLightingOutputAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLoadControlAll() interface {
+	BACnetConstructedDataLoadControlAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLoadControlAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLoadControlAllBuilder().(*_BACnetConstructedDataLoadControlAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLoopAll() interface {
+	BACnetConstructedDataLoopAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLoopAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLoopAllBuilder().(*_BACnetConstructedDataLoopAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMultiStateInputAll() interface {
+	BACnetConstructedDataMultiStateInputAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMultiStateInputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMultiStateInputAllBuilder().(*_BACnetConstructedDataMultiStateInputAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMultiStateOutputAll() interface {
+	BACnetConstructedDataMultiStateOutputAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMultiStateOutputAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMultiStateOutputAllBuilder().(*_BACnetConstructedDataMultiStateOutputAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMultiStateValueAll() interface {
+	BACnetConstructedDataMultiStateValueAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMultiStateValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMultiStateValueAllBuilder().(*_BACnetConstructedDataMultiStateValueAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNetworkPortAll() interface {
+	BACnetConstructedDataNetworkPortAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNetworkPortAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNetworkPortAllBuilder().(*_BACnetConstructedDataNetworkPortAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNetworkSecurityAll() interface {
+	BACnetConstructedDataNetworkSecurityAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNetworkSecurityAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNetworkSecurityAllBuilder().(*_BACnetConstructedDataNetworkSecurityAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNotificationClassAll() interface {
+	BACnetConstructedDataNotificationClassAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNotificationClassAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNotificationClassAllBuilder().(*_BACnetConstructedDataNotificationClassAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNotificationForwarderAll() interface {
+	BACnetConstructedDataNotificationForwarderAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNotificationForwarderAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNotificationForwarderAllBuilder().(*_BACnetConstructedDataNotificationForwarderAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOctetstringValueAll() interface {
+	BACnetConstructedDataOctetstringValueAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOctetstringValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOctetstringValueAllBuilder().(*_BACnetConstructedDataOctetstringValueAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPositiveIntegerValueAll() interface {
+	BACnetConstructedDataPositiveIntegerValueAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPositiveIntegerValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPositiveIntegerValueAllBuilder().(*_BACnetConstructedDataPositiveIntegerValueAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataProgramAll() interface {
+	BACnetConstructedDataProgramAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataProgramAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataProgramAllBuilder().(*_BACnetConstructedDataProgramAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPulseConverterAll() interface {
+	BACnetConstructedDataPulseConverterAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPulseConverterAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPulseConverterAllBuilder().(*_BACnetConstructedDataPulseConverterAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataScheduleAll() interface {
+	BACnetConstructedDataScheduleAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataScheduleAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataScheduleAllBuilder().(*_BACnetConstructedDataScheduleAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataStructuredViewAll() interface {
+	BACnetConstructedDataStructuredViewAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataStructuredViewAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataStructuredViewAllBuilder().(*_BACnetConstructedDataStructuredViewAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimepatternValueAll() interface {
+	BACnetConstructedDataTimepatternValueAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimepatternValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimepatternValueAllBuilder().(*_BACnetConstructedDataTimepatternValueAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimeValueAll() interface {
+	BACnetConstructedDataTimeValueAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimeValueAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimeValueAllBuilder().(*_BACnetConstructedDataTimeValueAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimerAll() interface {
+	BACnetConstructedDataTimerAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimerAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimerAllBuilder().(*_BACnetConstructedDataTimerAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTrendLogAll() interface {
+	BACnetConstructedDataTrendLogAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTrendLogAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTrendLogAllBuilder().(*_BACnetConstructedDataTrendLogAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTrendLogMultipleAll() interface {
+	BACnetConstructedDataTrendLogMultipleAllBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTrendLogMultipleAllBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTrendLogMultipleAllBuilder().(*_BACnetConstructedDataTrendLogMultipleAllBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAllWritesSuccessful() interface {
+	BACnetConstructedDataAllWritesSuccessfulBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAllWritesSuccessfulBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAllWritesSuccessfulBuilder().(*_BACnetConstructedDataAllWritesSuccessfulBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAllowGroupDelayInhibit() interface {
+	BACnetConstructedDataAllowGroupDelayInhibitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAllowGroupDelayInhibitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAllowGroupDelayInhibitBuilder().(*_BACnetConstructedDataAllowGroupDelayInhibitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAPDULength() interface {
+	BACnetConstructedDataAPDULengthBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAPDULengthBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAPDULengthBuilder().(*_BACnetConstructedDataAPDULengthBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAPDUSegmentTimeout() interface {
+	BACnetConstructedDataAPDUSegmentTimeoutBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAPDUSegmentTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAPDUSegmentTimeoutBuilder().(*_BACnetConstructedDataAPDUSegmentTimeoutBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAPDUTimeout() interface {
+	BACnetConstructedDataAPDUTimeoutBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAPDUTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAPDUTimeoutBuilder().(*_BACnetConstructedDataAPDUTimeoutBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataApplicationSoftwareVersion() interface {
+	BACnetConstructedDataApplicationSoftwareVersionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataApplicationSoftwareVersionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataApplicationSoftwareVersionBuilder().(*_BACnetConstructedDataApplicationSoftwareVersionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataArchive() interface {
+	BACnetConstructedDataArchiveBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataArchiveBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataArchiveBuilder().(*_BACnetConstructedDataArchiveBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAssignedAccessRights() interface {
+	BACnetConstructedDataAssignedAccessRightsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAssignedAccessRightsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAssignedAccessRightsBuilder().(*_BACnetConstructedDataAssignedAccessRightsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAssignedLandingCalls() interface {
+	BACnetConstructedDataAssignedLandingCallsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAssignedLandingCallsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAssignedLandingCallsBuilder().(*_BACnetConstructedDataAssignedLandingCallsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAttemptedSamples() interface {
+	BACnetConstructedDataAttemptedSamplesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAttemptedSamplesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAttemptedSamplesBuilder().(*_BACnetConstructedDataAttemptedSamplesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAuthenticationFactors() interface {
+	BACnetConstructedDataAuthenticationFactorsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAuthenticationFactorsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAuthenticationFactorsBuilder().(*_BACnetConstructedDataAuthenticationFactorsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAuthenticationPolicyList() interface {
+	BACnetConstructedDataAuthenticationPolicyListBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAuthenticationPolicyListBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAuthenticationPolicyListBuilder().(*_BACnetConstructedDataAuthenticationPolicyListBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAuthenticationPolicyNames() interface {
+	BACnetConstructedDataAuthenticationPolicyNamesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAuthenticationPolicyNamesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAuthenticationPolicyNamesBuilder().(*_BACnetConstructedDataAuthenticationPolicyNamesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAuthenticationStatus() interface {
+	BACnetConstructedDataAuthenticationStatusBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAuthenticationStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAuthenticationStatusBuilder().(*_BACnetConstructedDataAuthenticationStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAuthorizationExemptions() interface {
+	BACnetConstructedDataAuthorizationExemptionsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAuthorizationExemptionsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAuthorizationExemptionsBuilder().(*_BACnetConstructedDataAuthorizationExemptionsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAuthorizationMode() interface {
+	BACnetConstructedDataAuthorizationModeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAuthorizationModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAuthorizationModeBuilder().(*_BACnetConstructedDataAuthorizationModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAutoSlaveDiscovery() interface {
+	BACnetConstructedDataAutoSlaveDiscoveryBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAutoSlaveDiscoveryBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAutoSlaveDiscoveryBuilder().(*_BACnetConstructedDataAutoSlaveDiscoveryBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAverageValue() interface {
+	BACnetConstructedDataAverageValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAverageValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAverageValueBuilder().(*_BACnetConstructedDataAverageValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBackupAndRestoreState() interface {
+	BACnetConstructedDataBackupAndRestoreStateBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBackupAndRestoreStateBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBackupAndRestoreStateBuilder().(*_BACnetConstructedDataBackupAndRestoreStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBackupFailureTimeout() interface {
+	BACnetConstructedDataBackupFailureTimeoutBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBackupFailureTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBackupFailureTimeoutBuilder().(*_BACnetConstructedDataBackupFailureTimeoutBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBackupPreparationTime() interface {
+	BACnetConstructedDataBackupPreparationTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBackupPreparationTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBackupPreparationTimeBuilder().(*_BACnetConstructedDataBackupPreparationTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBACnetIPGlobalAddress() interface {
+	BACnetConstructedDataBACnetIPGlobalAddressBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBACnetIPGlobalAddressBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBACnetIPGlobalAddressBuilder().(*_BACnetConstructedDataBACnetIPGlobalAddressBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBACnetIPMode() interface {
+	BACnetConstructedDataBACnetIPModeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBACnetIPModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBACnetIPModeBuilder().(*_BACnetConstructedDataBACnetIPModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBACnetIPMulticastAddress() interface {
+	BACnetConstructedDataBACnetIPMulticastAddressBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBACnetIPMulticastAddressBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBACnetIPMulticastAddressBuilder().(*_BACnetConstructedDataBACnetIPMulticastAddressBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBACnetIPNATTraversal() interface {
+	BACnetConstructedDataBACnetIPNATTraversalBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBACnetIPNATTraversalBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBACnetIPNATTraversalBuilder().(*_BACnetConstructedDataBACnetIPNATTraversalBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBACnetIPUDPPort() interface {
+	BACnetConstructedDataBACnetIPUDPPortBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBACnetIPUDPPortBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBACnetIPUDPPortBuilder().(*_BACnetConstructedDataBACnetIPUDPPortBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBACnetIPv6Mode() interface {
+	BACnetConstructedDataBACnetIPv6ModeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBACnetIPv6ModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBACnetIPv6ModeBuilder().(*_BACnetConstructedDataBACnetIPv6ModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBACnetIPv6UDPPort() interface {
+	BACnetConstructedDataBACnetIPv6UDPPortBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBACnetIPv6UDPPortBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBACnetIPv6UDPPortBuilder().(*_BACnetConstructedDataBACnetIPv6UDPPortBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBACnetIPv6MulticastAddress() interface {
+	BACnetConstructedDataBACnetIPv6MulticastAddressBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBACnetIPv6MulticastAddressBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBACnetIPv6MulticastAddressBuilder().(*_BACnetConstructedDataBACnetIPv6MulticastAddressBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBaseDeviceSecurityPolicy() interface {
+	BACnetConstructedDataBaseDeviceSecurityPolicyBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBaseDeviceSecurityPolicyBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBaseDeviceSecurityPolicyBuilder().(*_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBBMDAcceptFDRegistrations() interface {
+	BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBBMDAcceptFDRegistrationsBuilder().(*_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBBMDBroadcastDistributionTable() interface {
+	BACnetConstructedDataBBMDBroadcastDistributionTableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBBMDBroadcastDistributionTableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBBMDBroadcastDistributionTableBuilder().(*_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBBMDForeignDeviceTable() interface {
+	BACnetConstructedDataBBMDForeignDeviceTableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBBMDForeignDeviceTableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBBMDForeignDeviceTableBuilder().(*_BACnetConstructedDataBBMDForeignDeviceTableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBelongsTo() interface {
+	BACnetConstructedDataBelongsToBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBelongsToBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBelongsToBuilder().(*_BACnetConstructedDataBelongsToBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBias() interface {
+	BACnetConstructedDataBiasBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBiasBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBiasBuilder().(*_BACnetConstructedDataBiasBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBitMask() interface {
+	BACnetConstructedDataBitMaskBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBitMaskBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBitMaskBuilder().(*_BACnetConstructedDataBitMaskBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBitText() interface {
+	BACnetConstructedDataBitTextBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBitTextBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBitTextBuilder().(*_BACnetConstructedDataBitTextBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBlinkWarnEnable() interface {
+	BACnetConstructedDataBlinkWarnEnableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBlinkWarnEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBlinkWarnEnableBuilder().(*_BACnetConstructedDataBlinkWarnEnableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBufferSize() interface {
+	BACnetConstructedDataBufferSizeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBufferSizeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBufferSizeBuilder().(*_BACnetConstructedDataBufferSizeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCarAssignedDirection() interface {
+	BACnetConstructedDataCarAssignedDirectionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCarAssignedDirectionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCarAssignedDirectionBuilder().(*_BACnetConstructedDataCarAssignedDirectionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCarDoorCommand() interface {
+	BACnetConstructedDataCarDoorCommandBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCarDoorCommandBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCarDoorCommandBuilder().(*_BACnetConstructedDataCarDoorCommandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCarDoorStatus() interface {
+	BACnetConstructedDataCarDoorStatusBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCarDoorStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCarDoorStatusBuilder().(*_BACnetConstructedDataCarDoorStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCarDoorText() interface {
+	BACnetConstructedDataCarDoorTextBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCarDoorTextBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCarDoorTextBuilder().(*_BACnetConstructedDataCarDoorTextBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCarDoorZone() interface {
+	BACnetConstructedDataCarDoorZoneBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCarDoorZoneBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCarDoorZoneBuilder().(*_BACnetConstructedDataCarDoorZoneBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCarDriveStatus() interface {
+	BACnetConstructedDataCarDriveStatusBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCarDriveStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCarDriveStatusBuilder().(*_BACnetConstructedDataCarDriveStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCarLoad() interface {
+	BACnetConstructedDataCarLoadBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCarLoadBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCarLoadBuilder().(*_BACnetConstructedDataCarLoadBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCarLoadUnits() interface {
+	BACnetConstructedDataCarLoadUnitsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCarLoadUnitsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCarLoadUnitsBuilder().(*_BACnetConstructedDataCarLoadUnitsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCarMode() interface {
+	BACnetConstructedDataCarModeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCarModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCarModeBuilder().(*_BACnetConstructedDataCarModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCarMovingDirection() interface {
+	BACnetConstructedDataCarMovingDirectionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCarMovingDirectionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCarMovingDirectionBuilder().(*_BACnetConstructedDataCarMovingDirectionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCarPosition() interface {
+	BACnetConstructedDataCarPositionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCarPositionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCarPositionBuilder().(*_BACnetConstructedDataCarPositionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataChangeOfStateCount() interface {
+	BACnetConstructedDataChangeOfStateCountBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataChangeOfStateCountBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataChangeOfStateCountBuilder().(*_BACnetConstructedDataChangeOfStateCountBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataChangeOfStateTime() interface {
+	BACnetConstructedDataChangeOfStateTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataChangeOfStateTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataChangeOfStateTimeBuilder().(*_BACnetConstructedDataChangeOfStateTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataChangesPending() interface {
+	BACnetConstructedDataChangesPendingBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataChangesPendingBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataChangesPendingBuilder().(*_BACnetConstructedDataChangesPendingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataChannelNumber() interface {
+	BACnetConstructedDataChannelNumberBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataChannelNumberBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataChannelNumberBuilder().(*_BACnetConstructedDataChannelNumberBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataClientCOVIncrement() interface {
+	BACnetConstructedDataClientCOVIncrementBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataClientCOVIncrementBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataClientCOVIncrementBuilder().(*_BACnetConstructedDataClientCOVIncrementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCommand() interface {
+	BACnetConstructedDataCommandBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCommandBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCommandBuilder().(*_BACnetConstructedDataCommandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCommandTimeArray() interface {
+	BACnetConstructedDataCommandTimeArrayBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCommandTimeArrayBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCommandTimeArrayBuilder().(*_BACnetConstructedDataCommandTimeArrayBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataConfigurationFiles() interface {
+	BACnetConstructedDataConfigurationFilesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataConfigurationFilesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataConfigurationFilesBuilder().(*_BACnetConstructedDataConfigurationFilesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataControlGroups() interface {
+	BACnetConstructedDataControlGroupsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataControlGroupsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataControlGroupsBuilder().(*_BACnetConstructedDataControlGroupsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataControlledVariableReference() interface {
+	BACnetConstructedDataControlledVariableReferenceBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataControlledVariableReferenceBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataControlledVariableReferenceBuilder().(*_BACnetConstructedDataControlledVariableReferenceBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataControlledVariableUnits() interface {
+	BACnetConstructedDataControlledVariableUnitsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataControlledVariableUnitsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataControlledVariableUnitsBuilder().(*_BACnetConstructedDataControlledVariableUnitsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataControlledVariableValue() interface {
+	BACnetConstructedDataControlledVariableValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataControlledVariableValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataControlledVariableValueBuilder().(*_BACnetConstructedDataControlledVariableValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCount() interface {
+	BACnetConstructedDataCountBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCountBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCountBuilder().(*_BACnetConstructedDataCountBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCountBeforeChange() interface {
+	BACnetConstructedDataCountBeforeChangeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCountBeforeChangeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCountBeforeChangeBuilder().(*_BACnetConstructedDataCountBeforeChangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCountChangeTime() interface {
+	BACnetConstructedDataCountChangeTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCountChangeTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCountChangeTimeBuilder().(*_BACnetConstructedDataCountChangeTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIntegerValueCOVIncrement() interface {
+	BACnetConstructedDataIntegerValueCOVIncrementBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIntegerValueCOVIncrementBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIntegerValueCOVIncrementBuilder().(*_BACnetConstructedDataIntegerValueCOVIncrementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLargeAnalogValueCOVIncrement() interface {
+	BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLargeAnalogValueCOVIncrementBuilder().(*_BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPositiveIntegerValueCOVIncrement() interface {
+	BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder().(*_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCOVIncrement() interface {
+	BACnetConstructedDataCOVIncrementBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCOVIncrementBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCOVIncrementBuilder().(*_BACnetConstructedDataCOVIncrementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCOVPeriod() interface {
+	BACnetConstructedDataCOVPeriodBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCOVPeriodBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCOVPeriodBuilder().(*_BACnetConstructedDataCOVPeriodBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCOVResubscriptionInterval() interface {
+	BACnetConstructedDataCOVResubscriptionIntervalBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCOVResubscriptionIntervalBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCOVResubscriptionIntervalBuilder().(*_BACnetConstructedDataCOVResubscriptionIntervalBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCOVUPeriod() interface {
+	BACnetConstructedDataCOVUPeriodBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCOVUPeriodBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCOVUPeriodBuilder().(*_BACnetConstructedDataCOVUPeriodBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCOVURecipients() interface {
+	BACnetConstructedDataCOVURecipientsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCOVURecipientsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCOVURecipientsBuilder().(*_BACnetConstructedDataCOVURecipientsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCredentialDisable() interface {
+	BACnetConstructedDataCredentialDisableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCredentialDisableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCredentialDisableBuilder().(*_BACnetConstructedDataCredentialDisableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCredentialStatus() interface {
+	BACnetConstructedDataCredentialStatusBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCredentialStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCredentialStatusBuilder().(*_BACnetConstructedDataCredentialStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCredentials() interface {
+	BACnetConstructedDataCredentialsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCredentialsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCredentialsBuilder().(*_BACnetConstructedDataCredentialsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCredentialsInZone() interface {
+	BACnetConstructedDataCredentialsInZoneBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCredentialsInZoneBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCredentialsInZoneBuilder().(*_BACnetConstructedDataCredentialsInZoneBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCurrentCommandPriority() interface {
+	BACnetConstructedDataCurrentCommandPriorityBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCurrentCommandPriorityBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCurrentCommandPriorityBuilder().(*_BACnetConstructedDataCurrentCommandPriorityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDatabaseRevision() interface {
+	BACnetConstructedDataDatabaseRevisionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDatabaseRevisionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDatabaseRevisionBuilder().(*_BACnetConstructedDataDatabaseRevisionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDateList() interface {
+	BACnetConstructedDataDateListBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDateListBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDateListBuilder().(*_BACnetConstructedDataDateListBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDaylightSavingsStatus() interface {
+	BACnetConstructedDataDaylightSavingsStatusBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDaylightSavingsStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDaylightSavingsStatusBuilder().(*_BACnetConstructedDataDaylightSavingsStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDaysRemaining() interface {
+	BACnetConstructedDataDaysRemainingBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDaysRemainingBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDaysRemainingBuilder().(*_BACnetConstructedDataDaysRemainingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIntegerValueDeadband() interface {
+	BACnetConstructedDataIntegerValueDeadbandBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIntegerValueDeadbandBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIntegerValueDeadbandBuilder().(*_BACnetConstructedDataIntegerValueDeadbandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLargeAnalogValueDeadband() interface {
+	BACnetConstructedDataLargeAnalogValueDeadbandBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLargeAnalogValueDeadbandBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLargeAnalogValueDeadbandBuilder().(*_BACnetConstructedDataLargeAnalogValueDeadbandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPositiveIntegerValueDeadband() interface {
+	BACnetConstructedDataPositiveIntegerValueDeadbandBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPositiveIntegerValueDeadbandBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPositiveIntegerValueDeadbandBuilder().(*_BACnetConstructedDataPositiveIntegerValueDeadbandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDeadband() interface {
+	BACnetConstructedDataDeadbandBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDeadbandBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDeadbandBuilder().(*_BACnetConstructedDataDeadbandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDefaultFadeTime() interface {
+	BACnetConstructedDataDefaultFadeTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDefaultFadeTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDefaultFadeTimeBuilder().(*_BACnetConstructedDataDefaultFadeTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDefaultRampRate() interface {
+	BACnetConstructedDataDefaultRampRateBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDefaultRampRateBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDefaultRampRateBuilder().(*_BACnetConstructedDataDefaultRampRateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDefaultStepIncrement() interface {
+	BACnetConstructedDataDefaultStepIncrementBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDefaultStepIncrementBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDefaultStepIncrementBuilder().(*_BACnetConstructedDataDefaultStepIncrementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDefaultSubordinateRelationship() interface {
+	BACnetConstructedDataDefaultSubordinateRelationshipBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDefaultSubordinateRelationshipBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDefaultSubordinateRelationshipBuilder().(*_BACnetConstructedDataDefaultSubordinateRelationshipBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDefaultTimeout() interface {
+	BACnetConstructedDataDefaultTimeoutBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDefaultTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDefaultTimeoutBuilder().(*_BACnetConstructedDataDefaultTimeoutBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDeployedProfileLocation() interface {
+	BACnetConstructedDataDeployedProfileLocationBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDeployedProfileLocationBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDeployedProfileLocationBuilder().(*_BACnetConstructedDataDeployedProfileLocationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDerivativeConstant() interface {
+	BACnetConstructedDataDerivativeConstantBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDerivativeConstantBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDerivativeConstantBuilder().(*_BACnetConstructedDataDerivativeConstantBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDerivativeConstantUnits() interface {
+	BACnetConstructedDataDerivativeConstantUnitsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDerivativeConstantUnitsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDerivativeConstantUnitsBuilder().(*_BACnetConstructedDataDerivativeConstantUnitsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDescription() interface {
+	BACnetConstructedDataDescriptionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDescriptionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDescriptionBuilder().(*_BACnetConstructedDataDescriptionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDescriptionOfHalt() interface {
+	BACnetConstructedDataDescriptionOfHaltBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDescriptionOfHaltBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDescriptionOfHaltBuilder().(*_BACnetConstructedDataDescriptionOfHaltBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDeviceAddressBinding() interface {
+	BACnetConstructedDataDeviceAddressBindingBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDeviceAddressBindingBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDeviceAddressBindingBuilder().(*_BACnetConstructedDataDeviceAddressBindingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDeviceType() interface {
+	BACnetConstructedDataDeviceTypeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDeviceTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDeviceTypeBuilder().(*_BACnetConstructedDataDeviceTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDirectReading() interface {
+	BACnetConstructedDataDirectReadingBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDirectReadingBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDirectReadingBuilder().(*_BACnetConstructedDataDirectReadingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDistributionKeyRevision() interface {
+	BACnetConstructedDataDistributionKeyRevisionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDistributionKeyRevisionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDistributionKeyRevisionBuilder().(*_BACnetConstructedDataDistributionKeyRevisionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDoNotHide() interface {
+	BACnetConstructedDataDoNotHideBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDoNotHideBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDoNotHideBuilder().(*_BACnetConstructedDataDoNotHideBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDoorAlarmState() interface {
+	BACnetConstructedDataDoorAlarmStateBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDoorAlarmStateBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDoorAlarmStateBuilder().(*_BACnetConstructedDataDoorAlarmStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDoorExtendedPulseTime() interface {
+	BACnetConstructedDataDoorExtendedPulseTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDoorExtendedPulseTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDoorExtendedPulseTimeBuilder().(*_BACnetConstructedDataDoorExtendedPulseTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDoorMembers() interface {
+	BACnetConstructedDataDoorMembersBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDoorMembersBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDoorMembersBuilder().(*_BACnetConstructedDataDoorMembersBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDoorOpenTooLongTime() interface {
+	BACnetConstructedDataDoorOpenTooLongTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDoorOpenTooLongTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDoorOpenTooLongTimeBuilder().(*_BACnetConstructedDataDoorOpenTooLongTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDoorPulseTime() interface {
+	BACnetConstructedDataDoorPulseTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDoorPulseTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDoorPulseTimeBuilder().(*_BACnetConstructedDataDoorPulseTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDoorStatus() interface {
+	BACnetConstructedDataDoorStatusBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDoorStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDoorStatusBuilder().(*_BACnetConstructedDataDoorStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDoorUnlockDelayTime() interface {
+	BACnetConstructedDataDoorUnlockDelayTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDoorUnlockDelayTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDoorUnlockDelayTimeBuilder().(*_BACnetConstructedDataDoorUnlockDelayTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDutyWindow() interface {
+	BACnetConstructedDataDutyWindowBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDutyWindowBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDutyWindowBuilder().(*_BACnetConstructedDataDutyWindowBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEffectivePeriod() interface {
+	BACnetConstructedDataEffectivePeriodBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEffectivePeriodBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEffectivePeriodBuilder().(*_BACnetConstructedDataEffectivePeriodBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEgressActive() interface {
+	BACnetConstructedDataEgressActiveBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEgressActiveBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEgressActiveBuilder().(*_BACnetConstructedDataEgressActiveBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEgressTime() interface {
+	BACnetConstructedDataEgressTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEgressTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEgressTimeBuilder().(*_BACnetConstructedDataEgressTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataElapsedActiveTime() interface {
+	BACnetConstructedDataElapsedActiveTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataElapsedActiveTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataElapsedActiveTimeBuilder().(*_BACnetConstructedDataElapsedActiveTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataElevatorGroup() interface {
+	BACnetConstructedDataElevatorGroupBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataElevatorGroupBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataElevatorGroupBuilder().(*_BACnetConstructedDataElevatorGroupBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEnable() interface {
+	BACnetConstructedDataEnableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEnableBuilder().(*_BACnetConstructedDataEnableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEnergyMeter() interface {
+	BACnetConstructedDataEnergyMeterBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEnergyMeterBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEnergyMeterBuilder().(*_BACnetConstructedDataEnergyMeterBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEnergyMeterRef() interface {
+	BACnetConstructedDataEnergyMeterRefBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEnergyMeterRefBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEnergyMeterRefBuilder().(*_BACnetConstructedDataEnergyMeterRefBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEntryPoints() interface {
+	BACnetConstructedDataEntryPointsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEntryPointsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEntryPointsBuilder().(*_BACnetConstructedDataEntryPointsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataErrorLimit() interface {
+	BACnetConstructedDataErrorLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataErrorLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataErrorLimitBuilder().(*_BACnetConstructedDataErrorLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEscalatorMode() interface {
+	BACnetConstructedDataEscalatorModeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEscalatorModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEscalatorModeBuilder().(*_BACnetConstructedDataEscalatorModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEventAlgorithmInhibit() interface {
+	BACnetConstructedDataEventAlgorithmInhibitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEventAlgorithmInhibitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEventAlgorithmInhibitBuilder().(*_BACnetConstructedDataEventAlgorithmInhibitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEventAlgorithmInhibitRef() interface {
+	BACnetConstructedDataEventAlgorithmInhibitRefBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEventAlgorithmInhibitRefBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEventAlgorithmInhibitRefBuilder().(*_BACnetConstructedDataEventAlgorithmInhibitRefBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEventDetectionEnable() interface {
+	BACnetConstructedDataEventDetectionEnableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEventDetectionEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEventDetectionEnableBuilder().(*_BACnetConstructedDataEventDetectionEnableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEventEnable() interface {
+	BACnetConstructedDataEventEnableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEventEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEventEnableBuilder().(*_BACnetConstructedDataEventEnableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEventMessageTexts() interface {
+	BACnetConstructedDataEventMessageTextsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEventMessageTextsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEventMessageTextsBuilder().(*_BACnetConstructedDataEventMessageTextsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEventMessageTextsConfig() interface {
+	BACnetConstructedDataEventMessageTextsConfigBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEventMessageTextsConfigBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEventMessageTextsConfigBuilder().(*_BACnetConstructedDataEventMessageTextsConfigBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEventParameters() interface {
+	BACnetConstructedDataEventParametersBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEventParametersBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEventParametersBuilder().(*_BACnetConstructedDataEventParametersBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEventState() interface {
+	BACnetConstructedDataEventStateBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEventStateBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEventStateBuilder().(*_BACnetConstructedDataEventStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEventTimeStamps() interface {
+	BACnetConstructedDataEventTimeStampsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEventTimeStampsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEventTimeStampsBuilder().(*_BACnetConstructedDataEventTimeStampsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEventType() interface {
+	BACnetConstructedDataEventTypeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEventTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEventTypeBuilder().(*_BACnetConstructedDataEventTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataExceptionSchedule() interface {
+	BACnetConstructedDataExceptionScheduleBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataExceptionScheduleBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataExceptionScheduleBuilder().(*_BACnetConstructedDataExceptionScheduleBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataExecutionDelay() interface {
+	BACnetConstructedDataExecutionDelayBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataExecutionDelayBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataExecutionDelayBuilder().(*_BACnetConstructedDataExecutionDelayBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataExitPoints() interface {
+	BACnetConstructedDataExitPointsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataExitPointsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataExitPointsBuilder().(*_BACnetConstructedDataExitPointsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataExpectedShedLevel() interface {
+	BACnetConstructedDataExpectedShedLevelBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataExpectedShedLevelBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataExpectedShedLevelBuilder().(*_BACnetConstructedDataExpectedShedLevelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataExpirationTime() interface {
+	BACnetConstructedDataExpirationTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataExpirationTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataExpirationTimeBuilder().(*_BACnetConstructedDataExpirationTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataExtendedTimeEnable() interface {
+	BACnetConstructedDataExtendedTimeEnableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataExtendedTimeEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataExtendedTimeEnableBuilder().(*_BACnetConstructedDataExtendedTimeEnableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFailedAttemptEvents() interface {
+	BACnetConstructedDataFailedAttemptEventsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFailedAttemptEventsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFailedAttemptEventsBuilder().(*_BACnetConstructedDataFailedAttemptEventsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFailedAttempts() interface {
+	BACnetConstructedDataFailedAttemptsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFailedAttemptsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFailedAttemptsBuilder().(*_BACnetConstructedDataFailedAttemptsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFailedAttemptsTime() interface {
+	BACnetConstructedDataFailedAttemptsTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFailedAttemptsTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFailedAttemptsTimeBuilder().(*_BACnetConstructedDataFailedAttemptsTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccumulatorFaultHighLimit() interface {
+	BACnetConstructedDataAccumulatorFaultHighLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccumulatorFaultHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccumulatorFaultHighLimitBuilder().(*_BACnetConstructedDataAccumulatorFaultHighLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogInputFaultHighLimit() interface {
+	BACnetConstructedDataAnalogInputFaultHighLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogInputFaultHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogInputFaultHighLimitBuilder().(*_BACnetConstructedDataAnalogInputFaultHighLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogValueFaultHighLimit() interface {
+	BACnetConstructedDataAnalogValueFaultHighLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogValueFaultHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogValueFaultHighLimitBuilder().(*_BACnetConstructedDataAnalogValueFaultHighLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIntegerValueFaultHighLimit() interface {
+	BACnetConstructedDataIntegerValueFaultHighLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIntegerValueFaultHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIntegerValueFaultHighLimitBuilder().(*_BACnetConstructedDataIntegerValueFaultHighLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLargeAnalogValueFaultHighLimit() interface {
+	BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder().(*_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPositiveIntegerValueFaultHighLimit() interface {
+	BACnetConstructedDataPositiveIntegerValueFaultHighLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPositiveIntegerValueFaultHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPositiveIntegerValueFaultHighLimitBuilder().(*_BACnetConstructedDataPositiveIntegerValueFaultHighLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFaultHighLimit() interface {
+	BACnetConstructedDataFaultHighLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFaultHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFaultHighLimitBuilder().(*_BACnetConstructedDataFaultHighLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccumulatorFaultLowLimit() interface {
+	BACnetConstructedDataAccumulatorFaultLowLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccumulatorFaultLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccumulatorFaultLowLimitBuilder().(*_BACnetConstructedDataAccumulatorFaultLowLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogInputFaultLowLimit() interface {
+	BACnetConstructedDataAnalogInputFaultLowLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogInputFaultLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogInputFaultLowLimitBuilder().(*_BACnetConstructedDataAnalogInputFaultLowLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogValueFaultLowLimit() interface {
+	BACnetConstructedDataAnalogValueFaultLowLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogValueFaultLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogValueFaultLowLimitBuilder().(*_BACnetConstructedDataAnalogValueFaultLowLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLargeAnalogValueFaultLowLimit() interface {
+	BACnetConstructedDataLargeAnalogValueFaultLowLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLargeAnalogValueFaultLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLargeAnalogValueFaultLowLimitBuilder().(*_BACnetConstructedDataLargeAnalogValueFaultLowLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIntegerValueFaultLowLimit() interface {
+	BACnetConstructedDataIntegerValueFaultLowLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIntegerValueFaultLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIntegerValueFaultLowLimitBuilder().(*_BACnetConstructedDataIntegerValueFaultLowLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPositiveIntegerValueFaultLowLimit() interface {
+	BACnetConstructedDataPositiveIntegerValueFaultLowLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPositiveIntegerValueFaultLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPositiveIntegerValueFaultLowLimitBuilder().(*_BACnetConstructedDataPositiveIntegerValueFaultLowLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFaultLowLimit() interface {
+	BACnetConstructedDataFaultLowLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFaultLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFaultLowLimitBuilder().(*_BACnetConstructedDataFaultLowLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFaultParameters() interface {
+	BACnetConstructedDataFaultParametersBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFaultParametersBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFaultParametersBuilder().(*_BACnetConstructedDataFaultParametersBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEscalatorFaultSignals() interface {
+	BACnetConstructedDataEscalatorFaultSignalsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEscalatorFaultSignalsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEscalatorFaultSignalsBuilder().(*_BACnetConstructedDataEscalatorFaultSignalsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLiftFaultSignals() interface {
+	BACnetConstructedDataLiftFaultSignalsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLiftFaultSignalsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLiftFaultSignalsBuilder().(*_BACnetConstructedDataLiftFaultSignalsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFaultSignals() interface {
+	BACnetConstructedDataFaultSignalsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFaultSignalsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFaultSignalsBuilder().(*_BACnetConstructedDataFaultSignalsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFaultType() interface {
+	BACnetConstructedDataFaultTypeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFaultTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFaultTypeBuilder().(*_BACnetConstructedDataFaultTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessDoorFaultValues() interface {
+	BACnetConstructedDataAccessDoorFaultValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessDoorFaultValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessDoorFaultValuesBuilder().(*_BACnetConstructedDataAccessDoorFaultValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCharacterStringValueFaultValues() interface {
+	BACnetConstructedDataCharacterStringValueFaultValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCharacterStringValueFaultValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCharacterStringValueFaultValuesBuilder().(*_BACnetConstructedDataCharacterStringValueFaultValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLifeSafetyPointFaultValues() interface {
+	BACnetConstructedDataLifeSafetyPointFaultValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLifeSafetyPointFaultValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLifeSafetyPointFaultValuesBuilder().(*_BACnetConstructedDataLifeSafetyPointFaultValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLifeSafetyZoneFaultValues() interface {
+	BACnetConstructedDataLifeSafetyZoneFaultValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLifeSafetyZoneFaultValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLifeSafetyZoneFaultValuesBuilder().(*_BACnetConstructedDataLifeSafetyZoneFaultValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMultiStateInputFaultValues() interface {
+	BACnetConstructedDataMultiStateInputFaultValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMultiStateInputFaultValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMultiStateInputFaultValuesBuilder().(*_BACnetConstructedDataMultiStateInputFaultValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMultiStateValueFaultValues() interface {
+	BACnetConstructedDataMultiStateValueFaultValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMultiStateValueFaultValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMultiStateValueFaultValuesBuilder().(*_BACnetConstructedDataMultiStateValueFaultValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFaultValues() interface {
+	BACnetConstructedDataFaultValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFaultValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFaultValuesBuilder().(*_BACnetConstructedDataFaultValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFDBBMDAddress() interface {
+	BACnetConstructedDataFDBBMDAddressBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFDBBMDAddressBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFDBBMDAddressBuilder().(*_BACnetConstructedDataFDBBMDAddressBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFDSubscriptionLifetime() interface {
+	BACnetConstructedDataFDSubscriptionLifetimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFDSubscriptionLifetimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFDSubscriptionLifetimeBuilder().(*_BACnetConstructedDataFDSubscriptionLifetimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBinaryLightingOutputFeedbackValue() interface {
+	BACnetConstructedDataBinaryLightingOutputFeedbackValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBinaryLightingOutputFeedbackValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBinaryLightingOutputFeedbackValueBuilder().(*_BACnetConstructedDataBinaryLightingOutputFeedbackValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBinaryOutputFeedbackValue() interface {
+	BACnetConstructedDataBinaryOutputFeedbackValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBinaryOutputFeedbackValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBinaryOutputFeedbackValueBuilder().(*_BACnetConstructedDataBinaryOutputFeedbackValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLightingOutputFeedbackValue() interface {
+	BACnetConstructedDataLightingOutputFeedbackValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLightingOutputFeedbackValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLightingOutputFeedbackValueBuilder().(*_BACnetConstructedDataLightingOutputFeedbackValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMultiStateOutputFeedbackValue() interface {
+	BACnetConstructedDataMultiStateOutputFeedbackValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMultiStateOutputFeedbackValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMultiStateOutputFeedbackValueBuilder().(*_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFileAccessMethod() interface {
+	BACnetConstructedDataFileAccessMethodBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFileAccessMethodBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFileAccessMethodBuilder().(*_BACnetConstructedDataFileAccessMethodBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFileSize() interface {
+	BACnetConstructedDataFileSizeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFileSizeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFileSizeBuilder().(*_BACnetConstructedDataFileSizeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFileType() interface {
+	BACnetConstructedDataFileTypeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFileTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFileTypeBuilder().(*_BACnetConstructedDataFileTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFirmwareRevision() interface {
+	BACnetConstructedDataFirmwareRevisionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFirmwareRevisionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFirmwareRevisionBuilder().(*_BACnetConstructedDataFirmwareRevisionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFloorText() interface {
+	BACnetConstructedDataFloorTextBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFloorTextBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFloorTextBuilder().(*_BACnetConstructedDataFloorTextBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFullDutyBaseline() interface {
+	BACnetConstructedDataFullDutyBaselineBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFullDutyBaselineBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFullDutyBaselineBuilder().(*_BACnetConstructedDataFullDutyBaselineBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataGlobalIdentifier() interface {
+	BACnetConstructedDataGlobalIdentifierBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataGlobalIdentifierBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataGlobalIdentifierBuilder().(*_BACnetConstructedDataGlobalIdentifierBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataGroupID() interface {
+	BACnetConstructedDataGroupIDBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataGroupIDBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataGroupIDBuilder().(*_BACnetConstructedDataGroupIDBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataGroupMemberNames() interface {
+	BACnetConstructedDataGroupMemberNamesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataGroupMemberNamesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataGroupMemberNamesBuilder().(*_BACnetConstructedDataGroupMemberNamesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataGlobalGroupGroupMembers() interface {
+	BACnetConstructedDataGlobalGroupGroupMembersBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataGlobalGroupGroupMembersBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataGlobalGroupGroupMembersBuilder().(*_BACnetConstructedDataGlobalGroupGroupMembersBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataElevatorGroupGroupMembers() interface {
+	BACnetConstructedDataElevatorGroupGroupMembersBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataElevatorGroupGroupMembersBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataElevatorGroupGroupMembersBuilder().(*_BACnetConstructedDataElevatorGroupGroupMembersBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataGroupMembers() interface {
+	BACnetConstructedDataGroupMembersBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataGroupMembersBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataGroupMembersBuilder().(*_BACnetConstructedDataGroupMembersBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataGroupMode() interface {
+	BACnetConstructedDataGroupModeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataGroupModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataGroupModeBuilder().(*_BACnetConstructedDataGroupModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccumulatorHighLimit() interface {
+	BACnetConstructedDataAccumulatorHighLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccumulatorHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccumulatorHighLimitBuilder().(*_BACnetConstructedDataAccumulatorHighLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLargeAnalogValueHighLimit() interface {
+	BACnetConstructedDataLargeAnalogValueHighLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLargeAnalogValueHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLargeAnalogValueHighLimitBuilder().(*_BACnetConstructedDataLargeAnalogValueHighLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIntegerValueHighLimit() interface {
+	BACnetConstructedDataIntegerValueHighLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIntegerValueHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIntegerValueHighLimitBuilder().(*_BACnetConstructedDataIntegerValueHighLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPositiveIntegerValueHighLimit() interface {
+	BACnetConstructedDataPositiveIntegerValueHighLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPositiveIntegerValueHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPositiveIntegerValueHighLimitBuilder().(*_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataHighLimit() interface {
+	BACnetConstructedDataHighLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataHighLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataHighLimitBuilder().(*_BACnetConstructedDataHighLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataHigherDeck() interface {
+	BACnetConstructedDataHigherDeckBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataHigherDeckBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataHigherDeckBuilder().(*_BACnetConstructedDataHigherDeckBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataInProcess() interface {
+	BACnetConstructedDataInProcessBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataInProcessBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataInProcessBuilder().(*_BACnetConstructedDataInProcessBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataInProgress() interface {
+	BACnetConstructedDataInProgressBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataInProgressBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataInProgressBuilder().(*_BACnetConstructedDataInProgressBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataInactiveText() interface {
+	BACnetConstructedDataInactiveTextBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataInactiveTextBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataInactiveTextBuilder().(*_BACnetConstructedDataInactiveTextBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataInitialTimeout() interface {
+	BACnetConstructedDataInitialTimeoutBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataInitialTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataInitialTimeoutBuilder().(*_BACnetConstructedDataInitialTimeoutBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataInputReference() interface {
+	BACnetConstructedDataInputReferenceBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataInputReferenceBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataInputReferenceBuilder().(*_BACnetConstructedDataInputReferenceBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataInstallationID() interface {
+	BACnetConstructedDataInstallationIDBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataInstallationIDBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataInstallationIDBuilder().(*_BACnetConstructedDataInstallationIDBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataInstanceOf() interface {
+	BACnetConstructedDataInstanceOfBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataInstanceOfBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataInstanceOfBuilder().(*_BACnetConstructedDataInstanceOfBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataInstantaneousPower() interface {
+	BACnetConstructedDataInstantaneousPowerBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataInstantaneousPowerBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataInstantaneousPowerBuilder().(*_BACnetConstructedDataInstantaneousPowerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIntegralConstant() interface {
+	BACnetConstructedDataIntegralConstantBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIntegralConstantBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIntegralConstantBuilder().(*_BACnetConstructedDataIntegralConstantBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIntegralConstantUnits() interface {
+	BACnetConstructedDataIntegralConstantUnitsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIntegralConstantUnitsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIntegralConstantUnitsBuilder().(*_BACnetConstructedDataIntegralConstantUnitsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogInputInterfaceValue() interface {
+	BACnetConstructedDataAnalogInputInterfaceValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogInputInterfaceValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogInputInterfaceValueBuilder().(*_BACnetConstructedDataAnalogInputInterfaceValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogOutputInterfaceValue() interface {
+	BACnetConstructedDataAnalogOutputInterfaceValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogOutputInterfaceValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogOutputInterfaceValueBuilder().(*_BACnetConstructedDataAnalogOutputInterfaceValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBinaryInputInterfaceValue() interface {
+	BACnetConstructedDataBinaryInputInterfaceValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBinaryInputInterfaceValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBinaryInputInterfaceValueBuilder().(*_BACnetConstructedDataBinaryInputInterfaceValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBinaryOutputInterfaceValue() interface {
+	BACnetConstructedDataBinaryOutputInterfaceValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBinaryOutputInterfaceValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBinaryOutputInterfaceValueBuilder().(*_BACnetConstructedDataBinaryOutputInterfaceValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMultiStateInputInterfaceValue() interface {
+	BACnetConstructedDataMultiStateInputInterfaceValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMultiStateInputInterfaceValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMultiStateInputInterfaceValueBuilder().(*_BACnetConstructedDataMultiStateInputInterfaceValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMultiStateOutputInterfaceValue() interface {
+	BACnetConstructedDataMultiStateOutputInterfaceValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMultiStateOutputInterfaceValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMultiStateOutputInterfaceValueBuilder().(*_BACnetConstructedDataMultiStateOutputInterfaceValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIntervalOffset() interface {
+	BACnetConstructedDataIntervalOffsetBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIntervalOffsetBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIntervalOffsetBuilder().(*_BACnetConstructedDataIntervalOffsetBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPAddress() interface {
+	BACnetConstructedDataIPAddressBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPAddressBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPAddressBuilder().(*_BACnetConstructedDataIPAddressBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPDefaultGateway() interface {
+	BACnetConstructedDataIPDefaultGatewayBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPDefaultGatewayBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPDefaultGatewayBuilder().(*_BACnetConstructedDataIPDefaultGatewayBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPDHCPEnable() interface {
+	BACnetConstructedDataIPDHCPEnableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPDHCPEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPDHCPEnableBuilder().(*_BACnetConstructedDataIPDHCPEnableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPDHCPLeaseTime() interface {
+	BACnetConstructedDataIPDHCPLeaseTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPDHCPLeaseTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPDHCPLeaseTimeBuilder().(*_BACnetConstructedDataIPDHCPLeaseTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPDHCPLeaseTimeRemaining() interface {
+	BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder().(*_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPDHCPServer() interface {
+	BACnetConstructedDataIPDHCPServerBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPDHCPServerBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPDHCPServerBuilder().(*_BACnetConstructedDataIPDHCPServerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPDNSServer() interface {
+	BACnetConstructedDataIPDNSServerBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPDNSServerBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPDNSServerBuilder().(*_BACnetConstructedDataIPDNSServerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPSubnetMask() interface {
+	BACnetConstructedDataIPSubnetMaskBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPSubnetMaskBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPSubnetMaskBuilder().(*_BACnetConstructedDataIPSubnetMaskBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPv6Address() interface {
+	BACnetConstructedDataIPv6AddressBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPv6AddressBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPv6AddressBuilder().(*_BACnetConstructedDataIPv6AddressBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPv6AutoAddressingEnable() interface {
+	BACnetConstructedDataIPv6AutoAddressingEnableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPv6AutoAddressingEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPv6AutoAddressingEnableBuilder().(*_BACnetConstructedDataIPv6AutoAddressingEnableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPv6DefaultGateway() interface {
+	BACnetConstructedDataIPv6DefaultGatewayBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPv6DefaultGatewayBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPv6DefaultGatewayBuilder().(*_BACnetConstructedDataIPv6DefaultGatewayBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPv6DHCPLeaseTime() interface {
+	BACnetConstructedDataIPv6DHCPLeaseTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPv6DHCPLeaseTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPv6DHCPLeaseTimeBuilder().(*_BACnetConstructedDataIPv6DHCPLeaseTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPv6DHCPLeaseTimeRemaining() interface {
+	BACnetConstructedDataIPv6DHCPLeaseTimeRemainingBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPv6DHCPLeaseTimeRemainingBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPv6DHCPLeaseTimeRemainingBuilder().(*_BACnetConstructedDataIPv6DHCPLeaseTimeRemainingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPv6DHCPServer() interface {
+	BACnetConstructedDataIPv6DHCPServerBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPv6DHCPServerBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPv6DHCPServerBuilder().(*_BACnetConstructedDataIPv6DHCPServerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPv6DNSServer() interface {
+	BACnetConstructedDataIPv6DNSServerBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPv6DNSServerBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPv6DNSServerBuilder().(*_BACnetConstructedDataIPv6DNSServerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPv6PrefixLength() interface {
+	BACnetConstructedDataIPv6PrefixLengthBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPv6PrefixLengthBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPv6PrefixLengthBuilder().(*_BACnetConstructedDataIPv6PrefixLengthBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIPv6ZoneIndex() interface {
+	BACnetConstructedDataIPv6ZoneIndexBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIPv6ZoneIndexBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIPv6ZoneIndexBuilder().(*_BACnetConstructedDataIPv6ZoneIndexBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIsUTC() interface {
+	BACnetConstructedDataIsUTCBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIsUTCBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIsUTCBuilder().(*_BACnetConstructedDataIsUTCBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataKeySets() interface {
+	BACnetConstructedDataKeySetsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataKeySetsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataKeySetsBuilder().(*_BACnetConstructedDataKeySetsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLandingCallControl() interface {
+	BACnetConstructedDataLandingCallControlBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLandingCallControlBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLandingCallControlBuilder().(*_BACnetConstructedDataLandingCallControlBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLandingCalls() interface {
+	BACnetConstructedDataLandingCallsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLandingCallsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLandingCallsBuilder().(*_BACnetConstructedDataLandingCallsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLandingDoorStatus() interface {
+	BACnetConstructedDataLandingDoorStatusBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLandingDoorStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLandingDoorStatusBuilder().(*_BACnetConstructedDataLandingDoorStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLastAccessEvent() interface {
+	BACnetConstructedDataLastAccessEventBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLastAccessEventBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLastAccessEventBuilder().(*_BACnetConstructedDataLastAccessEventBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLastAccessPoint() interface {
+	BACnetConstructedDataLastAccessPointBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLastAccessPointBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLastAccessPointBuilder().(*_BACnetConstructedDataLastAccessPointBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLastCommandTime() interface {
+	BACnetConstructedDataLastCommandTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLastCommandTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLastCommandTimeBuilder().(*_BACnetConstructedDataLastCommandTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLastCredentialAdded() interface {
+	BACnetConstructedDataLastCredentialAddedBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLastCredentialAddedBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLastCredentialAddedBuilder().(*_BACnetConstructedDataLastCredentialAddedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLastCredentialAddedTime() interface {
+	BACnetConstructedDataLastCredentialAddedTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLastCredentialAddedTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLastCredentialAddedTimeBuilder().(*_BACnetConstructedDataLastCredentialAddedTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLastCredentialRemoved() interface {
+	BACnetConstructedDataLastCredentialRemovedBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLastCredentialRemovedBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLastCredentialRemovedBuilder().(*_BACnetConstructedDataLastCredentialRemovedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLastCredentialRemovedTime() interface {
+	BACnetConstructedDataLastCredentialRemovedTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLastCredentialRemovedTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLastCredentialRemovedTimeBuilder().(*_BACnetConstructedDataLastCredentialRemovedTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLastKeyServer() interface {
+	BACnetConstructedDataLastKeyServerBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLastKeyServerBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLastKeyServerBuilder().(*_BACnetConstructedDataLastKeyServerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLastNotifyRecord() interface {
+	BACnetConstructedDataLastNotifyRecordBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLastNotifyRecordBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLastNotifyRecordBuilder().(*_BACnetConstructedDataLastNotifyRecordBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLastPriority() interface {
+	BACnetConstructedDataLastPriorityBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLastPriorityBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLastPriorityBuilder().(*_BACnetConstructedDataLastPriorityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLastRestartReason() interface {
+	BACnetConstructedDataLastRestartReasonBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLastRestartReasonBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLastRestartReasonBuilder().(*_BACnetConstructedDataLastRestartReasonBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLastRestoreTime() interface {
+	BACnetConstructedDataLastRestoreTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLastRestoreTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLastRestoreTimeBuilder().(*_BACnetConstructedDataLastRestoreTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLastStateChange() interface {
+	BACnetConstructedDataLastStateChangeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLastStateChangeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLastStateChangeBuilder().(*_BACnetConstructedDataLastStateChangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLastUseTime() interface {
+	BACnetConstructedDataLastUseTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLastUseTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLastUseTimeBuilder().(*_BACnetConstructedDataLastUseTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLifeSafetyAlarmValues() interface {
+	BACnetConstructedDataLifeSafetyAlarmValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLifeSafetyAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLifeSafetyAlarmValuesBuilder().(*_BACnetConstructedDataLifeSafetyAlarmValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLightingCommand() interface {
+	BACnetConstructedDataLightingCommandBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLightingCommandBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLightingCommandBuilder().(*_BACnetConstructedDataLightingCommandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLightingCommandDefaultPriority() interface {
+	BACnetConstructedDataLightingCommandDefaultPriorityBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLightingCommandDefaultPriorityBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLightingCommandDefaultPriorityBuilder().(*_BACnetConstructedDataLightingCommandDefaultPriorityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLimitEnable() interface {
+	BACnetConstructedDataLimitEnableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLimitEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLimitEnableBuilder().(*_BACnetConstructedDataLimitEnableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLimitMonitoringInterval() interface {
+	BACnetConstructedDataLimitMonitoringIntervalBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLimitMonitoringIntervalBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLimitMonitoringIntervalBuilder().(*_BACnetConstructedDataLimitMonitoringIntervalBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLinkSpeed() interface {
+	BACnetConstructedDataLinkSpeedBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLinkSpeedBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLinkSpeedBuilder().(*_BACnetConstructedDataLinkSpeedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLinkSpeedAutonegotiate() interface {
+	BACnetConstructedDataLinkSpeedAutonegotiateBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLinkSpeedAutonegotiateBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLinkSpeedAutonegotiateBuilder().(*_BACnetConstructedDataLinkSpeedAutonegotiateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLinkSpeeds() interface {
+	BACnetConstructedDataLinkSpeedsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLinkSpeedsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLinkSpeedsBuilder().(*_BACnetConstructedDataLinkSpeedsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataListOfGroupMembers() interface {
+	BACnetConstructedDataListOfGroupMembersBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataListOfGroupMembersBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataListOfGroupMembersBuilder().(*_BACnetConstructedDataListOfGroupMembersBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataChannelListOfObjectPropertyReferences() interface {
+	BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder().(*_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataListOfObjectPropertyReferences() interface {
+	BACnetConstructedDataListOfObjectPropertyReferencesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataListOfObjectPropertyReferencesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataListOfObjectPropertyReferencesBuilder().(*_BACnetConstructedDataListOfObjectPropertyReferencesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLocalDate() interface {
+	BACnetConstructedDataLocalDateBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLocalDateBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLocalDateBuilder().(*_BACnetConstructedDataLocalDateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLocalForwardingOnly() interface {
+	BACnetConstructedDataLocalForwardingOnlyBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLocalForwardingOnlyBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLocalForwardingOnlyBuilder().(*_BACnetConstructedDataLocalForwardingOnlyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLocalTime() interface {
+	BACnetConstructedDataLocalTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLocalTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLocalTimeBuilder().(*_BACnetConstructedDataLocalTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLocation() interface {
+	BACnetConstructedDataLocationBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLocationBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLocationBuilder().(*_BACnetConstructedDataLocationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLockStatus() interface {
+	BACnetConstructedDataLockStatusBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLockStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLockStatusBuilder().(*_BACnetConstructedDataLockStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLockout() interface {
+	BACnetConstructedDataLockoutBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLockoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLockoutBuilder().(*_BACnetConstructedDataLockoutBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLockoutRelinquishTime() interface {
+	BACnetConstructedDataLockoutRelinquishTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLockoutRelinquishTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLockoutRelinquishTimeBuilder().(*_BACnetConstructedDataLockoutRelinquishTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataEventLogLogBuffer() interface {
+	BACnetConstructedDataEventLogLogBufferBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataEventLogLogBufferBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataEventLogLogBufferBuilder().(*_BACnetConstructedDataEventLogLogBufferBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTrendLogLogBuffer() interface {
+	BACnetConstructedDataTrendLogLogBufferBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTrendLogLogBufferBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTrendLogLogBufferBuilder().(*_BACnetConstructedDataTrendLogLogBufferBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTrendLogMultipleLogBuffer() interface {
+	BACnetConstructedDataTrendLogMultipleLogBufferBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTrendLogMultipleLogBufferBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTrendLogMultipleLogBufferBuilder().(*_BACnetConstructedDataTrendLogMultipleLogBufferBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLogBuffer() interface {
+	BACnetConstructedDataLogBufferBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLogBufferBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLogBufferBuilder().(*_BACnetConstructedDataLogBufferBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTrendLogLogDeviceObjectProperty() interface {
+	BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder().(*_BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty() interface {
+	BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder().(*_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLogDeviceObjectProperty() interface {
+	BACnetConstructedDataLogDeviceObjectPropertyBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLogDeviceObjectPropertyBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLogDeviceObjectPropertyBuilder().(*_BACnetConstructedDataLogDeviceObjectPropertyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLogInterval() interface {
+	BACnetConstructedDataLogIntervalBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLogIntervalBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLogIntervalBuilder().(*_BACnetConstructedDataLogIntervalBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLoggingObject() interface {
+	BACnetConstructedDataLoggingObjectBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLoggingObjectBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLoggingObjectBuilder().(*_BACnetConstructedDataLoggingObjectBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLoggingRecord() interface {
+	BACnetConstructedDataLoggingRecordBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLoggingRecordBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLoggingRecordBuilder().(*_BACnetConstructedDataLoggingRecordBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLoggingType() interface {
+	BACnetConstructedDataLoggingTypeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLoggingTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLoggingTypeBuilder().(*_BACnetConstructedDataLoggingTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLowDiffLimit() interface {
+	BACnetConstructedDataLowDiffLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLowDiffLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLowDiffLimitBuilder().(*_BACnetConstructedDataLowDiffLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccumulatorLowLimit() interface {
+	BACnetConstructedDataAccumulatorLowLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccumulatorLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccumulatorLowLimitBuilder().(*_BACnetConstructedDataAccumulatorLowLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLargeAnalogValueLowLimit() interface {
+	BACnetConstructedDataLargeAnalogValueLowLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLargeAnalogValueLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLargeAnalogValueLowLimitBuilder().(*_BACnetConstructedDataLargeAnalogValueLowLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIntegerValueLowLimit() interface {
+	BACnetConstructedDataIntegerValueLowLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIntegerValueLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIntegerValueLowLimitBuilder().(*_BACnetConstructedDataIntegerValueLowLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPositiveIntegerValueLowLimit() interface {
+	BACnetConstructedDataPositiveIntegerValueLowLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPositiveIntegerValueLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPositiveIntegerValueLowLimitBuilder().(*_BACnetConstructedDataPositiveIntegerValueLowLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLowLimit() interface {
+	BACnetConstructedDataLowLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLowLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLowLimitBuilder().(*_BACnetConstructedDataLowLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLowerDeck() interface {
+	BACnetConstructedDataLowerDeckBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLowerDeckBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLowerDeckBuilder().(*_BACnetConstructedDataLowerDeckBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMACAddress() interface {
+	BACnetConstructedDataMACAddressBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMACAddressBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMACAddressBuilder().(*_BACnetConstructedDataMACAddressBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMachineRoomID() interface {
+	BACnetConstructedDataMachineRoomIDBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMachineRoomIDBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMachineRoomIDBuilder().(*_BACnetConstructedDataMachineRoomIDBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLifeSafetyZoneMaintenanceRequired() interface {
+	BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder().(*_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMaintenanceRequired() interface {
+	BACnetConstructedDataMaintenanceRequiredBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMaintenanceRequiredBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMaintenanceRequiredBuilder().(*_BACnetConstructedDataMaintenanceRequiredBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMakingCarCall() interface {
+	BACnetConstructedDataMakingCarCallBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMakingCarCallBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMakingCarCallBuilder().(*_BACnetConstructedDataMakingCarCallBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataManipulatedVariableReference() interface {
+	BACnetConstructedDataManipulatedVariableReferenceBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataManipulatedVariableReferenceBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataManipulatedVariableReferenceBuilder().(*_BACnetConstructedDataManipulatedVariableReferenceBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataManualSlaveAddressBinding() interface {
+	BACnetConstructedDataManualSlaveAddressBindingBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataManualSlaveAddressBindingBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataManualSlaveAddressBindingBuilder().(*_BACnetConstructedDataManualSlaveAddressBindingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMaskedAlarmValues() interface {
+	BACnetConstructedDataMaskedAlarmValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMaskedAlarmValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMaskedAlarmValuesBuilder().(*_BACnetConstructedDataMaskedAlarmValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMaxActualValue() interface {
+	BACnetConstructedDataMaxActualValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMaxActualValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMaxActualValueBuilder().(*_BACnetConstructedDataMaxActualValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMaxAPDULengthAccepted() interface {
+	BACnetConstructedDataMaxAPDULengthAcceptedBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMaxAPDULengthAcceptedBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMaxAPDULengthAcceptedBuilder().(*_BACnetConstructedDataMaxAPDULengthAcceptedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMaxFailedAttempts() interface {
+	BACnetConstructedDataMaxFailedAttemptsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMaxFailedAttemptsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMaxFailedAttemptsBuilder().(*_BACnetConstructedDataMaxFailedAttemptsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDeviceMaxInfoFrames() interface {
+	BACnetConstructedDataDeviceMaxInfoFramesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDeviceMaxInfoFramesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDeviceMaxInfoFramesBuilder().(*_BACnetConstructedDataDeviceMaxInfoFramesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNetworkPortMaxInfoFrames() interface {
+	BACnetConstructedDataNetworkPortMaxInfoFramesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNetworkPortMaxInfoFramesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNetworkPortMaxInfoFramesBuilder().(*_BACnetConstructedDataNetworkPortMaxInfoFramesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMaxInfoFrames() interface {
+	BACnetConstructedDataMaxInfoFramesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMaxInfoFramesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMaxInfoFramesBuilder().(*_BACnetConstructedDataMaxInfoFramesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDeviceMaxMaster() interface {
+	BACnetConstructedDataDeviceMaxMasterBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDeviceMaxMasterBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDeviceMaxMasterBuilder().(*_BACnetConstructedDataDeviceMaxMasterBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNetworkPortMaxMaster() interface {
+	BACnetConstructedDataNetworkPortMaxMasterBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNetworkPortMaxMasterBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNetworkPortMaxMasterBuilder().(*_BACnetConstructedDataNetworkPortMaxMasterBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMaxMaster() interface {
+	BACnetConstructedDataMaxMasterBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMaxMasterBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMaxMasterBuilder().(*_BACnetConstructedDataMaxMasterBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccumulatorMaxPresValue() interface {
+	BACnetConstructedDataAccumulatorMaxPresValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccumulatorMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccumulatorMaxPresValueBuilder().(*_BACnetConstructedDataAccumulatorMaxPresValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogInputMaxPresValue() interface {
+	BACnetConstructedDataAnalogInputMaxPresValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogInputMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogInputMaxPresValueBuilder().(*_BACnetConstructedDataAnalogInputMaxPresValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogOutputMaxPresValue() interface {
+	BACnetConstructedDataAnalogOutputMaxPresValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogOutputMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogOutputMaxPresValueBuilder().(*_BACnetConstructedDataAnalogOutputMaxPresValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogValueMaxPresValue() interface {
+	BACnetConstructedDataAnalogValueMaxPresValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogValueMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogValueMaxPresValueBuilder().(*_BACnetConstructedDataAnalogValueMaxPresValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLargeAnalogValueMaxPresValue() interface {
+	BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLargeAnalogValueMaxPresValueBuilder().(*_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIntegerValueMaxPresValue() interface {
+	BACnetConstructedDataIntegerValueMaxPresValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIntegerValueMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIntegerValueMaxPresValueBuilder().(*_BACnetConstructedDataIntegerValueMaxPresValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPositiveIntegerValueMaxPresValue() interface {
+	BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder().(*_BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimerMaxPresValue() interface {
+	BACnetConstructedDataTimerMaxPresValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimerMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimerMaxPresValueBuilder().(*_BACnetConstructedDataTimerMaxPresValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMaxPresValue() interface {
+	BACnetConstructedDataMaxPresValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMaxPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMaxPresValueBuilder().(*_BACnetConstructedDataMaxPresValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMaxSegmentsAccepted() interface {
+	BACnetConstructedDataMaxSegmentsAcceptedBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMaxSegmentsAcceptedBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMaxSegmentsAcceptedBuilder().(*_BACnetConstructedDataMaxSegmentsAcceptedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMaximumOutput() interface {
+	BACnetConstructedDataMaximumOutputBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMaximumOutputBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMaximumOutputBuilder().(*_BACnetConstructedDataMaximumOutputBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMaximumValue() interface {
+	BACnetConstructedDataMaximumValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMaximumValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMaximumValueBuilder().(*_BACnetConstructedDataMaximumValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMaximumValueTimestamp() interface {
+	BACnetConstructedDataMaximumValueTimestampBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMaximumValueTimestampBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMaximumValueTimestampBuilder().(*_BACnetConstructedDataMaximumValueTimestampBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMemberOf() interface {
+	BACnetConstructedDataMemberOfBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMemberOfBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMemberOfBuilder().(*_BACnetConstructedDataMemberOfBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMemberStatusFlags() interface {
+	BACnetConstructedDataMemberStatusFlagsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMemberStatusFlagsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMemberStatusFlagsBuilder().(*_BACnetConstructedDataMemberStatusFlagsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMembers() interface {
+	BACnetConstructedDataMembersBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMembersBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMembersBuilder().(*_BACnetConstructedDataMembersBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMinActualValue() interface {
+	BACnetConstructedDataMinActualValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMinActualValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMinActualValueBuilder().(*_BACnetConstructedDataMinActualValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccumulatorMinPresValue() interface {
+	BACnetConstructedDataAccumulatorMinPresValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccumulatorMinPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccumulatorMinPresValueBuilder().(*_BACnetConstructedDataAccumulatorMinPresValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIntegerValueMinPresValue() interface {
+	BACnetConstructedDataIntegerValueMinPresValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIntegerValueMinPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIntegerValueMinPresValueBuilder().(*_BACnetConstructedDataIntegerValueMinPresValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPositiveIntegerValueMinPresValue() interface {
+	BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPositiveIntegerValueMinPresValueBuilder().(*_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLargeAnalogValueMinPresValue() interface {
+	BACnetConstructedDataLargeAnalogValueMinPresValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLargeAnalogValueMinPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLargeAnalogValueMinPresValueBuilder().(*_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimerMinPresValue() interface {
+	BACnetConstructedDataTimerMinPresValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimerMinPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimerMinPresValueBuilder().(*_BACnetConstructedDataTimerMinPresValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMinPresValue() interface {
+	BACnetConstructedDataMinPresValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMinPresValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMinPresValueBuilder().(*_BACnetConstructedDataMinPresValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMinimumOffTime() interface {
+	BACnetConstructedDataMinimumOffTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMinimumOffTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMinimumOffTimeBuilder().(*_BACnetConstructedDataMinimumOffTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMinimumOnTime() interface {
+	BACnetConstructedDataMinimumOnTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMinimumOnTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMinimumOnTimeBuilder().(*_BACnetConstructedDataMinimumOnTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMinimumOutput() interface {
+	BACnetConstructedDataMinimumOutputBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMinimumOutputBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMinimumOutputBuilder().(*_BACnetConstructedDataMinimumOutputBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMinimumValue() interface {
+	BACnetConstructedDataMinimumValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMinimumValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMinimumValueBuilder().(*_BACnetConstructedDataMinimumValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMinimumValueTimestamp() interface {
+	BACnetConstructedDataMinimumValueTimestampBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMinimumValueTimestampBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMinimumValueTimestampBuilder().(*_BACnetConstructedDataMinimumValueTimestampBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMode() interface {
+	BACnetConstructedDataModeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataModeBuilder().(*_BACnetConstructedDataModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataModelName() interface {
+	BACnetConstructedDataModelNameBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataModelNameBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataModelNameBuilder().(*_BACnetConstructedDataModelNameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataModificationDate() interface {
+	BACnetConstructedDataModificationDateBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataModificationDateBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataModificationDateBuilder().(*_BACnetConstructedDataModificationDateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMusterPoint() interface {
+	BACnetConstructedDataMusterPointBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMusterPointBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMusterPointBuilder().(*_BACnetConstructedDataMusterPointBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNegativeAccessRules() interface {
+	BACnetConstructedDataNegativeAccessRulesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNegativeAccessRulesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNegativeAccessRulesBuilder().(*_BACnetConstructedDataNegativeAccessRulesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNetworkAccessSecurityPolicies() interface {
+	BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNetworkAccessSecurityPoliciesBuilder().(*_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNetworkInterfaceName() interface {
+	BACnetConstructedDataNetworkInterfaceNameBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNetworkInterfaceNameBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNetworkInterfaceNameBuilder().(*_BACnetConstructedDataNetworkInterfaceNameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNetworkNumber() interface {
+	BACnetConstructedDataNetworkNumberBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNetworkNumberBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNetworkNumberBuilder().(*_BACnetConstructedDataNetworkNumberBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNetworkNumberQuality() interface {
+	BACnetConstructedDataNetworkNumberQualityBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNetworkNumberQualityBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNetworkNumberQualityBuilder().(*_BACnetConstructedDataNetworkNumberQualityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNetworkType() interface {
+	BACnetConstructedDataNetworkTypeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNetworkTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNetworkTypeBuilder().(*_BACnetConstructedDataNetworkTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNextStoppingFloor() interface {
+	BACnetConstructedDataNextStoppingFloorBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNextStoppingFloorBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNextStoppingFloorBuilder().(*_BACnetConstructedDataNextStoppingFloorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNodeSubtype() interface {
+	BACnetConstructedDataNodeSubtypeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNodeSubtypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNodeSubtypeBuilder().(*_BACnetConstructedDataNodeSubtypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNodeType() interface {
+	BACnetConstructedDataNodeTypeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNodeTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNodeTypeBuilder().(*_BACnetConstructedDataNodeTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNotificationClass() interface {
+	BACnetConstructedDataNotificationClassBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNotificationClassBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNotificationClassBuilder().(*_BACnetConstructedDataNotificationClassBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNotificationThreshold() interface {
+	BACnetConstructedDataNotificationThresholdBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNotificationThresholdBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNotificationThresholdBuilder().(*_BACnetConstructedDataNotificationThresholdBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNotifyType() interface {
+	BACnetConstructedDataNotifyTypeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNotifyTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNotifyTypeBuilder().(*_BACnetConstructedDataNotifyTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNumberOfAPDURetries() interface {
+	BACnetConstructedDataNumberOfAPDURetriesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNumberOfAPDURetriesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNumberOfAPDURetriesBuilder().(*_BACnetConstructedDataNumberOfAPDURetriesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNumberOfAuthenticationPolicies() interface {
+	BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNumberOfAuthenticationPoliciesBuilder().(*_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataNumberOfStates() interface {
+	BACnetConstructedDataNumberOfStatesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataNumberOfStatesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataNumberOfStatesBuilder().(*_BACnetConstructedDataNumberOfStatesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataObjectIdentifier() interface {
+	BACnetConstructedDataObjectIdentifierBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataObjectIdentifierBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataObjectIdentifierBuilder().(*_BACnetConstructedDataObjectIdentifierBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataObjectList() interface {
+	BACnetConstructedDataObjectListBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataObjectListBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataObjectListBuilder().(*_BACnetConstructedDataObjectListBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataObjectName() interface {
+	BACnetConstructedDataObjectNameBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataObjectNameBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataObjectNameBuilder().(*_BACnetConstructedDataObjectNameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataObjectPropertyReference() interface {
+	BACnetConstructedDataObjectPropertyReferenceBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataObjectPropertyReferenceBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataObjectPropertyReferenceBuilder().(*_BACnetConstructedDataObjectPropertyReferenceBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataObjectType() interface {
+	BACnetConstructedDataObjectTypeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataObjectTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataObjectTypeBuilder().(*_BACnetConstructedDataObjectTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOccupancyCount() interface {
+	BACnetConstructedDataOccupancyCountBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOccupancyCountBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOccupancyCountBuilder().(*_BACnetConstructedDataOccupancyCountBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOccupancyCountAdjust() interface {
+	BACnetConstructedDataOccupancyCountAdjustBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOccupancyCountAdjustBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOccupancyCountAdjustBuilder().(*_BACnetConstructedDataOccupancyCountAdjustBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOccupancyCountEnable() interface {
+	BACnetConstructedDataOccupancyCountEnableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOccupancyCountEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOccupancyCountEnableBuilder().(*_BACnetConstructedDataOccupancyCountEnableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOccupancyLowerLimit() interface {
+	BACnetConstructedDataOccupancyLowerLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOccupancyLowerLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOccupancyLowerLimitBuilder().(*_BACnetConstructedDataOccupancyLowerLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOccupancyLowerLimitEnforced() interface {
+	BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOccupancyLowerLimitEnforcedBuilder().(*_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOccupancyState() interface {
+	BACnetConstructedDataOccupancyStateBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOccupancyStateBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOccupancyStateBuilder().(*_BACnetConstructedDataOccupancyStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOccupancyUpperLimit() interface {
+	BACnetConstructedDataOccupancyUpperLimitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOccupancyUpperLimitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOccupancyUpperLimitBuilder().(*_BACnetConstructedDataOccupancyUpperLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOccupancyUpperLimitEnforced() interface {
+	BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOccupancyUpperLimitEnforcedBuilder().(*_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOperationDirection() interface {
+	BACnetConstructedDataOperationDirectionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOperationDirectionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOperationDirectionBuilder().(*_BACnetConstructedDataOperationDirectionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOperationExpected() interface {
+	BACnetConstructedDataOperationExpectedBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOperationExpectedBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOperationExpectedBuilder().(*_BACnetConstructedDataOperationExpectedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOptional() interface {
+	BACnetConstructedDataOptionalBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOptionalBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOptionalBuilder().(*_BACnetConstructedDataOptionalBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOutOfService() interface {
+	BACnetConstructedDataOutOfServiceBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOutOfServiceBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOutOfServiceBuilder().(*_BACnetConstructedDataOutOfServiceBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOutputUnits() interface {
+	BACnetConstructedDataOutputUnitsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOutputUnitsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOutputUnitsBuilder().(*_BACnetConstructedDataOutputUnitsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPacketReorderTime() interface {
+	BACnetConstructedDataPacketReorderTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPacketReorderTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPacketReorderTimeBuilder().(*_BACnetConstructedDataPacketReorderTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPassbackMode() interface {
+	BACnetConstructedDataPassbackModeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPassbackModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPassbackModeBuilder().(*_BACnetConstructedDataPassbackModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPassbackTimeout() interface {
+	BACnetConstructedDataPassbackTimeoutBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPassbackTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPassbackTimeoutBuilder().(*_BACnetConstructedDataPassbackTimeoutBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPassengerAlarm() interface {
+	BACnetConstructedDataPassengerAlarmBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPassengerAlarmBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPassengerAlarmBuilder().(*_BACnetConstructedDataPassengerAlarmBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPolarity() interface {
+	BACnetConstructedDataPolarityBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPolarityBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPolarityBuilder().(*_BACnetConstructedDataPolarityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPortFilter() interface {
+	BACnetConstructedDataPortFilterBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPortFilterBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPortFilterBuilder().(*_BACnetConstructedDataPortFilterBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPositiveAccessRules() interface {
+	BACnetConstructedDataPositiveAccessRulesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPositiveAccessRulesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPositiveAccessRulesBuilder().(*_BACnetConstructedDataPositiveAccessRulesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPower() interface {
+	BACnetConstructedDataPowerBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPowerBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPowerBuilder().(*_BACnetConstructedDataPowerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPowerMode() interface {
+	BACnetConstructedDataPowerModeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPowerModeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPowerModeBuilder().(*_BACnetConstructedDataPowerModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPrescale() interface {
+	BACnetConstructedDataPrescaleBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPrescaleBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPrescaleBuilder().(*_BACnetConstructedDataPrescaleBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessDoorPresentValue() interface {
+	BACnetConstructedDataAccessDoorPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessDoorPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessDoorPresentValueBuilder().(*_BACnetConstructedDataAccessDoorPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAlertEnrollmentPresentValue() interface {
+	BACnetConstructedDataAlertEnrollmentPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAlertEnrollmentPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAlertEnrollmentPresentValueBuilder().(*_BACnetConstructedDataAlertEnrollmentPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogInputPresentValue() interface {
+	BACnetConstructedDataAnalogInputPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogInputPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogInputPresentValueBuilder().(*_BACnetConstructedDataAnalogInputPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogOutputPresentValue() interface {
+	BACnetConstructedDataAnalogOutputPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogOutputPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogOutputPresentValueBuilder().(*_BACnetConstructedDataAnalogOutputPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogValuePresentValue() interface {
+	BACnetConstructedDataAnalogValuePresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogValuePresentValueBuilder().(*_BACnetConstructedDataAnalogValuePresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBinaryInputPresentValue() interface {
+	BACnetConstructedDataBinaryInputPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBinaryInputPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBinaryInputPresentValueBuilder().(*_BACnetConstructedDataBinaryInputPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBinaryOutputPresentValue() interface {
+	BACnetConstructedDataBinaryOutputPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBinaryOutputPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBinaryOutputPresentValueBuilder().(*_BACnetConstructedDataBinaryOutputPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBinaryValuePresentValue() interface {
+	BACnetConstructedDataBinaryValuePresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBinaryValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBinaryValuePresentValueBuilder().(*_BACnetConstructedDataBinaryValuePresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBinaryLightingOutputPresentValue() interface {
+	BACnetConstructedDataBinaryLightingOutputPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBinaryLightingOutputPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBinaryLightingOutputPresentValueBuilder().(*_BACnetConstructedDataBinaryLightingOutputPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBitStringValuePresentValue() interface {
+	BACnetConstructedDataBitStringValuePresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBitStringValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBitStringValuePresentValueBuilder().(*_BACnetConstructedDataBitStringValuePresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCalendarPresentValue() interface {
+	BACnetConstructedDataCalendarPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCalendarPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCalendarPresentValueBuilder().(*_BACnetConstructedDataCalendarPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataChannelPresentValue() interface {
+	BACnetConstructedDataChannelPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataChannelPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataChannelPresentValueBuilder().(*_BACnetConstructedDataChannelPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCharacterStringValuePresentValue() interface {
+	BACnetConstructedDataCharacterStringValuePresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCharacterStringValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCharacterStringValuePresentValueBuilder().(*_BACnetConstructedDataCharacterStringValuePresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCredentialDataInputPresentValue() interface {
+	BACnetConstructedDataCredentialDataInputPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCredentialDataInputPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCredentialDataInputPresentValueBuilder().(*_BACnetConstructedDataCredentialDataInputPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDateValuePresentValue() interface {
+	BACnetConstructedDataDateValuePresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDateValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDateValuePresentValueBuilder().(*_BACnetConstructedDataDateValuePresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDatePatternValuePresentValue() interface {
+	BACnetConstructedDataDatePatternValuePresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDatePatternValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDatePatternValuePresentValueBuilder().(*_BACnetConstructedDataDatePatternValuePresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDateTimeValuePresentValue() interface {
+	BACnetConstructedDataDateTimeValuePresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDateTimeValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDateTimeValuePresentValueBuilder().(*_BACnetConstructedDataDateTimeValuePresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDateTimePatternValuePresentValue() interface {
+	BACnetConstructedDataDateTimePatternValuePresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDateTimePatternValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDateTimePatternValuePresentValueBuilder().(*_BACnetConstructedDataDateTimePatternValuePresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIntegerValuePresentValue() interface {
+	BACnetConstructedDataIntegerValuePresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIntegerValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIntegerValuePresentValueBuilder().(*_BACnetConstructedDataIntegerValuePresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLargeAnalogValuePresentValue() interface {
+	BACnetConstructedDataLargeAnalogValuePresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLargeAnalogValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLargeAnalogValuePresentValueBuilder().(*_BACnetConstructedDataLargeAnalogValuePresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLightingOutputPresentValue() interface {
+	BACnetConstructedDataLightingOutputPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLightingOutputPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLightingOutputPresentValueBuilder().(*_BACnetConstructedDataLightingOutputPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLifeSafetyPointPresentValue() interface {
+	BACnetConstructedDataLifeSafetyPointPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLifeSafetyPointPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLifeSafetyPointPresentValueBuilder().(*_BACnetConstructedDataLifeSafetyPointPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLifeSafetyZonePresentValue() interface {
+	BACnetConstructedDataLifeSafetyZonePresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLifeSafetyZonePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLifeSafetyZonePresentValueBuilder().(*_BACnetConstructedDataLifeSafetyZonePresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLoadControlPresentValue() interface {
+	BACnetConstructedDataLoadControlPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLoadControlPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLoadControlPresentValueBuilder().(*_BACnetConstructedDataLoadControlPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLoopPresentValue() interface {
+	BACnetConstructedDataLoopPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLoopPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLoopPresentValueBuilder().(*_BACnetConstructedDataLoopPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPulseConverterPresentValue() interface {
+	BACnetConstructedDataPulseConverterPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPulseConverterPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPulseConverterPresentValueBuilder().(*_BACnetConstructedDataPulseConverterPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataGroupPresentValue() interface {
+	BACnetConstructedDataGroupPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataGroupPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataGroupPresentValueBuilder().(*_BACnetConstructedDataGroupPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataGlobalGroupPresentValue() interface {
+	BACnetConstructedDataGlobalGroupPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataGlobalGroupPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataGlobalGroupPresentValueBuilder().(*_BACnetConstructedDataGlobalGroupPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOctetStringValuePresentValue() interface {
+	BACnetConstructedDataOctetStringValuePresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOctetStringValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOctetStringValuePresentValueBuilder().(*_BACnetConstructedDataOctetStringValuePresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSchedulePresentValue() interface {
+	BACnetConstructedDataSchedulePresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSchedulePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSchedulePresentValueBuilder().(*_BACnetConstructedDataSchedulePresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimeValuePresentValue() interface {
+	BACnetConstructedDataTimeValuePresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimeValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimeValuePresentValueBuilder().(*_BACnetConstructedDataTimeValuePresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimePatternValuePresentValue() interface {
+	BACnetConstructedDataTimePatternValuePresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimePatternValuePresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimePatternValuePresentValueBuilder().(*_BACnetConstructedDataTimePatternValuePresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPresentValue() interface {
+	BACnetConstructedDataPresentValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPresentValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPresentValueBuilder().(*_BACnetConstructedDataPresentValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPriority() interface {
+	BACnetConstructedDataPriorityBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPriorityBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPriorityBuilder().(*_BACnetConstructedDataPriorityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPriorityArray() interface {
+	BACnetConstructedDataPriorityArrayBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPriorityArrayBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPriorityArrayBuilder().(*_BACnetConstructedDataPriorityArrayBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPriorityForWriting() interface {
+	BACnetConstructedDataPriorityForWritingBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPriorityForWritingBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPriorityForWritingBuilder().(*_BACnetConstructedDataPriorityForWritingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataProcessIdentifier() interface {
+	BACnetConstructedDataProcessIdentifierBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataProcessIdentifierBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataProcessIdentifierBuilder().(*_BACnetConstructedDataProcessIdentifierBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataProcessIdentifierFilter() interface {
+	BACnetConstructedDataProcessIdentifierFilterBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataProcessIdentifierFilterBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataProcessIdentifierFilterBuilder().(*_BACnetConstructedDataProcessIdentifierFilterBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataProfileLocation() interface {
+	BACnetConstructedDataProfileLocationBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataProfileLocationBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataProfileLocationBuilder().(*_BACnetConstructedDataProfileLocationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataProfileName() interface {
+	BACnetConstructedDataProfileNameBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataProfileNameBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataProfileNameBuilder().(*_BACnetConstructedDataProfileNameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataProgramChange() interface {
+	BACnetConstructedDataProgramChangeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataProgramChangeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataProgramChangeBuilder().(*_BACnetConstructedDataProgramChangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataProgramLocation() interface {
+	BACnetConstructedDataProgramLocationBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataProgramLocationBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataProgramLocationBuilder().(*_BACnetConstructedDataProgramLocationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataProgramState() interface {
+	BACnetConstructedDataProgramStateBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataProgramStateBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataProgramStateBuilder().(*_BACnetConstructedDataProgramStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPropertyList() interface {
+	BACnetConstructedDataPropertyListBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPropertyListBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPropertyListBuilder().(*_BACnetConstructedDataPropertyListBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataProportionalConstant() interface {
+	BACnetConstructedDataProportionalConstantBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataProportionalConstantBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataProportionalConstantBuilder().(*_BACnetConstructedDataProportionalConstantBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataProportionalConstantUnits() interface {
+	BACnetConstructedDataProportionalConstantUnitsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataProportionalConstantUnitsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataProportionalConstantUnitsBuilder().(*_BACnetConstructedDataProportionalConstantUnitsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataProtocolLevel() interface {
+	BACnetConstructedDataProtocolLevelBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataProtocolLevelBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataProtocolLevelBuilder().(*_BACnetConstructedDataProtocolLevelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataProtocolObjectTypesSupported() interface {
+	BACnetConstructedDataProtocolObjectTypesSupportedBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataProtocolObjectTypesSupportedBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataProtocolObjectTypesSupportedBuilder().(*_BACnetConstructedDataProtocolObjectTypesSupportedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataProtocolRevision() interface {
+	BACnetConstructedDataProtocolRevisionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataProtocolRevisionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataProtocolRevisionBuilder().(*_BACnetConstructedDataProtocolRevisionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataProtocolServicesSupported() interface {
+	BACnetConstructedDataProtocolServicesSupportedBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataProtocolServicesSupportedBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataProtocolServicesSupportedBuilder().(*_BACnetConstructedDataProtocolServicesSupportedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataProtocolVersion() interface {
+	BACnetConstructedDataProtocolVersionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataProtocolVersionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataProtocolVersionBuilder().(*_BACnetConstructedDataProtocolVersionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPulseRate() interface {
+	BACnetConstructedDataPulseRateBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPulseRateBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPulseRateBuilder().(*_BACnetConstructedDataPulseRateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataReadOnly() interface {
+	BACnetConstructedDataReadOnlyBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataReadOnlyBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataReadOnlyBuilder().(*_BACnetConstructedDataReadOnlyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataReasonForDisable() interface {
+	BACnetConstructedDataReasonForDisableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataReasonForDisableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataReasonForDisableBuilder().(*_BACnetConstructedDataReasonForDisableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataReasonForHalt() interface {
+	BACnetConstructedDataReasonForHaltBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataReasonForHaltBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataReasonForHaltBuilder().(*_BACnetConstructedDataReasonForHaltBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataRecipientList() interface {
+	BACnetConstructedDataRecipientListBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataRecipientListBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataRecipientListBuilder().(*_BACnetConstructedDataRecipientListBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataFileRecordCount() interface {
+	BACnetConstructedDataFileRecordCountBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataFileRecordCountBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataFileRecordCountBuilder().(*_BACnetConstructedDataFileRecordCountBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataRecordCount() interface {
+	BACnetConstructedDataRecordCountBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataRecordCountBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataRecordCountBuilder().(*_BACnetConstructedDataRecordCountBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataRecordsSinceNotification() interface {
+	BACnetConstructedDataRecordsSinceNotificationBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataRecordsSinceNotificationBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataRecordsSinceNotificationBuilder().(*_BACnetConstructedDataRecordsSinceNotificationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataReferencePort() interface {
+	BACnetConstructedDataReferencePortBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataReferencePortBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataReferencePortBuilder().(*_BACnetConstructedDataReferencePortBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataRegisteredCarCall() interface {
+	BACnetConstructedDataRegisteredCarCallBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataRegisteredCarCallBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataRegisteredCarCallBuilder().(*_BACnetConstructedDataRegisteredCarCallBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataReliability() interface {
+	BACnetConstructedDataReliabilityBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataReliabilityBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataReliabilityBuilder().(*_BACnetConstructedDataReliabilityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataReliabilityEvaluationInhibit() interface {
+	BACnetConstructedDataReliabilityEvaluationInhibitBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataReliabilityEvaluationInhibitBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataReliabilityEvaluationInhibitBuilder().(*_BACnetConstructedDataReliabilityEvaluationInhibitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAccessDoorRelinquishDefault() interface {
+	BACnetConstructedDataAccessDoorRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAccessDoorRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAccessDoorRelinquishDefaultBuilder().(*_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogOutputRelinquishDefault() interface {
+	BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogOutputRelinquishDefaultBuilder().(*_BACnetConstructedDataAnalogOutputRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataAnalogValueRelinquishDefault() interface {
+	BACnetConstructedDataAnalogValueRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataAnalogValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataAnalogValueRelinquishDefaultBuilder().(*_BACnetConstructedDataAnalogValueRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBinaryOutputRelinquishDefault() interface {
+	BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBinaryOutputRelinquishDefaultBuilder().(*_BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBinaryValueRelinquishDefault() interface {
+	BACnetConstructedDataBinaryValueRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBinaryValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBinaryValueRelinquishDefaultBuilder().(*_BACnetConstructedDataBinaryValueRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBinaryLightingOutputRelinquishDefault() interface {
+	BACnetConstructedDataBinaryLightingOutputRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBinaryLightingOutputRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBinaryLightingOutputRelinquishDefaultBuilder().(*_BACnetConstructedDataBinaryLightingOutputRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataBitStringValueRelinquishDefault() interface {
+	BACnetConstructedDataBitStringValueRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataBitStringValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataBitStringValueRelinquishDefaultBuilder().(*_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCharacterStringValueRelinquishDefault() interface {
+	BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder().(*_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDateValueRelinquishDefault() interface {
+	BACnetConstructedDataDateValueRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDateValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDateValueRelinquishDefaultBuilder().(*_BACnetConstructedDataDateValueRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDatePatternValueRelinquishDefault() interface {
+	BACnetConstructedDataDatePatternValueRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDatePatternValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDatePatternValueRelinquishDefaultBuilder().(*_BACnetConstructedDataDatePatternValueRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDateTimeValueRelinquishDefault() interface {
+	BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDateTimeValueRelinquishDefaultBuilder().(*_BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataDateTimePatternValueRelinquishDefault() interface {
+	BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder().(*_BACnetConstructedDataDateTimePatternValueRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLargeAnalogValueRelinquishDefault() interface {
+	BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder().(*_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLightingOutputRelinquishDefault() interface {
+	BACnetConstructedDataLightingOutputRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLightingOutputRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLightingOutputRelinquishDefaultBuilder().(*_BACnetConstructedDataLightingOutputRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimePatternValueRelinquishDefault() interface {
+	BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimePatternValueRelinquishDefaultBuilder().(*_BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimeValueRelinquishDefault() interface {
+	BACnetConstructedDataTimeValueRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimeValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimeValueRelinquishDefaultBuilder().(*_BACnetConstructedDataTimeValueRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIntegerValueRelinquishDefault() interface {
+	BACnetConstructedDataIntegerValueRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIntegerValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIntegerValueRelinquishDefaultBuilder().(*_BACnetConstructedDataIntegerValueRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataOctetStringValueRelinquishDefault() interface {
+	BACnetConstructedDataOctetStringValueRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataOctetStringValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataOctetStringValueRelinquishDefaultBuilder().(*_BACnetConstructedDataOctetStringValueRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPositiveIntegerValueRelinquishDefault() interface {
+	BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder().(*_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMultiStateOutputRelinquishDefault() interface {
+	BACnetConstructedDataMultiStateOutputRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMultiStateOutputRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMultiStateOutputRelinquishDefaultBuilder().(*_BACnetConstructedDataMultiStateOutputRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataMultiStateValueRelinquishDefault() interface {
+	BACnetConstructedDataMultiStateValueRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataMultiStateValueRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataMultiStateValueRelinquishDefaultBuilder().(*_BACnetConstructedDataMultiStateValueRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataRelinquishDefault() interface {
+	BACnetConstructedDataRelinquishDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataRelinquishDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataRelinquishDefaultBuilder().(*_BACnetConstructedDataRelinquishDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataRepresents() interface {
+	BACnetConstructedDataRepresentsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataRepresentsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataRepresentsBuilder().(*_BACnetConstructedDataRepresentsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataRequestedShedLevel() interface {
+	BACnetConstructedDataRequestedShedLevelBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataRequestedShedLevelBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataRequestedShedLevelBuilder().(*_BACnetConstructedDataRequestedShedLevelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataRequestedUpdateInterval() interface {
+	BACnetConstructedDataRequestedUpdateIntervalBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataRequestedUpdateIntervalBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataRequestedUpdateIntervalBuilder().(*_BACnetConstructedDataRequestedUpdateIntervalBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataRequired() interface {
+	BACnetConstructedDataRequiredBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataRequiredBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataRequiredBuilder().(*_BACnetConstructedDataRequiredBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLargeAnalogValueResolution() interface {
+	BACnetConstructedDataLargeAnalogValueResolutionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLargeAnalogValueResolutionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLargeAnalogValueResolutionBuilder().(*_BACnetConstructedDataLargeAnalogValueResolutionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataIntegerValueResolution() interface {
+	BACnetConstructedDataIntegerValueResolutionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataIntegerValueResolutionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataIntegerValueResolutionBuilder().(*_BACnetConstructedDataIntegerValueResolutionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataPositiveIntegerValueResolution() interface {
+	BACnetConstructedDataPositiveIntegerValueResolutionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataPositiveIntegerValueResolutionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataPositiveIntegerValueResolutionBuilder().(*_BACnetConstructedDataPositiveIntegerValueResolutionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimerResolution() interface {
+	BACnetConstructedDataTimerResolutionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimerResolutionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimerResolutionBuilder().(*_BACnetConstructedDataTimerResolutionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataResolution() interface {
+	BACnetConstructedDataResolutionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataResolutionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataResolutionBuilder().(*_BACnetConstructedDataResolutionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataRestartNotificationRecipients() interface {
+	BACnetConstructedDataRestartNotificationRecipientsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataRestartNotificationRecipientsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataRestartNotificationRecipientsBuilder().(*_BACnetConstructedDataRestartNotificationRecipientsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataRestoreCompletionTime() interface {
+	BACnetConstructedDataRestoreCompletionTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataRestoreCompletionTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataRestoreCompletionTimeBuilder().(*_BACnetConstructedDataRestoreCompletionTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataRestorePreparationTime() interface {
+	BACnetConstructedDataRestorePreparationTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataRestorePreparationTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataRestorePreparationTimeBuilder().(*_BACnetConstructedDataRestorePreparationTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataRoutingTable() interface {
+	BACnetConstructedDataRoutingTableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataRoutingTableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataRoutingTableBuilder().(*_BACnetConstructedDataRoutingTableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataScale() interface {
+	BACnetConstructedDataScaleBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataScaleBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataScaleBuilder().(*_BACnetConstructedDataScaleBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataScaleFactor() interface {
+	BACnetConstructedDataScaleFactorBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataScaleFactorBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataScaleFactorBuilder().(*_BACnetConstructedDataScaleFactorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataScheduleDefault() interface {
+	BACnetConstructedDataScheduleDefaultBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataScheduleDefaultBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataScheduleDefaultBuilder().(*_BACnetConstructedDataScheduleDefaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSecuredStatus() interface {
+	BACnetConstructedDataSecuredStatusBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSecuredStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSecuredStatusBuilder().(*_BACnetConstructedDataSecuredStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSecurityPDUTimeout() interface {
+	BACnetConstructedDataSecurityPDUTimeoutBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSecurityPDUTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSecurityPDUTimeoutBuilder().(*_BACnetConstructedDataSecurityPDUTimeoutBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSecurityTimeWindow() interface {
+	BACnetConstructedDataSecurityTimeWindowBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSecurityTimeWindowBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSecurityTimeWindowBuilder().(*_BACnetConstructedDataSecurityTimeWindowBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSegmentationSupported() interface {
+	BACnetConstructedDataSegmentationSupportedBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSegmentationSupportedBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSegmentationSupportedBuilder().(*_BACnetConstructedDataSegmentationSupportedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSerialNumber() interface {
+	BACnetConstructedDataSerialNumberBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSerialNumberBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSerialNumberBuilder().(*_BACnetConstructedDataSerialNumberBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSetpoint() interface {
+	BACnetConstructedDataSetpointBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSetpointBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSetpointBuilder().(*_BACnetConstructedDataSetpointBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSetpointReference() interface {
+	BACnetConstructedDataSetpointReferenceBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSetpointReferenceBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSetpointReferenceBuilder().(*_BACnetConstructedDataSetpointReferenceBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSetting() interface {
+	BACnetConstructedDataSettingBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSettingBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSettingBuilder().(*_BACnetConstructedDataSettingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataShedDuration() interface {
+	BACnetConstructedDataShedDurationBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataShedDurationBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataShedDurationBuilder().(*_BACnetConstructedDataShedDurationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataShedLevelDescriptions() interface {
+	BACnetConstructedDataShedLevelDescriptionsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataShedLevelDescriptionsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataShedLevelDescriptionsBuilder().(*_BACnetConstructedDataShedLevelDescriptionsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataShedLevels() interface {
+	BACnetConstructedDataShedLevelsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataShedLevelsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataShedLevelsBuilder().(*_BACnetConstructedDataShedLevelsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSilenced() interface {
+	BACnetConstructedDataSilencedBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSilencedBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSilencedBuilder().(*_BACnetConstructedDataSilencedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSlaveAddressBinding() interface {
+	BACnetConstructedDataSlaveAddressBindingBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSlaveAddressBindingBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSlaveAddressBindingBuilder().(*_BACnetConstructedDataSlaveAddressBindingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSlaveProxyEnable() interface {
+	BACnetConstructedDataSlaveProxyEnableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSlaveProxyEnableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSlaveProxyEnableBuilder().(*_BACnetConstructedDataSlaveProxyEnableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataStartTime() interface {
+	BACnetConstructedDataStartTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataStartTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataStartTimeBuilder().(*_BACnetConstructedDataStartTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataStateChangeValues() interface {
+	BACnetConstructedDataStateChangeValuesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataStateChangeValuesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataStateChangeValuesBuilder().(*_BACnetConstructedDataStateChangeValuesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataStateDescription() interface {
+	BACnetConstructedDataStateDescriptionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataStateDescriptionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataStateDescriptionBuilder().(*_BACnetConstructedDataStateDescriptionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataStateText() interface {
+	BACnetConstructedDataStateTextBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataStateTextBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataStateTextBuilder().(*_BACnetConstructedDataStateTextBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataStatusFlags() interface {
+	BACnetConstructedDataStatusFlagsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataStatusFlagsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataStatusFlagsBuilder().(*_BACnetConstructedDataStatusFlagsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataStopTime() interface {
+	BACnetConstructedDataStopTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataStopTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataStopTimeBuilder().(*_BACnetConstructedDataStopTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataStopWhenFull() interface {
+	BACnetConstructedDataStopWhenFullBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataStopWhenFullBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataStopWhenFullBuilder().(*_BACnetConstructedDataStopWhenFullBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataStrikeCount() interface {
+	BACnetConstructedDataStrikeCountBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataStrikeCountBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataStrikeCountBuilder().(*_BACnetConstructedDataStrikeCountBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataStructuredObjectList() interface {
+	BACnetConstructedDataStructuredObjectListBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataStructuredObjectListBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataStructuredObjectListBuilder().(*_BACnetConstructedDataStructuredObjectListBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSubordinateAnnotations() interface {
+	BACnetConstructedDataSubordinateAnnotationsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSubordinateAnnotationsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSubordinateAnnotationsBuilder().(*_BACnetConstructedDataSubordinateAnnotationsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSubordinateList() interface {
+	BACnetConstructedDataSubordinateListBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSubordinateListBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSubordinateListBuilder().(*_BACnetConstructedDataSubordinateListBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSubordinateNodeTypes() interface {
+	BACnetConstructedDataSubordinateNodeTypesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSubordinateNodeTypesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSubordinateNodeTypesBuilder().(*_BACnetConstructedDataSubordinateNodeTypesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSubordinateRelationships() interface {
+	BACnetConstructedDataSubordinateRelationshipsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSubordinateRelationshipsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSubordinateRelationshipsBuilder().(*_BACnetConstructedDataSubordinateRelationshipsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSubordinateTags() interface {
+	BACnetConstructedDataSubordinateTagsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSubordinateTagsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSubordinateTagsBuilder().(*_BACnetConstructedDataSubordinateTagsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSubscribedRecipients() interface {
+	BACnetConstructedDataSubscribedRecipientsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSubscribedRecipientsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSubscribedRecipientsBuilder().(*_BACnetConstructedDataSubscribedRecipientsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSupportedFormatClasses() interface {
+	BACnetConstructedDataSupportedFormatClassesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSupportedFormatClassesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSupportedFormatClassesBuilder().(*_BACnetConstructedDataSupportedFormatClassesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSupportedFormats() interface {
+	BACnetConstructedDataSupportedFormatsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSupportedFormatsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSupportedFormatsBuilder().(*_BACnetConstructedDataSupportedFormatsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSupportedSecurityAlgorithms() interface {
+	BACnetConstructedDataSupportedSecurityAlgorithmsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSupportedSecurityAlgorithmsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSupportedSecurityAlgorithmsBuilder().(*_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataSystemStatus() interface {
+	BACnetConstructedDataSystemStatusBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataSystemStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataSystemStatusBuilder().(*_BACnetConstructedDataSystemStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTags() interface {
+	BACnetConstructedDataTagsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTagsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTagsBuilder().(*_BACnetConstructedDataTagsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataThreatAuthority() interface {
+	BACnetConstructedDataThreatAuthorityBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataThreatAuthorityBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataThreatAuthorityBuilder().(*_BACnetConstructedDataThreatAuthorityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataThreatLevel() interface {
+	BACnetConstructedDataThreatLevelBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataThreatLevelBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataThreatLevelBuilder().(*_BACnetConstructedDataThreatLevelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimeDelay() interface {
+	BACnetConstructedDataTimeDelayBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimeDelayBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimeDelayBuilder().(*_BACnetConstructedDataTimeDelayBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimeDelayNormal() interface {
+	BACnetConstructedDataTimeDelayNormalBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimeDelayNormalBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimeDelayNormalBuilder().(*_BACnetConstructedDataTimeDelayNormalBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimeOfActiveTimeReset() interface {
+	BACnetConstructedDataTimeOfActiveTimeResetBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimeOfActiveTimeResetBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimeOfActiveTimeResetBuilder().(*_BACnetConstructedDataTimeOfActiveTimeResetBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimeOfDeviceRestart() interface {
+	BACnetConstructedDataTimeOfDeviceRestartBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimeOfDeviceRestartBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimeOfDeviceRestartBuilder().(*_BACnetConstructedDataTimeOfDeviceRestartBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimeOfStateCountReset() interface {
+	BACnetConstructedDataTimeOfStateCountResetBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimeOfStateCountResetBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimeOfStateCountResetBuilder().(*_BACnetConstructedDataTimeOfStateCountResetBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimeOfStrikeCountReset() interface {
+	BACnetConstructedDataTimeOfStrikeCountResetBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimeOfStrikeCountResetBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimeOfStrikeCountResetBuilder().(*_BACnetConstructedDataTimeOfStrikeCountResetBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimeSynchronizationInterval() interface {
+	BACnetConstructedDataTimeSynchronizationIntervalBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimeSynchronizationIntervalBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimeSynchronizationIntervalBuilder().(*_BACnetConstructedDataTimeSynchronizationIntervalBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimeSynchronizationRecipients() interface {
+	BACnetConstructedDataTimeSynchronizationRecipientsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimeSynchronizationRecipientsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimeSynchronizationRecipientsBuilder().(*_BACnetConstructedDataTimeSynchronizationRecipientsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimerRunning() interface {
+	BACnetConstructedDataTimerRunningBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimerRunningBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimerRunningBuilder().(*_BACnetConstructedDataTimerRunningBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTimerState() interface {
+	BACnetConstructedDataTimerStateBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTimerStateBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTimerStateBuilder().(*_BACnetConstructedDataTimerStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTotalRecordCount() interface {
+	BACnetConstructedDataTotalRecordCountBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTotalRecordCountBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTotalRecordCountBuilder().(*_BACnetConstructedDataTotalRecordCountBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTraceFlag() interface {
+	BACnetConstructedDataTraceFlagBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTraceFlagBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTraceFlagBuilder().(*_BACnetConstructedDataTraceFlagBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataLightingOutputTrackingValue() interface {
+	BACnetConstructedDataLightingOutputTrackingValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataLightingOutputTrackingValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataLightingOutputTrackingValueBuilder().(*_BACnetConstructedDataLightingOutputTrackingValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTrackingValue() interface {
+	BACnetConstructedDataTrackingValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTrackingValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTrackingValueBuilder().(*_BACnetConstructedDataTrackingValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTransactionNotificationClass() interface {
+	BACnetConstructedDataTransactionNotificationClassBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTransactionNotificationClassBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTransactionNotificationClassBuilder().(*_BACnetConstructedDataTransactionNotificationClassBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTransition() interface {
+	BACnetConstructedDataTransitionBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTransitionBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTransitionBuilder().(*_BACnetConstructedDataTransitionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataTrigger() interface {
+	BACnetConstructedDataTriggerBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataTriggerBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataTriggerBuilder().(*_BACnetConstructedDataTriggerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataUnits() interface {
+	BACnetConstructedDataUnitsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataUnitsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataUnitsBuilder().(*_BACnetConstructedDataUnitsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataUpdateInterval() interface {
+	BACnetConstructedDataUpdateIntervalBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataUpdateIntervalBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataUpdateIntervalBuilder().(*_BACnetConstructedDataUpdateIntervalBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataUpdateKeySetTimeout() interface {
+	BACnetConstructedDataUpdateKeySetTimeoutBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataUpdateKeySetTimeoutBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataUpdateKeySetTimeoutBuilder().(*_BACnetConstructedDataUpdateKeySetTimeoutBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataCredentialDataInputUpdateTime() interface {
+	BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataCredentialDataInputUpdateTimeBuilder().(*_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataUpdateTime() interface {
+	BACnetConstructedDataUpdateTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataUpdateTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataUpdateTimeBuilder().(*_BACnetConstructedDataUpdateTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataUserExternalIdentifier() interface {
+	BACnetConstructedDataUserExternalIdentifierBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataUserExternalIdentifierBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataUserExternalIdentifierBuilder().(*_BACnetConstructedDataUserExternalIdentifierBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataUserInformationReference() interface {
+	BACnetConstructedDataUserInformationReferenceBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataUserInformationReferenceBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataUserInformationReferenceBuilder().(*_BACnetConstructedDataUserInformationReferenceBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataUserName() interface {
+	BACnetConstructedDataUserNameBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataUserNameBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataUserNameBuilder().(*_BACnetConstructedDataUserNameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataUserType() interface {
+	BACnetConstructedDataUserTypeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataUserTypeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataUserTypeBuilder().(*_BACnetConstructedDataUserTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataUsesRemaining() interface {
+	BACnetConstructedDataUsesRemainingBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataUsesRemainingBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataUsesRemainingBuilder().(*_BACnetConstructedDataUsesRemainingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataUTCOffset() interface {
+	BACnetConstructedDataUTCOffsetBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataUTCOffsetBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataUTCOffsetBuilder().(*_BACnetConstructedDataUTCOffsetBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataUTCTimeSynchronizationRecipients() interface {
+	BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder().(*_BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataValidSamples() interface {
+	BACnetConstructedDataValidSamplesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataValidSamplesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataValidSamplesBuilder().(*_BACnetConstructedDataValidSamplesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataValueBeforeChange() interface {
+	BACnetConstructedDataValueBeforeChangeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataValueBeforeChangeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataValueBeforeChangeBuilder().(*_BACnetConstructedDataValueBeforeChangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataValueChangeTime() interface {
+	BACnetConstructedDataValueChangeTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataValueChangeTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataValueChangeTimeBuilder().(*_BACnetConstructedDataValueChangeTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataValueSet() interface {
+	BACnetConstructedDataValueSetBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataValueSetBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataValueSetBuilder().(*_BACnetConstructedDataValueSetBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataValueSource() interface {
+	BACnetConstructedDataValueSourceBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataValueSourceBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataValueSourceBuilder().(*_BACnetConstructedDataValueSourceBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataValueSourceArray() interface {
+	BACnetConstructedDataValueSourceArrayBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataValueSourceArrayBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataValueSourceArrayBuilder().(*_BACnetConstructedDataValueSourceArrayBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataVarianceValue() interface {
+	BACnetConstructedDataVarianceValueBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataVarianceValueBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataVarianceValueBuilder().(*_BACnetConstructedDataVarianceValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataVendorIdentifier() interface {
+	BACnetConstructedDataVendorIdentifierBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataVendorIdentifierBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataVendorIdentifierBuilder().(*_BACnetConstructedDataVendorIdentifierBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataVendorName() interface {
+	BACnetConstructedDataVendorNameBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataVendorNameBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataVendorNameBuilder().(*_BACnetConstructedDataVendorNameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataVerificationTime() interface {
+	BACnetConstructedDataVerificationTimeBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataVerificationTimeBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataVerificationTimeBuilder().(*_BACnetConstructedDataVerificationTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataVirtualMACAddressTable() interface {
+	BACnetConstructedDataVirtualMACAddressTableBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataVirtualMACAddressTableBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataVirtualMACAddressTableBuilder().(*_BACnetConstructedDataVirtualMACAddressTableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataVTClassesSupported() interface {
+	BACnetConstructedDataVTClassesSupportedBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataVTClassesSupportedBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataVTClassesSupportedBuilder().(*_BACnetConstructedDataVTClassesSupportedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataWeeklySchedule() interface {
+	BACnetConstructedDataWeeklyScheduleBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataWeeklyScheduleBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataWeeklyScheduleBuilder().(*_BACnetConstructedDataWeeklyScheduleBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataWindowInterval() interface {
+	BACnetConstructedDataWindowIntervalBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataWindowIntervalBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataWindowIntervalBuilder().(*_BACnetConstructedDataWindowIntervalBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataWindowSamples() interface {
+	BACnetConstructedDataWindowSamplesBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataWindowSamplesBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataWindowSamplesBuilder().(*_BACnetConstructedDataWindowSamplesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataWriteStatus() interface {
+	BACnetConstructedDataWriteStatusBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataWriteStatusBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataWriteStatusBuilder().(*_BACnetConstructedDataWriteStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataZoneFrom() interface {
+	BACnetConstructedDataZoneFromBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataZoneFromBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataZoneFromBuilder().(*_BACnetConstructedDataZoneFromBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataZoneMembers() interface {
+	BACnetConstructedDataZoneMembersBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataZoneMembersBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataZoneMembersBuilder().(*_BACnetConstructedDataZoneMembersBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataZoneTo() interface {
+	BACnetConstructedDataZoneToBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataZoneToBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataZoneToBuilder().(*_BACnetConstructedDataZoneToBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) AsBACnetConstructedDataUnspecified() interface {
+	BACnetConstructedDataUnspecifiedBuilder
+	Done() BACnetConstructedDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConstructedDataUnspecifiedBuilder
+		Done() BACnetConstructedDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConstructedDataUnspecifiedBuilder().(*_BACnetConstructedDataUnspecifiedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConstructedDataBuilder) Build() (BACnetConstructedData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetConstructedData()
+}
+
+func (b *_BACnetConstructedDataBuilder) MustBuild() BACnetConstructedData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetConstructedDataBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetConstructedDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBuilder creates a BACnetConstructedDataBuilder
-func (m *_BACnetConstructedData) CreateBACnetConstructedDataBuilder() BACnetConstructedDataBuilder {
-	if m == nil {
+func (b *_BACnetConstructedData) CreateBACnetConstructedDataBuilder() BACnetConstructedDataBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBuilder()
 	}
-	return &_BACnetConstructedDataBuilder{_BACnetConstructedData: m.deepCopy()}
+	return &_BACnetConstructedDataBuilder{_BACnetConstructedData: b.deepCopy()}
 }
 
 ///////////////////////
@@ -2865,10 +16700,6 @@ func (m *_BACnetConstructedData) parse(ctx context.Context, readBuffer utils.Rea
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TRACE_FLAG && peekedTagNumber == uint8(1): // BACnetConstructedDataTraceFlag
 		if _child, err = new(_BACnetConstructedDataTraceFlag).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTraceFlag for type-switch of BACnetConstructedData")
-		}
-	case objectTypeArgument == BACnetObjectType_LIGHTING_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_TRACKING_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataLightingOutputTrackingValue
-		if _child, err = new(_BACnetConstructedDataLightingOutputTrackingValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLightingOutputTrackingValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIGHTING_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_TRACKING_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataLightingOutputTrackingValue
 		if _child, err = new(_BACnetConstructedDataLightingOutputTrackingValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {

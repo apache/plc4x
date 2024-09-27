@@ -111,60 +111,79 @@ func NewCipWriteRequestBuilder() CipWriteRequestBuilder {
 type _CipWriteRequestBuilder struct {
 	*_CipWriteRequest
 
+	parentBuilder *_CipServiceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CipWriteRequestBuilder) = (*_CipWriteRequestBuilder)(nil)
 
-func (m *_CipWriteRequestBuilder) WithMandatoryFields(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte) CipWriteRequestBuilder {
-	return m.WithTag(tag...).WithDataType(dataType).WithElementNb(elementNb).WithData(data...)
+func (b *_CipWriteRequestBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
 }
 
-func (m *_CipWriteRequestBuilder) WithTag(tag ...byte) CipWriteRequestBuilder {
-	m.Tag = tag
-	return m
+func (b *_CipWriteRequestBuilder) WithMandatoryFields(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte) CipWriteRequestBuilder {
+	return b.WithTag(tag...).WithDataType(dataType).WithElementNb(elementNb).WithData(data...)
 }
 
-func (m *_CipWriteRequestBuilder) WithDataType(dataType CIPDataTypeCode) CipWriteRequestBuilder {
-	m.DataType = dataType
-	return m
+func (b *_CipWriteRequestBuilder) WithTag(tag ...byte) CipWriteRequestBuilder {
+	b.Tag = tag
+	return b
 }
 
-func (m *_CipWriteRequestBuilder) WithElementNb(elementNb uint16) CipWriteRequestBuilder {
-	m.ElementNb = elementNb
-	return m
+func (b *_CipWriteRequestBuilder) WithDataType(dataType CIPDataTypeCode) CipWriteRequestBuilder {
+	b.DataType = dataType
+	return b
 }
 
-func (m *_CipWriteRequestBuilder) WithData(data ...byte) CipWriteRequestBuilder {
-	m.Data = data
-	return m
+func (b *_CipWriteRequestBuilder) WithElementNb(elementNb uint16) CipWriteRequestBuilder {
+	b.ElementNb = elementNb
+	return b
 }
 
-func (m *_CipWriteRequestBuilder) Build() (CipWriteRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CipWriteRequestBuilder) WithData(data ...byte) CipWriteRequestBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_CipWriteRequestBuilder) Build() (CipWriteRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CipWriteRequest.deepCopy(), nil
+	return b._CipWriteRequest.deepCopy(), nil
 }
 
-func (m *_CipWriteRequestBuilder) MustBuild() CipWriteRequest {
-	build, err := m.Build()
+func (b *_CipWriteRequestBuilder) MustBuild() CipWriteRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CipWriteRequestBuilder) DeepCopy() any {
-	return m.CreateCipWriteRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipWriteRequestBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipWriteRequestBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_CipWriteRequestBuilder) DeepCopy() any {
+	_copy := b.CreateCipWriteRequestBuilder().(*_CipWriteRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCipWriteRequestBuilder creates a CipWriteRequestBuilder
-func (m *_CipWriteRequest) CreateCipWriteRequestBuilder() CipWriteRequestBuilder {
-	if m == nil {
+func (b *_CipWriteRequest) CreateCipWriteRequestBuilder() CipWriteRequestBuilder {
+	if b == nil {
 		return NewCipWriteRequestBuilder()
 	}
-	return &_CipWriteRequestBuilder{_CipWriteRequest: m.deepCopy()}
+	return &_CipWriteRequestBuilder{_CipWriteRequest: b.deepCopy()}
 }
 
 ///////////////////////

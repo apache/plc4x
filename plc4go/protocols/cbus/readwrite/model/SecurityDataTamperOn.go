@@ -85,40 +85,59 @@ func NewSecurityDataTamperOnBuilder() SecurityDataTamperOnBuilder {
 type _SecurityDataTamperOnBuilder struct {
 	*_SecurityDataTamperOn
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataTamperOnBuilder) = (*_SecurityDataTamperOnBuilder)(nil)
 
-func (m *_SecurityDataTamperOnBuilder) WithMandatoryFields() SecurityDataTamperOnBuilder {
-	return m
+func (b *_SecurityDataTamperOnBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataTamperOnBuilder) Build() (SecurityDataTamperOn, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataTamperOnBuilder) WithMandatoryFields() SecurityDataTamperOnBuilder {
+	return b
+}
+
+func (b *_SecurityDataTamperOnBuilder) Build() (SecurityDataTamperOn, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataTamperOn.deepCopy(), nil
+	return b._SecurityDataTamperOn.deepCopy(), nil
 }
 
-func (m *_SecurityDataTamperOnBuilder) MustBuild() SecurityDataTamperOn {
-	build, err := m.Build()
+func (b *_SecurityDataTamperOnBuilder) MustBuild() SecurityDataTamperOn {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataTamperOnBuilder) DeepCopy() any {
-	return m.CreateSecurityDataTamperOnBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataTamperOnBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataTamperOnBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataTamperOnBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataTamperOnBuilder().(*_SecurityDataTamperOnBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataTamperOnBuilder creates a SecurityDataTamperOnBuilder
-func (m *_SecurityDataTamperOn) CreateSecurityDataTamperOnBuilder() SecurityDataTamperOnBuilder {
-	if m == nil {
+func (b *_SecurityDataTamperOn) CreateSecurityDataTamperOnBuilder() SecurityDataTamperOnBuilder {
+	if b == nil {
 		return NewSecurityDataTamperOnBuilder()
 	}
-	return &_SecurityDataTamperOnBuilder{_SecurityDataTamperOn: m.deepCopy()}
+	return &_SecurityDataTamperOnBuilder{_SecurityDataTamperOn: b.deepCopy()}
 }
 
 ///////////////////////

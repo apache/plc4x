@@ -100,64 +100,83 @@ func NewBACnetConstructedDataOccupancyStateBuilder() BACnetConstructedDataOccupa
 type _BACnetConstructedDataOccupancyStateBuilder struct {
 	*_BACnetConstructedDataOccupancyState
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataOccupancyStateBuilder) = (*_BACnetConstructedDataOccupancyStateBuilder)(nil)
 
-func (m *_BACnetConstructedDataOccupancyStateBuilder) WithMandatoryFields(occupancyState BACnetAccessZoneOccupancyStateTagged) BACnetConstructedDataOccupancyStateBuilder {
-	return m.WithOccupancyState(occupancyState)
+func (b *_BACnetConstructedDataOccupancyStateBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataOccupancyStateBuilder) WithOccupancyState(occupancyState BACnetAccessZoneOccupancyStateTagged) BACnetConstructedDataOccupancyStateBuilder {
-	m.OccupancyState = occupancyState
-	return m
+func (b *_BACnetConstructedDataOccupancyStateBuilder) WithMandatoryFields(occupancyState BACnetAccessZoneOccupancyStateTagged) BACnetConstructedDataOccupancyStateBuilder {
+	return b.WithOccupancyState(occupancyState)
 }
 
-func (m *_BACnetConstructedDataOccupancyStateBuilder) WithOccupancyStateBuilder(builderSupplier func(BACnetAccessZoneOccupancyStateTaggedBuilder) BACnetAccessZoneOccupancyStateTaggedBuilder) BACnetConstructedDataOccupancyStateBuilder {
-	builder := builderSupplier(m.OccupancyState.CreateBACnetAccessZoneOccupancyStateTaggedBuilder())
+func (b *_BACnetConstructedDataOccupancyStateBuilder) WithOccupancyState(occupancyState BACnetAccessZoneOccupancyStateTagged) BACnetConstructedDataOccupancyStateBuilder {
+	b.OccupancyState = occupancyState
+	return b
+}
+
+func (b *_BACnetConstructedDataOccupancyStateBuilder) WithOccupancyStateBuilder(builderSupplier func(BACnetAccessZoneOccupancyStateTaggedBuilder) BACnetAccessZoneOccupancyStateTaggedBuilder) BACnetConstructedDataOccupancyStateBuilder {
+	builder := builderSupplier(b.OccupancyState.CreateBACnetAccessZoneOccupancyStateTaggedBuilder())
 	var err error
-	m.OccupancyState, err = builder.Build()
+	b.OccupancyState, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAccessZoneOccupancyStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAccessZoneOccupancyStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataOccupancyStateBuilder) Build() (BACnetConstructedDataOccupancyState, error) {
-	if m.OccupancyState == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataOccupancyStateBuilder) Build() (BACnetConstructedDataOccupancyState, error) {
+	if b.OccupancyState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'occupancyState' not set"))
+		b.err.Append(errors.New("mandatory field 'occupancyState' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataOccupancyState.deepCopy(), nil
+	return b._BACnetConstructedDataOccupancyState.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataOccupancyStateBuilder) MustBuild() BACnetConstructedDataOccupancyState {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataOccupancyStateBuilder) MustBuild() BACnetConstructedDataOccupancyState {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataOccupancyStateBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataOccupancyStateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataOccupancyStateBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataOccupancyStateBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataOccupancyStateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataOccupancyStateBuilder().(*_BACnetConstructedDataOccupancyStateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataOccupancyStateBuilder creates a BACnetConstructedDataOccupancyStateBuilder
-func (m *_BACnetConstructedDataOccupancyState) CreateBACnetConstructedDataOccupancyStateBuilder() BACnetConstructedDataOccupancyStateBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataOccupancyState) CreateBACnetConstructedDataOccupancyStateBuilder() BACnetConstructedDataOccupancyStateBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataOccupancyStateBuilder()
 	}
-	return &_BACnetConstructedDataOccupancyStateBuilder{_BACnetConstructedDataOccupancyState: m.deepCopy()}
+	return &_BACnetConstructedDataOccupancyStateBuilder{_BACnetConstructedDataOccupancyState: b.deepCopy()}
 }
 
 ///////////////////////

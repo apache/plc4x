@@ -85,40 +85,59 @@ func NewNullExtensionBuilder() NullExtensionBuilder {
 type _NullExtensionBuilder struct {
 	*_NullExtension
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NullExtensionBuilder) = (*_NullExtensionBuilder)(nil)
 
-func (m *_NullExtensionBuilder) WithMandatoryFields() NullExtensionBuilder {
-	return m
+func (b *_NullExtensionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_NullExtensionBuilder) Build() (NullExtension, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NullExtensionBuilder) WithMandatoryFields() NullExtensionBuilder {
+	return b
+}
+
+func (b *_NullExtensionBuilder) Build() (NullExtension, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NullExtension.deepCopy(), nil
+	return b._NullExtension.deepCopy(), nil
 }
 
-func (m *_NullExtensionBuilder) MustBuild() NullExtension {
-	build, err := m.Build()
+func (b *_NullExtensionBuilder) MustBuild() NullExtension {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NullExtensionBuilder) DeepCopy() any {
-	return m.CreateNullExtensionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NullExtensionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NullExtensionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_NullExtensionBuilder) DeepCopy() any {
+	_copy := b.CreateNullExtensionBuilder().(*_NullExtensionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNullExtensionBuilder creates a NullExtensionBuilder
-func (m *_NullExtension) CreateNullExtensionBuilder() NullExtensionBuilder {
-	if m == nil {
+func (b *_NullExtension) CreateNullExtensionBuilder() NullExtensionBuilder {
+	if b == nil {
 		return NewNullExtensionBuilder()
 	}
-	return &_NullExtensionBuilder{_NullExtension: m.deepCopy()}
+	return &_NullExtensionBuilder{_NullExtension: b.deepCopy()}
 }
 
 ///////////////////////

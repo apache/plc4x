@@ -98,64 +98,83 @@ func NewBACnetPriorityValueObjectidentifierBuilder() BACnetPriorityValueObjectid
 type _BACnetPriorityValueObjectidentifierBuilder struct {
 	*_BACnetPriorityValueObjectidentifier
 
+	parentBuilder *_BACnetPriorityValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPriorityValueObjectidentifierBuilder) = (*_BACnetPriorityValueObjectidentifierBuilder)(nil)
 
-func (m *_BACnetPriorityValueObjectidentifierBuilder) WithMandatoryFields(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetPriorityValueObjectidentifierBuilder {
-	return m.WithObjectidentifierValue(objectidentifierValue)
+func (b *_BACnetPriorityValueObjectidentifierBuilder) setParent(contract BACnetPriorityValueContract) {
+	b.BACnetPriorityValueContract = contract
 }
 
-func (m *_BACnetPriorityValueObjectidentifierBuilder) WithObjectidentifierValue(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetPriorityValueObjectidentifierBuilder {
-	m.ObjectidentifierValue = objectidentifierValue
-	return m
+func (b *_BACnetPriorityValueObjectidentifierBuilder) WithMandatoryFields(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetPriorityValueObjectidentifierBuilder {
+	return b.WithObjectidentifierValue(objectidentifierValue)
 }
 
-func (m *_BACnetPriorityValueObjectidentifierBuilder) WithObjectidentifierValueBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetPriorityValueObjectidentifierBuilder {
-	builder := builderSupplier(m.ObjectidentifierValue.CreateBACnetApplicationTagObjectIdentifierBuilder())
+func (b *_BACnetPriorityValueObjectidentifierBuilder) WithObjectidentifierValue(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetPriorityValueObjectidentifierBuilder {
+	b.ObjectidentifierValue = objectidentifierValue
+	return b
+}
+
+func (b *_BACnetPriorityValueObjectidentifierBuilder) WithObjectidentifierValueBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetPriorityValueObjectidentifierBuilder {
+	builder := builderSupplier(b.ObjectidentifierValue.CreateBACnetApplicationTagObjectIdentifierBuilder())
 	var err error
-	m.ObjectidentifierValue, err = builder.Build()
+	b.ObjectidentifierValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPriorityValueObjectidentifierBuilder) Build() (BACnetPriorityValueObjectidentifier, error) {
-	if m.ObjectidentifierValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPriorityValueObjectidentifierBuilder) Build() (BACnetPriorityValueObjectidentifier, error) {
+	if b.ObjectidentifierValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectidentifierValue' not set"))
+		b.err.Append(errors.New("mandatory field 'objectidentifierValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPriorityValueObjectidentifier.deepCopy(), nil
+	return b._BACnetPriorityValueObjectidentifier.deepCopy(), nil
 }
 
-func (m *_BACnetPriorityValueObjectidentifierBuilder) MustBuild() BACnetPriorityValueObjectidentifier {
-	build, err := m.Build()
+func (b *_BACnetPriorityValueObjectidentifierBuilder) MustBuild() BACnetPriorityValueObjectidentifier {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPriorityValueObjectidentifierBuilder) DeepCopy() any {
-	return m.CreateBACnetPriorityValueObjectidentifierBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPriorityValueObjectidentifierBuilder) Done() BACnetPriorityValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPriorityValueObjectidentifierBuilder) buildForBACnetPriorityValue() (BACnetPriorityValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPriorityValueObjectidentifierBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityValueObjectidentifierBuilder().(*_BACnetPriorityValueObjectidentifierBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPriorityValueObjectidentifierBuilder creates a BACnetPriorityValueObjectidentifierBuilder
-func (m *_BACnetPriorityValueObjectidentifier) CreateBACnetPriorityValueObjectidentifierBuilder() BACnetPriorityValueObjectidentifierBuilder {
-	if m == nil {
+func (b *_BACnetPriorityValueObjectidentifier) CreateBACnetPriorityValueObjectidentifierBuilder() BACnetPriorityValueObjectidentifierBuilder {
+	if b == nil {
 		return NewBACnetPriorityValueObjectidentifierBuilder()
 	}
-	return &_BACnetPriorityValueObjectidentifierBuilder{_BACnetPriorityValueObjectidentifier: m.deepCopy()}
+	return &_BACnetPriorityValueObjectidentifierBuilder{_BACnetPriorityValueObjectidentifier: b.deepCopy()}
 }
 
 ///////////////////////

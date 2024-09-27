@@ -99,50 +99,69 @@ func NewVariantSByteBuilder() VariantSByteBuilder {
 type _VariantSByteBuilder struct {
 	*_VariantSByte
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantSByteBuilder) = (*_VariantSByteBuilder)(nil)
 
-func (m *_VariantSByteBuilder) WithMandatoryFields(value []byte) VariantSByteBuilder {
-	return m.WithValue(value...)
+func (b *_VariantSByteBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantSByteBuilder) WithOptionalArrayLength(arrayLength int32) VariantSByteBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantSByteBuilder) WithMandatoryFields(value []byte) VariantSByteBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantSByteBuilder) WithValue(value ...byte) VariantSByteBuilder {
-	m.Value = value
-	return m
+func (b *_VariantSByteBuilder) WithOptionalArrayLength(arrayLength int32) VariantSByteBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantSByteBuilder) Build() (VariantSByte, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantSByteBuilder) WithValue(value ...byte) VariantSByteBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantSByteBuilder) Build() (VariantSByte, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantSByte.deepCopy(), nil
+	return b._VariantSByte.deepCopy(), nil
 }
 
-func (m *_VariantSByteBuilder) MustBuild() VariantSByte {
-	build, err := m.Build()
+func (b *_VariantSByteBuilder) MustBuild() VariantSByte {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantSByteBuilder) DeepCopy() any {
-	return m.CreateVariantSByteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantSByteBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantSByteBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantSByteBuilder) DeepCopy() any {
+	_copy := b.CreateVariantSByteBuilder().(*_VariantSByteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantSByteBuilder creates a VariantSByteBuilder
-func (m *_VariantSByte) CreateVariantSByteBuilder() VariantSByteBuilder {
-	if m == nil {
+func (b *_VariantSByte) CreateVariantSByteBuilder() VariantSByteBuilder {
+	if b == nil {
 		return NewVariantSByteBuilder()
 	}
-	return &_VariantSByteBuilder{_VariantSByte: m.deepCopy()}
+	return &_VariantSByteBuilder{_VariantSByte: b.deepCopy()}
 }
 
 ///////////////////////

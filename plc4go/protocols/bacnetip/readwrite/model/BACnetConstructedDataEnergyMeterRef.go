@@ -100,64 +100,83 @@ func NewBACnetConstructedDataEnergyMeterRefBuilder() BACnetConstructedDataEnergy
 type _BACnetConstructedDataEnergyMeterRefBuilder struct {
 	*_BACnetConstructedDataEnergyMeterRef
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataEnergyMeterRefBuilder) = (*_BACnetConstructedDataEnergyMeterRefBuilder)(nil)
 
-func (m *_BACnetConstructedDataEnergyMeterRefBuilder) WithMandatoryFields(energyMeterRef BACnetDeviceObjectReference) BACnetConstructedDataEnergyMeterRefBuilder {
-	return m.WithEnergyMeterRef(energyMeterRef)
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataEnergyMeterRefBuilder) WithEnergyMeterRef(energyMeterRef BACnetDeviceObjectReference) BACnetConstructedDataEnergyMeterRefBuilder {
-	m.EnergyMeterRef = energyMeterRef
-	return m
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) WithMandatoryFields(energyMeterRef BACnetDeviceObjectReference) BACnetConstructedDataEnergyMeterRefBuilder {
+	return b.WithEnergyMeterRef(energyMeterRef)
 }
 
-func (m *_BACnetConstructedDataEnergyMeterRefBuilder) WithEnergyMeterRefBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataEnergyMeterRefBuilder {
-	builder := builderSupplier(m.EnergyMeterRef.CreateBACnetDeviceObjectReferenceBuilder())
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) WithEnergyMeterRef(energyMeterRef BACnetDeviceObjectReference) BACnetConstructedDataEnergyMeterRefBuilder {
+	b.EnergyMeterRef = energyMeterRef
+	return b
+}
+
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) WithEnergyMeterRefBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataEnergyMeterRefBuilder {
+	builder := builderSupplier(b.EnergyMeterRef.CreateBACnetDeviceObjectReferenceBuilder())
 	var err error
-	m.EnergyMeterRef, err = builder.Build()
+	b.EnergyMeterRef, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataEnergyMeterRefBuilder) Build() (BACnetConstructedDataEnergyMeterRef, error) {
-	if m.EnergyMeterRef == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) Build() (BACnetConstructedDataEnergyMeterRef, error) {
+	if b.EnergyMeterRef == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'energyMeterRef' not set"))
+		b.err.Append(errors.New("mandatory field 'energyMeterRef' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataEnergyMeterRef.deepCopy(), nil
+	return b._BACnetConstructedDataEnergyMeterRef.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataEnergyMeterRefBuilder) MustBuild() BACnetConstructedDataEnergyMeterRef {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) MustBuild() BACnetConstructedDataEnergyMeterRef {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataEnergyMeterRefBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataEnergyMeterRefBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEnergyMeterRefBuilder().(*_BACnetConstructedDataEnergyMeterRefBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataEnergyMeterRefBuilder creates a BACnetConstructedDataEnergyMeterRefBuilder
-func (m *_BACnetConstructedDataEnergyMeterRef) CreateBACnetConstructedDataEnergyMeterRefBuilder() BACnetConstructedDataEnergyMeterRefBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataEnergyMeterRef) CreateBACnetConstructedDataEnergyMeterRefBuilder() BACnetConstructedDataEnergyMeterRefBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataEnergyMeterRefBuilder()
 	}
-	return &_BACnetConstructedDataEnergyMeterRefBuilder{_BACnetConstructedDataEnergyMeterRef: m.deepCopy()}
+	return &_BACnetConstructedDataEnergyMeterRefBuilder{_BACnetConstructedDataEnergyMeterRef: b.deepCopy()}
 }
 
 ///////////////////////

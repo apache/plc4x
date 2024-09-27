@@ -100,64 +100,83 @@ func NewBACnetConstructedDataBBMDAcceptFDRegistrationsBuilder() BACnetConstructe
 type _BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder struct {
 	*_BACnetConstructedDataBBMDAcceptFDRegistrations
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) = (*_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder)(nil)
 
-func (m *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) WithMandatoryFields(bbmdAcceptFDRegistrations BACnetApplicationTagBoolean) BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder {
-	return m.WithBbmdAcceptFDRegistrations(bbmdAcceptFDRegistrations)
+func (b *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) WithBbmdAcceptFDRegistrations(bbmdAcceptFDRegistrations BACnetApplicationTagBoolean) BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder {
-	m.BbmdAcceptFDRegistrations = bbmdAcceptFDRegistrations
-	return m
+func (b *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) WithMandatoryFields(bbmdAcceptFDRegistrations BACnetApplicationTagBoolean) BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder {
+	return b.WithBbmdAcceptFDRegistrations(bbmdAcceptFDRegistrations)
 }
 
-func (m *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) WithBbmdAcceptFDRegistrationsBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder {
-	builder := builderSupplier(m.BbmdAcceptFDRegistrations.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) WithBbmdAcceptFDRegistrations(bbmdAcceptFDRegistrations BACnetApplicationTagBoolean) BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder {
+	b.BbmdAcceptFDRegistrations = bbmdAcceptFDRegistrations
+	return b
+}
+
+func (b *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) WithBbmdAcceptFDRegistrationsBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder {
+	builder := builderSupplier(b.BbmdAcceptFDRegistrations.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.BbmdAcceptFDRegistrations, err = builder.Build()
+	b.BbmdAcceptFDRegistrations, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) Build() (BACnetConstructedDataBBMDAcceptFDRegistrations, error) {
-	if m.BbmdAcceptFDRegistrations == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) Build() (BACnetConstructedDataBBMDAcceptFDRegistrations, error) {
+	if b.BbmdAcceptFDRegistrations == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'bbmdAcceptFDRegistrations' not set"))
+		b.err.Append(errors.New("mandatory field 'bbmdAcceptFDRegistrations' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBBMDAcceptFDRegistrations.deepCopy(), nil
+	return b._BACnetConstructedDataBBMDAcceptFDRegistrations.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) MustBuild() BACnetConstructedDataBBMDAcceptFDRegistrations {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) MustBuild() BACnetConstructedDataBBMDAcceptFDRegistrations {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBBMDAcceptFDRegistrationsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBBMDAcceptFDRegistrationsBuilder().(*_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBBMDAcceptFDRegistrationsBuilder creates a BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder
-func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) CreateBACnetConstructedDataBBMDAcceptFDRegistrationsBuilder() BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBBMDAcceptFDRegistrations) CreateBACnetConstructedDataBBMDAcceptFDRegistrationsBuilder() BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBBMDAcceptFDRegistrationsBuilder()
 	}
-	return &_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder{_BACnetConstructedDataBBMDAcceptFDRegistrations: m.deepCopy()}
+	return &_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder{_BACnetConstructedDataBBMDAcceptFDRegistrations: b.deepCopy()}
 }
 
 ///////////////////////

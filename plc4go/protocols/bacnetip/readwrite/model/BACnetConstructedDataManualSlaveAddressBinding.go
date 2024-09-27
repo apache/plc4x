@@ -93,45 +93,64 @@ func NewBACnetConstructedDataManualSlaveAddressBindingBuilder() BACnetConstructe
 type _BACnetConstructedDataManualSlaveAddressBindingBuilder struct {
 	*_BACnetConstructedDataManualSlaveAddressBinding
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataManualSlaveAddressBindingBuilder) = (*_BACnetConstructedDataManualSlaveAddressBindingBuilder)(nil)
 
-func (m *_BACnetConstructedDataManualSlaveAddressBindingBuilder) WithMandatoryFields(manualSlaveAddressBinding []BACnetAddressBinding) BACnetConstructedDataManualSlaveAddressBindingBuilder {
-	return m.WithManualSlaveAddressBinding(manualSlaveAddressBinding...)
+func (b *_BACnetConstructedDataManualSlaveAddressBindingBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataManualSlaveAddressBindingBuilder) WithManualSlaveAddressBinding(manualSlaveAddressBinding ...BACnetAddressBinding) BACnetConstructedDataManualSlaveAddressBindingBuilder {
-	m.ManualSlaveAddressBinding = manualSlaveAddressBinding
-	return m
+func (b *_BACnetConstructedDataManualSlaveAddressBindingBuilder) WithMandatoryFields(manualSlaveAddressBinding []BACnetAddressBinding) BACnetConstructedDataManualSlaveAddressBindingBuilder {
+	return b.WithManualSlaveAddressBinding(manualSlaveAddressBinding...)
 }
 
-func (m *_BACnetConstructedDataManualSlaveAddressBindingBuilder) Build() (BACnetConstructedDataManualSlaveAddressBinding, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataManualSlaveAddressBindingBuilder) WithManualSlaveAddressBinding(manualSlaveAddressBinding ...BACnetAddressBinding) BACnetConstructedDataManualSlaveAddressBindingBuilder {
+	b.ManualSlaveAddressBinding = manualSlaveAddressBinding
+	return b
+}
+
+func (b *_BACnetConstructedDataManualSlaveAddressBindingBuilder) Build() (BACnetConstructedDataManualSlaveAddressBinding, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataManualSlaveAddressBinding.deepCopy(), nil
+	return b._BACnetConstructedDataManualSlaveAddressBinding.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataManualSlaveAddressBindingBuilder) MustBuild() BACnetConstructedDataManualSlaveAddressBinding {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataManualSlaveAddressBindingBuilder) MustBuild() BACnetConstructedDataManualSlaveAddressBinding {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataManualSlaveAddressBindingBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataManualSlaveAddressBindingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataManualSlaveAddressBindingBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataManualSlaveAddressBindingBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataManualSlaveAddressBindingBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataManualSlaveAddressBindingBuilder().(*_BACnetConstructedDataManualSlaveAddressBindingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataManualSlaveAddressBindingBuilder creates a BACnetConstructedDataManualSlaveAddressBindingBuilder
-func (m *_BACnetConstructedDataManualSlaveAddressBinding) CreateBACnetConstructedDataManualSlaveAddressBindingBuilder() BACnetConstructedDataManualSlaveAddressBindingBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataManualSlaveAddressBinding) CreateBACnetConstructedDataManualSlaveAddressBindingBuilder() BACnetConstructedDataManualSlaveAddressBindingBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataManualSlaveAddressBindingBuilder()
 	}
-	return &_BACnetConstructedDataManualSlaveAddressBindingBuilder{_BACnetConstructedDataManualSlaveAddressBinding: m.deepCopy()}
+	return &_BACnetConstructedDataManualSlaveAddressBindingBuilder{_BACnetConstructedDataManualSlaveAddressBinding: b.deepCopy()}
 }
 
 ///////////////////////

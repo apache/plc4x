@@ -105,55 +105,74 @@ func NewModbusPDUWriteMultipleCoilsRequestBuilder() ModbusPDUWriteMultipleCoilsR
 type _ModbusPDUWriteMultipleCoilsRequestBuilder struct {
 	*_ModbusPDUWriteMultipleCoilsRequest
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUWriteMultipleCoilsRequestBuilder) = (*_ModbusPDUWriteMultipleCoilsRequestBuilder)(nil)
 
-func (m *_ModbusPDUWriteMultipleCoilsRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16, value []byte) ModbusPDUWriteMultipleCoilsRequestBuilder {
-	return m.WithStartingAddress(startingAddress).WithQuantity(quantity).WithValue(value...)
+func (b *_ModbusPDUWriteMultipleCoilsRequestBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsRequestBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUWriteMultipleCoilsRequestBuilder {
-	m.StartingAddress = startingAddress
-	return m
+func (b *_ModbusPDUWriteMultipleCoilsRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16, value []byte) ModbusPDUWriteMultipleCoilsRequestBuilder {
+	return b.WithStartingAddress(startingAddress).WithQuantity(quantity).WithValue(value...)
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsRequestBuilder) WithQuantity(quantity uint16) ModbusPDUWriteMultipleCoilsRequestBuilder {
-	m.Quantity = quantity
-	return m
+func (b *_ModbusPDUWriteMultipleCoilsRequestBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUWriteMultipleCoilsRequestBuilder {
+	b.StartingAddress = startingAddress
+	return b
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsRequestBuilder) WithValue(value ...byte) ModbusPDUWriteMultipleCoilsRequestBuilder {
-	m.Value = value
-	return m
+func (b *_ModbusPDUWriteMultipleCoilsRequestBuilder) WithQuantity(quantity uint16) ModbusPDUWriteMultipleCoilsRequestBuilder {
+	b.Quantity = quantity
+	return b
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsRequestBuilder) Build() (ModbusPDUWriteMultipleCoilsRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUWriteMultipleCoilsRequestBuilder) WithValue(value ...byte) ModbusPDUWriteMultipleCoilsRequestBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ModbusPDUWriteMultipleCoilsRequestBuilder) Build() (ModbusPDUWriteMultipleCoilsRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUWriteMultipleCoilsRequest.deepCopy(), nil
+	return b._ModbusPDUWriteMultipleCoilsRequest.deepCopy(), nil
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsRequestBuilder) MustBuild() ModbusPDUWriteMultipleCoilsRequest {
-	build, err := m.Build()
+func (b *_ModbusPDUWriteMultipleCoilsRequestBuilder) MustBuild() ModbusPDUWriteMultipleCoilsRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsRequestBuilder) DeepCopy() any {
-	return m.CreateModbusPDUWriteMultipleCoilsRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUWriteMultipleCoilsRequestBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUWriteMultipleCoilsRequestBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUWriteMultipleCoilsRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUWriteMultipleCoilsRequestBuilder().(*_ModbusPDUWriteMultipleCoilsRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUWriteMultipleCoilsRequestBuilder creates a ModbusPDUWriteMultipleCoilsRequestBuilder
-func (m *_ModbusPDUWriteMultipleCoilsRequest) CreateModbusPDUWriteMultipleCoilsRequestBuilder() ModbusPDUWriteMultipleCoilsRequestBuilder {
-	if m == nil {
+func (b *_ModbusPDUWriteMultipleCoilsRequest) CreateModbusPDUWriteMultipleCoilsRequestBuilder() ModbusPDUWriteMultipleCoilsRequestBuilder {
+	if b == nil {
 		return NewModbusPDUWriteMultipleCoilsRequestBuilder()
 	}
-	return &_ModbusPDUWriteMultipleCoilsRequestBuilder{_ModbusPDUWriteMultipleCoilsRequest: m.deepCopy()}
+	return &_ModbusPDUWriteMultipleCoilsRequestBuilder{_ModbusPDUWriteMultipleCoilsRequest: b.deepCopy()}
 }
 
 ///////////////////////

@@ -85,10 +85,19 @@ type S7VarRequestParameterItemBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() S7VarRequestParameterItemBuilder
+	// AsS7VarRequestParameterItemAddress converts this build to a subType of S7VarRequestParameterItem. It is always possible to return to current builder using Done()
+	AsS7VarRequestParameterItemAddress() interface {
+		S7VarRequestParameterItemAddressBuilder
+		Done() S7VarRequestParameterItemBuilder
+	}
 	// Build builds the S7VarRequestParameterItem or returns an error if something is wrong
-	Build() (S7VarRequestParameterItemContract, error)
+	PartialBuild() (S7VarRequestParameterItemContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() S7VarRequestParameterItemContract
+	PartialMustBuild() S7VarRequestParameterItemContract
+	// Build builds the S7VarRequestParameterItem or returns an error if something is wrong
+	Build() (S7VarRequestParameterItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7VarRequestParameterItem
 }
 
 // NewS7VarRequestParameterItemBuilder() creates a S7VarRequestParameterItemBuilder
@@ -96,43 +105,93 @@ func NewS7VarRequestParameterItemBuilder() S7VarRequestParameterItemBuilder {
 	return &_S7VarRequestParameterItemBuilder{_S7VarRequestParameterItem: new(_S7VarRequestParameterItem)}
 }
 
+type _S7VarRequestParameterItemChildBuilder interface {
+	utils.Copyable
+	setParent(S7VarRequestParameterItemContract)
+	buildForS7VarRequestParameterItem() (S7VarRequestParameterItem, error)
+}
+
 type _S7VarRequestParameterItemBuilder struct {
 	*_S7VarRequestParameterItem
+
+	childBuilder _S7VarRequestParameterItemChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (S7VarRequestParameterItemBuilder) = (*_S7VarRequestParameterItemBuilder)(nil)
 
-func (m *_S7VarRequestParameterItemBuilder) WithMandatoryFields() S7VarRequestParameterItemBuilder {
-	return m
+func (b *_S7VarRequestParameterItemBuilder) WithMandatoryFields() S7VarRequestParameterItemBuilder {
+	return b
 }
 
-func (m *_S7VarRequestParameterItemBuilder) Build() (S7VarRequestParameterItemContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7VarRequestParameterItemBuilder) PartialBuild() (S7VarRequestParameterItemContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7VarRequestParameterItem.deepCopy(), nil
+	return b._S7VarRequestParameterItem.deepCopy(), nil
 }
 
-func (m *_S7VarRequestParameterItemBuilder) MustBuild() S7VarRequestParameterItemContract {
-	build, err := m.Build()
+func (b *_S7VarRequestParameterItemBuilder) PartialMustBuild() S7VarRequestParameterItemContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7VarRequestParameterItemBuilder) DeepCopy() any {
-	return m.CreateS7VarRequestParameterItemBuilder()
+func (b *_S7VarRequestParameterItemBuilder) AsS7VarRequestParameterItemAddress() interface {
+	S7VarRequestParameterItemAddressBuilder
+	Done() S7VarRequestParameterItemBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7VarRequestParameterItemAddressBuilder
+		Done() S7VarRequestParameterItemBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7VarRequestParameterItemAddressBuilder().(*_S7VarRequestParameterItemAddressBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7VarRequestParameterItemBuilder) Build() (S7VarRequestParameterItem, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForS7VarRequestParameterItem()
+}
+
+func (b *_S7VarRequestParameterItemBuilder) MustBuild() S7VarRequestParameterItem {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_S7VarRequestParameterItemBuilder) DeepCopy() any {
+	_copy := b.CreateS7VarRequestParameterItemBuilder().(*_S7VarRequestParameterItemBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_S7VarRequestParameterItemChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7VarRequestParameterItemBuilder creates a S7VarRequestParameterItemBuilder
-func (m *_S7VarRequestParameterItem) CreateS7VarRequestParameterItemBuilder() S7VarRequestParameterItemBuilder {
-	if m == nil {
+func (b *_S7VarRequestParameterItem) CreateS7VarRequestParameterItemBuilder() S7VarRequestParameterItemBuilder {
+	if b == nil {
 		return NewS7VarRequestParameterItemBuilder()
 	}
-	return &_S7VarRequestParameterItemBuilder{_S7VarRequestParameterItem: m.deepCopy()}
+	return &_S7VarRequestParameterItemBuilder{_S7VarRequestParameterItem: b.deepCopy()}
 }
 
 ///////////////////////

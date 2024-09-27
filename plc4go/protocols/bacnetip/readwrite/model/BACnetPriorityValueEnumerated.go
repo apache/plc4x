@@ -98,64 +98,83 @@ func NewBACnetPriorityValueEnumeratedBuilder() BACnetPriorityValueEnumeratedBuil
 type _BACnetPriorityValueEnumeratedBuilder struct {
 	*_BACnetPriorityValueEnumerated
 
+	parentBuilder *_BACnetPriorityValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPriorityValueEnumeratedBuilder) = (*_BACnetPriorityValueEnumeratedBuilder)(nil)
 
-func (m *_BACnetPriorityValueEnumeratedBuilder) WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetPriorityValueEnumeratedBuilder {
-	return m.WithEnumeratedValue(enumeratedValue)
+func (b *_BACnetPriorityValueEnumeratedBuilder) setParent(contract BACnetPriorityValueContract) {
+	b.BACnetPriorityValueContract = contract
 }
 
-func (m *_BACnetPriorityValueEnumeratedBuilder) WithEnumeratedValue(enumeratedValue BACnetApplicationTagEnumerated) BACnetPriorityValueEnumeratedBuilder {
-	m.EnumeratedValue = enumeratedValue
-	return m
+func (b *_BACnetPriorityValueEnumeratedBuilder) WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetPriorityValueEnumeratedBuilder {
+	return b.WithEnumeratedValue(enumeratedValue)
 }
 
-func (m *_BACnetPriorityValueEnumeratedBuilder) WithEnumeratedValueBuilder(builderSupplier func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetPriorityValueEnumeratedBuilder {
-	builder := builderSupplier(m.EnumeratedValue.CreateBACnetApplicationTagEnumeratedBuilder())
+func (b *_BACnetPriorityValueEnumeratedBuilder) WithEnumeratedValue(enumeratedValue BACnetApplicationTagEnumerated) BACnetPriorityValueEnumeratedBuilder {
+	b.EnumeratedValue = enumeratedValue
+	return b
+}
+
+func (b *_BACnetPriorityValueEnumeratedBuilder) WithEnumeratedValueBuilder(builderSupplier func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetPriorityValueEnumeratedBuilder {
+	builder := builderSupplier(b.EnumeratedValue.CreateBACnetApplicationTagEnumeratedBuilder())
 	var err error
-	m.EnumeratedValue, err = builder.Build()
+	b.EnumeratedValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPriorityValueEnumeratedBuilder) Build() (BACnetPriorityValueEnumerated, error) {
-	if m.EnumeratedValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPriorityValueEnumeratedBuilder) Build() (BACnetPriorityValueEnumerated, error) {
+	if b.EnumeratedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
+		b.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPriorityValueEnumerated.deepCopy(), nil
+	return b._BACnetPriorityValueEnumerated.deepCopy(), nil
 }
 
-func (m *_BACnetPriorityValueEnumeratedBuilder) MustBuild() BACnetPriorityValueEnumerated {
-	build, err := m.Build()
+func (b *_BACnetPriorityValueEnumeratedBuilder) MustBuild() BACnetPriorityValueEnumerated {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPriorityValueEnumeratedBuilder) DeepCopy() any {
-	return m.CreateBACnetPriorityValueEnumeratedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPriorityValueEnumeratedBuilder) Done() BACnetPriorityValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPriorityValueEnumeratedBuilder) buildForBACnetPriorityValue() (BACnetPriorityValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPriorityValueEnumeratedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityValueEnumeratedBuilder().(*_BACnetPriorityValueEnumeratedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPriorityValueEnumeratedBuilder creates a BACnetPriorityValueEnumeratedBuilder
-func (m *_BACnetPriorityValueEnumerated) CreateBACnetPriorityValueEnumeratedBuilder() BACnetPriorityValueEnumeratedBuilder {
-	if m == nil {
+func (b *_BACnetPriorityValueEnumerated) CreateBACnetPriorityValueEnumeratedBuilder() BACnetPriorityValueEnumeratedBuilder {
+	if b == nil {
 		return NewBACnetPriorityValueEnumeratedBuilder()
 	}
-	return &_BACnetPriorityValueEnumeratedBuilder{_BACnetPriorityValueEnumerated: m.deepCopy()}
+	return &_BACnetPriorityValueEnumeratedBuilder{_BACnetPriorityValueEnumerated: b.deepCopy()}
 }
 
 ///////////////////////

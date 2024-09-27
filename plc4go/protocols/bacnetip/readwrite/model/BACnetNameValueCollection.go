@@ -113,88 +113,92 @@ type _BACnetNameValueCollectionBuilder struct {
 
 var _ (BACnetNameValueCollectionBuilder) = (*_BACnetNameValueCollectionBuilder)(nil)
 
-func (m *_BACnetNameValueCollectionBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, members []BACnetNameValue, closingTag BACnetClosingTag) BACnetNameValueCollectionBuilder {
-	return m.WithOpeningTag(openingTag).WithMembers(members...).WithClosingTag(closingTag)
+func (b *_BACnetNameValueCollectionBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, members []BACnetNameValue, closingTag BACnetClosingTag) BACnetNameValueCollectionBuilder {
+	return b.WithOpeningTag(openingTag).WithMembers(members...).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetNameValueCollectionBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetNameValueCollectionBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetNameValueCollectionBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetNameValueCollectionBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetNameValueCollectionBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNameValueCollectionBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetNameValueCollectionBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNameValueCollectionBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNameValueCollectionBuilder) WithMembers(members ...BACnetNameValue) BACnetNameValueCollectionBuilder {
-	m.Members = members
-	return m
+func (b *_BACnetNameValueCollectionBuilder) WithMembers(members ...BACnetNameValue) BACnetNameValueCollectionBuilder {
+	b.Members = members
+	return b
 }
 
-func (m *_BACnetNameValueCollectionBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetNameValueCollectionBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetNameValueCollectionBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetNameValueCollectionBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetNameValueCollectionBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNameValueCollectionBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetNameValueCollectionBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNameValueCollectionBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNameValueCollectionBuilder) Build() (BACnetNameValueCollection, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNameValueCollectionBuilder) Build() (BACnetNameValueCollection, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNameValueCollection.deepCopy(), nil
+	return b._BACnetNameValueCollection.deepCopy(), nil
 }
 
-func (m *_BACnetNameValueCollectionBuilder) MustBuild() BACnetNameValueCollection {
-	build, err := m.Build()
+func (b *_BACnetNameValueCollectionBuilder) MustBuild() BACnetNameValueCollection {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNameValueCollectionBuilder) DeepCopy() any {
-	return m.CreateBACnetNameValueCollectionBuilder()
+func (b *_BACnetNameValueCollectionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNameValueCollectionBuilder().(*_BACnetNameValueCollectionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNameValueCollectionBuilder creates a BACnetNameValueCollectionBuilder
-func (m *_BACnetNameValueCollection) CreateBACnetNameValueCollectionBuilder() BACnetNameValueCollectionBuilder {
-	if m == nil {
+func (b *_BACnetNameValueCollection) CreateBACnetNameValueCollectionBuilder() BACnetNameValueCollectionBuilder {
+	if b == nil {
 		return NewBACnetNameValueCollectionBuilder()
 	}
-	return &_BACnetNameValueCollectionBuilder{_BACnetNameValueCollection: m.deepCopy()}
+	return &_BACnetNameValueCollectionBuilder{_BACnetNameValueCollection: b.deepCopy()}
 }
 
 ///////////////////////

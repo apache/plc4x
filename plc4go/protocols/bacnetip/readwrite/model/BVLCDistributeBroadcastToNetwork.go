@@ -103,64 +103,83 @@ func NewBVLCDistributeBroadcastToNetworkBuilder() BVLCDistributeBroadcastToNetwo
 type _BVLCDistributeBroadcastToNetworkBuilder struct {
 	*_BVLCDistributeBroadcastToNetwork
 
+	parentBuilder *_BVLCBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BVLCDistributeBroadcastToNetworkBuilder) = (*_BVLCDistributeBroadcastToNetworkBuilder)(nil)
 
-func (m *_BVLCDistributeBroadcastToNetworkBuilder) WithMandatoryFields(npdu NPDU) BVLCDistributeBroadcastToNetworkBuilder {
-	return m.WithNpdu(npdu)
+func (b *_BVLCDistributeBroadcastToNetworkBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
 }
 
-func (m *_BVLCDistributeBroadcastToNetworkBuilder) WithNpdu(npdu NPDU) BVLCDistributeBroadcastToNetworkBuilder {
-	m.Npdu = npdu
-	return m
+func (b *_BVLCDistributeBroadcastToNetworkBuilder) WithMandatoryFields(npdu NPDU) BVLCDistributeBroadcastToNetworkBuilder {
+	return b.WithNpdu(npdu)
 }
 
-func (m *_BVLCDistributeBroadcastToNetworkBuilder) WithNpduBuilder(builderSupplier func(NPDUBuilder) NPDUBuilder) BVLCDistributeBroadcastToNetworkBuilder {
-	builder := builderSupplier(m.Npdu.CreateNPDUBuilder())
+func (b *_BVLCDistributeBroadcastToNetworkBuilder) WithNpdu(npdu NPDU) BVLCDistributeBroadcastToNetworkBuilder {
+	b.Npdu = npdu
+	return b
+}
+
+func (b *_BVLCDistributeBroadcastToNetworkBuilder) WithNpduBuilder(builderSupplier func(NPDUBuilder) NPDUBuilder) BVLCDistributeBroadcastToNetworkBuilder {
+	builder := builderSupplier(b.Npdu.CreateNPDUBuilder())
 	var err error
-	m.Npdu, err = builder.Build()
+	b.Npdu, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NPDUBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NPDUBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BVLCDistributeBroadcastToNetworkBuilder) Build() (BVLCDistributeBroadcastToNetwork, error) {
-	if m.Npdu == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BVLCDistributeBroadcastToNetworkBuilder) Build() (BVLCDistributeBroadcastToNetwork, error) {
+	if b.Npdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'npdu' not set"))
+		b.err.Append(errors.New("mandatory field 'npdu' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BVLCDistributeBroadcastToNetwork.deepCopy(), nil
+	return b._BVLCDistributeBroadcastToNetwork.deepCopy(), nil
 }
 
-func (m *_BVLCDistributeBroadcastToNetworkBuilder) MustBuild() BVLCDistributeBroadcastToNetwork {
-	build, err := m.Build()
+func (b *_BVLCDistributeBroadcastToNetworkBuilder) MustBuild() BVLCDistributeBroadcastToNetwork {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BVLCDistributeBroadcastToNetworkBuilder) DeepCopy() any {
-	return m.CreateBVLCDistributeBroadcastToNetworkBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCDistributeBroadcastToNetworkBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCDistributeBroadcastToNetworkBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCDistributeBroadcastToNetworkBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCDistributeBroadcastToNetworkBuilder().(*_BVLCDistributeBroadcastToNetworkBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBVLCDistributeBroadcastToNetworkBuilder creates a BVLCDistributeBroadcastToNetworkBuilder
-func (m *_BVLCDistributeBroadcastToNetwork) CreateBVLCDistributeBroadcastToNetworkBuilder() BVLCDistributeBroadcastToNetworkBuilder {
-	if m == nil {
+func (b *_BVLCDistributeBroadcastToNetwork) CreateBVLCDistributeBroadcastToNetworkBuilder() BVLCDistributeBroadcastToNetworkBuilder {
+	if b == nil {
 		return NewBVLCDistributeBroadcastToNetworkBuilder()
 	}
-	return &_BVLCDistributeBroadcastToNetworkBuilder{_BVLCDistributeBroadcastToNetwork: m.deepCopy()}
+	return &_BVLCDistributeBroadcastToNetworkBuilder{_BVLCDistributeBroadcastToNetwork: b.deepCopy()}
 }
 
 ///////////////////////

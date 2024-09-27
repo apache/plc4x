@@ -104,64 +104,68 @@ type _BACnetLiftCarDoorCommandTaggedBuilder struct {
 
 var _ (BACnetLiftCarDoorCommandTaggedBuilder) = (*_BACnetLiftCarDoorCommandTaggedBuilder)(nil)
 
-func (m *_BACnetLiftCarDoorCommandTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLiftCarDoorCommand) BACnetLiftCarDoorCommandTaggedBuilder {
-	return m.WithHeader(header).WithValue(value)
+func (b *_BACnetLiftCarDoorCommandTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLiftCarDoorCommand) BACnetLiftCarDoorCommandTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
 }
 
-func (m *_BACnetLiftCarDoorCommandTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLiftCarDoorCommandTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetLiftCarDoorCommandTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLiftCarDoorCommandTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetLiftCarDoorCommandTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftCarDoorCommandTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetLiftCarDoorCommandTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftCarDoorCommandTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLiftCarDoorCommandTaggedBuilder) WithValue(value BACnetLiftCarDoorCommand) BACnetLiftCarDoorCommandTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetLiftCarDoorCommandTaggedBuilder) WithValue(value BACnetLiftCarDoorCommand) BACnetLiftCarDoorCommandTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetLiftCarDoorCommandTaggedBuilder) Build() (BACnetLiftCarDoorCommandTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLiftCarDoorCommandTaggedBuilder) Build() (BACnetLiftCarDoorCommandTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLiftCarDoorCommandTagged.deepCopy(), nil
+	return b._BACnetLiftCarDoorCommandTagged.deepCopy(), nil
 }
 
-func (m *_BACnetLiftCarDoorCommandTaggedBuilder) MustBuild() BACnetLiftCarDoorCommandTagged {
-	build, err := m.Build()
+func (b *_BACnetLiftCarDoorCommandTaggedBuilder) MustBuild() BACnetLiftCarDoorCommandTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLiftCarDoorCommandTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetLiftCarDoorCommandTaggedBuilder()
+func (b *_BACnetLiftCarDoorCommandTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLiftCarDoorCommandTaggedBuilder().(*_BACnetLiftCarDoorCommandTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLiftCarDoorCommandTaggedBuilder creates a BACnetLiftCarDoorCommandTaggedBuilder
-func (m *_BACnetLiftCarDoorCommandTagged) CreateBACnetLiftCarDoorCommandTaggedBuilder() BACnetLiftCarDoorCommandTaggedBuilder {
-	if m == nil {
+func (b *_BACnetLiftCarDoorCommandTagged) CreateBACnetLiftCarDoorCommandTaggedBuilder() BACnetLiftCarDoorCommandTaggedBuilder {
+	if b == nil {
 		return NewBACnetLiftCarDoorCommandTaggedBuilder()
 	}
-	return &_BACnetLiftCarDoorCommandTaggedBuilder{_BACnetLiftCarDoorCommandTagged: m.deepCopy()}
+	return &_BACnetLiftCarDoorCommandTaggedBuilder{_BACnetLiftCarDoorCommandTagged: b.deepCopy()}
 }
 
 ///////////////////////

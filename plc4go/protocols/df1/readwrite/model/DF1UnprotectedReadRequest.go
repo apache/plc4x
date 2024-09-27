@@ -99,50 +99,69 @@ func NewDF1UnprotectedReadRequestBuilder() DF1UnprotectedReadRequestBuilder {
 type _DF1UnprotectedReadRequestBuilder struct {
 	*_DF1UnprotectedReadRequest
 
+	parentBuilder *_DF1CommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DF1UnprotectedReadRequestBuilder) = (*_DF1UnprotectedReadRequestBuilder)(nil)
 
-func (m *_DF1UnprotectedReadRequestBuilder) WithMandatoryFields(address uint16, size uint8) DF1UnprotectedReadRequestBuilder {
-	return m.WithAddress(address).WithSize(size)
+func (b *_DF1UnprotectedReadRequestBuilder) setParent(contract DF1CommandContract) {
+	b.DF1CommandContract = contract
 }
 
-func (m *_DF1UnprotectedReadRequestBuilder) WithAddress(address uint16) DF1UnprotectedReadRequestBuilder {
-	m.Address = address
-	return m
+func (b *_DF1UnprotectedReadRequestBuilder) WithMandatoryFields(address uint16, size uint8) DF1UnprotectedReadRequestBuilder {
+	return b.WithAddress(address).WithSize(size)
 }
 
-func (m *_DF1UnprotectedReadRequestBuilder) WithSize(size uint8) DF1UnprotectedReadRequestBuilder {
-	m.Size = size
-	return m
+func (b *_DF1UnprotectedReadRequestBuilder) WithAddress(address uint16) DF1UnprotectedReadRequestBuilder {
+	b.Address = address
+	return b
 }
 
-func (m *_DF1UnprotectedReadRequestBuilder) Build() (DF1UnprotectedReadRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DF1UnprotectedReadRequestBuilder) WithSize(size uint8) DF1UnprotectedReadRequestBuilder {
+	b.Size = size
+	return b
+}
+
+func (b *_DF1UnprotectedReadRequestBuilder) Build() (DF1UnprotectedReadRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DF1UnprotectedReadRequest.deepCopy(), nil
+	return b._DF1UnprotectedReadRequest.deepCopy(), nil
 }
 
-func (m *_DF1UnprotectedReadRequestBuilder) MustBuild() DF1UnprotectedReadRequest {
-	build, err := m.Build()
+func (b *_DF1UnprotectedReadRequestBuilder) MustBuild() DF1UnprotectedReadRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DF1UnprotectedReadRequestBuilder) DeepCopy() any {
-	return m.CreateDF1UnprotectedReadRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DF1UnprotectedReadRequestBuilder) Done() DF1CommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DF1UnprotectedReadRequestBuilder) buildForDF1Command() (DF1Command, error) {
+	return b.Build()
+}
+
+func (b *_DF1UnprotectedReadRequestBuilder) DeepCopy() any {
+	_copy := b.CreateDF1UnprotectedReadRequestBuilder().(*_DF1UnprotectedReadRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDF1UnprotectedReadRequestBuilder creates a DF1UnprotectedReadRequestBuilder
-func (m *_DF1UnprotectedReadRequest) CreateDF1UnprotectedReadRequestBuilder() DF1UnprotectedReadRequestBuilder {
-	if m == nil {
+func (b *_DF1UnprotectedReadRequest) CreateDF1UnprotectedReadRequestBuilder() DF1UnprotectedReadRequestBuilder {
+	if b == nil {
 		return NewDF1UnprotectedReadRequestBuilder()
 	}
-	return &_DF1UnprotectedReadRequestBuilder{_DF1UnprotectedReadRequest: m.deepCopy()}
+	return &_DF1UnprotectedReadRequestBuilder{_DF1UnprotectedReadRequest: b.deepCopy()}
 }
 
 ///////////////////////

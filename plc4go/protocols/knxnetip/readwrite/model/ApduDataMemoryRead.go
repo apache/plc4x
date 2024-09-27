@@ -99,50 +99,69 @@ func NewApduDataMemoryReadBuilder() ApduDataMemoryReadBuilder {
 type _ApduDataMemoryReadBuilder struct {
 	*_ApduDataMemoryRead
 
+	parentBuilder *_ApduDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataMemoryReadBuilder) = (*_ApduDataMemoryReadBuilder)(nil)
 
-func (m *_ApduDataMemoryReadBuilder) WithMandatoryFields(numBytes uint8, address uint16) ApduDataMemoryReadBuilder {
-	return m.WithNumBytes(numBytes).WithAddress(address)
+func (b *_ApduDataMemoryReadBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
 }
 
-func (m *_ApduDataMemoryReadBuilder) WithNumBytes(numBytes uint8) ApduDataMemoryReadBuilder {
-	m.NumBytes = numBytes
-	return m
+func (b *_ApduDataMemoryReadBuilder) WithMandatoryFields(numBytes uint8, address uint16) ApduDataMemoryReadBuilder {
+	return b.WithNumBytes(numBytes).WithAddress(address)
 }
 
-func (m *_ApduDataMemoryReadBuilder) WithAddress(address uint16) ApduDataMemoryReadBuilder {
-	m.Address = address
-	return m
+func (b *_ApduDataMemoryReadBuilder) WithNumBytes(numBytes uint8) ApduDataMemoryReadBuilder {
+	b.NumBytes = numBytes
+	return b
 }
 
-func (m *_ApduDataMemoryReadBuilder) Build() (ApduDataMemoryRead, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataMemoryReadBuilder) WithAddress(address uint16) ApduDataMemoryReadBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_ApduDataMemoryReadBuilder) Build() (ApduDataMemoryRead, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataMemoryRead.deepCopy(), nil
+	return b._ApduDataMemoryRead.deepCopy(), nil
 }
 
-func (m *_ApduDataMemoryReadBuilder) MustBuild() ApduDataMemoryRead {
-	build, err := m.Build()
+func (b *_ApduDataMemoryReadBuilder) MustBuild() ApduDataMemoryRead {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataMemoryReadBuilder) DeepCopy() any {
-	return m.CreateApduDataMemoryReadBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataMemoryReadBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataMemoryReadBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataMemoryReadBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataMemoryReadBuilder().(*_ApduDataMemoryReadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataMemoryReadBuilder creates a ApduDataMemoryReadBuilder
-func (m *_ApduDataMemoryRead) CreateApduDataMemoryReadBuilder() ApduDataMemoryReadBuilder {
-	if m == nil {
+func (b *_ApduDataMemoryRead) CreateApduDataMemoryReadBuilder() ApduDataMemoryReadBuilder {
+	if b == nil {
 		return NewApduDataMemoryReadBuilder()
 	}
-	return &_ApduDataMemoryReadBuilder{_ApduDataMemoryRead: m.deepCopy()}
+	return &_ApduDataMemoryReadBuilder{_ApduDataMemoryRead: b.deepCopy()}
 }
 
 ///////////////////////

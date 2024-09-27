@@ -93,45 +93,64 @@ func NewBACnetConstructedDataLifeSafetyPointAlarmValuesBuilder() BACnetConstruct
 type _BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder struct {
 	*_BACnetConstructedDataLifeSafetyPointAlarmValues
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder) = (*_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder)(nil)
 
-func (m *_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder) WithMandatoryFields(alarmValues []BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder {
-	return m.WithAlarmValues(alarmValues...)
+func (b *_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder) WithAlarmValues(alarmValues ...BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder {
-	m.AlarmValues = alarmValues
-	return m
+func (b *_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder) WithMandatoryFields(alarmValues []BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder {
+	return b.WithAlarmValues(alarmValues...)
 }
 
-func (m *_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder) Build() (BACnetConstructedDataLifeSafetyPointAlarmValues, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder) WithAlarmValues(alarmValues ...BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder {
+	b.AlarmValues = alarmValues
+	return b
+}
+
+func (b *_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder) Build() (BACnetConstructedDataLifeSafetyPointAlarmValues, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLifeSafetyPointAlarmValues.deepCopy(), nil
+	return b._BACnetConstructedDataLifeSafetyPointAlarmValues.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder) MustBuild() BACnetConstructedDataLifeSafetyPointAlarmValues {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder) MustBuild() BACnetConstructedDataLifeSafetyPointAlarmValues {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLifeSafetyPointAlarmValuesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLifeSafetyPointAlarmValuesBuilder().(*_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLifeSafetyPointAlarmValuesBuilder creates a BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder
-func (m *_BACnetConstructedDataLifeSafetyPointAlarmValues) CreateBACnetConstructedDataLifeSafetyPointAlarmValuesBuilder() BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLifeSafetyPointAlarmValues) CreateBACnetConstructedDataLifeSafetyPointAlarmValuesBuilder() BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLifeSafetyPointAlarmValuesBuilder()
 	}
-	return &_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder{_BACnetConstructedDataLifeSafetyPointAlarmValues: m.deepCopy()}
+	return &_BACnetConstructedDataLifeSafetyPointAlarmValuesBuilder{_BACnetConstructedDataLifeSafetyPointAlarmValues: b.deepCopy()}
 }
 
 ///////////////////////

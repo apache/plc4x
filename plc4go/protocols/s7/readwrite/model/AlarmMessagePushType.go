@@ -110,74 +110,78 @@ type _AlarmMessagePushTypeBuilder struct {
 
 var _ (AlarmMessagePushTypeBuilder) = (*_AlarmMessagePushTypeBuilder)(nil)
 
-func (m *_AlarmMessagePushTypeBuilder) WithMandatoryFields(timeStamp DateAndTime, functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageObjectPushType) AlarmMessagePushTypeBuilder {
-	return m.WithTimeStamp(timeStamp).WithFunctionId(functionId).WithNumberOfObjects(numberOfObjects).WithMessageObjects(messageObjects...)
+func (b *_AlarmMessagePushTypeBuilder) WithMandatoryFields(timeStamp DateAndTime, functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageObjectPushType) AlarmMessagePushTypeBuilder {
+	return b.WithTimeStamp(timeStamp).WithFunctionId(functionId).WithNumberOfObjects(numberOfObjects).WithMessageObjects(messageObjects...)
 }
 
-func (m *_AlarmMessagePushTypeBuilder) WithTimeStamp(timeStamp DateAndTime) AlarmMessagePushTypeBuilder {
-	m.TimeStamp = timeStamp
-	return m
+func (b *_AlarmMessagePushTypeBuilder) WithTimeStamp(timeStamp DateAndTime) AlarmMessagePushTypeBuilder {
+	b.TimeStamp = timeStamp
+	return b
 }
 
-func (m *_AlarmMessagePushTypeBuilder) WithTimeStampBuilder(builderSupplier func(DateAndTimeBuilder) DateAndTimeBuilder) AlarmMessagePushTypeBuilder {
-	builder := builderSupplier(m.TimeStamp.CreateDateAndTimeBuilder())
+func (b *_AlarmMessagePushTypeBuilder) WithTimeStampBuilder(builderSupplier func(DateAndTimeBuilder) DateAndTimeBuilder) AlarmMessagePushTypeBuilder {
+	builder := builderSupplier(b.TimeStamp.CreateDateAndTimeBuilder())
 	var err error
-	m.TimeStamp, err = builder.Build()
+	b.TimeStamp, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AlarmMessagePushTypeBuilder) WithFunctionId(functionId uint8) AlarmMessagePushTypeBuilder {
-	m.FunctionId = functionId
-	return m
+func (b *_AlarmMessagePushTypeBuilder) WithFunctionId(functionId uint8) AlarmMessagePushTypeBuilder {
+	b.FunctionId = functionId
+	return b
 }
 
-func (m *_AlarmMessagePushTypeBuilder) WithNumberOfObjects(numberOfObjects uint8) AlarmMessagePushTypeBuilder {
-	m.NumberOfObjects = numberOfObjects
-	return m
+func (b *_AlarmMessagePushTypeBuilder) WithNumberOfObjects(numberOfObjects uint8) AlarmMessagePushTypeBuilder {
+	b.NumberOfObjects = numberOfObjects
+	return b
 }
 
-func (m *_AlarmMessagePushTypeBuilder) WithMessageObjects(messageObjects ...AlarmMessageObjectPushType) AlarmMessagePushTypeBuilder {
-	m.MessageObjects = messageObjects
-	return m
+func (b *_AlarmMessagePushTypeBuilder) WithMessageObjects(messageObjects ...AlarmMessageObjectPushType) AlarmMessagePushTypeBuilder {
+	b.MessageObjects = messageObjects
+	return b
 }
 
-func (m *_AlarmMessagePushTypeBuilder) Build() (AlarmMessagePushType, error) {
-	if m.TimeStamp == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AlarmMessagePushTypeBuilder) Build() (AlarmMessagePushType, error) {
+	if b.TimeStamp == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeStamp' not set"))
+		b.err.Append(errors.New("mandatory field 'timeStamp' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AlarmMessagePushType.deepCopy(), nil
+	return b._AlarmMessagePushType.deepCopy(), nil
 }
 
-func (m *_AlarmMessagePushTypeBuilder) MustBuild() AlarmMessagePushType {
-	build, err := m.Build()
+func (b *_AlarmMessagePushTypeBuilder) MustBuild() AlarmMessagePushType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AlarmMessagePushTypeBuilder) DeepCopy() any {
-	return m.CreateAlarmMessagePushTypeBuilder()
+func (b *_AlarmMessagePushTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAlarmMessagePushTypeBuilder().(*_AlarmMessagePushTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAlarmMessagePushTypeBuilder creates a AlarmMessagePushTypeBuilder
-func (m *_AlarmMessagePushType) CreateAlarmMessagePushTypeBuilder() AlarmMessagePushTypeBuilder {
-	if m == nil {
+func (b *_AlarmMessagePushType) CreateAlarmMessagePushTypeBuilder() AlarmMessagePushTypeBuilder {
+	if b == nil {
 		return NewAlarmMessagePushTypeBuilder()
 	}
-	return &_AlarmMessagePushTypeBuilder{_AlarmMessagePushType: m.deepCopy()}
+	return &_AlarmMessagePushTypeBuilder{_AlarmMessagePushType: b.deepCopy()}
 }
 
 ///////////////////////

@@ -96,45 +96,64 @@ func NewBACnetConfirmedServiceRequestWritePropertyMultipleBuilder() BACnetConfir
 type _BACnetConfirmedServiceRequestWritePropertyMultipleBuilder struct {
 	*_BACnetConfirmedServiceRequestWritePropertyMultiple
 
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) = (*_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) WithMandatoryFields(data []BACnetWriteAccessSpecification) BACnetConfirmedServiceRequestWritePropertyMultipleBuilder {
-	return m.WithData(data...)
+func (b *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) WithData(data ...BACnetWriteAccessSpecification) BACnetConfirmedServiceRequestWritePropertyMultipleBuilder {
-	m.Data = data
-	return m
+func (b *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) WithMandatoryFields(data []BACnetWriteAccessSpecification) BACnetConfirmedServiceRequestWritePropertyMultipleBuilder {
+	return b.WithData(data...)
 }
 
-func (m *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) Build() (BACnetConfirmedServiceRequestWritePropertyMultiple, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) WithData(data ...BACnetWriteAccessSpecification) BACnetConfirmedServiceRequestWritePropertyMultipleBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) Build() (BACnetConfirmedServiceRequestWritePropertyMultiple, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestWritePropertyMultiple.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestWritePropertyMultiple.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) MustBuild() BACnetConfirmedServiceRequestWritePropertyMultiple {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) MustBuild() BACnetConfirmedServiceRequestWritePropertyMultiple {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestWritePropertyMultipleBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestWritePropertyMultipleBuilder().(*_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestWritePropertyMultipleBuilder creates a BACnetConfirmedServiceRequestWritePropertyMultipleBuilder
-func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) CreateBACnetConfirmedServiceRequestWritePropertyMultipleBuilder() BACnetConfirmedServiceRequestWritePropertyMultipleBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestWritePropertyMultiple) CreateBACnetConfirmedServiceRequestWritePropertyMultipleBuilder() BACnetConfirmedServiceRequestWritePropertyMultipleBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestWritePropertyMultipleBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder{_BACnetConfirmedServiceRequestWritePropertyMultiple: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder{_BACnetConfirmedServiceRequestWritePropertyMultiple: b.deepCopy()}
 }
 
 ///////////////////////

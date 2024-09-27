@@ -104,64 +104,68 @@ type _BACnetIPModeTaggedBuilder struct {
 
 var _ (BACnetIPModeTaggedBuilder) = (*_BACnetIPModeTaggedBuilder)(nil)
 
-func (m *_BACnetIPModeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetIPMode) BACnetIPModeTaggedBuilder {
-	return m.WithHeader(header).WithValue(value)
+func (b *_BACnetIPModeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetIPMode) BACnetIPModeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
 }
 
-func (m *_BACnetIPModeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetIPModeTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetIPModeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetIPModeTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetIPModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetIPModeTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetIPModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetIPModeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetIPModeTaggedBuilder) WithValue(value BACnetIPMode) BACnetIPModeTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetIPModeTaggedBuilder) WithValue(value BACnetIPMode) BACnetIPModeTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetIPModeTaggedBuilder) Build() (BACnetIPModeTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetIPModeTaggedBuilder) Build() (BACnetIPModeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetIPModeTagged.deepCopy(), nil
+	return b._BACnetIPModeTagged.deepCopy(), nil
 }
 
-func (m *_BACnetIPModeTaggedBuilder) MustBuild() BACnetIPModeTagged {
-	build, err := m.Build()
+func (b *_BACnetIPModeTaggedBuilder) MustBuild() BACnetIPModeTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetIPModeTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetIPModeTaggedBuilder()
+func (b *_BACnetIPModeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetIPModeTaggedBuilder().(*_BACnetIPModeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetIPModeTaggedBuilder creates a BACnetIPModeTaggedBuilder
-func (m *_BACnetIPModeTagged) CreateBACnetIPModeTaggedBuilder() BACnetIPModeTaggedBuilder {
-	if m == nil {
+func (b *_BACnetIPModeTagged) CreateBACnetIPModeTaggedBuilder() BACnetIPModeTaggedBuilder {
+	if b == nil {
 		return NewBACnetIPModeTaggedBuilder()
 	}
-	return &_BACnetIPModeTaggedBuilder{_BACnetIPModeTagged: m.deepCopy()}
+	return &_BACnetIPModeTaggedBuilder{_BACnetIPModeTagged: b.deepCopy()}
 }
 
 ///////////////////////

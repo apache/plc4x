@@ -126,10 +126,64 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder interface 
 	WithClosingTag(BACnetClosingTag) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	// AsBACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean converts this build to a subType of BACnetNotificationParametersChangeOfDiscreteValueNewValue. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean() interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned converts this build to a subType of BACnetNotificationParametersChangeOfDiscreteValueNewValue. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned() interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger converts this build to a subType of BACnetNotificationParametersChangeOfDiscreteValueNewValue. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger() interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated converts this build to a subType of BACnetNotificationParametersChangeOfDiscreteValueNewValue. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated() interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString converts this build to a subType of BACnetNotificationParametersChangeOfDiscreteValueNewValue. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString() interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString converts this build to a subType of BACnetNotificationParametersChangeOfDiscreteValueNewValue. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString() interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate converts this build to a subType of BACnetNotificationParametersChangeOfDiscreteValueNewValue. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate() interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime converts this build to a subType of BACnetNotificationParametersChangeOfDiscreteValueNewValue. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime() interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier converts this build to a subType of BACnetNotificationParametersChangeOfDiscreteValueNewValue. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier() interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime converts this build to a subType of BACnetNotificationParametersChangeOfDiscreteValueNewValue. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime() interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}
 	// Build builds the BACnetNotificationParametersChangeOfDiscreteValueNewValue or returns an error if something is wrong
-	Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueContract, error)
+	PartialBuild() (BACnetNotificationParametersChangeOfDiscreteValueNewValueContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueContract
+	PartialMustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueContract
+	// Build builds the BACnetNotificationParametersChangeOfDiscreteValueNewValue or returns an error if something is wrong
+	Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValue
 }
 
 // NewBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder() creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
@@ -137,115 +191,309 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder() BACne
 	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValue: new(_BACnetNotificationParametersChangeOfDiscreteValueNewValue)}
 }
 
+type _BACnetNotificationParametersChangeOfDiscreteValueNewValueChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetNotificationParametersChangeOfDiscreteValueNewValueContract)
+	buildForBACnetNotificationParametersChangeOfDiscreteValueNewValue() (BACnetNotificationParametersChangeOfDiscreteValueNewValue, error)
+}
+
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValue
+
+	childBuilder _BACnetNotificationParametersChangeOfDiscreteValueNewValueChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder)(nil)
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
-	return m.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	return b.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueContract, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) PartialBuild() (BACnetNotificationParametersChangeOfDiscreteValueNewValueContract, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNotificationParametersChangeOfDiscreteValueNewValue.deepCopy(), nil
+	return b._BACnetNotificationParametersChangeOfDiscreteValueNewValue.deepCopy(), nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueContract {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) PartialMustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder()
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) AsBACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean() interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder
+	Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) AsBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned() interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilder
+	Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) AsBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger() interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder
+	Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) AsBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated() interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder
+	Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) AsBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString() interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder
+	Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) AsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString() interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder
+	Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) AsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate() interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder
+	Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) AsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime() interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+	Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) AsBACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier() interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilder
+	Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) AsBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime() interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
+	Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
+		Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValue, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetNotificationParametersChangeOfDiscreteValueNewValue()
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetNotificationParametersChangeOfDiscreteValueNewValueChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder()
 	}
-	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValue: m.deepCopy()}
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValue: b.deepCopy()}
 }
 
 ///////////////////////

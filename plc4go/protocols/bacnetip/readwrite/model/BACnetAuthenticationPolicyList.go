@@ -113,88 +113,92 @@ type _BACnetAuthenticationPolicyListBuilder struct {
 
 var _ (BACnetAuthenticationPolicyListBuilder) = (*_BACnetAuthenticationPolicyListBuilder)(nil)
 
-func (m *_BACnetAuthenticationPolicyListBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, entries []BACnetAuthenticationPolicyListEntry, closingTag BACnetClosingTag) BACnetAuthenticationPolicyListBuilder {
-	return m.WithOpeningTag(openingTag).WithEntries(entries...).WithClosingTag(closingTag)
+func (b *_BACnetAuthenticationPolicyListBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, entries []BACnetAuthenticationPolicyListEntry, closingTag BACnetClosingTag) BACnetAuthenticationPolicyListBuilder {
+	return b.WithOpeningTag(openingTag).WithEntries(entries...).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetAuthenticationPolicyListBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetAuthenticationPolicyListBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetAuthenticationPolicyListBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetAuthenticationPolicyListBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetAuthenticationPolicyListBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetAuthenticationPolicyListBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetAuthenticationPolicyListBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetAuthenticationPolicyListBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAuthenticationPolicyListBuilder) WithEntries(entries ...BACnetAuthenticationPolicyListEntry) BACnetAuthenticationPolicyListBuilder {
-	m.Entries = entries
-	return m
+func (b *_BACnetAuthenticationPolicyListBuilder) WithEntries(entries ...BACnetAuthenticationPolicyListEntry) BACnetAuthenticationPolicyListBuilder {
+	b.Entries = entries
+	return b
 }
 
-func (m *_BACnetAuthenticationPolicyListBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetAuthenticationPolicyListBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetAuthenticationPolicyListBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetAuthenticationPolicyListBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetAuthenticationPolicyListBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetAuthenticationPolicyListBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetAuthenticationPolicyListBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetAuthenticationPolicyListBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAuthenticationPolicyListBuilder) Build() (BACnetAuthenticationPolicyList, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAuthenticationPolicyListBuilder) Build() (BACnetAuthenticationPolicyList, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAuthenticationPolicyList.deepCopy(), nil
+	return b._BACnetAuthenticationPolicyList.deepCopy(), nil
 }
 
-func (m *_BACnetAuthenticationPolicyListBuilder) MustBuild() BACnetAuthenticationPolicyList {
-	build, err := m.Build()
+func (b *_BACnetAuthenticationPolicyListBuilder) MustBuild() BACnetAuthenticationPolicyList {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAuthenticationPolicyListBuilder) DeepCopy() any {
-	return m.CreateBACnetAuthenticationPolicyListBuilder()
+func (b *_BACnetAuthenticationPolicyListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAuthenticationPolicyListBuilder().(*_BACnetAuthenticationPolicyListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAuthenticationPolicyListBuilder creates a BACnetAuthenticationPolicyListBuilder
-func (m *_BACnetAuthenticationPolicyList) CreateBACnetAuthenticationPolicyListBuilder() BACnetAuthenticationPolicyListBuilder {
-	if m == nil {
+func (b *_BACnetAuthenticationPolicyList) CreateBACnetAuthenticationPolicyListBuilder() BACnetAuthenticationPolicyListBuilder {
+	if b == nil {
 		return NewBACnetAuthenticationPolicyListBuilder()
 	}
-	return &_BACnetAuthenticationPolicyListBuilder{_BACnetAuthenticationPolicyList: m.deepCopy()}
+	return &_BACnetAuthenticationPolicyListBuilder{_BACnetAuthenticationPolicyList: b.deepCopy()}
 }
 
 ///////////////////////

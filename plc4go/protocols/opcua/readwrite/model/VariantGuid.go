@@ -99,50 +99,69 @@ func NewVariantGuidBuilder() VariantGuidBuilder {
 type _VariantGuidBuilder struct {
 	*_VariantGuid
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantGuidBuilder) = (*_VariantGuidBuilder)(nil)
 
-func (m *_VariantGuidBuilder) WithMandatoryFields(value []GuidValue) VariantGuidBuilder {
-	return m.WithValue(value...)
+func (b *_VariantGuidBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantGuidBuilder) WithOptionalArrayLength(arrayLength int32) VariantGuidBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantGuidBuilder) WithMandatoryFields(value []GuidValue) VariantGuidBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantGuidBuilder) WithValue(value ...GuidValue) VariantGuidBuilder {
-	m.Value = value
-	return m
+func (b *_VariantGuidBuilder) WithOptionalArrayLength(arrayLength int32) VariantGuidBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantGuidBuilder) Build() (VariantGuid, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantGuidBuilder) WithValue(value ...GuidValue) VariantGuidBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantGuidBuilder) Build() (VariantGuid, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantGuid.deepCopy(), nil
+	return b._VariantGuid.deepCopy(), nil
 }
 
-func (m *_VariantGuidBuilder) MustBuild() VariantGuid {
-	build, err := m.Build()
+func (b *_VariantGuidBuilder) MustBuild() VariantGuid {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantGuidBuilder) DeepCopy() any {
-	return m.CreateVariantGuidBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantGuidBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantGuidBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantGuidBuilder) DeepCopy() any {
+	_copy := b.CreateVariantGuidBuilder().(*_VariantGuidBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantGuidBuilder creates a VariantGuidBuilder
-func (m *_VariantGuid) CreateVariantGuidBuilder() VariantGuidBuilder {
-	if m == nil {
+func (b *_VariantGuid) CreateVariantGuidBuilder() VariantGuidBuilder {
+	if b == nil {
 		return NewVariantGuidBuilder()
 	}
-	return &_VariantGuidBuilder{_VariantGuid: m.deepCopy()}
+	return &_VariantGuidBuilder{_VariantGuid: b.deepCopy()}
 }
 
 ///////////////////////

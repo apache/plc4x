@@ -93,45 +93,64 @@ func NewBACnetConstructedDataAccessAlarmEventsBuilder() BACnetConstructedDataAcc
 type _BACnetConstructedDataAccessAlarmEventsBuilder struct {
 	*_BACnetConstructedDataAccessAlarmEvents
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccessAlarmEventsBuilder) = (*_BACnetConstructedDataAccessAlarmEventsBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccessAlarmEventsBuilder) WithMandatoryFields(accessAlarmEvents []BACnetAccessEventTagged) BACnetConstructedDataAccessAlarmEventsBuilder {
-	return m.WithAccessAlarmEvents(accessAlarmEvents...)
+func (b *_BACnetConstructedDataAccessAlarmEventsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccessAlarmEventsBuilder) WithAccessAlarmEvents(accessAlarmEvents ...BACnetAccessEventTagged) BACnetConstructedDataAccessAlarmEventsBuilder {
-	m.AccessAlarmEvents = accessAlarmEvents
-	return m
+func (b *_BACnetConstructedDataAccessAlarmEventsBuilder) WithMandatoryFields(accessAlarmEvents []BACnetAccessEventTagged) BACnetConstructedDataAccessAlarmEventsBuilder {
+	return b.WithAccessAlarmEvents(accessAlarmEvents...)
 }
 
-func (m *_BACnetConstructedDataAccessAlarmEventsBuilder) Build() (BACnetConstructedDataAccessAlarmEvents, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataAccessAlarmEventsBuilder) WithAccessAlarmEvents(accessAlarmEvents ...BACnetAccessEventTagged) BACnetConstructedDataAccessAlarmEventsBuilder {
+	b.AccessAlarmEvents = accessAlarmEvents
+	return b
+}
+
+func (b *_BACnetConstructedDataAccessAlarmEventsBuilder) Build() (BACnetConstructedDataAccessAlarmEvents, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAccessAlarmEvents.deepCopy(), nil
+	return b._BACnetConstructedDataAccessAlarmEvents.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAccessAlarmEventsBuilder) MustBuild() BACnetConstructedDataAccessAlarmEvents {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccessAlarmEventsBuilder) MustBuild() BACnetConstructedDataAccessAlarmEvents {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccessAlarmEventsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccessAlarmEventsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccessAlarmEventsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccessAlarmEventsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccessAlarmEventsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccessAlarmEventsBuilder().(*_BACnetConstructedDataAccessAlarmEventsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccessAlarmEventsBuilder creates a BACnetConstructedDataAccessAlarmEventsBuilder
-func (m *_BACnetConstructedDataAccessAlarmEvents) CreateBACnetConstructedDataAccessAlarmEventsBuilder() BACnetConstructedDataAccessAlarmEventsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccessAlarmEvents) CreateBACnetConstructedDataAccessAlarmEventsBuilder() BACnetConstructedDataAccessAlarmEventsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccessAlarmEventsBuilder()
 	}
-	return &_BACnetConstructedDataAccessAlarmEventsBuilder{_BACnetConstructedDataAccessAlarmEvents: m.deepCopy()}
+	return &_BACnetConstructedDataAccessAlarmEventsBuilder{_BACnetConstructedDataAccessAlarmEvents: b.deepCopy()}
 }
 
 ///////////////////////

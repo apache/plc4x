@@ -85,40 +85,59 @@ func NewMediaTransportControlDataStopBuilder() MediaTransportControlDataStopBuil
 type _MediaTransportControlDataStopBuilder struct {
 	*_MediaTransportControlDataStop
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataStopBuilder) = (*_MediaTransportControlDataStopBuilder)(nil)
 
-func (m *_MediaTransportControlDataStopBuilder) WithMandatoryFields() MediaTransportControlDataStopBuilder {
-	return m
+func (b *_MediaTransportControlDataStopBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataStopBuilder) Build() (MediaTransportControlDataStop, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataStopBuilder) WithMandatoryFields() MediaTransportControlDataStopBuilder {
+	return b
+}
+
+func (b *_MediaTransportControlDataStopBuilder) Build() (MediaTransportControlDataStop, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataStop.deepCopy(), nil
+	return b._MediaTransportControlDataStop.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataStopBuilder) MustBuild() MediaTransportControlDataStop {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataStopBuilder) MustBuild() MediaTransportControlDataStop {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataStopBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataStopBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataStopBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataStopBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataStopBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataStopBuilder().(*_MediaTransportControlDataStopBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataStopBuilder creates a MediaTransportControlDataStopBuilder
-func (m *_MediaTransportControlDataStop) CreateMediaTransportControlDataStopBuilder() MediaTransportControlDataStopBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataStop) CreateMediaTransportControlDataStopBuilder() MediaTransportControlDataStopBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataStopBuilder()
 	}
-	return &_MediaTransportControlDataStopBuilder{_MediaTransportControlDataStop: m.deepCopy()}
+	return &_MediaTransportControlDataStopBuilder{_MediaTransportControlDataStop: b.deepCopy()}
 }
 
 ///////////////////////

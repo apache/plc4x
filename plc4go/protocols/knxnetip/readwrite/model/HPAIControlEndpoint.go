@@ -105,69 +105,73 @@ type _HPAIControlEndpointBuilder struct {
 
 var _ (HPAIControlEndpointBuilder) = (*_HPAIControlEndpointBuilder)(nil)
 
-func (m *_HPAIControlEndpointBuilder) WithMandatoryFields(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) HPAIControlEndpointBuilder {
-	return m.WithHostProtocolCode(hostProtocolCode).WithIpAddress(ipAddress).WithIpPort(ipPort)
+func (b *_HPAIControlEndpointBuilder) WithMandatoryFields(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) HPAIControlEndpointBuilder {
+	return b.WithHostProtocolCode(hostProtocolCode).WithIpAddress(ipAddress).WithIpPort(ipPort)
 }
 
-func (m *_HPAIControlEndpointBuilder) WithHostProtocolCode(hostProtocolCode HostProtocolCode) HPAIControlEndpointBuilder {
-	m.HostProtocolCode = hostProtocolCode
-	return m
+func (b *_HPAIControlEndpointBuilder) WithHostProtocolCode(hostProtocolCode HostProtocolCode) HPAIControlEndpointBuilder {
+	b.HostProtocolCode = hostProtocolCode
+	return b
 }
 
-func (m *_HPAIControlEndpointBuilder) WithIpAddress(ipAddress IPAddress) HPAIControlEndpointBuilder {
-	m.IpAddress = ipAddress
-	return m
+func (b *_HPAIControlEndpointBuilder) WithIpAddress(ipAddress IPAddress) HPAIControlEndpointBuilder {
+	b.IpAddress = ipAddress
+	return b
 }
 
-func (m *_HPAIControlEndpointBuilder) WithIpAddressBuilder(builderSupplier func(IPAddressBuilder) IPAddressBuilder) HPAIControlEndpointBuilder {
-	builder := builderSupplier(m.IpAddress.CreateIPAddressBuilder())
+func (b *_HPAIControlEndpointBuilder) WithIpAddressBuilder(builderSupplier func(IPAddressBuilder) IPAddressBuilder) HPAIControlEndpointBuilder {
+	builder := builderSupplier(b.IpAddress.CreateIPAddressBuilder())
 	var err error
-	m.IpAddress, err = builder.Build()
+	b.IpAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "IPAddressBuilder failed"))
+		b.err.Append(errors.Wrap(err, "IPAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_HPAIControlEndpointBuilder) WithIpPort(ipPort uint16) HPAIControlEndpointBuilder {
-	m.IpPort = ipPort
-	return m
+func (b *_HPAIControlEndpointBuilder) WithIpPort(ipPort uint16) HPAIControlEndpointBuilder {
+	b.IpPort = ipPort
+	return b
 }
 
-func (m *_HPAIControlEndpointBuilder) Build() (HPAIControlEndpoint, error) {
-	if m.IpAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_HPAIControlEndpointBuilder) Build() (HPAIControlEndpoint, error) {
+	if b.IpAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'ipAddress' not set"))
+		b.err.Append(errors.New("mandatory field 'ipAddress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HPAIControlEndpoint.deepCopy(), nil
+	return b._HPAIControlEndpoint.deepCopy(), nil
 }
 
-func (m *_HPAIControlEndpointBuilder) MustBuild() HPAIControlEndpoint {
-	build, err := m.Build()
+func (b *_HPAIControlEndpointBuilder) MustBuild() HPAIControlEndpoint {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HPAIControlEndpointBuilder) DeepCopy() any {
-	return m.CreateHPAIControlEndpointBuilder()
+func (b *_HPAIControlEndpointBuilder) DeepCopy() any {
+	_copy := b.CreateHPAIControlEndpointBuilder().(*_HPAIControlEndpointBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHPAIControlEndpointBuilder creates a HPAIControlEndpointBuilder
-func (m *_HPAIControlEndpoint) CreateHPAIControlEndpointBuilder() HPAIControlEndpointBuilder {
-	if m == nil {
+func (b *_HPAIControlEndpoint) CreateHPAIControlEndpointBuilder() HPAIControlEndpointBuilder {
+	if b == nil {
 		return NewHPAIControlEndpointBuilder()
 	}
-	return &_HPAIControlEndpointBuilder{_HPAIControlEndpoint: m.deepCopy()}
+	return &_HPAIControlEndpointBuilder{_HPAIControlEndpoint: b.deepCopy()}
 }
 
 ///////////////////////

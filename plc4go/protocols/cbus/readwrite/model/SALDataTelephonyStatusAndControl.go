@@ -82,6 +82,8 @@ type SALDataTelephonyStatusAndControlBuilder interface {
 	WithMandatoryFields(telephonyData TelephonyData) SALDataTelephonyStatusAndControlBuilder
 	// WithTelephonyData adds TelephonyData (property field)
 	WithTelephonyData(TelephonyData) SALDataTelephonyStatusAndControlBuilder
+	// WithTelephonyDataBuilder adds TelephonyData (property field) which is build by the builder
+	WithTelephonyDataBuilder(func(TelephonyDataBuilder) TelephonyDataBuilder) SALDataTelephonyStatusAndControlBuilder
 	// Build builds the SALDataTelephonyStatusAndControl or returns an error if something is wrong
 	Build() (SALDataTelephonyStatusAndControl, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewSALDataTelephonyStatusAndControlBuilder() SALDataTelephonyStatusAndContr
 type _SALDataTelephonyStatusAndControlBuilder struct {
 	*_SALDataTelephonyStatusAndControl
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataTelephonyStatusAndControlBuilder) = (*_SALDataTelephonyStatusAndControlBuilder)(nil)
 
-func (m *_SALDataTelephonyStatusAndControlBuilder) WithMandatoryFields(telephonyData TelephonyData) SALDataTelephonyStatusAndControlBuilder {
-	return m.WithTelephonyData(telephonyData)
+func (b *_SALDataTelephonyStatusAndControlBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataTelephonyStatusAndControlBuilder) WithTelephonyData(telephonyData TelephonyData) SALDataTelephonyStatusAndControlBuilder {
-	m.TelephonyData = telephonyData
-	return m
+func (b *_SALDataTelephonyStatusAndControlBuilder) WithMandatoryFields(telephonyData TelephonyData) SALDataTelephonyStatusAndControlBuilder {
+	return b.WithTelephonyData(telephonyData)
 }
 
-func (m *_SALDataTelephonyStatusAndControlBuilder) Build() (SALDataTelephonyStatusAndControl, error) {
-	if m.TelephonyData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SALDataTelephonyStatusAndControlBuilder) WithTelephonyData(telephonyData TelephonyData) SALDataTelephonyStatusAndControlBuilder {
+	b.TelephonyData = telephonyData
+	return b
+}
+
+func (b *_SALDataTelephonyStatusAndControlBuilder) WithTelephonyDataBuilder(builderSupplier func(TelephonyDataBuilder) TelephonyDataBuilder) SALDataTelephonyStatusAndControlBuilder {
+	builder := builderSupplier(b.TelephonyData.CreateTelephonyDataBuilder())
+	var err error
+	b.TelephonyData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'telephonyData' not set"))
+		b.err.Append(errors.Wrap(err, "TelephonyDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._SALDataTelephonyStatusAndControl.deepCopy(), nil
+	return b
 }
 
-func (m *_SALDataTelephonyStatusAndControlBuilder) MustBuild() SALDataTelephonyStatusAndControl {
-	build, err := m.Build()
+func (b *_SALDataTelephonyStatusAndControlBuilder) Build() (SALDataTelephonyStatusAndControl, error) {
+	if b.TelephonyData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'telephonyData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataTelephonyStatusAndControl.deepCopy(), nil
+}
+
+func (b *_SALDataTelephonyStatusAndControlBuilder) MustBuild() SALDataTelephonyStatusAndControl {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataTelephonyStatusAndControlBuilder) DeepCopy() any {
-	return m.CreateSALDataTelephonyStatusAndControlBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataTelephonyStatusAndControlBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataTelephonyStatusAndControlBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataTelephonyStatusAndControlBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataTelephonyStatusAndControlBuilder().(*_SALDataTelephonyStatusAndControlBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataTelephonyStatusAndControlBuilder creates a SALDataTelephonyStatusAndControlBuilder
-func (m *_SALDataTelephonyStatusAndControl) CreateSALDataTelephonyStatusAndControlBuilder() SALDataTelephonyStatusAndControlBuilder {
-	if m == nil {
+func (b *_SALDataTelephonyStatusAndControl) CreateSALDataTelephonyStatusAndControlBuilder() SALDataTelephonyStatusAndControlBuilder {
+	if b == nil {
 		return NewSALDataTelephonyStatusAndControlBuilder()
 	}
-	return &_SALDataTelephonyStatusAndControlBuilder{_SALDataTelephonyStatusAndControl: m.deepCopy()}
+	return &_SALDataTelephonyStatusAndControlBuilder{_SALDataTelephonyStatusAndControl: b.deepCopy()}
 }
 
 ///////////////////////

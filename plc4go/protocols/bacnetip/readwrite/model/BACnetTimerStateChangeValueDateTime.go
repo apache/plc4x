@@ -98,64 +98,83 @@ func NewBACnetTimerStateChangeValueDateTimeBuilder() BACnetTimerStateChangeValue
 type _BACnetTimerStateChangeValueDateTimeBuilder struct {
 	*_BACnetTimerStateChangeValueDateTime
 
+	parentBuilder *_BACnetTimerStateChangeValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetTimerStateChangeValueDateTimeBuilder) = (*_BACnetTimerStateChangeValueDateTimeBuilder)(nil)
 
-func (m *_BACnetTimerStateChangeValueDateTimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetTimerStateChangeValueDateTimeBuilder {
-	return m.WithDateTimeValue(dateTimeValue)
+func (b *_BACnetTimerStateChangeValueDateTimeBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
+	b.BACnetTimerStateChangeValueContract = contract
 }
 
-func (m *_BACnetTimerStateChangeValueDateTimeBuilder) WithDateTimeValue(dateTimeValue BACnetDateTimeEnclosed) BACnetTimerStateChangeValueDateTimeBuilder {
-	m.DateTimeValue = dateTimeValue
-	return m
+func (b *_BACnetTimerStateChangeValueDateTimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetTimerStateChangeValueDateTimeBuilder {
+	return b.WithDateTimeValue(dateTimeValue)
 }
 
-func (m *_BACnetTimerStateChangeValueDateTimeBuilder) WithDateTimeValueBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetTimerStateChangeValueDateTimeBuilder {
-	builder := builderSupplier(m.DateTimeValue.CreateBACnetDateTimeEnclosedBuilder())
+func (b *_BACnetTimerStateChangeValueDateTimeBuilder) WithDateTimeValue(dateTimeValue BACnetDateTimeEnclosed) BACnetTimerStateChangeValueDateTimeBuilder {
+	b.DateTimeValue = dateTimeValue
+	return b
+}
+
+func (b *_BACnetTimerStateChangeValueDateTimeBuilder) WithDateTimeValueBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetTimerStateChangeValueDateTimeBuilder {
+	builder := builderSupplier(b.DateTimeValue.CreateBACnetDateTimeEnclosedBuilder())
 	var err error
-	m.DateTimeValue, err = builder.Build()
+	b.DateTimeValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetTimerStateChangeValueDateTimeBuilder) Build() (BACnetTimerStateChangeValueDateTime, error) {
-	if m.DateTimeValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetTimerStateChangeValueDateTimeBuilder) Build() (BACnetTimerStateChangeValueDateTime, error) {
+	if b.DateTimeValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dateTimeValue' not set"))
+		b.err.Append(errors.New("mandatory field 'dateTimeValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTimerStateChangeValueDateTime.deepCopy(), nil
+	return b._BACnetTimerStateChangeValueDateTime.deepCopy(), nil
 }
 
-func (m *_BACnetTimerStateChangeValueDateTimeBuilder) MustBuild() BACnetTimerStateChangeValueDateTime {
-	build, err := m.Build()
+func (b *_BACnetTimerStateChangeValueDateTimeBuilder) MustBuild() BACnetTimerStateChangeValueDateTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTimerStateChangeValueDateTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetTimerStateChangeValueDateTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetTimerStateChangeValueDateTimeBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetTimerStateChangeValueDateTimeBuilder) buildForBACnetTimerStateChangeValue() (BACnetTimerStateChangeValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetTimerStateChangeValueDateTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimerStateChangeValueDateTimeBuilder().(*_BACnetTimerStateChangeValueDateTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTimerStateChangeValueDateTimeBuilder creates a BACnetTimerStateChangeValueDateTimeBuilder
-func (m *_BACnetTimerStateChangeValueDateTime) CreateBACnetTimerStateChangeValueDateTimeBuilder() BACnetTimerStateChangeValueDateTimeBuilder {
-	if m == nil {
+func (b *_BACnetTimerStateChangeValueDateTime) CreateBACnetTimerStateChangeValueDateTimeBuilder() BACnetTimerStateChangeValueDateTimeBuilder {
+	if b == nil {
 		return NewBACnetTimerStateChangeValueDateTimeBuilder()
 	}
-	return &_BACnetTimerStateChangeValueDateTimeBuilder{_BACnetTimerStateChangeValueDateTime: m.deepCopy()}
+	return &_BACnetTimerStateChangeValueDateTimeBuilder{_BACnetTimerStateChangeValueDateTime: b.deepCopy()}
 }
 
 ///////////////////////

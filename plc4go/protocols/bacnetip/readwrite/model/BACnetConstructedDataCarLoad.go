@@ -100,64 +100,83 @@ func NewBACnetConstructedDataCarLoadBuilder() BACnetConstructedDataCarLoadBuilde
 type _BACnetConstructedDataCarLoadBuilder struct {
 	*_BACnetConstructedDataCarLoad
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCarLoadBuilder) = (*_BACnetConstructedDataCarLoadBuilder)(nil)
 
-func (m *_BACnetConstructedDataCarLoadBuilder) WithMandatoryFields(carLoad BACnetApplicationTagReal) BACnetConstructedDataCarLoadBuilder {
-	return m.WithCarLoad(carLoad)
+func (b *_BACnetConstructedDataCarLoadBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCarLoadBuilder) WithCarLoad(carLoad BACnetApplicationTagReal) BACnetConstructedDataCarLoadBuilder {
-	m.CarLoad = carLoad
-	return m
+func (b *_BACnetConstructedDataCarLoadBuilder) WithMandatoryFields(carLoad BACnetApplicationTagReal) BACnetConstructedDataCarLoadBuilder {
+	return b.WithCarLoad(carLoad)
 }
 
-func (m *_BACnetConstructedDataCarLoadBuilder) WithCarLoadBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataCarLoadBuilder {
-	builder := builderSupplier(m.CarLoad.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataCarLoadBuilder) WithCarLoad(carLoad BACnetApplicationTagReal) BACnetConstructedDataCarLoadBuilder {
+	b.CarLoad = carLoad
+	return b
+}
+
+func (b *_BACnetConstructedDataCarLoadBuilder) WithCarLoadBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataCarLoadBuilder {
+	builder := builderSupplier(b.CarLoad.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.CarLoad, err = builder.Build()
+	b.CarLoad, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataCarLoadBuilder) Build() (BACnetConstructedDataCarLoad, error) {
-	if m.CarLoad == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataCarLoadBuilder) Build() (BACnetConstructedDataCarLoad, error) {
+	if b.CarLoad == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'carLoad' not set"))
+		b.err.Append(errors.New("mandatory field 'carLoad' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCarLoad.deepCopy(), nil
+	return b._BACnetConstructedDataCarLoad.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCarLoadBuilder) MustBuild() BACnetConstructedDataCarLoad {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCarLoadBuilder) MustBuild() BACnetConstructedDataCarLoad {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCarLoadBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCarLoadBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCarLoadBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCarLoadBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCarLoadBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCarLoadBuilder().(*_BACnetConstructedDataCarLoadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCarLoadBuilder creates a BACnetConstructedDataCarLoadBuilder
-func (m *_BACnetConstructedDataCarLoad) CreateBACnetConstructedDataCarLoadBuilder() BACnetConstructedDataCarLoadBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCarLoad) CreateBACnetConstructedDataCarLoadBuilder() BACnetConstructedDataCarLoadBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCarLoadBuilder()
 	}
-	return &_BACnetConstructedDataCarLoadBuilder{_BACnetConstructedDataCarLoad: m.deepCopy()}
+	return &_BACnetConstructedDataCarLoadBuilder{_BACnetConstructedDataCarLoad: b.deepCopy()}
 }
 
 ///////////////////////

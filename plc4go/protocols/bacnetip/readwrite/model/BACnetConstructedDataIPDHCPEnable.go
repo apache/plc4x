@@ -100,64 +100,83 @@ func NewBACnetConstructedDataIPDHCPEnableBuilder() BACnetConstructedDataIPDHCPEn
 type _BACnetConstructedDataIPDHCPEnableBuilder struct {
 	*_BACnetConstructedDataIPDHCPEnable
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataIPDHCPEnableBuilder) = (*_BACnetConstructedDataIPDHCPEnableBuilder)(nil)
 
-func (m *_BACnetConstructedDataIPDHCPEnableBuilder) WithMandatoryFields(ipDhcpEnable BACnetApplicationTagBoolean) BACnetConstructedDataIPDHCPEnableBuilder {
-	return m.WithIpDhcpEnable(ipDhcpEnable)
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataIPDHCPEnableBuilder) WithIpDhcpEnable(ipDhcpEnable BACnetApplicationTagBoolean) BACnetConstructedDataIPDHCPEnableBuilder {
-	m.IpDhcpEnable = ipDhcpEnable
-	return m
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) WithMandatoryFields(ipDhcpEnable BACnetApplicationTagBoolean) BACnetConstructedDataIPDHCPEnableBuilder {
+	return b.WithIpDhcpEnable(ipDhcpEnable)
 }
 
-func (m *_BACnetConstructedDataIPDHCPEnableBuilder) WithIpDhcpEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataIPDHCPEnableBuilder {
-	builder := builderSupplier(m.IpDhcpEnable.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) WithIpDhcpEnable(ipDhcpEnable BACnetApplicationTagBoolean) BACnetConstructedDataIPDHCPEnableBuilder {
+	b.IpDhcpEnable = ipDhcpEnable
+	return b
+}
+
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) WithIpDhcpEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataIPDHCPEnableBuilder {
+	builder := builderSupplier(b.IpDhcpEnable.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.IpDhcpEnable, err = builder.Build()
+	b.IpDhcpEnable, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataIPDHCPEnableBuilder) Build() (BACnetConstructedDataIPDHCPEnable, error) {
-	if m.IpDhcpEnable == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) Build() (BACnetConstructedDataIPDHCPEnable, error) {
+	if b.IpDhcpEnable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'ipDhcpEnable' not set"))
+		b.err.Append(errors.New("mandatory field 'ipDhcpEnable' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataIPDHCPEnable.deepCopy(), nil
+	return b._BACnetConstructedDataIPDHCPEnable.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataIPDHCPEnableBuilder) MustBuild() BACnetConstructedDataIPDHCPEnable {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) MustBuild() BACnetConstructedDataIPDHCPEnable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataIPDHCPEnableBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataIPDHCPEnableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPDHCPEnableBuilder().(*_BACnetConstructedDataIPDHCPEnableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataIPDHCPEnableBuilder creates a BACnetConstructedDataIPDHCPEnableBuilder
-func (m *_BACnetConstructedDataIPDHCPEnable) CreateBACnetConstructedDataIPDHCPEnableBuilder() BACnetConstructedDataIPDHCPEnableBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataIPDHCPEnable) CreateBACnetConstructedDataIPDHCPEnableBuilder() BACnetConstructedDataIPDHCPEnableBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataIPDHCPEnableBuilder()
 	}
-	return &_BACnetConstructedDataIPDHCPEnableBuilder{_BACnetConstructedDataIPDHCPEnable: m.deepCopy()}
+	return &_BACnetConstructedDataIPDHCPEnableBuilder{_BACnetConstructedDataIPDHCPEnable: b.deepCopy()}
 }
 
 ///////////////////////

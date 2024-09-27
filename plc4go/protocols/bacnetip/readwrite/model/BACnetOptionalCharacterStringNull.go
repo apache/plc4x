@@ -98,64 +98,83 @@ func NewBACnetOptionalCharacterStringNullBuilder() BACnetOptionalCharacterString
 type _BACnetOptionalCharacterStringNullBuilder struct {
 	*_BACnetOptionalCharacterStringNull
 
+	parentBuilder *_BACnetOptionalCharacterStringBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetOptionalCharacterStringNullBuilder) = (*_BACnetOptionalCharacterStringNullBuilder)(nil)
 
-func (m *_BACnetOptionalCharacterStringNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetOptionalCharacterStringNullBuilder {
-	return m.WithNullValue(nullValue)
+func (b *_BACnetOptionalCharacterStringNullBuilder) setParent(contract BACnetOptionalCharacterStringContract) {
+	b.BACnetOptionalCharacterStringContract = contract
 }
 
-func (m *_BACnetOptionalCharacterStringNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetOptionalCharacterStringNullBuilder {
-	m.NullValue = nullValue
-	return m
+func (b *_BACnetOptionalCharacterStringNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetOptionalCharacterStringNullBuilder {
+	return b.WithNullValue(nullValue)
 }
 
-func (m *_BACnetOptionalCharacterStringNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetOptionalCharacterStringNullBuilder {
-	builder := builderSupplier(m.NullValue.CreateBACnetApplicationTagNullBuilder())
+func (b *_BACnetOptionalCharacterStringNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetOptionalCharacterStringNullBuilder {
+	b.NullValue = nullValue
+	return b
+}
+
+func (b *_BACnetOptionalCharacterStringNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetOptionalCharacterStringNullBuilder {
+	builder := builderSupplier(b.NullValue.CreateBACnetApplicationTagNullBuilder())
 	var err error
-	m.NullValue, err = builder.Build()
+	b.NullValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetOptionalCharacterStringNullBuilder) Build() (BACnetOptionalCharacterStringNull, error) {
-	if m.NullValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetOptionalCharacterStringNullBuilder) Build() (BACnetOptionalCharacterStringNull, error) {
+	if b.NullValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nullValue' not set"))
+		b.err.Append(errors.New("mandatory field 'nullValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetOptionalCharacterStringNull.deepCopy(), nil
+	return b._BACnetOptionalCharacterStringNull.deepCopy(), nil
 }
 
-func (m *_BACnetOptionalCharacterStringNullBuilder) MustBuild() BACnetOptionalCharacterStringNull {
-	build, err := m.Build()
+func (b *_BACnetOptionalCharacterStringNullBuilder) MustBuild() BACnetOptionalCharacterStringNull {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetOptionalCharacterStringNullBuilder) DeepCopy() any {
-	return m.CreateBACnetOptionalCharacterStringNullBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetOptionalCharacterStringNullBuilder) Done() BACnetOptionalCharacterStringBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetOptionalCharacterStringNullBuilder) buildForBACnetOptionalCharacterString() (BACnetOptionalCharacterString, error) {
+	return b.Build()
+}
+
+func (b *_BACnetOptionalCharacterStringNullBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetOptionalCharacterStringNullBuilder().(*_BACnetOptionalCharacterStringNullBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetOptionalCharacterStringNullBuilder creates a BACnetOptionalCharacterStringNullBuilder
-func (m *_BACnetOptionalCharacterStringNull) CreateBACnetOptionalCharacterStringNullBuilder() BACnetOptionalCharacterStringNullBuilder {
-	if m == nil {
+func (b *_BACnetOptionalCharacterStringNull) CreateBACnetOptionalCharacterStringNullBuilder() BACnetOptionalCharacterStringNullBuilder {
+	if b == nil {
 		return NewBACnetOptionalCharacterStringNullBuilder()
 	}
-	return &_BACnetOptionalCharacterStringNullBuilder{_BACnetOptionalCharacterStringNull: m.deepCopy()}
+	return &_BACnetOptionalCharacterStringNullBuilder{_BACnetOptionalCharacterStringNull: b.deepCopy()}
 }
 
 ///////////////////////

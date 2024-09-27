@@ -99,45 +99,49 @@ type _AdsDataTypeArrayInfoBuilder struct {
 
 var _ (AdsDataTypeArrayInfoBuilder) = (*_AdsDataTypeArrayInfoBuilder)(nil)
 
-func (m *_AdsDataTypeArrayInfoBuilder) WithMandatoryFields(lowerBound uint32, numElements uint32) AdsDataTypeArrayInfoBuilder {
-	return m.WithLowerBound(lowerBound).WithNumElements(numElements)
+func (b *_AdsDataTypeArrayInfoBuilder) WithMandatoryFields(lowerBound uint32, numElements uint32) AdsDataTypeArrayInfoBuilder {
+	return b.WithLowerBound(lowerBound).WithNumElements(numElements)
 }
 
-func (m *_AdsDataTypeArrayInfoBuilder) WithLowerBound(lowerBound uint32) AdsDataTypeArrayInfoBuilder {
-	m.LowerBound = lowerBound
-	return m
+func (b *_AdsDataTypeArrayInfoBuilder) WithLowerBound(lowerBound uint32) AdsDataTypeArrayInfoBuilder {
+	b.LowerBound = lowerBound
+	return b
 }
 
-func (m *_AdsDataTypeArrayInfoBuilder) WithNumElements(numElements uint32) AdsDataTypeArrayInfoBuilder {
-	m.NumElements = numElements
-	return m
+func (b *_AdsDataTypeArrayInfoBuilder) WithNumElements(numElements uint32) AdsDataTypeArrayInfoBuilder {
+	b.NumElements = numElements
+	return b
 }
 
-func (m *_AdsDataTypeArrayInfoBuilder) Build() (AdsDataTypeArrayInfo, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsDataTypeArrayInfoBuilder) Build() (AdsDataTypeArrayInfo, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsDataTypeArrayInfo.deepCopy(), nil
+	return b._AdsDataTypeArrayInfo.deepCopy(), nil
 }
 
-func (m *_AdsDataTypeArrayInfoBuilder) MustBuild() AdsDataTypeArrayInfo {
-	build, err := m.Build()
+func (b *_AdsDataTypeArrayInfoBuilder) MustBuild() AdsDataTypeArrayInfo {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsDataTypeArrayInfoBuilder) DeepCopy() any {
-	return m.CreateAdsDataTypeArrayInfoBuilder()
+func (b *_AdsDataTypeArrayInfoBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDataTypeArrayInfoBuilder().(*_AdsDataTypeArrayInfoBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsDataTypeArrayInfoBuilder creates a AdsDataTypeArrayInfoBuilder
-func (m *_AdsDataTypeArrayInfo) CreateAdsDataTypeArrayInfoBuilder() AdsDataTypeArrayInfoBuilder {
-	if m == nil {
+func (b *_AdsDataTypeArrayInfo) CreateAdsDataTypeArrayInfoBuilder() AdsDataTypeArrayInfoBuilder {
+	if b == nil {
 		return NewAdsDataTypeArrayInfoBuilder()
 	}
-	return &_AdsDataTypeArrayInfoBuilder{_AdsDataTypeArrayInfo: m.deepCopy()}
+	return &_AdsDataTypeArrayInfoBuilder{_AdsDataTypeArrayInfo: b.deepCopy()}
 }
 
 ///////////////////////

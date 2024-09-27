@@ -99,50 +99,69 @@ func NewServiceCounterDataTypeBuilder() ServiceCounterDataTypeBuilder {
 type _ServiceCounterDataTypeBuilder struct {
 	*_ServiceCounterDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ServiceCounterDataTypeBuilder) = (*_ServiceCounterDataTypeBuilder)(nil)
 
-func (m *_ServiceCounterDataTypeBuilder) WithMandatoryFields(totalCount uint32, errorCount uint32) ServiceCounterDataTypeBuilder {
-	return m.WithTotalCount(totalCount).WithErrorCount(errorCount)
+func (b *_ServiceCounterDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ServiceCounterDataTypeBuilder) WithTotalCount(totalCount uint32) ServiceCounterDataTypeBuilder {
-	m.TotalCount = totalCount
-	return m
+func (b *_ServiceCounterDataTypeBuilder) WithMandatoryFields(totalCount uint32, errorCount uint32) ServiceCounterDataTypeBuilder {
+	return b.WithTotalCount(totalCount).WithErrorCount(errorCount)
 }
 
-func (m *_ServiceCounterDataTypeBuilder) WithErrorCount(errorCount uint32) ServiceCounterDataTypeBuilder {
-	m.ErrorCount = errorCount
-	return m
+func (b *_ServiceCounterDataTypeBuilder) WithTotalCount(totalCount uint32) ServiceCounterDataTypeBuilder {
+	b.TotalCount = totalCount
+	return b
 }
 
-func (m *_ServiceCounterDataTypeBuilder) Build() (ServiceCounterDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ServiceCounterDataTypeBuilder) WithErrorCount(errorCount uint32) ServiceCounterDataTypeBuilder {
+	b.ErrorCount = errorCount
+	return b
+}
+
+func (b *_ServiceCounterDataTypeBuilder) Build() (ServiceCounterDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ServiceCounterDataType.deepCopy(), nil
+	return b._ServiceCounterDataType.deepCopy(), nil
 }
 
-func (m *_ServiceCounterDataTypeBuilder) MustBuild() ServiceCounterDataType {
-	build, err := m.Build()
+func (b *_ServiceCounterDataTypeBuilder) MustBuild() ServiceCounterDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ServiceCounterDataTypeBuilder) DeepCopy() any {
-	return m.CreateServiceCounterDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ServiceCounterDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ServiceCounterDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ServiceCounterDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateServiceCounterDataTypeBuilder().(*_ServiceCounterDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateServiceCounterDataTypeBuilder creates a ServiceCounterDataTypeBuilder
-func (m *_ServiceCounterDataType) CreateServiceCounterDataTypeBuilder() ServiceCounterDataTypeBuilder {
-	if m == nil {
+func (b *_ServiceCounterDataType) CreateServiceCounterDataTypeBuilder() ServiceCounterDataTypeBuilder {
+	if b == nil {
 		return NewServiceCounterDataTypeBuilder()
 	}
-	return &_ServiceCounterDataTypeBuilder{_ServiceCounterDataType: m.deepCopy()}
+	return &_ServiceCounterDataTypeBuilder{_ServiceCounterDataType: b.deepCopy()}
 }
 
 ///////////////////////

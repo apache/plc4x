@@ -85,40 +85,59 @@ func NewDataTypeDefinitionBuilder() DataTypeDefinitionBuilder {
 type _DataTypeDefinitionBuilder struct {
 	*_DataTypeDefinition
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DataTypeDefinitionBuilder) = (*_DataTypeDefinitionBuilder)(nil)
 
-func (m *_DataTypeDefinitionBuilder) WithMandatoryFields() DataTypeDefinitionBuilder {
-	return m
+func (b *_DataTypeDefinitionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_DataTypeDefinitionBuilder) Build() (DataTypeDefinition, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DataTypeDefinitionBuilder) WithMandatoryFields() DataTypeDefinitionBuilder {
+	return b
+}
+
+func (b *_DataTypeDefinitionBuilder) Build() (DataTypeDefinition, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DataTypeDefinition.deepCopy(), nil
+	return b._DataTypeDefinition.deepCopy(), nil
 }
 
-func (m *_DataTypeDefinitionBuilder) MustBuild() DataTypeDefinition {
-	build, err := m.Build()
+func (b *_DataTypeDefinitionBuilder) MustBuild() DataTypeDefinition {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DataTypeDefinitionBuilder) DeepCopy() any {
-	return m.CreateDataTypeDefinitionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DataTypeDefinitionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DataTypeDefinitionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DataTypeDefinitionBuilder) DeepCopy() any {
+	_copy := b.CreateDataTypeDefinitionBuilder().(*_DataTypeDefinitionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDataTypeDefinitionBuilder creates a DataTypeDefinitionBuilder
-func (m *_DataTypeDefinition) CreateDataTypeDefinitionBuilder() DataTypeDefinitionBuilder {
-	if m == nil {
+func (b *_DataTypeDefinition) CreateDataTypeDefinitionBuilder() DataTypeDefinitionBuilder {
+	if b == nil {
 		return NewDataTypeDefinitionBuilder()
 	}
-	return &_DataTypeDefinitionBuilder{_DataTypeDefinition: m.deepCopy()}
+	return &_DataTypeDefinitionBuilder{_DataTypeDefinition: b.deepCopy()}
 }
 
 ///////////////////////

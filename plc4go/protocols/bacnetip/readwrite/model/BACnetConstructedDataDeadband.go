@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDeadbandBuilder() BACnetConstructedDataDeadbandBuil
 type _BACnetConstructedDataDeadbandBuilder struct {
 	*_BACnetConstructedDataDeadband
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDeadbandBuilder) = (*_BACnetConstructedDataDeadbandBuilder)(nil)
 
-func (m *_BACnetConstructedDataDeadbandBuilder) WithMandatoryFields(deadband BACnetApplicationTagReal) BACnetConstructedDataDeadbandBuilder {
-	return m.WithDeadband(deadband)
+func (b *_BACnetConstructedDataDeadbandBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDeadbandBuilder) WithDeadband(deadband BACnetApplicationTagReal) BACnetConstructedDataDeadbandBuilder {
-	m.Deadband = deadband
-	return m
+func (b *_BACnetConstructedDataDeadbandBuilder) WithMandatoryFields(deadband BACnetApplicationTagReal) BACnetConstructedDataDeadbandBuilder {
+	return b.WithDeadband(deadband)
 }
 
-func (m *_BACnetConstructedDataDeadbandBuilder) WithDeadbandBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDeadbandBuilder {
-	builder := builderSupplier(m.Deadband.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataDeadbandBuilder) WithDeadband(deadband BACnetApplicationTagReal) BACnetConstructedDataDeadbandBuilder {
+	b.Deadband = deadband
+	return b
+}
+
+func (b *_BACnetConstructedDataDeadbandBuilder) WithDeadbandBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDeadbandBuilder {
+	builder := builderSupplier(b.Deadband.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.Deadband, err = builder.Build()
+	b.Deadband, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDeadbandBuilder) Build() (BACnetConstructedDataDeadband, error) {
-	if m.Deadband == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDeadbandBuilder) Build() (BACnetConstructedDataDeadband, error) {
+	if b.Deadband == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'deadband' not set"))
+		b.err.Append(errors.New("mandatory field 'deadband' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDeadband.deepCopy(), nil
+	return b._BACnetConstructedDataDeadband.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDeadbandBuilder) MustBuild() BACnetConstructedDataDeadband {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDeadbandBuilder) MustBuild() BACnetConstructedDataDeadband {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDeadbandBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDeadbandBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDeadbandBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDeadbandBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDeadbandBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDeadbandBuilder().(*_BACnetConstructedDataDeadbandBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDeadbandBuilder creates a BACnetConstructedDataDeadbandBuilder
-func (m *_BACnetConstructedDataDeadband) CreateBACnetConstructedDataDeadbandBuilder() BACnetConstructedDataDeadbandBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDeadband) CreateBACnetConstructedDataDeadbandBuilder() BACnetConstructedDataDeadbandBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDeadbandBuilder()
 	}
-	return &_BACnetConstructedDataDeadbandBuilder{_BACnetConstructedDataDeadband: m.deepCopy()}
+	return &_BACnetConstructedDataDeadbandBuilder{_BACnetConstructedDataDeadband: b.deepCopy()}
 }
 
 ///////////////////////

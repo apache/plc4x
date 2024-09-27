@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesLiftCarDriveStatusBuilder() BACnetPropertyStatesLift
 type _BACnetPropertyStatesLiftCarDriveStatusBuilder struct {
 	*_BACnetPropertyStatesLiftCarDriveStatus
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesLiftCarDriveStatusBuilder) = (*_BACnetPropertyStatesLiftCarDriveStatusBuilder)(nil)
 
-func (m *_BACnetPropertyStatesLiftCarDriveStatusBuilder) WithMandatoryFields(liftCarDriveStatus BACnetLiftCarDriveStatusTagged) BACnetPropertyStatesLiftCarDriveStatusBuilder {
-	return m.WithLiftCarDriveStatus(liftCarDriveStatus)
+func (b *_BACnetPropertyStatesLiftCarDriveStatusBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesLiftCarDriveStatusBuilder) WithLiftCarDriveStatus(liftCarDriveStatus BACnetLiftCarDriveStatusTagged) BACnetPropertyStatesLiftCarDriveStatusBuilder {
-	m.LiftCarDriveStatus = liftCarDriveStatus
-	return m
+func (b *_BACnetPropertyStatesLiftCarDriveStatusBuilder) WithMandatoryFields(liftCarDriveStatus BACnetLiftCarDriveStatusTagged) BACnetPropertyStatesLiftCarDriveStatusBuilder {
+	return b.WithLiftCarDriveStatus(liftCarDriveStatus)
 }
 
-func (m *_BACnetPropertyStatesLiftCarDriveStatusBuilder) WithLiftCarDriveStatusBuilder(builderSupplier func(BACnetLiftCarDriveStatusTaggedBuilder) BACnetLiftCarDriveStatusTaggedBuilder) BACnetPropertyStatesLiftCarDriveStatusBuilder {
-	builder := builderSupplier(m.LiftCarDriveStatus.CreateBACnetLiftCarDriveStatusTaggedBuilder())
+func (b *_BACnetPropertyStatesLiftCarDriveStatusBuilder) WithLiftCarDriveStatus(liftCarDriveStatus BACnetLiftCarDriveStatusTagged) BACnetPropertyStatesLiftCarDriveStatusBuilder {
+	b.LiftCarDriveStatus = liftCarDriveStatus
+	return b
+}
+
+func (b *_BACnetPropertyStatesLiftCarDriveStatusBuilder) WithLiftCarDriveStatusBuilder(builderSupplier func(BACnetLiftCarDriveStatusTaggedBuilder) BACnetLiftCarDriveStatusTaggedBuilder) BACnetPropertyStatesLiftCarDriveStatusBuilder {
+	builder := builderSupplier(b.LiftCarDriveStatus.CreateBACnetLiftCarDriveStatusTaggedBuilder())
 	var err error
-	m.LiftCarDriveStatus, err = builder.Build()
+	b.LiftCarDriveStatus, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLiftCarDriveStatusTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLiftCarDriveStatusTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesLiftCarDriveStatusBuilder) Build() (BACnetPropertyStatesLiftCarDriveStatus, error) {
-	if m.LiftCarDriveStatus == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesLiftCarDriveStatusBuilder) Build() (BACnetPropertyStatesLiftCarDriveStatus, error) {
+	if b.LiftCarDriveStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'liftCarDriveStatus' not set"))
+		b.err.Append(errors.New("mandatory field 'liftCarDriveStatus' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesLiftCarDriveStatus.deepCopy(), nil
+	return b._BACnetPropertyStatesLiftCarDriveStatus.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesLiftCarDriveStatusBuilder) MustBuild() BACnetPropertyStatesLiftCarDriveStatus {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesLiftCarDriveStatusBuilder) MustBuild() BACnetPropertyStatesLiftCarDriveStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesLiftCarDriveStatusBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesLiftCarDriveStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesLiftCarDriveStatusBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesLiftCarDriveStatusBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesLiftCarDriveStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesLiftCarDriveStatusBuilder().(*_BACnetPropertyStatesLiftCarDriveStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesLiftCarDriveStatusBuilder creates a BACnetPropertyStatesLiftCarDriveStatusBuilder
-func (m *_BACnetPropertyStatesLiftCarDriveStatus) CreateBACnetPropertyStatesLiftCarDriveStatusBuilder() BACnetPropertyStatesLiftCarDriveStatusBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesLiftCarDriveStatus) CreateBACnetPropertyStatesLiftCarDriveStatusBuilder() BACnetPropertyStatesLiftCarDriveStatusBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesLiftCarDriveStatusBuilder()
 	}
-	return &_BACnetPropertyStatesLiftCarDriveStatusBuilder{_BACnetPropertyStatesLiftCarDriveStatus: m.deepCopy()}
+	return &_BACnetPropertyStatesLiftCarDriveStatusBuilder{_BACnetPropertyStatesLiftCarDriveStatus: b.deepCopy()}
 }
 
 ///////////////////////

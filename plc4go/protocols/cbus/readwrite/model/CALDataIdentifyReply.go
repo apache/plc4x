@@ -88,6 +88,8 @@ type CALDataIdentifyReplyBuilder interface {
 	WithAttribute(Attribute) CALDataIdentifyReplyBuilder
 	// WithIdentifyReplyCommand adds IdentifyReplyCommand (property field)
 	WithIdentifyReplyCommand(IdentifyReplyCommand) CALDataIdentifyReplyBuilder
+	// WithIdentifyReplyCommandBuilder adds IdentifyReplyCommand (property field) which is build by the builder
+	WithIdentifyReplyCommandBuilder(func(IdentifyReplyCommandBuilder) IdentifyReplyCommandBuilder) CALDataIdentifyReplyBuilder
 	// Build builds the CALDataIdentifyReply or returns an error if something is wrong
 	Build() (CALDataIdentifyReply, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,56 +104,88 @@ func NewCALDataIdentifyReplyBuilder() CALDataIdentifyReplyBuilder {
 type _CALDataIdentifyReplyBuilder struct {
 	*_CALDataIdentifyReply
 
+	parentBuilder *_CALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CALDataIdentifyReplyBuilder) = (*_CALDataIdentifyReplyBuilder)(nil)
 
-func (m *_CALDataIdentifyReplyBuilder) WithMandatoryFields(attribute Attribute, identifyReplyCommand IdentifyReplyCommand) CALDataIdentifyReplyBuilder {
-	return m.WithAttribute(attribute).WithIdentifyReplyCommand(identifyReplyCommand)
+func (b *_CALDataIdentifyReplyBuilder) setParent(contract CALDataContract) {
+	b.CALDataContract = contract
 }
 
-func (m *_CALDataIdentifyReplyBuilder) WithAttribute(attribute Attribute) CALDataIdentifyReplyBuilder {
-	m.Attribute = attribute
-	return m
+func (b *_CALDataIdentifyReplyBuilder) WithMandatoryFields(attribute Attribute, identifyReplyCommand IdentifyReplyCommand) CALDataIdentifyReplyBuilder {
+	return b.WithAttribute(attribute).WithIdentifyReplyCommand(identifyReplyCommand)
 }
 
-func (m *_CALDataIdentifyReplyBuilder) WithIdentifyReplyCommand(identifyReplyCommand IdentifyReplyCommand) CALDataIdentifyReplyBuilder {
-	m.IdentifyReplyCommand = identifyReplyCommand
-	return m
+func (b *_CALDataIdentifyReplyBuilder) WithAttribute(attribute Attribute) CALDataIdentifyReplyBuilder {
+	b.Attribute = attribute
+	return b
 }
 
-func (m *_CALDataIdentifyReplyBuilder) Build() (CALDataIdentifyReply, error) {
-	if m.IdentifyReplyCommand == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CALDataIdentifyReplyBuilder) WithIdentifyReplyCommand(identifyReplyCommand IdentifyReplyCommand) CALDataIdentifyReplyBuilder {
+	b.IdentifyReplyCommand = identifyReplyCommand
+	return b
+}
+
+func (b *_CALDataIdentifyReplyBuilder) WithIdentifyReplyCommandBuilder(builderSupplier func(IdentifyReplyCommandBuilder) IdentifyReplyCommandBuilder) CALDataIdentifyReplyBuilder {
+	builder := builderSupplier(b.IdentifyReplyCommand.CreateIdentifyReplyCommandBuilder())
+	var err error
+	b.IdentifyReplyCommand, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'identifyReplyCommand' not set"))
+		b.err.Append(errors.Wrap(err, "IdentifyReplyCommandBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._CALDataIdentifyReply.deepCopy(), nil
+	return b
 }
 
-func (m *_CALDataIdentifyReplyBuilder) MustBuild() CALDataIdentifyReply {
-	build, err := m.Build()
+func (b *_CALDataIdentifyReplyBuilder) Build() (CALDataIdentifyReply, error) {
+	if b.IdentifyReplyCommand == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'identifyReplyCommand' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CALDataIdentifyReply.deepCopy(), nil
+}
+
+func (b *_CALDataIdentifyReplyBuilder) MustBuild() CALDataIdentifyReply {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CALDataIdentifyReplyBuilder) DeepCopy() any {
-	return m.CreateCALDataIdentifyReplyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CALDataIdentifyReplyBuilder) Done() CALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CALDataIdentifyReplyBuilder) buildForCALData() (CALData, error) {
+	return b.Build()
+}
+
+func (b *_CALDataIdentifyReplyBuilder) DeepCopy() any {
+	_copy := b.CreateCALDataIdentifyReplyBuilder().(*_CALDataIdentifyReplyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCALDataIdentifyReplyBuilder creates a CALDataIdentifyReplyBuilder
-func (m *_CALDataIdentifyReply) CreateCALDataIdentifyReplyBuilder() CALDataIdentifyReplyBuilder {
-	if m == nil {
+func (b *_CALDataIdentifyReply) CreateCALDataIdentifyReplyBuilder() CALDataIdentifyReplyBuilder {
+	if b == nil {
 		return NewCALDataIdentifyReplyBuilder()
 	}
-	return &_CALDataIdentifyReplyBuilder{_CALDataIdentifyReply: m.deepCopy()}
+	return &_CALDataIdentifyReplyBuilder{_CALDataIdentifyReply: b.deepCopy()}
 }
 
 ///////////////////////

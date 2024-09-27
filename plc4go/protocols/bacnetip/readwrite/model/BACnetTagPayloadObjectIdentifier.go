@@ -102,50 +102,54 @@ type _BACnetTagPayloadObjectIdentifierBuilder struct {
 
 var _ (BACnetTagPayloadObjectIdentifierBuilder) = (*_BACnetTagPayloadObjectIdentifierBuilder)(nil)
 
-func (m *_BACnetTagPayloadObjectIdentifierBuilder) WithMandatoryFields(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32) BACnetTagPayloadObjectIdentifierBuilder {
-	return m.WithObjectType(objectType).WithProprietaryValue(proprietaryValue).WithInstanceNumber(instanceNumber)
+func (b *_BACnetTagPayloadObjectIdentifierBuilder) WithMandatoryFields(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32) BACnetTagPayloadObjectIdentifierBuilder {
+	return b.WithObjectType(objectType).WithProprietaryValue(proprietaryValue).WithInstanceNumber(instanceNumber)
 }
 
-func (m *_BACnetTagPayloadObjectIdentifierBuilder) WithObjectType(objectType BACnetObjectType) BACnetTagPayloadObjectIdentifierBuilder {
-	m.ObjectType = objectType
-	return m
+func (b *_BACnetTagPayloadObjectIdentifierBuilder) WithObjectType(objectType BACnetObjectType) BACnetTagPayloadObjectIdentifierBuilder {
+	b.ObjectType = objectType
+	return b
 }
 
-func (m *_BACnetTagPayloadObjectIdentifierBuilder) WithProprietaryValue(proprietaryValue uint16) BACnetTagPayloadObjectIdentifierBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetTagPayloadObjectIdentifierBuilder) WithProprietaryValue(proprietaryValue uint16) BACnetTagPayloadObjectIdentifierBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetTagPayloadObjectIdentifierBuilder) WithInstanceNumber(instanceNumber uint32) BACnetTagPayloadObjectIdentifierBuilder {
-	m.InstanceNumber = instanceNumber
-	return m
+func (b *_BACnetTagPayloadObjectIdentifierBuilder) WithInstanceNumber(instanceNumber uint32) BACnetTagPayloadObjectIdentifierBuilder {
+	b.InstanceNumber = instanceNumber
+	return b
 }
 
-func (m *_BACnetTagPayloadObjectIdentifierBuilder) Build() (BACnetTagPayloadObjectIdentifier, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetTagPayloadObjectIdentifierBuilder) Build() (BACnetTagPayloadObjectIdentifier, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTagPayloadObjectIdentifier.deepCopy(), nil
+	return b._BACnetTagPayloadObjectIdentifier.deepCopy(), nil
 }
 
-func (m *_BACnetTagPayloadObjectIdentifierBuilder) MustBuild() BACnetTagPayloadObjectIdentifier {
-	build, err := m.Build()
+func (b *_BACnetTagPayloadObjectIdentifierBuilder) MustBuild() BACnetTagPayloadObjectIdentifier {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTagPayloadObjectIdentifierBuilder) DeepCopy() any {
-	return m.CreateBACnetTagPayloadObjectIdentifierBuilder()
+func (b *_BACnetTagPayloadObjectIdentifierBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadObjectIdentifierBuilder().(*_BACnetTagPayloadObjectIdentifierBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTagPayloadObjectIdentifierBuilder creates a BACnetTagPayloadObjectIdentifierBuilder
-func (m *_BACnetTagPayloadObjectIdentifier) CreateBACnetTagPayloadObjectIdentifierBuilder() BACnetTagPayloadObjectIdentifierBuilder {
-	if m == nil {
+func (b *_BACnetTagPayloadObjectIdentifier) CreateBACnetTagPayloadObjectIdentifierBuilder() BACnetTagPayloadObjectIdentifierBuilder {
+	if b == nil {
 		return NewBACnetTagPayloadObjectIdentifierBuilder()
 	}
-	return &_BACnetTagPayloadObjectIdentifierBuilder{_BACnetTagPayloadObjectIdentifier: m.deepCopy()}
+	return &_BACnetTagPayloadObjectIdentifierBuilder{_BACnetTagPayloadObjectIdentifier: b.deepCopy()}
 }
 
 ///////////////////////

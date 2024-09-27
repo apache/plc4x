@@ -85,40 +85,59 @@ func NewTelephonyDataRejectIncomingCallBuilder() TelephonyDataRejectIncomingCall
 type _TelephonyDataRejectIncomingCallBuilder struct {
 	*_TelephonyDataRejectIncomingCall
 
+	parentBuilder *_TelephonyDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TelephonyDataRejectIncomingCallBuilder) = (*_TelephonyDataRejectIncomingCallBuilder)(nil)
 
-func (m *_TelephonyDataRejectIncomingCallBuilder) WithMandatoryFields() TelephonyDataRejectIncomingCallBuilder {
-	return m
+func (b *_TelephonyDataRejectIncomingCallBuilder) setParent(contract TelephonyDataContract) {
+	b.TelephonyDataContract = contract
 }
 
-func (m *_TelephonyDataRejectIncomingCallBuilder) Build() (TelephonyDataRejectIncomingCall, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TelephonyDataRejectIncomingCallBuilder) WithMandatoryFields() TelephonyDataRejectIncomingCallBuilder {
+	return b
+}
+
+func (b *_TelephonyDataRejectIncomingCallBuilder) Build() (TelephonyDataRejectIncomingCall, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TelephonyDataRejectIncomingCall.deepCopy(), nil
+	return b._TelephonyDataRejectIncomingCall.deepCopy(), nil
 }
 
-func (m *_TelephonyDataRejectIncomingCallBuilder) MustBuild() TelephonyDataRejectIncomingCall {
-	build, err := m.Build()
+func (b *_TelephonyDataRejectIncomingCallBuilder) MustBuild() TelephonyDataRejectIncomingCall {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TelephonyDataRejectIncomingCallBuilder) DeepCopy() any {
-	return m.CreateTelephonyDataRejectIncomingCallBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TelephonyDataRejectIncomingCallBuilder) Done() TelephonyDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TelephonyDataRejectIncomingCallBuilder) buildForTelephonyData() (TelephonyData, error) {
+	return b.Build()
+}
+
+func (b *_TelephonyDataRejectIncomingCallBuilder) DeepCopy() any {
+	_copy := b.CreateTelephonyDataRejectIncomingCallBuilder().(*_TelephonyDataRejectIncomingCallBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTelephonyDataRejectIncomingCallBuilder creates a TelephonyDataRejectIncomingCallBuilder
-func (m *_TelephonyDataRejectIncomingCall) CreateTelephonyDataRejectIncomingCallBuilder() TelephonyDataRejectIncomingCallBuilder {
-	if m == nil {
+func (b *_TelephonyDataRejectIncomingCall) CreateTelephonyDataRejectIncomingCallBuilder() TelephonyDataRejectIncomingCallBuilder {
+	if b == nil {
 		return NewTelephonyDataRejectIncomingCallBuilder()
 	}
-	return &_TelephonyDataRejectIncomingCallBuilder{_TelephonyDataRejectIncomingCall: m.deepCopy()}
+	return &_TelephonyDataRejectIncomingCallBuilder{_TelephonyDataRejectIncomingCall: b.deepCopy()}
 }
 
 ///////////////////////

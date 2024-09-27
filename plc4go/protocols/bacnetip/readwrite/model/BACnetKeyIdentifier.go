@@ -105,83 +105,87 @@ type _BACnetKeyIdentifierBuilder struct {
 
 var _ (BACnetKeyIdentifierBuilder) = (*_BACnetKeyIdentifierBuilder)(nil)
 
-func (m *_BACnetKeyIdentifierBuilder) WithMandatoryFields(algorithm BACnetContextTagUnsignedInteger, keyId BACnetContextTagUnsignedInteger) BACnetKeyIdentifierBuilder {
-	return m.WithAlgorithm(algorithm).WithKeyId(keyId)
+func (b *_BACnetKeyIdentifierBuilder) WithMandatoryFields(algorithm BACnetContextTagUnsignedInteger, keyId BACnetContextTagUnsignedInteger) BACnetKeyIdentifierBuilder {
+	return b.WithAlgorithm(algorithm).WithKeyId(keyId)
 }
 
-func (m *_BACnetKeyIdentifierBuilder) WithAlgorithm(algorithm BACnetContextTagUnsignedInteger) BACnetKeyIdentifierBuilder {
-	m.Algorithm = algorithm
-	return m
+func (b *_BACnetKeyIdentifierBuilder) WithAlgorithm(algorithm BACnetContextTagUnsignedInteger) BACnetKeyIdentifierBuilder {
+	b.Algorithm = algorithm
+	return b
 }
 
-func (m *_BACnetKeyIdentifierBuilder) WithAlgorithmBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetKeyIdentifierBuilder {
-	builder := builderSupplier(m.Algorithm.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetKeyIdentifierBuilder) WithAlgorithmBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetKeyIdentifierBuilder {
+	builder := builderSupplier(b.Algorithm.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.Algorithm, err = builder.Build()
+	b.Algorithm, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetKeyIdentifierBuilder) WithKeyId(keyId BACnetContextTagUnsignedInteger) BACnetKeyIdentifierBuilder {
-	m.KeyId = keyId
-	return m
+func (b *_BACnetKeyIdentifierBuilder) WithKeyId(keyId BACnetContextTagUnsignedInteger) BACnetKeyIdentifierBuilder {
+	b.KeyId = keyId
+	return b
 }
 
-func (m *_BACnetKeyIdentifierBuilder) WithKeyIdBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetKeyIdentifierBuilder {
-	builder := builderSupplier(m.KeyId.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetKeyIdentifierBuilder) WithKeyIdBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetKeyIdentifierBuilder {
+	builder := builderSupplier(b.KeyId.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.KeyId, err = builder.Build()
+	b.KeyId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetKeyIdentifierBuilder) Build() (BACnetKeyIdentifier, error) {
-	if m.Algorithm == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetKeyIdentifierBuilder) Build() (BACnetKeyIdentifier, error) {
+	if b.Algorithm == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'algorithm' not set"))
+		b.err.Append(errors.New("mandatory field 'algorithm' not set"))
 	}
-	if m.KeyId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.KeyId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'keyId' not set"))
+		b.err.Append(errors.New("mandatory field 'keyId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetKeyIdentifier.deepCopy(), nil
+	return b._BACnetKeyIdentifier.deepCopy(), nil
 }
 
-func (m *_BACnetKeyIdentifierBuilder) MustBuild() BACnetKeyIdentifier {
-	build, err := m.Build()
+func (b *_BACnetKeyIdentifierBuilder) MustBuild() BACnetKeyIdentifier {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetKeyIdentifierBuilder) DeepCopy() any {
-	return m.CreateBACnetKeyIdentifierBuilder()
+func (b *_BACnetKeyIdentifierBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetKeyIdentifierBuilder().(*_BACnetKeyIdentifierBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetKeyIdentifierBuilder creates a BACnetKeyIdentifierBuilder
-func (m *_BACnetKeyIdentifier) CreateBACnetKeyIdentifierBuilder() BACnetKeyIdentifierBuilder {
-	if m == nil {
+func (b *_BACnetKeyIdentifier) CreateBACnetKeyIdentifierBuilder() BACnetKeyIdentifierBuilder {
+	if b == nil {
 		return NewBACnetKeyIdentifierBuilder()
 	}
-	return &_BACnetKeyIdentifierBuilder{_BACnetKeyIdentifier: m.deepCopy()}
+	return &_BACnetKeyIdentifierBuilder{_BACnetKeyIdentifier: b.deepCopy()}
 }
 
 ///////////////////////

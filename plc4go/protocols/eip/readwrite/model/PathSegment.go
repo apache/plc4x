@@ -85,10 +85,29 @@ type PathSegmentBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() PathSegmentBuilder
+	// AsPortSegment converts this build to a subType of PathSegment. It is always possible to return to current builder using Done()
+	AsPortSegment() interface {
+		PortSegmentBuilder
+		Done() PathSegmentBuilder
+	}
+	// AsLogicalSegment converts this build to a subType of PathSegment. It is always possible to return to current builder using Done()
+	AsLogicalSegment() interface {
+		LogicalSegmentBuilder
+		Done() PathSegmentBuilder
+	}
+	// AsDataSegment converts this build to a subType of PathSegment. It is always possible to return to current builder using Done()
+	AsDataSegment() interface {
+		DataSegmentBuilder
+		Done() PathSegmentBuilder
+	}
 	// Build builds the PathSegment or returns an error if something is wrong
-	Build() (PathSegmentContract, error)
+	PartialBuild() (PathSegmentContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() PathSegmentContract
+	PartialMustBuild() PathSegmentContract
+	// Build builds the PathSegment or returns an error if something is wrong
+	Build() (PathSegment, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PathSegment
 }
 
 // NewPathSegmentBuilder() creates a PathSegmentBuilder
@@ -96,43 +115,125 @@ func NewPathSegmentBuilder() PathSegmentBuilder {
 	return &_PathSegmentBuilder{_PathSegment: new(_PathSegment)}
 }
 
+type _PathSegmentChildBuilder interface {
+	utils.Copyable
+	setParent(PathSegmentContract)
+	buildForPathSegment() (PathSegment, error)
+}
+
 type _PathSegmentBuilder struct {
 	*_PathSegment
+
+	childBuilder _PathSegmentChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (PathSegmentBuilder) = (*_PathSegmentBuilder)(nil)
 
-func (m *_PathSegmentBuilder) WithMandatoryFields() PathSegmentBuilder {
-	return m
+func (b *_PathSegmentBuilder) WithMandatoryFields() PathSegmentBuilder {
+	return b
 }
 
-func (m *_PathSegmentBuilder) Build() (PathSegmentContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_PathSegmentBuilder) PartialBuild() (PathSegmentContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._PathSegment.deepCopy(), nil
+	return b._PathSegment.deepCopy(), nil
 }
 
-func (m *_PathSegmentBuilder) MustBuild() PathSegmentContract {
-	build, err := m.Build()
+func (b *_PathSegmentBuilder) PartialMustBuild() PathSegmentContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PathSegmentBuilder) DeepCopy() any {
-	return m.CreatePathSegmentBuilder()
+func (b *_PathSegmentBuilder) AsPortSegment() interface {
+	PortSegmentBuilder
+	Done() PathSegmentBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PortSegmentBuilder
+		Done() PathSegmentBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPortSegmentBuilder().(*_PortSegmentBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_PathSegmentBuilder) AsLogicalSegment() interface {
+	LogicalSegmentBuilder
+	Done() PathSegmentBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LogicalSegmentBuilder
+		Done() PathSegmentBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLogicalSegmentBuilder().(*_LogicalSegmentBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_PathSegmentBuilder) AsDataSegment() interface {
+	DataSegmentBuilder
+	Done() PathSegmentBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DataSegmentBuilder
+		Done() PathSegmentBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDataSegmentBuilder().(*_DataSegmentBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_PathSegmentBuilder) Build() (PathSegment, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForPathSegment()
+}
+
+func (b *_PathSegmentBuilder) MustBuild() PathSegment {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_PathSegmentBuilder) DeepCopy() any {
+	_copy := b.CreatePathSegmentBuilder().(*_PathSegmentBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_PathSegmentChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePathSegmentBuilder creates a PathSegmentBuilder
-func (m *_PathSegment) CreatePathSegmentBuilder() PathSegmentBuilder {
-	if m == nil {
+func (b *_PathSegment) CreatePathSegmentBuilder() PathSegmentBuilder {
+	if b == nil {
 		return NewPathSegmentBuilder()
 	}
-	return &_PathSegmentBuilder{_PathSegment: m.deepCopy()}
+	return &_PathSegmentBuilder{_PathSegment: b.deepCopy()}
 }
 
 ///////////////////////

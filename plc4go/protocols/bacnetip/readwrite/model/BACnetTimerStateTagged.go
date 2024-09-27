@@ -104,64 +104,68 @@ type _BACnetTimerStateTaggedBuilder struct {
 
 var _ (BACnetTimerStateTaggedBuilder) = (*_BACnetTimerStateTaggedBuilder)(nil)
 
-func (m *_BACnetTimerStateTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetTimerState) BACnetTimerStateTaggedBuilder {
-	return m.WithHeader(header).WithValue(value)
+func (b *_BACnetTimerStateTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetTimerState) BACnetTimerStateTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
 }
 
-func (m *_BACnetTimerStateTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetTimerStateTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetTimerStateTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetTimerStateTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetTimerStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimerStateTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetTimerStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimerStateTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetTimerStateTaggedBuilder) WithValue(value BACnetTimerState) BACnetTimerStateTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetTimerStateTaggedBuilder) WithValue(value BACnetTimerState) BACnetTimerStateTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetTimerStateTaggedBuilder) Build() (BACnetTimerStateTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetTimerStateTaggedBuilder) Build() (BACnetTimerStateTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTimerStateTagged.deepCopy(), nil
+	return b._BACnetTimerStateTagged.deepCopy(), nil
 }
 
-func (m *_BACnetTimerStateTaggedBuilder) MustBuild() BACnetTimerStateTagged {
-	build, err := m.Build()
+func (b *_BACnetTimerStateTaggedBuilder) MustBuild() BACnetTimerStateTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTimerStateTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetTimerStateTaggedBuilder()
+func (b *_BACnetTimerStateTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimerStateTaggedBuilder().(*_BACnetTimerStateTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTimerStateTaggedBuilder creates a BACnetTimerStateTaggedBuilder
-func (m *_BACnetTimerStateTagged) CreateBACnetTimerStateTaggedBuilder() BACnetTimerStateTaggedBuilder {
-	if m == nil {
+func (b *_BACnetTimerStateTagged) CreateBACnetTimerStateTaggedBuilder() BACnetTimerStateTaggedBuilder {
+	if b == nil {
 		return NewBACnetTimerStateTaggedBuilder()
 	}
-	return &_BACnetTimerStateTaggedBuilder{_BACnetTimerStateTagged: m.deepCopy()}
+	return &_BACnetTimerStateTaggedBuilder{_BACnetTimerStateTagged: b.deepCopy()}
 }
 
 ///////////////////////

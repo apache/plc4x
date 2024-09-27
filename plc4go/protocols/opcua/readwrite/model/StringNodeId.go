@@ -100,64 +100,68 @@ type _StringNodeIdBuilder struct {
 
 var _ (StringNodeIdBuilder) = (*_StringNodeIdBuilder)(nil)
 
-func (m *_StringNodeIdBuilder) WithMandatoryFields(namespaceIndex uint16, identifier PascalString) StringNodeIdBuilder {
-	return m.WithNamespaceIndex(namespaceIndex).WithIdentifier(identifier)
+func (b *_StringNodeIdBuilder) WithMandatoryFields(namespaceIndex uint16, identifier PascalString) StringNodeIdBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithIdentifier(identifier)
 }
 
-func (m *_StringNodeIdBuilder) WithNamespaceIndex(namespaceIndex uint16) StringNodeIdBuilder {
-	m.NamespaceIndex = namespaceIndex
-	return m
+func (b *_StringNodeIdBuilder) WithNamespaceIndex(namespaceIndex uint16) StringNodeIdBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
 }
 
-func (m *_StringNodeIdBuilder) WithIdentifier(identifier PascalString) StringNodeIdBuilder {
-	m.Identifier = identifier
-	return m
+func (b *_StringNodeIdBuilder) WithIdentifier(identifier PascalString) StringNodeIdBuilder {
+	b.Identifier = identifier
+	return b
 }
 
-func (m *_StringNodeIdBuilder) WithIdentifierBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) StringNodeIdBuilder {
-	builder := builderSupplier(m.Identifier.CreatePascalStringBuilder())
+func (b *_StringNodeIdBuilder) WithIdentifierBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) StringNodeIdBuilder {
+	builder := builderSupplier(b.Identifier.CreatePascalStringBuilder())
 	var err error
-	m.Identifier, err = builder.Build()
+	b.Identifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_StringNodeIdBuilder) Build() (StringNodeId, error) {
-	if m.Identifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_StringNodeIdBuilder) Build() (StringNodeId, error) {
+	if b.Identifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'identifier' not set"))
+		b.err.Append(errors.New("mandatory field 'identifier' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._StringNodeId.deepCopy(), nil
+	return b._StringNodeId.deepCopy(), nil
 }
 
-func (m *_StringNodeIdBuilder) MustBuild() StringNodeId {
-	build, err := m.Build()
+func (b *_StringNodeIdBuilder) MustBuild() StringNodeId {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_StringNodeIdBuilder) DeepCopy() any {
-	return m.CreateStringNodeIdBuilder()
+func (b *_StringNodeIdBuilder) DeepCopy() any {
+	_copy := b.CreateStringNodeIdBuilder().(*_StringNodeIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateStringNodeIdBuilder creates a StringNodeIdBuilder
-func (m *_StringNodeId) CreateStringNodeIdBuilder() StringNodeIdBuilder {
-	if m == nil {
+func (b *_StringNodeId) CreateStringNodeIdBuilder() StringNodeIdBuilder {
+	if b == nil {
 		return NewStringNodeIdBuilder()
 	}
-	return &_StringNodeIdBuilder{_StringNodeId: m.deepCopy()}
+	return &_StringNodeIdBuilder{_StringNodeId: b.deepCopy()}
 }
 
 ///////////////////////

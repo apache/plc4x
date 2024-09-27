@@ -109,6 +109,8 @@ type BACnetConfirmedServiceRequestRemoveListElementBuilder interface {
 	WithOptionalArrayIndexBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder
 	// WithListOfElements adds ListOfElements (property field)
 	WithOptionalListOfElements(BACnetConstructedData) BACnetConfirmedServiceRequestRemoveListElementBuilder
+	// WithOptionalListOfElementsBuilder adds ListOfElements (property field) which is build by the builder
+	WithOptionalListOfElementsBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder
 	// Build builds the BACnetConfirmedServiceRequestRemoveListElement or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestRemoveListElement, error)
 	// MustBuild does the same as Build but panics on error
@@ -123,111 +125,143 @@ func NewBACnetConfirmedServiceRequestRemoveListElementBuilder() BACnetConfirmedS
 type _BACnetConfirmedServiceRequestRemoveListElementBuilder struct {
 	*_BACnetConfirmedServiceRequestRemoveListElement
 
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestRemoveListElementBuilder) = (*_BACnetConfirmedServiceRequestRemoveListElementBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestRemoveListElementBuilder {
-	return m.WithObjectIdentifier(objectIdentifier).WithPropertyIdentifier(propertyIdentifier)
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestRemoveListElementBuilder {
-	m.ObjectIdentifier = objectIdentifier
-	return m
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	return b.WithObjectIdentifier(objectIdentifier).WithPropertyIdentifier(propertyIdentifier)
 }
 
-func (m *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder {
-	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
 	var err error
-	m.ObjectIdentifier, err = builder.Build()
+	b.ObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestRemoveListElementBuilder {
-	m.PropertyIdentifier = propertyIdentifier
-	return m
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	b.PropertyIdentifier = propertyIdentifier
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithPropertyIdentifierBuilder(builderSupplier func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder {
-	builder := builderSupplier(m.PropertyIdentifier.CreateBACnetPropertyIdentifierTaggedBuilder())
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithPropertyIdentifierBuilder(builderSupplier func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	builder := builderSupplier(b.PropertyIdentifier.CreateBACnetPropertyIdentifierTaggedBuilder())
 	var err error
-	m.PropertyIdentifier, err = builder.Build()
+	b.PropertyIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithOptionalArrayIndex(arrayIndex BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestRemoveListElementBuilder {
-	m.ArrayIndex = arrayIndex
-	return m
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithOptionalArrayIndex(arrayIndex BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	b.ArrayIndex = arrayIndex
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithOptionalArrayIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder {
-	builder := builderSupplier(m.ArrayIndex.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithOptionalArrayIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	builder := builderSupplier(b.ArrayIndex.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.ArrayIndex, err = builder.Build()
+	b.ArrayIndex, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithOptionalListOfElements(listOfElements BACnetConstructedData) BACnetConfirmedServiceRequestRemoveListElementBuilder {
-	m.ListOfElements = listOfElements
-	return m
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithOptionalListOfElements(listOfElements BACnetConstructedData) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	b.ListOfElements = listOfElements
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestRemoveListElementBuilder) Build() (BACnetConfirmedServiceRequestRemoveListElement, error) {
-	if m.ObjectIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithOptionalListOfElementsBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	builder := builderSupplier(b.ListOfElements.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.ListOfElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
-	if m.PropertyIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'propertyIdentifier' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetConfirmedServiceRequestRemoveListElement.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestRemoveListElementBuilder) MustBuild() BACnetConfirmedServiceRequestRemoveListElement {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) Build() (BACnetConfirmedServiceRequestRemoveListElement, error) {
+	if b.ObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+	}
+	if b.PropertyIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'propertyIdentifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConfirmedServiceRequestRemoveListElement.deepCopy(), nil
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) MustBuild() BACnetConfirmedServiceRequestRemoveListElement {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestRemoveListElementBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestRemoveListElementBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestRemoveListElementBuilder().(*_BACnetConfirmedServiceRequestRemoveListElementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestRemoveListElementBuilder creates a BACnetConfirmedServiceRequestRemoveListElementBuilder
-func (m *_BACnetConfirmedServiceRequestRemoveListElement) CreateBACnetConfirmedServiceRequestRemoveListElementBuilder() BACnetConfirmedServiceRequestRemoveListElementBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestRemoveListElement) CreateBACnetConfirmedServiceRequestRemoveListElementBuilder() BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestRemoveListElementBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestRemoveListElementBuilder{_BACnetConfirmedServiceRequestRemoveListElement: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestRemoveListElementBuilder{_BACnetConfirmedServiceRequestRemoveListElement: b.deepCopy()}
 }
 
 ///////////////////////

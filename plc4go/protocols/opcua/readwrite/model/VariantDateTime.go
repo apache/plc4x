@@ -99,50 +99,69 @@ func NewVariantDateTimeBuilder() VariantDateTimeBuilder {
 type _VariantDateTimeBuilder struct {
 	*_VariantDateTime
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantDateTimeBuilder) = (*_VariantDateTimeBuilder)(nil)
 
-func (m *_VariantDateTimeBuilder) WithMandatoryFields(value []int64) VariantDateTimeBuilder {
-	return m.WithValue(value...)
+func (b *_VariantDateTimeBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantDateTimeBuilder) WithOptionalArrayLength(arrayLength int32) VariantDateTimeBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantDateTimeBuilder) WithMandatoryFields(value []int64) VariantDateTimeBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantDateTimeBuilder) WithValue(value ...int64) VariantDateTimeBuilder {
-	m.Value = value
-	return m
+func (b *_VariantDateTimeBuilder) WithOptionalArrayLength(arrayLength int32) VariantDateTimeBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantDateTimeBuilder) Build() (VariantDateTime, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantDateTimeBuilder) WithValue(value ...int64) VariantDateTimeBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantDateTimeBuilder) Build() (VariantDateTime, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantDateTime.deepCopy(), nil
+	return b._VariantDateTime.deepCopy(), nil
 }
 
-func (m *_VariantDateTimeBuilder) MustBuild() VariantDateTime {
-	build, err := m.Build()
+func (b *_VariantDateTimeBuilder) MustBuild() VariantDateTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantDateTimeBuilder) DeepCopy() any {
-	return m.CreateVariantDateTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantDateTimeBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantDateTimeBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantDateTimeBuilder) DeepCopy() any {
+	_copy := b.CreateVariantDateTimeBuilder().(*_VariantDateTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantDateTimeBuilder creates a VariantDateTimeBuilder
-func (m *_VariantDateTime) CreateVariantDateTimeBuilder() VariantDateTimeBuilder {
-	if m == nil {
+func (b *_VariantDateTime) CreateVariantDateTimeBuilder() VariantDateTimeBuilder {
+	if b == nil {
 		return NewVariantDateTimeBuilder()
 	}
-	return &_VariantDateTimeBuilder{_VariantDateTime: m.deepCopy()}
+	return &_VariantDateTimeBuilder{_VariantDateTime: b.deepCopy()}
 }
 
 ///////////////////////

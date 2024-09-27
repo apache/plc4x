@@ -126,117 +126,136 @@ func NewReadValueIdBuilder() ReadValueIdBuilder {
 type _ReadValueIdBuilder struct {
 	*_ReadValueId
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ReadValueIdBuilder) = (*_ReadValueIdBuilder)(nil)
 
-func (m *_ReadValueIdBuilder) WithMandatoryFields(nodeId NodeId, attributeId uint32, indexRange PascalString, dataEncoding QualifiedName) ReadValueIdBuilder {
-	return m.WithNodeId(nodeId).WithAttributeId(attributeId).WithIndexRange(indexRange).WithDataEncoding(dataEncoding)
+func (b *_ReadValueIdBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ReadValueIdBuilder) WithNodeId(nodeId NodeId) ReadValueIdBuilder {
-	m.NodeId = nodeId
-	return m
+func (b *_ReadValueIdBuilder) WithMandatoryFields(nodeId NodeId, attributeId uint32, indexRange PascalString, dataEncoding QualifiedName) ReadValueIdBuilder {
+	return b.WithNodeId(nodeId).WithAttributeId(attributeId).WithIndexRange(indexRange).WithDataEncoding(dataEncoding)
 }
 
-func (m *_ReadValueIdBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ReadValueIdBuilder {
-	builder := builderSupplier(m.NodeId.CreateNodeIdBuilder())
+func (b *_ReadValueIdBuilder) WithNodeId(nodeId NodeId) ReadValueIdBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_ReadValueIdBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ReadValueIdBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdBuilder())
 	var err error
-	m.NodeId, err = builder.Build()
+	b.NodeId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ReadValueIdBuilder) WithAttributeId(attributeId uint32) ReadValueIdBuilder {
-	m.AttributeId = attributeId
-	return m
+func (b *_ReadValueIdBuilder) WithAttributeId(attributeId uint32) ReadValueIdBuilder {
+	b.AttributeId = attributeId
+	return b
 }
 
-func (m *_ReadValueIdBuilder) WithIndexRange(indexRange PascalString) ReadValueIdBuilder {
-	m.IndexRange = indexRange
-	return m
+func (b *_ReadValueIdBuilder) WithIndexRange(indexRange PascalString) ReadValueIdBuilder {
+	b.IndexRange = indexRange
+	return b
 }
 
-func (m *_ReadValueIdBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ReadValueIdBuilder {
-	builder := builderSupplier(m.IndexRange.CreatePascalStringBuilder())
+func (b *_ReadValueIdBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ReadValueIdBuilder {
+	builder := builderSupplier(b.IndexRange.CreatePascalStringBuilder())
 	var err error
-	m.IndexRange, err = builder.Build()
+	b.IndexRange, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ReadValueIdBuilder) WithDataEncoding(dataEncoding QualifiedName) ReadValueIdBuilder {
-	m.DataEncoding = dataEncoding
-	return m
+func (b *_ReadValueIdBuilder) WithDataEncoding(dataEncoding QualifiedName) ReadValueIdBuilder {
+	b.DataEncoding = dataEncoding
+	return b
 }
 
-func (m *_ReadValueIdBuilder) WithDataEncodingBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) ReadValueIdBuilder {
-	builder := builderSupplier(m.DataEncoding.CreateQualifiedNameBuilder())
+func (b *_ReadValueIdBuilder) WithDataEncodingBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) ReadValueIdBuilder {
+	builder := builderSupplier(b.DataEncoding.CreateQualifiedNameBuilder())
 	var err error
-	m.DataEncoding, err = builder.Build()
+	b.DataEncoding, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ReadValueIdBuilder) Build() (ReadValueId, error) {
-	if m.NodeId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ReadValueIdBuilder) Build() (ReadValueId, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nodeId' not set"))
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
 	}
-	if m.IndexRange == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.IndexRange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'indexRange' not set"))
+		b.err.Append(errors.New("mandatory field 'indexRange' not set"))
 	}
-	if m.DataEncoding == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.DataEncoding == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dataEncoding' not set"))
+		b.err.Append(errors.New("mandatory field 'dataEncoding' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ReadValueId.deepCopy(), nil
+	return b._ReadValueId.deepCopy(), nil
 }
 
-func (m *_ReadValueIdBuilder) MustBuild() ReadValueId {
-	build, err := m.Build()
+func (b *_ReadValueIdBuilder) MustBuild() ReadValueId {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ReadValueIdBuilder) DeepCopy() any {
-	return m.CreateReadValueIdBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ReadValueIdBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ReadValueIdBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ReadValueIdBuilder) DeepCopy() any {
+	_copy := b.CreateReadValueIdBuilder().(*_ReadValueIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateReadValueIdBuilder creates a ReadValueIdBuilder
-func (m *_ReadValueId) CreateReadValueIdBuilder() ReadValueIdBuilder {
-	if m == nil {
+func (b *_ReadValueId) CreateReadValueIdBuilder() ReadValueIdBuilder {
+	if b == nil {
 		return NewReadValueIdBuilder()
 	}
-	return &_ReadValueIdBuilder{_ReadValueId: m.deepCopy()}
+	return &_ReadValueIdBuilder{_ReadValueId: b.deepCopy()}
 }
 
 ///////////////////////

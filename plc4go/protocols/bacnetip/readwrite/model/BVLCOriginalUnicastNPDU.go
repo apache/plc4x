@@ -103,64 +103,83 @@ func NewBVLCOriginalUnicastNPDUBuilder() BVLCOriginalUnicastNPDUBuilder {
 type _BVLCOriginalUnicastNPDUBuilder struct {
 	*_BVLCOriginalUnicastNPDU
 
+	parentBuilder *_BVLCBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BVLCOriginalUnicastNPDUBuilder) = (*_BVLCOriginalUnicastNPDUBuilder)(nil)
 
-func (m *_BVLCOriginalUnicastNPDUBuilder) WithMandatoryFields(npdu NPDU) BVLCOriginalUnicastNPDUBuilder {
-	return m.WithNpdu(npdu)
+func (b *_BVLCOriginalUnicastNPDUBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
 }
 
-func (m *_BVLCOriginalUnicastNPDUBuilder) WithNpdu(npdu NPDU) BVLCOriginalUnicastNPDUBuilder {
-	m.Npdu = npdu
-	return m
+func (b *_BVLCOriginalUnicastNPDUBuilder) WithMandatoryFields(npdu NPDU) BVLCOriginalUnicastNPDUBuilder {
+	return b.WithNpdu(npdu)
 }
 
-func (m *_BVLCOriginalUnicastNPDUBuilder) WithNpduBuilder(builderSupplier func(NPDUBuilder) NPDUBuilder) BVLCOriginalUnicastNPDUBuilder {
-	builder := builderSupplier(m.Npdu.CreateNPDUBuilder())
+func (b *_BVLCOriginalUnicastNPDUBuilder) WithNpdu(npdu NPDU) BVLCOriginalUnicastNPDUBuilder {
+	b.Npdu = npdu
+	return b
+}
+
+func (b *_BVLCOriginalUnicastNPDUBuilder) WithNpduBuilder(builderSupplier func(NPDUBuilder) NPDUBuilder) BVLCOriginalUnicastNPDUBuilder {
+	builder := builderSupplier(b.Npdu.CreateNPDUBuilder())
 	var err error
-	m.Npdu, err = builder.Build()
+	b.Npdu, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NPDUBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NPDUBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BVLCOriginalUnicastNPDUBuilder) Build() (BVLCOriginalUnicastNPDU, error) {
-	if m.Npdu == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BVLCOriginalUnicastNPDUBuilder) Build() (BVLCOriginalUnicastNPDU, error) {
+	if b.Npdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'npdu' not set"))
+		b.err.Append(errors.New("mandatory field 'npdu' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BVLCOriginalUnicastNPDU.deepCopy(), nil
+	return b._BVLCOriginalUnicastNPDU.deepCopy(), nil
 }
 
-func (m *_BVLCOriginalUnicastNPDUBuilder) MustBuild() BVLCOriginalUnicastNPDU {
-	build, err := m.Build()
+func (b *_BVLCOriginalUnicastNPDUBuilder) MustBuild() BVLCOriginalUnicastNPDU {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BVLCOriginalUnicastNPDUBuilder) DeepCopy() any {
-	return m.CreateBVLCOriginalUnicastNPDUBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCOriginalUnicastNPDUBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCOriginalUnicastNPDUBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCOriginalUnicastNPDUBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCOriginalUnicastNPDUBuilder().(*_BVLCOriginalUnicastNPDUBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBVLCOriginalUnicastNPDUBuilder creates a BVLCOriginalUnicastNPDUBuilder
-func (m *_BVLCOriginalUnicastNPDU) CreateBVLCOriginalUnicastNPDUBuilder() BVLCOriginalUnicastNPDUBuilder {
-	if m == nil {
+func (b *_BVLCOriginalUnicastNPDU) CreateBVLCOriginalUnicastNPDUBuilder() BVLCOriginalUnicastNPDUBuilder {
+	if b == nil {
 		return NewBVLCOriginalUnicastNPDUBuilder()
 	}
-	return &_BVLCOriginalUnicastNPDUBuilder{_BVLCOriginalUnicastNPDU: m.deepCopy()}
+	return &_BVLCOriginalUnicastNPDUBuilder{_BVLCOriginalUnicastNPDU: b.deepCopy()}
 }
 
 ///////////////////////

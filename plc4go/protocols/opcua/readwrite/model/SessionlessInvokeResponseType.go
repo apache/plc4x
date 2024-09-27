@@ -117,65 +117,84 @@ func NewSessionlessInvokeResponseTypeBuilder() SessionlessInvokeResponseTypeBuil
 type _SessionlessInvokeResponseTypeBuilder struct {
 	*_SessionlessInvokeResponseType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SessionlessInvokeResponseTypeBuilder) = (*_SessionlessInvokeResponseTypeBuilder)(nil)
 
-func (m *_SessionlessInvokeResponseTypeBuilder) WithMandatoryFields(noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, serviceId uint32) SessionlessInvokeResponseTypeBuilder {
-	return m.WithNoOfNamespaceUris(noOfNamespaceUris).WithNamespaceUris(namespaceUris...).WithNoOfServerUris(noOfServerUris).WithServerUris(serverUris...).WithServiceId(serviceId)
+func (b *_SessionlessInvokeResponseTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_SessionlessInvokeResponseTypeBuilder) WithNoOfNamespaceUris(noOfNamespaceUris int32) SessionlessInvokeResponseTypeBuilder {
-	m.NoOfNamespaceUris = noOfNamespaceUris
-	return m
+func (b *_SessionlessInvokeResponseTypeBuilder) WithMandatoryFields(noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, serviceId uint32) SessionlessInvokeResponseTypeBuilder {
+	return b.WithNoOfNamespaceUris(noOfNamespaceUris).WithNamespaceUris(namespaceUris...).WithNoOfServerUris(noOfServerUris).WithServerUris(serverUris...).WithServiceId(serviceId)
 }
 
-func (m *_SessionlessInvokeResponseTypeBuilder) WithNamespaceUris(namespaceUris ...PascalString) SessionlessInvokeResponseTypeBuilder {
-	m.NamespaceUris = namespaceUris
-	return m
+func (b *_SessionlessInvokeResponseTypeBuilder) WithNoOfNamespaceUris(noOfNamespaceUris int32) SessionlessInvokeResponseTypeBuilder {
+	b.NoOfNamespaceUris = noOfNamespaceUris
+	return b
 }
 
-func (m *_SessionlessInvokeResponseTypeBuilder) WithNoOfServerUris(noOfServerUris int32) SessionlessInvokeResponseTypeBuilder {
-	m.NoOfServerUris = noOfServerUris
-	return m
+func (b *_SessionlessInvokeResponseTypeBuilder) WithNamespaceUris(namespaceUris ...PascalString) SessionlessInvokeResponseTypeBuilder {
+	b.NamespaceUris = namespaceUris
+	return b
 }
 
-func (m *_SessionlessInvokeResponseTypeBuilder) WithServerUris(serverUris ...PascalString) SessionlessInvokeResponseTypeBuilder {
-	m.ServerUris = serverUris
-	return m
+func (b *_SessionlessInvokeResponseTypeBuilder) WithNoOfServerUris(noOfServerUris int32) SessionlessInvokeResponseTypeBuilder {
+	b.NoOfServerUris = noOfServerUris
+	return b
 }
 
-func (m *_SessionlessInvokeResponseTypeBuilder) WithServiceId(serviceId uint32) SessionlessInvokeResponseTypeBuilder {
-	m.ServiceId = serviceId
-	return m
+func (b *_SessionlessInvokeResponseTypeBuilder) WithServerUris(serverUris ...PascalString) SessionlessInvokeResponseTypeBuilder {
+	b.ServerUris = serverUris
+	return b
 }
 
-func (m *_SessionlessInvokeResponseTypeBuilder) Build() (SessionlessInvokeResponseType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SessionlessInvokeResponseTypeBuilder) WithServiceId(serviceId uint32) SessionlessInvokeResponseTypeBuilder {
+	b.ServiceId = serviceId
+	return b
+}
+
+func (b *_SessionlessInvokeResponseTypeBuilder) Build() (SessionlessInvokeResponseType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SessionlessInvokeResponseType.deepCopy(), nil
+	return b._SessionlessInvokeResponseType.deepCopy(), nil
 }
 
-func (m *_SessionlessInvokeResponseTypeBuilder) MustBuild() SessionlessInvokeResponseType {
-	build, err := m.Build()
+func (b *_SessionlessInvokeResponseTypeBuilder) MustBuild() SessionlessInvokeResponseType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SessionlessInvokeResponseTypeBuilder) DeepCopy() any {
-	return m.CreateSessionlessInvokeResponseTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SessionlessInvokeResponseTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SessionlessInvokeResponseTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SessionlessInvokeResponseTypeBuilder) DeepCopy() any {
+	_copy := b.CreateSessionlessInvokeResponseTypeBuilder().(*_SessionlessInvokeResponseTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSessionlessInvokeResponseTypeBuilder creates a SessionlessInvokeResponseTypeBuilder
-func (m *_SessionlessInvokeResponseType) CreateSessionlessInvokeResponseTypeBuilder() SessionlessInvokeResponseTypeBuilder {
-	if m == nil {
+func (b *_SessionlessInvokeResponseType) CreateSessionlessInvokeResponseTypeBuilder() SessionlessInvokeResponseTypeBuilder {
+	if b == nil {
 		return NewSessionlessInvokeResponseTypeBuilder()
 	}
-	return &_SessionlessInvokeResponseTypeBuilder{_SessionlessInvokeResponseType: m.deepCopy()}
+	return &_SessionlessInvokeResponseTypeBuilder{_SessionlessInvokeResponseType: b.deepCopy()}
 }
 
 ///////////////////////

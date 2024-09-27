@@ -93,45 +93,64 @@ func NewSysexCommandAnalogMappingQueryResponseBuilder() SysexCommandAnalogMappin
 type _SysexCommandAnalogMappingQueryResponseBuilder struct {
 	*_SysexCommandAnalogMappingQueryResponse
 
+	parentBuilder *_SysexCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SysexCommandAnalogMappingQueryResponseBuilder) = (*_SysexCommandAnalogMappingQueryResponseBuilder)(nil)
 
-func (m *_SysexCommandAnalogMappingQueryResponseBuilder) WithMandatoryFields(pin uint8) SysexCommandAnalogMappingQueryResponseBuilder {
-	return m.WithPin(pin)
+func (b *_SysexCommandAnalogMappingQueryResponseBuilder) setParent(contract SysexCommandContract) {
+	b.SysexCommandContract = contract
 }
 
-func (m *_SysexCommandAnalogMappingQueryResponseBuilder) WithPin(pin uint8) SysexCommandAnalogMappingQueryResponseBuilder {
-	m.Pin = pin
-	return m
+func (b *_SysexCommandAnalogMappingQueryResponseBuilder) WithMandatoryFields(pin uint8) SysexCommandAnalogMappingQueryResponseBuilder {
+	return b.WithPin(pin)
 }
 
-func (m *_SysexCommandAnalogMappingQueryResponseBuilder) Build() (SysexCommandAnalogMappingQueryResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SysexCommandAnalogMappingQueryResponseBuilder) WithPin(pin uint8) SysexCommandAnalogMappingQueryResponseBuilder {
+	b.Pin = pin
+	return b
+}
+
+func (b *_SysexCommandAnalogMappingQueryResponseBuilder) Build() (SysexCommandAnalogMappingQueryResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SysexCommandAnalogMappingQueryResponse.deepCopy(), nil
+	return b._SysexCommandAnalogMappingQueryResponse.deepCopy(), nil
 }
 
-func (m *_SysexCommandAnalogMappingQueryResponseBuilder) MustBuild() SysexCommandAnalogMappingQueryResponse {
-	build, err := m.Build()
+func (b *_SysexCommandAnalogMappingQueryResponseBuilder) MustBuild() SysexCommandAnalogMappingQueryResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SysexCommandAnalogMappingQueryResponseBuilder) DeepCopy() any {
-	return m.CreateSysexCommandAnalogMappingQueryResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SysexCommandAnalogMappingQueryResponseBuilder) Done() SysexCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SysexCommandAnalogMappingQueryResponseBuilder) buildForSysexCommand() (SysexCommand, error) {
+	return b.Build()
+}
+
+func (b *_SysexCommandAnalogMappingQueryResponseBuilder) DeepCopy() any {
+	_copy := b.CreateSysexCommandAnalogMappingQueryResponseBuilder().(*_SysexCommandAnalogMappingQueryResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSysexCommandAnalogMappingQueryResponseBuilder creates a SysexCommandAnalogMappingQueryResponseBuilder
-func (m *_SysexCommandAnalogMappingQueryResponse) CreateSysexCommandAnalogMappingQueryResponseBuilder() SysexCommandAnalogMappingQueryResponseBuilder {
-	if m == nil {
+func (b *_SysexCommandAnalogMappingQueryResponse) CreateSysexCommandAnalogMappingQueryResponseBuilder() SysexCommandAnalogMappingQueryResponseBuilder {
+	if b == nil {
 		return NewSysexCommandAnalogMappingQueryResponseBuilder()
 	}
-	return &_SysexCommandAnalogMappingQueryResponseBuilder{_SysexCommandAnalogMappingQueryResponse: m.deepCopy()}
+	return &_SysexCommandAnalogMappingQueryResponseBuilder{_SysexCommandAnalogMappingQueryResponse: b.deepCopy()}
 }
 
 ///////////////////////

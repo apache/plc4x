@@ -101,50 +101,69 @@ func NewDisconnectResponseBuilder() DisconnectResponseBuilder {
 type _DisconnectResponseBuilder struct {
 	*_DisconnectResponse
 
+	parentBuilder *_KnxNetIpMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DisconnectResponseBuilder) = (*_DisconnectResponseBuilder)(nil)
 
-func (m *_DisconnectResponseBuilder) WithMandatoryFields(communicationChannelId uint8, status Status) DisconnectResponseBuilder {
-	return m.WithCommunicationChannelId(communicationChannelId).WithStatus(status)
+func (b *_DisconnectResponseBuilder) setParent(contract KnxNetIpMessageContract) {
+	b.KnxNetIpMessageContract = contract
 }
 
-func (m *_DisconnectResponseBuilder) WithCommunicationChannelId(communicationChannelId uint8) DisconnectResponseBuilder {
-	m.CommunicationChannelId = communicationChannelId
-	return m
+func (b *_DisconnectResponseBuilder) WithMandatoryFields(communicationChannelId uint8, status Status) DisconnectResponseBuilder {
+	return b.WithCommunicationChannelId(communicationChannelId).WithStatus(status)
 }
 
-func (m *_DisconnectResponseBuilder) WithStatus(status Status) DisconnectResponseBuilder {
-	m.Status = status
-	return m
+func (b *_DisconnectResponseBuilder) WithCommunicationChannelId(communicationChannelId uint8) DisconnectResponseBuilder {
+	b.CommunicationChannelId = communicationChannelId
+	return b
 }
 
-func (m *_DisconnectResponseBuilder) Build() (DisconnectResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DisconnectResponseBuilder) WithStatus(status Status) DisconnectResponseBuilder {
+	b.Status = status
+	return b
+}
+
+func (b *_DisconnectResponseBuilder) Build() (DisconnectResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DisconnectResponse.deepCopy(), nil
+	return b._DisconnectResponse.deepCopy(), nil
 }
 
-func (m *_DisconnectResponseBuilder) MustBuild() DisconnectResponse {
-	build, err := m.Build()
+func (b *_DisconnectResponseBuilder) MustBuild() DisconnectResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DisconnectResponseBuilder) DeepCopy() any {
-	return m.CreateDisconnectResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DisconnectResponseBuilder) Done() KnxNetIpMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DisconnectResponseBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, error) {
+	return b.Build()
+}
+
+func (b *_DisconnectResponseBuilder) DeepCopy() any {
+	_copy := b.CreateDisconnectResponseBuilder().(*_DisconnectResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDisconnectResponseBuilder creates a DisconnectResponseBuilder
-func (m *_DisconnectResponse) CreateDisconnectResponseBuilder() DisconnectResponseBuilder {
-	if m == nil {
+func (b *_DisconnectResponse) CreateDisconnectResponseBuilder() DisconnectResponseBuilder {
+	if b == nil {
 		return NewDisconnectResponseBuilder()
 	}
-	return &_DisconnectResponseBuilder{_DisconnectResponse: m.deepCopy()}
+	return &_DisconnectResponseBuilder{_DisconnectResponse: b.deepCopy()}
 }
 
 ///////////////////////

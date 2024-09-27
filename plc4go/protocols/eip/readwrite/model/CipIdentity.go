@@ -171,105 +171,124 @@ func NewCipIdentityBuilder() CipIdentityBuilder {
 type _CipIdentityBuilder struct {
 	*_CipIdentity
 
+	parentBuilder *_CommandSpecificDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CipIdentityBuilder) = (*_CipIdentityBuilder)(nil)
 
-func (m *_CipIdentityBuilder) WithMandatoryFields(encapsulationProtocolVersion uint16, socketAddressFamily uint16, socketAddressPort uint16, socketAddressAddress []uint8, vendorId uint16, deviceType uint16, productCode uint16, revisionMajor uint8, revisionMinor uint8, status uint16, serialNumber uint32, productName string, state uint8) CipIdentityBuilder {
-	return m.WithEncapsulationProtocolVersion(encapsulationProtocolVersion).WithSocketAddressFamily(socketAddressFamily).WithSocketAddressPort(socketAddressPort).WithSocketAddressAddress(socketAddressAddress...).WithVendorId(vendorId).WithDeviceType(deviceType).WithProductCode(productCode).WithRevisionMajor(revisionMajor).WithRevisionMinor(revisionMinor).WithStatus(status).WithSerialNumber(serialNumber).WithProductName(productName).WithState(state)
+func (b *_CipIdentityBuilder) setParent(contract CommandSpecificDataItemContract) {
+	b.CommandSpecificDataItemContract = contract
 }
 
-func (m *_CipIdentityBuilder) WithEncapsulationProtocolVersion(encapsulationProtocolVersion uint16) CipIdentityBuilder {
-	m.EncapsulationProtocolVersion = encapsulationProtocolVersion
-	return m
+func (b *_CipIdentityBuilder) WithMandatoryFields(encapsulationProtocolVersion uint16, socketAddressFamily uint16, socketAddressPort uint16, socketAddressAddress []uint8, vendorId uint16, deviceType uint16, productCode uint16, revisionMajor uint8, revisionMinor uint8, status uint16, serialNumber uint32, productName string, state uint8) CipIdentityBuilder {
+	return b.WithEncapsulationProtocolVersion(encapsulationProtocolVersion).WithSocketAddressFamily(socketAddressFamily).WithSocketAddressPort(socketAddressPort).WithSocketAddressAddress(socketAddressAddress...).WithVendorId(vendorId).WithDeviceType(deviceType).WithProductCode(productCode).WithRevisionMajor(revisionMajor).WithRevisionMinor(revisionMinor).WithStatus(status).WithSerialNumber(serialNumber).WithProductName(productName).WithState(state)
 }
 
-func (m *_CipIdentityBuilder) WithSocketAddressFamily(socketAddressFamily uint16) CipIdentityBuilder {
-	m.SocketAddressFamily = socketAddressFamily
-	return m
+func (b *_CipIdentityBuilder) WithEncapsulationProtocolVersion(encapsulationProtocolVersion uint16) CipIdentityBuilder {
+	b.EncapsulationProtocolVersion = encapsulationProtocolVersion
+	return b
 }
 
-func (m *_CipIdentityBuilder) WithSocketAddressPort(socketAddressPort uint16) CipIdentityBuilder {
-	m.SocketAddressPort = socketAddressPort
-	return m
+func (b *_CipIdentityBuilder) WithSocketAddressFamily(socketAddressFamily uint16) CipIdentityBuilder {
+	b.SocketAddressFamily = socketAddressFamily
+	return b
 }
 
-func (m *_CipIdentityBuilder) WithSocketAddressAddress(socketAddressAddress ...uint8) CipIdentityBuilder {
-	m.SocketAddressAddress = socketAddressAddress
-	return m
+func (b *_CipIdentityBuilder) WithSocketAddressPort(socketAddressPort uint16) CipIdentityBuilder {
+	b.SocketAddressPort = socketAddressPort
+	return b
 }
 
-func (m *_CipIdentityBuilder) WithVendorId(vendorId uint16) CipIdentityBuilder {
-	m.VendorId = vendorId
-	return m
+func (b *_CipIdentityBuilder) WithSocketAddressAddress(socketAddressAddress ...uint8) CipIdentityBuilder {
+	b.SocketAddressAddress = socketAddressAddress
+	return b
 }
 
-func (m *_CipIdentityBuilder) WithDeviceType(deviceType uint16) CipIdentityBuilder {
-	m.DeviceType = deviceType
-	return m
+func (b *_CipIdentityBuilder) WithVendorId(vendorId uint16) CipIdentityBuilder {
+	b.VendorId = vendorId
+	return b
 }
 
-func (m *_CipIdentityBuilder) WithProductCode(productCode uint16) CipIdentityBuilder {
-	m.ProductCode = productCode
-	return m
+func (b *_CipIdentityBuilder) WithDeviceType(deviceType uint16) CipIdentityBuilder {
+	b.DeviceType = deviceType
+	return b
 }
 
-func (m *_CipIdentityBuilder) WithRevisionMajor(revisionMajor uint8) CipIdentityBuilder {
-	m.RevisionMajor = revisionMajor
-	return m
+func (b *_CipIdentityBuilder) WithProductCode(productCode uint16) CipIdentityBuilder {
+	b.ProductCode = productCode
+	return b
 }
 
-func (m *_CipIdentityBuilder) WithRevisionMinor(revisionMinor uint8) CipIdentityBuilder {
-	m.RevisionMinor = revisionMinor
-	return m
+func (b *_CipIdentityBuilder) WithRevisionMajor(revisionMajor uint8) CipIdentityBuilder {
+	b.RevisionMajor = revisionMajor
+	return b
 }
 
-func (m *_CipIdentityBuilder) WithStatus(status uint16) CipIdentityBuilder {
-	m.Status = status
-	return m
+func (b *_CipIdentityBuilder) WithRevisionMinor(revisionMinor uint8) CipIdentityBuilder {
+	b.RevisionMinor = revisionMinor
+	return b
 }
 
-func (m *_CipIdentityBuilder) WithSerialNumber(serialNumber uint32) CipIdentityBuilder {
-	m.SerialNumber = serialNumber
-	return m
+func (b *_CipIdentityBuilder) WithStatus(status uint16) CipIdentityBuilder {
+	b.Status = status
+	return b
 }
 
-func (m *_CipIdentityBuilder) WithProductName(productName string) CipIdentityBuilder {
-	m.ProductName = productName
-	return m
+func (b *_CipIdentityBuilder) WithSerialNumber(serialNumber uint32) CipIdentityBuilder {
+	b.SerialNumber = serialNumber
+	return b
 }
 
-func (m *_CipIdentityBuilder) WithState(state uint8) CipIdentityBuilder {
-	m.State = state
-	return m
+func (b *_CipIdentityBuilder) WithProductName(productName string) CipIdentityBuilder {
+	b.ProductName = productName
+	return b
 }
 
-func (m *_CipIdentityBuilder) Build() (CipIdentity, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CipIdentityBuilder) WithState(state uint8) CipIdentityBuilder {
+	b.State = state
+	return b
+}
+
+func (b *_CipIdentityBuilder) Build() (CipIdentity, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CipIdentity.deepCopy(), nil
+	return b._CipIdentity.deepCopy(), nil
 }
 
-func (m *_CipIdentityBuilder) MustBuild() CipIdentity {
-	build, err := m.Build()
+func (b *_CipIdentityBuilder) MustBuild() CipIdentity {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CipIdentityBuilder) DeepCopy() any {
-	return m.CreateCipIdentityBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipIdentityBuilder) Done() CommandSpecificDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipIdentityBuilder) buildForCommandSpecificDataItem() (CommandSpecificDataItem, error) {
+	return b.Build()
+}
+
+func (b *_CipIdentityBuilder) DeepCopy() any {
+	_copy := b.CreateCipIdentityBuilder().(*_CipIdentityBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCipIdentityBuilder creates a CipIdentityBuilder
-func (m *_CipIdentity) CreateCipIdentityBuilder() CipIdentityBuilder {
-	if m == nil {
+func (b *_CipIdentity) CreateCipIdentityBuilder() CipIdentityBuilder {
+	if b == nil {
 		return NewCipIdentityBuilder()
 	}
-	return &_CipIdentityBuilder{_CipIdentity: m.deepCopy()}
+	return &_CipIdentityBuilder{_CipIdentity: b.deepCopy()}
 }
 
 ///////////////////////

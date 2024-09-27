@@ -100,64 +100,83 @@ func NewBACnetConstructedDataCOVIncrementBuilder() BACnetConstructedDataCOVIncre
 type _BACnetConstructedDataCOVIncrementBuilder struct {
 	*_BACnetConstructedDataCOVIncrement
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCOVIncrementBuilder) = (*_BACnetConstructedDataCOVIncrementBuilder)(nil)
 
-func (m *_BACnetConstructedDataCOVIncrementBuilder) WithMandatoryFields(covIncrement BACnetApplicationTagReal) BACnetConstructedDataCOVIncrementBuilder {
-	return m.WithCovIncrement(covIncrement)
+func (b *_BACnetConstructedDataCOVIncrementBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCOVIncrementBuilder) WithCovIncrement(covIncrement BACnetApplicationTagReal) BACnetConstructedDataCOVIncrementBuilder {
-	m.CovIncrement = covIncrement
-	return m
+func (b *_BACnetConstructedDataCOVIncrementBuilder) WithMandatoryFields(covIncrement BACnetApplicationTagReal) BACnetConstructedDataCOVIncrementBuilder {
+	return b.WithCovIncrement(covIncrement)
 }
 
-func (m *_BACnetConstructedDataCOVIncrementBuilder) WithCovIncrementBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataCOVIncrementBuilder {
-	builder := builderSupplier(m.CovIncrement.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataCOVIncrementBuilder) WithCovIncrement(covIncrement BACnetApplicationTagReal) BACnetConstructedDataCOVIncrementBuilder {
+	b.CovIncrement = covIncrement
+	return b
+}
+
+func (b *_BACnetConstructedDataCOVIncrementBuilder) WithCovIncrementBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataCOVIncrementBuilder {
+	builder := builderSupplier(b.CovIncrement.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.CovIncrement, err = builder.Build()
+	b.CovIncrement, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataCOVIncrementBuilder) Build() (BACnetConstructedDataCOVIncrement, error) {
-	if m.CovIncrement == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataCOVIncrementBuilder) Build() (BACnetConstructedDataCOVIncrement, error) {
+	if b.CovIncrement == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'covIncrement' not set"))
+		b.err.Append(errors.New("mandatory field 'covIncrement' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCOVIncrement.deepCopy(), nil
+	return b._BACnetConstructedDataCOVIncrement.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCOVIncrementBuilder) MustBuild() BACnetConstructedDataCOVIncrement {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCOVIncrementBuilder) MustBuild() BACnetConstructedDataCOVIncrement {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCOVIncrementBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCOVIncrementBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCOVIncrementBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCOVIncrementBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCOVIncrementBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCOVIncrementBuilder().(*_BACnetConstructedDataCOVIncrementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCOVIncrementBuilder creates a BACnetConstructedDataCOVIncrementBuilder
-func (m *_BACnetConstructedDataCOVIncrement) CreateBACnetConstructedDataCOVIncrementBuilder() BACnetConstructedDataCOVIncrementBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCOVIncrement) CreateBACnetConstructedDataCOVIncrementBuilder() BACnetConstructedDataCOVIncrementBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCOVIncrementBuilder()
 	}
-	return &_BACnetConstructedDataCOVIncrementBuilder{_BACnetConstructedDataCOVIncrement: m.deepCopy()}
+	return &_BACnetConstructedDataCOVIncrementBuilder{_BACnetConstructedDataCOVIncrement: b.deepCopy()}
 }
 
 ///////////////////////

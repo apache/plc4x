@@ -93,45 +93,64 @@ func NewIdentifyReplyCommandGAVPhysicalAddressesBuilder() IdentifyReplyCommandGA
 type _IdentifyReplyCommandGAVPhysicalAddressesBuilder struct {
 	*_IdentifyReplyCommandGAVPhysicalAddresses
 
+	parentBuilder *_IdentifyReplyCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (IdentifyReplyCommandGAVPhysicalAddressesBuilder) = (*_IdentifyReplyCommandGAVPhysicalAddressesBuilder)(nil)
 
-func (m *_IdentifyReplyCommandGAVPhysicalAddressesBuilder) WithMandatoryFields(values []byte) IdentifyReplyCommandGAVPhysicalAddressesBuilder {
-	return m.WithValues(values...)
+func (b *_IdentifyReplyCommandGAVPhysicalAddressesBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
 }
 
-func (m *_IdentifyReplyCommandGAVPhysicalAddressesBuilder) WithValues(values ...byte) IdentifyReplyCommandGAVPhysicalAddressesBuilder {
-	m.Values = values
-	return m
+func (b *_IdentifyReplyCommandGAVPhysicalAddressesBuilder) WithMandatoryFields(values []byte) IdentifyReplyCommandGAVPhysicalAddressesBuilder {
+	return b.WithValues(values...)
 }
 
-func (m *_IdentifyReplyCommandGAVPhysicalAddressesBuilder) Build() (IdentifyReplyCommandGAVPhysicalAddresses, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IdentifyReplyCommandGAVPhysicalAddressesBuilder) WithValues(values ...byte) IdentifyReplyCommandGAVPhysicalAddressesBuilder {
+	b.Values = values
+	return b
+}
+
+func (b *_IdentifyReplyCommandGAVPhysicalAddressesBuilder) Build() (IdentifyReplyCommandGAVPhysicalAddresses, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommandGAVPhysicalAddresses.deepCopy(), nil
+	return b._IdentifyReplyCommandGAVPhysicalAddresses.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandGAVPhysicalAddressesBuilder) MustBuild() IdentifyReplyCommandGAVPhysicalAddresses {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandGAVPhysicalAddressesBuilder) MustBuild() IdentifyReplyCommandGAVPhysicalAddresses {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandGAVPhysicalAddressesBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandGAVPhysicalAddressesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandGAVPhysicalAddressesBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandGAVPhysicalAddressesBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandGAVPhysicalAddressesBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandGAVPhysicalAddressesBuilder().(*_IdentifyReplyCommandGAVPhysicalAddressesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandGAVPhysicalAddressesBuilder creates a IdentifyReplyCommandGAVPhysicalAddressesBuilder
-func (m *_IdentifyReplyCommandGAVPhysicalAddresses) CreateIdentifyReplyCommandGAVPhysicalAddressesBuilder() IdentifyReplyCommandGAVPhysicalAddressesBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommandGAVPhysicalAddresses) CreateIdentifyReplyCommandGAVPhysicalAddressesBuilder() IdentifyReplyCommandGAVPhysicalAddressesBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandGAVPhysicalAddressesBuilder()
 	}
-	return &_IdentifyReplyCommandGAVPhysicalAddressesBuilder{_IdentifyReplyCommandGAVPhysicalAddresses: m.deepCopy()}
+	return &_IdentifyReplyCommandGAVPhysicalAddressesBuilder{_IdentifyReplyCommandGAVPhysicalAddresses: b.deepCopy()}
 }
 
 ///////////////////////

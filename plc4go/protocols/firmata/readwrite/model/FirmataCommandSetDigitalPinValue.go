@@ -101,50 +101,69 @@ func NewFirmataCommandSetDigitalPinValueBuilder() FirmataCommandSetDigitalPinVal
 type _FirmataCommandSetDigitalPinValueBuilder struct {
 	*_FirmataCommandSetDigitalPinValue
 
+	parentBuilder *_FirmataCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (FirmataCommandSetDigitalPinValueBuilder) = (*_FirmataCommandSetDigitalPinValueBuilder)(nil)
 
-func (m *_FirmataCommandSetDigitalPinValueBuilder) WithMandatoryFields(pin uint8, on bool) FirmataCommandSetDigitalPinValueBuilder {
-	return m.WithPin(pin).WithOn(on)
+func (b *_FirmataCommandSetDigitalPinValueBuilder) setParent(contract FirmataCommandContract) {
+	b.FirmataCommandContract = contract
 }
 
-func (m *_FirmataCommandSetDigitalPinValueBuilder) WithPin(pin uint8) FirmataCommandSetDigitalPinValueBuilder {
-	m.Pin = pin
-	return m
+func (b *_FirmataCommandSetDigitalPinValueBuilder) WithMandatoryFields(pin uint8, on bool) FirmataCommandSetDigitalPinValueBuilder {
+	return b.WithPin(pin).WithOn(on)
 }
 
-func (m *_FirmataCommandSetDigitalPinValueBuilder) WithOn(on bool) FirmataCommandSetDigitalPinValueBuilder {
-	m.On = on
-	return m
+func (b *_FirmataCommandSetDigitalPinValueBuilder) WithPin(pin uint8) FirmataCommandSetDigitalPinValueBuilder {
+	b.Pin = pin
+	return b
 }
 
-func (m *_FirmataCommandSetDigitalPinValueBuilder) Build() (FirmataCommandSetDigitalPinValue, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_FirmataCommandSetDigitalPinValueBuilder) WithOn(on bool) FirmataCommandSetDigitalPinValueBuilder {
+	b.On = on
+	return b
+}
+
+func (b *_FirmataCommandSetDigitalPinValueBuilder) Build() (FirmataCommandSetDigitalPinValue, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._FirmataCommandSetDigitalPinValue.deepCopy(), nil
+	return b._FirmataCommandSetDigitalPinValue.deepCopy(), nil
 }
 
-func (m *_FirmataCommandSetDigitalPinValueBuilder) MustBuild() FirmataCommandSetDigitalPinValue {
-	build, err := m.Build()
+func (b *_FirmataCommandSetDigitalPinValueBuilder) MustBuild() FirmataCommandSetDigitalPinValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FirmataCommandSetDigitalPinValueBuilder) DeepCopy() any {
-	return m.CreateFirmataCommandSetDigitalPinValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FirmataCommandSetDigitalPinValueBuilder) Done() FirmataCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FirmataCommandSetDigitalPinValueBuilder) buildForFirmataCommand() (FirmataCommand, error) {
+	return b.Build()
+}
+
+func (b *_FirmataCommandSetDigitalPinValueBuilder) DeepCopy() any {
+	_copy := b.CreateFirmataCommandSetDigitalPinValueBuilder().(*_FirmataCommandSetDigitalPinValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFirmataCommandSetDigitalPinValueBuilder creates a FirmataCommandSetDigitalPinValueBuilder
-func (m *_FirmataCommandSetDigitalPinValue) CreateFirmataCommandSetDigitalPinValueBuilder() FirmataCommandSetDigitalPinValueBuilder {
-	if m == nil {
+func (b *_FirmataCommandSetDigitalPinValue) CreateFirmataCommandSetDigitalPinValueBuilder() FirmataCommandSetDigitalPinValueBuilder {
+	if b == nil {
 		return NewFirmataCommandSetDigitalPinValueBuilder()
 	}
-	return &_FirmataCommandSetDigitalPinValueBuilder{_FirmataCommandSetDigitalPinValue: m.deepCopy()}
+	return &_FirmataCommandSetDigitalPinValueBuilder{_FirmataCommandSetDigitalPinValue: b.deepCopy()}
 }
 
 ///////////////////////

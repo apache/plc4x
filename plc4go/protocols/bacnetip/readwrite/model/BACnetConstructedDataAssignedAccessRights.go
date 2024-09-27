@@ -103,63 +103,82 @@ func NewBACnetConstructedDataAssignedAccessRightsBuilder() BACnetConstructedData
 type _BACnetConstructedDataAssignedAccessRightsBuilder struct {
 	*_BACnetConstructedDataAssignedAccessRights
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAssignedAccessRightsBuilder) = (*_BACnetConstructedDataAssignedAccessRightsBuilder)(nil)
 
-func (m *_BACnetConstructedDataAssignedAccessRightsBuilder) WithMandatoryFields(assignedAccessRights []BACnetAssignedAccessRights) BACnetConstructedDataAssignedAccessRightsBuilder {
-	return m.WithAssignedAccessRights(assignedAccessRights...)
+func (b *_BACnetConstructedDataAssignedAccessRightsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAssignedAccessRightsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAssignedAccessRightsBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataAssignedAccessRightsBuilder) WithMandatoryFields(assignedAccessRights []BACnetAssignedAccessRights) BACnetConstructedDataAssignedAccessRightsBuilder {
+	return b.WithAssignedAccessRights(assignedAccessRights...)
 }
 
-func (m *_BACnetConstructedDataAssignedAccessRightsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAssignedAccessRightsBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataAssignedAccessRightsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAssignedAccessRightsBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataAssignedAccessRightsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAssignedAccessRightsBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAssignedAccessRightsBuilder) WithAssignedAccessRights(assignedAccessRights ...BACnetAssignedAccessRights) BACnetConstructedDataAssignedAccessRightsBuilder {
-	m.AssignedAccessRights = assignedAccessRights
-	return m
+func (b *_BACnetConstructedDataAssignedAccessRightsBuilder) WithAssignedAccessRights(assignedAccessRights ...BACnetAssignedAccessRights) BACnetConstructedDataAssignedAccessRightsBuilder {
+	b.AssignedAccessRights = assignedAccessRights
+	return b
 }
 
-func (m *_BACnetConstructedDataAssignedAccessRightsBuilder) Build() (BACnetConstructedDataAssignedAccessRights, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataAssignedAccessRightsBuilder) Build() (BACnetConstructedDataAssignedAccessRights, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAssignedAccessRights.deepCopy(), nil
+	return b._BACnetConstructedDataAssignedAccessRights.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAssignedAccessRightsBuilder) MustBuild() BACnetConstructedDataAssignedAccessRights {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAssignedAccessRightsBuilder) MustBuild() BACnetConstructedDataAssignedAccessRights {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAssignedAccessRightsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAssignedAccessRightsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAssignedAccessRightsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAssignedAccessRightsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAssignedAccessRightsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAssignedAccessRightsBuilder().(*_BACnetConstructedDataAssignedAccessRightsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAssignedAccessRightsBuilder creates a BACnetConstructedDataAssignedAccessRightsBuilder
-func (m *_BACnetConstructedDataAssignedAccessRights) CreateBACnetConstructedDataAssignedAccessRightsBuilder() BACnetConstructedDataAssignedAccessRightsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAssignedAccessRights) CreateBACnetConstructedDataAssignedAccessRightsBuilder() BACnetConstructedDataAssignedAccessRightsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAssignedAccessRightsBuilder()
 	}
-	return &_BACnetConstructedDataAssignedAccessRightsBuilder{_BACnetConstructedDataAssignedAccessRights: m.deepCopy()}
+	return &_BACnetConstructedDataAssignedAccessRightsBuilder{_BACnetConstructedDataAssignedAccessRights: b.deepCopy()}
 }
 
 ///////////////////////

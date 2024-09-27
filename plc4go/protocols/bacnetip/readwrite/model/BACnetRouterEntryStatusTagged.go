@@ -104,64 +104,68 @@ type _BACnetRouterEntryStatusTaggedBuilder struct {
 
 var _ (BACnetRouterEntryStatusTaggedBuilder) = (*_BACnetRouterEntryStatusTaggedBuilder)(nil)
 
-func (m *_BACnetRouterEntryStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetRouterEntryStatus) BACnetRouterEntryStatusTaggedBuilder {
-	return m.WithHeader(header).WithValue(value)
+func (b *_BACnetRouterEntryStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetRouterEntryStatus) BACnetRouterEntryStatusTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
 }
 
-func (m *_BACnetRouterEntryStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetRouterEntryStatusTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetRouterEntryStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetRouterEntryStatusTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetRouterEntryStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRouterEntryStatusTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetRouterEntryStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRouterEntryStatusTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetRouterEntryStatusTaggedBuilder) WithValue(value BACnetRouterEntryStatus) BACnetRouterEntryStatusTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetRouterEntryStatusTaggedBuilder) WithValue(value BACnetRouterEntryStatus) BACnetRouterEntryStatusTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetRouterEntryStatusTaggedBuilder) Build() (BACnetRouterEntryStatusTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetRouterEntryStatusTaggedBuilder) Build() (BACnetRouterEntryStatusTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetRouterEntryStatusTagged.deepCopy(), nil
+	return b._BACnetRouterEntryStatusTagged.deepCopy(), nil
 }
 
-func (m *_BACnetRouterEntryStatusTaggedBuilder) MustBuild() BACnetRouterEntryStatusTagged {
-	build, err := m.Build()
+func (b *_BACnetRouterEntryStatusTaggedBuilder) MustBuild() BACnetRouterEntryStatusTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetRouterEntryStatusTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetRouterEntryStatusTaggedBuilder()
+func (b *_BACnetRouterEntryStatusTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetRouterEntryStatusTaggedBuilder().(*_BACnetRouterEntryStatusTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetRouterEntryStatusTaggedBuilder creates a BACnetRouterEntryStatusTaggedBuilder
-func (m *_BACnetRouterEntryStatusTagged) CreateBACnetRouterEntryStatusTaggedBuilder() BACnetRouterEntryStatusTaggedBuilder {
-	if m == nil {
+func (b *_BACnetRouterEntryStatusTagged) CreateBACnetRouterEntryStatusTaggedBuilder() BACnetRouterEntryStatusTaggedBuilder {
+	if b == nil {
 		return NewBACnetRouterEntryStatusTaggedBuilder()
 	}
-	return &_BACnetRouterEntryStatusTaggedBuilder{_BACnetRouterEntryStatusTagged: m.deepCopy()}
+	return &_BACnetRouterEntryStatusTaggedBuilder{_BACnetRouterEntryStatusTagged: b.deepCopy()}
 }
 
 ///////////////////////

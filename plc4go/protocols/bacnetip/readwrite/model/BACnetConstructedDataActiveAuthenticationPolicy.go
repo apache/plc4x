@@ -100,64 +100,83 @@ func NewBACnetConstructedDataActiveAuthenticationPolicyBuilder() BACnetConstruct
 type _BACnetConstructedDataActiveAuthenticationPolicyBuilder struct {
 	*_BACnetConstructedDataActiveAuthenticationPolicy
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataActiveAuthenticationPolicyBuilder) = (*_BACnetConstructedDataActiveAuthenticationPolicyBuilder)(nil)
 
-func (m *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) WithMandatoryFields(activeAuthenticationPolicy BACnetApplicationTagUnsignedInteger) BACnetConstructedDataActiveAuthenticationPolicyBuilder {
-	return m.WithActiveAuthenticationPolicy(activeAuthenticationPolicy)
+func (b *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) WithActiveAuthenticationPolicy(activeAuthenticationPolicy BACnetApplicationTagUnsignedInteger) BACnetConstructedDataActiveAuthenticationPolicyBuilder {
-	m.ActiveAuthenticationPolicy = activeAuthenticationPolicy
-	return m
+func (b *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) WithMandatoryFields(activeAuthenticationPolicy BACnetApplicationTagUnsignedInteger) BACnetConstructedDataActiveAuthenticationPolicyBuilder {
+	return b.WithActiveAuthenticationPolicy(activeAuthenticationPolicy)
 }
 
-func (m *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) WithActiveAuthenticationPolicyBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataActiveAuthenticationPolicyBuilder {
-	builder := builderSupplier(m.ActiveAuthenticationPolicy.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) WithActiveAuthenticationPolicy(activeAuthenticationPolicy BACnetApplicationTagUnsignedInteger) BACnetConstructedDataActiveAuthenticationPolicyBuilder {
+	b.ActiveAuthenticationPolicy = activeAuthenticationPolicy
+	return b
+}
+
+func (b *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) WithActiveAuthenticationPolicyBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataActiveAuthenticationPolicyBuilder {
+	builder := builderSupplier(b.ActiveAuthenticationPolicy.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.ActiveAuthenticationPolicy, err = builder.Build()
+	b.ActiveAuthenticationPolicy, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) Build() (BACnetConstructedDataActiveAuthenticationPolicy, error) {
-	if m.ActiveAuthenticationPolicy == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) Build() (BACnetConstructedDataActiveAuthenticationPolicy, error) {
+	if b.ActiveAuthenticationPolicy == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'activeAuthenticationPolicy' not set"))
+		b.err.Append(errors.New("mandatory field 'activeAuthenticationPolicy' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataActiveAuthenticationPolicy.deepCopy(), nil
+	return b._BACnetConstructedDataActiveAuthenticationPolicy.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) MustBuild() BACnetConstructedDataActiveAuthenticationPolicy {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) MustBuild() BACnetConstructedDataActiveAuthenticationPolicy {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataActiveAuthenticationPolicyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataActiveAuthenticationPolicyBuilder().(*_BACnetConstructedDataActiveAuthenticationPolicyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataActiveAuthenticationPolicyBuilder creates a BACnetConstructedDataActiveAuthenticationPolicyBuilder
-func (m *_BACnetConstructedDataActiveAuthenticationPolicy) CreateBACnetConstructedDataActiveAuthenticationPolicyBuilder() BACnetConstructedDataActiveAuthenticationPolicyBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataActiveAuthenticationPolicy) CreateBACnetConstructedDataActiveAuthenticationPolicyBuilder() BACnetConstructedDataActiveAuthenticationPolicyBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataActiveAuthenticationPolicyBuilder()
 	}
-	return &_BACnetConstructedDataActiveAuthenticationPolicyBuilder{_BACnetConstructedDataActiveAuthenticationPolicy: m.deepCopy()}
+	return &_BACnetConstructedDataActiveAuthenticationPolicyBuilder{_BACnetConstructedDataActiveAuthenticationPolicy: b.deepCopy()}
 }
 
 ///////////////////////

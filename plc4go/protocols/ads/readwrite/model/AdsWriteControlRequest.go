@@ -105,55 +105,74 @@ func NewAdsWriteControlRequestBuilder() AdsWriteControlRequestBuilder {
 type _AdsWriteControlRequestBuilder struct {
 	*_AdsWriteControlRequest
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsWriteControlRequestBuilder) = (*_AdsWriteControlRequestBuilder)(nil)
 
-func (m *_AdsWriteControlRequestBuilder) WithMandatoryFields(adsState uint16, deviceState uint16, data []byte) AdsWriteControlRequestBuilder {
-	return m.WithAdsState(adsState).WithDeviceState(deviceState).WithData(data...)
+func (b *_AdsWriteControlRequestBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_AdsWriteControlRequestBuilder) WithAdsState(adsState uint16) AdsWriteControlRequestBuilder {
-	m.AdsState = adsState
-	return m
+func (b *_AdsWriteControlRequestBuilder) WithMandatoryFields(adsState uint16, deviceState uint16, data []byte) AdsWriteControlRequestBuilder {
+	return b.WithAdsState(adsState).WithDeviceState(deviceState).WithData(data...)
 }
 
-func (m *_AdsWriteControlRequestBuilder) WithDeviceState(deviceState uint16) AdsWriteControlRequestBuilder {
-	m.DeviceState = deviceState
-	return m
+func (b *_AdsWriteControlRequestBuilder) WithAdsState(adsState uint16) AdsWriteControlRequestBuilder {
+	b.AdsState = adsState
+	return b
 }
 
-func (m *_AdsWriteControlRequestBuilder) WithData(data ...byte) AdsWriteControlRequestBuilder {
-	m.Data = data
-	return m
+func (b *_AdsWriteControlRequestBuilder) WithDeviceState(deviceState uint16) AdsWriteControlRequestBuilder {
+	b.DeviceState = deviceState
+	return b
 }
 
-func (m *_AdsWriteControlRequestBuilder) Build() (AdsWriteControlRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsWriteControlRequestBuilder) WithData(data ...byte) AdsWriteControlRequestBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_AdsWriteControlRequestBuilder) Build() (AdsWriteControlRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsWriteControlRequest.deepCopy(), nil
+	return b._AdsWriteControlRequest.deepCopy(), nil
 }
 
-func (m *_AdsWriteControlRequestBuilder) MustBuild() AdsWriteControlRequest {
-	build, err := m.Build()
+func (b *_AdsWriteControlRequestBuilder) MustBuild() AdsWriteControlRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsWriteControlRequestBuilder) DeepCopy() any {
-	return m.CreateAdsWriteControlRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsWriteControlRequestBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsWriteControlRequestBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsWriteControlRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAdsWriteControlRequestBuilder().(*_AdsWriteControlRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsWriteControlRequestBuilder creates a AdsWriteControlRequestBuilder
-func (m *_AdsWriteControlRequest) CreateAdsWriteControlRequestBuilder() AdsWriteControlRequestBuilder {
-	if m == nil {
+func (b *_AdsWriteControlRequest) CreateAdsWriteControlRequestBuilder() AdsWriteControlRequestBuilder {
+	if b == nil {
 		return NewAdsWriteControlRequestBuilder()
 	}
-	return &_AdsWriteControlRequestBuilder{_AdsWriteControlRequest: m.deepCopy()}
+	return &_AdsWriteControlRequestBuilder{_AdsWriteControlRequest: b.deepCopy()}
 }
 
 ///////////////////////

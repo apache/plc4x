@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLargeAnalogValueMinPresValueBuilder() BACnetConstru
 type _BACnetConstructedDataLargeAnalogValueMinPresValueBuilder struct {
 	*_BACnetConstructedDataLargeAnalogValueMinPresValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) = (*_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) WithMandatoryFields(minPresValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueMinPresValueBuilder {
-	return m.WithMinPresValue(minPresValue)
+func (b *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) WithMinPresValue(minPresValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueMinPresValueBuilder {
-	m.MinPresValue = minPresValue
-	return m
+func (b *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) WithMandatoryFields(minPresValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueMinPresValueBuilder {
+	return b.WithMinPresValue(minPresValue)
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) WithMinPresValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueMinPresValueBuilder {
-	builder := builderSupplier(m.MinPresValue.CreateBACnetApplicationTagDoubleBuilder())
+func (b *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) WithMinPresValue(minPresValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueMinPresValueBuilder {
+	b.MinPresValue = minPresValue
+	return b
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) WithMinPresValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueMinPresValueBuilder {
+	builder := builderSupplier(b.MinPresValue.CreateBACnetApplicationTagDoubleBuilder())
 	var err error
-	m.MinPresValue, err = builder.Build()
+	b.MinPresValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) Build() (BACnetConstructedDataLargeAnalogValueMinPresValue, error) {
-	if m.MinPresValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) Build() (BACnetConstructedDataLargeAnalogValueMinPresValue, error) {
+	if b.MinPresValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'minPresValue' not set"))
+		b.err.Append(errors.New("mandatory field 'minPresValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLargeAnalogValueMinPresValue.deepCopy(), nil
+	return b._BACnetConstructedDataLargeAnalogValueMinPresValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueMinPresValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueMinPresValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLargeAnalogValueMinPresValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLargeAnalogValueMinPresValueBuilder().(*_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLargeAnalogValueMinPresValueBuilder creates a BACnetConstructedDataLargeAnalogValueMinPresValueBuilder
-func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) CreateBACnetConstructedDataLargeAnalogValueMinPresValueBuilder() BACnetConstructedDataLargeAnalogValueMinPresValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLargeAnalogValueMinPresValue) CreateBACnetConstructedDataLargeAnalogValueMinPresValueBuilder() BACnetConstructedDataLargeAnalogValueMinPresValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLargeAnalogValueMinPresValueBuilder()
 	}
-	return &_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder{_BACnetConstructedDataLargeAnalogValueMinPresValue: m.deepCopy()}
+	return &_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder{_BACnetConstructedDataLargeAnalogValueMinPresValue: b.deepCopy()}
 }
 
 ///////////////////////

@@ -85,40 +85,59 @@ func NewTDataConnectedReqBuilder() TDataConnectedReqBuilder {
 type _TDataConnectedReqBuilder struct {
 	*_TDataConnectedReq
 
+	parentBuilder *_CEMIBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TDataConnectedReqBuilder) = (*_TDataConnectedReqBuilder)(nil)
 
-func (m *_TDataConnectedReqBuilder) WithMandatoryFields() TDataConnectedReqBuilder {
-	return m
+func (b *_TDataConnectedReqBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
 }
 
-func (m *_TDataConnectedReqBuilder) Build() (TDataConnectedReq, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TDataConnectedReqBuilder) WithMandatoryFields() TDataConnectedReqBuilder {
+	return b
+}
+
+func (b *_TDataConnectedReqBuilder) Build() (TDataConnectedReq, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TDataConnectedReq.deepCopy(), nil
+	return b._TDataConnectedReq.deepCopy(), nil
 }
 
-func (m *_TDataConnectedReqBuilder) MustBuild() TDataConnectedReq {
-	build, err := m.Build()
+func (b *_TDataConnectedReqBuilder) MustBuild() TDataConnectedReq {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TDataConnectedReqBuilder) DeepCopy() any {
-	return m.CreateTDataConnectedReqBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TDataConnectedReqBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TDataConnectedReqBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_TDataConnectedReqBuilder) DeepCopy() any {
+	_copy := b.CreateTDataConnectedReqBuilder().(*_TDataConnectedReqBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTDataConnectedReqBuilder creates a TDataConnectedReqBuilder
-func (m *_TDataConnectedReq) CreateTDataConnectedReqBuilder() TDataConnectedReqBuilder {
-	if m == nil {
+func (b *_TDataConnectedReq) CreateTDataConnectedReqBuilder() TDataConnectedReqBuilder {
+	if b == nil {
 		return NewTDataConnectedReqBuilder()
 	}
-	return &_TDataConnectedReqBuilder{_TDataConnectedReq: m.deepCopy()}
+	return &_TDataConnectedReqBuilder{_TDataConnectedReq: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataArchiveBuilder() BACnetConstructedDataArchiveBuilde
 type _BACnetConstructedDataArchiveBuilder struct {
 	*_BACnetConstructedDataArchive
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataArchiveBuilder) = (*_BACnetConstructedDataArchiveBuilder)(nil)
 
-func (m *_BACnetConstructedDataArchiveBuilder) WithMandatoryFields(archive BACnetApplicationTagBoolean) BACnetConstructedDataArchiveBuilder {
-	return m.WithArchive(archive)
+func (b *_BACnetConstructedDataArchiveBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataArchiveBuilder) WithArchive(archive BACnetApplicationTagBoolean) BACnetConstructedDataArchiveBuilder {
-	m.Archive = archive
-	return m
+func (b *_BACnetConstructedDataArchiveBuilder) WithMandatoryFields(archive BACnetApplicationTagBoolean) BACnetConstructedDataArchiveBuilder {
+	return b.WithArchive(archive)
 }
 
-func (m *_BACnetConstructedDataArchiveBuilder) WithArchiveBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataArchiveBuilder {
-	builder := builderSupplier(m.Archive.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataArchiveBuilder) WithArchive(archive BACnetApplicationTagBoolean) BACnetConstructedDataArchiveBuilder {
+	b.Archive = archive
+	return b
+}
+
+func (b *_BACnetConstructedDataArchiveBuilder) WithArchiveBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataArchiveBuilder {
+	builder := builderSupplier(b.Archive.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.Archive, err = builder.Build()
+	b.Archive, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataArchiveBuilder) Build() (BACnetConstructedDataArchive, error) {
-	if m.Archive == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataArchiveBuilder) Build() (BACnetConstructedDataArchive, error) {
+	if b.Archive == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'archive' not set"))
+		b.err.Append(errors.New("mandatory field 'archive' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataArchive.deepCopy(), nil
+	return b._BACnetConstructedDataArchive.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataArchiveBuilder) MustBuild() BACnetConstructedDataArchive {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataArchiveBuilder) MustBuild() BACnetConstructedDataArchive {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataArchiveBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataArchiveBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataArchiveBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataArchiveBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataArchiveBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataArchiveBuilder().(*_BACnetConstructedDataArchiveBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataArchiveBuilder creates a BACnetConstructedDataArchiveBuilder
-func (m *_BACnetConstructedDataArchive) CreateBACnetConstructedDataArchiveBuilder() BACnetConstructedDataArchiveBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataArchive) CreateBACnetConstructedDataArchiveBuilder() BACnetConstructedDataArchiveBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataArchiveBuilder()
 	}
-	return &_BACnetConstructedDataArchiveBuilder{_BACnetConstructedDataArchive: m.deepCopy()}
+	return &_BACnetConstructedDataArchiveBuilder{_BACnetConstructedDataArchive: b.deepCopy()}
 }
 
 ///////////////////////

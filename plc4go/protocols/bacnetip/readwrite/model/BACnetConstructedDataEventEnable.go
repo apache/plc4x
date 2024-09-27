@@ -100,64 +100,83 @@ func NewBACnetConstructedDataEventEnableBuilder() BACnetConstructedDataEventEnab
 type _BACnetConstructedDataEventEnableBuilder struct {
 	*_BACnetConstructedDataEventEnable
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataEventEnableBuilder) = (*_BACnetConstructedDataEventEnableBuilder)(nil)
 
-func (m *_BACnetConstructedDataEventEnableBuilder) WithMandatoryFields(eventEnable BACnetEventTransitionBitsTagged) BACnetConstructedDataEventEnableBuilder {
-	return m.WithEventEnable(eventEnable)
+func (b *_BACnetConstructedDataEventEnableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataEventEnableBuilder) WithEventEnable(eventEnable BACnetEventTransitionBitsTagged) BACnetConstructedDataEventEnableBuilder {
-	m.EventEnable = eventEnable
-	return m
+func (b *_BACnetConstructedDataEventEnableBuilder) WithMandatoryFields(eventEnable BACnetEventTransitionBitsTagged) BACnetConstructedDataEventEnableBuilder {
+	return b.WithEventEnable(eventEnable)
 }
 
-func (m *_BACnetConstructedDataEventEnableBuilder) WithEventEnableBuilder(builderSupplier func(BACnetEventTransitionBitsTaggedBuilder) BACnetEventTransitionBitsTaggedBuilder) BACnetConstructedDataEventEnableBuilder {
-	builder := builderSupplier(m.EventEnable.CreateBACnetEventTransitionBitsTaggedBuilder())
+func (b *_BACnetConstructedDataEventEnableBuilder) WithEventEnable(eventEnable BACnetEventTransitionBitsTagged) BACnetConstructedDataEventEnableBuilder {
+	b.EventEnable = eventEnable
+	return b
+}
+
+func (b *_BACnetConstructedDataEventEnableBuilder) WithEventEnableBuilder(builderSupplier func(BACnetEventTransitionBitsTaggedBuilder) BACnetEventTransitionBitsTaggedBuilder) BACnetConstructedDataEventEnableBuilder {
+	builder := builderSupplier(b.EventEnable.CreateBACnetEventTransitionBitsTaggedBuilder())
 	var err error
-	m.EventEnable, err = builder.Build()
+	b.EventEnable, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventTransitionBitsTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventTransitionBitsTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataEventEnableBuilder) Build() (BACnetConstructedDataEventEnable, error) {
-	if m.EventEnable == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataEventEnableBuilder) Build() (BACnetConstructedDataEventEnable, error) {
+	if b.EventEnable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'eventEnable' not set"))
+		b.err.Append(errors.New("mandatory field 'eventEnable' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataEventEnable.deepCopy(), nil
+	return b._BACnetConstructedDataEventEnable.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataEventEnableBuilder) MustBuild() BACnetConstructedDataEventEnable {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataEventEnableBuilder) MustBuild() BACnetConstructedDataEventEnable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataEventEnableBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataEventEnableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEventEnableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEventEnableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEventEnableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEventEnableBuilder().(*_BACnetConstructedDataEventEnableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataEventEnableBuilder creates a BACnetConstructedDataEventEnableBuilder
-func (m *_BACnetConstructedDataEventEnable) CreateBACnetConstructedDataEventEnableBuilder() BACnetConstructedDataEventEnableBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataEventEnable) CreateBACnetConstructedDataEventEnableBuilder() BACnetConstructedDataEventEnableBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataEventEnableBuilder()
 	}
-	return &_BACnetConstructedDataEventEnableBuilder{_BACnetConstructedDataEventEnable: m.deepCopy()}
+	return &_BACnetConstructedDataEventEnableBuilder{_BACnetConstructedDataEventEnable: b.deepCopy()}
 }
 
 ///////////////////////

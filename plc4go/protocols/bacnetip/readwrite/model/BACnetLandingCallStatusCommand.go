@@ -97,10 +97,24 @@ type BACnetLandingCallStatusCommandBuilder interface {
 	WithPeekedTagHeader(BACnetTagHeader) BACnetLandingCallStatusCommandBuilder
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLandingCallStatusCommandBuilder
+	// AsBACnetLandingCallStatusCommandDirection converts this build to a subType of BACnetLandingCallStatusCommand. It is always possible to return to current builder using Done()
+	AsBACnetLandingCallStatusCommandDirection() interface {
+		BACnetLandingCallStatusCommandDirectionBuilder
+		Done() BACnetLandingCallStatusCommandBuilder
+	}
+	// AsBACnetLandingCallStatusCommandDestination converts this build to a subType of BACnetLandingCallStatusCommand. It is always possible to return to current builder using Done()
+	AsBACnetLandingCallStatusCommandDestination() interface {
+		BACnetLandingCallStatusCommandDestinationBuilder
+		Done() BACnetLandingCallStatusCommandBuilder
+	}
 	// Build builds the BACnetLandingCallStatusCommand or returns an error if something is wrong
-	Build() (BACnetLandingCallStatusCommandContract, error)
+	PartialBuild() (BACnetLandingCallStatusCommandContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetLandingCallStatusCommandContract
+	PartialMustBuild() BACnetLandingCallStatusCommandContract
+	// Build builds the BACnetLandingCallStatusCommand or returns an error if something is wrong
+	Build() (BACnetLandingCallStatusCommand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLandingCallStatusCommand
 }
 
 // NewBACnetLandingCallStatusCommandBuilder() creates a BACnetLandingCallStatusCommandBuilder
@@ -108,67 +122,133 @@ func NewBACnetLandingCallStatusCommandBuilder() BACnetLandingCallStatusCommandBu
 	return &_BACnetLandingCallStatusCommandBuilder{_BACnetLandingCallStatusCommand: new(_BACnetLandingCallStatusCommand)}
 }
 
+type _BACnetLandingCallStatusCommandChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetLandingCallStatusCommandContract)
+	buildForBACnetLandingCallStatusCommand() (BACnetLandingCallStatusCommand, error)
+}
+
 type _BACnetLandingCallStatusCommandBuilder struct {
 	*_BACnetLandingCallStatusCommand
+
+	childBuilder _BACnetLandingCallStatusCommandChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetLandingCallStatusCommandBuilder) = (*_BACnetLandingCallStatusCommandBuilder)(nil)
 
-func (m *_BACnetLandingCallStatusCommandBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetLandingCallStatusCommandBuilder {
-	return m.WithPeekedTagHeader(peekedTagHeader)
+func (b *_BACnetLandingCallStatusCommandBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetLandingCallStatusCommandBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
 }
 
-func (m *_BACnetLandingCallStatusCommandBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetLandingCallStatusCommandBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetLandingCallStatusCommandBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetLandingCallStatusCommandBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetLandingCallStatusCommandBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLandingCallStatusCommandBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetLandingCallStatusCommandBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLandingCallStatusCommandBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLandingCallStatusCommandBuilder) Build() (BACnetLandingCallStatusCommandContract, error) {
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLandingCallStatusCommandBuilder) PartialBuild() (BACnetLandingCallStatusCommandContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLandingCallStatusCommand.deepCopy(), nil
+	return b._BACnetLandingCallStatusCommand.deepCopy(), nil
 }
 
-func (m *_BACnetLandingCallStatusCommandBuilder) MustBuild() BACnetLandingCallStatusCommandContract {
-	build, err := m.Build()
+func (b *_BACnetLandingCallStatusCommandBuilder) PartialMustBuild() BACnetLandingCallStatusCommandContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLandingCallStatusCommandBuilder) DeepCopy() any {
-	return m.CreateBACnetLandingCallStatusCommandBuilder()
+func (b *_BACnetLandingCallStatusCommandBuilder) AsBACnetLandingCallStatusCommandDirection() interface {
+	BACnetLandingCallStatusCommandDirectionBuilder
+	Done() BACnetLandingCallStatusCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLandingCallStatusCommandDirectionBuilder
+		Done() BACnetLandingCallStatusCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLandingCallStatusCommandDirectionBuilder().(*_BACnetLandingCallStatusCommandDirectionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLandingCallStatusCommandBuilder) AsBACnetLandingCallStatusCommandDestination() interface {
+	BACnetLandingCallStatusCommandDestinationBuilder
+	Done() BACnetLandingCallStatusCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLandingCallStatusCommandDestinationBuilder
+		Done() BACnetLandingCallStatusCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLandingCallStatusCommandDestinationBuilder().(*_BACnetLandingCallStatusCommandDestinationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLandingCallStatusCommandBuilder) Build() (BACnetLandingCallStatusCommand, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetLandingCallStatusCommand()
+}
+
+func (b *_BACnetLandingCallStatusCommandBuilder) MustBuild() BACnetLandingCallStatusCommand {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetLandingCallStatusCommandBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLandingCallStatusCommandBuilder().(*_BACnetLandingCallStatusCommandBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetLandingCallStatusCommandChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLandingCallStatusCommandBuilder creates a BACnetLandingCallStatusCommandBuilder
-func (m *_BACnetLandingCallStatusCommand) CreateBACnetLandingCallStatusCommandBuilder() BACnetLandingCallStatusCommandBuilder {
-	if m == nil {
+func (b *_BACnetLandingCallStatusCommand) CreateBACnetLandingCallStatusCommandBuilder() BACnetLandingCallStatusCommandBuilder {
+	if b == nil {
 		return NewBACnetLandingCallStatusCommandBuilder()
 	}
-	return &_BACnetLandingCallStatusCommandBuilder{_BACnetLandingCallStatusCommand: m.deepCopy()}
+	return &_BACnetLandingCallStatusCommandBuilder{_BACnetLandingCallStatusCommand: b.deepCopy()}
 }
 
 ///////////////////////

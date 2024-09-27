@@ -99,45 +99,49 @@ type _BACnetRejectReasonTaggedBuilder struct {
 
 var _ (BACnetRejectReasonTaggedBuilder) = (*_BACnetRejectReasonTaggedBuilder)(nil)
 
-func (m *_BACnetRejectReasonTaggedBuilder) WithMandatoryFields(value BACnetRejectReason, proprietaryValue uint32) BACnetRejectReasonTaggedBuilder {
-	return m.WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetRejectReasonTaggedBuilder) WithMandatoryFields(value BACnetRejectReason, proprietaryValue uint32) BACnetRejectReasonTaggedBuilder {
+	return b.WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_BACnetRejectReasonTaggedBuilder) WithValue(value BACnetRejectReason) BACnetRejectReasonTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetRejectReasonTaggedBuilder) WithValue(value BACnetRejectReason) BACnetRejectReasonTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetRejectReasonTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetRejectReasonTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetRejectReasonTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetRejectReasonTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetRejectReasonTaggedBuilder) Build() (BACnetRejectReasonTagged, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetRejectReasonTaggedBuilder) Build() (BACnetRejectReasonTagged, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetRejectReasonTagged.deepCopy(), nil
+	return b._BACnetRejectReasonTagged.deepCopy(), nil
 }
 
-func (m *_BACnetRejectReasonTaggedBuilder) MustBuild() BACnetRejectReasonTagged {
-	build, err := m.Build()
+func (b *_BACnetRejectReasonTaggedBuilder) MustBuild() BACnetRejectReasonTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetRejectReasonTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetRejectReasonTaggedBuilder()
+func (b *_BACnetRejectReasonTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetRejectReasonTaggedBuilder().(*_BACnetRejectReasonTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetRejectReasonTaggedBuilder creates a BACnetRejectReasonTaggedBuilder
-func (m *_BACnetRejectReasonTagged) CreateBACnetRejectReasonTaggedBuilder() BACnetRejectReasonTaggedBuilder {
-	if m == nil {
+func (b *_BACnetRejectReasonTagged) CreateBACnetRejectReasonTaggedBuilder() BACnetRejectReasonTaggedBuilder {
+	if b == nil {
 		return NewBACnetRejectReasonTaggedBuilder()
 	}
-	return &_BACnetRejectReasonTaggedBuilder{_BACnetRejectReasonTagged: m.deepCopy()}
+	return &_BACnetRejectReasonTaggedBuilder{_BACnetRejectReasonTagged: b.deepCopy()}
 }
 
 ///////////////////////

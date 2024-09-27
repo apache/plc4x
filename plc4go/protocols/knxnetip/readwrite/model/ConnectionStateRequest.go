@@ -108,69 +108,88 @@ func NewConnectionStateRequestBuilder() ConnectionStateRequestBuilder {
 type _ConnectionStateRequestBuilder struct {
 	*_ConnectionStateRequest
 
+	parentBuilder *_KnxNetIpMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ConnectionStateRequestBuilder) = (*_ConnectionStateRequestBuilder)(nil)
 
-func (m *_ConnectionStateRequestBuilder) WithMandatoryFields(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) ConnectionStateRequestBuilder {
-	return m.WithCommunicationChannelId(communicationChannelId).WithHpaiControlEndpoint(hpaiControlEndpoint)
+func (b *_ConnectionStateRequestBuilder) setParent(contract KnxNetIpMessageContract) {
+	b.KnxNetIpMessageContract = contract
 }
 
-func (m *_ConnectionStateRequestBuilder) WithCommunicationChannelId(communicationChannelId uint8) ConnectionStateRequestBuilder {
-	m.CommunicationChannelId = communicationChannelId
-	return m
+func (b *_ConnectionStateRequestBuilder) WithMandatoryFields(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) ConnectionStateRequestBuilder {
+	return b.WithCommunicationChannelId(communicationChannelId).WithHpaiControlEndpoint(hpaiControlEndpoint)
 }
 
-func (m *_ConnectionStateRequestBuilder) WithHpaiControlEndpoint(hpaiControlEndpoint HPAIControlEndpoint) ConnectionStateRequestBuilder {
-	m.HpaiControlEndpoint = hpaiControlEndpoint
-	return m
+func (b *_ConnectionStateRequestBuilder) WithCommunicationChannelId(communicationChannelId uint8) ConnectionStateRequestBuilder {
+	b.CommunicationChannelId = communicationChannelId
+	return b
 }
 
-func (m *_ConnectionStateRequestBuilder) WithHpaiControlEndpointBuilder(builderSupplier func(HPAIControlEndpointBuilder) HPAIControlEndpointBuilder) ConnectionStateRequestBuilder {
-	builder := builderSupplier(m.HpaiControlEndpoint.CreateHPAIControlEndpointBuilder())
+func (b *_ConnectionStateRequestBuilder) WithHpaiControlEndpoint(hpaiControlEndpoint HPAIControlEndpoint) ConnectionStateRequestBuilder {
+	b.HpaiControlEndpoint = hpaiControlEndpoint
+	return b
+}
+
+func (b *_ConnectionStateRequestBuilder) WithHpaiControlEndpointBuilder(builderSupplier func(HPAIControlEndpointBuilder) HPAIControlEndpointBuilder) ConnectionStateRequestBuilder {
+	builder := builderSupplier(b.HpaiControlEndpoint.CreateHPAIControlEndpointBuilder())
 	var err error
-	m.HpaiControlEndpoint, err = builder.Build()
+	b.HpaiControlEndpoint, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HPAIControlEndpointBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HPAIControlEndpointBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ConnectionStateRequestBuilder) Build() (ConnectionStateRequest, error) {
-	if m.HpaiControlEndpoint == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ConnectionStateRequestBuilder) Build() (ConnectionStateRequest, error) {
+	if b.HpaiControlEndpoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'hpaiControlEndpoint' not set"))
+		b.err.Append(errors.New("mandatory field 'hpaiControlEndpoint' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ConnectionStateRequest.deepCopy(), nil
+	return b._ConnectionStateRequest.deepCopy(), nil
 }
 
-func (m *_ConnectionStateRequestBuilder) MustBuild() ConnectionStateRequest {
-	build, err := m.Build()
+func (b *_ConnectionStateRequestBuilder) MustBuild() ConnectionStateRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ConnectionStateRequestBuilder) DeepCopy() any {
-	return m.CreateConnectionStateRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ConnectionStateRequestBuilder) Done() KnxNetIpMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ConnectionStateRequestBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, error) {
+	return b.Build()
+}
+
+func (b *_ConnectionStateRequestBuilder) DeepCopy() any {
+	_copy := b.CreateConnectionStateRequestBuilder().(*_ConnectionStateRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateConnectionStateRequestBuilder creates a ConnectionStateRequestBuilder
-func (m *_ConnectionStateRequest) CreateConnectionStateRequestBuilder() ConnectionStateRequestBuilder {
-	if m == nil {
+func (b *_ConnectionStateRequest) CreateConnectionStateRequestBuilder() ConnectionStateRequestBuilder {
+	if b == nil {
 		return NewConnectionStateRequestBuilder()
 	}
-	return &_ConnectionStateRequestBuilder{_ConnectionStateRequest: m.deepCopy()}
+	return &_ConnectionStateRequestBuilder{_ConnectionStateRequest: b.deepCopy()}
 }
 
 ///////////////////////

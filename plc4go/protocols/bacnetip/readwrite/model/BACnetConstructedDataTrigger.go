@@ -100,64 +100,83 @@ func NewBACnetConstructedDataTriggerBuilder() BACnetConstructedDataTriggerBuilde
 type _BACnetConstructedDataTriggerBuilder struct {
 	*_BACnetConstructedDataTrigger
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataTriggerBuilder) = (*_BACnetConstructedDataTriggerBuilder)(nil)
 
-func (m *_BACnetConstructedDataTriggerBuilder) WithMandatoryFields(trigger BACnetApplicationTagBoolean) BACnetConstructedDataTriggerBuilder {
-	return m.WithTrigger(trigger)
+func (b *_BACnetConstructedDataTriggerBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataTriggerBuilder) WithTrigger(trigger BACnetApplicationTagBoolean) BACnetConstructedDataTriggerBuilder {
-	m.Trigger = trigger
-	return m
+func (b *_BACnetConstructedDataTriggerBuilder) WithMandatoryFields(trigger BACnetApplicationTagBoolean) BACnetConstructedDataTriggerBuilder {
+	return b.WithTrigger(trigger)
 }
 
-func (m *_BACnetConstructedDataTriggerBuilder) WithTriggerBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataTriggerBuilder {
-	builder := builderSupplier(m.Trigger.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataTriggerBuilder) WithTrigger(trigger BACnetApplicationTagBoolean) BACnetConstructedDataTriggerBuilder {
+	b.Trigger = trigger
+	return b
+}
+
+func (b *_BACnetConstructedDataTriggerBuilder) WithTriggerBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataTriggerBuilder {
+	builder := builderSupplier(b.Trigger.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.Trigger, err = builder.Build()
+	b.Trigger, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataTriggerBuilder) Build() (BACnetConstructedDataTrigger, error) {
-	if m.Trigger == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataTriggerBuilder) Build() (BACnetConstructedDataTrigger, error) {
+	if b.Trigger == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'trigger' not set"))
+		b.err.Append(errors.New("mandatory field 'trigger' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataTrigger.deepCopy(), nil
+	return b._BACnetConstructedDataTrigger.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataTriggerBuilder) MustBuild() BACnetConstructedDataTrigger {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataTriggerBuilder) MustBuild() BACnetConstructedDataTrigger {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataTriggerBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataTriggerBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTriggerBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTriggerBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTriggerBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTriggerBuilder().(*_BACnetConstructedDataTriggerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataTriggerBuilder creates a BACnetConstructedDataTriggerBuilder
-func (m *_BACnetConstructedDataTrigger) CreateBACnetConstructedDataTriggerBuilder() BACnetConstructedDataTriggerBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataTrigger) CreateBACnetConstructedDataTriggerBuilder() BACnetConstructedDataTriggerBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataTriggerBuilder()
 	}
-	return &_BACnetConstructedDataTriggerBuilder{_BACnetConstructedDataTrigger: m.deepCopy()}
+	return &_BACnetConstructedDataTriggerBuilder{_BACnetConstructedDataTrigger: b.deepCopy()}
 }
 
 ///////////////////////

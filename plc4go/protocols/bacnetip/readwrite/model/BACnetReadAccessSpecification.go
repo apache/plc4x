@@ -120,112 +120,116 @@ type _BACnetReadAccessSpecificationBuilder struct {
 
 var _ (BACnetReadAccessSpecificationBuilder) = (*_BACnetReadAccessSpecificationBuilder)(nil)
 
-func (m *_BACnetReadAccessSpecificationBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfPropertyReferences []BACnetPropertyReference, closingTag BACnetClosingTag) BACnetReadAccessSpecificationBuilder {
-	return m.WithObjectIdentifier(objectIdentifier).WithOpeningTag(openingTag).WithListOfPropertyReferences(listOfPropertyReferences...).WithClosingTag(closingTag)
+func (b *_BACnetReadAccessSpecificationBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfPropertyReferences []BACnetPropertyReference, closingTag BACnetClosingTag) BACnetReadAccessSpecificationBuilder {
+	return b.WithObjectIdentifier(objectIdentifier).WithOpeningTag(openingTag).WithListOfPropertyReferences(listOfPropertyReferences...).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetReadAccessSpecificationBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetReadAccessSpecificationBuilder {
-	m.ObjectIdentifier = objectIdentifier
-	return m
+func (b *_BACnetReadAccessSpecificationBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetReadAccessSpecificationBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
 }
 
-func (m *_BACnetReadAccessSpecificationBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetReadAccessSpecificationBuilder {
-	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+func (b *_BACnetReadAccessSpecificationBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetReadAccessSpecificationBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
 	var err error
-	m.ObjectIdentifier, err = builder.Build()
+	b.ObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetReadAccessSpecificationBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetReadAccessSpecificationBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetReadAccessSpecificationBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetReadAccessSpecificationBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetReadAccessSpecificationBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetReadAccessSpecificationBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetReadAccessSpecificationBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetReadAccessSpecificationBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetReadAccessSpecificationBuilder) WithListOfPropertyReferences(listOfPropertyReferences ...BACnetPropertyReference) BACnetReadAccessSpecificationBuilder {
-	m.ListOfPropertyReferences = listOfPropertyReferences
-	return m
+func (b *_BACnetReadAccessSpecificationBuilder) WithListOfPropertyReferences(listOfPropertyReferences ...BACnetPropertyReference) BACnetReadAccessSpecificationBuilder {
+	b.ListOfPropertyReferences = listOfPropertyReferences
+	return b
 }
 
-func (m *_BACnetReadAccessSpecificationBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetReadAccessSpecificationBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetReadAccessSpecificationBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetReadAccessSpecificationBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetReadAccessSpecificationBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetReadAccessSpecificationBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetReadAccessSpecificationBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetReadAccessSpecificationBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetReadAccessSpecificationBuilder) Build() (BACnetReadAccessSpecification, error) {
-	if m.ObjectIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetReadAccessSpecificationBuilder) Build() (BACnetReadAccessSpecification, error) {
+	if b.ObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
 	}
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetReadAccessSpecification.deepCopy(), nil
+	return b._BACnetReadAccessSpecification.deepCopy(), nil
 }
 
-func (m *_BACnetReadAccessSpecificationBuilder) MustBuild() BACnetReadAccessSpecification {
-	build, err := m.Build()
+func (b *_BACnetReadAccessSpecificationBuilder) MustBuild() BACnetReadAccessSpecification {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetReadAccessSpecificationBuilder) DeepCopy() any {
-	return m.CreateBACnetReadAccessSpecificationBuilder()
+func (b *_BACnetReadAccessSpecificationBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetReadAccessSpecificationBuilder().(*_BACnetReadAccessSpecificationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetReadAccessSpecificationBuilder creates a BACnetReadAccessSpecificationBuilder
-func (m *_BACnetReadAccessSpecification) CreateBACnetReadAccessSpecificationBuilder() BACnetReadAccessSpecificationBuilder {
-	if m == nil {
+func (b *_BACnetReadAccessSpecification) CreateBACnetReadAccessSpecificationBuilder() BACnetReadAccessSpecificationBuilder {
+	if b == nil {
 		return NewBACnetReadAccessSpecificationBuilder()
 	}
-	return &_BACnetReadAccessSpecificationBuilder{_BACnetReadAccessSpecification: m.deepCopy()}
+	return &_BACnetReadAccessSpecificationBuilder{_BACnetReadAccessSpecification: b.deepCopy()}
 }
 
 ///////////////////////

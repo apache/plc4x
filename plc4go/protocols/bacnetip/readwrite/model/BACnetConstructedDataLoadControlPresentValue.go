@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLoadControlPresentValueBuilder() BACnetConstructedD
 type _BACnetConstructedDataLoadControlPresentValueBuilder struct {
 	*_BACnetConstructedDataLoadControlPresentValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLoadControlPresentValueBuilder) = (*_BACnetConstructedDataLoadControlPresentValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataLoadControlPresentValueBuilder) WithMandatoryFields(presentValue BACnetShedStateTagged) BACnetConstructedDataLoadControlPresentValueBuilder {
-	return m.WithPresentValue(presentValue)
+func (b *_BACnetConstructedDataLoadControlPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLoadControlPresentValueBuilder) WithPresentValue(presentValue BACnetShedStateTagged) BACnetConstructedDataLoadControlPresentValueBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetConstructedDataLoadControlPresentValueBuilder) WithMandatoryFields(presentValue BACnetShedStateTagged) BACnetConstructedDataLoadControlPresentValueBuilder {
+	return b.WithPresentValue(presentValue)
 }
 
-func (m *_BACnetConstructedDataLoadControlPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetShedStateTaggedBuilder) BACnetShedStateTaggedBuilder) BACnetConstructedDataLoadControlPresentValueBuilder {
-	builder := builderSupplier(m.PresentValue.CreateBACnetShedStateTaggedBuilder())
+func (b *_BACnetConstructedDataLoadControlPresentValueBuilder) WithPresentValue(presentValue BACnetShedStateTagged) BACnetConstructedDataLoadControlPresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataLoadControlPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetShedStateTaggedBuilder) BACnetShedStateTaggedBuilder) BACnetConstructedDataLoadControlPresentValueBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetShedStateTaggedBuilder())
 	var err error
-	m.PresentValue, err = builder.Build()
+	b.PresentValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetShedStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetShedStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLoadControlPresentValueBuilder) Build() (BACnetConstructedDataLoadControlPresentValue, error) {
-	if m.PresentValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLoadControlPresentValueBuilder) Build() (BACnetConstructedDataLoadControlPresentValue, error) {
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLoadControlPresentValue.deepCopy(), nil
+	return b._BACnetConstructedDataLoadControlPresentValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLoadControlPresentValueBuilder) MustBuild() BACnetConstructedDataLoadControlPresentValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLoadControlPresentValueBuilder) MustBuild() BACnetConstructedDataLoadControlPresentValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLoadControlPresentValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLoadControlPresentValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLoadControlPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLoadControlPresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLoadControlPresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLoadControlPresentValueBuilder().(*_BACnetConstructedDataLoadControlPresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLoadControlPresentValueBuilder creates a BACnetConstructedDataLoadControlPresentValueBuilder
-func (m *_BACnetConstructedDataLoadControlPresentValue) CreateBACnetConstructedDataLoadControlPresentValueBuilder() BACnetConstructedDataLoadControlPresentValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLoadControlPresentValue) CreateBACnetConstructedDataLoadControlPresentValueBuilder() BACnetConstructedDataLoadControlPresentValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLoadControlPresentValueBuilder()
 	}
-	return &_BACnetConstructedDataLoadControlPresentValueBuilder{_BACnetConstructedDataLoadControlPresentValue: m.deepCopy()}
+	return &_BACnetConstructedDataLoadControlPresentValueBuilder{_BACnetConstructedDataLoadControlPresentValue: b.deepCopy()}
 }
 
 ///////////////////////

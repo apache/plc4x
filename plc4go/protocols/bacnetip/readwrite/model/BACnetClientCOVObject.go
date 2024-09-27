@@ -98,64 +98,83 @@ func NewBACnetClientCOVObjectBuilder() BACnetClientCOVObjectBuilder {
 type _BACnetClientCOVObjectBuilder struct {
 	*_BACnetClientCOVObject
 
+	parentBuilder *_BACnetClientCOVBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetClientCOVObjectBuilder) = (*_BACnetClientCOVObjectBuilder)(nil)
 
-func (m *_BACnetClientCOVObjectBuilder) WithMandatoryFields(realIncrement BACnetApplicationTagReal) BACnetClientCOVObjectBuilder {
-	return m.WithRealIncrement(realIncrement)
+func (b *_BACnetClientCOVObjectBuilder) setParent(contract BACnetClientCOVContract) {
+	b.BACnetClientCOVContract = contract
 }
 
-func (m *_BACnetClientCOVObjectBuilder) WithRealIncrement(realIncrement BACnetApplicationTagReal) BACnetClientCOVObjectBuilder {
-	m.RealIncrement = realIncrement
-	return m
+func (b *_BACnetClientCOVObjectBuilder) WithMandatoryFields(realIncrement BACnetApplicationTagReal) BACnetClientCOVObjectBuilder {
+	return b.WithRealIncrement(realIncrement)
 }
 
-func (m *_BACnetClientCOVObjectBuilder) WithRealIncrementBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetClientCOVObjectBuilder {
-	builder := builderSupplier(m.RealIncrement.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetClientCOVObjectBuilder) WithRealIncrement(realIncrement BACnetApplicationTagReal) BACnetClientCOVObjectBuilder {
+	b.RealIncrement = realIncrement
+	return b
+}
+
+func (b *_BACnetClientCOVObjectBuilder) WithRealIncrementBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetClientCOVObjectBuilder {
+	builder := builderSupplier(b.RealIncrement.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.RealIncrement, err = builder.Build()
+	b.RealIncrement, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetClientCOVObjectBuilder) Build() (BACnetClientCOVObject, error) {
-	if m.RealIncrement == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetClientCOVObjectBuilder) Build() (BACnetClientCOVObject, error) {
+	if b.RealIncrement == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'realIncrement' not set"))
+		b.err.Append(errors.New("mandatory field 'realIncrement' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetClientCOVObject.deepCopy(), nil
+	return b._BACnetClientCOVObject.deepCopy(), nil
 }
 
-func (m *_BACnetClientCOVObjectBuilder) MustBuild() BACnetClientCOVObject {
-	build, err := m.Build()
+func (b *_BACnetClientCOVObjectBuilder) MustBuild() BACnetClientCOVObject {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetClientCOVObjectBuilder) DeepCopy() any {
-	return m.CreateBACnetClientCOVObjectBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetClientCOVObjectBuilder) Done() BACnetClientCOVBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetClientCOVObjectBuilder) buildForBACnetClientCOV() (BACnetClientCOV, error) {
+	return b.Build()
+}
+
+func (b *_BACnetClientCOVObjectBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetClientCOVObjectBuilder().(*_BACnetClientCOVObjectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetClientCOVObjectBuilder creates a BACnetClientCOVObjectBuilder
-func (m *_BACnetClientCOVObject) CreateBACnetClientCOVObjectBuilder() BACnetClientCOVObjectBuilder {
-	if m == nil {
+func (b *_BACnetClientCOVObject) CreateBACnetClientCOVObjectBuilder() BACnetClientCOVObjectBuilder {
+	if b == nil {
 		return NewBACnetClientCOVObjectBuilder()
 	}
-	return &_BACnetClientCOVObjectBuilder{_BACnetClientCOVObject: m.deepCopy()}
+	return &_BACnetClientCOVObjectBuilder{_BACnetClientCOVObject: b.deepCopy()}
 }
 
 ///////////////////////

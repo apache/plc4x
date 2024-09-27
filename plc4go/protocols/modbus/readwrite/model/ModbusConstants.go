@@ -88,35 +88,39 @@ type _ModbusConstantsBuilder struct {
 
 var _ (ModbusConstantsBuilder) = (*_ModbusConstantsBuilder)(nil)
 
-func (m *_ModbusConstantsBuilder) WithMandatoryFields() ModbusConstantsBuilder {
-	return m
+func (b *_ModbusConstantsBuilder) WithMandatoryFields() ModbusConstantsBuilder {
+	return b
 }
 
-func (m *_ModbusConstantsBuilder) Build() (ModbusConstants, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusConstantsBuilder) Build() (ModbusConstants, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusConstants.deepCopy(), nil
+	return b._ModbusConstants.deepCopy(), nil
 }
 
-func (m *_ModbusConstantsBuilder) MustBuild() ModbusConstants {
-	build, err := m.Build()
+func (b *_ModbusConstantsBuilder) MustBuild() ModbusConstants {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusConstantsBuilder) DeepCopy() any {
-	return m.CreateModbusConstantsBuilder()
+func (b *_ModbusConstantsBuilder) DeepCopy() any {
+	_copy := b.CreateModbusConstantsBuilder().(*_ModbusConstantsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusConstantsBuilder creates a ModbusConstantsBuilder
-func (m *_ModbusConstants) CreateModbusConstantsBuilder() ModbusConstantsBuilder {
-	if m == nil {
+func (b *_ModbusConstants) CreateModbusConstantsBuilder() ModbusConstantsBuilder {
+	if b == nil {
 		return NewModbusConstantsBuilder()
 	}
-	return &_ModbusConstantsBuilder{_ModbusConstants: m.deepCopy()}
+	return &_ModbusConstantsBuilder{_ModbusConstants: b.deepCopy()}
 }
 
 ///////////////////////

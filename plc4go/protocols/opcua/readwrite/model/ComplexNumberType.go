@@ -99,50 +99,69 @@ func NewComplexNumberTypeBuilder() ComplexNumberTypeBuilder {
 type _ComplexNumberTypeBuilder struct {
 	*_ComplexNumberType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ComplexNumberTypeBuilder) = (*_ComplexNumberTypeBuilder)(nil)
 
-func (m *_ComplexNumberTypeBuilder) WithMandatoryFields(real float32, imaginary float32) ComplexNumberTypeBuilder {
-	return m.WithReal(real).WithImaginary(imaginary)
+func (b *_ComplexNumberTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ComplexNumberTypeBuilder) WithReal(real float32) ComplexNumberTypeBuilder {
-	m.Real = real
-	return m
+func (b *_ComplexNumberTypeBuilder) WithMandatoryFields(real float32, imaginary float32) ComplexNumberTypeBuilder {
+	return b.WithReal(real).WithImaginary(imaginary)
 }
 
-func (m *_ComplexNumberTypeBuilder) WithImaginary(imaginary float32) ComplexNumberTypeBuilder {
-	m.Imaginary = imaginary
-	return m
+func (b *_ComplexNumberTypeBuilder) WithReal(real float32) ComplexNumberTypeBuilder {
+	b.Real = real
+	return b
 }
 
-func (m *_ComplexNumberTypeBuilder) Build() (ComplexNumberType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ComplexNumberTypeBuilder) WithImaginary(imaginary float32) ComplexNumberTypeBuilder {
+	b.Imaginary = imaginary
+	return b
+}
+
+func (b *_ComplexNumberTypeBuilder) Build() (ComplexNumberType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ComplexNumberType.deepCopy(), nil
+	return b._ComplexNumberType.deepCopy(), nil
 }
 
-func (m *_ComplexNumberTypeBuilder) MustBuild() ComplexNumberType {
-	build, err := m.Build()
+func (b *_ComplexNumberTypeBuilder) MustBuild() ComplexNumberType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ComplexNumberTypeBuilder) DeepCopy() any {
-	return m.CreateComplexNumberTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ComplexNumberTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ComplexNumberTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ComplexNumberTypeBuilder) DeepCopy() any {
+	_copy := b.CreateComplexNumberTypeBuilder().(*_ComplexNumberTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateComplexNumberTypeBuilder creates a ComplexNumberTypeBuilder
-func (m *_ComplexNumberType) CreateComplexNumberTypeBuilder() ComplexNumberTypeBuilder {
-	if m == nil {
+func (b *_ComplexNumberType) CreateComplexNumberTypeBuilder() ComplexNumberTypeBuilder {
+	if b == nil {
 		return NewComplexNumberTypeBuilder()
 	}
-	return &_ComplexNumberTypeBuilder{_ComplexNumberType: m.deepCopy()}
+	return &_ComplexNumberTypeBuilder{_ComplexNumberType: b.deepCopy()}
 }
 
 ///////////////////////

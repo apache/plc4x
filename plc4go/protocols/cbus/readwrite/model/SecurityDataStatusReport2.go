@@ -93,45 +93,64 @@ func NewSecurityDataStatusReport2Builder() SecurityDataStatusReport2Builder {
 type _SecurityDataStatusReport2Builder struct {
 	*_SecurityDataStatusReport2
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataStatusReport2Builder) = (*_SecurityDataStatusReport2Builder)(nil)
 
-func (m *_SecurityDataStatusReport2Builder) WithMandatoryFields(zoneStatus []ZoneStatus) SecurityDataStatusReport2Builder {
-	return m.WithZoneStatus(zoneStatus...)
+func (b *_SecurityDataStatusReport2Builder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataStatusReport2Builder) WithZoneStatus(zoneStatus ...ZoneStatus) SecurityDataStatusReport2Builder {
-	m.ZoneStatus = zoneStatus
-	return m
+func (b *_SecurityDataStatusReport2Builder) WithMandatoryFields(zoneStatus []ZoneStatus) SecurityDataStatusReport2Builder {
+	return b.WithZoneStatus(zoneStatus...)
 }
 
-func (m *_SecurityDataStatusReport2Builder) Build() (SecurityDataStatusReport2, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataStatusReport2Builder) WithZoneStatus(zoneStatus ...ZoneStatus) SecurityDataStatusReport2Builder {
+	b.ZoneStatus = zoneStatus
+	return b
+}
+
+func (b *_SecurityDataStatusReport2Builder) Build() (SecurityDataStatusReport2, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataStatusReport2.deepCopy(), nil
+	return b._SecurityDataStatusReport2.deepCopy(), nil
 }
 
-func (m *_SecurityDataStatusReport2Builder) MustBuild() SecurityDataStatusReport2 {
-	build, err := m.Build()
+func (b *_SecurityDataStatusReport2Builder) MustBuild() SecurityDataStatusReport2 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataStatusReport2Builder) DeepCopy() any {
-	return m.CreateSecurityDataStatusReport2Builder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataStatusReport2Builder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataStatusReport2Builder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataStatusReport2Builder) DeepCopy() any {
+	_copy := b.CreateSecurityDataStatusReport2Builder().(*_SecurityDataStatusReport2Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataStatusReport2Builder creates a SecurityDataStatusReport2Builder
-func (m *_SecurityDataStatusReport2) CreateSecurityDataStatusReport2Builder() SecurityDataStatusReport2Builder {
-	if m == nil {
+func (b *_SecurityDataStatusReport2) CreateSecurityDataStatusReport2Builder() SecurityDataStatusReport2Builder {
+	if b == nil {
 		return NewSecurityDataStatusReport2Builder()
 	}
-	return &_SecurityDataStatusReport2Builder{_SecurityDataStatusReport2: m.deepCopy()}
+	return &_SecurityDataStatusReport2Builder{_SecurityDataStatusReport2: b.deepCopy()}
 }
 
 ///////////////////////

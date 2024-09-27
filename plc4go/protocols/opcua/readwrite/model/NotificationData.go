@@ -85,40 +85,59 @@ func NewNotificationDataBuilder() NotificationDataBuilder {
 type _NotificationDataBuilder struct {
 	*_NotificationData
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NotificationDataBuilder) = (*_NotificationDataBuilder)(nil)
 
-func (m *_NotificationDataBuilder) WithMandatoryFields() NotificationDataBuilder {
-	return m
+func (b *_NotificationDataBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_NotificationDataBuilder) Build() (NotificationData, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NotificationDataBuilder) WithMandatoryFields() NotificationDataBuilder {
+	return b
+}
+
+func (b *_NotificationDataBuilder) Build() (NotificationData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NotificationData.deepCopy(), nil
+	return b._NotificationData.deepCopy(), nil
 }
 
-func (m *_NotificationDataBuilder) MustBuild() NotificationData {
-	build, err := m.Build()
+func (b *_NotificationDataBuilder) MustBuild() NotificationData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NotificationDataBuilder) DeepCopy() any {
-	return m.CreateNotificationDataBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NotificationDataBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NotificationDataBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_NotificationDataBuilder) DeepCopy() any {
+	_copy := b.CreateNotificationDataBuilder().(*_NotificationDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNotificationDataBuilder creates a NotificationDataBuilder
-func (m *_NotificationData) CreateNotificationDataBuilder() NotificationDataBuilder {
-	if m == nil {
+func (b *_NotificationData) CreateNotificationDataBuilder() NotificationDataBuilder {
+	if b == nil {
 		return NewNotificationDataBuilder()
 	}
-	return &_NotificationDataBuilder{_NotificationData: m.deepCopy()}
+	return &_NotificationDataBuilder{_NotificationData: b.deepCopy()}
 }
 
 ///////////////////////

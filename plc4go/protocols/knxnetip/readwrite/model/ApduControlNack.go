@@ -85,40 +85,59 @@ func NewApduControlNackBuilder() ApduControlNackBuilder {
 type _ApduControlNackBuilder struct {
 	*_ApduControlNack
 
+	parentBuilder *_ApduControlBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduControlNackBuilder) = (*_ApduControlNackBuilder)(nil)
 
-func (m *_ApduControlNackBuilder) WithMandatoryFields() ApduControlNackBuilder {
-	return m
+func (b *_ApduControlNackBuilder) setParent(contract ApduControlContract) {
+	b.ApduControlContract = contract
 }
 
-func (m *_ApduControlNackBuilder) Build() (ApduControlNack, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduControlNackBuilder) WithMandatoryFields() ApduControlNackBuilder {
+	return b
+}
+
+func (b *_ApduControlNackBuilder) Build() (ApduControlNack, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduControlNack.deepCopy(), nil
+	return b._ApduControlNack.deepCopy(), nil
 }
 
-func (m *_ApduControlNackBuilder) MustBuild() ApduControlNack {
-	build, err := m.Build()
+func (b *_ApduControlNackBuilder) MustBuild() ApduControlNack {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduControlNackBuilder) DeepCopy() any {
-	return m.CreateApduControlNackBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduControlNackBuilder) Done() ApduControlBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduControlNackBuilder) buildForApduControl() (ApduControl, error) {
+	return b.Build()
+}
+
+func (b *_ApduControlNackBuilder) DeepCopy() any {
+	_copy := b.CreateApduControlNackBuilder().(*_ApduControlNackBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduControlNackBuilder creates a ApduControlNackBuilder
-func (m *_ApduControlNack) CreateApduControlNackBuilder() ApduControlNackBuilder {
-	if m == nil {
+func (b *_ApduControlNack) CreateApduControlNackBuilder() ApduControlNackBuilder {
+	if b == nil {
 		return NewApduControlNackBuilder()
 	}
-	return &_ApduControlNackBuilder{_ApduControlNack: m.deepCopy()}
+	return &_ApduControlNackBuilder{_ApduControlNack: b.deepCopy()}
 }
 
 ///////////////////////

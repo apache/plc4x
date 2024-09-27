@@ -85,40 +85,59 @@ func NewBACnetConstructedDataDatepatternValueAllBuilder() BACnetConstructedDataD
 type _BACnetConstructedDataDatepatternValueAllBuilder struct {
 	*_BACnetConstructedDataDatepatternValueAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDatepatternValueAllBuilder) = (*_BACnetConstructedDataDatepatternValueAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataDatepatternValueAllBuilder) WithMandatoryFields() BACnetConstructedDataDatepatternValueAllBuilder {
-	return m
+func (b *_BACnetConstructedDataDatepatternValueAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDatepatternValueAllBuilder) Build() (BACnetConstructedDataDatepatternValueAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataDatepatternValueAllBuilder) WithMandatoryFields() BACnetConstructedDataDatepatternValueAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataDatepatternValueAllBuilder) Build() (BACnetConstructedDataDatepatternValueAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDatepatternValueAll.deepCopy(), nil
+	return b._BACnetConstructedDataDatepatternValueAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDatepatternValueAllBuilder) MustBuild() BACnetConstructedDataDatepatternValueAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDatepatternValueAllBuilder) MustBuild() BACnetConstructedDataDatepatternValueAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDatepatternValueAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDatepatternValueAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDatepatternValueAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDatepatternValueAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDatepatternValueAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDatepatternValueAllBuilder().(*_BACnetConstructedDataDatepatternValueAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDatepatternValueAllBuilder creates a BACnetConstructedDataDatepatternValueAllBuilder
-func (m *_BACnetConstructedDataDatepatternValueAll) CreateBACnetConstructedDataDatepatternValueAllBuilder() BACnetConstructedDataDatepatternValueAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDatepatternValueAll) CreateBACnetConstructedDataDatepatternValueAllBuilder() BACnetConstructedDataDatepatternValueAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDatepatternValueAllBuilder()
 	}
-	return &_BACnetConstructedDataDatepatternValueAllBuilder{_BACnetConstructedDataDatepatternValueAll: m.deepCopy()}
+	return &_BACnetConstructedDataDatepatternValueAllBuilder{_BACnetConstructedDataDatepatternValueAll: b.deepCopy()}
 }
 
 ///////////////////////

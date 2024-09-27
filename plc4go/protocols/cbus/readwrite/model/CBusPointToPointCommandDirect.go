@@ -100,64 +100,83 @@ func NewCBusPointToPointCommandDirectBuilder() CBusPointToPointCommandDirectBuil
 type _CBusPointToPointCommandDirectBuilder struct {
 	*_CBusPointToPointCommandDirect
 
+	parentBuilder *_CBusPointToPointCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CBusPointToPointCommandDirectBuilder) = (*_CBusPointToPointCommandDirectBuilder)(nil)
 
-func (m *_CBusPointToPointCommandDirectBuilder) WithMandatoryFields(unitAddress UnitAddress) CBusPointToPointCommandDirectBuilder {
-	return m.WithUnitAddress(unitAddress)
+func (b *_CBusPointToPointCommandDirectBuilder) setParent(contract CBusPointToPointCommandContract) {
+	b.CBusPointToPointCommandContract = contract
 }
 
-func (m *_CBusPointToPointCommandDirectBuilder) WithUnitAddress(unitAddress UnitAddress) CBusPointToPointCommandDirectBuilder {
-	m.UnitAddress = unitAddress
-	return m
+func (b *_CBusPointToPointCommandDirectBuilder) WithMandatoryFields(unitAddress UnitAddress) CBusPointToPointCommandDirectBuilder {
+	return b.WithUnitAddress(unitAddress)
 }
 
-func (m *_CBusPointToPointCommandDirectBuilder) WithUnitAddressBuilder(builderSupplier func(UnitAddressBuilder) UnitAddressBuilder) CBusPointToPointCommandDirectBuilder {
-	builder := builderSupplier(m.UnitAddress.CreateUnitAddressBuilder())
+func (b *_CBusPointToPointCommandDirectBuilder) WithUnitAddress(unitAddress UnitAddress) CBusPointToPointCommandDirectBuilder {
+	b.UnitAddress = unitAddress
+	return b
+}
+
+func (b *_CBusPointToPointCommandDirectBuilder) WithUnitAddressBuilder(builderSupplier func(UnitAddressBuilder) UnitAddressBuilder) CBusPointToPointCommandDirectBuilder {
+	builder := builderSupplier(b.UnitAddress.CreateUnitAddressBuilder())
 	var err error
-	m.UnitAddress, err = builder.Build()
+	b.UnitAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "UnitAddressBuilder failed"))
+		b.err.Append(errors.Wrap(err, "UnitAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CBusPointToPointCommandDirectBuilder) Build() (CBusPointToPointCommandDirect, error) {
-	if m.UnitAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CBusPointToPointCommandDirectBuilder) Build() (CBusPointToPointCommandDirect, error) {
+	if b.UnitAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'unitAddress' not set"))
+		b.err.Append(errors.New("mandatory field 'unitAddress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CBusPointToPointCommandDirect.deepCopy(), nil
+	return b._CBusPointToPointCommandDirect.deepCopy(), nil
 }
 
-func (m *_CBusPointToPointCommandDirectBuilder) MustBuild() CBusPointToPointCommandDirect {
-	build, err := m.Build()
+func (b *_CBusPointToPointCommandDirectBuilder) MustBuild() CBusPointToPointCommandDirect {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CBusPointToPointCommandDirectBuilder) DeepCopy() any {
-	return m.CreateCBusPointToPointCommandDirectBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CBusPointToPointCommandDirectBuilder) Done() CBusPointToPointCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CBusPointToPointCommandDirectBuilder) buildForCBusPointToPointCommand() (CBusPointToPointCommand, error) {
+	return b.Build()
+}
+
+func (b *_CBusPointToPointCommandDirectBuilder) DeepCopy() any {
+	_copy := b.CreateCBusPointToPointCommandDirectBuilder().(*_CBusPointToPointCommandDirectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCBusPointToPointCommandDirectBuilder creates a CBusPointToPointCommandDirectBuilder
-func (m *_CBusPointToPointCommandDirect) CreateCBusPointToPointCommandDirectBuilder() CBusPointToPointCommandDirectBuilder {
-	if m == nil {
+func (b *_CBusPointToPointCommandDirect) CreateCBusPointToPointCommandDirectBuilder() CBusPointToPointCommandDirectBuilder {
+	if b == nil {
 		return NewCBusPointToPointCommandDirectBuilder()
 	}
-	return &_CBusPointToPointCommandDirectBuilder{_CBusPointToPointCommandDirect: m.deepCopy()}
+	return &_CBusPointToPointCommandDirectBuilder{_CBusPointToPointCommandDirect: b.deepCopy()}
 }
 
 ///////////////////////

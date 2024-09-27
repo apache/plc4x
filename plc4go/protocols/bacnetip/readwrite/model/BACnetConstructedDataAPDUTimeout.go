@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAPDUTimeoutBuilder() BACnetConstructedDataAPDUTimeo
 type _BACnetConstructedDataAPDUTimeoutBuilder struct {
 	*_BACnetConstructedDataAPDUTimeout
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAPDUTimeoutBuilder) = (*_BACnetConstructedDataAPDUTimeoutBuilder)(nil)
 
-func (m *_BACnetConstructedDataAPDUTimeoutBuilder) WithMandatoryFields(apduTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDUTimeoutBuilder {
-	return m.WithApduTimeout(apduTimeout)
+func (b *_BACnetConstructedDataAPDUTimeoutBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAPDUTimeoutBuilder) WithApduTimeout(apduTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDUTimeoutBuilder {
-	m.ApduTimeout = apduTimeout
-	return m
+func (b *_BACnetConstructedDataAPDUTimeoutBuilder) WithMandatoryFields(apduTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDUTimeoutBuilder {
+	return b.WithApduTimeout(apduTimeout)
 }
 
-func (m *_BACnetConstructedDataAPDUTimeoutBuilder) WithApduTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAPDUTimeoutBuilder {
-	builder := builderSupplier(m.ApduTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataAPDUTimeoutBuilder) WithApduTimeout(apduTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDUTimeoutBuilder {
+	b.ApduTimeout = apduTimeout
+	return b
+}
+
+func (b *_BACnetConstructedDataAPDUTimeoutBuilder) WithApduTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAPDUTimeoutBuilder {
+	builder := builderSupplier(b.ApduTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.ApduTimeout, err = builder.Build()
+	b.ApduTimeout, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAPDUTimeoutBuilder) Build() (BACnetConstructedDataAPDUTimeout, error) {
-	if m.ApduTimeout == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAPDUTimeoutBuilder) Build() (BACnetConstructedDataAPDUTimeout, error) {
+	if b.ApduTimeout == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'apduTimeout' not set"))
+		b.err.Append(errors.New("mandatory field 'apduTimeout' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAPDUTimeout.deepCopy(), nil
+	return b._BACnetConstructedDataAPDUTimeout.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAPDUTimeoutBuilder) MustBuild() BACnetConstructedDataAPDUTimeout {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAPDUTimeoutBuilder) MustBuild() BACnetConstructedDataAPDUTimeout {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAPDUTimeoutBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAPDUTimeoutBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAPDUTimeoutBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAPDUTimeoutBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAPDUTimeoutBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAPDUTimeoutBuilder().(*_BACnetConstructedDataAPDUTimeoutBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAPDUTimeoutBuilder creates a BACnetConstructedDataAPDUTimeoutBuilder
-func (m *_BACnetConstructedDataAPDUTimeout) CreateBACnetConstructedDataAPDUTimeoutBuilder() BACnetConstructedDataAPDUTimeoutBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAPDUTimeout) CreateBACnetConstructedDataAPDUTimeoutBuilder() BACnetConstructedDataAPDUTimeoutBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAPDUTimeoutBuilder()
 	}
-	return &_BACnetConstructedDataAPDUTimeoutBuilder{_BACnetConstructedDataAPDUTimeout: m.deepCopy()}
+	return &_BACnetConstructedDataAPDUTimeoutBuilder{_BACnetConstructedDataAPDUTimeout: b.deepCopy()}
 }
 
 ///////////////////////

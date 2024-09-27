@@ -88,35 +88,39 @@ type _BacnetConstantsBuilder struct {
 
 var _ (BacnetConstantsBuilder) = (*_BacnetConstantsBuilder)(nil)
 
-func (m *_BacnetConstantsBuilder) WithMandatoryFields() BacnetConstantsBuilder {
-	return m
+func (b *_BacnetConstantsBuilder) WithMandatoryFields() BacnetConstantsBuilder {
+	return b
 }
 
-func (m *_BacnetConstantsBuilder) Build() (BacnetConstants, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BacnetConstantsBuilder) Build() (BacnetConstants, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BacnetConstants.deepCopy(), nil
+	return b._BacnetConstants.deepCopy(), nil
 }
 
-func (m *_BacnetConstantsBuilder) MustBuild() BacnetConstants {
-	build, err := m.Build()
+func (b *_BacnetConstantsBuilder) MustBuild() BacnetConstants {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BacnetConstantsBuilder) DeepCopy() any {
-	return m.CreateBacnetConstantsBuilder()
+func (b *_BacnetConstantsBuilder) DeepCopy() any {
+	_copy := b.CreateBacnetConstantsBuilder().(*_BacnetConstantsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBacnetConstantsBuilder creates a BacnetConstantsBuilder
-func (m *_BacnetConstants) CreateBacnetConstantsBuilder() BacnetConstantsBuilder {
-	if m == nil {
+func (b *_BacnetConstants) CreateBacnetConstantsBuilder() BacnetConstantsBuilder {
+	if b == nil {
 		return NewBacnetConstantsBuilder()
 	}
-	return &_BacnetConstantsBuilder{_BacnetConstants: m.deepCopy()}
+	return &_BacnetConstantsBuilder{_BacnetConstants: b.deepCopy()}
 }
 
 ///////////////////////

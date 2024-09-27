@@ -179,176 +179,195 @@ func NewFieldMetaDataBuilder() FieldMetaDataBuilder {
 type _FieldMetaDataBuilder struct {
 	*_FieldMetaData
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (FieldMetaDataBuilder) = (*_FieldMetaDataBuilder)(nil)
 
-func (m *_FieldMetaDataBuilder) WithMandatoryFields(name PascalString, description LocalizedText, fieldFlags DataSetFieldFlags, builtInType uint8, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, dataSetFieldId GuidValue, noOfProperties int32, properties []ExtensionObjectDefinition) FieldMetaDataBuilder {
-	return m.WithName(name).WithDescription(description).WithFieldFlags(fieldFlags).WithBuiltInType(builtInType).WithDataType(dataType).WithValueRank(valueRank).WithNoOfArrayDimensions(noOfArrayDimensions).WithArrayDimensions(arrayDimensions...).WithMaxStringLength(maxStringLength).WithDataSetFieldId(dataSetFieldId).WithNoOfProperties(noOfProperties).WithProperties(properties...)
+func (b *_FieldMetaDataBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_FieldMetaDataBuilder) WithName(name PascalString) FieldMetaDataBuilder {
-	m.Name = name
-	return m
+func (b *_FieldMetaDataBuilder) WithMandatoryFields(name PascalString, description LocalizedText, fieldFlags DataSetFieldFlags, builtInType uint8, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, dataSetFieldId GuidValue, noOfProperties int32, properties []ExtensionObjectDefinition) FieldMetaDataBuilder {
+	return b.WithName(name).WithDescription(description).WithFieldFlags(fieldFlags).WithBuiltInType(builtInType).WithDataType(dataType).WithValueRank(valueRank).WithNoOfArrayDimensions(noOfArrayDimensions).WithArrayDimensions(arrayDimensions...).WithMaxStringLength(maxStringLength).WithDataSetFieldId(dataSetFieldId).WithNoOfProperties(noOfProperties).WithProperties(properties...)
 }
 
-func (m *_FieldMetaDataBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) FieldMetaDataBuilder {
-	builder := builderSupplier(m.Name.CreatePascalStringBuilder())
+func (b *_FieldMetaDataBuilder) WithName(name PascalString) FieldMetaDataBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_FieldMetaDataBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) FieldMetaDataBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
 	var err error
-	m.Name, err = builder.Build()
+	b.Name, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_FieldMetaDataBuilder) WithDescription(description LocalizedText) FieldMetaDataBuilder {
-	m.Description = description
-	return m
+func (b *_FieldMetaDataBuilder) WithDescription(description LocalizedText) FieldMetaDataBuilder {
+	b.Description = description
+	return b
 }
 
-func (m *_FieldMetaDataBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) FieldMetaDataBuilder {
-	builder := builderSupplier(m.Description.CreateLocalizedTextBuilder())
+func (b *_FieldMetaDataBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) FieldMetaDataBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
 	var err error
-	m.Description, err = builder.Build()
+	b.Description, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_FieldMetaDataBuilder) WithFieldFlags(fieldFlags DataSetFieldFlags) FieldMetaDataBuilder {
-	m.FieldFlags = fieldFlags
-	return m
+func (b *_FieldMetaDataBuilder) WithFieldFlags(fieldFlags DataSetFieldFlags) FieldMetaDataBuilder {
+	b.FieldFlags = fieldFlags
+	return b
 }
 
-func (m *_FieldMetaDataBuilder) WithBuiltInType(builtInType uint8) FieldMetaDataBuilder {
-	m.BuiltInType = builtInType
-	return m
+func (b *_FieldMetaDataBuilder) WithBuiltInType(builtInType uint8) FieldMetaDataBuilder {
+	b.BuiltInType = builtInType
+	return b
 }
 
-func (m *_FieldMetaDataBuilder) WithDataType(dataType NodeId) FieldMetaDataBuilder {
-	m.DataType = dataType
-	return m
+func (b *_FieldMetaDataBuilder) WithDataType(dataType NodeId) FieldMetaDataBuilder {
+	b.DataType = dataType
+	return b
 }
 
-func (m *_FieldMetaDataBuilder) WithDataTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) FieldMetaDataBuilder {
-	builder := builderSupplier(m.DataType.CreateNodeIdBuilder())
+func (b *_FieldMetaDataBuilder) WithDataTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) FieldMetaDataBuilder {
+	builder := builderSupplier(b.DataType.CreateNodeIdBuilder())
 	var err error
-	m.DataType, err = builder.Build()
+	b.DataType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_FieldMetaDataBuilder) WithValueRank(valueRank int32) FieldMetaDataBuilder {
-	m.ValueRank = valueRank
-	return m
+func (b *_FieldMetaDataBuilder) WithValueRank(valueRank int32) FieldMetaDataBuilder {
+	b.ValueRank = valueRank
+	return b
 }
 
-func (m *_FieldMetaDataBuilder) WithNoOfArrayDimensions(noOfArrayDimensions int32) FieldMetaDataBuilder {
-	m.NoOfArrayDimensions = noOfArrayDimensions
-	return m
+func (b *_FieldMetaDataBuilder) WithNoOfArrayDimensions(noOfArrayDimensions int32) FieldMetaDataBuilder {
+	b.NoOfArrayDimensions = noOfArrayDimensions
+	return b
 }
 
-func (m *_FieldMetaDataBuilder) WithArrayDimensions(arrayDimensions ...uint32) FieldMetaDataBuilder {
-	m.ArrayDimensions = arrayDimensions
-	return m
+func (b *_FieldMetaDataBuilder) WithArrayDimensions(arrayDimensions ...uint32) FieldMetaDataBuilder {
+	b.ArrayDimensions = arrayDimensions
+	return b
 }
 
-func (m *_FieldMetaDataBuilder) WithMaxStringLength(maxStringLength uint32) FieldMetaDataBuilder {
-	m.MaxStringLength = maxStringLength
-	return m
+func (b *_FieldMetaDataBuilder) WithMaxStringLength(maxStringLength uint32) FieldMetaDataBuilder {
+	b.MaxStringLength = maxStringLength
+	return b
 }
 
-func (m *_FieldMetaDataBuilder) WithDataSetFieldId(dataSetFieldId GuidValue) FieldMetaDataBuilder {
-	m.DataSetFieldId = dataSetFieldId
-	return m
+func (b *_FieldMetaDataBuilder) WithDataSetFieldId(dataSetFieldId GuidValue) FieldMetaDataBuilder {
+	b.DataSetFieldId = dataSetFieldId
+	return b
 }
 
-func (m *_FieldMetaDataBuilder) WithDataSetFieldIdBuilder(builderSupplier func(GuidValueBuilder) GuidValueBuilder) FieldMetaDataBuilder {
-	builder := builderSupplier(m.DataSetFieldId.CreateGuidValueBuilder())
+func (b *_FieldMetaDataBuilder) WithDataSetFieldIdBuilder(builderSupplier func(GuidValueBuilder) GuidValueBuilder) FieldMetaDataBuilder {
+	builder := builderSupplier(b.DataSetFieldId.CreateGuidValueBuilder())
 	var err error
-	m.DataSetFieldId, err = builder.Build()
+	b.DataSetFieldId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "GuidValueBuilder failed"))
+		b.err.Append(errors.Wrap(err, "GuidValueBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_FieldMetaDataBuilder) WithNoOfProperties(noOfProperties int32) FieldMetaDataBuilder {
-	m.NoOfProperties = noOfProperties
-	return m
+func (b *_FieldMetaDataBuilder) WithNoOfProperties(noOfProperties int32) FieldMetaDataBuilder {
+	b.NoOfProperties = noOfProperties
+	return b
 }
 
-func (m *_FieldMetaDataBuilder) WithProperties(properties ...ExtensionObjectDefinition) FieldMetaDataBuilder {
-	m.Properties = properties
-	return m
+func (b *_FieldMetaDataBuilder) WithProperties(properties ...ExtensionObjectDefinition) FieldMetaDataBuilder {
+	b.Properties = properties
+	return b
 }
 
-func (m *_FieldMetaDataBuilder) Build() (FieldMetaData, error) {
-	if m.Name == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_FieldMetaDataBuilder) Build() (FieldMetaData, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'name' not set"))
+		b.err.Append(errors.New("mandatory field 'name' not set"))
 	}
-	if m.Description == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'description' not set"))
+		b.err.Append(errors.New("mandatory field 'description' not set"))
 	}
-	if m.DataType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.DataType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dataType' not set"))
+		b.err.Append(errors.New("mandatory field 'dataType' not set"))
 	}
-	if m.DataSetFieldId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.DataSetFieldId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dataSetFieldId' not set"))
+		b.err.Append(errors.New("mandatory field 'dataSetFieldId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._FieldMetaData.deepCopy(), nil
+	return b._FieldMetaData.deepCopy(), nil
 }
 
-func (m *_FieldMetaDataBuilder) MustBuild() FieldMetaData {
-	build, err := m.Build()
+func (b *_FieldMetaDataBuilder) MustBuild() FieldMetaData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FieldMetaDataBuilder) DeepCopy() any {
-	return m.CreateFieldMetaDataBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FieldMetaDataBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FieldMetaDataBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_FieldMetaDataBuilder) DeepCopy() any {
+	_copy := b.CreateFieldMetaDataBuilder().(*_FieldMetaDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFieldMetaDataBuilder creates a FieldMetaDataBuilder
-func (m *_FieldMetaData) CreateFieldMetaDataBuilder() FieldMetaDataBuilder {
-	if m == nil {
+func (b *_FieldMetaData) CreateFieldMetaDataBuilder() FieldMetaDataBuilder {
+	if b == nil {
 		return NewFieldMetaDataBuilder()
 	}
-	return &_FieldMetaDataBuilder{_FieldMetaData: m.deepCopy()}
+	return &_FieldMetaDataBuilder{_FieldMetaData: b.deepCopy()}
 }
 
 ///////////////////////

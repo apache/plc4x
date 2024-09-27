@@ -85,40 +85,59 @@ func NewApduDataRestartBuilder() ApduDataRestartBuilder {
 type _ApduDataRestartBuilder struct {
 	*_ApduDataRestart
 
+	parentBuilder *_ApduDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataRestartBuilder) = (*_ApduDataRestartBuilder)(nil)
 
-func (m *_ApduDataRestartBuilder) WithMandatoryFields() ApduDataRestartBuilder {
-	return m
+func (b *_ApduDataRestartBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
 }
 
-func (m *_ApduDataRestartBuilder) Build() (ApduDataRestart, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataRestartBuilder) WithMandatoryFields() ApduDataRestartBuilder {
+	return b
+}
+
+func (b *_ApduDataRestartBuilder) Build() (ApduDataRestart, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataRestart.deepCopy(), nil
+	return b._ApduDataRestart.deepCopy(), nil
 }
 
-func (m *_ApduDataRestartBuilder) MustBuild() ApduDataRestart {
-	build, err := m.Build()
+func (b *_ApduDataRestartBuilder) MustBuild() ApduDataRestart {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataRestartBuilder) DeepCopy() any {
-	return m.CreateApduDataRestartBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataRestartBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataRestartBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataRestartBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataRestartBuilder().(*_ApduDataRestartBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataRestartBuilder creates a ApduDataRestartBuilder
-func (m *_ApduDataRestart) CreateApduDataRestartBuilder() ApduDataRestartBuilder {
-	if m == nil {
+func (b *_ApduDataRestart) CreateApduDataRestartBuilder() ApduDataRestartBuilder {
+	if b == nil {
 		return NewApduDataRestartBuilder()
 	}
-	return &_ApduDataRestartBuilder{_ApduDataRestart: m.deepCopy()}
+	return &_ApduDataRestartBuilder{_ApduDataRestart: b.deepCopy()}
 }
 
 ///////////////////////

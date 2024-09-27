@@ -105,55 +105,59 @@ type _ModbusPDUWriteFileRecordRequestItemBuilder struct {
 
 var _ (ModbusPDUWriteFileRecordRequestItemBuilder) = (*_ModbusPDUWriteFileRecordRequestItemBuilder)(nil)
 
-func (m *_ModbusPDUWriteFileRecordRequestItemBuilder) WithMandatoryFields(referenceType uint8, fileNumber uint16, recordNumber uint16, recordData []byte) ModbusPDUWriteFileRecordRequestItemBuilder {
-	return m.WithReferenceType(referenceType).WithFileNumber(fileNumber).WithRecordNumber(recordNumber).WithRecordData(recordData...)
+func (b *_ModbusPDUWriteFileRecordRequestItemBuilder) WithMandatoryFields(referenceType uint8, fileNumber uint16, recordNumber uint16, recordData []byte) ModbusPDUWriteFileRecordRequestItemBuilder {
+	return b.WithReferenceType(referenceType).WithFileNumber(fileNumber).WithRecordNumber(recordNumber).WithRecordData(recordData...)
 }
 
-func (m *_ModbusPDUWriteFileRecordRequestItemBuilder) WithReferenceType(referenceType uint8) ModbusPDUWriteFileRecordRequestItemBuilder {
-	m.ReferenceType = referenceType
-	return m
+func (b *_ModbusPDUWriteFileRecordRequestItemBuilder) WithReferenceType(referenceType uint8) ModbusPDUWriteFileRecordRequestItemBuilder {
+	b.ReferenceType = referenceType
+	return b
 }
 
-func (m *_ModbusPDUWriteFileRecordRequestItemBuilder) WithFileNumber(fileNumber uint16) ModbusPDUWriteFileRecordRequestItemBuilder {
-	m.FileNumber = fileNumber
-	return m
+func (b *_ModbusPDUWriteFileRecordRequestItemBuilder) WithFileNumber(fileNumber uint16) ModbusPDUWriteFileRecordRequestItemBuilder {
+	b.FileNumber = fileNumber
+	return b
 }
 
-func (m *_ModbusPDUWriteFileRecordRequestItemBuilder) WithRecordNumber(recordNumber uint16) ModbusPDUWriteFileRecordRequestItemBuilder {
-	m.RecordNumber = recordNumber
-	return m
+func (b *_ModbusPDUWriteFileRecordRequestItemBuilder) WithRecordNumber(recordNumber uint16) ModbusPDUWriteFileRecordRequestItemBuilder {
+	b.RecordNumber = recordNumber
+	return b
 }
 
-func (m *_ModbusPDUWriteFileRecordRequestItemBuilder) WithRecordData(recordData ...byte) ModbusPDUWriteFileRecordRequestItemBuilder {
-	m.RecordData = recordData
-	return m
+func (b *_ModbusPDUWriteFileRecordRequestItemBuilder) WithRecordData(recordData ...byte) ModbusPDUWriteFileRecordRequestItemBuilder {
+	b.RecordData = recordData
+	return b
 }
 
-func (m *_ModbusPDUWriteFileRecordRequestItemBuilder) Build() (ModbusPDUWriteFileRecordRequestItem, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUWriteFileRecordRequestItemBuilder) Build() (ModbusPDUWriteFileRecordRequestItem, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUWriteFileRecordRequestItem.deepCopy(), nil
+	return b._ModbusPDUWriteFileRecordRequestItem.deepCopy(), nil
 }
 
-func (m *_ModbusPDUWriteFileRecordRequestItemBuilder) MustBuild() ModbusPDUWriteFileRecordRequestItem {
-	build, err := m.Build()
+func (b *_ModbusPDUWriteFileRecordRequestItemBuilder) MustBuild() ModbusPDUWriteFileRecordRequestItem {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUWriteFileRecordRequestItemBuilder) DeepCopy() any {
-	return m.CreateModbusPDUWriteFileRecordRequestItemBuilder()
+func (b *_ModbusPDUWriteFileRecordRequestItemBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUWriteFileRecordRequestItemBuilder().(*_ModbusPDUWriteFileRecordRequestItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUWriteFileRecordRequestItemBuilder creates a ModbusPDUWriteFileRecordRequestItemBuilder
-func (m *_ModbusPDUWriteFileRecordRequestItem) CreateModbusPDUWriteFileRecordRequestItemBuilder() ModbusPDUWriteFileRecordRequestItemBuilder {
-	if m == nil {
+func (b *_ModbusPDUWriteFileRecordRequestItem) CreateModbusPDUWriteFileRecordRequestItemBuilder() ModbusPDUWriteFileRecordRequestItemBuilder {
+	if b == nil {
 		return NewModbusPDUWriteFileRecordRequestItemBuilder()
 	}
-	return &_ModbusPDUWriteFileRecordRequestItemBuilder{_ModbusPDUWriteFileRecordRequestItem: m.deepCopy()}
+	return &_ModbusPDUWriteFileRecordRequestItemBuilder{_ModbusPDUWriteFileRecordRequestItem: b.deepCopy()}
 }
 
 ///////////////////////

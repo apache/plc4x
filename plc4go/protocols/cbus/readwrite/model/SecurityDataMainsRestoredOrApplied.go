@@ -85,40 +85,59 @@ func NewSecurityDataMainsRestoredOrAppliedBuilder() SecurityDataMainsRestoredOrA
 type _SecurityDataMainsRestoredOrAppliedBuilder struct {
 	*_SecurityDataMainsRestoredOrApplied
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataMainsRestoredOrAppliedBuilder) = (*_SecurityDataMainsRestoredOrAppliedBuilder)(nil)
 
-func (m *_SecurityDataMainsRestoredOrAppliedBuilder) WithMandatoryFields() SecurityDataMainsRestoredOrAppliedBuilder {
-	return m
+func (b *_SecurityDataMainsRestoredOrAppliedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataMainsRestoredOrAppliedBuilder) Build() (SecurityDataMainsRestoredOrApplied, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataMainsRestoredOrAppliedBuilder) WithMandatoryFields() SecurityDataMainsRestoredOrAppliedBuilder {
+	return b
+}
+
+func (b *_SecurityDataMainsRestoredOrAppliedBuilder) Build() (SecurityDataMainsRestoredOrApplied, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataMainsRestoredOrApplied.deepCopy(), nil
+	return b._SecurityDataMainsRestoredOrApplied.deepCopy(), nil
 }
 
-func (m *_SecurityDataMainsRestoredOrAppliedBuilder) MustBuild() SecurityDataMainsRestoredOrApplied {
-	build, err := m.Build()
+func (b *_SecurityDataMainsRestoredOrAppliedBuilder) MustBuild() SecurityDataMainsRestoredOrApplied {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataMainsRestoredOrAppliedBuilder) DeepCopy() any {
-	return m.CreateSecurityDataMainsRestoredOrAppliedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataMainsRestoredOrAppliedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataMainsRestoredOrAppliedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataMainsRestoredOrAppliedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataMainsRestoredOrAppliedBuilder().(*_SecurityDataMainsRestoredOrAppliedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataMainsRestoredOrAppliedBuilder creates a SecurityDataMainsRestoredOrAppliedBuilder
-func (m *_SecurityDataMainsRestoredOrApplied) CreateSecurityDataMainsRestoredOrAppliedBuilder() SecurityDataMainsRestoredOrAppliedBuilder {
-	if m == nil {
+func (b *_SecurityDataMainsRestoredOrApplied) CreateSecurityDataMainsRestoredOrAppliedBuilder() SecurityDataMainsRestoredOrAppliedBuilder {
+	if b == nil {
 		return NewSecurityDataMainsRestoredOrAppliedBuilder()
 	}
-	return &_SecurityDataMainsRestoredOrAppliedBuilder{_SecurityDataMainsRestoredOrApplied: m.deepCopy()}
+	return &_SecurityDataMainsRestoredOrAppliedBuilder{_SecurityDataMainsRestoredOrApplied: b.deepCopy()}
 }
 
 ///////////////////////

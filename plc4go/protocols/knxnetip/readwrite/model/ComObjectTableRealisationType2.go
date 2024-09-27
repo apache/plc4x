@@ -105,55 +105,74 @@ func NewComObjectTableRealisationType2Builder() ComObjectTableRealisationType2Bu
 type _ComObjectTableRealisationType2Builder struct {
 	*_ComObjectTableRealisationType2
 
+	parentBuilder *_ComObjectTableBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ComObjectTableRealisationType2Builder) = (*_ComObjectTableRealisationType2Builder)(nil)
 
-func (m *_ComObjectTableRealisationType2Builder) WithMandatoryFields(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []GroupObjectDescriptorRealisationType2) ComObjectTableRealisationType2Builder {
-	return m.WithNumEntries(numEntries).WithRamFlagsTablePointer(ramFlagsTablePointer).WithComObjectDescriptors(comObjectDescriptors...)
+func (b *_ComObjectTableRealisationType2Builder) setParent(contract ComObjectTableContract) {
+	b.ComObjectTableContract = contract
 }
 
-func (m *_ComObjectTableRealisationType2Builder) WithNumEntries(numEntries uint8) ComObjectTableRealisationType2Builder {
-	m.NumEntries = numEntries
-	return m
+func (b *_ComObjectTableRealisationType2Builder) WithMandatoryFields(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []GroupObjectDescriptorRealisationType2) ComObjectTableRealisationType2Builder {
+	return b.WithNumEntries(numEntries).WithRamFlagsTablePointer(ramFlagsTablePointer).WithComObjectDescriptors(comObjectDescriptors...)
 }
 
-func (m *_ComObjectTableRealisationType2Builder) WithRamFlagsTablePointer(ramFlagsTablePointer uint8) ComObjectTableRealisationType2Builder {
-	m.RamFlagsTablePointer = ramFlagsTablePointer
-	return m
+func (b *_ComObjectTableRealisationType2Builder) WithNumEntries(numEntries uint8) ComObjectTableRealisationType2Builder {
+	b.NumEntries = numEntries
+	return b
 }
 
-func (m *_ComObjectTableRealisationType2Builder) WithComObjectDescriptors(comObjectDescriptors ...GroupObjectDescriptorRealisationType2) ComObjectTableRealisationType2Builder {
-	m.ComObjectDescriptors = comObjectDescriptors
-	return m
+func (b *_ComObjectTableRealisationType2Builder) WithRamFlagsTablePointer(ramFlagsTablePointer uint8) ComObjectTableRealisationType2Builder {
+	b.RamFlagsTablePointer = ramFlagsTablePointer
+	return b
 }
 
-func (m *_ComObjectTableRealisationType2Builder) Build() (ComObjectTableRealisationType2, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ComObjectTableRealisationType2Builder) WithComObjectDescriptors(comObjectDescriptors ...GroupObjectDescriptorRealisationType2) ComObjectTableRealisationType2Builder {
+	b.ComObjectDescriptors = comObjectDescriptors
+	return b
+}
+
+func (b *_ComObjectTableRealisationType2Builder) Build() (ComObjectTableRealisationType2, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ComObjectTableRealisationType2.deepCopy(), nil
+	return b._ComObjectTableRealisationType2.deepCopy(), nil
 }
 
-func (m *_ComObjectTableRealisationType2Builder) MustBuild() ComObjectTableRealisationType2 {
-	build, err := m.Build()
+func (b *_ComObjectTableRealisationType2Builder) MustBuild() ComObjectTableRealisationType2 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ComObjectTableRealisationType2Builder) DeepCopy() any {
-	return m.CreateComObjectTableRealisationType2Builder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ComObjectTableRealisationType2Builder) Done() ComObjectTableBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ComObjectTableRealisationType2Builder) buildForComObjectTable() (ComObjectTable, error) {
+	return b.Build()
+}
+
+func (b *_ComObjectTableRealisationType2Builder) DeepCopy() any {
+	_copy := b.CreateComObjectTableRealisationType2Builder().(*_ComObjectTableRealisationType2Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateComObjectTableRealisationType2Builder creates a ComObjectTableRealisationType2Builder
-func (m *_ComObjectTableRealisationType2) CreateComObjectTableRealisationType2Builder() ComObjectTableRealisationType2Builder {
-	if m == nil {
+func (b *_ComObjectTableRealisationType2) CreateComObjectTableRealisationType2Builder() ComObjectTableRealisationType2Builder {
+	if b == nil {
 		return NewComObjectTableRealisationType2Builder()
 	}
-	return &_ComObjectTableRealisationType2Builder{_ComObjectTableRealisationType2: m.deepCopy()}
+	return &_ComObjectTableRealisationType2Builder{_ComObjectTableRealisationType2: b.deepCopy()}
 }
 
 ///////////////////////

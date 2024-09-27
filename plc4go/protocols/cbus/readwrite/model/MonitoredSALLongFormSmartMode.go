@@ -125,6 +125,8 @@ type MonitoredSALLongFormSmartModeBuilder interface {
 	WithOptionalReplyNetworkBuilder(func(ReplyNetworkBuilder) ReplyNetworkBuilder) MonitoredSALLongFormSmartModeBuilder
 	// WithSalData adds SalData (property field)
 	WithOptionalSalData(SALData) MonitoredSALLongFormSmartModeBuilder
+	// WithOptionalSalDataBuilder adds SalData (property field) which is build by the builder
+	WithOptionalSalDataBuilder(func(SALDataBuilder) SALDataBuilder) MonitoredSALLongFormSmartModeBuilder
 	// Build builds the MonitoredSALLongFormSmartMode or returns an error if something is wrong
 	Build() (MonitoredSALLongFormSmartMode, error)
 	// MustBuild does the same as Build but panics on error
@@ -139,114 +141,146 @@ func NewMonitoredSALLongFormSmartModeBuilder() MonitoredSALLongFormSmartModeBuil
 type _MonitoredSALLongFormSmartModeBuilder struct {
 	*_MonitoredSALLongFormSmartMode
 
+	parentBuilder *_MonitoredSALBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MonitoredSALLongFormSmartModeBuilder) = (*_MonitoredSALLongFormSmartModeBuilder)(nil)
 
-func (m *_MonitoredSALLongFormSmartModeBuilder) WithMandatoryFields(terminatingByte uint32, application ApplicationIdContainer) MonitoredSALLongFormSmartModeBuilder {
-	return m.WithTerminatingByte(terminatingByte).WithApplication(application)
+func (b *_MonitoredSALLongFormSmartModeBuilder) setParent(contract MonitoredSALContract) {
+	b.MonitoredSALContract = contract
 }
 
-func (m *_MonitoredSALLongFormSmartModeBuilder) WithTerminatingByte(terminatingByte uint32) MonitoredSALLongFormSmartModeBuilder {
-	m.TerminatingByte = terminatingByte
-	return m
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithMandatoryFields(terminatingByte uint32, application ApplicationIdContainer) MonitoredSALLongFormSmartModeBuilder {
+	return b.WithTerminatingByte(terminatingByte).WithApplication(application)
 }
 
-func (m *_MonitoredSALLongFormSmartModeBuilder) WithOptionalUnitAddress(unitAddress UnitAddress) MonitoredSALLongFormSmartModeBuilder {
-	m.UnitAddress = unitAddress
-	return m
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithTerminatingByte(terminatingByte uint32) MonitoredSALLongFormSmartModeBuilder {
+	b.TerminatingByte = terminatingByte
+	return b
 }
 
-func (m *_MonitoredSALLongFormSmartModeBuilder) WithOptionalUnitAddressBuilder(builderSupplier func(UnitAddressBuilder) UnitAddressBuilder) MonitoredSALLongFormSmartModeBuilder {
-	builder := builderSupplier(m.UnitAddress.CreateUnitAddressBuilder())
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalUnitAddress(unitAddress UnitAddress) MonitoredSALLongFormSmartModeBuilder {
+	b.UnitAddress = unitAddress
+	return b
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalUnitAddressBuilder(builderSupplier func(UnitAddressBuilder) UnitAddressBuilder) MonitoredSALLongFormSmartModeBuilder {
+	builder := builderSupplier(b.UnitAddress.CreateUnitAddressBuilder())
 	var err error
-	m.UnitAddress, err = builder.Build()
+	b.UnitAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "UnitAddressBuilder failed"))
+		b.err.Append(errors.Wrap(err, "UnitAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_MonitoredSALLongFormSmartModeBuilder) WithOptionalBridgeAddress(bridgeAddress BridgeAddress) MonitoredSALLongFormSmartModeBuilder {
-	m.BridgeAddress = bridgeAddress
-	return m
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalBridgeAddress(bridgeAddress BridgeAddress) MonitoredSALLongFormSmartModeBuilder {
+	b.BridgeAddress = bridgeAddress
+	return b
 }
 
-func (m *_MonitoredSALLongFormSmartModeBuilder) WithOptionalBridgeAddressBuilder(builderSupplier func(BridgeAddressBuilder) BridgeAddressBuilder) MonitoredSALLongFormSmartModeBuilder {
-	builder := builderSupplier(m.BridgeAddress.CreateBridgeAddressBuilder())
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalBridgeAddressBuilder(builderSupplier func(BridgeAddressBuilder) BridgeAddressBuilder) MonitoredSALLongFormSmartModeBuilder {
+	builder := builderSupplier(b.BridgeAddress.CreateBridgeAddressBuilder())
 	var err error
-	m.BridgeAddress, err = builder.Build()
+	b.BridgeAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BridgeAddressBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BridgeAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_MonitoredSALLongFormSmartModeBuilder) WithApplication(application ApplicationIdContainer) MonitoredSALLongFormSmartModeBuilder {
-	m.Application = application
-	return m
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithApplication(application ApplicationIdContainer) MonitoredSALLongFormSmartModeBuilder {
+	b.Application = application
+	return b
 }
 
-func (m *_MonitoredSALLongFormSmartModeBuilder) WithOptionalReservedByte(reservedByte byte) MonitoredSALLongFormSmartModeBuilder {
-	m.ReservedByte = &reservedByte
-	return m
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalReservedByte(reservedByte byte) MonitoredSALLongFormSmartModeBuilder {
+	b.ReservedByte = &reservedByte
+	return b
 }
 
-func (m *_MonitoredSALLongFormSmartModeBuilder) WithOptionalReplyNetwork(replyNetwork ReplyNetwork) MonitoredSALLongFormSmartModeBuilder {
-	m.ReplyNetwork = replyNetwork
-	return m
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalReplyNetwork(replyNetwork ReplyNetwork) MonitoredSALLongFormSmartModeBuilder {
+	b.ReplyNetwork = replyNetwork
+	return b
 }
 
-func (m *_MonitoredSALLongFormSmartModeBuilder) WithOptionalReplyNetworkBuilder(builderSupplier func(ReplyNetworkBuilder) ReplyNetworkBuilder) MonitoredSALLongFormSmartModeBuilder {
-	builder := builderSupplier(m.ReplyNetwork.CreateReplyNetworkBuilder())
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalReplyNetworkBuilder(builderSupplier func(ReplyNetworkBuilder) ReplyNetworkBuilder) MonitoredSALLongFormSmartModeBuilder {
+	builder := builderSupplier(b.ReplyNetwork.CreateReplyNetworkBuilder())
 	var err error
-	m.ReplyNetwork, err = builder.Build()
+	b.ReplyNetwork, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ReplyNetworkBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ReplyNetworkBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_MonitoredSALLongFormSmartModeBuilder) WithOptionalSalData(salData SALData) MonitoredSALLongFormSmartModeBuilder {
-	m.SalData = salData
-	return m
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalSalData(salData SALData) MonitoredSALLongFormSmartModeBuilder {
+	b.SalData = salData
+	return b
 }
 
-func (m *_MonitoredSALLongFormSmartModeBuilder) Build() (MonitoredSALLongFormSmartMode, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalSalDataBuilder(builderSupplier func(SALDataBuilder) SALDataBuilder) MonitoredSALLongFormSmartModeBuilder {
+	builder := builderSupplier(b.SalData.CreateSALDataBuilder())
+	var err error
+	b.SalData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "SALDataBuilder failed"))
 	}
-	return m._MonitoredSALLongFormSmartMode.deepCopy(), nil
+	return b
 }
 
-func (m *_MonitoredSALLongFormSmartModeBuilder) MustBuild() MonitoredSALLongFormSmartMode {
-	build, err := m.Build()
+func (b *_MonitoredSALLongFormSmartModeBuilder) Build() (MonitoredSALLongFormSmartMode, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MonitoredSALLongFormSmartMode.deepCopy(), nil
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) MustBuild() MonitoredSALLongFormSmartMode {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MonitoredSALLongFormSmartModeBuilder) DeepCopy() any {
-	return m.CreateMonitoredSALLongFormSmartModeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MonitoredSALLongFormSmartModeBuilder) Done() MonitoredSALBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) buildForMonitoredSAL() (MonitoredSAL, error) {
+	return b.Build()
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) DeepCopy() any {
+	_copy := b.CreateMonitoredSALLongFormSmartModeBuilder().(*_MonitoredSALLongFormSmartModeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMonitoredSALLongFormSmartModeBuilder creates a MonitoredSALLongFormSmartModeBuilder
-func (m *_MonitoredSALLongFormSmartMode) CreateMonitoredSALLongFormSmartModeBuilder() MonitoredSALLongFormSmartModeBuilder {
-	if m == nil {
+func (b *_MonitoredSALLongFormSmartMode) CreateMonitoredSALLongFormSmartModeBuilder() MonitoredSALLongFormSmartModeBuilder {
+	if b == nil {
 		return NewMonitoredSALLongFormSmartModeBuilder()
 	}
-	return &_MonitoredSALLongFormSmartModeBuilder{_MonitoredSALLongFormSmartMode: m.deepCopy()}
+	return &_MonitoredSALLongFormSmartModeBuilder{_MonitoredSALLongFormSmartMode: b.deepCopy()}
 }
 
 ///////////////////////

@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesMaintenanceBuilder() BACnetPropertyStatesMaintenance
 type _BACnetPropertyStatesMaintenanceBuilder struct {
 	*_BACnetPropertyStatesMaintenance
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesMaintenanceBuilder) = (*_BACnetPropertyStatesMaintenanceBuilder)(nil)
 
-func (m *_BACnetPropertyStatesMaintenanceBuilder) WithMandatoryFields(maintenance BACnetMaintenanceTagged) BACnetPropertyStatesMaintenanceBuilder {
-	return m.WithMaintenance(maintenance)
+func (b *_BACnetPropertyStatesMaintenanceBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesMaintenanceBuilder) WithMaintenance(maintenance BACnetMaintenanceTagged) BACnetPropertyStatesMaintenanceBuilder {
-	m.Maintenance = maintenance
-	return m
+func (b *_BACnetPropertyStatesMaintenanceBuilder) WithMandatoryFields(maintenance BACnetMaintenanceTagged) BACnetPropertyStatesMaintenanceBuilder {
+	return b.WithMaintenance(maintenance)
 }
 
-func (m *_BACnetPropertyStatesMaintenanceBuilder) WithMaintenanceBuilder(builderSupplier func(BACnetMaintenanceTaggedBuilder) BACnetMaintenanceTaggedBuilder) BACnetPropertyStatesMaintenanceBuilder {
-	builder := builderSupplier(m.Maintenance.CreateBACnetMaintenanceTaggedBuilder())
+func (b *_BACnetPropertyStatesMaintenanceBuilder) WithMaintenance(maintenance BACnetMaintenanceTagged) BACnetPropertyStatesMaintenanceBuilder {
+	b.Maintenance = maintenance
+	return b
+}
+
+func (b *_BACnetPropertyStatesMaintenanceBuilder) WithMaintenanceBuilder(builderSupplier func(BACnetMaintenanceTaggedBuilder) BACnetMaintenanceTaggedBuilder) BACnetPropertyStatesMaintenanceBuilder {
+	builder := builderSupplier(b.Maintenance.CreateBACnetMaintenanceTaggedBuilder())
 	var err error
-	m.Maintenance, err = builder.Build()
+	b.Maintenance, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetMaintenanceTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetMaintenanceTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesMaintenanceBuilder) Build() (BACnetPropertyStatesMaintenance, error) {
-	if m.Maintenance == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesMaintenanceBuilder) Build() (BACnetPropertyStatesMaintenance, error) {
+	if b.Maintenance == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'maintenance' not set"))
+		b.err.Append(errors.New("mandatory field 'maintenance' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesMaintenance.deepCopy(), nil
+	return b._BACnetPropertyStatesMaintenance.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesMaintenanceBuilder) MustBuild() BACnetPropertyStatesMaintenance {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesMaintenanceBuilder) MustBuild() BACnetPropertyStatesMaintenance {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesMaintenanceBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesMaintenanceBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesMaintenanceBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesMaintenanceBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesMaintenanceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesMaintenanceBuilder().(*_BACnetPropertyStatesMaintenanceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesMaintenanceBuilder creates a BACnetPropertyStatesMaintenanceBuilder
-func (m *_BACnetPropertyStatesMaintenance) CreateBACnetPropertyStatesMaintenanceBuilder() BACnetPropertyStatesMaintenanceBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesMaintenance) CreateBACnetPropertyStatesMaintenanceBuilder() BACnetPropertyStatesMaintenanceBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesMaintenanceBuilder()
 	}
-	return &_BACnetPropertyStatesMaintenanceBuilder{_BACnetPropertyStatesMaintenance: m.deepCopy()}
+	return &_BACnetPropertyStatesMaintenanceBuilder{_BACnetPropertyStatesMaintenance: b.deepCopy()}
 }
 
 ///////////////////////

@@ -101,50 +101,69 @@ func NewNLMNetworkNumberIsBuilder() NLMNetworkNumberIsBuilder {
 type _NLMNetworkNumberIsBuilder struct {
 	*_NLMNetworkNumberIs
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMNetworkNumberIsBuilder) = (*_NLMNetworkNumberIsBuilder)(nil)
 
-func (m *_NLMNetworkNumberIsBuilder) WithMandatoryFields(networkNumber uint16, networkNumberConfigured bool) NLMNetworkNumberIsBuilder {
-	return m.WithNetworkNumber(networkNumber).WithNetworkNumberConfigured(networkNumberConfigured)
+func (b *_NLMNetworkNumberIsBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMNetworkNumberIsBuilder) WithNetworkNumber(networkNumber uint16) NLMNetworkNumberIsBuilder {
-	m.NetworkNumber = networkNumber
-	return m
+func (b *_NLMNetworkNumberIsBuilder) WithMandatoryFields(networkNumber uint16, networkNumberConfigured bool) NLMNetworkNumberIsBuilder {
+	return b.WithNetworkNumber(networkNumber).WithNetworkNumberConfigured(networkNumberConfigured)
 }
 
-func (m *_NLMNetworkNumberIsBuilder) WithNetworkNumberConfigured(networkNumberConfigured bool) NLMNetworkNumberIsBuilder {
-	m.NetworkNumberConfigured = networkNumberConfigured
-	return m
+func (b *_NLMNetworkNumberIsBuilder) WithNetworkNumber(networkNumber uint16) NLMNetworkNumberIsBuilder {
+	b.NetworkNumber = networkNumber
+	return b
 }
 
-func (m *_NLMNetworkNumberIsBuilder) Build() (NLMNetworkNumberIs, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMNetworkNumberIsBuilder) WithNetworkNumberConfigured(networkNumberConfigured bool) NLMNetworkNumberIsBuilder {
+	b.NetworkNumberConfigured = networkNumberConfigured
+	return b
+}
+
+func (b *_NLMNetworkNumberIsBuilder) Build() (NLMNetworkNumberIs, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMNetworkNumberIs.deepCopy(), nil
+	return b._NLMNetworkNumberIs.deepCopy(), nil
 }
 
-func (m *_NLMNetworkNumberIsBuilder) MustBuild() NLMNetworkNumberIs {
-	build, err := m.Build()
+func (b *_NLMNetworkNumberIsBuilder) MustBuild() NLMNetworkNumberIs {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMNetworkNumberIsBuilder) DeepCopy() any {
-	return m.CreateNLMNetworkNumberIsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMNetworkNumberIsBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMNetworkNumberIsBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMNetworkNumberIsBuilder) DeepCopy() any {
+	_copy := b.CreateNLMNetworkNumberIsBuilder().(*_NLMNetworkNumberIsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMNetworkNumberIsBuilder creates a NLMNetworkNumberIsBuilder
-func (m *_NLMNetworkNumberIs) CreateNLMNetworkNumberIsBuilder() NLMNetworkNumberIsBuilder {
-	if m == nil {
+func (b *_NLMNetworkNumberIs) CreateNLMNetworkNumberIsBuilder() NLMNetworkNumberIsBuilder {
+	if b == nil {
 		return NewNLMNetworkNumberIsBuilder()
 	}
-	return &_NLMNetworkNumberIsBuilder{_NLMNetworkNumberIs: m.deepCopy()}
+	return &_NLMNetworkNumberIsBuilder{_NLMNetworkNumberIs: b.deepCopy()}
 }
 
 ///////////////////////

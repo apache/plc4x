@@ -84,6 +84,8 @@ type BACnetConstructedDataMultiStateInputInterfaceValueBuilder interface {
 	WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder
 	// WithInterfaceValue adds InterfaceValue (property field)
 	WithInterfaceValue(BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder
+	// WithInterfaceValueBuilder adds InterfaceValue (property field) which is build by the builder
+	WithInterfaceValueBuilder(func(BACnetOptionalBinaryPVBuilder) BACnetOptionalBinaryPVBuilder) BACnetConstructedDataMultiStateInputInterfaceValueBuilder
 	// Build builds the BACnetConstructedDataMultiStateInputInterfaceValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataMultiStateInputInterfaceValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewBACnetConstructedDataMultiStateInputInterfaceValueBuilder() BACnetConstr
 type _BACnetConstructedDataMultiStateInputInterfaceValueBuilder struct {
 	*_BACnetConstructedDataMultiStateInputInterfaceValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMultiStateInputInterfaceValueBuilder) = (*_BACnetConstructedDataMultiStateInputInterfaceValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
-	return m.WithInterfaceValue(interfaceValue)
+func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) WithInterfaceValue(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
-	m.InterfaceValue = interfaceValue
-	return m
+func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
+	return b.WithInterfaceValue(interfaceValue)
 }
 
-func (m *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) Build() (BACnetConstructedDataMultiStateInputInterfaceValue, error) {
-	if m.InterfaceValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) WithInterfaceValue(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
+	b.InterfaceValue = interfaceValue
+	return b
+}
+
+func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) WithInterfaceValueBuilder(builderSupplier func(BACnetOptionalBinaryPVBuilder) BACnetOptionalBinaryPVBuilder) BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
+	builder := builderSupplier(b.InterfaceValue.CreateBACnetOptionalBinaryPVBuilder())
+	var err error
+	b.InterfaceValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'interfaceValue' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetOptionalBinaryPVBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetConstructedDataMultiStateInputInterfaceValue.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) MustBuild() BACnetConstructedDataMultiStateInputInterfaceValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) Build() (BACnetConstructedDataMultiStateInputInterfaceValue, error) {
+	if b.InterfaceValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'interfaceValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataMultiStateInputInterfaceValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) MustBuild() BACnetConstructedDataMultiStateInputInterfaceValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMultiStateInputInterfaceValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMultiStateInputInterfaceValueBuilder().(*_BACnetConstructedDataMultiStateInputInterfaceValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMultiStateInputInterfaceValueBuilder creates a BACnetConstructedDataMultiStateInputInterfaceValueBuilder
-func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) CreateBACnetConstructedDataMultiStateInputInterfaceValueBuilder() BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMultiStateInputInterfaceValue) CreateBACnetConstructedDataMultiStateInputInterfaceValueBuilder() BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMultiStateInputInterfaceValueBuilder()
 	}
-	return &_BACnetConstructedDataMultiStateInputInterfaceValueBuilder{_BACnetConstructedDataMultiStateInputInterfaceValue: m.deepCopy()}
+	return &_BACnetConstructedDataMultiStateInputInterfaceValueBuilder{_BACnetConstructedDataMultiStateInputInterfaceValue: b.deepCopy()}
 }
 
 ///////////////////////

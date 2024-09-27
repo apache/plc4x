@@ -100,64 +100,83 @@ func NewBACnetConstructedDataInstanceOfBuilder() BACnetConstructedDataInstanceOf
 type _BACnetConstructedDataInstanceOfBuilder struct {
 	*_BACnetConstructedDataInstanceOf
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataInstanceOfBuilder) = (*_BACnetConstructedDataInstanceOfBuilder)(nil)
 
-func (m *_BACnetConstructedDataInstanceOfBuilder) WithMandatoryFields(instanceOf BACnetApplicationTagCharacterString) BACnetConstructedDataInstanceOfBuilder {
-	return m.WithInstanceOf(instanceOf)
+func (b *_BACnetConstructedDataInstanceOfBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataInstanceOfBuilder) WithInstanceOf(instanceOf BACnetApplicationTagCharacterString) BACnetConstructedDataInstanceOfBuilder {
-	m.InstanceOf = instanceOf
-	return m
+func (b *_BACnetConstructedDataInstanceOfBuilder) WithMandatoryFields(instanceOf BACnetApplicationTagCharacterString) BACnetConstructedDataInstanceOfBuilder {
+	return b.WithInstanceOf(instanceOf)
 }
 
-func (m *_BACnetConstructedDataInstanceOfBuilder) WithInstanceOfBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataInstanceOfBuilder {
-	builder := builderSupplier(m.InstanceOf.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetConstructedDataInstanceOfBuilder) WithInstanceOf(instanceOf BACnetApplicationTagCharacterString) BACnetConstructedDataInstanceOfBuilder {
+	b.InstanceOf = instanceOf
+	return b
+}
+
+func (b *_BACnetConstructedDataInstanceOfBuilder) WithInstanceOfBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataInstanceOfBuilder {
+	builder := builderSupplier(b.InstanceOf.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.InstanceOf, err = builder.Build()
+	b.InstanceOf, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataInstanceOfBuilder) Build() (BACnetConstructedDataInstanceOf, error) {
-	if m.InstanceOf == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataInstanceOfBuilder) Build() (BACnetConstructedDataInstanceOf, error) {
+	if b.InstanceOf == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'instanceOf' not set"))
+		b.err.Append(errors.New("mandatory field 'instanceOf' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataInstanceOf.deepCopy(), nil
+	return b._BACnetConstructedDataInstanceOf.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataInstanceOfBuilder) MustBuild() BACnetConstructedDataInstanceOf {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataInstanceOfBuilder) MustBuild() BACnetConstructedDataInstanceOf {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataInstanceOfBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataInstanceOfBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataInstanceOfBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataInstanceOfBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataInstanceOfBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataInstanceOfBuilder().(*_BACnetConstructedDataInstanceOfBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataInstanceOfBuilder creates a BACnetConstructedDataInstanceOfBuilder
-func (m *_BACnetConstructedDataInstanceOf) CreateBACnetConstructedDataInstanceOfBuilder() BACnetConstructedDataInstanceOfBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataInstanceOf) CreateBACnetConstructedDataInstanceOfBuilder() BACnetConstructedDataInstanceOfBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataInstanceOfBuilder()
 	}
-	return &_BACnetConstructedDataInstanceOfBuilder{_BACnetConstructedDataInstanceOf: m.deepCopy()}
+	return &_BACnetConstructedDataInstanceOfBuilder{_BACnetConstructedDataInstanceOf: b.deepCopy()}
 }
 
 ///////////////////////

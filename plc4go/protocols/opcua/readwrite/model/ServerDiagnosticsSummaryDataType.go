@@ -159,100 +159,119 @@ func NewServerDiagnosticsSummaryDataTypeBuilder() ServerDiagnosticsSummaryDataTy
 type _ServerDiagnosticsSummaryDataTypeBuilder struct {
 	*_ServerDiagnosticsSummaryDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ServerDiagnosticsSummaryDataTypeBuilder) = (*_ServerDiagnosticsSummaryDataTypeBuilder)(nil)
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) WithMandatoryFields(serverViewCount uint32, currentSessionCount uint32, cumulatedSessionCount uint32, securityRejectedSessionCount uint32, rejectedSessionCount uint32, sessionTimeoutCount uint32, sessionAbortCount uint32, currentSubscriptionCount uint32, cumulatedSubscriptionCount uint32, publishingIntervalCount uint32, securityRejectedRequestsCount uint32, rejectedRequestsCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
-	return m.WithServerViewCount(serverViewCount).WithCurrentSessionCount(currentSessionCount).WithCumulatedSessionCount(cumulatedSessionCount).WithSecurityRejectedSessionCount(securityRejectedSessionCount).WithRejectedSessionCount(rejectedSessionCount).WithSessionTimeoutCount(sessionTimeoutCount).WithSessionAbortCount(sessionAbortCount).WithCurrentSubscriptionCount(currentSubscriptionCount).WithCumulatedSubscriptionCount(cumulatedSubscriptionCount).WithPublishingIntervalCount(publishingIntervalCount).WithSecurityRejectedRequestsCount(securityRejectedRequestsCount).WithRejectedRequestsCount(rejectedRequestsCount)
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) WithServerViewCount(serverViewCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
-	m.ServerViewCount = serverViewCount
-	return m
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithMandatoryFields(serverViewCount uint32, currentSessionCount uint32, cumulatedSessionCount uint32, securityRejectedSessionCount uint32, rejectedSessionCount uint32, sessionTimeoutCount uint32, sessionAbortCount uint32, currentSubscriptionCount uint32, cumulatedSubscriptionCount uint32, publishingIntervalCount uint32, securityRejectedRequestsCount uint32, rejectedRequestsCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
+	return b.WithServerViewCount(serverViewCount).WithCurrentSessionCount(currentSessionCount).WithCumulatedSessionCount(cumulatedSessionCount).WithSecurityRejectedSessionCount(securityRejectedSessionCount).WithRejectedSessionCount(rejectedSessionCount).WithSessionTimeoutCount(sessionTimeoutCount).WithSessionAbortCount(sessionAbortCount).WithCurrentSubscriptionCount(currentSubscriptionCount).WithCumulatedSubscriptionCount(cumulatedSubscriptionCount).WithPublishingIntervalCount(publishingIntervalCount).WithSecurityRejectedRequestsCount(securityRejectedRequestsCount).WithRejectedRequestsCount(rejectedRequestsCount)
 }
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) WithCurrentSessionCount(currentSessionCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
-	m.CurrentSessionCount = currentSessionCount
-	return m
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithServerViewCount(serverViewCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
+	b.ServerViewCount = serverViewCount
+	return b
 }
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) WithCumulatedSessionCount(cumulatedSessionCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
-	m.CumulatedSessionCount = cumulatedSessionCount
-	return m
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithCurrentSessionCount(currentSessionCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
+	b.CurrentSessionCount = currentSessionCount
+	return b
 }
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) WithSecurityRejectedSessionCount(securityRejectedSessionCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
-	m.SecurityRejectedSessionCount = securityRejectedSessionCount
-	return m
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithCumulatedSessionCount(cumulatedSessionCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
+	b.CumulatedSessionCount = cumulatedSessionCount
+	return b
 }
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) WithRejectedSessionCount(rejectedSessionCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
-	m.RejectedSessionCount = rejectedSessionCount
-	return m
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithSecurityRejectedSessionCount(securityRejectedSessionCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
+	b.SecurityRejectedSessionCount = securityRejectedSessionCount
+	return b
 }
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) WithSessionTimeoutCount(sessionTimeoutCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
-	m.SessionTimeoutCount = sessionTimeoutCount
-	return m
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithRejectedSessionCount(rejectedSessionCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
+	b.RejectedSessionCount = rejectedSessionCount
+	return b
 }
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) WithSessionAbortCount(sessionAbortCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
-	m.SessionAbortCount = sessionAbortCount
-	return m
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithSessionTimeoutCount(sessionTimeoutCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
+	b.SessionTimeoutCount = sessionTimeoutCount
+	return b
 }
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) WithCurrentSubscriptionCount(currentSubscriptionCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
-	m.CurrentSubscriptionCount = currentSubscriptionCount
-	return m
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithSessionAbortCount(sessionAbortCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
+	b.SessionAbortCount = sessionAbortCount
+	return b
 }
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) WithCumulatedSubscriptionCount(cumulatedSubscriptionCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
-	m.CumulatedSubscriptionCount = cumulatedSubscriptionCount
-	return m
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithCurrentSubscriptionCount(currentSubscriptionCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
+	b.CurrentSubscriptionCount = currentSubscriptionCount
+	return b
 }
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) WithPublishingIntervalCount(publishingIntervalCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
-	m.PublishingIntervalCount = publishingIntervalCount
-	return m
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithCumulatedSubscriptionCount(cumulatedSubscriptionCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
+	b.CumulatedSubscriptionCount = cumulatedSubscriptionCount
+	return b
 }
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) WithSecurityRejectedRequestsCount(securityRejectedRequestsCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
-	m.SecurityRejectedRequestsCount = securityRejectedRequestsCount
-	return m
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithPublishingIntervalCount(publishingIntervalCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
+	b.PublishingIntervalCount = publishingIntervalCount
+	return b
 }
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) WithRejectedRequestsCount(rejectedRequestsCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
-	m.RejectedRequestsCount = rejectedRequestsCount
-	return m
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithSecurityRejectedRequestsCount(securityRejectedRequestsCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
+	b.SecurityRejectedRequestsCount = securityRejectedRequestsCount
+	return b
 }
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) Build() (ServerDiagnosticsSummaryDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithRejectedRequestsCount(rejectedRequestsCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
+	b.RejectedRequestsCount = rejectedRequestsCount
+	return b
+}
+
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) Build() (ServerDiagnosticsSummaryDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ServerDiagnosticsSummaryDataType.deepCopy(), nil
+	return b._ServerDiagnosticsSummaryDataType.deepCopy(), nil
 }
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) MustBuild() ServerDiagnosticsSummaryDataType {
-	build, err := m.Build()
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) MustBuild() ServerDiagnosticsSummaryDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ServerDiagnosticsSummaryDataTypeBuilder) DeepCopy() any {
-	return m.CreateServerDiagnosticsSummaryDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ServerDiagnosticsSummaryDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateServerDiagnosticsSummaryDataTypeBuilder().(*_ServerDiagnosticsSummaryDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateServerDiagnosticsSummaryDataTypeBuilder creates a ServerDiagnosticsSummaryDataTypeBuilder
-func (m *_ServerDiagnosticsSummaryDataType) CreateServerDiagnosticsSummaryDataTypeBuilder() ServerDiagnosticsSummaryDataTypeBuilder {
-	if m == nil {
+func (b *_ServerDiagnosticsSummaryDataType) CreateServerDiagnosticsSummaryDataTypeBuilder() ServerDiagnosticsSummaryDataTypeBuilder {
+	if b == nil {
 		return NewServerDiagnosticsSummaryDataTypeBuilder()
 	}
-	return &_ServerDiagnosticsSummaryDataTypeBuilder{_ServerDiagnosticsSummaryDataType: m.deepCopy()}
+	return &_ServerDiagnosticsSummaryDataTypeBuilder{_ServerDiagnosticsSummaryDataType: b.deepCopy()}
 }
 
 ///////////////////////

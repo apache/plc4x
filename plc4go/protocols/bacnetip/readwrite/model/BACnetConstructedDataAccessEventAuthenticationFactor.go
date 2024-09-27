@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAccessEventAuthenticationFactorBuilder() BACnetCons
 type _BACnetConstructedDataAccessEventAuthenticationFactorBuilder struct {
 	*_BACnetConstructedDataAccessEventAuthenticationFactor
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccessEventAuthenticationFactorBuilder) = (*_BACnetConstructedDataAccessEventAuthenticationFactorBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccessEventAuthenticationFactorBuilder) WithMandatoryFields(accessEventAuthenticationFactor BACnetAuthenticationFactor) BACnetConstructedDataAccessEventAuthenticationFactorBuilder {
-	return m.WithAccessEventAuthenticationFactor(accessEventAuthenticationFactor)
+func (b *_BACnetConstructedDataAccessEventAuthenticationFactorBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccessEventAuthenticationFactorBuilder) WithAccessEventAuthenticationFactor(accessEventAuthenticationFactor BACnetAuthenticationFactor) BACnetConstructedDataAccessEventAuthenticationFactorBuilder {
-	m.AccessEventAuthenticationFactor = accessEventAuthenticationFactor
-	return m
+func (b *_BACnetConstructedDataAccessEventAuthenticationFactorBuilder) WithMandatoryFields(accessEventAuthenticationFactor BACnetAuthenticationFactor) BACnetConstructedDataAccessEventAuthenticationFactorBuilder {
+	return b.WithAccessEventAuthenticationFactor(accessEventAuthenticationFactor)
 }
 
-func (m *_BACnetConstructedDataAccessEventAuthenticationFactorBuilder) WithAccessEventAuthenticationFactorBuilder(builderSupplier func(BACnetAuthenticationFactorBuilder) BACnetAuthenticationFactorBuilder) BACnetConstructedDataAccessEventAuthenticationFactorBuilder {
-	builder := builderSupplier(m.AccessEventAuthenticationFactor.CreateBACnetAuthenticationFactorBuilder())
+func (b *_BACnetConstructedDataAccessEventAuthenticationFactorBuilder) WithAccessEventAuthenticationFactor(accessEventAuthenticationFactor BACnetAuthenticationFactor) BACnetConstructedDataAccessEventAuthenticationFactorBuilder {
+	b.AccessEventAuthenticationFactor = accessEventAuthenticationFactor
+	return b
+}
+
+func (b *_BACnetConstructedDataAccessEventAuthenticationFactorBuilder) WithAccessEventAuthenticationFactorBuilder(builderSupplier func(BACnetAuthenticationFactorBuilder) BACnetAuthenticationFactorBuilder) BACnetConstructedDataAccessEventAuthenticationFactorBuilder {
+	builder := builderSupplier(b.AccessEventAuthenticationFactor.CreateBACnetAuthenticationFactorBuilder())
 	var err error
-	m.AccessEventAuthenticationFactor, err = builder.Build()
+	b.AccessEventAuthenticationFactor, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAuthenticationFactorBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAuthenticationFactorBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAccessEventAuthenticationFactorBuilder) Build() (BACnetConstructedDataAccessEventAuthenticationFactor, error) {
-	if m.AccessEventAuthenticationFactor == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAccessEventAuthenticationFactorBuilder) Build() (BACnetConstructedDataAccessEventAuthenticationFactor, error) {
+	if b.AccessEventAuthenticationFactor == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'accessEventAuthenticationFactor' not set"))
+		b.err.Append(errors.New("mandatory field 'accessEventAuthenticationFactor' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAccessEventAuthenticationFactor.deepCopy(), nil
+	return b._BACnetConstructedDataAccessEventAuthenticationFactor.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAccessEventAuthenticationFactorBuilder) MustBuild() BACnetConstructedDataAccessEventAuthenticationFactor {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccessEventAuthenticationFactorBuilder) MustBuild() BACnetConstructedDataAccessEventAuthenticationFactor {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccessEventAuthenticationFactorBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccessEventAuthenticationFactorBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccessEventAuthenticationFactorBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccessEventAuthenticationFactorBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccessEventAuthenticationFactorBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccessEventAuthenticationFactorBuilder().(*_BACnetConstructedDataAccessEventAuthenticationFactorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccessEventAuthenticationFactorBuilder creates a BACnetConstructedDataAccessEventAuthenticationFactorBuilder
-func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) CreateBACnetConstructedDataAccessEventAuthenticationFactorBuilder() BACnetConstructedDataAccessEventAuthenticationFactorBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccessEventAuthenticationFactor) CreateBACnetConstructedDataAccessEventAuthenticationFactorBuilder() BACnetConstructedDataAccessEventAuthenticationFactorBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccessEventAuthenticationFactorBuilder()
 	}
-	return &_BACnetConstructedDataAccessEventAuthenticationFactorBuilder{_BACnetConstructedDataAccessEventAuthenticationFactor: m.deepCopy()}
+	return &_BACnetConstructedDataAccessEventAuthenticationFactorBuilder{_BACnetConstructedDataAccessEventAuthenticationFactor: b.deepCopy()}
 }
 
 ///////////////////////

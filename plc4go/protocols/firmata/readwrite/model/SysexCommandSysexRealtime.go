@@ -85,40 +85,59 @@ func NewSysexCommandSysexRealtimeBuilder() SysexCommandSysexRealtimeBuilder {
 type _SysexCommandSysexRealtimeBuilder struct {
 	*_SysexCommandSysexRealtime
 
+	parentBuilder *_SysexCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SysexCommandSysexRealtimeBuilder) = (*_SysexCommandSysexRealtimeBuilder)(nil)
 
-func (m *_SysexCommandSysexRealtimeBuilder) WithMandatoryFields() SysexCommandSysexRealtimeBuilder {
-	return m
+func (b *_SysexCommandSysexRealtimeBuilder) setParent(contract SysexCommandContract) {
+	b.SysexCommandContract = contract
 }
 
-func (m *_SysexCommandSysexRealtimeBuilder) Build() (SysexCommandSysexRealtime, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SysexCommandSysexRealtimeBuilder) WithMandatoryFields() SysexCommandSysexRealtimeBuilder {
+	return b
+}
+
+func (b *_SysexCommandSysexRealtimeBuilder) Build() (SysexCommandSysexRealtime, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SysexCommandSysexRealtime.deepCopy(), nil
+	return b._SysexCommandSysexRealtime.deepCopy(), nil
 }
 
-func (m *_SysexCommandSysexRealtimeBuilder) MustBuild() SysexCommandSysexRealtime {
-	build, err := m.Build()
+func (b *_SysexCommandSysexRealtimeBuilder) MustBuild() SysexCommandSysexRealtime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SysexCommandSysexRealtimeBuilder) DeepCopy() any {
-	return m.CreateSysexCommandSysexRealtimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SysexCommandSysexRealtimeBuilder) Done() SysexCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SysexCommandSysexRealtimeBuilder) buildForSysexCommand() (SysexCommand, error) {
+	return b.Build()
+}
+
+func (b *_SysexCommandSysexRealtimeBuilder) DeepCopy() any {
+	_copy := b.CreateSysexCommandSysexRealtimeBuilder().(*_SysexCommandSysexRealtimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSysexCommandSysexRealtimeBuilder creates a SysexCommandSysexRealtimeBuilder
-func (m *_SysexCommandSysexRealtime) CreateSysexCommandSysexRealtimeBuilder() SysexCommandSysexRealtimeBuilder {
-	if m == nil {
+func (b *_SysexCommandSysexRealtime) CreateSysexCommandSysexRealtimeBuilder() SysexCommandSysexRealtimeBuilder {
+	if b == nil {
 		return NewSysexCommandSysexRealtimeBuilder()
 	}
-	return &_SysexCommandSysexRealtimeBuilder{_SysexCommandSysexRealtime: m.deepCopy()}
+	return &_SysexCommandSysexRealtimeBuilder{_SysexCommandSysexRealtime: b.deepCopy()}
 }
 
 ///////////////////////

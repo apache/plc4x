@@ -93,45 +93,64 @@ func NewNLMDisconnectConnectionToNetworkBuilder() NLMDisconnectConnectionToNetwo
 type _NLMDisconnectConnectionToNetworkBuilder struct {
 	*_NLMDisconnectConnectionToNetwork
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMDisconnectConnectionToNetworkBuilder) = (*_NLMDisconnectConnectionToNetworkBuilder)(nil)
 
-func (m *_NLMDisconnectConnectionToNetworkBuilder) WithMandatoryFields(destinationNetworkAddress uint16) NLMDisconnectConnectionToNetworkBuilder {
-	return m.WithDestinationNetworkAddress(destinationNetworkAddress)
+func (b *_NLMDisconnectConnectionToNetworkBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMDisconnectConnectionToNetworkBuilder) WithDestinationNetworkAddress(destinationNetworkAddress uint16) NLMDisconnectConnectionToNetworkBuilder {
-	m.DestinationNetworkAddress = destinationNetworkAddress
-	return m
+func (b *_NLMDisconnectConnectionToNetworkBuilder) WithMandatoryFields(destinationNetworkAddress uint16) NLMDisconnectConnectionToNetworkBuilder {
+	return b.WithDestinationNetworkAddress(destinationNetworkAddress)
 }
 
-func (m *_NLMDisconnectConnectionToNetworkBuilder) Build() (NLMDisconnectConnectionToNetwork, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMDisconnectConnectionToNetworkBuilder) WithDestinationNetworkAddress(destinationNetworkAddress uint16) NLMDisconnectConnectionToNetworkBuilder {
+	b.DestinationNetworkAddress = destinationNetworkAddress
+	return b
+}
+
+func (b *_NLMDisconnectConnectionToNetworkBuilder) Build() (NLMDisconnectConnectionToNetwork, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMDisconnectConnectionToNetwork.deepCopy(), nil
+	return b._NLMDisconnectConnectionToNetwork.deepCopy(), nil
 }
 
-func (m *_NLMDisconnectConnectionToNetworkBuilder) MustBuild() NLMDisconnectConnectionToNetwork {
-	build, err := m.Build()
+func (b *_NLMDisconnectConnectionToNetworkBuilder) MustBuild() NLMDisconnectConnectionToNetwork {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMDisconnectConnectionToNetworkBuilder) DeepCopy() any {
-	return m.CreateNLMDisconnectConnectionToNetworkBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMDisconnectConnectionToNetworkBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMDisconnectConnectionToNetworkBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMDisconnectConnectionToNetworkBuilder) DeepCopy() any {
+	_copy := b.CreateNLMDisconnectConnectionToNetworkBuilder().(*_NLMDisconnectConnectionToNetworkBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMDisconnectConnectionToNetworkBuilder creates a NLMDisconnectConnectionToNetworkBuilder
-func (m *_NLMDisconnectConnectionToNetwork) CreateNLMDisconnectConnectionToNetworkBuilder() NLMDisconnectConnectionToNetworkBuilder {
-	if m == nil {
+func (b *_NLMDisconnectConnectionToNetwork) CreateNLMDisconnectConnectionToNetworkBuilder() NLMDisconnectConnectionToNetworkBuilder {
+	if b == nil {
 		return NewNLMDisconnectConnectionToNetworkBuilder()
 	}
-	return &_NLMDisconnectConnectionToNetworkBuilder{_NLMDisconnectConnectionToNetwork: m.deepCopy()}
+	return &_NLMDisconnectConnectionToNetworkBuilder{_NLMDisconnectConnectionToNetwork: b.deepCopy()}
 }
 
 ///////////////////////

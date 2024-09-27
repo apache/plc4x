@@ -100,64 +100,83 @@ func NewBACnetConstructedDataExtendedTimeEnableBuilder() BACnetConstructedDataEx
 type _BACnetConstructedDataExtendedTimeEnableBuilder struct {
 	*_BACnetConstructedDataExtendedTimeEnable
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataExtendedTimeEnableBuilder) = (*_BACnetConstructedDataExtendedTimeEnableBuilder)(nil)
 
-func (m *_BACnetConstructedDataExtendedTimeEnableBuilder) WithMandatoryFields(extendedTimeEnable BACnetApplicationTagBoolean) BACnetConstructedDataExtendedTimeEnableBuilder {
-	return m.WithExtendedTimeEnable(extendedTimeEnable)
+func (b *_BACnetConstructedDataExtendedTimeEnableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataExtendedTimeEnableBuilder) WithExtendedTimeEnable(extendedTimeEnable BACnetApplicationTagBoolean) BACnetConstructedDataExtendedTimeEnableBuilder {
-	m.ExtendedTimeEnable = extendedTimeEnable
-	return m
+func (b *_BACnetConstructedDataExtendedTimeEnableBuilder) WithMandatoryFields(extendedTimeEnable BACnetApplicationTagBoolean) BACnetConstructedDataExtendedTimeEnableBuilder {
+	return b.WithExtendedTimeEnable(extendedTimeEnable)
 }
 
-func (m *_BACnetConstructedDataExtendedTimeEnableBuilder) WithExtendedTimeEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataExtendedTimeEnableBuilder {
-	builder := builderSupplier(m.ExtendedTimeEnable.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataExtendedTimeEnableBuilder) WithExtendedTimeEnable(extendedTimeEnable BACnetApplicationTagBoolean) BACnetConstructedDataExtendedTimeEnableBuilder {
+	b.ExtendedTimeEnable = extendedTimeEnable
+	return b
+}
+
+func (b *_BACnetConstructedDataExtendedTimeEnableBuilder) WithExtendedTimeEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataExtendedTimeEnableBuilder {
+	builder := builderSupplier(b.ExtendedTimeEnable.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.ExtendedTimeEnable, err = builder.Build()
+	b.ExtendedTimeEnable, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataExtendedTimeEnableBuilder) Build() (BACnetConstructedDataExtendedTimeEnable, error) {
-	if m.ExtendedTimeEnable == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataExtendedTimeEnableBuilder) Build() (BACnetConstructedDataExtendedTimeEnable, error) {
+	if b.ExtendedTimeEnable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'extendedTimeEnable' not set"))
+		b.err.Append(errors.New("mandatory field 'extendedTimeEnable' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataExtendedTimeEnable.deepCopy(), nil
+	return b._BACnetConstructedDataExtendedTimeEnable.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataExtendedTimeEnableBuilder) MustBuild() BACnetConstructedDataExtendedTimeEnable {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataExtendedTimeEnableBuilder) MustBuild() BACnetConstructedDataExtendedTimeEnable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataExtendedTimeEnableBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataExtendedTimeEnableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataExtendedTimeEnableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataExtendedTimeEnableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataExtendedTimeEnableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataExtendedTimeEnableBuilder().(*_BACnetConstructedDataExtendedTimeEnableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataExtendedTimeEnableBuilder creates a BACnetConstructedDataExtendedTimeEnableBuilder
-func (m *_BACnetConstructedDataExtendedTimeEnable) CreateBACnetConstructedDataExtendedTimeEnableBuilder() BACnetConstructedDataExtendedTimeEnableBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataExtendedTimeEnable) CreateBACnetConstructedDataExtendedTimeEnableBuilder() BACnetConstructedDataExtendedTimeEnableBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataExtendedTimeEnableBuilder()
 	}
-	return &_BACnetConstructedDataExtendedTimeEnableBuilder{_BACnetConstructedDataExtendedTimeEnable: m.deepCopy()}
+	return &_BACnetConstructedDataExtendedTimeEnableBuilder{_BACnetConstructedDataExtendedTimeEnable: b.deepCopy()}
 }
 
 ///////////////////////

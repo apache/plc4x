@@ -95,45 +95,64 @@ func NewConnectedAddressItemBuilder() ConnectedAddressItemBuilder {
 type _ConnectedAddressItemBuilder struct {
 	*_ConnectedAddressItem
 
+	parentBuilder *_TypeIdBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ConnectedAddressItemBuilder) = (*_ConnectedAddressItemBuilder)(nil)
 
-func (m *_ConnectedAddressItemBuilder) WithMandatoryFields(connectionId uint32) ConnectedAddressItemBuilder {
-	return m.WithConnectionId(connectionId)
+func (b *_ConnectedAddressItemBuilder) setParent(contract TypeIdContract) {
+	b.TypeIdContract = contract
 }
 
-func (m *_ConnectedAddressItemBuilder) WithConnectionId(connectionId uint32) ConnectedAddressItemBuilder {
-	m.ConnectionId = connectionId
-	return m
+func (b *_ConnectedAddressItemBuilder) WithMandatoryFields(connectionId uint32) ConnectedAddressItemBuilder {
+	return b.WithConnectionId(connectionId)
 }
 
-func (m *_ConnectedAddressItemBuilder) Build() (ConnectedAddressItem, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ConnectedAddressItemBuilder) WithConnectionId(connectionId uint32) ConnectedAddressItemBuilder {
+	b.ConnectionId = connectionId
+	return b
+}
+
+func (b *_ConnectedAddressItemBuilder) Build() (ConnectedAddressItem, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ConnectedAddressItem.deepCopy(), nil
+	return b._ConnectedAddressItem.deepCopy(), nil
 }
 
-func (m *_ConnectedAddressItemBuilder) MustBuild() ConnectedAddressItem {
-	build, err := m.Build()
+func (b *_ConnectedAddressItemBuilder) MustBuild() ConnectedAddressItem {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ConnectedAddressItemBuilder) DeepCopy() any {
-	return m.CreateConnectedAddressItemBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ConnectedAddressItemBuilder) Done() TypeIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ConnectedAddressItemBuilder) buildForTypeId() (TypeId, error) {
+	return b.Build()
+}
+
+func (b *_ConnectedAddressItemBuilder) DeepCopy() any {
+	_copy := b.CreateConnectedAddressItemBuilder().(*_ConnectedAddressItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateConnectedAddressItemBuilder creates a ConnectedAddressItemBuilder
-func (m *_ConnectedAddressItem) CreateConnectedAddressItemBuilder() ConnectedAddressItemBuilder {
-	if m == nil {
+func (b *_ConnectedAddressItem) CreateConnectedAddressItemBuilder() ConnectedAddressItemBuilder {
+	if b == nil {
 		return NewConnectedAddressItemBuilder()
 	}
-	return &_ConnectedAddressItemBuilder{_ConnectedAddressItem: m.deepCopy()}
+	return &_ConnectedAddressItemBuilder{_ConnectedAddressItem: b.deepCopy()}
 }
 
 ///////////////////////

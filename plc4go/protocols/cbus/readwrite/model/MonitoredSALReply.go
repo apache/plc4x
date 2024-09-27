@@ -82,6 +82,8 @@ type MonitoredSALReplyBuilder interface {
 	WithMandatoryFields(monitoredSAL MonitoredSAL) MonitoredSALReplyBuilder
 	// WithMonitoredSAL adds MonitoredSAL (property field)
 	WithMonitoredSAL(MonitoredSAL) MonitoredSALReplyBuilder
+	// WithMonitoredSALBuilder adds MonitoredSAL (property field) which is build by the builder
+	WithMonitoredSALBuilder(func(MonitoredSALBuilder) MonitoredSALBuilder) MonitoredSALReplyBuilder
 	// Build builds the MonitoredSALReply or returns an error if something is wrong
 	Build() (MonitoredSALReply, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewMonitoredSALReplyBuilder() MonitoredSALReplyBuilder {
 type _MonitoredSALReplyBuilder struct {
 	*_MonitoredSALReply
 
+	parentBuilder *_EncodedReplyBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MonitoredSALReplyBuilder) = (*_MonitoredSALReplyBuilder)(nil)
 
-func (m *_MonitoredSALReplyBuilder) WithMandatoryFields(monitoredSAL MonitoredSAL) MonitoredSALReplyBuilder {
-	return m.WithMonitoredSAL(monitoredSAL)
+func (b *_MonitoredSALReplyBuilder) setParent(contract EncodedReplyContract) {
+	b.EncodedReplyContract = contract
 }
 
-func (m *_MonitoredSALReplyBuilder) WithMonitoredSAL(monitoredSAL MonitoredSAL) MonitoredSALReplyBuilder {
-	m.MonitoredSAL = monitoredSAL
-	return m
+func (b *_MonitoredSALReplyBuilder) WithMandatoryFields(monitoredSAL MonitoredSAL) MonitoredSALReplyBuilder {
+	return b.WithMonitoredSAL(monitoredSAL)
 }
 
-func (m *_MonitoredSALReplyBuilder) Build() (MonitoredSALReply, error) {
-	if m.MonitoredSAL == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_MonitoredSALReplyBuilder) WithMonitoredSAL(monitoredSAL MonitoredSAL) MonitoredSALReplyBuilder {
+	b.MonitoredSAL = monitoredSAL
+	return b
+}
+
+func (b *_MonitoredSALReplyBuilder) WithMonitoredSALBuilder(builderSupplier func(MonitoredSALBuilder) MonitoredSALBuilder) MonitoredSALReplyBuilder {
+	builder := builderSupplier(b.MonitoredSAL.CreateMonitoredSALBuilder())
+	var err error
+	b.MonitoredSAL, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'monitoredSAL' not set"))
+		b.err.Append(errors.Wrap(err, "MonitoredSALBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._MonitoredSALReply.deepCopy(), nil
+	return b
 }
 
-func (m *_MonitoredSALReplyBuilder) MustBuild() MonitoredSALReply {
-	build, err := m.Build()
+func (b *_MonitoredSALReplyBuilder) Build() (MonitoredSALReply, error) {
+	if b.MonitoredSAL == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'monitoredSAL' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MonitoredSALReply.deepCopy(), nil
+}
+
+func (b *_MonitoredSALReplyBuilder) MustBuild() MonitoredSALReply {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MonitoredSALReplyBuilder) DeepCopy() any {
-	return m.CreateMonitoredSALReplyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MonitoredSALReplyBuilder) Done() EncodedReplyBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MonitoredSALReplyBuilder) buildForEncodedReply() (EncodedReply, error) {
+	return b.Build()
+}
+
+func (b *_MonitoredSALReplyBuilder) DeepCopy() any {
+	_copy := b.CreateMonitoredSALReplyBuilder().(*_MonitoredSALReplyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMonitoredSALReplyBuilder creates a MonitoredSALReplyBuilder
-func (m *_MonitoredSALReply) CreateMonitoredSALReplyBuilder() MonitoredSALReplyBuilder {
-	if m == nil {
+func (b *_MonitoredSALReply) CreateMonitoredSALReplyBuilder() MonitoredSALReplyBuilder {
+	if b == nil {
 		return NewMonitoredSALReplyBuilder()
 	}
-	return &_MonitoredSALReplyBuilder{_MonitoredSALReply: m.deepCopy()}
+	return &_MonitoredSALReplyBuilder{_MonitoredSALReply: b.deepCopy()}
 }
 
 ///////////////////////

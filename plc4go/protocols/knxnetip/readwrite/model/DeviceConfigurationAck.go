@@ -100,64 +100,83 @@ func NewDeviceConfigurationAckBuilder() DeviceConfigurationAckBuilder {
 type _DeviceConfigurationAckBuilder struct {
 	*_DeviceConfigurationAck
 
+	parentBuilder *_KnxNetIpMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DeviceConfigurationAckBuilder) = (*_DeviceConfigurationAckBuilder)(nil)
 
-func (m *_DeviceConfigurationAckBuilder) WithMandatoryFields(deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock) DeviceConfigurationAckBuilder {
-	return m.WithDeviceConfigurationAckDataBlock(deviceConfigurationAckDataBlock)
+func (b *_DeviceConfigurationAckBuilder) setParent(contract KnxNetIpMessageContract) {
+	b.KnxNetIpMessageContract = contract
 }
 
-func (m *_DeviceConfigurationAckBuilder) WithDeviceConfigurationAckDataBlock(deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock) DeviceConfigurationAckBuilder {
-	m.DeviceConfigurationAckDataBlock = deviceConfigurationAckDataBlock
-	return m
+func (b *_DeviceConfigurationAckBuilder) WithMandatoryFields(deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock) DeviceConfigurationAckBuilder {
+	return b.WithDeviceConfigurationAckDataBlock(deviceConfigurationAckDataBlock)
 }
 
-func (m *_DeviceConfigurationAckBuilder) WithDeviceConfigurationAckDataBlockBuilder(builderSupplier func(DeviceConfigurationAckDataBlockBuilder) DeviceConfigurationAckDataBlockBuilder) DeviceConfigurationAckBuilder {
-	builder := builderSupplier(m.DeviceConfigurationAckDataBlock.CreateDeviceConfigurationAckDataBlockBuilder())
+func (b *_DeviceConfigurationAckBuilder) WithDeviceConfigurationAckDataBlock(deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock) DeviceConfigurationAckBuilder {
+	b.DeviceConfigurationAckDataBlock = deviceConfigurationAckDataBlock
+	return b
+}
+
+func (b *_DeviceConfigurationAckBuilder) WithDeviceConfigurationAckDataBlockBuilder(builderSupplier func(DeviceConfigurationAckDataBlockBuilder) DeviceConfigurationAckDataBlockBuilder) DeviceConfigurationAckBuilder {
+	builder := builderSupplier(b.DeviceConfigurationAckDataBlock.CreateDeviceConfigurationAckDataBlockBuilder())
 	var err error
-	m.DeviceConfigurationAckDataBlock, err = builder.Build()
+	b.DeviceConfigurationAckDataBlock, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "DeviceConfigurationAckDataBlockBuilder failed"))
+		b.err.Append(errors.Wrap(err, "DeviceConfigurationAckDataBlockBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_DeviceConfigurationAckBuilder) Build() (DeviceConfigurationAck, error) {
-	if m.DeviceConfigurationAckDataBlock == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_DeviceConfigurationAckBuilder) Build() (DeviceConfigurationAck, error) {
+	if b.DeviceConfigurationAckDataBlock == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'deviceConfigurationAckDataBlock' not set"))
+		b.err.Append(errors.New("mandatory field 'deviceConfigurationAckDataBlock' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DeviceConfigurationAck.deepCopy(), nil
+	return b._DeviceConfigurationAck.deepCopy(), nil
 }
 
-func (m *_DeviceConfigurationAckBuilder) MustBuild() DeviceConfigurationAck {
-	build, err := m.Build()
+func (b *_DeviceConfigurationAckBuilder) MustBuild() DeviceConfigurationAck {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DeviceConfigurationAckBuilder) DeepCopy() any {
-	return m.CreateDeviceConfigurationAckBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DeviceConfigurationAckBuilder) Done() KnxNetIpMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DeviceConfigurationAckBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, error) {
+	return b.Build()
+}
+
+func (b *_DeviceConfigurationAckBuilder) DeepCopy() any {
+	_copy := b.CreateDeviceConfigurationAckBuilder().(*_DeviceConfigurationAckBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDeviceConfigurationAckBuilder creates a DeviceConfigurationAckBuilder
-func (m *_DeviceConfigurationAck) CreateDeviceConfigurationAckBuilder() DeviceConfigurationAckBuilder {
-	if m == nil {
+func (b *_DeviceConfigurationAck) CreateDeviceConfigurationAckBuilder() DeviceConfigurationAckBuilder {
+	if b == nil {
 		return NewDeviceConfigurationAckBuilder()
 	}
-	return &_DeviceConfigurationAckBuilder{_DeviceConfigurationAck: m.deepCopy()}
+	return &_DeviceConfigurationAckBuilder{_DeviceConfigurationAck: b.deepCopy()}
 }
 
 ///////////////////////

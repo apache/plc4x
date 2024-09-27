@@ -99,50 +99,69 @@ func NewIdentifyReplyCommandDelaysBuilder() IdentifyReplyCommandDelaysBuilder {
 type _IdentifyReplyCommandDelaysBuilder struct {
 	*_IdentifyReplyCommandDelays
 
+	parentBuilder *_IdentifyReplyCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (IdentifyReplyCommandDelaysBuilder) = (*_IdentifyReplyCommandDelaysBuilder)(nil)
 
-func (m *_IdentifyReplyCommandDelaysBuilder) WithMandatoryFields(terminalLevels []byte, reStrikeDelay byte) IdentifyReplyCommandDelaysBuilder {
-	return m.WithTerminalLevels(terminalLevels...).WithReStrikeDelay(reStrikeDelay)
+func (b *_IdentifyReplyCommandDelaysBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
 }
 
-func (m *_IdentifyReplyCommandDelaysBuilder) WithTerminalLevels(terminalLevels ...byte) IdentifyReplyCommandDelaysBuilder {
-	m.TerminalLevels = terminalLevels
-	return m
+func (b *_IdentifyReplyCommandDelaysBuilder) WithMandatoryFields(terminalLevels []byte, reStrikeDelay byte) IdentifyReplyCommandDelaysBuilder {
+	return b.WithTerminalLevels(terminalLevels...).WithReStrikeDelay(reStrikeDelay)
 }
 
-func (m *_IdentifyReplyCommandDelaysBuilder) WithReStrikeDelay(reStrikeDelay byte) IdentifyReplyCommandDelaysBuilder {
-	m.ReStrikeDelay = reStrikeDelay
-	return m
+func (b *_IdentifyReplyCommandDelaysBuilder) WithTerminalLevels(terminalLevels ...byte) IdentifyReplyCommandDelaysBuilder {
+	b.TerminalLevels = terminalLevels
+	return b
 }
 
-func (m *_IdentifyReplyCommandDelaysBuilder) Build() (IdentifyReplyCommandDelays, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IdentifyReplyCommandDelaysBuilder) WithReStrikeDelay(reStrikeDelay byte) IdentifyReplyCommandDelaysBuilder {
+	b.ReStrikeDelay = reStrikeDelay
+	return b
+}
+
+func (b *_IdentifyReplyCommandDelaysBuilder) Build() (IdentifyReplyCommandDelays, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommandDelays.deepCopy(), nil
+	return b._IdentifyReplyCommandDelays.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandDelaysBuilder) MustBuild() IdentifyReplyCommandDelays {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandDelaysBuilder) MustBuild() IdentifyReplyCommandDelays {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandDelaysBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandDelaysBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandDelaysBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandDelaysBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandDelaysBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandDelaysBuilder().(*_IdentifyReplyCommandDelaysBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandDelaysBuilder creates a IdentifyReplyCommandDelaysBuilder
-func (m *_IdentifyReplyCommandDelays) CreateIdentifyReplyCommandDelaysBuilder() IdentifyReplyCommandDelaysBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommandDelays) CreateIdentifyReplyCommandDelaysBuilder() IdentifyReplyCommandDelaysBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandDelaysBuilder()
 	}
-	return &_IdentifyReplyCommandDelaysBuilder{_IdentifyReplyCommandDelays: m.deepCopy()}
+	return &_IdentifyReplyCommandDelaysBuilder{_IdentifyReplyCommandDelays: b.deepCopy()}
 }
 
 ///////////////////////

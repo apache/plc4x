@@ -99,50 +99,69 @@ func NewModbusPDUReadDiscreteInputsRequestBuilder() ModbusPDUReadDiscreteInputsR
 type _ModbusPDUReadDiscreteInputsRequestBuilder struct {
 	*_ModbusPDUReadDiscreteInputsRequest
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUReadDiscreteInputsRequestBuilder) = (*_ModbusPDUReadDiscreteInputsRequestBuilder)(nil)
 
-func (m *_ModbusPDUReadDiscreteInputsRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUReadDiscreteInputsRequestBuilder {
-	return m.WithStartingAddress(startingAddress).WithQuantity(quantity)
+func (b *_ModbusPDUReadDiscreteInputsRequestBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUReadDiscreteInputsRequestBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUReadDiscreteInputsRequestBuilder {
-	m.StartingAddress = startingAddress
-	return m
+func (b *_ModbusPDUReadDiscreteInputsRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUReadDiscreteInputsRequestBuilder {
+	return b.WithStartingAddress(startingAddress).WithQuantity(quantity)
 }
 
-func (m *_ModbusPDUReadDiscreteInputsRequestBuilder) WithQuantity(quantity uint16) ModbusPDUReadDiscreteInputsRequestBuilder {
-	m.Quantity = quantity
-	return m
+func (b *_ModbusPDUReadDiscreteInputsRequestBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUReadDiscreteInputsRequestBuilder {
+	b.StartingAddress = startingAddress
+	return b
 }
 
-func (m *_ModbusPDUReadDiscreteInputsRequestBuilder) Build() (ModbusPDUReadDiscreteInputsRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUReadDiscreteInputsRequestBuilder) WithQuantity(quantity uint16) ModbusPDUReadDiscreteInputsRequestBuilder {
+	b.Quantity = quantity
+	return b
+}
+
+func (b *_ModbusPDUReadDiscreteInputsRequestBuilder) Build() (ModbusPDUReadDiscreteInputsRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUReadDiscreteInputsRequest.deepCopy(), nil
+	return b._ModbusPDUReadDiscreteInputsRequest.deepCopy(), nil
 }
 
-func (m *_ModbusPDUReadDiscreteInputsRequestBuilder) MustBuild() ModbusPDUReadDiscreteInputsRequest {
-	build, err := m.Build()
+func (b *_ModbusPDUReadDiscreteInputsRequestBuilder) MustBuild() ModbusPDUReadDiscreteInputsRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUReadDiscreteInputsRequestBuilder) DeepCopy() any {
-	return m.CreateModbusPDUReadDiscreteInputsRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUReadDiscreteInputsRequestBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUReadDiscreteInputsRequestBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUReadDiscreteInputsRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUReadDiscreteInputsRequestBuilder().(*_ModbusPDUReadDiscreteInputsRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUReadDiscreteInputsRequestBuilder creates a ModbusPDUReadDiscreteInputsRequestBuilder
-func (m *_ModbusPDUReadDiscreteInputsRequest) CreateModbusPDUReadDiscreteInputsRequestBuilder() ModbusPDUReadDiscreteInputsRequestBuilder {
-	if m == nil {
+func (b *_ModbusPDUReadDiscreteInputsRequest) CreateModbusPDUReadDiscreteInputsRequestBuilder() ModbusPDUReadDiscreteInputsRequestBuilder {
+	if b == nil {
 		return NewModbusPDUReadDiscreteInputsRequestBuilder()
 	}
-	return &_ModbusPDUReadDiscreteInputsRequestBuilder{_ModbusPDUReadDiscreteInputsRequest: m.deepCopy()}
+	return &_ModbusPDUReadDiscreteInputsRequestBuilder{_ModbusPDUReadDiscreteInputsRequest: b.deepCopy()}
 }
 
 ///////////////////////

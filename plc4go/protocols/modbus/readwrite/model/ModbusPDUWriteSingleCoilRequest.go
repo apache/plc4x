@@ -99,50 +99,69 @@ func NewModbusPDUWriteSingleCoilRequestBuilder() ModbusPDUWriteSingleCoilRequest
 type _ModbusPDUWriteSingleCoilRequestBuilder struct {
 	*_ModbusPDUWriteSingleCoilRequest
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUWriteSingleCoilRequestBuilder) = (*_ModbusPDUWriteSingleCoilRequestBuilder)(nil)
 
-func (m *_ModbusPDUWriteSingleCoilRequestBuilder) WithMandatoryFields(address uint16, value uint16) ModbusPDUWriteSingleCoilRequestBuilder {
-	return m.WithAddress(address).WithValue(value)
+func (b *_ModbusPDUWriteSingleCoilRequestBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUWriteSingleCoilRequestBuilder) WithAddress(address uint16) ModbusPDUWriteSingleCoilRequestBuilder {
-	m.Address = address
-	return m
+func (b *_ModbusPDUWriteSingleCoilRequestBuilder) WithMandatoryFields(address uint16, value uint16) ModbusPDUWriteSingleCoilRequestBuilder {
+	return b.WithAddress(address).WithValue(value)
 }
 
-func (m *_ModbusPDUWriteSingleCoilRequestBuilder) WithValue(value uint16) ModbusPDUWriteSingleCoilRequestBuilder {
-	m.Value = value
-	return m
+func (b *_ModbusPDUWriteSingleCoilRequestBuilder) WithAddress(address uint16) ModbusPDUWriteSingleCoilRequestBuilder {
+	b.Address = address
+	return b
 }
 
-func (m *_ModbusPDUWriteSingleCoilRequestBuilder) Build() (ModbusPDUWriteSingleCoilRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUWriteSingleCoilRequestBuilder) WithValue(value uint16) ModbusPDUWriteSingleCoilRequestBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ModbusPDUWriteSingleCoilRequestBuilder) Build() (ModbusPDUWriteSingleCoilRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUWriteSingleCoilRequest.deepCopy(), nil
+	return b._ModbusPDUWriteSingleCoilRequest.deepCopy(), nil
 }
 
-func (m *_ModbusPDUWriteSingleCoilRequestBuilder) MustBuild() ModbusPDUWriteSingleCoilRequest {
-	build, err := m.Build()
+func (b *_ModbusPDUWriteSingleCoilRequestBuilder) MustBuild() ModbusPDUWriteSingleCoilRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUWriteSingleCoilRequestBuilder) DeepCopy() any {
-	return m.CreateModbusPDUWriteSingleCoilRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUWriteSingleCoilRequestBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUWriteSingleCoilRequestBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUWriteSingleCoilRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUWriteSingleCoilRequestBuilder().(*_ModbusPDUWriteSingleCoilRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUWriteSingleCoilRequestBuilder creates a ModbusPDUWriteSingleCoilRequestBuilder
-func (m *_ModbusPDUWriteSingleCoilRequest) CreateModbusPDUWriteSingleCoilRequestBuilder() ModbusPDUWriteSingleCoilRequestBuilder {
-	if m == nil {
+func (b *_ModbusPDUWriteSingleCoilRequest) CreateModbusPDUWriteSingleCoilRequestBuilder() ModbusPDUWriteSingleCoilRequestBuilder {
+	if b == nil {
 		return NewModbusPDUWriteSingleCoilRequestBuilder()
 	}
-	return &_ModbusPDUWriteSingleCoilRequestBuilder{_ModbusPDUWriteSingleCoilRequest: m.deepCopy()}
+	return &_ModbusPDUWriteSingleCoilRequestBuilder{_ModbusPDUWriteSingleCoilRequest: b.deepCopy()}
 }
 
 ///////////////////////

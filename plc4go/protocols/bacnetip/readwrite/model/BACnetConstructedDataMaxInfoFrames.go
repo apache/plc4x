@@ -100,64 +100,83 @@ func NewBACnetConstructedDataMaxInfoFramesBuilder() BACnetConstructedDataMaxInfo
 type _BACnetConstructedDataMaxInfoFramesBuilder struct {
 	*_BACnetConstructedDataMaxInfoFrames
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMaxInfoFramesBuilder) = (*_BACnetConstructedDataMaxInfoFramesBuilder)(nil)
 
-func (m *_BACnetConstructedDataMaxInfoFramesBuilder) WithMandatoryFields(maxInfoFrames BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxInfoFramesBuilder {
-	return m.WithMaxInfoFrames(maxInfoFrames)
+func (b *_BACnetConstructedDataMaxInfoFramesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMaxInfoFramesBuilder) WithMaxInfoFrames(maxInfoFrames BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxInfoFramesBuilder {
-	m.MaxInfoFrames = maxInfoFrames
-	return m
+func (b *_BACnetConstructedDataMaxInfoFramesBuilder) WithMandatoryFields(maxInfoFrames BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxInfoFramesBuilder {
+	return b.WithMaxInfoFrames(maxInfoFrames)
 }
 
-func (m *_BACnetConstructedDataMaxInfoFramesBuilder) WithMaxInfoFramesBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxInfoFramesBuilder {
-	builder := builderSupplier(m.MaxInfoFrames.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataMaxInfoFramesBuilder) WithMaxInfoFrames(maxInfoFrames BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxInfoFramesBuilder {
+	b.MaxInfoFrames = maxInfoFrames
+	return b
+}
+
+func (b *_BACnetConstructedDataMaxInfoFramesBuilder) WithMaxInfoFramesBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxInfoFramesBuilder {
+	builder := builderSupplier(b.MaxInfoFrames.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.MaxInfoFrames, err = builder.Build()
+	b.MaxInfoFrames, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataMaxInfoFramesBuilder) Build() (BACnetConstructedDataMaxInfoFrames, error) {
-	if m.MaxInfoFrames == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataMaxInfoFramesBuilder) Build() (BACnetConstructedDataMaxInfoFrames, error) {
+	if b.MaxInfoFrames == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'maxInfoFrames' not set"))
+		b.err.Append(errors.New("mandatory field 'maxInfoFrames' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataMaxInfoFrames.deepCopy(), nil
+	return b._BACnetConstructedDataMaxInfoFrames.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataMaxInfoFramesBuilder) MustBuild() BACnetConstructedDataMaxInfoFrames {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMaxInfoFramesBuilder) MustBuild() BACnetConstructedDataMaxInfoFrames {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMaxInfoFramesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMaxInfoFramesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMaxInfoFramesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMaxInfoFramesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMaxInfoFramesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMaxInfoFramesBuilder().(*_BACnetConstructedDataMaxInfoFramesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMaxInfoFramesBuilder creates a BACnetConstructedDataMaxInfoFramesBuilder
-func (m *_BACnetConstructedDataMaxInfoFrames) CreateBACnetConstructedDataMaxInfoFramesBuilder() BACnetConstructedDataMaxInfoFramesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMaxInfoFrames) CreateBACnetConstructedDataMaxInfoFramesBuilder() BACnetConstructedDataMaxInfoFramesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMaxInfoFramesBuilder()
 	}
-	return &_BACnetConstructedDataMaxInfoFramesBuilder{_BACnetConstructedDataMaxInfoFrames: m.deepCopy()}
+	return &_BACnetConstructedDataMaxInfoFramesBuilder{_BACnetConstructedDataMaxInfoFrames: b.deepCopy()}
 }
 
 ///////////////////////

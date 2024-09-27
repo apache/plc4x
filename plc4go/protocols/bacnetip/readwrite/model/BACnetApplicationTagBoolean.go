@@ -100,64 +100,83 @@ func NewBACnetApplicationTagBooleanBuilder() BACnetApplicationTagBooleanBuilder 
 type _BACnetApplicationTagBooleanBuilder struct {
 	*_BACnetApplicationTagBoolean
 
+	parentBuilder *_BACnetApplicationTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetApplicationTagBooleanBuilder) = (*_BACnetApplicationTagBooleanBuilder)(nil)
 
-func (m *_BACnetApplicationTagBooleanBuilder) WithMandatoryFields(payload BACnetTagPayloadBoolean) BACnetApplicationTagBooleanBuilder {
-	return m.WithPayload(payload)
+func (b *_BACnetApplicationTagBooleanBuilder) setParent(contract BACnetApplicationTagContract) {
+	b.BACnetApplicationTagContract = contract
 }
 
-func (m *_BACnetApplicationTagBooleanBuilder) WithPayload(payload BACnetTagPayloadBoolean) BACnetApplicationTagBooleanBuilder {
-	m.Payload = payload
-	return m
+func (b *_BACnetApplicationTagBooleanBuilder) WithMandatoryFields(payload BACnetTagPayloadBoolean) BACnetApplicationTagBooleanBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_BACnetApplicationTagBooleanBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadBooleanBuilder) BACnetTagPayloadBooleanBuilder) BACnetApplicationTagBooleanBuilder {
-	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadBooleanBuilder())
+func (b *_BACnetApplicationTagBooleanBuilder) WithPayload(payload BACnetTagPayloadBoolean) BACnetApplicationTagBooleanBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetApplicationTagBooleanBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadBooleanBuilder) BACnetTagPayloadBooleanBuilder) BACnetApplicationTagBooleanBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadBooleanBuilder())
 	var err error
-	m.Payload, err = builder.Build()
+	b.Payload, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagPayloadBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetApplicationTagBooleanBuilder) Build() (BACnetApplicationTagBoolean, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetApplicationTagBooleanBuilder) Build() (BACnetApplicationTagBoolean, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetApplicationTagBoolean.deepCopy(), nil
+	return b._BACnetApplicationTagBoolean.deepCopy(), nil
 }
 
-func (m *_BACnetApplicationTagBooleanBuilder) MustBuild() BACnetApplicationTagBoolean {
-	build, err := m.Build()
+func (b *_BACnetApplicationTagBooleanBuilder) MustBuild() BACnetApplicationTagBoolean {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetApplicationTagBooleanBuilder) DeepCopy() any {
-	return m.CreateBACnetApplicationTagBooleanBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetApplicationTagBooleanBuilder) Done() BACnetApplicationTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetApplicationTagBooleanBuilder) buildForBACnetApplicationTag() (BACnetApplicationTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetApplicationTagBooleanBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetApplicationTagBooleanBuilder().(*_BACnetApplicationTagBooleanBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetApplicationTagBooleanBuilder creates a BACnetApplicationTagBooleanBuilder
-func (m *_BACnetApplicationTagBoolean) CreateBACnetApplicationTagBooleanBuilder() BACnetApplicationTagBooleanBuilder {
-	if m == nil {
+func (b *_BACnetApplicationTagBoolean) CreateBACnetApplicationTagBooleanBuilder() BACnetApplicationTagBooleanBuilder {
+	if b == nil {
 		return NewBACnetApplicationTagBooleanBuilder()
 	}
-	return &_BACnetApplicationTagBooleanBuilder{_BACnetApplicationTagBoolean: m.deepCopy()}
+	return &_BACnetApplicationTagBooleanBuilder{_BACnetApplicationTagBoolean: b.deepCopy()}
 }
 
 ///////////////////////

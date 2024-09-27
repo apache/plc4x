@@ -125,75 +125,79 @@ type _IdentifyReplyCommandUnitSummaryBuilder struct {
 
 var _ (IdentifyReplyCommandUnitSummaryBuilder) = (*_IdentifyReplyCommandUnitSummaryBuilder)(nil)
 
-func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithMandatoryFields(assertingNetworkBurden bool, restrikeTimingActive bool, remoteOFFInputAsserted bool, remoteONInputAsserted bool, localToggleEnabled bool, localToggleActiveState bool, clockGenerationEnabled bool, unitGeneratingClock bool) IdentifyReplyCommandUnitSummaryBuilder {
-	return m.WithAssertingNetworkBurden(assertingNetworkBurden).WithRestrikeTimingActive(restrikeTimingActive).WithRemoteOFFInputAsserted(remoteOFFInputAsserted).WithRemoteONInputAsserted(remoteONInputAsserted).WithLocalToggleEnabled(localToggleEnabled).WithLocalToggleActiveState(localToggleActiveState).WithClockGenerationEnabled(clockGenerationEnabled).WithUnitGeneratingClock(unitGeneratingClock)
+func (b *_IdentifyReplyCommandUnitSummaryBuilder) WithMandatoryFields(assertingNetworkBurden bool, restrikeTimingActive bool, remoteOFFInputAsserted bool, remoteONInputAsserted bool, localToggleEnabled bool, localToggleActiveState bool, clockGenerationEnabled bool, unitGeneratingClock bool) IdentifyReplyCommandUnitSummaryBuilder {
+	return b.WithAssertingNetworkBurden(assertingNetworkBurden).WithRestrikeTimingActive(restrikeTimingActive).WithRemoteOFFInputAsserted(remoteOFFInputAsserted).WithRemoteONInputAsserted(remoteONInputAsserted).WithLocalToggleEnabled(localToggleEnabled).WithLocalToggleActiveState(localToggleActiveState).WithClockGenerationEnabled(clockGenerationEnabled).WithUnitGeneratingClock(unitGeneratingClock)
 }
 
-func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithAssertingNetworkBurden(assertingNetworkBurden bool) IdentifyReplyCommandUnitSummaryBuilder {
-	m.AssertingNetworkBurden = assertingNetworkBurden
-	return m
+func (b *_IdentifyReplyCommandUnitSummaryBuilder) WithAssertingNetworkBurden(assertingNetworkBurden bool) IdentifyReplyCommandUnitSummaryBuilder {
+	b.AssertingNetworkBurden = assertingNetworkBurden
+	return b
 }
 
-func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithRestrikeTimingActive(restrikeTimingActive bool) IdentifyReplyCommandUnitSummaryBuilder {
-	m.RestrikeTimingActive = restrikeTimingActive
-	return m
+func (b *_IdentifyReplyCommandUnitSummaryBuilder) WithRestrikeTimingActive(restrikeTimingActive bool) IdentifyReplyCommandUnitSummaryBuilder {
+	b.RestrikeTimingActive = restrikeTimingActive
+	return b
 }
 
-func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithRemoteOFFInputAsserted(remoteOFFInputAsserted bool) IdentifyReplyCommandUnitSummaryBuilder {
-	m.RemoteOFFInputAsserted = remoteOFFInputAsserted
-	return m
+func (b *_IdentifyReplyCommandUnitSummaryBuilder) WithRemoteOFFInputAsserted(remoteOFFInputAsserted bool) IdentifyReplyCommandUnitSummaryBuilder {
+	b.RemoteOFFInputAsserted = remoteOFFInputAsserted
+	return b
 }
 
-func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithRemoteONInputAsserted(remoteONInputAsserted bool) IdentifyReplyCommandUnitSummaryBuilder {
-	m.RemoteONInputAsserted = remoteONInputAsserted
-	return m
+func (b *_IdentifyReplyCommandUnitSummaryBuilder) WithRemoteONInputAsserted(remoteONInputAsserted bool) IdentifyReplyCommandUnitSummaryBuilder {
+	b.RemoteONInputAsserted = remoteONInputAsserted
+	return b
 }
 
-func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithLocalToggleEnabled(localToggleEnabled bool) IdentifyReplyCommandUnitSummaryBuilder {
-	m.LocalToggleEnabled = localToggleEnabled
-	return m
+func (b *_IdentifyReplyCommandUnitSummaryBuilder) WithLocalToggleEnabled(localToggleEnabled bool) IdentifyReplyCommandUnitSummaryBuilder {
+	b.LocalToggleEnabled = localToggleEnabled
+	return b
 }
 
-func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithLocalToggleActiveState(localToggleActiveState bool) IdentifyReplyCommandUnitSummaryBuilder {
-	m.LocalToggleActiveState = localToggleActiveState
-	return m
+func (b *_IdentifyReplyCommandUnitSummaryBuilder) WithLocalToggleActiveState(localToggleActiveState bool) IdentifyReplyCommandUnitSummaryBuilder {
+	b.LocalToggleActiveState = localToggleActiveState
+	return b
 }
 
-func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithClockGenerationEnabled(clockGenerationEnabled bool) IdentifyReplyCommandUnitSummaryBuilder {
-	m.ClockGenerationEnabled = clockGenerationEnabled
-	return m
+func (b *_IdentifyReplyCommandUnitSummaryBuilder) WithClockGenerationEnabled(clockGenerationEnabled bool) IdentifyReplyCommandUnitSummaryBuilder {
+	b.ClockGenerationEnabled = clockGenerationEnabled
+	return b
 }
 
-func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithUnitGeneratingClock(unitGeneratingClock bool) IdentifyReplyCommandUnitSummaryBuilder {
-	m.UnitGeneratingClock = unitGeneratingClock
-	return m
+func (b *_IdentifyReplyCommandUnitSummaryBuilder) WithUnitGeneratingClock(unitGeneratingClock bool) IdentifyReplyCommandUnitSummaryBuilder {
+	b.UnitGeneratingClock = unitGeneratingClock
+	return b
 }
 
-func (m *_IdentifyReplyCommandUnitSummaryBuilder) Build() (IdentifyReplyCommandUnitSummary, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IdentifyReplyCommandUnitSummaryBuilder) Build() (IdentifyReplyCommandUnitSummary, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommandUnitSummary.deepCopy(), nil
+	return b._IdentifyReplyCommandUnitSummary.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandUnitSummaryBuilder) MustBuild() IdentifyReplyCommandUnitSummary {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandUnitSummaryBuilder) MustBuild() IdentifyReplyCommandUnitSummary {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandUnitSummaryBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandUnitSummaryBuilder()
+func (b *_IdentifyReplyCommandUnitSummaryBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandUnitSummaryBuilder().(*_IdentifyReplyCommandUnitSummaryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandUnitSummaryBuilder creates a IdentifyReplyCommandUnitSummaryBuilder
-func (m *_IdentifyReplyCommandUnitSummary) CreateIdentifyReplyCommandUnitSummaryBuilder() IdentifyReplyCommandUnitSummaryBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommandUnitSummary) CreateIdentifyReplyCommandUnitSummaryBuilder() IdentifyReplyCommandUnitSummaryBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandUnitSummaryBuilder()
 	}
-	return &_IdentifyReplyCommandUnitSummaryBuilder{_IdentifyReplyCommandUnitSummary: m.deepCopy()}
+	return &_IdentifyReplyCommandUnitSummaryBuilder{_IdentifyReplyCommandUnitSummary: b.deepCopy()}
 }
 
 ///////////////////////

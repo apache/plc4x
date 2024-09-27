@@ -95,45 +95,49 @@ type _FourByteNodeIdBuilder struct {
 
 var _ (FourByteNodeIdBuilder) = (*_FourByteNodeIdBuilder)(nil)
 
-func (m *_FourByteNodeIdBuilder) WithMandatoryFields(namespaceIndex uint8, identifier uint16) FourByteNodeIdBuilder {
-	return m.WithNamespaceIndex(namespaceIndex).WithIdentifier(identifier)
+func (b *_FourByteNodeIdBuilder) WithMandatoryFields(namespaceIndex uint8, identifier uint16) FourByteNodeIdBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithIdentifier(identifier)
 }
 
-func (m *_FourByteNodeIdBuilder) WithNamespaceIndex(namespaceIndex uint8) FourByteNodeIdBuilder {
-	m.NamespaceIndex = namespaceIndex
-	return m
+func (b *_FourByteNodeIdBuilder) WithNamespaceIndex(namespaceIndex uint8) FourByteNodeIdBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
 }
 
-func (m *_FourByteNodeIdBuilder) WithIdentifier(identifier uint16) FourByteNodeIdBuilder {
-	m.Identifier = identifier
-	return m
+func (b *_FourByteNodeIdBuilder) WithIdentifier(identifier uint16) FourByteNodeIdBuilder {
+	b.Identifier = identifier
+	return b
 }
 
-func (m *_FourByteNodeIdBuilder) Build() (FourByteNodeId, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_FourByteNodeIdBuilder) Build() (FourByteNodeId, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._FourByteNodeId.deepCopy(), nil
+	return b._FourByteNodeId.deepCopy(), nil
 }
 
-func (m *_FourByteNodeIdBuilder) MustBuild() FourByteNodeId {
-	build, err := m.Build()
+func (b *_FourByteNodeIdBuilder) MustBuild() FourByteNodeId {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FourByteNodeIdBuilder) DeepCopy() any {
-	return m.CreateFourByteNodeIdBuilder()
+func (b *_FourByteNodeIdBuilder) DeepCopy() any {
+	_copy := b.CreateFourByteNodeIdBuilder().(*_FourByteNodeIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFourByteNodeIdBuilder creates a FourByteNodeIdBuilder
-func (m *_FourByteNodeId) CreateFourByteNodeIdBuilder() FourByteNodeIdBuilder {
-	if m == nil {
+func (b *_FourByteNodeId) CreateFourByteNodeIdBuilder() FourByteNodeIdBuilder {
+	if b == nil {
 		return NewFourByteNodeIdBuilder()
 	}
-	return &_FourByteNodeIdBuilder{_FourByteNodeId: m.deepCopy()}
+	return &_FourByteNodeIdBuilder{_FourByteNodeId: b.deepCopy()}
 }
 
 ///////////////////////

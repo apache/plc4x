@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDaysRemainingBuilder() BACnetConstructedDataDaysRem
 type _BACnetConstructedDataDaysRemainingBuilder struct {
 	*_BACnetConstructedDataDaysRemaining
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDaysRemainingBuilder) = (*_BACnetConstructedDataDaysRemainingBuilder)(nil)
 
-func (m *_BACnetConstructedDataDaysRemainingBuilder) WithMandatoryFields(daysRemaining BACnetApplicationTagSignedInteger) BACnetConstructedDataDaysRemainingBuilder {
-	return m.WithDaysRemaining(daysRemaining)
+func (b *_BACnetConstructedDataDaysRemainingBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDaysRemainingBuilder) WithDaysRemaining(daysRemaining BACnetApplicationTagSignedInteger) BACnetConstructedDataDaysRemainingBuilder {
-	m.DaysRemaining = daysRemaining
-	return m
+func (b *_BACnetConstructedDataDaysRemainingBuilder) WithMandatoryFields(daysRemaining BACnetApplicationTagSignedInteger) BACnetConstructedDataDaysRemainingBuilder {
+	return b.WithDaysRemaining(daysRemaining)
 }
 
-func (m *_BACnetConstructedDataDaysRemainingBuilder) WithDaysRemainingBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataDaysRemainingBuilder {
-	builder := builderSupplier(m.DaysRemaining.CreateBACnetApplicationTagSignedIntegerBuilder())
+func (b *_BACnetConstructedDataDaysRemainingBuilder) WithDaysRemaining(daysRemaining BACnetApplicationTagSignedInteger) BACnetConstructedDataDaysRemainingBuilder {
+	b.DaysRemaining = daysRemaining
+	return b
+}
+
+func (b *_BACnetConstructedDataDaysRemainingBuilder) WithDaysRemainingBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataDaysRemainingBuilder {
+	builder := builderSupplier(b.DaysRemaining.CreateBACnetApplicationTagSignedIntegerBuilder())
 	var err error
-	m.DaysRemaining, err = builder.Build()
+	b.DaysRemaining, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDaysRemainingBuilder) Build() (BACnetConstructedDataDaysRemaining, error) {
-	if m.DaysRemaining == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDaysRemainingBuilder) Build() (BACnetConstructedDataDaysRemaining, error) {
+	if b.DaysRemaining == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'daysRemaining' not set"))
+		b.err.Append(errors.New("mandatory field 'daysRemaining' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDaysRemaining.deepCopy(), nil
+	return b._BACnetConstructedDataDaysRemaining.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDaysRemainingBuilder) MustBuild() BACnetConstructedDataDaysRemaining {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDaysRemainingBuilder) MustBuild() BACnetConstructedDataDaysRemaining {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDaysRemainingBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDaysRemainingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDaysRemainingBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDaysRemainingBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDaysRemainingBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDaysRemainingBuilder().(*_BACnetConstructedDataDaysRemainingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDaysRemainingBuilder creates a BACnetConstructedDataDaysRemainingBuilder
-func (m *_BACnetConstructedDataDaysRemaining) CreateBACnetConstructedDataDaysRemainingBuilder() BACnetConstructedDataDaysRemainingBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDaysRemaining) CreateBACnetConstructedDataDaysRemainingBuilder() BACnetConstructedDataDaysRemainingBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDaysRemainingBuilder()
 	}
-	return &_BACnetConstructedDataDaysRemainingBuilder{_BACnetConstructedDataDaysRemaining: m.deepCopy()}
+	return &_BACnetConstructedDataDaysRemainingBuilder{_BACnetConstructedDataDaysRemaining: b.deepCopy()}
 }
 
 ///////////////////////

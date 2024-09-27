@@ -145,146 +145,165 @@ func NewAddReferencesItemBuilder() AddReferencesItemBuilder {
 type _AddReferencesItemBuilder struct {
 	*_AddReferencesItem
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AddReferencesItemBuilder) = (*_AddReferencesItemBuilder)(nil)
 
-func (m *_AddReferencesItemBuilder) WithMandatoryFields(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetServerUri PascalString, targetNodeId ExpandedNodeId, targetNodeClass NodeClass) AddReferencesItemBuilder {
-	return m.WithSourceNodeId(sourceNodeId).WithReferenceTypeId(referenceTypeId).WithIsForward(isForward).WithTargetServerUri(targetServerUri).WithTargetNodeId(targetNodeId).WithTargetNodeClass(targetNodeClass)
+func (b *_AddReferencesItemBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_AddReferencesItemBuilder) WithSourceNodeId(sourceNodeId NodeId) AddReferencesItemBuilder {
-	m.SourceNodeId = sourceNodeId
-	return m
+func (b *_AddReferencesItemBuilder) WithMandatoryFields(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetServerUri PascalString, targetNodeId ExpandedNodeId, targetNodeClass NodeClass) AddReferencesItemBuilder {
+	return b.WithSourceNodeId(sourceNodeId).WithReferenceTypeId(referenceTypeId).WithIsForward(isForward).WithTargetServerUri(targetServerUri).WithTargetNodeId(targetNodeId).WithTargetNodeClass(targetNodeClass)
 }
 
-func (m *_AddReferencesItemBuilder) WithSourceNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) AddReferencesItemBuilder {
-	builder := builderSupplier(m.SourceNodeId.CreateNodeIdBuilder())
+func (b *_AddReferencesItemBuilder) WithSourceNodeId(sourceNodeId NodeId) AddReferencesItemBuilder {
+	b.SourceNodeId = sourceNodeId
+	return b
+}
+
+func (b *_AddReferencesItemBuilder) WithSourceNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) AddReferencesItemBuilder {
+	builder := builderSupplier(b.SourceNodeId.CreateNodeIdBuilder())
 	var err error
-	m.SourceNodeId, err = builder.Build()
+	b.SourceNodeId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AddReferencesItemBuilder) WithReferenceTypeId(referenceTypeId NodeId) AddReferencesItemBuilder {
-	m.ReferenceTypeId = referenceTypeId
-	return m
+func (b *_AddReferencesItemBuilder) WithReferenceTypeId(referenceTypeId NodeId) AddReferencesItemBuilder {
+	b.ReferenceTypeId = referenceTypeId
+	return b
 }
 
-func (m *_AddReferencesItemBuilder) WithReferenceTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) AddReferencesItemBuilder {
-	builder := builderSupplier(m.ReferenceTypeId.CreateNodeIdBuilder())
+func (b *_AddReferencesItemBuilder) WithReferenceTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) AddReferencesItemBuilder {
+	builder := builderSupplier(b.ReferenceTypeId.CreateNodeIdBuilder())
 	var err error
-	m.ReferenceTypeId, err = builder.Build()
+	b.ReferenceTypeId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AddReferencesItemBuilder) WithIsForward(isForward bool) AddReferencesItemBuilder {
-	m.IsForward = isForward
-	return m
+func (b *_AddReferencesItemBuilder) WithIsForward(isForward bool) AddReferencesItemBuilder {
+	b.IsForward = isForward
+	return b
 }
 
-func (m *_AddReferencesItemBuilder) WithTargetServerUri(targetServerUri PascalString) AddReferencesItemBuilder {
-	m.TargetServerUri = targetServerUri
-	return m
+func (b *_AddReferencesItemBuilder) WithTargetServerUri(targetServerUri PascalString) AddReferencesItemBuilder {
+	b.TargetServerUri = targetServerUri
+	return b
 }
 
-func (m *_AddReferencesItemBuilder) WithTargetServerUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AddReferencesItemBuilder {
-	builder := builderSupplier(m.TargetServerUri.CreatePascalStringBuilder())
+func (b *_AddReferencesItemBuilder) WithTargetServerUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AddReferencesItemBuilder {
+	builder := builderSupplier(b.TargetServerUri.CreatePascalStringBuilder())
 	var err error
-	m.TargetServerUri, err = builder.Build()
+	b.TargetServerUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AddReferencesItemBuilder) WithTargetNodeId(targetNodeId ExpandedNodeId) AddReferencesItemBuilder {
-	m.TargetNodeId = targetNodeId
-	return m
+func (b *_AddReferencesItemBuilder) WithTargetNodeId(targetNodeId ExpandedNodeId) AddReferencesItemBuilder {
+	b.TargetNodeId = targetNodeId
+	return b
 }
 
-func (m *_AddReferencesItemBuilder) WithTargetNodeIdBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) AddReferencesItemBuilder {
-	builder := builderSupplier(m.TargetNodeId.CreateExpandedNodeIdBuilder())
+func (b *_AddReferencesItemBuilder) WithTargetNodeIdBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) AddReferencesItemBuilder {
+	builder := builderSupplier(b.TargetNodeId.CreateExpandedNodeIdBuilder())
 	var err error
-	m.TargetNodeId, err = builder.Build()
+	b.TargetNodeId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AddReferencesItemBuilder) WithTargetNodeClass(targetNodeClass NodeClass) AddReferencesItemBuilder {
-	m.TargetNodeClass = targetNodeClass
-	return m
+func (b *_AddReferencesItemBuilder) WithTargetNodeClass(targetNodeClass NodeClass) AddReferencesItemBuilder {
+	b.TargetNodeClass = targetNodeClass
+	return b
 }
 
-func (m *_AddReferencesItemBuilder) Build() (AddReferencesItem, error) {
-	if m.SourceNodeId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AddReferencesItemBuilder) Build() (AddReferencesItem, error) {
+	if b.SourceNodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'sourceNodeId' not set"))
+		b.err.Append(errors.New("mandatory field 'sourceNodeId' not set"))
 	}
-	if m.ReferenceTypeId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ReferenceTypeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
+		b.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
 	}
-	if m.TargetServerUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TargetServerUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'targetServerUri' not set"))
+		b.err.Append(errors.New("mandatory field 'targetServerUri' not set"))
 	}
-	if m.TargetNodeId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TargetNodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'targetNodeId' not set"))
+		b.err.Append(errors.New("mandatory field 'targetNodeId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AddReferencesItem.deepCopy(), nil
+	return b._AddReferencesItem.deepCopy(), nil
 }
 
-func (m *_AddReferencesItemBuilder) MustBuild() AddReferencesItem {
-	build, err := m.Build()
+func (b *_AddReferencesItemBuilder) MustBuild() AddReferencesItem {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AddReferencesItemBuilder) DeepCopy() any {
-	return m.CreateAddReferencesItemBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AddReferencesItemBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AddReferencesItemBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AddReferencesItemBuilder) DeepCopy() any {
+	_copy := b.CreateAddReferencesItemBuilder().(*_AddReferencesItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAddReferencesItemBuilder creates a AddReferencesItemBuilder
-func (m *_AddReferencesItem) CreateAddReferencesItemBuilder() AddReferencesItemBuilder {
-	if m == nil {
+func (b *_AddReferencesItem) CreateAddReferencesItemBuilder() AddReferencesItemBuilder {
+	if b == nil {
 		return NewAddReferencesItemBuilder()
 	}
-	return &_AddReferencesItemBuilder{_AddReferencesItem: m.deepCopy()}
+	return &_AddReferencesItemBuilder{_AddReferencesItem: b.deepCopy()}
 }
 
 ///////////////////////

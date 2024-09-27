@@ -104,64 +104,68 @@ type _BACnetBackupStateTaggedBuilder struct {
 
 var _ (BACnetBackupStateTaggedBuilder) = (*_BACnetBackupStateTaggedBuilder)(nil)
 
-func (m *_BACnetBackupStateTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetBackupState) BACnetBackupStateTaggedBuilder {
-	return m.WithHeader(header).WithValue(value)
+func (b *_BACnetBackupStateTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetBackupState) BACnetBackupStateTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
 }
 
-func (m *_BACnetBackupStateTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetBackupStateTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetBackupStateTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetBackupStateTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetBackupStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetBackupStateTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetBackupStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetBackupStateTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetBackupStateTaggedBuilder) WithValue(value BACnetBackupState) BACnetBackupStateTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetBackupStateTaggedBuilder) WithValue(value BACnetBackupState) BACnetBackupStateTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetBackupStateTaggedBuilder) Build() (BACnetBackupStateTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetBackupStateTaggedBuilder) Build() (BACnetBackupStateTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetBackupStateTagged.deepCopy(), nil
+	return b._BACnetBackupStateTagged.deepCopy(), nil
 }
 
-func (m *_BACnetBackupStateTaggedBuilder) MustBuild() BACnetBackupStateTagged {
-	build, err := m.Build()
+func (b *_BACnetBackupStateTaggedBuilder) MustBuild() BACnetBackupStateTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetBackupStateTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetBackupStateTaggedBuilder()
+func (b *_BACnetBackupStateTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetBackupStateTaggedBuilder().(*_BACnetBackupStateTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetBackupStateTaggedBuilder creates a BACnetBackupStateTaggedBuilder
-func (m *_BACnetBackupStateTagged) CreateBACnetBackupStateTaggedBuilder() BACnetBackupStateTaggedBuilder {
-	if m == nil {
+func (b *_BACnetBackupStateTagged) CreateBACnetBackupStateTaggedBuilder() BACnetBackupStateTaggedBuilder {
+	if b == nil {
 		return NewBACnetBackupStateTaggedBuilder()
 	}
-	return &_BACnetBackupStateTaggedBuilder{_BACnetBackupStateTagged: m.deepCopy()}
+	return &_BACnetBackupStateTaggedBuilder{_BACnetBackupStateTagged: b.deepCopy()}
 }
 
 ///////////////////////

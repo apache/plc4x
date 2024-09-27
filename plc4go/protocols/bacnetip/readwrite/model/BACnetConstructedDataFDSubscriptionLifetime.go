@@ -100,64 +100,83 @@ func NewBACnetConstructedDataFDSubscriptionLifetimeBuilder() BACnetConstructedDa
 type _BACnetConstructedDataFDSubscriptionLifetimeBuilder struct {
 	*_BACnetConstructedDataFDSubscriptionLifetime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataFDSubscriptionLifetimeBuilder) = (*_BACnetConstructedDataFDSubscriptionLifetimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetimeBuilder) WithMandatoryFields(fdSubscriptionLifetime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFDSubscriptionLifetimeBuilder {
-	return m.WithFdSubscriptionLifetime(fdSubscriptionLifetime)
+func (b *_BACnetConstructedDataFDSubscriptionLifetimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetimeBuilder) WithFdSubscriptionLifetime(fdSubscriptionLifetime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFDSubscriptionLifetimeBuilder {
-	m.FdSubscriptionLifetime = fdSubscriptionLifetime
-	return m
+func (b *_BACnetConstructedDataFDSubscriptionLifetimeBuilder) WithMandatoryFields(fdSubscriptionLifetime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFDSubscriptionLifetimeBuilder {
+	return b.WithFdSubscriptionLifetime(fdSubscriptionLifetime)
 }
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetimeBuilder) WithFdSubscriptionLifetimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFDSubscriptionLifetimeBuilder {
-	builder := builderSupplier(m.FdSubscriptionLifetime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataFDSubscriptionLifetimeBuilder) WithFdSubscriptionLifetime(fdSubscriptionLifetime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFDSubscriptionLifetimeBuilder {
+	b.FdSubscriptionLifetime = fdSubscriptionLifetime
+	return b
+}
+
+func (b *_BACnetConstructedDataFDSubscriptionLifetimeBuilder) WithFdSubscriptionLifetimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFDSubscriptionLifetimeBuilder {
+	builder := builderSupplier(b.FdSubscriptionLifetime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.FdSubscriptionLifetime, err = builder.Build()
+	b.FdSubscriptionLifetime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetimeBuilder) Build() (BACnetConstructedDataFDSubscriptionLifetime, error) {
-	if m.FdSubscriptionLifetime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataFDSubscriptionLifetimeBuilder) Build() (BACnetConstructedDataFDSubscriptionLifetime, error) {
+	if b.FdSubscriptionLifetime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'fdSubscriptionLifetime' not set"))
+		b.err.Append(errors.New("mandatory field 'fdSubscriptionLifetime' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataFDSubscriptionLifetime.deepCopy(), nil
+	return b._BACnetConstructedDataFDSubscriptionLifetime.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetimeBuilder) MustBuild() BACnetConstructedDataFDSubscriptionLifetime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataFDSubscriptionLifetimeBuilder) MustBuild() BACnetConstructedDataFDSubscriptionLifetime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataFDSubscriptionLifetimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFDSubscriptionLifetimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFDSubscriptionLifetimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFDSubscriptionLifetimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFDSubscriptionLifetimeBuilder().(*_BACnetConstructedDataFDSubscriptionLifetimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataFDSubscriptionLifetimeBuilder creates a BACnetConstructedDataFDSubscriptionLifetimeBuilder
-func (m *_BACnetConstructedDataFDSubscriptionLifetime) CreateBACnetConstructedDataFDSubscriptionLifetimeBuilder() BACnetConstructedDataFDSubscriptionLifetimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataFDSubscriptionLifetime) CreateBACnetConstructedDataFDSubscriptionLifetimeBuilder() BACnetConstructedDataFDSubscriptionLifetimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataFDSubscriptionLifetimeBuilder()
 	}
-	return &_BACnetConstructedDataFDSubscriptionLifetimeBuilder{_BACnetConstructedDataFDSubscriptionLifetime: m.deepCopy()}
+	return &_BACnetConstructedDataFDSubscriptionLifetimeBuilder{_BACnetConstructedDataFDSubscriptionLifetime: b.deepCopy()}
 }
 
 ///////////////////////

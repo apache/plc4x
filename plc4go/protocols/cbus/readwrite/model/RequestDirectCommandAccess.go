@@ -88,6 +88,8 @@ type RequestDirectCommandAccessBuilder interface {
 	WithMandatoryFields(calData CALData) RequestDirectCommandAccessBuilder
 	// WithCalData adds CalData (property field)
 	WithCalData(CALData) RequestDirectCommandAccessBuilder
+	// WithCalDataBuilder adds CalData (property field) which is build by the builder
+	WithCalDataBuilder(func(CALDataBuilder) CALDataBuilder) RequestDirectCommandAccessBuilder
 	// WithAlpha adds Alpha (property field)
 	WithOptionalAlpha(Alpha) RequestDirectCommandAccessBuilder
 	// WithOptionalAlphaBuilder adds Alpha (property field) which is build by the builder
@@ -106,69 +108,101 @@ func NewRequestDirectCommandAccessBuilder() RequestDirectCommandAccessBuilder {
 type _RequestDirectCommandAccessBuilder struct {
 	*_RequestDirectCommandAccess
 
+	parentBuilder *_RequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RequestDirectCommandAccessBuilder) = (*_RequestDirectCommandAccessBuilder)(nil)
 
-func (m *_RequestDirectCommandAccessBuilder) WithMandatoryFields(calData CALData) RequestDirectCommandAccessBuilder {
-	return m.WithCalData(calData)
+func (b *_RequestDirectCommandAccessBuilder) setParent(contract RequestContract) {
+	b.RequestContract = contract
 }
 
-func (m *_RequestDirectCommandAccessBuilder) WithCalData(calData CALData) RequestDirectCommandAccessBuilder {
-	m.CalData = calData
-	return m
+func (b *_RequestDirectCommandAccessBuilder) WithMandatoryFields(calData CALData) RequestDirectCommandAccessBuilder {
+	return b.WithCalData(calData)
 }
 
-func (m *_RequestDirectCommandAccessBuilder) WithOptionalAlpha(alpha Alpha) RequestDirectCommandAccessBuilder {
-	m.Alpha = alpha
-	return m
+func (b *_RequestDirectCommandAccessBuilder) WithCalData(calData CALData) RequestDirectCommandAccessBuilder {
+	b.CalData = calData
+	return b
 }
 
-func (m *_RequestDirectCommandAccessBuilder) WithOptionalAlphaBuilder(builderSupplier func(AlphaBuilder) AlphaBuilder) RequestDirectCommandAccessBuilder {
-	builder := builderSupplier(m.Alpha.CreateAlphaBuilder())
+func (b *_RequestDirectCommandAccessBuilder) WithCalDataBuilder(builderSupplier func(CALDataBuilder) CALDataBuilder) RequestDirectCommandAccessBuilder {
+	builder := builderSupplier(b.CalData.CreateCALDataBuilder())
 	var err error
-	m.Alpha, err = builder.Build()
+	b.CalData, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
+		b.err.Append(errors.Wrap(err, "CALDataBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RequestDirectCommandAccessBuilder) Build() (RequestDirectCommandAccess, error) {
-	if m.CalData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'calData' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._RequestDirectCommandAccess.deepCopy(), nil
+func (b *_RequestDirectCommandAccessBuilder) WithOptionalAlpha(alpha Alpha) RequestDirectCommandAccessBuilder {
+	b.Alpha = alpha
+	return b
 }
 
-func (m *_RequestDirectCommandAccessBuilder) MustBuild() RequestDirectCommandAccess {
-	build, err := m.Build()
+func (b *_RequestDirectCommandAccessBuilder) WithOptionalAlphaBuilder(builderSupplier func(AlphaBuilder) AlphaBuilder) RequestDirectCommandAccessBuilder {
+	builder := builderSupplier(b.Alpha.CreateAlphaBuilder())
+	var err error
+	b.Alpha, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
+	}
+	return b
+}
+
+func (b *_RequestDirectCommandAccessBuilder) Build() (RequestDirectCommandAccess, error) {
+	if b.CalData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'calData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RequestDirectCommandAccess.deepCopy(), nil
+}
+
+func (b *_RequestDirectCommandAccessBuilder) MustBuild() RequestDirectCommandAccess {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RequestDirectCommandAccessBuilder) DeepCopy() any {
-	return m.CreateRequestDirectCommandAccessBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RequestDirectCommandAccessBuilder) Done() RequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RequestDirectCommandAccessBuilder) buildForRequest() (Request, error) {
+	return b.Build()
+}
+
+func (b *_RequestDirectCommandAccessBuilder) DeepCopy() any {
+	_copy := b.CreateRequestDirectCommandAccessBuilder().(*_RequestDirectCommandAccessBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRequestDirectCommandAccessBuilder creates a RequestDirectCommandAccessBuilder
-func (m *_RequestDirectCommandAccess) CreateRequestDirectCommandAccessBuilder() RequestDirectCommandAccessBuilder {
-	if m == nil {
+func (b *_RequestDirectCommandAccess) CreateRequestDirectCommandAccessBuilder() RequestDirectCommandAccessBuilder {
+	if b == nil {
 		return NewRequestDirectCommandAccessBuilder()
 	}
-	return &_RequestDirectCommandAccessBuilder{_RequestDirectCommandAccess: m.deepCopy()}
+	return &_RequestDirectCommandAccessBuilder{_RequestDirectCommandAccess: b.deepCopy()}
 }
 
 ///////////////////////

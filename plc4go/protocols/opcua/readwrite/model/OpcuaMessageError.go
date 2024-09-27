@@ -104,69 +104,88 @@ func NewOpcuaMessageErrorBuilder() OpcuaMessageErrorBuilder {
 type _OpcuaMessageErrorBuilder struct {
 	*_OpcuaMessageError
 
+	parentBuilder *_MessagePDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (OpcuaMessageErrorBuilder) = (*_OpcuaMessageErrorBuilder)(nil)
 
-func (m *_OpcuaMessageErrorBuilder) WithMandatoryFields(error OpcuaStatusCode, reason PascalString) OpcuaMessageErrorBuilder {
-	return m.WithError(error).WithReason(reason)
+func (b *_OpcuaMessageErrorBuilder) setParent(contract MessagePDUContract) {
+	b.MessagePDUContract = contract
 }
 
-func (m *_OpcuaMessageErrorBuilder) WithError(error OpcuaStatusCode) OpcuaMessageErrorBuilder {
-	m.Error = error
-	return m
+func (b *_OpcuaMessageErrorBuilder) WithMandatoryFields(error OpcuaStatusCode, reason PascalString) OpcuaMessageErrorBuilder {
+	return b.WithError(error).WithReason(reason)
 }
 
-func (m *_OpcuaMessageErrorBuilder) WithReason(reason PascalString) OpcuaMessageErrorBuilder {
-	m.Reason = reason
-	return m
+func (b *_OpcuaMessageErrorBuilder) WithError(error OpcuaStatusCode) OpcuaMessageErrorBuilder {
+	b.Error = error
+	return b
 }
 
-func (m *_OpcuaMessageErrorBuilder) WithReasonBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) OpcuaMessageErrorBuilder {
-	builder := builderSupplier(m.Reason.CreatePascalStringBuilder())
+func (b *_OpcuaMessageErrorBuilder) WithReason(reason PascalString) OpcuaMessageErrorBuilder {
+	b.Reason = reason
+	return b
+}
+
+func (b *_OpcuaMessageErrorBuilder) WithReasonBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) OpcuaMessageErrorBuilder {
+	builder := builderSupplier(b.Reason.CreatePascalStringBuilder())
 	var err error
-	m.Reason, err = builder.Build()
+	b.Reason, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_OpcuaMessageErrorBuilder) Build() (OpcuaMessageError, error) {
-	if m.Reason == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_OpcuaMessageErrorBuilder) Build() (OpcuaMessageError, error) {
+	if b.Reason == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'reason' not set"))
+		b.err.Append(errors.New("mandatory field 'reason' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._OpcuaMessageError.deepCopy(), nil
+	return b._OpcuaMessageError.deepCopy(), nil
 }
 
-func (m *_OpcuaMessageErrorBuilder) MustBuild() OpcuaMessageError {
-	build, err := m.Build()
+func (b *_OpcuaMessageErrorBuilder) MustBuild() OpcuaMessageError {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_OpcuaMessageErrorBuilder) DeepCopy() any {
-	return m.CreateOpcuaMessageErrorBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OpcuaMessageErrorBuilder) Done() MessagePDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OpcuaMessageErrorBuilder) buildForMessagePDU() (MessagePDU, error) {
+	return b.Build()
+}
+
+func (b *_OpcuaMessageErrorBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaMessageErrorBuilder().(*_OpcuaMessageErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateOpcuaMessageErrorBuilder creates a OpcuaMessageErrorBuilder
-func (m *_OpcuaMessageError) CreateOpcuaMessageErrorBuilder() OpcuaMessageErrorBuilder {
-	if m == nil {
+func (b *_OpcuaMessageError) CreateOpcuaMessageErrorBuilder() OpcuaMessageErrorBuilder {
+	if b == nil {
 		return NewOpcuaMessageErrorBuilder()
 	}
-	return &_OpcuaMessageErrorBuilder{_OpcuaMessageError: m.deepCopy()}
+	return &_OpcuaMessageErrorBuilder{_OpcuaMessageError: b.deepCopy()}
 }
 
 ///////////////////////

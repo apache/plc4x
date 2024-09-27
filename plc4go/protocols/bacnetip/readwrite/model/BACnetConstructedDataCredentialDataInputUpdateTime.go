@@ -84,6 +84,8 @@ type BACnetConstructedDataCredentialDataInputUpdateTimeBuilder interface {
 	WithMandatoryFields(updateTime BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
 	// WithUpdateTime adds UpdateTime (property field)
 	WithUpdateTime(BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+	// WithUpdateTimeBuilder adds UpdateTime (property field) which is build by the builder
+	WithUpdateTimeBuilder(func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
 	// Build builds the BACnetConstructedDataCredentialDataInputUpdateTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataCredentialDataInputUpdateTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewBACnetConstructedDataCredentialDataInputUpdateTimeBuilder() BACnetConstr
 type _BACnetConstructedDataCredentialDataInputUpdateTimeBuilder struct {
 	*_BACnetConstructedDataCredentialDataInputUpdateTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) = (*_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) WithMandatoryFields(updateTime BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
-	return m.WithUpdateTime(updateTime)
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) WithUpdateTime(updateTime BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
-	m.UpdateTime = updateTime
-	return m
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) WithMandatoryFields(updateTime BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
+	return b.WithUpdateTime(updateTime)
 }
 
-func (m *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) Build() (BACnetConstructedDataCredentialDataInputUpdateTime, error) {
-	if m.UpdateTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) WithUpdateTime(updateTime BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
+	b.UpdateTime = updateTime
+	return b
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) WithUpdateTimeBuilder(builderSupplier func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
+	builder := builderSupplier(b.UpdateTime.CreateBACnetTimeStampBuilder())
+	var err error
+	b.UpdateTime, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'updateTime' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetTimeStampBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetConstructedDataCredentialDataInputUpdateTime.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) MustBuild() BACnetConstructedDataCredentialDataInputUpdateTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) Build() (BACnetConstructedDataCredentialDataInputUpdateTime, error) {
+	if b.UpdateTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'updateTime' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataCredentialDataInputUpdateTime.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) MustBuild() BACnetConstructedDataCredentialDataInputUpdateTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCredentialDataInputUpdateTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCredentialDataInputUpdateTimeBuilder().(*_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCredentialDataInputUpdateTimeBuilder creates a BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
-func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) CreateBACnetConstructedDataCredentialDataInputUpdateTimeBuilder() BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTime) CreateBACnetConstructedDataCredentialDataInputUpdateTimeBuilder() BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCredentialDataInputUpdateTimeBuilder()
 	}
-	return &_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder{_BACnetConstructedDataCredentialDataInputUpdateTime: m.deepCopy()}
+	return &_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder{_BACnetConstructedDataCredentialDataInputUpdateTime: b.deepCopy()}
 }
 
 ///////////////////////

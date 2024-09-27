@@ -99,50 +99,69 @@ func NewRangeBuilder() RangeBuilder {
 type _RangeBuilder struct {
 	*_Range
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RangeBuilder) = (*_RangeBuilder)(nil)
 
-func (m *_RangeBuilder) WithMandatoryFields(low float64, high float64) RangeBuilder {
-	return m.WithLow(low).WithHigh(high)
+func (b *_RangeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_RangeBuilder) WithLow(low float64) RangeBuilder {
-	m.Low = low
-	return m
+func (b *_RangeBuilder) WithMandatoryFields(low float64, high float64) RangeBuilder {
+	return b.WithLow(low).WithHigh(high)
 }
 
-func (m *_RangeBuilder) WithHigh(high float64) RangeBuilder {
-	m.High = high
-	return m
+func (b *_RangeBuilder) WithLow(low float64) RangeBuilder {
+	b.Low = low
+	return b
 }
 
-func (m *_RangeBuilder) Build() (Range, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_RangeBuilder) WithHigh(high float64) RangeBuilder {
+	b.High = high
+	return b
+}
+
+func (b *_RangeBuilder) Build() (Range, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Range.deepCopy(), nil
+	return b._Range.deepCopy(), nil
 }
 
-func (m *_RangeBuilder) MustBuild() Range {
-	build, err := m.Build()
+func (b *_RangeBuilder) MustBuild() Range {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RangeBuilder) DeepCopy() any {
-	return m.CreateRangeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RangeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RangeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_RangeBuilder) DeepCopy() any {
+	_copy := b.CreateRangeBuilder().(*_RangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRangeBuilder creates a RangeBuilder
-func (m *_Range) CreateRangeBuilder() RangeBuilder {
-	if m == nil {
+func (b *_Range) CreateRangeBuilder() RangeBuilder {
+	if b == nil {
 		return NewRangeBuilder()
 	}
-	return &_RangeBuilder{_Range: m.deepCopy()}
+	return &_RangeBuilder{_Range: b.deepCopy()}
 }
 
 ///////////////////////

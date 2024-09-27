@@ -98,64 +98,83 @@ func NewPowerUpReplyBuilder() PowerUpReplyBuilder {
 type _PowerUpReplyBuilder struct {
 	*_PowerUpReply
 
+	parentBuilder *_ReplyBuilder
+
 	err *utils.MultiError
 }
 
 var _ (PowerUpReplyBuilder) = (*_PowerUpReplyBuilder)(nil)
 
-func (m *_PowerUpReplyBuilder) WithMandatoryFields(powerUpIndicator PowerUp) PowerUpReplyBuilder {
-	return m.WithPowerUpIndicator(powerUpIndicator)
+func (b *_PowerUpReplyBuilder) setParent(contract ReplyContract) {
+	b.ReplyContract = contract
 }
 
-func (m *_PowerUpReplyBuilder) WithPowerUpIndicator(powerUpIndicator PowerUp) PowerUpReplyBuilder {
-	m.PowerUpIndicator = powerUpIndicator
-	return m
+func (b *_PowerUpReplyBuilder) WithMandatoryFields(powerUpIndicator PowerUp) PowerUpReplyBuilder {
+	return b.WithPowerUpIndicator(powerUpIndicator)
 }
 
-func (m *_PowerUpReplyBuilder) WithPowerUpIndicatorBuilder(builderSupplier func(PowerUpBuilder) PowerUpBuilder) PowerUpReplyBuilder {
-	builder := builderSupplier(m.PowerUpIndicator.CreatePowerUpBuilder())
+func (b *_PowerUpReplyBuilder) WithPowerUpIndicator(powerUpIndicator PowerUp) PowerUpReplyBuilder {
+	b.PowerUpIndicator = powerUpIndicator
+	return b
+}
+
+func (b *_PowerUpReplyBuilder) WithPowerUpIndicatorBuilder(builderSupplier func(PowerUpBuilder) PowerUpBuilder) PowerUpReplyBuilder {
+	builder := builderSupplier(b.PowerUpIndicator.CreatePowerUpBuilder())
 	var err error
-	m.PowerUpIndicator, err = builder.Build()
+	b.PowerUpIndicator, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PowerUpBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PowerUpBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PowerUpReplyBuilder) Build() (PowerUpReply, error) {
-	if m.PowerUpIndicator == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_PowerUpReplyBuilder) Build() (PowerUpReply, error) {
+	if b.PowerUpIndicator == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'powerUpIndicator' not set"))
+		b.err.Append(errors.New("mandatory field 'powerUpIndicator' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._PowerUpReply.deepCopy(), nil
+	return b._PowerUpReply.deepCopy(), nil
 }
 
-func (m *_PowerUpReplyBuilder) MustBuild() PowerUpReply {
-	build, err := m.Build()
+func (b *_PowerUpReplyBuilder) MustBuild() PowerUpReply {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PowerUpReplyBuilder) DeepCopy() any {
-	return m.CreatePowerUpReplyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PowerUpReplyBuilder) Done() ReplyBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PowerUpReplyBuilder) buildForReply() (Reply, error) {
+	return b.Build()
+}
+
+func (b *_PowerUpReplyBuilder) DeepCopy() any {
+	_copy := b.CreatePowerUpReplyBuilder().(*_PowerUpReplyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePowerUpReplyBuilder creates a PowerUpReplyBuilder
-func (m *_PowerUpReply) CreatePowerUpReplyBuilder() PowerUpReplyBuilder {
-	if m == nil {
+func (b *_PowerUpReply) CreatePowerUpReplyBuilder() PowerUpReplyBuilder {
+	if b == nil {
 		return NewPowerUpReplyBuilder()
 	}
-	return &_PowerUpReplyBuilder{_PowerUpReply: m.deepCopy()}
+	return &_PowerUpReplyBuilder{_PowerUpReply: b.deepCopy()}
 }
 
 ///////////////////////

@@ -93,45 +93,64 @@ func NewBACnetConstructedDataZoneMembersBuilder() BACnetConstructedDataZoneMembe
 type _BACnetConstructedDataZoneMembersBuilder struct {
 	*_BACnetConstructedDataZoneMembers
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataZoneMembersBuilder) = (*_BACnetConstructedDataZoneMembersBuilder)(nil)
 
-func (m *_BACnetConstructedDataZoneMembersBuilder) WithMandatoryFields(members []BACnetDeviceObjectReference) BACnetConstructedDataZoneMembersBuilder {
-	return m.WithMembers(members...)
+func (b *_BACnetConstructedDataZoneMembersBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataZoneMembersBuilder) WithMembers(members ...BACnetDeviceObjectReference) BACnetConstructedDataZoneMembersBuilder {
-	m.Members = members
-	return m
+func (b *_BACnetConstructedDataZoneMembersBuilder) WithMandatoryFields(members []BACnetDeviceObjectReference) BACnetConstructedDataZoneMembersBuilder {
+	return b.WithMembers(members...)
 }
 
-func (m *_BACnetConstructedDataZoneMembersBuilder) Build() (BACnetConstructedDataZoneMembers, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataZoneMembersBuilder) WithMembers(members ...BACnetDeviceObjectReference) BACnetConstructedDataZoneMembersBuilder {
+	b.Members = members
+	return b
+}
+
+func (b *_BACnetConstructedDataZoneMembersBuilder) Build() (BACnetConstructedDataZoneMembers, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataZoneMembers.deepCopy(), nil
+	return b._BACnetConstructedDataZoneMembers.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataZoneMembersBuilder) MustBuild() BACnetConstructedDataZoneMembers {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataZoneMembersBuilder) MustBuild() BACnetConstructedDataZoneMembers {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataZoneMembersBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataZoneMembersBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataZoneMembersBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataZoneMembersBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataZoneMembersBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataZoneMembersBuilder().(*_BACnetConstructedDataZoneMembersBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataZoneMembersBuilder creates a BACnetConstructedDataZoneMembersBuilder
-func (m *_BACnetConstructedDataZoneMembers) CreateBACnetConstructedDataZoneMembersBuilder() BACnetConstructedDataZoneMembersBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataZoneMembers) CreateBACnetConstructedDataZoneMembersBuilder() BACnetConstructedDataZoneMembersBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataZoneMembersBuilder()
 	}
-	return &_BACnetConstructedDataZoneMembersBuilder{_BACnetConstructedDataZoneMembers: m.deepCopy()}
+	return &_BACnetConstructedDataZoneMembersBuilder{_BACnetConstructedDataZoneMembers: b.deepCopy()}
 }
 
 ///////////////////////

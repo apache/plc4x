@@ -100,64 +100,83 @@ func NewBACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder() BACn
 type _BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder struct {
 	*_BACnetConstructedDataCharacterStringValueRelinquishDefault
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) = (*_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder)(nil)
 
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetApplicationTagCharacterString) BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder {
-	return m.WithRelinquishDefault(relinquishDefault)
+func (b *_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetApplicationTagCharacterString) BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder {
-	m.RelinquishDefault = relinquishDefault
-	return m
+func (b *_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetApplicationTagCharacterString) BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder {
+	return b.WithRelinquishDefault(relinquishDefault)
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder {
-	builder := builderSupplier(m.RelinquishDefault.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetApplicationTagCharacterString) BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder {
+	b.RelinquishDefault = relinquishDefault
+	return b
+}
+
+func (b *_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder {
+	builder := builderSupplier(b.RelinquishDefault.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.RelinquishDefault, err = builder.Build()
+	b.RelinquishDefault, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) Build() (BACnetConstructedDataCharacterStringValueRelinquishDefault, error) {
-	if m.RelinquishDefault == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) Build() (BACnetConstructedDataCharacterStringValueRelinquishDefault, error) {
+	if b.RelinquishDefault == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
+		b.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCharacterStringValueRelinquishDefault.deepCopy(), nil
+	return b._BACnetConstructedDataCharacterStringValueRelinquishDefault.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataCharacterStringValueRelinquishDefault {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataCharacterStringValueRelinquishDefault {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder().(*_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder creates a BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder
-func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) CreateBACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder() BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCharacterStringValueRelinquishDefault) CreateBACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder() BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder()
 	}
-	return &_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder{_BACnetConstructedDataCharacterStringValueRelinquishDefault: m.deepCopy()}
+	return &_BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder{_BACnetConstructedDataCharacterStringValueRelinquishDefault: b.deepCopy()}
 }
 
 ///////////////////////

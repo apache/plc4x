@@ -93,45 +93,64 @@ func NewBACnetConstructedDataCOVURecipientsBuilder() BACnetConstructedDataCOVURe
 type _BACnetConstructedDataCOVURecipientsBuilder struct {
 	*_BACnetConstructedDataCOVURecipients
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCOVURecipientsBuilder) = (*_BACnetConstructedDataCOVURecipientsBuilder)(nil)
 
-func (m *_BACnetConstructedDataCOVURecipientsBuilder) WithMandatoryFields(covuRecipients []BACnetRecipient) BACnetConstructedDataCOVURecipientsBuilder {
-	return m.WithCovuRecipients(covuRecipients...)
+func (b *_BACnetConstructedDataCOVURecipientsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCOVURecipientsBuilder) WithCovuRecipients(covuRecipients ...BACnetRecipient) BACnetConstructedDataCOVURecipientsBuilder {
-	m.CovuRecipients = covuRecipients
-	return m
+func (b *_BACnetConstructedDataCOVURecipientsBuilder) WithMandatoryFields(covuRecipients []BACnetRecipient) BACnetConstructedDataCOVURecipientsBuilder {
+	return b.WithCovuRecipients(covuRecipients...)
 }
 
-func (m *_BACnetConstructedDataCOVURecipientsBuilder) Build() (BACnetConstructedDataCOVURecipients, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataCOVURecipientsBuilder) WithCovuRecipients(covuRecipients ...BACnetRecipient) BACnetConstructedDataCOVURecipientsBuilder {
+	b.CovuRecipients = covuRecipients
+	return b
+}
+
+func (b *_BACnetConstructedDataCOVURecipientsBuilder) Build() (BACnetConstructedDataCOVURecipients, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCOVURecipients.deepCopy(), nil
+	return b._BACnetConstructedDataCOVURecipients.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCOVURecipientsBuilder) MustBuild() BACnetConstructedDataCOVURecipients {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCOVURecipientsBuilder) MustBuild() BACnetConstructedDataCOVURecipients {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCOVURecipientsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCOVURecipientsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCOVURecipientsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCOVURecipientsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCOVURecipientsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCOVURecipientsBuilder().(*_BACnetConstructedDataCOVURecipientsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCOVURecipientsBuilder creates a BACnetConstructedDataCOVURecipientsBuilder
-func (m *_BACnetConstructedDataCOVURecipients) CreateBACnetConstructedDataCOVURecipientsBuilder() BACnetConstructedDataCOVURecipientsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCOVURecipients) CreateBACnetConstructedDataCOVURecipientsBuilder() BACnetConstructedDataCOVURecipientsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCOVURecipientsBuilder()
 	}
-	return &_BACnetConstructedDataCOVURecipientsBuilder{_BACnetConstructedDataCOVURecipients: m.deepCopy()}
+	return &_BACnetConstructedDataCOVURecipientsBuilder{_BACnetConstructedDataCOVURecipients: b.deepCopy()}
 }
 
 ///////////////////////

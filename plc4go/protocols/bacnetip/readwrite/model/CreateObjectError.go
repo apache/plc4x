@@ -109,88 +109,107 @@ func NewCreateObjectErrorBuilder() CreateObjectErrorBuilder {
 type _CreateObjectErrorBuilder struct {
 	*_CreateObjectError
 
+	parentBuilder *_BACnetErrorBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CreateObjectErrorBuilder) = (*_CreateObjectErrorBuilder)(nil)
 
-func (m *_CreateObjectErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) CreateObjectErrorBuilder {
-	return m.WithErrorType(errorType).WithFirstFailedElementNumber(firstFailedElementNumber)
+func (b *_CreateObjectErrorBuilder) setParent(contract BACnetErrorContract) {
+	b.BACnetErrorContract = contract
 }
 
-func (m *_CreateObjectErrorBuilder) WithErrorType(errorType ErrorEnclosed) CreateObjectErrorBuilder {
-	m.ErrorType = errorType
-	return m
+func (b *_CreateObjectErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) CreateObjectErrorBuilder {
+	return b.WithErrorType(errorType).WithFirstFailedElementNumber(firstFailedElementNumber)
 }
 
-func (m *_CreateObjectErrorBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) CreateObjectErrorBuilder {
-	builder := builderSupplier(m.ErrorType.CreateErrorEnclosedBuilder())
+func (b *_CreateObjectErrorBuilder) WithErrorType(errorType ErrorEnclosed) CreateObjectErrorBuilder {
+	b.ErrorType = errorType
+	return b
+}
+
+func (b *_CreateObjectErrorBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) CreateObjectErrorBuilder {
+	builder := builderSupplier(b.ErrorType.CreateErrorEnclosedBuilder())
 	var err error
-	m.ErrorType, err = builder.Build()
+	b.ErrorType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CreateObjectErrorBuilder) WithFirstFailedElementNumber(firstFailedElementNumber BACnetContextTagUnsignedInteger) CreateObjectErrorBuilder {
-	m.FirstFailedElementNumber = firstFailedElementNumber
-	return m
+func (b *_CreateObjectErrorBuilder) WithFirstFailedElementNumber(firstFailedElementNumber BACnetContextTagUnsignedInteger) CreateObjectErrorBuilder {
+	b.FirstFailedElementNumber = firstFailedElementNumber
+	return b
 }
 
-func (m *_CreateObjectErrorBuilder) WithFirstFailedElementNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) CreateObjectErrorBuilder {
-	builder := builderSupplier(m.FirstFailedElementNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_CreateObjectErrorBuilder) WithFirstFailedElementNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) CreateObjectErrorBuilder {
+	builder := builderSupplier(b.FirstFailedElementNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.FirstFailedElementNumber, err = builder.Build()
+	b.FirstFailedElementNumber, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CreateObjectErrorBuilder) Build() (CreateObjectError, error) {
-	if m.ErrorType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CreateObjectErrorBuilder) Build() (CreateObjectError, error) {
+	if b.ErrorType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'errorType' not set"))
+		b.err.Append(errors.New("mandatory field 'errorType' not set"))
 	}
-	if m.FirstFailedElementNumber == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.FirstFailedElementNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'firstFailedElementNumber' not set"))
+		b.err.Append(errors.New("mandatory field 'firstFailedElementNumber' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CreateObjectError.deepCopy(), nil
+	return b._CreateObjectError.deepCopy(), nil
 }
 
-func (m *_CreateObjectErrorBuilder) MustBuild() CreateObjectError {
-	build, err := m.Build()
+func (b *_CreateObjectErrorBuilder) MustBuild() CreateObjectError {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CreateObjectErrorBuilder) DeepCopy() any {
-	return m.CreateCreateObjectErrorBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CreateObjectErrorBuilder) Done() BACnetErrorBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CreateObjectErrorBuilder) buildForBACnetError() (BACnetError, error) {
+	return b.Build()
+}
+
+func (b *_CreateObjectErrorBuilder) DeepCopy() any {
+	_copy := b.CreateCreateObjectErrorBuilder().(*_CreateObjectErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCreateObjectErrorBuilder creates a CreateObjectErrorBuilder
-func (m *_CreateObjectError) CreateCreateObjectErrorBuilder() CreateObjectErrorBuilder {
-	if m == nil {
+func (b *_CreateObjectError) CreateCreateObjectErrorBuilder() CreateObjectErrorBuilder {
+	if b == nil {
 		return NewCreateObjectErrorBuilder()
 	}
-	return &_CreateObjectErrorBuilder{_CreateObjectError: m.deepCopy()}
+	return &_CreateObjectErrorBuilder{_CreateObjectError: b.deepCopy()}
 }
 
 ///////////////////////

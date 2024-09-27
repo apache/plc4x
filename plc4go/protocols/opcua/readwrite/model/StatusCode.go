@@ -90,40 +90,44 @@ type _StatusCodeBuilder struct {
 
 var _ (StatusCodeBuilder) = (*_StatusCodeBuilder)(nil)
 
-func (m *_StatusCodeBuilder) WithMandatoryFields(statusCode uint32) StatusCodeBuilder {
-	return m.WithStatusCode(statusCode)
+func (b *_StatusCodeBuilder) WithMandatoryFields(statusCode uint32) StatusCodeBuilder {
+	return b.WithStatusCode(statusCode)
 }
 
-func (m *_StatusCodeBuilder) WithStatusCode(statusCode uint32) StatusCodeBuilder {
-	m.StatusCode = statusCode
-	return m
+func (b *_StatusCodeBuilder) WithStatusCode(statusCode uint32) StatusCodeBuilder {
+	b.StatusCode = statusCode
+	return b
 }
 
-func (m *_StatusCodeBuilder) Build() (StatusCode, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_StatusCodeBuilder) Build() (StatusCode, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._StatusCode.deepCopy(), nil
+	return b._StatusCode.deepCopy(), nil
 }
 
-func (m *_StatusCodeBuilder) MustBuild() StatusCode {
-	build, err := m.Build()
+func (b *_StatusCodeBuilder) MustBuild() StatusCode {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_StatusCodeBuilder) DeepCopy() any {
-	return m.CreateStatusCodeBuilder()
+func (b *_StatusCodeBuilder) DeepCopy() any {
+	_copy := b.CreateStatusCodeBuilder().(*_StatusCodeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateStatusCodeBuilder creates a StatusCodeBuilder
-func (m *_StatusCode) CreateStatusCodeBuilder() StatusCodeBuilder {
-	if m == nil {
+func (b *_StatusCode) CreateStatusCodeBuilder() StatusCodeBuilder {
+	if b == nil {
 		return NewStatusCodeBuilder()
 	}
-	return &_StatusCodeBuilder{_StatusCode: m.deepCopy()}
+	return &_StatusCodeBuilder{_StatusCode: b.deepCopy()}
 }
 
 ///////////////////////

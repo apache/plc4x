@@ -93,45 +93,64 @@ func NewModbusPDUWriteFileRecordResponseBuilder() ModbusPDUWriteFileRecordRespon
 type _ModbusPDUWriteFileRecordResponseBuilder struct {
 	*_ModbusPDUWriteFileRecordResponse
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUWriteFileRecordResponseBuilder) = (*_ModbusPDUWriteFileRecordResponseBuilder)(nil)
 
-func (m *_ModbusPDUWriteFileRecordResponseBuilder) WithMandatoryFields(items []ModbusPDUWriteFileRecordResponseItem) ModbusPDUWriteFileRecordResponseBuilder {
-	return m.WithItems(items...)
+func (b *_ModbusPDUWriteFileRecordResponseBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUWriteFileRecordResponseBuilder) WithItems(items ...ModbusPDUWriteFileRecordResponseItem) ModbusPDUWriteFileRecordResponseBuilder {
-	m.Items = items
-	return m
+func (b *_ModbusPDUWriteFileRecordResponseBuilder) WithMandatoryFields(items []ModbusPDUWriteFileRecordResponseItem) ModbusPDUWriteFileRecordResponseBuilder {
+	return b.WithItems(items...)
 }
 
-func (m *_ModbusPDUWriteFileRecordResponseBuilder) Build() (ModbusPDUWriteFileRecordResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUWriteFileRecordResponseBuilder) WithItems(items ...ModbusPDUWriteFileRecordResponseItem) ModbusPDUWriteFileRecordResponseBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_ModbusPDUWriteFileRecordResponseBuilder) Build() (ModbusPDUWriteFileRecordResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUWriteFileRecordResponse.deepCopy(), nil
+	return b._ModbusPDUWriteFileRecordResponse.deepCopy(), nil
 }
 
-func (m *_ModbusPDUWriteFileRecordResponseBuilder) MustBuild() ModbusPDUWriteFileRecordResponse {
-	build, err := m.Build()
+func (b *_ModbusPDUWriteFileRecordResponseBuilder) MustBuild() ModbusPDUWriteFileRecordResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUWriteFileRecordResponseBuilder) DeepCopy() any {
-	return m.CreateModbusPDUWriteFileRecordResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUWriteFileRecordResponseBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUWriteFileRecordResponseBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUWriteFileRecordResponseBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUWriteFileRecordResponseBuilder().(*_ModbusPDUWriteFileRecordResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUWriteFileRecordResponseBuilder creates a ModbusPDUWriteFileRecordResponseBuilder
-func (m *_ModbusPDUWriteFileRecordResponse) CreateModbusPDUWriteFileRecordResponseBuilder() ModbusPDUWriteFileRecordResponseBuilder {
-	if m == nil {
+func (b *_ModbusPDUWriteFileRecordResponse) CreateModbusPDUWriteFileRecordResponseBuilder() ModbusPDUWriteFileRecordResponseBuilder {
+	if b == nil {
 		return NewModbusPDUWriteFileRecordResponseBuilder()
 	}
-	return &_ModbusPDUWriteFileRecordResponseBuilder{_ModbusPDUWriteFileRecordResponse: m.deepCopy()}
+	return &_ModbusPDUWriteFileRecordResponseBuilder{_ModbusPDUWriteFileRecordResponse: b.deepCopy()}
 }
 
 ///////////////////////

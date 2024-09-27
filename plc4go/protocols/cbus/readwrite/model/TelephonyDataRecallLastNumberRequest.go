@@ -97,45 +97,64 @@ func NewTelephonyDataRecallLastNumberRequestBuilder() TelephonyDataRecallLastNum
 type _TelephonyDataRecallLastNumberRequestBuilder struct {
 	*_TelephonyDataRecallLastNumberRequest
 
+	parentBuilder *_TelephonyDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TelephonyDataRecallLastNumberRequestBuilder) = (*_TelephonyDataRecallLastNumberRequestBuilder)(nil)
 
-func (m *_TelephonyDataRecallLastNumberRequestBuilder) WithMandatoryFields(recallLastNumberType byte) TelephonyDataRecallLastNumberRequestBuilder {
-	return m.WithRecallLastNumberType(recallLastNumberType)
+func (b *_TelephonyDataRecallLastNumberRequestBuilder) setParent(contract TelephonyDataContract) {
+	b.TelephonyDataContract = contract
 }
 
-func (m *_TelephonyDataRecallLastNumberRequestBuilder) WithRecallLastNumberType(recallLastNumberType byte) TelephonyDataRecallLastNumberRequestBuilder {
-	m.RecallLastNumberType = recallLastNumberType
-	return m
+func (b *_TelephonyDataRecallLastNumberRequestBuilder) WithMandatoryFields(recallLastNumberType byte) TelephonyDataRecallLastNumberRequestBuilder {
+	return b.WithRecallLastNumberType(recallLastNumberType)
 }
 
-func (m *_TelephonyDataRecallLastNumberRequestBuilder) Build() (TelephonyDataRecallLastNumberRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TelephonyDataRecallLastNumberRequestBuilder) WithRecallLastNumberType(recallLastNumberType byte) TelephonyDataRecallLastNumberRequestBuilder {
+	b.RecallLastNumberType = recallLastNumberType
+	return b
+}
+
+func (b *_TelephonyDataRecallLastNumberRequestBuilder) Build() (TelephonyDataRecallLastNumberRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TelephonyDataRecallLastNumberRequest.deepCopy(), nil
+	return b._TelephonyDataRecallLastNumberRequest.deepCopy(), nil
 }
 
-func (m *_TelephonyDataRecallLastNumberRequestBuilder) MustBuild() TelephonyDataRecallLastNumberRequest {
-	build, err := m.Build()
+func (b *_TelephonyDataRecallLastNumberRequestBuilder) MustBuild() TelephonyDataRecallLastNumberRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TelephonyDataRecallLastNumberRequestBuilder) DeepCopy() any {
-	return m.CreateTelephonyDataRecallLastNumberRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TelephonyDataRecallLastNumberRequestBuilder) Done() TelephonyDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TelephonyDataRecallLastNumberRequestBuilder) buildForTelephonyData() (TelephonyData, error) {
+	return b.Build()
+}
+
+func (b *_TelephonyDataRecallLastNumberRequestBuilder) DeepCopy() any {
+	_copy := b.CreateTelephonyDataRecallLastNumberRequestBuilder().(*_TelephonyDataRecallLastNumberRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTelephonyDataRecallLastNumberRequestBuilder creates a TelephonyDataRecallLastNumberRequestBuilder
-func (m *_TelephonyDataRecallLastNumberRequest) CreateTelephonyDataRecallLastNumberRequestBuilder() TelephonyDataRecallLastNumberRequestBuilder {
-	if m == nil {
+func (b *_TelephonyDataRecallLastNumberRequest) CreateTelephonyDataRecallLastNumberRequestBuilder() TelephonyDataRecallLastNumberRequestBuilder {
+	if b == nil {
 		return NewTelephonyDataRecallLastNumberRequestBuilder()
 	}
-	return &_TelephonyDataRecallLastNumberRequestBuilder{_TelephonyDataRecallLastNumberRequest: m.deepCopy()}
+	return &_TelephonyDataRecallLastNumberRequestBuilder{_TelephonyDataRecallLastNumberRequest: b.deepCopy()}
 }
 
 ///////////////////////

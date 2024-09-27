@@ -99,50 +99,69 @@ func NewVariantByteBuilder() VariantByteBuilder {
 type _VariantByteBuilder struct {
 	*_VariantByte
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantByteBuilder) = (*_VariantByteBuilder)(nil)
 
-func (m *_VariantByteBuilder) WithMandatoryFields(value []uint8) VariantByteBuilder {
-	return m.WithValue(value...)
+func (b *_VariantByteBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantByteBuilder) WithOptionalArrayLength(arrayLength int32) VariantByteBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantByteBuilder) WithMandatoryFields(value []uint8) VariantByteBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantByteBuilder) WithValue(value ...uint8) VariantByteBuilder {
-	m.Value = value
-	return m
+func (b *_VariantByteBuilder) WithOptionalArrayLength(arrayLength int32) VariantByteBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantByteBuilder) Build() (VariantByte, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantByteBuilder) WithValue(value ...uint8) VariantByteBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantByteBuilder) Build() (VariantByte, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantByte.deepCopy(), nil
+	return b._VariantByte.deepCopy(), nil
 }
 
-func (m *_VariantByteBuilder) MustBuild() VariantByte {
-	build, err := m.Build()
+func (b *_VariantByteBuilder) MustBuild() VariantByte {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantByteBuilder) DeepCopy() any {
-	return m.CreateVariantByteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantByteBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantByteBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantByteBuilder) DeepCopy() any {
+	_copy := b.CreateVariantByteBuilder().(*_VariantByteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantByteBuilder creates a VariantByteBuilder
-func (m *_VariantByte) CreateVariantByteBuilder() VariantByteBuilder {
-	if m == nil {
+func (b *_VariantByte) CreateVariantByteBuilder() VariantByteBuilder {
+	if b == nil {
 		return NewVariantByteBuilder()
 	}
-	return &_VariantByteBuilder{_VariantByte: m.deepCopy()}
+	return &_VariantByteBuilder{_VariantByte: b.deepCopy()}
 }
 
 ///////////////////////

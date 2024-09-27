@@ -85,40 +85,59 @@ func NewSecurityDataAlarmOffBuilder() SecurityDataAlarmOffBuilder {
 type _SecurityDataAlarmOffBuilder struct {
 	*_SecurityDataAlarmOff
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataAlarmOffBuilder) = (*_SecurityDataAlarmOffBuilder)(nil)
 
-func (m *_SecurityDataAlarmOffBuilder) WithMandatoryFields() SecurityDataAlarmOffBuilder {
-	return m
+func (b *_SecurityDataAlarmOffBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataAlarmOffBuilder) Build() (SecurityDataAlarmOff, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataAlarmOffBuilder) WithMandatoryFields() SecurityDataAlarmOffBuilder {
+	return b
+}
+
+func (b *_SecurityDataAlarmOffBuilder) Build() (SecurityDataAlarmOff, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataAlarmOff.deepCopy(), nil
+	return b._SecurityDataAlarmOff.deepCopy(), nil
 }
 
-func (m *_SecurityDataAlarmOffBuilder) MustBuild() SecurityDataAlarmOff {
-	build, err := m.Build()
+func (b *_SecurityDataAlarmOffBuilder) MustBuild() SecurityDataAlarmOff {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataAlarmOffBuilder) DeepCopy() any {
-	return m.CreateSecurityDataAlarmOffBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataAlarmOffBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataAlarmOffBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataAlarmOffBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataAlarmOffBuilder().(*_SecurityDataAlarmOffBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataAlarmOffBuilder creates a SecurityDataAlarmOffBuilder
-func (m *_SecurityDataAlarmOff) CreateSecurityDataAlarmOffBuilder() SecurityDataAlarmOffBuilder {
-	if m == nil {
+func (b *_SecurityDataAlarmOff) CreateSecurityDataAlarmOffBuilder() SecurityDataAlarmOffBuilder {
+	if b == nil {
 		return NewSecurityDataAlarmOffBuilder()
 	}
-	return &_SecurityDataAlarmOffBuilder{_SecurityDataAlarmOff: m.deepCopy()}
+	return &_SecurityDataAlarmOffBuilder{_SecurityDataAlarmOff: b.deepCopy()}
 }
 
 ///////////////////////

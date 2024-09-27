@@ -84,6 +84,8 @@ type BACnetConstructedDataLastRestoreTimeBuilder interface {
 	WithMandatoryFields(lastRestoreTime BACnetTimeStamp) BACnetConstructedDataLastRestoreTimeBuilder
 	// WithLastRestoreTime adds LastRestoreTime (property field)
 	WithLastRestoreTime(BACnetTimeStamp) BACnetConstructedDataLastRestoreTimeBuilder
+	// WithLastRestoreTimeBuilder adds LastRestoreTime (property field) which is build by the builder
+	WithLastRestoreTimeBuilder(func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetConstructedDataLastRestoreTimeBuilder
 	// Build builds the BACnetConstructedDataLastRestoreTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataLastRestoreTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewBACnetConstructedDataLastRestoreTimeBuilder() BACnetConstructedDataLastR
 type _BACnetConstructedDataLastRestoreTimeBuilder struct {
 	*_BACnetConstructedDataLastRestoreTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLastRestoreTimeBuilder) = (*_BACnetConstructedDataLastRestoreTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataLastRestoreTimeBuilder) WithMandatoryFields(lastRestoreTime BACnetTimeStamp) BACnetConstructedDataLastRestoreTimeBuilder {
-	return m.WithLastRestoreTime(lastRestoreTime)
+func (b *_BACnetConstructedDataLastRestoreTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLastRestoreTimeBuilder) WithLastRestoreTime(lastRestoreTime BACnetTimeStamp) BACnetConstructedDataLastRestoreTimeBuilder {
-	m.LastRestoreTime = lastRestoreTime
-	return m
+func (b *_BACnetConstructedDataLastRestoreTimeBuilder) WithMandatoryFields(lastRestoreTime BACnetTimeStamp) BACnetConstructedDataLastRestoreTimeBuilder {
+	return b.WithLastRestoreTime(lastRestoreTime)
 }
 
-func (m *_BACnetConstructedDataLastRestoreTimeBuilder) Build() (BACnetConstructedDataLastRestoreTime, error) {
-	if m.LastRestoreTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLastRestoreTimeBuilder) WithLastRestoreTime(lastRestoreTime BACnetTimeStamp) BACnetConstructedDataLastRestoreTimeBuilder {
+	b.LastRestoreTime = lastRestoreTime
+	return b
+}
+
+func (b *_BACnetConstructedDataLastRestoreTimeBuilder) WithLastRestoreTimeBuilder(builderSupplier func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetConstructedDataLastRestoreTimeBuilder {
+	builder := builderSupplier(b.LastRestoreTime.CreateBACnetTimeStampBuilder())
+	var err error
+	b.LastRestoreTime, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'lastRestoreTime' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetTimeStampBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetConstructedDataLastRestoreTime.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetConstructedDataLastRestoreTimeBuilder) MustBuild() BACnetConstructedDataLastRestoreTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLastRestoreTimeBuilder) Build() (BACnetConstructedDataLastRestoreTime, error) {
+	if b.LastRestoreTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'lastRestoreTime' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLastRestoreTime.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLastRestoreTimeBuilder) MustBuild() BACnetConstructedDataLastRestoreTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLastRestoreTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLastRestoreTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLastRestoreTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLastRestoreTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLastRestoreTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLastRestoreTimeBuilder().(*_BACnetConstructedDataLastRestoreTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLastRestoreTimeBuilder creates a BACnetConstructedDataLastRestoreTimeBuilder
-func (m *_BACnetConstructedDataLastRestoreTime) CreateBACnetConstructedDataLastRestoreTimeBuilder() BACnetConstructedDataLastRestoreTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLastRestoreTime) CreateBACnetConstructedDataLastRestoreTimeBuilder() BACnetConstructedDataLastRestoreTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLastRestoreTimeBuilder()
 	}
-	return &_BACnetConstructedDataLastRestoreTimeBuilder{_BACnetConstructedDataLastRestoreTime: m.deepCopy()}
+	return &_BACnetConstructedDataLastRestoreTimeBuilder{_BACnetConstructedDataLastRestoreTime: b.deepCopy()}
 }
 
 ///////////////////////

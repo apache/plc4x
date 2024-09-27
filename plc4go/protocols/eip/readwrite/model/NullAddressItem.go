@@ -89,40 +89,59 @@ func NewNullAddressItemBuilder() NullAddressItemBuilder {
 type _NullAddressItemBuilder struct {
 	*_NullAddressItem
 
+	parentBuilder *_TypeIdBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NullAddressItemBuilder) = (*_NullAddressItemBuilder)(nil)
 
-func (m *_NullAddressItemBuilder) WithMandatoryFields() NullAddressItemBuilder {
-	return m
+func (b *_NullAddressItemBuilder) setParent(contract TypeIdContract) {
+	b.TypeIdContract = contract
 }
 
-func (m *_NullAddressItemBuilder) Build() (NullAddressItem, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NullAddressItemBuilder) WithMandatoryFields() NullAddressItemBuilder {
+	return b
+}
+
+func (b *_NullAddressItemBuilder) Build() (NullAddressItem, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NullAddressItem.deepCopy(), nil
+	return b._NullAddressItem.deepCopy(), nil
 }
 
-func (m *_NullAddressItemBuilder) MustBuild() NullAddressItem {
-	build, err := m.Build()
+func (b *_NullAddressItemBuilder) MustBuild() NullAddressItem {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NullAddressItemBuilder) DeepCopy() any {
-	return m.CreateNullAddressItemBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NullAddressItemBuilder) Done() TypeIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NullAddressItemBuilder) buildForTypeId() (TypeId, error) {
+	return b.Build()
+}
+
+func (b *_NullAddressItemBuilder) DeepCopy() any {
+	_copy := b.CreateNullAddressItemBuilder().(*_NullAddressItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNullAddressItemBuilder creates a NullAddressItemBuilder
-func (m *_NullAddressItem) CreateNullAddressItemBuilder() NullAddressItemBuilder {
-	if m == nil {
+func (b *_NullAddressItem) CreateNullAddressItemBuilder() NullAddressItemBuilder {
+	if b == nil {
 		return NewNullAddressItemBuilder()
 	}
-	return &_NullAddressItemBuilder{_NullAddressItem: m.deepCopy()}
+	return &_NullAddressItemBuilder{_NullAddressItem: b.deepCopy()}
 }
 
 ///////////////////////

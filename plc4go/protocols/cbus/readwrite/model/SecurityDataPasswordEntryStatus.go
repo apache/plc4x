@@ -103,45 +103,64 @@ func NewSecurityDataPasswordEntryStatusBuilder() SecurityDataPasswordEntryStatus
 type _SecurityDataPasswordEntryStatusBuilder struct {
 	*_SecurityDataPasswordEntryStatus
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataPasswordEntryStatusBuilder) = (*_SecurityDataPasswordEntryStatusBuilder)(nil)
 
-func (m *_SecurityDataPasswordEntryStatusBuilder) WithMandatoryFields(code byte) SecurityDataPasswordEntryStatusBuilder {
-	return m.WithCode(code)
+func (b *_SecurityDataPasswordEntryStatusBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataPasswordEntryStatusBuilder) WithCode(code byte) SecurityDataPasswordEntryStatusBuilder {
-	m.Code = code
-	return m
+func (b *_SecurityDataPasswordEntryStatusBuilder) WithMandatoryFields(code byte) SecurityDataPasswordEntryStatusBuilder {
+	return b.WithCode(code)
 }
 
-func (m *_SecurityDataPasswordEntryStatusBuilder) Build() (SecurityDataPasswordEntryStatus, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataPasswordEntryStatusBuilder) WithCode(code byte) SecurityDataPasswordEntryStatusBuilder {
+	b.Code = code
+	return b
+}
+
+func (b *_SecurityDataPasswordEntryStatusBuilder) Build() (SecurityDataPasswordEntryStatus, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataPasswordEntryStatus.deepCopy(), nil
+	return b._SecurityDataPasswordEntryStatus.deepCopy(), nil
 }
 
-func (m *_SecurityDataPasswordEntryStatusBuilder) MustBuild() SecurityDataPasswordEntryStatus {
-	build, err := m.Build()
+func (b *_SecurityDataPasswordEntryStatusBuilder) MustBuild() SecurityDataPasswordEntryStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataPasswordEntryStatusBuilder) DeepCopy() any {
-	return m.CreateSecurityDataPasswordEntryStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataPasswordEntryStatusBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataPasswordEntryStatusBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataPasswordEntryStatusBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataPasswordEntryStatusBuilder().(*_SecurityDataPasswordEntryStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataPasswordEntryStatusBuilder creates a SecurityDataPasswordEntryStatusBuilder
-func (m *_SecurityDataPasswordEntryStatus) CreateSecurityDataPasswordEntryStatusBuilder() SecurityDataPasswordEntryStatusBuilder {
-	if m == nil {
+func (b *_SecurityDataPasswordEntryStatus) CreateSecurityDataPasswordEntryStatusBuilder() SecurityDataPasswordEntryStatusBuilder {
+	if b == nil {
 		return NewSecurityDataPasswordEntryStatusBuilder()
 	}
-	return &_SecurityDataPasswordEntryStatusBuilder{_SecurityDataPasswordEntryStatus: m.deepCopy()}
+	return &_SecurityDataPasswordEntryStatusBuilder{_SecurityDataPasswordEntryStatus: b.deepCopy()}
 }
 
 ///////////////////////

@@ -108,69 +108,88 @@ func NewDisconnectRequestBuilder() DisconnectRequestBuilder {
 type _DisconnectRequestBuilder struct {
 	*_DisconnectRequest
 
+	parentBuilder *_KnxNetIpMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DisconnectRequestBuilder) = (*_DisconnectRequestBuilder)(nil)
 
-func (m *_DisconnectRequestBuilder) WithMandatoryFields(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) DisconnectRequestBuilder {
-	return m.WithCommunicationChannelId(communicationChannelId).WithHpaiControlEndpoint(hpaiControlEndpoint)
+func (b *_DisconnectRequestBuilder) setParent(contract KnxNetIpMessageContract) {
+	b.KnxNetIpMessageContract = contract
 }
 
-func (m *_DisconnectRequestBuilder) WithCommunicationChannelId(communicationChannelId uint8) DisconnectRequestBuilder {
-	m.CommunicationChannelId = communicationChannelId
-	return m
+func (b *_DisconnectRequestBuilder) WithMandatoryFields(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) DisconnectRequestBuilder {
+	return b.WithCommunicationChannelId(communicationChannelId).WithHpaiControlEndpoint(hpaiControlEndpoint)
 }
 
-func (m *_DisconnectRequestBuilder) WithHpaiControlEndpoint(hpaiControlEndpoint HPAIControlEndpoint) DisconnectRequestBuilder {
-	m.HpaiControlEndpoint = hpaiControlEndpoint
-	return m
+func (b *_DisconnectRequestBuilder) WithCommunicationChannelId(communicationChannelId uint8) DisconnectRequestBuilder {
+	b.CommunicationChannelId = communicationChannelId
+	return b
 }
 
-func (m *_DisconnectRequestBuilder) WithHpaiControlEndpointBuilder(builderSupplier func(HPAIControlEndpointBuilder) HPAIControlEndpointBuilder) DisconnectRequestBuilder {
-	builder := builderSupplier(m.HpaiControlEndpoint.CreateHPAIControlEndpointBuilder())
+func (b *_DisconnectRequestBuilder) WithHpaiControlEndpoint(hpaiControlEndpoint HPAIControlEndpoint) DisconnectRequestBuilder {
+	b.HpaiControlEndpoint = hpaiControlEndpoint
+	return b
+}
+
+func (b *_DisconnectRequestBuilder) WithHpaiControlEndpointBuilder(builderSupplier func(HPAIControlEndpointBuilder) HPAIControlEndpointBuilder) DisconnectRequestBuilder {
+	builder := builderSupplier(b.HpaiControlEndpoint.CreateHPAIControlEndpointBuilder())
 	var err error
-	m.HpaiControlEndpoint, err = builder.Build()
+	b.HpaiControlEndpoint, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HPAIControlEndpointBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HPAIControlEndpointBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_DisconnectRequestBuilder) Build() (DisconnectRequest, error) {
-	if m.HpaiControlEndpoint == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_DisconnectRequestBuilder) Build() (DisconnectRequest, error) {
+	if b.HpaiControlEndpoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'hpaiControlEndpoint' not set"))
+		b.err.Append(errors.New("mandatory field 'hpaiControlEndpoint' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DisconnectRequest.deepCopy(), nil
+	return b._DisconnectRequest.deepCopy(), nil
 }
 
-func (m *_DisconnectRequestBuilder) MustBuild() DisconnectRequest {
-	build, err := m.Build()
+func (b *_DisconnectRequestBuilder) MustBuild() DisconnectRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DisconnectRequestBuilder) DeepCopy() any {
-	return m.CreateDisconnectRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DisconnectRequestBuilder) Done() KnxNetIpMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DisconnectRequestBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, error) {
+	return b.Build()
+}
+
+func (b *_DisconnectRequestBuilder) DeepCopy() any {
+	_copy := b.CreateDisconnectRequestBuilder().(*_DisconnectRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDisconnectRequestBuilder creates a DisconnectRequestBuilder
-func (m *_DisconnectRequest) CreateDisconnectRequestBuilder() DisconnectRequestBuilder {
-	if m == nil {
+func (b *_DisconnectRequest) CreateDisconnectRequestBuilder() DisconnectRequestBuilder {
+	if b == nil {
 		return NewDisconnectRequestBuilder()
 	}
-	return &_DisconnectRequestBuilder{_DisconnectRequest: m.deepCopy()}
+	return &_DisconnectRequestBuilder{_DisconnectRequest: b.deepCopy()}
 }
 
 ///////////////////////

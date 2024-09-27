@@ -100,64 +100,83 @@ func NewBACnetConstructedDataEnableBuilder() BACnetConstructedDataEnableBuilder 
 type _BACnetConstructedDataEnableBuilder struct {
 	*_BACnetConstructedDataEnable
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataEnableBuilder) = (*_BACnetConstructedDataEnableBuilder)(nil)
 
-func (m *_BACnetConstructedDataEnableBuilder) WithMandatoryFields(enable BACnetApplicationTagBoolean) BACnetConstructedDataEnableBuilder {
-	return m.WithEnable(enable)
+func (b *_BACnetConstructedDataEnableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataEnableBuilder) WithEnable(enable BACnetApplicationTagBoolean) BACnetConstructedDataEnableBuilder {
-	m.Enable = enable
-	return m
+func (b *_BACnetConstructedDataEnableBuilder) WithMandatoryFields(enable BACnetApplicationTagBoolean) BACnetConstructedDataEnableBuilder {
+	return b.WithEnable(enable)
 }
 
-func (m *_BACnetConstructedDataEnableBuilder) WithEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataEnableBuilder {
-	builder := builderSupplier(m.Enable.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataEnableBuilder) WithEnable(enable BACnetApplicationTagBoolean) BACnetConstructedDataEnableBuilder {
+	b.Enable = enable
+	return b
+}
+
+func (b *_BACnetConstructedDataEnableBuilder) WithEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataEnableBuilder {
+	builder := builderSupplier(b.Enable.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.Enable, err = builder.Build()
+	b.Enable, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataEnableBuilder) Build() (BACnetConstructedDataEnable, error) {
-	if m.Enable == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataEnableBuilder) Build() (BACnetConstructedDataEnable, error) {
+	if b.Enable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'enable' not set"))
+		b.err.Append(errors.New("mandatory field 'enable' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataEnable.deepCopy(), nil
+	return b._BACnetConstructedDataEnable.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataEnableBuilder) MustBuild() BACnetConstructedDataEnable {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataEnableBuilder) MustBuild() BACnetConstructedDataEnable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataEnableBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataEnableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEnableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEnableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEnableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEnableBuilder().(*_BACnetConstructedDataEnableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataEnableBuilder creates a BACnetConstructedDataEnableBuilder
-func (m *_BACnetConstructedDataEnable) CreateBACnetConstructedDataEnableBuilder() BACnetConstructedDataEnableBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataEnable) CreateBACnetConstructedDataEnableBuilder() BACnetConstructedDataEnableBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataEnableBuilder()
 	}
-	return &_BACnetConstructedDataEnableBuilder{_BACnetConstructedDataEnable: m.deepCopy()}
+	return &_BACnetConstructedDataEnableBuilder{_BACnetConstructedDataEnable: b.deepCopy()}
 }
 
 ///////////////////////

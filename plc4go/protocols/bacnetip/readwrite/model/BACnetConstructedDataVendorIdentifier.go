@@ -100,64 +100,83 @@ func NewBACnetConstructedDataVendorIdentifierBuilder() BACnetConstructedDataVend
 type _BACnetConstructedDataVendorIdentifierBuilder struct {
 	*_BACnetConstructedDataVendorIdentifier
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataVendorIdentifierBuilder) = (*_BACnetConstructedDataVendorIdentifierBuilder)(nil)
 
-func (m *_BACnetConstructedDataVendorIdentifierBuilder) WithMandatoryFields(vendorIdentifier BACnetVendorIdTagged) BACnetConstructedDataVendorIdentifierBuilder {
-	return m.WithVendorIdentifier(vendorIdentifier)
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataVendorIdentifierBuilder) WithVendorIdentifier(vendorIdentifier BACnetVendorIdTagged) BACnetConstructedDataVendorIdentifierBuilder {
-	m.VendorIdentifier = vendorIdentifier
-	return m
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) WithMandatoryFields(vendorIdentifier BACnetVendorIdTagged) BACnetConstructedDataVendorIdentifierBuilder {
+	return b.WithVendorIdentifier(vendorIdentifier)
 }
 
-func (m *_BACnetConstructedDataVendorIdentifierBuilder) WithVendorIdentifierBuilder(builderSupplier func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetConstructedDataVendorIdentifierBuilder {
-	builder := builderSupplier(m.VendorIdentifier.CreateBACnetVendorIdTaggedBuilder())
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) WithVendorIdentifier(vendorIdentifier BACnetVendorIdTagged) BACnetConstructedDataVendorIdentifierBuilder {
+	b.VendorIdentifier = vendorIdentifier
+	return b
+}
+
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) WithVendorIdentifierBuilder(builderSupplier func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetConstructedDataVendorIdentifierBuilder {
+	builder := builderSupplier(b.VendorIdentifier.CreateBACnetVendorIdTaggedBuilder())
 	var err error
-	m.VendorIdentifier, err = builder.Build()
+	b.VendorIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataVendorIdentifierBuilder) Build() (BACnetConstructedDataVendorIdentifier, error) {
-	if m.VendorIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) Build() (BACnetConstructedDataVendorIdentifier, error) {
+	if b.VendorIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'vendorIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'vendorIdentifier' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataVendorIdentifier.deepCopy(), nil
+	return b._BACnetConstructedDataVendorIdentifier.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataVendorIdentifierBuilder) MustBuild() BACnetConstructedDataVendorIdentifier {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) MustBuild() BACnetConstructedDataVendorIdentifier {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataVendorIdentifierBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataVendorIdentifierBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataVendorIdentifierBuilder().(*_BACnetConstructedDataVendorIdentifierBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataVendorIdentifierBuilder creates a BACnetConstructedDataVendorIdentifierBuilder
-func (m *_BACnetConstructedDataVendorIdentifier) CreateBACnetConstructedDataVendorIdentifierBuilder() BACnetConstructedDataVendorIdentifierBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataVendorIdentifier) CreateBACnetConstructedDataVendorIdentifierBuilder() BACnetConstructedDataVendorIdentifierBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataVendorIdentifierBuilder()
 	}
-	return &_BACnetConstructedDataVendorIdentifierBuilder{_BACnetConstructedDataVendorIdentifier: m.deepCopy()}
+	return &_BACnetConstructedDataVendorIdentifierBuilder{_BACnetConstructedDataVendorIdentifier: b.deepCopy()}
 }
 
 ///////////////////////

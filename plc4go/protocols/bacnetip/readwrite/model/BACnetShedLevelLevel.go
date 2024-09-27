@@ -98,64 +98,83 @@ func NewBACnetShedLevelLevelBuilder() BACnetShedLevelLevelBuilder {
 type _BACnetShedLevelLevelBuilder struct {
 	*_BACnetShedLevelLevel
 
+	parentBuilder *_BACnetShedLevelBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetShedLevelLevelBuilder) = (*_BACnetShedLevelLevelBuilder)(nil)
 
-func (m *_BACnetShedLevelLevelBuilder) WithMandatoryFields(level BACnetContextTagUnsignedInteger) BACnetShedLevelLevelBuilder {
-	return m.WithLevel(level)
+func (b *_BACnetShedLevelLevelBuilder) setParent(contract BACnetShedLevelContract) {
+	b.BACnetShedLevelContract = contract
 }
 
-func (m *_BACnetShedLevelLevelBuilder) WithLevel(level BACnetContextTagUnsignedInteger) BACnetShedLevelLevelBuilder {
-	m.Level = level
-	return m
+func (b *_BACnetShedLevelLevelBuilder) WithMandatoryFields(level BACnetContextTagUnsignedInteger) BACnetShedLevelLevelBuilder {
+	return b.WithLevel(level)
 }
 
-func (m *_BACnetShedLevelLevelBuilder) WithLevelBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetShedLevelLevelBuilder {
-	builder := builderSupplier(m.Level.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetShedLevelLevelBuilder) WithLevel(level BACnetContextTagUnsignedInteger) BACnetShedLevelLevelBuilder {
+	b.Level = level
+	return b
+}
+
+func (b *_BACnetShedLevelLevelBuilder) WithLevelBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetShedLevelLevelBuilder {
+	builder := builderSupplier(b.Level.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.Level, err = builder.Build()
+	b.Level, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetShedLevelLevelBuilder) Build() (BACnetShedLevelLevel, error) {
-	if m.Level == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetShedLevelLevelBuilder) Build() (BACnetShedLevelLevel, error) {
+	if b.Level == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'level' not set"))
+		b.err.Append(errors.New("mandatory field 'level' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetShedLevelLevel.deepCopy(), nil
+	return b._BACnetShedLevelLevel.deepCopy(), nil
 }
 
-func (m *_BACnetShedLevelLevelBuilder) MustBuild() BACnetShedLevelLevel {
-	build, err := m.Build()
+func (b *_BACnetShedLevelLevelBuilder) MustBuild() BACnetShedLevelLevel {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetShedLevelLevelBuilder) DeepCopy() any {
-	return m.CreateBACnetShedLevelLevelBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetShedLevelLevelBuilder) Done() BACnetShedLevelBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetShedLevelLevelBuilder) buildForBACnetShedLevel() (BACnetShedLevel, error) {
+	return b.Build()
+}
+
+func (b *_BACnetShedLevelLevelBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetShedLevelLevelBuilder().(*_BACnetShedLevelLevelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetShedLevelLevelBuilder creates a BACnetShedLevelLevelBuilder
-func (m *_BACnetShedLevelLevel) CreateBACnetShedLevelLevelBuilder() BACnetShedLevelLevelBuilder {
-	if m == nil {
+func (b *_BACnetShedLevelLevel) CreateBACnetShedLevelLevelBuilder() BACnetShedLevelLevelBuilder {
+	if b == nil {
 		return NewBACnetShedLevelLevelBuilder()
 	}
-	return &_BACnetShedLevelLevelBuilder{_BACnetShedLevelLevel: m.deepCopy()}
+	return &_BACnetShedLevelLevelBuilder{_BACnetShedLevelLevel: b.deepCopy()}
 }
 
 ///////////////////////

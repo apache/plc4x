@@ -93,35 +93,39 @@ type _BACnetTagPayloadBooleanBuilder struct {
 
 var _ (BACnetTagPayloadBooleanBuilder) = (*_BACnetTagPayloadBooleanBuilder)(nil)
 
-func (m *_BACnetTagPayloadBooleanBuilder) WithMandatoryFields() BACnetTagPayloadBooleanBuilder {
-	return m
+func (b *_BACnetTagPayloadBooleanBuilder) WithMandatoryFields() BACnetTagPayloadBooleanBuilder {
+	return b
 }
 
-func (m *_BACnetTagPayloadBooleanBuilder) Build() (BACnetTagPayloadBoolean, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetTagPayloadBooleanBuilder) Build() (BACnetTagPayloadBoolean, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTagPayloadBoolean.deepCopy(), nil
+	return b._BACnetTagPayloadBoolean.deepCopy(), nil
 }
 
-func (m *_BACnetTagPayloadBooleanBuilder) MustBuild() BACnetTagPayloadBoolean {
-	build, err := m.Build()
+func (b *_BACnetTagPayloadBooleanBuilder) MustBuild() BACnetTagPayloadBoolean {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTagPayloadBooleanBuilder) DeepCopy() any {
-	return m.CreateBACnetTagPayloadBooleanBuilder()
+func (b *_BACnetTagPayloadBooleanBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadBooleanBuilder().(*_BACnetTagPayloadBooleanBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTagPayloadBooleanBuilder creates a BACnetTagPayloadBooleanBuilder
-func (m *_BACnetTagPayloadBoolean) CreateBACnetTagPayloadBooleanBuilder() BACnetTagPayloadBooleanBuilder {
-	if m == nil {
+func (b *_BACnetTagPayloadBoolean) CreateBACnetTagPayloadBooleanBuilder() BACnetTagPayloadBooleanBuilder {
+	if b == nil {
 		return NewBACnetTagPayloadBooleanBuilder()
 	}
-	return &_BACnetTagPayloadBooleanBuilder{_BACnetTagPayloadBoolean: m.deepCopy()}
+	return &_BACnetTagPayloadBooleanBuilder{_BACnetTagPayloadBoolean: b.deepCopy()}
 }
 
 ///////////////////////

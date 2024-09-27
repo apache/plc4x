@@ -122,10 +122,24 @@ type BACnetNotificationParametersChangeOfValueNewValueBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetNotificationParametersChangeOfValueNewValueBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfValueNewValueBuilder
+	// AsBACnetNotificationParametersChangeOfValueNewValueChangedBits converts this build to a subType of BACnetNotificationParametersChangeOfValueNewValue. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfValueNewValueChangedBits() interface {
+		BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder
+		Done() BACnetNotificationParametersChangeOfValueNewValueBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfValueNewValueChangedValue converts this build to a subType of BACnetNotificationParametersChangeOfValueNewValue. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfValueNewValueChangedValue() interface {
+		BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder
+		Done() BACnetNotificationParametersChangeOfValueNewValueBuilder
+	}
 	// Build builds the BACnetNotificationParametersChangeOfValueNewValue or returns an error if something is wrong
-	Build() (BACnetNotificationParametersChangeOfValueNewValueContract, error)
+	PartialBuild() (BACnetNotificationParametersChangeOfValueNewValueContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetNotificationParametersChangeOfValueNewValueContract
+	PartialMustBuild() BACnetNotificationParametersChangeOfValueNewValueContract
+	// Build builds the BACnetNotificationParametersChangeOfValueNewValue or returns an error if something is wrong
+	Build() (BACnetNotificationParametersChangeOfValueNewValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersChangeOfValueNewValue
 }
 
 // NewBACnetNotificationParametersChangeOfValueNewValueBuilder() creates a BACnetNotificationParametersChangeOfValueNewValueBuilder
@@ -133,115 +147,181 @@ func NewBACnetNotificationParametersChangeOfValueNewValueBuilder() BACnetNotific
 	return &_BACnetNotificationParametersChangeOfValueNewValueBuilder{_BACnetNotificationParametersChangeOfValueNewValue: new(_BACnetNotificationParametersChangeOfValueNewValue)}
 }
 
+type _BACnetNotificationParametersChangeOfValueNewValueChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetNotificationParametersChangeOfValueNewValueContract)
+	buildForBACnetNotificationParametersChangeOfValueNewValue() (BACnetNotificationParametersChangeOfValueNewValue, error)
+}
+
 type _BACnetNotificationParametersChangeOfValueNewValueBuilder struct {
 	*_BACnetNotificationParametersChangeOfValueNewValue
+
+	childBuilder _BACnetNotificationParametersChangeOfValueNewValueChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersChangeOfValueNewValueBuilder) = (*_BACnetNotificationParametersChangeOfValueNewValueBuilder)(nil)
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetNotificationParametersChangeOfValueNewValueBuilder {
-	return m.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	return b.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetNotificationParametersChangeOfValueNewValueBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfValueNewValueBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetNotificationParametersChangeOfValueNewValueBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotificationParametersChangeOfValueNewValueBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetNotificationParametersChangeOfValueNewValueBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfValueNewValueBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueBuilder) Build() (BACnetNotificationParametersChangeOfValueNewValueContract, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) PartialBuild() (BACnetNotificationParametersChangeOfValueNewValueContract, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNotificationParametersChangeOfValueNewValue.deepCopy(), nil
+	return b._BACnetNotificationParametersChangeOfValueNewValue.deepCopy(), nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueBuilder) MustBuild() BACnetNotificationParametersChangeOfValueNewValueContract {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) PartialMustBuild() BACnetNotificationParametersChangeOfValueNewValueContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersChangeOfValueNewValueBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersChangeOfValueNewValueBuilder()
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) AsBACnetNotificationParametersChangeOfValueNewValueChangedBits() interface {
+	BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder
+	Done() BACnetNotificationParametersChangeOfValueNewValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder
+		Done() BACnetNotificationParametersChangeOfValueNewValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder().(*_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) AsBACnetNotificationParametersChangeOfValueNewValueChangedValue() interface {
+	BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder
+	Done() BACnetNotificationParametersChangeOfValueNewValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder
+		Done() BACnetNotificationParametersChangeOfValueNewValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder().(*_BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) Build() (BACnetNotificationParametersChangeOfValueNewValue, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetNotificationParametersChangeOfValueNewValue()
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) MustBuild() BACnetNotificationParametersChangeOfValueNewValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersChangeOfValueNewValueBuilder().(*_BACnetNotificationParametersChangeOfValueNewValueBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetNotificationParametersChangeOfValueNewValueChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersChangeOfValueNewValueBuilder creates a BACnetNotificationParametersChangeOfValueNewValueBuilder
-func (m *_BACnetNotificationParametersChangeOfValueNewValue) CreateBACnetNotificationParametersChangeOfValueNewValueBuilder() BACnetNotificationParametersChangeOfValueNewValueBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersChangeOfValueNewValue) CreateBACnetNotificationParametersChangeOfValueNewValueBuilder() BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersChangeOfValueNewValueBuilder()
 	}
-	return &_BACnetNotificationParametersChangeOfValueNewValueBuilder{_BACnetNotificationParametersChangeOfValueNewValue: m.deepCopy()}
+	return &_BACnetNotificationParametersChangeOfValueNewValueBuilder{_BACnetNotificationParametersChangeOfValueNewValue: b.deepCopy()}
 }
 
 ///////////////////////

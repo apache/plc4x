@@ -98,64 +98,83 @@ func NewSALDataTemperatureBroadcastBuilder() SALDataTemperatureBroadcastBuilder 
 type _SALDataTemperatureBroadcastBuilder struct {
 	*_SALDataTemperatureBroadcast
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataTemperatureBroadcastBuilder) = (*_SALDataTemperatureBroadcastBuilder)(nil)
 
-func (m *_SALDataTemperatureBroadcastBuilder) WithMandatoryFields(temperatureBroadcastData TemperatureBroadcastData) SALDataTemperatureBroadcastBuilder {
-	return m.WithTemperatureBroadcastData(temperatureBroadcastData)
+func (b *_SALDataTemperatureBroadcastBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataTemperatureBroadcastBuilder) WithTemperatureBroadcastData(temperatureBroadcastData TemperatureBroadcastData) SALDataTemperatureBroadcastBuilder {
-	m.TemperatureBroadcastData = temperatureBroadcastData
-	return m
+func (b *_SALDataTemperatureBroadcastBuilder) WithMandatoryFields(temperatureBroadcastData TemperatureBroadcastData) SALDataTemperatureBroadcastBuilder {
+	return b.WithTemperatureBroadcastData(temperatureBroadcastData)
 }
 
-func (m *_SALDataTemperatureBroadcastBuilder) WithTemperatureBroadcastDataBuilder(builderSupplier func(TemperatureBroadcastDataBuilder) TemperatureBroadcastDataBuilder) SALDataTemperatureBroadcastBuilder {
-	builder := builderSupplier(m.TemperatureBroadcastData.CreateTemperatureBroadcastDataBuilder())
+func (b *_SALDataTemperatureBroadcastBuilder) WithTemperatureBroadcastData(temperatureBroadcastData TemperatureBroadcastData) SALDataTemperatureBroadcastBuilder {
+	b.TemperatureBroadcastData = temperatureBroadcastData
+	return b
+}
+
+func (b *_SALDataTemperatureBroadcastBuilder) WithTemperatureBroadcastDataBuilder(builderSupplier func(TemperatureBroadcastDataBuilder) TemperatureBroadcastDataBuilder) SALDataTemperatureBroadcastBuilder {
+	builder := builderSupplier(b.TemperatureBroadcastData.CreateTemperatureBroadcastDataBuilder())
 	var err error
-	m.TemperatureBroadcastData, err = builder.Build()
+	b.TemperatureBroadcastData, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "TemperatureBroadcastDataBuilder failed"))
+		b.err.Append(errors.Wrap(err, "TemperatureBroadcastDataBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SALDataTemperatureBroadcastBuilder) Build() (SALDataTemperatureBroadcast, error) {
-	if m.TemperatureBroadcastData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SALDataTemperatureBroadcastBuilder) Build() (SALDataTemperatureBroadcast, error) {
+	if b.TemperatureBroadcastData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'temperatureBroadcastData' not set"))
+		b.err.Append(errors.New("mandatory field 'temperatureBroadcastData' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SALDataTemperatureBroadcast.deepCopy(), nil
+	return b._SALDataTemperatureBroadcast.deepCopy(), nil
 }
 
-func (m *_SALDataTemperatureBroadcastBuilder) MustBuild() SALDataTemperatureBroadcast {
-	build, err := m.Build()
+func (b *_SALDataTemperatureBroadcastBuilder) MustBuild() SALDataTemperatureBroadcast {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataTemperatureBroadcastBuilder) DeepCopy() any {
-	return m.CreateSALDataTemperatureBroadcastBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataTemperatureBroadcastBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataTemperatureBroadcastBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataTemperatureBroadcastBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataTemperatureBroadcastBuilder().(*_SALDataTemperatureBroadcastBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataTemperatureBroadcastBuilder creates a SALDataTemperatureBroadcastBuilder
-func (m *_SALDataTemperatureBroadcast) CreateSALDataTemperatureBroadcastBuilder() SALDataTemperatureBroadcastBuilder {
-	if m == nil {
+func (b *_SALDataTemperatureBroadcast) CreateSALDataTemperatureBroadcastBuilder() SALDataTemperatureBroadcastBuilder {
+	if b == nil {
 		return NewSALDataTemperatureBroadcastBuilder()
 	}
-	return &_SALDataTemperatureBroadcastBuilder{_SALDataTemperatureBroadcast: m.deepCopy()}
+	return &_SALDataTemperatureBroadcastBuilder{_SALDataTemperatureBroadcast: b.deepCopy()}
 }
 
 ///////////////////////

@@ -85,40 +85,59 @@ func NewBACnetConstructedDataEscalatorAllBuilder() BACnetConstructedDataEscalato
 type _BACnetConstructedDataEscalatorAllBuilder struct {
 	*_BACnetConstructedDataEscalatorAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataEscalatorAllBuilder) = (*_BACnetConstructedDataEscalatorAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataEscalatorAllBuilder) WithMandatoryFields() BACnetConstructedDataEscalatorAllBuilder {
-	return m
+func (b *_BACnetConstructedDataEscalatorAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataEscalatorAllBuilder) Build() (BACnetConstructedDataEscalatorAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataEscalatorAllBuilder) WithMandatoryFields() BACnetConstructedDataEscalatorAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataEscalatorAllBuilder) Build() (BACnetConstructedDataEscalatorAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataEscalatorAll.deepCopy(), nil
+	return b._BACnetConstructedDataEscalatorAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataEscalatorAllBuilder) MustBuild() BACnetConstructedDataEscalatorAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataEscalatorAllBuilder) MustBuild() BACnetConstructedDataEscalatorAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataEscalatorAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataEscalatorAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEscalatorAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEscalatorAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEscalatorAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEscalatorAllBuilder().(*_BACnetConstructedDataEscalatorAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataEscalatorAllBuilder creates a BACnetConstructedDataEscalatorAllBuilder
-func (m *_BACnetConstructedDataEscalatorAll) CreateBACnetConstructedDataEscalatorAllBuilder() BACnetConstructedDataEscalatorAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataEscalatorAll) CreateBACnetConstructedDataEscalatorAllBuilder() BACnetConstructedDataEscalatorAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataEscalatorAllBuilder()
 	}
-	return &_BACnetConstructedDataEscalatorAllBuilder{_BACnetConstructedDataEscalatorAll: m.deepCopy()}
+	return &_BACnetConstructedDataEscalatorAllBuilder{_BACnetConstructedDataEscalatorAll: b.deepCopy()}
 }
 
 ///////////////////////

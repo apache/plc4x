@@ -130,70 +130,74 @@ type _BACnetTagHeaderBuilder struct {
 
 var _ (BACnetTagHeaderBuilder) = (*_BACnetTagHeaderBuilder)(nil)
 
-func (m *_BACnetTagHeaderBuilder) WithMandatoryFields(tagNumber uint8, tagClass TagClass, lengthValueType uint8) BACnetTagHeaderBuilder {
-	return m.WithTagNumber(tagNumber).WithTagClass(tagClass).WithLengthValueType(lengthValueType)
+func (b *_BACnetTagHeaderBuilder) WithMandatoryFields(tagNumber uint8, tagClass TagClass, lengthValueType uint8) BACnetTagHeaderBuilder {
+	return b.WithTagNumber(tagNumber).WithTagClass(tagClass).WithLengthValueType(lengthValueType)
 }
 
-func (m *_BACnetTagHeaderBuilder) WithTagNumber(tagNumber uint8) BACnetTagHeaderBuilder {
-	m.TagNumber = tagNumber
-	return m
+func (b *_BACnetTagHeaderBuilder) WithTagNumber(tagNumber uint8) BACnetTagHeaderBuilder {
+	b.TagNumber = tagNumber
+	return b
 }
 
-func (m *_BACnetTagHeaderBuilder) WithTagClass(tagClass TagClass) BACnetTagHeaderBuilder {
-	m.TagClass = tagClass
-	return m
+func (b *_BACnetTagHeaderBuilder) WithTagClass(tagClass TagClass) BACnetTagHeaderBuilder {
+	b.TagClass = tagClass
+	return b
 }
 
-func (m *_BACnetTagHeaderBuilder) WithLengthValueType(lengthValueType uint8) BACnetTagHeaderBuilder {
-	m.LengthValueType = lengthValueType
-	return m
+func (b *_BACnetTagHeaderBuilder) WithLengthValueType(lengthValueType uint8) BACnetTagHeaderBuilder {
+	b.LengthValueType = lengthValueType
+	return b
 }
 
-func (m *_BACnetTagHeaderBuilder) WithOptionalExtTagNumber(extTagNumber uint8) BACnetTagHeaderBuilder {
-	m.ExtTagNumber = &extTagNumber
-	return m
+func (b *_BACnetTagHeaderBuilder) WithOptionalExtTagNumber(extTagNumber uint8) BACnetTagHeaderBuilder {
+	b.ExtTagNumber = &extTagNumber
+	return b
 }
 
-func (m *_BACnetTagHeaderBuilder) WithOptionalExtLength(extLength uint8) BACnetTagHeaderBuilder {
-	m.ExtLength = &extLength
-	return m
+func (b *_BACnetTagHeaderBuilder) WithOptionalExtLength(extLength uint8) BACnetTagHeaderBuilder {
+	b.ExtLength = &extLength
+	return b
 }
 
-func (m *_BACnetTagHeaderBuilder) WithOptionalExtExtLength(extExtLength uint16) BACnetTagHeaderBuilder {
-	m.ExtExtLength = &extExtLength
-	return m
+func (b *_BACnetTagHeaderBuilder) WithOptionalExtExtLength(extExtLength uint16) BACnetTagHeaderBuilder {
+	b.ExtExtLength = &extExtLength
+	return b
 }
 
-func (m *_BACnetTagHeaderBuilder) WithOptionalExtExtExtLength(extExtExtLength uint32) BACnetTagHeaderBuilder {
-	m.ExtExtExtLength = &extExtExtLength
-	return m
+func (b *_BACnetTagHeaderBuilder) WithOptionalExtExtExtLength(extExtExtLength uint32) BACnetTagHeaderBuilder {
+	b.ExtExtExtLength = &extExtExtLength
+	return b
 }
 
-func (m *_BACnetTagHeaderBuilder) Build() (BACnetTagHeader, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetTagHeaderBuilder) Build() (BACnetTagHeader, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTagHeader.deepCopy(), nil
+	return b._BACnetTagHeader.deepCopy(), nil
 }
 
-func (m *_BACnetTagHeaderBuilder) MustBuild() BACnetTagHeader {
-	build, err := m.Build()
+func (b *_BACnetTagHeaderBuilder) MustBuild() BACnetTagHeader {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTagHeaderBuilder) DeepCopy() any {
-	return m.CreateBACnetTagHeaderBuilder()
+func (b *_BACnetTagHeaderBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagHeaderBuilder().(*_BACnetTagHeaderBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTagHeaderBuilder creates a BACnetTagHeaderBuilder
-func (m *_BACnetTagHeader) CreateBACnetTagHeaderBuilder() BACnetTagHeaderBuilder {
-	if m == nil {
+func (b *_BACnetTagHeader) CreateBACnetTagHeaderBuilder() BACnetTagHeaderBuilder {
+	if b == nil {
 		return NewBACnetTagHeaderBuilder()
 	}
-	return &_BACnetTagHeaderBuilder{_BACnetTagHeader: m.deepCopy()}
+	return &_BACnetTagHeaderBuilder{_BACnetTagHeader: b.deepCopy()}
 }
 
 ///////////////////////

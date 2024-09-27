@@ -95,40 +95,44 @@ type _BACnetTagPayloadEnumeratedBuilder struct {
 
 var _ (BACnetTagPayloadEnumeratedBuilder) = (*_BACnetTagPayloadEnumeratedBuilder)(nil)
 
-func (m *_BACnetTagPayloadEnumeratedBuilder) WithMandatoryFields(data []byte) BACnetTagPayloadEnumeratedBuilder {
-	return m.WithData(data...)
+func (b *_BACnetTagPayloadEnumeratedBuilder) WithMandatoryFields(data []byte) BACnetTagPayloadEnumeratedBuilder {
+	return b.WithData(data...)
 }
 
-func (m *_BACnetTagPayloadEnumeratedBuilder) WithData(data ...byte) BACnetTagPayloadEnumeratedBuilder {
-	m.Data = data
-	return m
+func (b *_BACnetTagPayloadEnumeratedBuilder) WithData(data ...byte) BACnetTagPayloadEnumeratedBuilder {
+	b.Data = data
+	return b
 }
 
-func (m *_BACnetTagPayloadEnumeratedBuilder) Build() (BACnetTagPayloadEnumerated, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetTagPayloadEnumeratedBuilder) Build() (BACnetTagPayloadEnumerated, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTagPayloadEnumerated.deepCopy(), nil
+	return b._BACnetTagPayloadEnumerated.deepCopy(), nil
 }
 
-func (m *_BACnetTagPayloadEnumeratedBuilder) MustBuild() BACnetTagPayloadEnumerated {
-	build, err := m.Build()
+func (b *_BACnetTagPayloadEnumeratedBuilder) MustBuild() BACnetTagPayloadEnumerated {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTagPayloadEnumeratedBuilder) DeepCopy() any {
-	return m.CreateBACnetTagPayloadEnumeratedBuilder()
+func (b *_BACnetTagPayloadEnumeratedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadEnumeratedBuilder().(*_BACnetTagPayloadEnumeratedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTagPayloadEnumeratedBuilder creates a BACnetTagPayloadEnumeratedBuilder
-func (m *_BACnetTagPayloadEnumerated) CreateBACnetTagPayloadEnumeratedBuilder() BACnetTagPayloadEnumeratedBuilder {
-	if m == nil {
+func (b *_BACnetTagPayloadEnumerated) CreateBACnetTagPayloadEnumeratedBuilder() BACnetTagPayloadEnumeratedBuilder {
+	if b == nil {
 		return NewBACnetTagPayloadEnumeratedBuilder()
 	}
-	return &_BACnetTagPayloadEnumeratedBuilder{_BACnetTagPayloadEnumerated: m.deepCopy()}
+	return &_BACnetTagPayloadEnumeratedBuilder{_BACnetTagPayloadEnumerated: b.deepCopy()}
 }
 
 ///////////////////////

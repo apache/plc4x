@@ -85,40 +85,59 @@ func NewBACnetConstructedDataAveragingAllBuilder() BACnetConstructedDataAveragin
 type _BACnetConstructedDataAveragingAllBuilder struct {
 	*_BACnetConstructedDataAveragingAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAveragingAllBuilder) = (*_BACnetConstructedDataAveragingAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataAveragingAllBuilder) WithMandatoryFields() BACnetConstructedDataAveragingAllBuilder {
-	return m
+func (b *_BACnetConstructedDataAveragingAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAveragingAllBuilder) Build() (BACnetConstructedDataAveragingAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataAveragingAllBuilder) WithMandatoryFields() BACnetConstructedDataAveragingAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataAveragingAllBuilder) Build() (BACnetConstructedDataAveragingAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAveragingAll.deepCopy(), nil
+	return b._BACnetConstructedDataAveragingAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAveragingAllBuilder) MustBuild() BACnetConstructedDataAveragingAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAveragingAllBuilder) MustBuild() BACnetConstructedDataAveragingAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAveragingAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAveragingAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAveragingAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAveragingAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAveragingAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAveragingAllBuilder().(*_BACnetConstructedDataAveragingAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAveragingAllBuilder creates a BACnetConstructedDataAveragingAllBuilder
-func (m *_BACnetConstructedDataAveragingAll) CreateBACnetConstructedDataAveragingAllBuilder() BACnetConstructedDataAveragingAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAveragingAll) CreateBACnetConstructedDataAveragingAllBuilder() BACnetConstructedDataAveragingAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAveragingAllBuilder()
 	}
-	return &_BACnetConstructedDataAveragingAllBuilder{_BACnetConstructedDataAveragingAll: m.deepCopy()}
+	return &_BACnetConstructedDataAveragingAllBuilder{_BACnetConstructedDataAveragingAll: b.deepCopy()}
 }
 
 ///////////////////////

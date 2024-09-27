@@ -98,64 +98,83 @@ func NewBACnetChannelValueTimeBuilder() BACnetChannelValueTimeBuilder {
 type _BACnetChannelValueTimeBuilder struct {
 	*_BACnetChannelValueTime
 
+	parentBuilder *_BACnetChannelValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetChannelValueTimeBuilder) = (*_BACnetChannelValueTimeBuilder)(nil)
 
-func (m *_BACnetChannelValueTimeBuilder) WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetChannelValueTimeBuilder {
-	return m.WithTimeValue(timeValue)
+func (b *_BACnetChannelValueTimeBuilder) setParent(contract BACnetChannelValueContract) {
+	b.BACnetChannelValueContract = contract
 }
 
-func (m *_BACnetChannelValueTimeBuilder) WithTimeValue(timeValue BACnetApplicationTagTime) BACnetChannelValueTimeBuilder {
-	m.TimeValue = timeValue
-	return m
+func (b *_BACnetChannelValueTimeBuilder) WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetChannelValueTimeBuilder {
+	return b.WithTimeValue(timeValue)
 }
 
-func (m *_BACnetChannelValueTimeBuilder) WithTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetChannelValueTimeBuilder {
-	builder := builderSupplier(m.TimeValue.CreateBACnetApplicationTagTimeBuilder())
+func (b *_BACnetChannelValueTimeBuilder) WithTimeValue(timeValue BACnetApplicationTagTime) BACnetChannelValueTimeBuilder {
+	b.TimeValue = timeValue
+	return b
+}
+
+func (b *_BACnetChannelValueTimeBuilder) WithTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetChannelValueTimeBuilder {
+	builder := builderSupplier(b.TimeValue.CreateBACnetApplicationTagTimeBuilder())
 	var err error
-	m.TimeValue, err = builder.Build()
+	b.TimeValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetChannelValueTimeBuilder) Build() (BACnetChannelValueTime, error) {
-	if m.TimeValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetChannelValueTimeBuilder) Build() (BACnetChannelValueTime, error) {
+	if b.TimeValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeValue' not set"))
+		b.err.Append(errors.New("mandatory field 'timeValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetChannelValueTime.deepCopy(), nil
+	return b._BACnetChannelValueTime.deepCopy(), nil
 }
 
-func (m *_BACnetChannelValueTimeBuilder) MustBuild() BACnetChannelValueTime {
-	build, err := m.Build()
+func (b *_BACnetChannelValueTimeBuilder) MustBuild() BACnetChannelValueTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetChannelValueTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetChannelValueTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetChannelValueTimeBuilder) Done() BACnetChannelValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetChannelValueTimeBuilder) buildForBACnetChannelValue() (BACnetChannelValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetChannelValueTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetChannelValueTimeBuilder().(*_BACnetChannelValueTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetChannelValueTimeBuilder creates a BACnetChannelValueTimeBuilder
-func (m *_BACnetChannelValueTime) CreateBACnetChannelValueTimeBuilder() BACnetChannelValueTimeBuilder {
-	if m == nil {
+func (b *_BACnetChannelValueTime) CreateBACnetChannelValueTimeBuilder() BACnetChannelValueTimeBuilder {
+	if b == nil {
 		return NewBACnetChannelValueTimeBuilder()
 	}
-	return &_BACnetChannelValueTimeBuilder{_BACnetChannelValueTime: m.deepCopy()}
+	return &_BACnetChannelValueTimeBuilder{_BACnetChannelValueTime: b.deepCopy()}
 }
 
 ///////////////////////

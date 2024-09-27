@@ -144,132 +144,151 @@ func NewRequestHeaderBuilder() RequestHeaderBuilder {
 type _RequestHeaderBuilder struct {
 	*_RequestHeader
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RequestHeaderBuilder) = (*_RequestHeaderBuilder)(nil)
 
-func (m *_RequestHeaderBuilder) WithMandatoryFields(authenticationToken NodeId, timestamp int64, requestHandle uint32, returnDiagnostics uint32, auditEntryId PascalString, timeoutHint uint32, additionalHeader ExtensionObject) RequestHeaderBuilder {
-	return m.WithAuthenticationToken(authenticationToken).WithTimestamp(timestamp).WithRequestHandle(requestHandle).WithReturnDiagnostics(returnDiagnostics).WithAuditEntryId(auditEntryId).WithTimeoutHint(timeoutHint).WithAdditionalHeader(additionalHeader)
+func (b *_RequestHeaderBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_RequestHeaderBuilder) WithAuthenticationToken(authenticationToken NodeId) RequestHeaderBuilder {
-	m.AuthenticationToken = authenticationToken
-	return m
+func (b *_RequestHeaderBuilder) WithMandatoryFields(authenticationToken NodeId, timestamp int64, requestHandle uint32, returnDiagnostics uint32, auditEntryId PascalString, timeoutHint uint32, additionalHeader ExtensionObject) RequestHeaderBuilder {
+	return b.WithAuthenticationToken(authenticationToken).WithTimestamp(timestamp).WithRequestHandle(requestHandle).WithReturnDiagnostics(returnDiagnostics).WithAuditEntryId(auditEntryId).WithTimeoutHint(timeoutHint).WithAdditionalHeader(additionalHeader)
 }
 
-func (m *_RequestHeaderBuilder) WithAuthenticationTokenBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) RequestHeaderBuilder {
-	builder := builderSupplier(m.AuthenticationToken.CreateNodeIdBuilder())
+func (b *_RequestHeaderBuilder) WithAuthenticationToken(authenticationToken NodeId) RequestHeaderBuilder {
+	b.AuthenticationToken = authenticationToken
+	return b
+}
+
+func (b *_RequestHeaderBuilder) WithAuthenticationTokenBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) RequestHeaderBuilder {
+	builder := builderSupplier(b.AuthenticationToken.CreateNodeIdBuilder())
 	var err error
-	m.AuthenticationToken, err = builder.Build()
+	b.AuthenticationToken, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RequestHeaderBuilder) WithTimestamp(timestamp int64) RequestHeaderBuilder {
-	m.Timestamp = timestamp
-	return m
+func (b *_RequestHeaderBuilder) WithTimestamp(timestamp int64) RequestHeaderBuilder {
+	b.Timestamp = timestamp
+	return b
 }
 
-func (m *_RequestHeaderBuilder) WithRequestHandle(requestHandle uint32) RequestHeaderBuilder {
-	m.RequestHandle = requestHandle
-	return m
+func (b *_RequestHeaderBuilder) WithRequestHandle(requestHandle uint32) RequestHeaderBuilder {
+	b.RequestHandle = requestHandle
+	return b
 }
 
-func (m *_RequestHeaderBuilder) WithReturnDiagnostics(returnDiagnostics uint32) RequestHeaderBuilder {
-	m.ReturnDiagnostics = returnDiagnostics
-	return m
+func (b *_RequestHeaderBuilder) WithReturnDiagnostics(returnDiagnostics uint32) RequestHeaderBuilder {
+	b.ReturnDiagnostics = returnDiagnostics
+	return b
 }
 
-func (m *_RequestHeaderBuilder) WithAuditEntryId(auditEntryId PascalString) RequestHeaderBuilder {
-	m.AuditEntryId = auditEntryId
-	return m
+func (b *_RequestHeaderBuilder) WithAuditEntryId(auditEntryId PascalString) RequestHeaderBuilder {
+	b.AuditEntryId = auditEntryId
+	return b
 }
 
-func (m *_RequestHeaderBuilder) WithAuditEntryIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) RequestHeaderBuilder {
-	builder := builderSupplier(m.AuditEntryId.CreatePascalStringBuilder())
+func (b *_RequestHeaderBuilder) WithAuditEntryIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) RequestHeaderBuilder {
+	builder := builderSupplier(b.AuditEntryId.CreatePascalStringBuilder())
 	var err error
-	m.AuditEntryId, err = builder.Build()
+	b.AuditEntryId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RequestHeaderBuilder) WithTimeoutHint(timeoutHint uint32) RequestHeaderBuilder {
-	m.TimeoutHint = timeoutHint
-	return m
+func (b *_RequestHeaderBuilder) WithTimeoutHint(timeoutHint uint32) RequestHeaderBuilder {
+	b.TimeoutHint = timeoutHint
+	return b
 }
 
-func (m *_RequestHeaderBuilder) WithAdditionalHeader(additionalHeader ExtensionObject) RequestHeaderBuilder {
-	m.AdditionalHeader = additionalHeader
-	return m
+func (b *_RequestHeaderBuilder) WithAdditionalHeader(additionalHeader ExtensionObject) RequestHeaderBuilder {
+	b.AdditionalHeader = additionalHeader
+	return b
 }
 
-func (m *_RequestHeaderBuilder) WithAdditionalHeaderBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) RequestHeaderBuilder {
-	builder := builderSupplier(m.AdditionalHeader.CreateExtensionObjectBuilder())
+func (b *_RequestHeaderBuilder) WithAdditionalHeaderBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) RequestHeaderBuilder {
+	builder := builderSupplier(b.AdditionalHeader.CreateExtensionObjectBuilder())
 	var err error
-	m.AdditionalHeader, err = builder.Build()
+	b.AdditionalHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RequestHeaderBuilder) Build() (RequestHeader, error) {
-	if m.AuthenticationToken == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_RequestHeaderBuilder) Build() (RequestHeader, error) {
+	if b.AuthenticationToken == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'authenticationToken' not set"))
+		b.err.Append(errors.New("mandatory field 'authenticationToken' not set"))
 	}
-	if m.AuditEntryId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.AuditEntryId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'auditEntryId' not set"))
+		b.err.Append(errors.New("mandatory field 'auditEntryId' not set"))
 	}
-	if m.AdditionalHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.AdditionalHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'additionalHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'additionalHeader' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._RequestHeader.deepCopy(), nil
+	return b._RequestHeader.deepCopy(), nil
 }
 
-func (m *_RequestHeaderBuilder) MustBuild() RequestHeader {
-	build, err := m.Build()
+func (b *_RequestHeaderBuilder) MustBuild() RequestHeader {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RequestHeaderBuilder) DeepCopy() any {
-	return m.CreateRequestHeaderBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RequestHeaderBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RequestHeaderBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_RequestHeaderBuilder) DeepCopy() any {
+	_copy := b.CreateRequestHeaderBuilder().(*_RequestHeaderBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRequestHeaderBuilder creates a RequestHeaderBuilder
-func (m *_RequestHeader) CreateRequestHeaderBuilder() RequestHeaderBuilder {
-	if m == nil {
+func (b *_RequestHeader) CreateRequestHeaderBuilder() RequestHeaderBuilder {
+	if b == nil {
 		return NewRequestHeaderBuilder()
 	}
-	return &_RequestHeaderBuilder{_RequestHeader: m.deepCopy()}
+	return &_RequestHeaderBuilder{_RequestHeader: b.deepCopy()}
 }
 
 ///////////////////////

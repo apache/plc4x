@@ -85,40 +85,59 @@ func NewTelephonyDataLineOnHookBuilder() TelephonyDataLineOnHookBuilder {
 type _TelephonyDataLineOnHookBuilder struct {
 	*_TelephonyDataLineOnHook
 
+	parentBuilder *_TelephonyDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TelephonyDataLineOnHookBuilder) = (*_TelephonyDataLineOnHookBuilder)(nil)
 
-func (m *_TelephonyDataLineOnHookBuilder) WithMandatoryFields() TelephonyDataLineOnHookBuilder {
-	return m
+func (b *_TelephonyDataLineOnHookBuilder) setParent(contract TelephonyDataContract) {
+	b.TelephonyDataContract = contract
 }
 
-func (m *_TelephonyDataLineOnHookBuilder) Build() (TelephonyDataLineOnHook, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TelephonyDataLineOnHookBuilder) WithMandatoryFields() TelephonyDataLineOnHookBuilder {
+	return b
+}
+
+func (b *_TelephonyDataLineOnHookBuilder) Build() (TelephonyDataLineOnHook, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TelephonyDataLineOnHook.deepCopy(), nil
+	return b._TelephonyDataLineOnHook.deepCopy(), nil
 }
 
-func (m *_TelephonyDataLineOnHookBuilder) MustBuild() TelephonyDataLineOnHook {
-	build, err := m.Build()
+func (b *_TelephonyDataLineOnHookBuilder) MustBuild() TelephonyDataLineOnHook {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TelephonyDataLineOnHookBuilder) DeepCopy() any {
-	return m.CreateTelephonyDataLineOnHookBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TelephonyDataLineOnHookBuilder) Done() TelephonyDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TelephonyDataLineOnHookBuilder) buildForTelephonyData() (TelephonyData, error) {
+	return b.Build()
+}
+
+func (b *_TelephonyDataLineOnHookBuilder) DeepCopy() any {
+	_copy := b.CreateTelephonyDataLineOnHookBuilder().(*_TelephonyDataLineOnHookBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTelephonyDataLineOnHookBuilder creates a TelephonyDataLineOnHookBuilder
-func (m *_TelephonyDataLineOnHook) CreateTelephonyDataLineOnHookBuilder() TelephonyDataLineOnHookBuilder {
-	if m == nil {
+func (b *_TelephonyDataLineOnHook) CreateTelephonyDataLineOnHookBuilder() TelephonyDataLineOnHookBuilder {
+	if b == nil {
 		return NewTelephonyDataLineOnHookBuilder()
 	}
-	return &_TelephonyDataLineOnHookBuilder{_TelephonyDataLineOnHook: m.deepCopy()}
+	return &_TelephonyDataLineOnHookBuilder{_TelephonyDataLineOnHook: b.deepCopy()}
 }
 
 ///////////////////////

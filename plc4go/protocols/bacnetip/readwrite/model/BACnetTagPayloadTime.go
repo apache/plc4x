@@ -115,55 +115,59 @@ type _BACnetTagPayloadTimeBuilder struct {
 
 var _ (BACnetTagPayloadTimeBuilder) = (*_BACnetTagPayloadTimeBuilder)(nil)
 
-func (m *_BACnetTagPayloadTimeBuilder) WithMandatoryFields(hour uint8, minute uint8, second uint8, fractional uint8) BACnetTagPayloadTimeBuilder {
-	return m.WithHour(hour).WithMinute(minute).WithSecond(second).WithFractional(fractional)
+func (b *_BACnetTagPayloadTimeBuilder) WithMandatoryFields(hour uint8, minute uint8, second uint8, fractional uint8) BACnetTagPayloadTimeBuilder {
+	return b.WithHour(hour).WithMinute(minute).WithSecond(second).WithFractional(fractional)
 }
 
-func (m *_BACnetTagPayloadTimeBuilder) WithHour(hour uint8) BACnetTagPayloadTimeBuilder {
-	m.Hour = hour
-	return m
+func (b *_BACnetTagPayloadTimeBuilder) WithHour(hour uint8) BACnetTagPayloadTimeBuilder {
+	b.Hour = hour
+	return b
 }
 
-func (m *_BACnetTagPayloadTimeBuilder) WithMinute(minute uint8) BACnetTagPayloadTimeBuilder {
-	m.Minute = minute
-	return m
+func (b *_BACnetTagPayloadTimeBuilder) WithMinute(minute uint8) BACnetTagPayloadTimeBuilder {
+	b.Minute = minute
+	return b
 }
 
-func (m *_BACnetTagPayloadTimeBuilder) WithSecond(second uint8) BACnetTagPayloadTimeBuilder {
-	m.Second = second
-	return m
+func (b *_BACnetTagPayloadTimeBuilder) WithSecond(second uint8) BACnetTagPayloadTimeBuilder {
+	b.Second = second
+	return b
 }
 
-func (m *_BACnetTagPayloadTimeBuilder) WithFractional(fractional uint8) BACnetTagPayloadTimeBuilder {
-	m.Fractional = fractional
-	return m
+func (b *_BACnetTagPayloadTimeBuilder) WithFractional(fractional uint8) BACnetTagPayloadTimeBuilder {
+	b.Fractional = fractional
+	return b
 }
 
-func (m *_BACnetTagPayloadTimeBuilder) Build() (BACnetTagPayloadTime, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetTagPayloadTimeBuilder) Build() (BACnetTagPayloadTime, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTagPayloadTime.deepCopy(), nil
+	return b._BACnetTagPayloadTime.deepCopy(), nil
 }
 
-func (m *_BACnetTagPayloadTimeBuilder) MustBuild() BACnetTagPayloadTime {
-	build, err := m.Build()
+func (b *_BACnetTagPayloadTimeBuilder) MustBuild() BACnetTagPayloadTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTagPayloadTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetTagPayloadTimeBuilder()
+func (b *_BACnetTagPayloadTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadTimeBuilder().(*_BACnetTagPayloadTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTagPayloadTimeBuilder creates a BACnetTagPayloadTimeBuilder
-func (m *_BACnetTagPayloadTime) CreateBACnetTagPayloadTimeBuilder() BACnetTagPayloadTimeBuilder {
-	if m == nil {
+func (b *_BACnetTagPayloadTime) CreateBACnetTagPayloadTimeBuilder() BACnetTagPayloadTimeBuilder {
+	if b == nil {
 		return NewBACnetTagPayloadTimeBuilder()
 	}
-	return &_BACnetTagPayloadTimeBuilder{_BACnetTagPayloadTime: m.deepCopy()}
+	return &_BACnetTagPayloadTimeBuilder{_BACnetTagPayloadTime: b.deepCopy()}
 }
 
 ///////////////////////

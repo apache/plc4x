@@ -100,64 +100,83 @@ func NewBACnetConstructedDataTrackingValueBuilder() BACnetConstructedDataTrackin
 type _BACnetConstructedDataTrackingValueBuilder struct {
 	*_BACnetConstructedDataTrackingValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataTrackingValueBuilder) = (*_BACnetConstructedDataTrackingValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataTrackingValueBuilder) WithMandatoryFields(trackingValue BACnetLifeSafetyStateTagged) BACnetConstructedDataTrackingValueBuilder {
-	return m.WithTrackingValue(trackingValue)
+func (b *_BACnetConstructedDataTrackingValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataTrackingValueBuilder) WithTrackingValue(trackingValue BACnetLifeSafetyStateTagged) BACnetConstructedDataTrackingValueBuilder {
-	m.TrackingValue = trackingValue
-	return m
+func (b *_BACnetConstructedDataTrackingValueBuilder) WithMandatoryFields(trackingValue BACnetLifeSafetyStateTagged) BACnetConstructedDataTrackingValueBuilder {
+	return b.WithTrackingValue(trackingValue)
 }
 
-func (m *_BACnetConstructedDataTrackingValueBuilder) WithTrackingValueBuilder(builderSupplier func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetConstructedDataTrackingValueBuilder {
-	builder := builderSupplier(m.TrackingValue.CreateBACnetLifeSafetyStateTaggedBuilder())
+func (b *_BACnetConstructedDataTrackingValueBuilder) WithTrackingValue(trackingValue BACnetLifeSafetyStateTagged) BACnetConstructedDataTrackingValueBuilder {
+	b.TrackingValue = trackingValue
+	return b
+}
+
+func (b *_BACnetConstructedDataTrackingValueBuilder) WithTrackingValueBuilder(builderSupplier func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetConstructedDataTrackingValueBuilder {
+	builder := builderSupplier(b.TrackingValue.CreateBACnetLifeSafetyStateTaggedBuilder())
 	var err error
-	m.TrackingValue, err = builder.Build()
+	b.TrackingValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLifeSafetyStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLifeSafetyStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataTrackingValueBuilder) Build() (BACnetConstructedDataTrackingValue, error) {
-	if m.TrackingValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataTrackingValueBuilder) Build() (BACnetConstructedDataTrackingValue, error) {
+	if b.TrackingValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'trackingValue' not set"))
+		b.err.Append(errors.New("mandatory field 'trackingValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataTrackingValue.deepCopy(), nil
+	return b._BACnetConstructedDataTrackingValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataTrackingValueBuilder) MustBuild() BACnetConstructedDataTrackingValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataTrackingValueBuilder) MustBuild() BACnetConstructedDataTrackingValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataTrackingValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataTrackingValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTrackingValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTrackingValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTrackingValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTrackingValueBuilder().(*_BACnetConstructedDataTrackingValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataTrackingValueBuilder creates a BACnetConstructedDataTrackingValueBuilder
-func (m *_BACnetConstructedDataTrackingValue) CreateBACnetConstructedDataTrackingValueBuilder() BACnetConstructedDataTrackingValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataTrackingValue) CreateBACnetConstructedDataTrackingValueBuilder() BACnetConstructedDataTrackingValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataTrackingValueBuilder()
 	}
-	return &_BACnetConstructedDataTrackingValueBuilder{_BACnetConstructedDataTrackingValue: m.deepCopy()}
+	return &_BACnetConstructedDataTrackingValueBuilder{_BACnetConstructedDataTrackingValue: b.deepCopy()}
 }
 
 ///////////////////////

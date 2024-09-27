@@ -100,64 +100,83 @@ func NewBACnetConstructedDataIPv6ZoneIndexBuilder() BACnetConstructedDataIPv6Zon
 type _BACnetConstructedDataIPv6ZoneIndexBuilder struct {
 	*_BACnetConstructedDataIPv6ZoneIndex
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataIPv6ZoneIndexBuilder) = (*_BACnetConstructedDataIPv6ZoneIndexBuilder)(nil)
 
-func (m *_BACnetConstructedDataIPv6ZoneIndexBuilder) WithMandatoryFields(ipv6ZoneIndex BACnetApplicationTagCharacterString) BACnetConstructedDataIPv6ZoneIndexBuilder {
-	return m.WithIpv6ZoneIndex(ipv6ZoneIndex)
+func (b *_BACnetConstructedDataIPv6ZoneIndexBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataIPv6ZoneIndexBuilder) WithIpv6ZoneIndex(ipv6ZoneIndex BACnetApplicationTagCharacterString) BACnetConstructedDataIPv6ZoneIndexBuilder {
-	m.Ipv6ZoneIndex = ipv6ZoneIndex
-	return m
+func (b *_BACnetConstructedDataIPv6ZoneIndexBuilder) WithMandatoryFields(ipv6ZoneIndex BACnetApplicationTagCharacterString) BACnetConstructedDataIPv6ZoneIndexBuilder {
+	return b.WithIpv6ZoneIndex(ipv6ZoneIndex)
 }
 
-func (m *_BACnetConstructedDataIPv6ZoneIndexBuilder) WithIpv6ZoneIndexBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataIPv6ZoneIndexBuilder {
-	builder := builderSupplier(m.Ipv6ZoneIndex.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetConstructedDataIPv6ZoneIndexBuilder) WithIpv6ZoneIndex(ipv6ZoneIndex BACnetApplicationTagCharacterString) BACnetConstructedDataIPv6ZoneIndexBuilder {
+	b.Ipv6ZoneIndex = ipv6ZoneIndex
+	return b
+}
+
+func (b *_BACnetConstructedDataIPv6ZoneIndexBuilder) WithIpv6ZoneIndexBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataIPv6ZoneIndexBuilder {
+	builder := builderSupplier(b.Ipv6ZoneIndex.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.Ipv6ZoneIndex, err = builder.Build()
+	b.Ipv6ZoneIndex, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataIPv6ZoneIndexBuilder) Build() (BACnetConstructedDataIPv6ZoneIndex, error) {
-	if m.Ipv6ZoneIndex == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataIPv6ZoneIndexBuilder) Build() (BACnetConstructedDataIPv6ZoneIndex, error) {
+	if b.Ipv6ZoneIndex == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'ipv6ZoneIndex' not set"))
+		b.err.Append(errors.New("mandatory field 'ipv6ZoneIndex' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataIPv6ZoneIndex.deepCopy(), nil
+	return b._BACnetConstructedDataIPv6ZoneIndex.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataIPv6ZoneIndexBuilder) MustBuild() BACnetConstructedDataIPv6ZoneIndex {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataIPv6ZoneIndexBuilder) MustBuild() BACnetConstructedDataIPv6ZoneIndex {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataIPv6ZoneIndexBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataIPv6ZoneIndexBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPv6ZoneIndexBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPv6ZoneIndexBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPv6ZoneIndexBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPv6ZoneIndexBuilder().(*_BACnetConstructedDataIPv6ZoneIndexBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataIPv6ZoneIndexBuilder creates a BACnetConstructedDataIPv6ZoneIndexBuilder
-func (m *_BACnetConstructedDataIPv6ZoneIndex) CreateBACnetConstructedDataIPv6ZoneIndexBuilder() BACnetConstructedDataIPv6ZoneIndexBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataIPv6ZoneIndex) CreateBACnetConstructedDataIPv6ZoneIndexBuilder() BACnetConstructedDataIPv6ZoneIndexBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataIPv6ZoneIndexBuilder()
 	}
-	return &_BACnetConstructedDataIPv6ZoneIndexBuilder{_BACnetConstructedDataIPv6ZoneIndex: m.deepCopy()}
+	return &_BACnetConstructedDataIPv6ZoneIndexBuilder{_BACnetConstructedDataIPv6ZoneIndex: b.deepCopy()}
 }
 
 ///////////////////////

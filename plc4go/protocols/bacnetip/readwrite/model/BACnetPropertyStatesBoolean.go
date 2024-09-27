@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesBooleanBuilder() BACnetPropertyStatesBooleanBuilder 
 type _BACnetPropertyStatesBooleanBuilder struct {
 	*_BACnetPropertyStatesBoolean
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesBooleanBuilder) = (*_BACnetPropertyStatesBooleanBuilder)(nil)
 
-func (m *_BACnetPropertyStatesBooleanBuilder) WithMandatoryFields(booleanValue BACnetContextTagBoolean) BACnetPropertyStatesBooleanBuilder {
-	return m.WithBooleanValue(booleanValue)
+func (b *_BACnetPropertyStatesBooleanBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesBooleanBuilder) WithBooleanValue(booleanValue BACnetContextTagBoolean) BACnetPropertyStatesBooleanBuilder {
-	m.BooleanValue = booleanValue
-	return m
+func (b *_BACnetPropertyStatesBooleanBuilder) WithMandatoryFields(booleanValue BACnetContextTagBoolean) BACnetPropertyStatesBooleanBuilder {
+	return b.WithBooleanValue(booleanValue)
 }
 
-func (m *_BACnetPropertyStatesBooleanBuilder) WithBooleanValueBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetPropertyStatesBooleanBuilder {
-	builder := builderSupplier(m.BooleanValue.CreateBACnetContextTagBooleanBuilder())
+func (b *_BACnetPropertyStatesBooleanBuilder) WithBooleanValue(booleanValue BACnetContextTagBoolean) BACnetPropertyStatesBooleanBuilder {
+	b.BooleanValue = booleanValue
+	return b
+}
+
+func (b *_BACnetPropertyStatesBooleanBuilder) WithBooleanValueBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetPropertyStatesBooleanBuilder {
+	builder := builderSupplier(b.BooleanValue.CreateBACnetContextTagBooleanBuilder())
 	var err error
-	m.BooleanValue, err = builder.Build()
+	b.BooleanValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesBooleanBuilder) Build() (BACnetPropertyStatesBoolean, error) {
-	if m.BooleanValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesBooleanBuilder) Build() (BACnetPropertyStatesBoolean, error) {
+	if b.BooleanValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'booleanValue' not set"))
+		b.err.Append(errors.New("mandatory field 'booleanValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesBoolean.deepCopy(), nil
+	return b._BACnetPropertyStatesBoolean.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesBooleanBuilder) MustBuild() BACnetPropertyStatesBoolean {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesBooleanBuilder) MustBuild() BACnetPropertyStatesBoolean {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesBooleanBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesBooleanBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesBooleanBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesBooleanBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesBooleanBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesBooleanBuilder().(*_BACnetPropertyStatesBooleanBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesBooleanBuilder creates a BACnetPropertyStatesBooleanBuilder
-func (m *_BACnetPropertyStatesBoolean) CreateBACnetPropertyStatesBooleanBuilder() BACnetPropertyStatesBooleanBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesBoolean) CreateBACnetPropertyStatesBooleanBuilder() BACnetPropertyStatesBooleanBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesBooleanBuilder()
 	}
-	return &_BACnetPropertyStatesBooleanBuilder{_BACnetPropertyStatesBoolean: m.deepCopy()}
+	return &_BACnetPropertyStatesBooleanBuilder{_BACnetPropertyStatesBoolean: b.deepCopy()}
 }
 
 ///////////////////////

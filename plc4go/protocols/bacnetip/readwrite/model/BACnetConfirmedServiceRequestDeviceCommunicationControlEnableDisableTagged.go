@@ -104,64 +104,68 @@ type _BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged
 
 var _ (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) = (*_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
-	return m.WithHeader(header).WithValue(value)
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) Build() (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) Build() (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) MustBuild() BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) MustBuild() BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder()
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder().(*_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder creates a BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) CreateBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder() BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) CreateBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder() BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder{_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder{_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged: b.deepCopy()}
 }
 
 ///////////////////////

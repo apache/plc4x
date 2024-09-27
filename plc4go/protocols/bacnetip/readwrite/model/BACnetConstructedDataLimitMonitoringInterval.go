@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLimitMonitoringIntervalBuilder() BACnetConstructedD
 type _BACnetConstructedDataLimitMonitoringIntervalBuilder struct {
 	*_BACnetConstructedDataLimitMonitoringInterval
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLimitMonitoringIntervalBuilder) = (*_BACnetConstructedDataLimitMonitoringIntervalBuilder)(nil)
 
-func (m *_BACnetConstructedDataLimitMonitoringIntervalBuilder) WithMandatoryFields(limitMonitoringInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLimitMonitoringIntervalBuilder {
-	return m.WithLimitMonitoringInterval(limitMonitoringInterval)
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLimitMonitoringIntervalBuilder) WithLimitMonitoringInterval(limitMonitoringInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLimitMonitoringIntervalBuilder {
-	m.LimitMonitoringInterval = limitMonitoringInterval
-	return m
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) WithMandatoryFields(limitMonitoringInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLimitMonitoringIntervalBuilder {
+	return b.WithLimitMonitoringInterval(limitMonitoringInterval)
 }
 
-func (m *_BACnetConstructedDataLimitMonitoringIntervalBuilder) WithLimitMonitoringIntervalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLimitMonitoringIntervalBuilder {
-	builder := builderSupplier(m.LimitMonitoringInterval.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) WithLimitMonitoringInterval(limitMonitoringInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLimitMonitoringIntervalBuilder {
+	b.LimitMonitoringInterval = limitMonitoringInterval
+	return b
+}
+
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) WithLimitMonitoringIntervalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLimitMonitoringIntervalBuilder {
+	builder := builderSupplier(b.LimitMonitoringInterval.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.LimitMonitoringInterval, err = builder.Build()
+	b.LimitMonitoringInterval, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLimitMonitoringIntervalBuilder) Build() (BACnetConstructedDataLimitMonitoringInterval, error) {
-	if m.LimitMonitoringInterval == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) Build() (BACnetConstructedDataLimitMonitoringInterval, error) {
+	if b.LimitMonitoringInterval == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'limitMonitoringInterval' not set"))
+		b.err.Append(errors.New("mandatory field 'limitMonitoringInterval' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLimitMonitoringInterval.deepCopy(), nil
+	return b._BACnetConstructedDataLimitMonitoringInterval.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLimitMonitoringIntervalBuilder) MustBuild() BACnetConstructedDataLimitMonitoringInterval {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) MustBuild() BACnetConstructedDataLimitMonitoringInterval {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLimitMonitoringIntervalBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLimitMonitoringIntervalBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLimitMonitoringIntervalBuilder().(*_BACnetConstructedDataLimitMonitoringIntervalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLimitMonitoringIntervalBuilder creates a BACnetConstructedDataLimitMonitoringIntervalBuilder
-func (m *_BACnetConstructedDataLimitMonitoringInterval) CreateBACnetConstructedDataLimitMonitoringIntervalBuilder() BACnetConstructedDataLimitMonitoringIntervalBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLimitMonitoringInterval) CreateBACnetConstructedDataLimitMonitoringIntervalBuilder() BACnetConstructedDataLimitMonitoringIntervalBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLimitMonitoringIntervalBuilder()
 	}
-	return &_BACnetConstructedDataLimitMonitoringIntervalBuilder{_BACnetConstructedDataLimitMonitoringInterval: m.deepCopy()}
+	return &_BACnetConstructedDataLimitMonitoringIntervalBuilder{_BACnetConstructedDataLimitMonitoringInterval: b.deepCopy()}
 }
 
 ///////////////////////

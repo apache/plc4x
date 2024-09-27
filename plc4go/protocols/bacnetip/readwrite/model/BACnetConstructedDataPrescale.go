@@ -100,64 +100,83 @@ func NewBACnetConstructedDataPrescaleBuilder() BACnetConstructedDataPrescaleBuil
 type _BACnetConstructedDataPrescaleBuilder struct {
 	*_BACnetConstructedDataPrescale
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataPrescaleBuilder) = (*_BACnetConstructedDataPrescaleBuilder)(nil)
 
-func (m *_BACnetConstructedDataPrescaleBuilder) WithMandatoryFields(prescale BACnetPrescale) BACnetConstructedDataPrescaleBuilder {
-	return m.WithPrescale(prescale)
+func (b *_BACnetConstructedDataPrescaleBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataPrescaleBuilder) WithPrescale(prescale BACnetPrescale) BACnetConstructedDataPrescaleBuilder {
-	m.Prescale = prescale
-	return m
+func (b *_BACnetConstructedDataPrescaleBuilder) WithMandatoryFields(prescale BACnetPrescale) BACnetConstructedDataPrescaleBuilder {
+	return b.WithPrescale(prescale)
 }
 
-func (m *_BACnetConstructedDataPrescaleBuilder) WithPrescaleBuilder(builderSupplier func(BACnetPrescaleBuilder) BACnetPrescaleBuilder) BACnetConstructedDataPrescaleBuilder {
-	builder := builderSupplier(m.Prescale.CreateBACnetPrescaleBuilder())
+func (b *_BACnetConstructedDataPrescaleBuilder) WithPrescale(prescale BACnetPrescale) BACnetConstructedDataPrescaleBuilder {
+	b.Prescale = prescale
+	return b
+}
+
+func (b *_BACnetConstructedDataPrescaleBuilder) WithPrescaleBuilder(builderSupplier func(BACnetPrescaleBuilder) BACnetPrescaleBuilder) BACnetConstructedDataPrescaleBuilder {
+	builder := builderSupplier(b.Prescale.CreateBACnetPrescaleBuilder())
 	var err error
-	m.Prescale, err = builder.Build()
+	b.Prescale, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetPrescaleBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetPrescaleBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataPrescaleBuilder) Build() (BACnetConstructedDataPrescale, error) {
-	if m.Prescale == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataPrescaleBuilder) Build() (BACnetConstructedDataPrescale, error) {
+	if b.Prescale == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'prescale' not set"))
+		b.err.Append(errors.New("mandatory field 'prescale' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataPrescale.deepCopy(), nil
+	return b._BACnetConstructedDataPrescale.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataPrescaleBuilder) MustBuild() BACnetConstructedDataPrescale {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataPrescaleBuilder) MustBuild() BACnetConstructedDataPrescale {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataPrescaleBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataPrescaleBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPrescaleBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPrescaleBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPrescaleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPrescaleBuilder().(*_BACnetConstructedDataPrescaleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataPrescaleBuilder creates a BACnetConstructedDataPrescaleBuilder
-func (m *_BACnetConstructedDataPrescale) CreateBACnetConstructedDataPrescaleBuilder() BACnetConstructedDataPrescaleBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataPrescale) CreateBACnetConstructedDataPrescaleBuilder() BACnetConstructedDataPrescaleBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataPrescaleBuilder()
 	}
-	return &_BACnetConstructedDataPrescaleBuilder{_BACnetConstructedDataPrescale: m.deepCopy()}
+	return &_BACnetConstructedDataPrescaleBuilder{_BACnetConstructedDataPrescale: b.deepCopy()}
 }
 
 ///////////////////////

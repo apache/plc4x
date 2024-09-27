@@ -100,64 +100,83 @@ func NewBACnetConstructedDataObjectTypeBuilder() BACnetConstructedDataObjectType
 type _BACnetConstructedDataObjectTypeBuilder struct {
 	*_BACnetConstructedDataObjectType
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataObjectTypeBuilder) = (*_BACnetConstructedDataObjectTypeBuilder)(nil)
 
-func (m *_BACnetConstructedDataObjectTypeBuilder) WithMandatoryFields(objectType BACnetObjectTypeTagged) BACnetConstructedDataObjectTypeBuilder {
-	return m.WithObjectType(objectType)
+func (b *_BACnetConstructedDataObjectTypeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataObjectTypeBuilder) WithObjectType(objectType BACnetObjectTypeTagged) BACnetConstructedDataObjectTypeBuilder {
-	m.ObjectType = objectType
-	return m
+func (b *_BACnetConstructedDataObjectTypeBuilder) WithMandatoryFields(objectType BACnetObjectTypeTagged) BACnetConstructedDataObjectTypeBuilder {
+	return b.WithObjectType(objectType)
 }
 
-func (m *_BACnetConstructedDataObjectTypeBuilder) WithObjectTypeBuilder(builderSupplier func(BACnetObjectTypeTaggedBuilder) BACnetObjectTypeTaggedBuilder) BACnetConstructedDataObjectTypeBuilder {
-	builder := builderSupplier(m.ObjectType.CreateBACnetObjectTypeTaggedBuilder())
+func (b *_BACnetConstructedDataObjectTypeBuilder) WithObjectType(objectType BACnetObjectTypeTagged) BACnetConstructedDataObjectTypeBuilder {
+	b.ObjectType = objectType
+	return b
+}
+
+func (b *_BACnetConstructedDataObjectTypeBuilder) WithObjectTypeBuilder(builderSupplier func(BACnetObjectTypeTaggedBuilder) BACnetObjectTypeTaggedBuilder) BACnetConstructedDataObjectTypeBuilder {
+	builder := builderSupplier(b.ObjectType.CreateBACnetObjectTypeTaggedBuilder())
 	var err error
-	m.ObjectType, err = builder.Build()
+	b.ObjectType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetObjectTypeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetObjectTypeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataObjectTypeBuilder) Build() (BACnetConstructedDataObjectType, error) {
-	if m.ObjectType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataObjectTypeBuilder) Build() (BACnetConstructedDataObjectType, error) {
+	if b.ObjectType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectType' not set"))
+		b.err.Append(errors.New("mandatory field 'objectType' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataObjectType.deepCopy(), nil
+	return b._BACnetConstructedDataObjectType.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataObjectTypeBuilder) MustBuild() BACnetConstructedDataObjectType {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataObjectTypeBuilder) MustBuild() BACnetConstructedDataObjectType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataObjectTypeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataObjectTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataObjectTypeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataObjectTypeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataObjectTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataObjectTypeBuilder().(*_BACnetConstructedDataObjectTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataObjectTypeBuilder creates a BACnetConstructedDataObjectTypeBuilder
-func (m *_BACnetConstructedDataObjectType) CreateBACnetConstructedDataObjectTypeBuilder() BACnetConstructedDataObjectTypeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataObjectType) CreateBACnetConstructedDataObjectTypeBuilder() BACnetConstructedDataObjectTypeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataObjectTypeBuilder()
 	}
-	return &_BACnetConstructedDataObjectTypeBuilder{_BACnetConstructedDataObjectType: m.deepCopy()}
+	return &_BACnetConstructedDataObjectTypeBuilder{_BACnetConstructedDataObjectType: b.deepCopy()}
 }
 
 ///////////////////////

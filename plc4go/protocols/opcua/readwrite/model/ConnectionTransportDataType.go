@@ -85,40 +85,59 @@ func NewConnectionTransportDataTypeBuilder() ConnectionTransportDataTypeBuilder 
 type _ConnectionTransportDataTypeBuilder struct {
 	*_ConnectionTransportDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ConnectionTransportDataTypeBuilder) = (*_ConnectionTransportDataTypeBuilder)(nil)
 
-func (m *_ConnectionTransportDataTypeBuilder) WithMandatoryFields() ConnectionTransportDataTypeBuilder {
-	return m
+func (b *_ConnectionTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ConnectionTransportDataTypeBuilder) Build() (ConnectionTransportDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ConnectionTransportDataTypeBuilder) WithMandatoryFields() ConnectionTransportDataTypeBuilder {
+	return b
+}
+
+func (b *_ConnectionTransportDataTypeBuilder) Build() (ConnectionTransportDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ConnectionTransportDataType.deepCopy(), nil
+	return b._ConnectionTransportDataType.deepCopy(), nil
 }
 
-func (m *_ConnectionTransportDataTypeBuilder) MustBuild() ConnectionTransportDataType {
-	build, err := m.Build()
+func (b *_ConnectionTransportDataTypeBuilder) MustBuild() ConnectionTransportDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ConnectionTransportDataTypeBuilder) DeepCopy() any {
-	return m.CreateConnectionTransportDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ConnectionTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ConnectionTransportDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ConnectionTransportDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateConnectionTransportDataTypeBuilder().(*_ConnectionTransportDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateConnectionTransportDataTypeBuilder creates a ConnectionTransportDataTypeBuilder
-func (m *_ConnectionTransportDataType) CreateConnectionTransportDataTypeBuilder() ConnectionTransportDataTypeBuilder {
-	if m == nil {
+func (b *_ConnectionTransportDataType) CreateConnectionTransportDataTypeBuilder() ConnectionTransportDataTypeBuilder {
+	if b == nil {
 		return NewConnectionTransportDataTypeBuilder()
 	}
-	return &_ConnectionTransportDataTypeBuilder{_ConnectionTransportDataType: m.deepCopy()}
+	return &_ConnectionTransportDataTypeBuilder{_ConnectionTransportDataType: b.deepCopy()}
 }
 
 ///////////////////////

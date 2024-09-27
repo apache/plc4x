@@ -103,63 +103,82 @@ func NewBACnetConstructedDataTagsBuilder() BACnetConstructedDataTagsBuilder {
 type _BACnetConstructedDataTagsBuilder struct {
 	*_BACnetConstructedDataTags
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataTagsBuilder) = (*_BACnetConstructedDataTagsBuilder)(nil)
 
-func (m *_BACnetConstructedDataTagsBuilder) WithMandatoryFields(tags []BACnetNameValue) BACnetConstructedDataTagsBuilder {
-	return m.WithTags(tags...)
+func (b *_BACnetConstructedDataTagsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataTagsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTagsBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataTagsBuilder) WithMandatoryFields(tags []BACnetNameValue) BACnetConstructedDataTagsBuilder {
+	return b.WithTags(tags...)
 }
 
-func (m *_BACnetConstructedDataTagsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTagsBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataTagsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTagsBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataTagsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTagsBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataTagsBuilder) WithTags(tags ...BACnetNameValue) BACnetConstructedDataTagsBuilder {
-	m.Tags = tags
-	return m
+func (b *_BACnetConstructedDataTagsBuilder) WithTags(tags ...BACnetNameValue) BACnetConstructedDataTagsBuilder {
+	b.Tags = tags
+	return b
 }
 
-func (m *_BACnetConstructedDataTagsBuilder) Build() (BACnetConstructedDataTags, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataTagsBuilder) Build() (BACnetConstructedDataTags, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataTags.deepCopy(), nil
+	return b._BACnetConstructedDataTags.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataTagsBuilder) MustBuild() BACnetConstructedDataTags {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataTagsBuilder) MustBuild() BACnetConstructedDataTags {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataTagsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataTagsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTagsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTagsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTagsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTagsBuilder().(*_BACnetConstructedDataTagsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataTagsBuilder creates a BACnetConstructedDataTagsBuilder
-func (m *_BACnetConstructedDataTags) CreateBACnetConstructedDataTagsBuilder() BACnetConstructedDataTagsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataTags) CreateBACnetConstructedDataTagsBuilder() BACnetConstructedDataTagsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataTagsBuilder()
 	}
-	return &_BACnetConstructedDataTagsBuilder{_BACnetConstructedDataTags: m.deepCopy()}
+	return &_BACnetConstructedDataTagsBuilder{_BACnetConstructedDataTags: b.deepCopy()}
 }
 
 ///////////////////////

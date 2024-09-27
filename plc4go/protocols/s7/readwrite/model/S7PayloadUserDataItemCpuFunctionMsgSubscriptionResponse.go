@@ -85,40 +85,59 @@ func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder() S7Paylo
 type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder struct {
 	*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder) = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder)(nil)
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder) WithMandatoryFields() S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder {
-	return m
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder) WithMandatoryFields() S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder {
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse.deepCopy(), nil
+	return b._S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse.deepCopy(), nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse {
-	build, err := m.Build()
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder) DeepCopy() any {
-	return m.CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder creates a S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder {
-	if m == nil {
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder {
+	if b == nil {
 		return NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder()
 	}
-	return &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder{_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse: m.deepCopy()}
+	return &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder{_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse: b.deepCopy()}
 }
 
 ///////////////////////

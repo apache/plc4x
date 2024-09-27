@@ -86,6 +86,8 @@ type ReplyEncodedReplyBuilder interface {
 	WithMandatoryFields(encodedReply EncodedReply, chksum Checksum) ReplyEncodedReplyBuilder
 	// WithEncodedReply adds EncodedReply (property field)
 	WithEncodedReply(EncodedReply) ReplyEncodedReplyBuilder
+	// WithEncodedReplyBuilder adds EncodedReply (property field) which is build by the builder
+	WithEncodedReplyBuilder(func(EncodedReplyBuilder) EncodedReplyBuilder) ReplyEncodedReplyBuilder
 	// WithChksum adds Chksum (property field)
 	WithChksum(Checksum) ReplyEncodedReplyBuilder
 	// WithChksumBuilder adds Chksum (property field) which is build by the builder
@@ -104,75 +106,107 @@ func NewReplyEncodedReplyBuilder() ReplyEncodedReplyBuilder {
 type _ReplyEncodedReplyBuilder struct {
 	*_ReplyEncodedReply
 
+	parentBuilder *_ReplyBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ReplyEncodedReplyBuilder) = (*_ReplyEncodedReplyBuilder)(nil)
 
-func (m *_ReplyEncodedReplyBuilder) WithMandatoryFields(encodedReply EncodedReply, chksum Checksum) ReplyEncodedReplyBuilder {
-	return m.WithEncodedReply(encodedReply).WithChksum(chksum)
+func (b *_ReplyEncodedReplyBuilder) setParent(contract ReplyContract) {
+	b.ReplyContract = contract
 }
 
-func (m *_ReplyEncodedReplyBuilder) WithEncodedReply(encodedReply EncodedReply) ReplyEncodedReplyBuilder {
-	m.EncodedReply = encodedReply
-	return m
+func (b *_ReplyEncodedReplyBuilder) WithMandatoryFields(encodedReply EncodedReply, chksum Checksum) ReplyEncodedReplyBuilder {
+	return b.WithEncodedReply(encodedReply).WithChksum(chksum)
 }
 
-func (m *_ReplyEncodedReplyBuilder) WithChksum(chksum Checksum) ReplyEncodedReplyBuilder {
-	m.Chksum = chksum
-	return m
+func (b *_ReplyEncodedReplyBuilder) WithEncodedReply(encodedReply EncodedReply) ReplyEncodedReplyBuilder {
+	b.EncodedReply = encodedReply
+	return b
 }
 
-func (m *_ReplyEncodedReplyBuilder) WithChksumBuilder(builderSupplier func(ChecksumBuilder) ChecksumBuilder) ReplyEncodedReplyBuilder {
-	builder := builderSupplier(m.Chksum.CreateChecksumBuilder())
+func (b *_ReplyEncodedReplyBuilder) WithEncodedReplyBuilder(builderSupplier func(EncodedReplyBuilder) EncodedReplyBuilder) ReplyEncodedReplyBuilder {
+	builder := builderSupplier(b.EncodedReply.CreateEncodedReplyBuilder())
 	var err error
-	m.Chksum, err = builder.Build()
+	b.EncodedReply, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ChecksumBuilder failed"))
+		b.err.Append(errors.Wrap(err, "EncodedReplyBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ReplyEncodedReplyBuilder) Build() (ReplyEncodedReply, error) {
-	if m.EncodedReply == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'encodedReply' not set"))
-	}
-	if m.Chksum == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'chksum' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._ReplyEncodedReply.deepCopy(), nil
+func (b *_ReplyEncodedReplyBuilder) WithChksum(chksum Checksum) ReplyEncodedReplyBuilder {
+	b.Chksum = chksum
+	return b
 }
 
-func (m *_ReplyEncodedReplyBuilder) MustBuild() ReplyEncodedReply {
-	build, err := m.Build()
+func (b *_ReplyEncodedReplyBuilder) WithChksumBuilder(builderSupplier func(ChecksumBuilder) ChecksumBuilder) ReplyEncodedReplyBuilder {
+	builder := builderSupplier(b.Chksum.CreateChecksumBuilder())
+	var err error
+	b.Chksum, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ChecksumBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReplyEncodedReplyBuilder) Build() (ReplyEncodedReply, error) {
+	if b.EncodedReply == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'encodedReply' not set"))
+	}
+	if b.Chksum == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'chksum' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ReplyEncodedReply.deepCopy(), nil
+}
+
+func (b *_ReplyEncodedReplyBuilder) MustBuild() ReplyEncodedReply {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ReplyEncodedReplyBuilder) DeepCopy() any {
-	return m.CreateReplyEncodedReplyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ReplyEncodedReplyBuilder) Done() ReplyBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ReplyEncodedReplyBuilder) buildForReply() (Reply, error) {
+	return b.Build()
+}
+
+func (b *_ReplyEncodedReplyBuilder) DeepCopy() any {
+	_copy := b.CreateReplyEncodedReplyBuilder().(*_ReplyEncodedReplyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateReplyEncodedReplyBuilder creates a ReplyEncodedReplyBuilder
-func (m *_ReplyEncodedReply) CreateReplyEncodedReplyBuilder() ReplyEncodedReplyBuilder {
-	if m == nil {
+func (b *_ReplyEncodedReply) CreateReplyEncodedReplyBuilder() ReplyEncodedReplyBuilder {
+	if b == nil {
 		return NewReplyEncodedReplyBuilder()
 	}
-	return &_ReplyEncodedReplyBuilder{_ReplyEncodedReply: m.deepCopy()}
+	return &_ReplyEncodedReplyBuilder{_ReplyEncodedReply: b.deepCopy()}
 }
 
 ///////////////////////

@@ -85,40 +85,59 @@ func NewS7MessageUserDataBuilder() S7MessageUserDataBuilder {
 type _S7MessageUserDataBuilder struct {
 	*_S7MessageUserData
 
+	parentBuilder *_S7MessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7MessageUserDataBuilder) = (*_S7MessageUserDataBuilder)(nil)
 
-func (m *_S7MessageUserDataBuilder) WithMandatoryFields() S7MessageUserDataBuilder {
-	return m
+func (b *_S7MessageUserDataBuilder) setParent(contract S7MessageContract) {
+	b.S7MessageContract = contract
 }
 
-func (m *_S7MessageUserDataBuilder) Build() (S7MessageUserData, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7MessageUserDataBuilder) WithMandatoryFields() S7MessageUserDataBuilder {
+	return b
+}
+
+func (b *_S7MessageUserDataBuilder) Build() (S7MessageUserData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7MessageUserData.deepCopy(), nil
+	return b._S7MessageUserData.deepCopy(), nil
 }
 
-func (m *_S7MessageUserDataBuilder) MustBuild() S7MessageUserData {
-	build, err := m.Build()
+func (b *_S7MessageUserDataBuilder) MustBuild() S7MessageUserData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7MessageUserDataBuilder) DeepCopy() any {
-	return m.CreateS7MessageUserDataBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7MessageUserDataBuilder) Done() S7MessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7MessageUserDataBuilder) buildForS7Message() (S7Message, error) {
+	return b.Build()
+}
+
+func (b *_S7MessageUserDataBuilder) DeepCopy() any {
+	_copy := b.CreateS7MessageUserDataBuilder().(*_S7MessageUserDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7MessageUserDataBuilder creates a S7MessageUserDataBuilder
-func (m *_S7MessageUserData) CreateS7MessageUserDataBuilder() S7MessageUserDataBuilder {
-	if m == nil {
+func (b *_S7MessageUserData) CreateS7MessageUserDataBuilder() S7MessageUserDataBuilder {
+	if b == nil {
 		return NewS7MessageUserDataBuilder()
 	}
-	return &_S7MessageUserDataBuilder{_S7MessageUserData: m.deepCopy()}
+	return &_S7MessageUserDataBuilder{_S7MessageUserData: b.deepCopy()}
 }
 
 ///////////////////////

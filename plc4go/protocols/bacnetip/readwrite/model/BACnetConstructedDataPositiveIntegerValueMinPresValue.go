@@ -100,64 +100,83 @@ func NewBACnetConstructedDataPositiveIntegerValueMinPresValueBuilder() BACnetCon
 type _BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder struct {
 	*_BACnetConstructedDataPositiveIntegerValueMinPresValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) = (*_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) WithMandatoryFields(minPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder {
-	return m.WithMinPresValue(minPresValue)
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) WithMinPresValue(minPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder {
-	m.MinPresValue = minPresValue
-	return m
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) WithMandatoryFields(minPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder {
+	return b.WithMinPresValue(minPresValue)
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) WithMinPresValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder {
-	builder := builderSupplier(m.MinPresValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) WithMinPresValue(minPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder {
+	b.MinPresValue = minPresValue
+	return b
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) WithMinPresValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder {
+	builder := builderSupplier(b.MinPresValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.MinPresValue, err = builder.Build()
+	b.MinPresValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) Build() (BACnetConstructedDataPositiveIntegerValueMinPresValue, error) {
-	if m.MinPresValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) Build() (BACnetConstructedDataPositiveIntegerValueMinPresValue, error) {
+	if b.MinPresValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'minPresValue' not set"))
+		b.err.Append(errors.New("mandatory field 'minPresValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataPositiveIntegerValueMinPresValue.deepCopy(), nil
+	return b._BACnetConstructedDataPositiveIntegerValueMinPresValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueMinPresValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueMinPresValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataPositiveIntegerValueMinPresValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPositiveIntegerValueMinPresValueBuilder().(*_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataPositiveIntegerValueMinPresValueBuilder creates a BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder
-func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) CreateBACnetConstructedDataPositiveIntegerValueMinPresValueBuilder() BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValue) CreateBACnetConstructedDataPositiveIntegerValueMinPresValueBuilder() BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataPositiveIntegerValueMinPresValueBuilder()
 	}
-	return &_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder{_BACnetConstructedDataPositiveIntegerValueMinPresValue: m.deepCopy()}
+	return &_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder{_BACnetConstructedDataPositiveIntegerValueMinPresValue: b.deepCopy()}
 }
 
 ///////////////////////

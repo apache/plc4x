@@ -112,55 +112,74 @@ func NewS7MessageObjectRequestBuilder() S7MessageObjectRequestBuilder {
 type _S7MessageObjectRequestBuilder struct {
 	*_S7MessageObjectRequest
 
+	parentBuilder *_S7DataAlarmMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7MessageObjectRequestBuilder) = (*_S7MessageObjectRequestBuilder)(nil)
 
-func (m *_S7MessageObjectRequestBuilder) WithMandatoryFields(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) S7MessageObjectRequestBuilder {
-	return m.WithSyntaxId(syntaxId).WithQueryType(queryType).WithAlarmType(alarmType)
+func (b *_S7MessageObjectRequestBuilder) setParent(contract S7DataAlarmMessageContract) {
+	b.S7DataAlarmMessageContract = contract
 }
 
-func (m *_S7MessageObjectRequestBuilder) WithSyntaxId(syntaxId SyntaxIdType) S7MessageObjectRequestBuilder {
-	m.SyntaxId = syntaxId
-	return m
+func (b *_S7MessageObjectRequestBuilder) WithMandatoryFields(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) S7MessageObjectRequestBuilder {
+	return b.WithSyntaxId(syntaxId).WithQueryType(queryType).WithAlarmType(alarmType)
 }
 
-func (m *_S7MessageObjectRequestBuilder) WithQueryType(queryType QueryType) S7MessageObjectRequestBuilder {
-	m.QueryType = queryType
-	return m
+func (b *_S7MessageObjectRequestBuilder) WithSyntaxId(syntaxId SyntaxIdType) S7MessageObjectRequestBuilder {
+	b.SyntaxId = syntaxId
+	return b
 }
 
-func (m *_S7MessageObjectRequestBuilder) WithAlarmType(alarmType AlarmType) S7MessageObjectRequestBuilder {
-	m.AlarmType = alarmType
-	return m
+func (b *_S7MessageObjectRequestBuilder) WithQueryType(queryType QueryType) S7MessageObjectRequestBuilder {
+	b.QueryType = queryType
+	return b
 }
 
-func (m *_S7MessageObjectRequestBuilder) Build() (S7MessageObjectRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7MessageObjectRequestBuilder) WithAlarmType(alarmType AlarmType) S7MessageObjectRequestBuilder {
+	b.AlarmType = alarmType
+	return b
+}
+
+func (b *_S7MessageObjectRequestBuilder) Build() (S7MessageObjectRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7MessageObjectRequest.deepCopy(), nil
+	return b._S7MessageObjectRequest.deepCopy(), nil
 }
 
-func (m *_S7MessageObjectRequestBuilder) MustBuild() S7MessageObjectRequest {
-	build, err := m.Build()
+func (b *_S7MessageObjectRequestBuilder) MustBuild() S7MessageObjectRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7MessageObjectRequestBuilder) DeepCopy() any {
-	return m.CreateS7MessageObjectRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7MessageObjectRequestBuilder) Done() S7DataAlarmMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7MessageObjectRequestBuilder) buildForS7DataAlarmMessage() (S7DataAlarmMessage, error) {
+	return b.Build()
+}
+
+func (b *_S7MessageObjectRequestBuilder) DeepCopy() any {
+	_copy := b.CreateS7MessageObjectRequestBuilder().(*_S7MessageObjectRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7MessageObjectRequestBuilder creates a S7MessageObjectRequestBuilder
-func (m *_S7MessageObjectRequest) CreateS7MessageObjectRequestBuilder() S7MessageObjectRequestBuilder {
-	if m == nil {
+func (b *_S7MessageObjectRequest) CreateS7MessageObjectRequestBuilder() S7MessageObjectRequestBuilder {
+	if b == nil {
 		return NewS7MessageObjectRequestBuilder()
 	}
-	return &_S7MessageObjectRequestBuilder{_S7MessageObjectRequest: m.deepCopy()}
+	return &_S7MessageObjectRequestBuilder{_S7MessageObjectRequest: b.deepCopy()}
 }
 
 ///////////////////////

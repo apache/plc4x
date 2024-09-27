@@ -103,63 +103,82 @@ func NewBACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder() BA
 type _BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder struct {
 	*_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) = (*_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder)(nil)
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) WithMandatoryFields(groupMembers []BACnetDeviceObjectPropertyReference) BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder {
-	return m.WithGroupMembers(groupMembers...)
+func (b *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) WithMandatoryFields(groupMembers []BACnetDeviceObjectPropertyReference) BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder {
+	return b.WithGroupMembers(groupMembers...)
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) WithGroupMembers(groupMembers ...BACnetDeviceObjectPropertyReference) BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder {
-	m.GroupMembers = groupMembers
-	return m
+func (b *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) WithGroupMembers(groupMembers ...BACnetDeviceObjectPropertyReference) BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder {
+	b.GroupMembers = groupMembers
+	return b
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) Build() (BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) Build() (BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty.deepCopy(), nil
+	return b._BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) MustBuild() BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) MustBuild() BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder().(*_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder creates a BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder
-func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty) CreateBACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder() BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty) CreateBACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder() BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder()
 	}
-	return &_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder{_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty: m.deepCopy()}
+	return &_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder{_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty: b.deepCopy()}
 }
 
 ///////////////////////

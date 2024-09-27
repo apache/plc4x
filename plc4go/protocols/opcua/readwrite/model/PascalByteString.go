@@ -95,45 +95,49 @@ type _PascalByteStringBuilder struct {
 
 var _ (PascalByteStringBuilder) = (*_PascalByteStringBuilder)(nil)
 
-func (m *_PascalByteStringBuilder) WithMandatoryFields(stringLength int32, stringValue []byte) PascalByteStringBuilder {
-	return m.WithStringLength(stringLength).WithStringValue(stringValue...)
+func (b *_PascalByteStringBuilder) WithMandatoryFields(stringLength int32, stringValue []byte) PascalByteStringBuilder {
+	return b.WithStringLength(stringLength).WithStringValue(stringValue...)
 }
 
-func (m *_PascalByteStringBuilder) WithStringLength(stringLength int32) PascalByteStringBuilder {
-	m.StringLength = stringLength
-	return m
+func (b *_PascalByteStringBuilder) WithStringLength(stringLength int32) PascalByteStringBuilder {
+	b.StringLength = stringLength
+	return b
 }
 
-func (m *_PascalByteStringBuilder) WithStringValue(stringValue ...byte) PascalByteStringBuilder {
-	m.StringValue = stringValue
-	return m
+func (b *_PascalByteStringBuilder) WithStringValue(stringValue ...byte) PascalByteStringBuilder {
+	b.StringValue = stringValue
+	return b
 }
 
-func (m *_PascalByteStringBuilder) Build() (PascalByteString, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_PascalByteStringBuilder) Build() (PascalByteString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._PascalByteString.deepCopy(), nil
+	return b._PascalByteString.deepCopy(), nil
 }
 
-func (m *_PascalByteStringBuilder) MustBuild() PascalByteString {
-	build, err := m.Build()
+func (b *_PascalByteStringBuilder) MustBuild() PascalByteString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PascalByteStringBuilder) DeepCopy() any {
-	return m.CreatePascalByteStringBuilder()
+func (b *_PascalByteStringBuilder) DeepCopy() any {
+	_copy := b.CreatePascalByteStringBuilder().(*_PascalByteStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePascalByteStringBuilder creates a PascalByteStringBuilder
-func (m *_PascalByteString) CreatePascalByteStringBuilder() PascalByteStringBuilder {
-	if m == nil {
+func (b *_PascalByteString) CreatePascalByteStringBuilder() PascalByteStringBuilder {
+	if b == nil {
 		return NewPascalByteStringBuilder()
 	}
-	return &_PascalByteStringBuilder{_PascalByteString: m.deepCopy()}
+	return &_PascalByteStringBuilder{_PascalByteString: b.deepCopy()}
 }
 
 ///////////////////////

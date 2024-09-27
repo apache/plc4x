@@ -98,64 +98,83 @@ func NewBACnetScaleFloatScaleBuilder() BACnetScaleFloatScaleBuilder {
 type _BACnetScaleFloatScaleBuilder struct {
 	*_BACnetScaleFloatScale
 
+	parentBuilder *_BACnetScaleBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetScaleFloatScaleBuilder) = (*_BACnetScaleFloatScaleBuilder)(nil)
 
-func (m *_BACnetScaleFloatScaleBuilder) WithMandatoryFields(floatScale BACnetContextTagReal) BACnetScaleFloatScaleBuilder {
-	return m.WithFloatScale(floatScale)
+func (b *_BACnetScaleFloatScaleBuilder) setParent(contract BACnetScaleContract) {
+	b.BACnetScaleContract = contract
 }
 
-func (m *_BACnetScaleFloatScaleBuilder) WithFloatScale(floatScale BACnetContextTagReal) BACnetScaleFloatScaleBuilder {
-	m.FloatScale = floatScale
-	return m
+func (b *_BACnetScaleFloatScaleBuilder) WithMandatoryFields(floatScale BACnetContextTagReal) BACnetScaleFloatScaleBuilder {
+	return b.WithFloatScale(floatScale)
 }
 
-func (m *_BACnetScaleFloatScaleBuilder) WithFloatScaleBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetScaleFloatScaleBuilder {
-	builder := builderSupplier(m.FloatScale.CreateBACnetContextTagRealBuilder())
+func (b *_BACnetScaleFloatScaleBuilder) WithFloatScale(floatScale BACnetContextTagReal) BACnetScaleFloatScaleBuilder {
+	b.FloatScale = floatScale
+	return b
+}
+
+func (b *_BACnetScaleFloatScaleBuilder) WithFloatScaleBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetScaleFloatScaleBuilder {
+	builder := builderSupplier(b.FloatScale.CreateBACnetContextTagRealBuilder())
 	var err error
-	m.FloatScale, err = builder.Build()
+	b.FloatScale, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetScaleFloatScaleBuilder) Build() (BACnetScaleFloatScale, error) {
-	if m.FloatScale == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetScaleFloatScaleBuilder) Build() (BACnetScaleFloatScale, error) {
+	if b.FloatScale == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'floatScale' not set"))
+		b.err.Append(errors.New("mandatory field 'floatScale' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetScaleFloatScale.deepCopy(), nil
+	return b._BACnetScaleFloatScale.deepCopy(), nil
 }
 
-func (m *_BACnetScaleFloatScaleBuilder) MustBuild() BACnetScaleFloatScale {
-	build, err := m.Build()
+func (b *_BACnetScaleFloatScaleBuilder) MustBuild() BACnetScaleFloatScale {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetScaleFloatScaleBuilder) DeepCopy() any {
-	return m.CreateBACnetScaleFloatScaleBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetScaleFloatScaleBuilder) Done() BACnetScaleBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetScaleFloatScaleBuilder) buildForBACnetScale() (BACnetScale, error) {
+	return b.Build()
+}
+
+func (b *_BACnetScaleFloatScaleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetScaleFloatScaleBuilder().(*_BACnetScaleFloatScaleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetScaleFloatScaleBuilder creates a BACnetScaleFloatScaleBuilder
-func (m *_BACnetScaleFloatScale) CreateBACnetScaleFloatScaleBuilder() BACnetScaleFloatScaleBuilder {
-	if m == nil {
+func (b *_BACnetScaleFloatScale) CreateBACnetScaleFloatScaleBuilder() BACnetScaleFloatScaleBuilder {
+	if b == nil {
 		return NewBACnetScaleFloatScaleBuilder()
 	}
-	return &_BACnetScaleFloatScaleBuilder{_BACnetScaleFloatScale: m.deepCopy()}
+	return &_BACnetScaleFloatScaleBuilder{_BACnetScaleFloatScale: b.deepCopy()}
 }
 
 ///////////////////////

@@ -93,45 +93,64 @@ func NewTelephonyDataDivertBuilder() TelephonyDataDivertBuilder {
 type _TelephonyDataDivertBuilder struct {
 	*_TelephonyDataDivert
 
+	parentBuilder *_TelephonyDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TelephonyDataDivertBuilder) = (*_TelephonyDataDivertBuilder)(nil)
 
-func (m *_TelephonyDataDivertBuilder) WithMandatoryFields(number string) TelephonyDataDivertBuilder {
-	return m.WithNumber(number)
+func (b *_TelephonyDataDivertBuilder) setParent(contract TelephonyDataContract) {
+	b.TelephonyDataContract = contract
 }
 
-func (m *_TelephonyDataDivertBuilder) WithNumber(number string) TelephonyDataDivertBuilder {
-	m.Number = number
-	return m
+func (b *_TelephonyDataDivertBuilder) WithMandatoryFields(number string) TelephonyDataDivertBuilder {
+	return b.WithNumber(number)
 }
 
-func (m *_TelephonyDataDivertBuilder) Build() (TelephonyDataDivert, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TelephonyDataDivertBuilder) WithNumber(number string) TelephonyDataDivertBuilder {
+	b.Number = number
+	return b
+}
+
+func (b *_TelephonyDataDivertBuilder) Build() (TelephonyDataDivert, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TelephonyDataDivert.deepCopy(), nil
+	return b._TelephonyDataDivert.deepCopy(), nil
 }
 
-func (m *_TelephonyDataDivertBuilder) MustBuild() TelephonyDataDivert {
-	build, err := m.Build()
+func (b *_TelephonyDataDivertBuilder) MustBuild() TelephonyDataDivert {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TelephonyDataDivertBuilder) DeepCopy() any {
-	return m.CreateTelephonyDataDivertBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TelephonyDataDivertBuilder) Done() TelephonyDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TelephonyDataDivertBuilder) buildForTelephonyData() (TelephonyData, error) {
+	return b.Build()
+}
+
+func (b *_TelephonyDataDivertBuilder) DeepCopy() any {
+	_copy := b.CreateTelephonyDataDivertBuilder().(*_TelephonyDataDivertBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTelephonyDataDivertBuilder creates a TelephonyDataDivertBuilder
-func (m *_TelephonyDataDivert) CreateTelephonyDataDivertBuilder() TelephonyDataDivertBuilder {
-	if m == nil {
+func (b *_TelephonyDataDivert) CreateTelephonyDataDivertBuilder() TelephonyDataDivertBuilder {
+	if b == nil {
 		return NewTelephonyDataDivertBuilder()
 	}
-	return &_TelephonyDataDivertBuilder{_TelephonyDataDivert: m.deepCopy()}
+	return &_TelephonyDataDivertBuilder{_TelephonyDataDivert: b.deepCopy()}
 }
 
 ///////////////////////

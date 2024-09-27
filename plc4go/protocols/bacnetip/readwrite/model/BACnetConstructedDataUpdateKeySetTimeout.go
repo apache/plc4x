@@ -100,64 +100,83 @@ func NewBACnetConstructedDataUpdateKeySetTimeoutBuilder() BACnetConstructedDataU
 type _BACnetConstructedDataUpdateKeySetTimeoutBuilder struct {
 	*_BACnetConstructedDataUpdateKeySetTimeout
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataUpdateKeySetTimeoutBuilder) = (*_BACnetConstructedDataUpdateKeySetTimeoutBuilder)(nil)
 
-func (m *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) WithMandatoryFields(updateKeySetTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataUpdateKeySetTimeoutBuilder {
-	return m.WithUpdateKeySetTimeout(updateKeySetTimeout)
+func (b *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) WithUpdateKeySetTimeout(updateKeySetTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataUpdateKeySetTimeoutBuilder {
-	m.UpdateKeySetTimeout = updateKeySetTimeout
-	return m
+func (b *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) WithMandatoryFields(updateKeySetTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataUpdateKeySetTimeoutBuilder {
+	return b.WithUpdateKeySetTimeout(updateKeySetTimeout)
 }
 
-func (m *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) WithUpdateKeySetTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataUpdateKeySetTimeoutBuilder {
-	builder := builderSupplier(m.UpdateKeySetTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) WithUpdateKeySetTimeout(updateKeySetTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataUpdateKeySetTimeoutBuilder {
+	b.UpdateKeySetTimeout = updateKeySetTimeout
+	return b
+}
+
+func (b *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) WithUpdateKeySetTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataUpdateKeySetTimeoutBuilder {
+	builder := builderSupplier(b.UpdateKeySetTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.UpdateKeySetTimeout, err = builder.Build()
+	b.UpdateKeySetTimeout, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) Build() (BACnetConstructedDataUpdateKeySetTimeout, error) {
-	if m.UpdateKeySetTimeout == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) Build() (BACnetConstructedDataUpdateKeySetTimeout, error) {
+	if b.UpdateKeySetTimeout == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'updateKeySetTimeout' not set"))
+		b.err.Append(errors.New("mandatory field 'updateKeySetTimeout' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataUpdateKeySetTimeout.deepCopy(), nil
+	return b._BACnetConstructedDataUpdateKeySetTimeout.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) MustBuild() BACnetConstructedDataUpdateKeySetTimeout {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) MustBuild() BACnetConstructedDataUpdateKeySetTimeout {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataUpdateKeySetTimeoutBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataUpdateKeySetTimeoutBuilder().(*_BACnetConstructedDataUpdateKeySetTimeoutBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataUpdateKeySetTimeoutBuilder creates a BACnetConstructedDataUpdateKeySetTimeoutBuilder
-func (m *_BACnetConstructedDataUpdateKeySetTimeout) CreateBACnetConstructedDataUpdateKeySetTimeoutBuilder() BACnetConstructedDataUpdateKeySetTimeoutBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataUpdateKeySetTimeout) CreateBACnetConstructedDataUpdateKeySetTimeoutBuilder() BACnetConstructedDataUpdateKeySetTimeoutBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataUpdateKeySetTimeoutBuilder()
 	}
-	return &_BACnetConstructedDataUpdateKeySetTimeoutBuilder{_BACnetConstructedDataUpdateKeySetTimeout: m.deepCopy()}
+	return &_BACnetConstructedDataUpdateKeySetTimeoutBuilder{_BACnetConstructedDataUpdateKeySetTimeout: b.deepCopy()}
 }
 
 ///////////////////////

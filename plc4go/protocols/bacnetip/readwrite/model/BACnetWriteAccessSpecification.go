@@ -120,112 +120,116 @@ type _BACnetWriteAccessSpecificationBuilder struct {
 
 var _ (BACnetWriteAccessSpecificationBuilder) = (*_BACnetWriteAccessSpecificationBuilder)(nil)
 
-func (m *_BACnetWriteAccessSpecificationBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfPropertyWriteDefinition []BACnetPropertyWriteDefinition, closingTag BACnetClosingTag) BACnetWriteAccessSpecificationBuilder {
-	return m.WithObjectIdentifier(objectIdentifier).WithOpeningTag(openingTag).WithListOfPropertyWriteDefinition(listOfPropertyWriteDefinition...).WithClosingTag(closingTag)
+func (b *_BACnetWriteAccessSpecificationBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfPropertyWriteDefinition []BACnetPropertyWriteDefinition, closingTag BACnetClosingTag) BACnetWriteAccessSpecificationBuilder {
+	return b.WithObjectIdentifier(objectIdentifier).WithOpeningTag(openingTag).WithListOfPropertyWriteDefinition(listOfPropertyWriteDefinition...).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetWriteAccessSpecificationBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetWriteAccessSpecificationBuilder {
-	m.ObjectIdentifier = objectIdentifier
-	return m
+func (b *_BACnetWriteAccessSpecificationBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetWriteAccessSpecificationBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
 }
 
-func (m *_BACnetWriteAccessSpecificationBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetWriteAccessSpecificationBuilder {
-	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+func (b *_BACnetWriteAccessSpecificationBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetWriteAccessSpecificationBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
 	var err error
-	m.ObjectIdentifier, err = builder.Build()
+	b.ObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetWriteAccessSpecificationBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetWriteAccessSpecificationBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetWriteAccessSpecificationBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetWriteAccessSpecificationBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetWriteAccessSpecificationBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetWriteAccessSpecificationBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetWriteAccessSpecificationBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetWriteAccessSpecificationBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetWriteAccessSpecificationBuilder) WithListOfPropertyWriteDefinition(listOfPropertyWriteDefinition ...BACnetPropertyWriteDefinition) BACnetWriteAccessSpecificationBuilder {
-	m.ListOfPropertyWriteDefinition = listOfPropertyWriteDefinition
-	return m
+func (b *_BACnetWriteAccessSpecificationBuilder) WithListOfPropertyWriteDefinition(listOfPropertyWriteDefinition ...BACnetPropertyWriteDefinition) BACnetWriteAccessSpecificationBuilder {
+	b.ListOfPropertyWriteDefinition = listOfPropertyWriteDefinition
+	return b
 }
 
-func (m *_BACnetWriteAccessSpecificationBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetWriteAccessSpecificationBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetWriteAccessSpecificationBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetWriteAccessSpecificationBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetWriteAccessSpecificationBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetWriteAccessSpecificationBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetWriteAccessSpecificationBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetWriteAccessSpecificationBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetWriteAccessSpecificationBuilder) Build() (BACnetWriteAccessSpecification, error) {
-	if m.ObjectIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetWriteAccessSpecificationBuilder) Build() (BACnetWriteAccessSpecification, error) {
+	if b.ObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
 	}
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetWriteAccessSpecification.deepCopy(), nil
+	return b._BACnetWriteAccessSpecification.deepCopy(), nil
 }
 
-func (m *_BACnetWriteAccessSpecificationBuilder) MustBuild() BACnetWriteAccessSpecification {
-	build, err := m.Build()
+func (b *_BACnetWriteAccessSpecificationBuilder) MustBuild() BACnetWriteAccessSpecification {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetWriteAccessSpecificationBuilder) DeepCopy() any {
-	return m.CreateBACnetWriteAccessSpecificationBuilder()
+func (b *_BACnetWriteAccessSpecificationBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetWriteAccessSpecificationBuilder().(*_BACnetWriteAccessSpecificationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetWriteAccessSpecificationBuilder creates a BACnetWriteAccessSpecificationBuilder
-func (m *_BACnetWriteAccessSpecification) CreateBACnetWriteAccessSpecificationBuilder() BACnetWriteAccessSpecificationBuilder {
-	if m == nil {
+func (b *_BACnetWriteAccessSpecification) CreateBACnetWriteAccessSpecificationBuilder() BACnetWriteAccessSpecificationBuilder {
+	if b == nil {
 		return NewBACnetWriteAccessSpecificationBuilder()
 	}
-	return &_BACnetWriteAccessSpecificationBuilder{_BACnetWriteAccessSpecification: m.deepCopy()}
+	return &_BACnetWriteAccessSpecificationBuilder{_BACnetWriteAccessSpecification: b.deepCopy()}
 }
 
 ///////////////////////

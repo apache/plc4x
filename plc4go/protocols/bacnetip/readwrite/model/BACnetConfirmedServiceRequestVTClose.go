@@ -96,45 +96,64 @@ func NewBACnetConfirmedServiceRequestVTCloseBuilder() BACnetConfirmedServiceRequ
 type _BACnetConfirmedServiceRequestVTCloseBuilder struct {
 	*_BACnetConfirmedServiceRequestVTClose
 
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestVTCloseBuilder) = (*_BACnetConfirmedServiceRequestVTCloseBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestVTCloseBuilder) WithMandatoryFields(listOfRemoteVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTCloseBuilder {
-	return m.WithListOfRemoteVtSessionIdentifiers(listOfRemoteVtSessionIdentifiers...)
+func (b *_BACnetConfirmedServiceRequestVTCloseBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestVTCloseBuilder) WithListOfRemoteVtSessionIdentifiers(listOfRemoteVtSessionIdentifiers ...BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTCloseBuilder {
-	m.ListOfRemoteVtSessionIdentifiers = listOfRemoteVtSessionIdentifiers
-	return m
+func (b *_BACnetConfirmedServiceRequestVTCloseBuilder) WithMandatoryFields(listOfRemoteVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTCloseBuilder {
+	return b.WithListOfRemoteVtSessionIdentifiers(listOfRemoteVtSessionIdentifiers...)
 }
 
-func (m *_BACnetConfirmedServiceRequestVTCloseBuilder) Build() (BACnetConfirmedServiceRequestVTClose, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConfirmedServiceRequestVTCloseBuilder) WithListOfRemoteVtSessionIdentifiers(listOfRemoteVtSessionIdentifiers ...BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTCloseBuilder {
+	b.ListOfRemoteVtSessionIdentifiers = listOfRemoteVtSessionIdentifiers
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestVTCloseBuilder) Build() (BACnetConfirmedServiceRequestVTClose, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestVTClose.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestVTClose.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestVTCloseBuilder) MustBuild() BACnetConfirmedServiceRequestVTClose {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestVTCloseBuilder) MustBuild() BACnetConfirmedServiceRequestVTClose {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestVTCloseBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestVTCloseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestVTCloseBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestVTCloseBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestVTCloseBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestVTCloseBuilder().(*_BACnetConfirmedServiceRequestVTCloseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestVTCloseBuilder creates a BACnetConfirmedServiceRequestVTCloseBuilder
-func (m *_BACnetConfirmedServiceRequestVTClose) CreateBACnetConfirmedServiceRequestVTCloseBuilder() BACnetConfirmedServiceRequestVTCloseBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestVTClose) CreateBACnetConfirmedServiceRequestVTCloseBuilder() BACnetConfirmedServiceRequestVTCloseBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestVTCloseBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestVTCloseBuilder{_BACnetConfirmedServiceRequestVTClose: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestVTCloseBuilder{_BACnetConfirmedServiceRequestVTClose: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataTimeOfStrikeCountResetBuilder() BACnetConstructedDa
 type _BACnetConstructedDataTimeOfStrikeCountResetBuilder struct {
 	*_BACnetConstructedDataTimeOfStrikeCountReset
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataTimeOfStrikeCountResetBuilder) = (*_BACnetConstructedDataTimeOfStrikeCountResetBuilder)(nil)
 
-func (m *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) WithMandatoryFields(timeOfStrikeCountReset BACnetDateTime) BACnetConstructedDataTimeOfStrikeCountResetBuilder {
-	return m.WithTimeOfStrikeCountReset(timeOfStrikeCountReset)
+func (b *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) WithTimeOfStrikeCountReset(timeOfStrikeCountReset BACnetDateTime) BACnetConstructedDataTimeOfStrikeCountResetBuilder {
-	m.TimeOfStrikeCountReset = timeOfStrikeCountReset
-	return m
+func (b *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) WithMandatoryFields(timeOfStrikeCountReset BACnetDateTime) BACnetConstructedDataTimeOfStrikeCountResetBuilder {
+	return b.WithTimeOfStrikeCountReset(timeOfStrikeCountReset)
 }
 
-func (m *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) WithTimeOfStrikeCountResetBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataTimeOfStrikeCountResetBuilder {
-	builder := builderSupplier(m.TimeOfStrikeCountReset.CreateBACnetDateTimeBuilder())
+func (b *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) WithTimeOfStrikeCountReset(timeOfStrikeCountReset BACnetDateTime) BACnetConstructedDataTimeOfStrikeCountResetBuilder {
+	b.TimeOfStrikeCountReset = timeOfStrikeCountReset
+	return b
+}
+
+func (b *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) WithTimeOfStrikeCountResetBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataTimeOfStrikeCountResetBuilder {
+	builder := builderSupplier(b.TimeOfStrikeCountReset.CreateBACnetDateTimeBuilder())
 	var err error
-	m.TimeOfStrikeCountReset, err = builder.Build()
+	b.TimeOfStrikeCountReset, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) Build() (BACnetConstructedDataTimeOfStrikeCountReset, error) {
-	if m.TimeOfStrikeCountReset == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) Build() (BACnetConstructedDataTimeOfStrikeCountReset, error) {
+	if b.TimeOfStrikeCountReset == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeOfStrikeCountReset' not set"))
+		b.err.Append(errors.New("mandatory field 'timeOfStrikeCountReset' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataTimeOfStrikeCountReset.deepCopy(), nil
+	return b._BACnetConstructedDataTimeOfStrikeCountReset.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) MustBuild() BACnetConstructedDataTimeOfStrikeCountReset {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) MustBuild() BACnetConstructedDataTimeOfStrikeCountReset {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataTimeOfStrikeCountResetBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTimeOfStrikeCountResetBuilder().(*_BACnetConstructedDataTimeOfStrikeCountResetBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataTimeOfStrikeCountResetBuilder creates a BACnetConstructedDataTimeOfStrikeCountResetBuilder
-func (m *_BACnetConstructedDataTimeOfStrikeCountReset) CreateBACnetConstructedDataTimeOfStrikeCountResetBuilder() BACnetConstructedDataTimeOfStrikeCountResetBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataTimeOfStrikeCountReset) CreateBACnetConstructedDataTimeOfStrikeCountResetBuilder() BACnetConstructedDataTimeOfStrikeCountResetBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataTimeOfStrikeCountResetBuilder()
 	}
-	return &_BACnetConstructedDataTimeOfStrikeCountResetBuilder{_BACnetConstructedDataTimeOfStrikeCountReset: m.deepCopy()}
+	return &_BACnetConstructedDataTimeOfStrikeCountResetBuilder{_BACnetConstructedDataTimeOfStrikeCountReset: b.deepCopy()}
 }
 
 ///////////////////////

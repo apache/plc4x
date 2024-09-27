@@ -90,10 +90,39 @@ type FirmataCommandBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() FirmataCommandBuilder
+	// AsFirmataCommandSysex converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
+	AsFirmataCommandSysex() interface {
+		FirmataCommandSysexBuilder
+		Done() FirmataCommandBuilder
+	}
+	// AsFirmataCommandSetPinMode converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
+	AsFirmataCommandSetPinMode() interface {
+		FirmataCommandSetPinModeBuilder
+		Done() FirmataCommandBuilder
+	}
+	// AsFirmataCommandSetDigitalPinValue converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
+	AsFirmataCommandSetDigitalPinValue() interface {
+		FirmataCommandSetDigitalPinValueBuilder
+		Done() FirmataCommandBuilder
+	}
+	// AsFirmataCommandProtocolVersion converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
+	AsFirmataCommandProtocolVersion() interface {
+		FirmataCommandProtocolVersionBuilder
+		Done() FirmataCommandBuilder
+	}
+	// AsFirmataCommandSystemReset converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
+	AsFirmataCommandSystemReset() interface {
+		FirmataCommandSystemResetBuilder
+		Done() FirmataCommandBuilder
+	}
 	// Build builds the FirmataCommand or returns an error if something is wrong
-	Build() (FirmataCommandContract, error)
+	PartialBuild() (FirmataCommandContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() FirmataCommandContract
+	PartialMustBuild() FirmataCommandContract
+	// Build builds the FirmataCommand or returns an error if something is wrong
+	Build() (FirmataCommand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() FirmataCommand
 }
 
 // NewFirmataCommandBuilder() creates a FirmataCommandBuilder
@@ -101,43 +130,157 @@ func NewFirmataCommandBuilder() FirmataCommandBuilder {
 	return &_FirmataCommandBuilder{_FirmataCommand: new(_FirmataCommand)}
 }
 
+type _FirmataCommandChildBuilder interface {
+	utils.Copyable
+	setParent(FirmataCommandContract)
+	buildForFirmataCommand() (FirmataCommand, error)
+}
+
 type _FirmataCommandBuilder struct {
 	*_FirmataCommand
+
+	childBuilder _FirmataCommandChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (FirmataCommandBuilder) = (*_FirmataCommandBuilder)(nil)
 
-func (m *_FirmataCommandBuilder) WithMandatoryFields() FirmataCommandBuilder {
-	return m
+func (b *_FirmataCommandBuilder) WithMandatoryFields() FirmataCommandBuilder {
+	return b
 }
 
-func (m *_FirmataCommandBuilder) Build() (FirmataCommandContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_FirmataCommandBuilder) PartialBuild() (FirmataCommandContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._FirmataCommand.deepCopy(), nil
+	return b._FirmataCommand.deepCopy(), nil
 }
 
-func (m *_FirmataCommandBuilder) MustBuild() FirmataCommandContract {
-	build, err := m.Build()
+func (b *_FirmataCommandBuilder) PartialMustBuild() FirmataCommandContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FirmataCommandBuilder) DeepCopy() any {
-	return m.CreateFirmataCommandBuilder()
+func (b *_FirmataCommandBuilder) AsFirmataCommandSysex() interface {
+	FirmataCommandSysexBuilder
+	Done() FirmataCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		FirmataCommandSysexBuilder
+		Done() FirmataCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewFirmataCommandSysexBuilder().(*_FirmataCommandSysexBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_FirmataCommandBuilder) AsFirmataCommandSetPinMode() interface {
+	FirmataCommandSetPinModeBuilder
+	Done() FirmataCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		FirmataCommandSetPinModeBuilder
+		Done() FirmataCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewFirmataCommandSetPinModeBuilder().(*_FirmataCommandSetPinModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_FirmataCommandBuilder) AsFirmataCommandSetDigitalPinValue() interface {
+	FirmataCommandSetDigitalPinValueBuilder
+	Done() FirmataCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		FirmataCommandSetDigitalPinValueBuilder
+		Done() FirmataCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewFirmataCommandSetDigitalPinValueBuilder().(*_FirmataCommandSetDigitalPinValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_FirmataCommandBuilder) AsFirmataCommandProtocolVersion() interface {
+	FirmataCommandProtocolVersionBuilder
+	Done() FirmataCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		FirmataCommandProtocolVersionBuilder
+		Done() FirmataCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewFirmataCommandProtocolVersionBuilder().(*_FirmataCommandProtocolVersionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_FirmataCommandBuilder) AsFirmataCommandSystemReset() interface {
+	FirmataCommandSystemResetBuilder
+	Done() FirmataCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		FirmataCommandSystemResetBuilder
+		Done() FirmataCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewFirmataCommandSystemResetBuilder().(*_FirmataCommandSystemResetBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_FirmataCommandBuilder) Build() (FirmataCommand, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForFirmataCommand()
+}
+
+func (b *_FirmataCommandBuilder) MustBuild() FirmataCommand {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_FirmataCommandBuilder) DeepCopy() any {
+	_copy := b.CreateFirmataCommandBuilder().(*_FirmataCommandBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_FirmataCommandChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFirmataCommandBuilder creates a FirmataCommandBuilder
-func (m *_FirmataCommand) CreateFirmataCommandBuilder() FirmataCommandBuilder {
-	if m == nil {
+func (b *_FirmataCommand) CreateFirmataCommandBuilder() FirmataCommandBuilder {
+	if b == nil {
 		return NewFirmataCommandBuilder()
 	}
-	return &_FirmataCommandBuilder{_FirmataCommand: m.deepCopy()}
+	return &_FirmataCommandBuilder{_FirmataCommand: b.deepCopy()}
 }
 
 ///////////////////////

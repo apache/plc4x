@@ -85,40 +85,59 @@ func NewOpcuaVectorBuilder() OpcuaVectorBuilder {
 type _OpcuaVectorBuilder struct {
 	*_OpcuaVector
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (OpcuaVectorBuilder) = (*_OpcuaVectorBuilder)(nil)
 
-func (m *_OpcuaVectorBuilder) WithMandatoryFields() OpcuaVectorBuilder {
-	return m
+func (b *_OpcuaVectorBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_OpcuaVectorBuilder) Build() (OpcuaVector, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_OpcuaVectorBuilder) WithMandatoryFields() OpcuaVectorBuilder {
+	return b
+}
+
+func (b *_OpcuaVectorBuilder) Build() (OpcuaVector, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._OpcuaVector.deepCopy(), nil
+	return b._OpcuaVector.deepCopy(), nil
 }
 
-func (m *_OpcuaVectorBuilder) MustBuild() OpcuaVector {
-	build, err := m.Build()
+func (b *_OpcuaVectorBuilder) MustBuild() OpcuaVector {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_OpcuaVectorBuilder) DeepCopy() any {
-	return m.CreateOpcuaVectorBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OpcuaVectorBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OpcuaVectorBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_OpcuaVectorBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaVectorBuilder().(*_OpcuaVectorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateOpcuaVectorBuilder creates a OpcuaVectorBuilder
-func (m *_OpcuaVector) CreateOpcuaVectorBuilder() OpcuaVectorBuilder {
-	if m == nil {
+func (b *_OpcuaVector) CreateOpcuaVectorBuilder() OpcuaVectorBuilder {
+	if b == nil {
 		return NewOpcuaVectorBuilder()
 	}
-	return &_OpcuaVectorBuilder{_OpcuaVector: m.deepCopy()}
+	return &_OpcuaVectorBuilder{_OpcuaVector: b.deepCopy()}
 }
 
 ///////////////////////

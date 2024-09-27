@@ -105,55 +105,74 @@ func NewCipRRDataBuilder() CipRRDataBuilder {
 type _CipRRDataBuilder struct {
 	*_CipRRData
 
+	parentBuilder *_EipPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CipRRDataBuilder) = (*_CipRRDataBuilder)(nil)
 
-func (m *_CipRRDataBuilder) WithMandatoryFields(interfaceHandle uint32, timeout uint16, typeIds []TypeId) CipRRDataBuilder {
-	return m.WithInterfaceHandle(interfaceHandle).WithTimeout(timeout).WithTypeIds(typeIds...)
+func (b *_CipRRDataBuilder) setParent(contract EipPacketContract) {
+	b.EipPacketContract = contract
 }
 
-func (m *_CipRRDataBuilder) WithInterfaceHandle(interfaceHandle uint32) CipRRDataBuilder {
-	m.InterfaceHandle = interfaceHandle
-	return m
+func (b *_CipRRDataBuilder) WithMandatoryFields(interfaceHandle uint32, timeout uint16, typeIds []TypeId) CipRRDataBuilder {
+	return b.WithInterfaceHandle(interfaceHandle).WithTimeout(timeout).WithTypeIds(typeIds...)
 }
 
-func (m *_CipRRDataBuilder) WithTimeout(timeout uint16) CipRRDataBuilder {
-	m.Timeout = timeout
-	return m
+func (b *_CipRRDataBuilder) WithInterfaceHandle(interfaceHandle uint32) CipRRDataBuilder {
+	b.InterfaceHandle = interfaceHandle
+	return b
 }
 
-func (m *_CipRRDataBuilder) WithTypeIds(typeIds ...TypeId) CipRRDataBuilder {
-	m.TypeIds = typeIds
-	return m
+func (b *_CipRRDataBuilder) WithTimeout(timeout uint16) CipRRDataBuilder {
+	b.Timeout = timeout
+	return b
 }
 
-func (m *_CipRRDataBuilder) Build() (CipRRData, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CipRRDataBuilder) WithTypeIds(typeIds ...TypeId) CipRRDataBuilder {
+	b.TypeIds = typeIds
+	return b
+}
+
+func (b *_CipRRDataBuilder) Build() (CipRRData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CipRRData.deepCopy(), nil
+	return b._CipRRData.deepCopy(), nil
 }
 
-func (m *_CipRRDataBuilder) MustBuild() CipRRData {
-	build, err := m.Build()
+func (b *_CipRRDataBuilder) MustBuild() CipRRData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CipRRDataBuilder) DeepCopy() any {
-	return m.CreateCipRRDataBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipRRDataBuilder) Done() EipPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipRRDataBuilder) buildForEipPacket() (EipPacket, error) {
+	return b.Build()
+}
+
+func (b *_CipRRDataBuilder) DeepCopy() any {
+	_copy := b.CreateCipRRDataBuilder().(*_CipRRDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCipRRDataBuilder creates a CipRRDataBuilder
-func (m *_CipRRData) CreateCipRRDataBuilder() CipRRDataBuilder {
-	if m == nil {
+func (b *_CipRRData) CreateCipRRDataBuilder() CipRRDataBuilder {
+	if b == nil {
 		return NewCipRRDataBuilder()
 	}
-	return &_CipRRDataBuilder{_CipRRData: m.deepCopy()}
+	return &_CipRRDataBuilder{_CipRRData: b.deepCopy()}
 }
 
 ///////////////////////

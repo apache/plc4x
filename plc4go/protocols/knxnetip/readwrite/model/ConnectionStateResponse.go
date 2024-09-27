@@ -101,50 +101,69 @@ func NewConnectionStateResponseBuilder() ConnectionStateResponseBuilder {
 type _ConnectionStateResponseBuilder struct {
 	*_ConnectionStateResponse
 
+	parentBuilder *_KnxNetIpMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ConnectionStateResponseBuilder) = (*_ConnectionStateResponseBuilder)(nil)
 
-func (m *_ConnectionStateResponseBuilder) WithMandatoryFields(communicationChannelId uint8, status Status) ConnectionStateResponseBuilder {
-	return m.WithCommunicationChannelId(communicationChannelId).WithStatus(status)
+func (b *_ConnectionStateResponseBuilder) setParent(contract KnxNetIpMessageContract) {
+	b.KnxNetIpMessageContract = contract
 }
 
-func (m *_ConnectionStateResponseBuilder) WithCommunicationChannelId(communicationChannelId uint8) ConnectionStateResponseBuilder {
-	m.CommunicationChannelId = communicationChannelId
-	return m
+func (b *_ConnectionStateResponseBuilder) WithMandatoryFields(communicationChannelId uint8, status Status) ConnectionStateResponseBuilder {
+	return b.WithCommunicationChannelId(communicationChannelId).WithStatus(status)
 }
 
-func (m *_ConnectionStateResponseBuilder) WithStatus(status Status) ConnectionStateResponseBuilder {
-	m.Status = status
-	return m
+func (b *_ConnectionStateResponseBuilder) WithCommunicationChannelId(communicationChannelId uint8) ConnectionStateResponseBuilder {
+	b.CommunicationChannelId = communicationChannelId
+	return b
 }
 
-func (m *_ConnectionStateResponseBuilder) Build() (ConnectionStateResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ConnectionStateResponseBuilder) WithStatus(status Status) ConnectionStateResponseBuilder {
+	b.Status = status
+	return b
+}
+
+func (b *_ConnectionStateResponseBuilder) Build() (ConnectionStateResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ConnectionStateResponse.deepCopy(), nil
+	return b._ConnectionStateResponse.deepCopy(), nil
 }
 
-func (m *_ConnectionStateResponseBuilder) MustBuild() ConnectionStateResponse {
-	build, err := m.Build()
+func (b *_ConnectionStateResponseBuilder) MustBuild() ConnectionStateResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ConnectionStateResponseBuilder) DeepCopy() any {
-	return m.CreateConnectionStateResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ConnectionStateResponseBuilder) Done() KnxNetIpMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ConnectionStateResponseBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, error) {
+	return b.Build()
+}
+
+func (b *_ConnectionStateResponseBuilder) DeepCopy() any {
+	_copy := b.CreateConnectionStateResponseBuilder().(*_ConnectionStateResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateConnectionStateResponseBuilder creates a ConnectionStateResponseBuilder
-func (m *_ConnectionStateResponse) CreateConnectionStateResponseBuilder() ConnectionStateResponseBuilder {
-	if m == nil {
+func (b *_ConnectionStateResponse) CreateConnectionStateResponseBuilder() ConnectionStateResponseBuilder {
+	if b == nil {
 		return NewConnectionStateResponseBuilder()
 	}
-	return &_ConnectionStateResponseBuilder{_ConnectionStateResponse: m.deepCopy()}
+	return &_ConnectionStateResponseBuilder{_ConnectionStateResponse: b.deepCopy()}
 }
 
 ///////////////////////

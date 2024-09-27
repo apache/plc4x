@@ -82,6 +82,8 @@ type ServiceFaultBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition) ServiceFaultBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) ServiceFaultBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ServiceFaultBuilder
 	// Build builds the ServiceFault or returns an error if something is wrong
 	Build() (ServiceFault, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewServiceFaultBuilder() ServiceFaultBuilder {
 type _ServiceFaultBuilder struct {
 	*_ServiceFault
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ServiceFaultBuilder) = (*_ServiceFaultBuilder)(nil)
 
-func (m *_ServiceFaultBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) ServiceFaultBuilder {
-	return m.WithResponseHeader(responseHeader)
+func (b *_ServiceFaultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ServiceFaultBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) ServiceFaultBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_ServiceFaultBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) ServiceFaultBuilder {
+	return b.WithResponseHeader(responseHeader)
 }
 
-func (m *_ServiceFaultBuilder) Build() (ServiceFault, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ServiceFaultBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) ServiceFaultBuilder {
+	b.ResponseHeader = responseHeader
+	return b
+}
+
+func (b *_ServiceFaultBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ServiceFaultBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._ServiceFault.deepCopy(), nil
+	return b
 }
 
-func (m *_ServiceFaultBuilder) MustBuild() ServiceFault {
-	build, err := m.Build()
+func (b *_ServiceFaultBuilder) Build() (ServiceFault, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ServiceFault.deepCopy(), nil
+}
+
+func (b *_ServiceFaultBuilder) MustBuild() ServiceFault {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ServiceFaultBuilder) DeepCopy() any {
-	return m.CreateServiceFaultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ServiceFaultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ServiceFaultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ServiceFaultBuilder) DeepCopy() any {
+	_copy := b.CreateServiceFaultBuilder().(*_ServiceFaultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateServiceFaultBuilder creates a ServiceFaultBuilder
-func (m *_ServiceFault) CreateServiceFaultBuilder() ServiceFaultBuilder {
-	if m == nil {
+func (b *_ServiceFault) CreateServiceFaultBuilder() ServiceFaultBuilder {
+	if b == nil {
 		return NewServiceFaultBuilder()
 	}
-	return &_ServiceFaultBuilder{_ServiceFault: m.deepCopy()}
+	return &_ServiceFaultBuilder{_ServiceFault: b.deepCopy()}
 }
 
 ///////////////////////

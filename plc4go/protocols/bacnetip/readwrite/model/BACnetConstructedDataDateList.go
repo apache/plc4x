@@ -93,45 +93,64 @@ func NewBACnetConstructedDataDateListBuilder() BACnetConstructedDataDateListBuil
 type _BACnetConstructedDataDateListBuilder struct {
 	*_BACnetConstructedDataDateList
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDateListBuilder) = (*_BACnetConstructedDataDateListBuilder)(nil)
 
-func (m *_BACnetConstructedDataDateListBuilder) WithMandatoryFields(dateList []BACnetCalendarEntry) BACnetConstructedDataDateListBuilder {
-	return m.WithDateList(dateList...)
+func (b *_BACnetConstructedDataDateListBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDateListBuilder) WithDateList(dateList ...BACnetCalendarEntry) BACnetConstructedDataDateListBuilder {
-	m.DateList = dateList
-	return m
+func (b *_BACnetConstructedDataDateListBuilder) WithMandatoryFields(dateList []BACnetCalendarEntry) BACnetConstructedDataDateListBuilder {
+	return b.WithDateList(dateList...)
 }
 
-func (m *_BACnetConstructedDataDateListBuilder) Build() (BACnetConstructedDataDateList, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataDateListBuilder) WithDateList(dateList ...BACnetCalendarEntry) BACnetConstructedDataDateListBuilder {
+	b.DateList = dateList
+	return b
+}
+
+func (b *_BACnetConstructedDataDateListBuilder) Build() (BACnetConstructedDataDateList, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDateList.deepCopy(), nil
+	return b._BACnetConstructedDataDateList.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDateListBuilder) MustBuild() BACnetConstructedDataDateList {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDateListBuilder) MustBuild() BACnetConstructedDataDateList {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDateListBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDateListBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDateListBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDateListBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDateListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDateListBuilder().(*_BACnetConstructedDataDateListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDateListBuilder creates a BACnetConstructedDataDateListBuilder
-func (m *_BACnetConstructedDataDateList) CreateBACnetConstructedDataDateListBuilder() BACnetConstructedDataDateListBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDateList) CreateBACnetConstructedDataDateListBuilder() BACnetConstructedDataDateListBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDateListBuilder()
 	}
-	return &_BACnetConstructedDataDateListBuilder{_BACnetConstructedDataDateList: m.deepCopy()}
+	return &_BACnetConstructedDataDateListBuilder{_BACnetConstructedDataDateList: b.deepCopy()}
 }
 
 ///////////////////////

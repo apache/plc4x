@@ -98,64 +98,83 @@ func NewBACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder() BACnetUnconfirm
 type _BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder struct {
 	*_BACnetUnconfirmedServiceRequestWhoHasObjectName
 
+	parentBuilder *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) = (*_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder)(nil)
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) WithMandatoryFields(objectName BACnetContextTagCharacterString) BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder {
-	return m.WithObjectName(objectName)
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) setParent(contract BACnetUnconfirmedServiceRequestWhoHasObjectContract) {
+	b.BACnetUnconfirmedServiceRequestWhoHasObjectContract = contract
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) WithObjectName(objectName BACnetContextTagCharacterString) BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder {
-	m.ObjectName = objectName
-	return m
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) WithMandatoryFields(objectName BACnetContextTagCharacterString) BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder {
+	return b.WithObjectName(objectName)
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) WithObjectNameBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder {
-	builder := builderSupplier(m.ObjectName.CreateBACnetContextTagCharacterStringBuilder())
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) WithObjectName(objectName BACnetContextTagCharacterString) BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder {
+	b.ObjectName = objectName
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) WithObjectNameBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder {
+	builder := builderSupplier(b.ObjectName.CreateBACnetContextTagCharacterStringBuilder())
 	var err error
-	m.ObjectName, err = builder.Build()
+	b.ObjectName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) Build() (BACnetUnconfirmedServiceRequestWhoHasObjectName, error) {
-	if m.ObjectName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) Build() (BACnetUnconfirmedServiceRequestWhoHasObjectName, error) {
+	if b.ObjectName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectName' not set"))
+		b.err.Append(errors.New("mandatory field 'objectName' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetUnconfirmedServiceRequestWhoHasObjectName.deepCopy(), nil
+	return b._BACnetUnconfirmedServiceRequestWhoHasObjectName.deepCopy(), nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) MustBuild() BACnetUnconfirmedServiceRequestWhoHasObjectName {
-	build, err := m.Build()
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) MustBuild() BACnetUnconfirmedServiceRequestWhoHasObjectName {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) DeepCopy() any {
-	return m.CreateBACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) buildForBACnetUnconfirmedServiceRequestWhoHasObject() (BACnetUnconfirmedServiceRequestWhoHasObject, error) {
+	return b.Build()
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder().(*_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder creates a BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) CreateBACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder() BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder {
-	if m == nil {
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectName) CreateBACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder() BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder {
+	if b == nil {
 		return NewBACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder()
 	}
-	return &_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder{_BACnetUnconfirmedServiceRequestWhoHasObjectName: m.deepCopy()}
+	return &_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder{_BACnetUnconfirmedServiceRequestWhoHasObjectName: b.deepCopy()}
 }
 
 ///////////////////////

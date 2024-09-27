@@ -98,6 +98,8 @@ type DeleteReferencesResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteReferencesResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) DeleteReferencesResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteReferencesResponseBuilder
 	// WithNoOfResults adds NoOfResults (property field)
 	WithNoOfResults(int32) DeleteReferencesResponseBuilder
 	// WithResults adds Results (property field)
@@ -120,71 +122,103 @@ func NewDeleteReferencesResponseBuilder() DeleteReferencesResponseBuilder {
 type _DeleteReferencesResponseBuilder struct {
 	*_DeleteReferencesResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DeleteReferencesResponseBuilder) = (*_DeleteReferencesResponseBuilder)(nil)
 
-func (m *_DeleteReferencesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteReferencesResponseBuilder {
-	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_DeleteReferencesResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_DeleteReferencesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) DeleteReferencesResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_DeleteReferencesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteReferencesResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (m *_DeleteReferencesResponseBuilder) WithNoOfResults(noOfResults int32) DeleteReferencesResponseBuilder {
-	m.NoOfResults = noOfResults
-	return m
+func (b *_DeleteReferencesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) DeleteReferencesResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
 }
 
-func (m *_DeleteReferencesResponseBuilder) WithResults(results ...StatusCode) DeleteReferencesResponseBuilder {
-	m.Results = results
-	return m
-}
-
-func (m *_DeleteReferencesResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) DeleteReferencesResponseBuilder {
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
-	return m
-}
-
-func (m *_DeleteReferencesResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) DeleteReferencesResponseBuilder {
-	m.DiagnosticInfos = diagnosticInfos
-	return m
-}
-
-func (m *_DeleteReferencesResponseBuilder) Build() (DeleteReferencesResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_DeleteReferencesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteReferencesResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._DeleteReferencesResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_DeleteReferencesResponseBuilder) MustBuild() DeleteReferencesResponse {
-	build, err := m.Build()
+func (b *_DeleteReferencesResponseBuilder) WithNoOfResults(noOfResults int32) DeleteReferencesResponseBuilder {
+	b.NoOfResults = noOfResults
+	return b
+}
+
+func (b *_DeleteReferencesResponseBuilder) WithResults(results ...StatusCode) DeleteReferencesResponseBuilder {
+	b.Results = results
+	return b
+}
+
+func (b *_DeleteReferencesResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) DeleteReferencesResponseBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_DeleteReferencesResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) DeleteReferencesResponseBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_DeleteReferencesResponseBuilder) Build() (DeleteReferencesResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DeleteReferencesResponse.deepCopy(), nil
+}
+
+func (b *_DeleteReferencesResponseBuilder) MustBuild() DeleteReferencesResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DeleteReferencesResponseBuilder) DeepCopy() any {
-	return m.CreateDeleteReferencesResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DeleteReferencesResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DeleteReferencesResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DeleteReferencesResponseBuilder) DeepCopy() any {
+	_copy := b.CreateDeleteReferencesResponseBuilder().(*_DeleteReferencesResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDeleteReferencesResponseBuilder creates a DeleteReferencesResponseBuilder
-func (m *_DeleteReferencesResponse) CreateDeleteReferencesResponseBuilder() DeleteReferencesResponseBuilder {
-	if m == nil {
+func (b *_DeleteReferencesResponse) CreateDeleteReferencesResponseBuilder() DeleteReferencesResponseBuilder {
+	if b == nil {
 		return NewDeleteReferencesResponseBuilder()
 	}
-	return &_DeleteReferencesResponseBuilder{_DeleteReferencesResponse: m.deepCopy()}
+	return &_DeleteReferencesResponseBuilder{_DeleteReferencesResponse: b.deepCopy()}
 }
 
 ///////////////////////

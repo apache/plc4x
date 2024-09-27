@@ -93,45 +93,64 @@ func NewAdsWriteResponseBuilder() AdsWriteResponseBuilder {
 type _AdsWriteResponseBuilder struct {
 	*_AdsWriteResponse
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsWriteResponseBuilder) = (*_AdsWriteResponseBuilder)(nil)
 
-func (m *_AdsWriteResponseBuilder) WithMandatoryFields(result ReturnCode) AdsWriteResponseBuilder {
-	return m.WithResult(result)
+func (b *_AdsWriteResponseBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_AdsWriteResponseBuilder) WithResult(result ReturnCode) AdsWriteResponseBuilder {
-	m.Result = result
-	return m
+func (b *_AdsWriteResponseBuilder) WithMandatoryFields(result ReturnCode) AdsWriteResponseBuilder {
+	return b.WithResult(result)
 }
 
-func (m *_AdsWriteResponseBuilder) Build() (AdsWriteResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsWriteResponseBuilder) WithResult(result ReturnCode) AdsWriteResponseBuilder {
+	b.Result = result
+	return b
+}
+
+func (b *_AdsWriteResponseBuilder) Build() (AdsWriteResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsWriteResponse.deepCopy(), nil
+	return b._AdsWriteResponse.deepCopy(), nil
 }
 
-func (m *_AdsWriteResponseBuilder) MustBuild() AdsWriteResponse {
-	build, err := m.Build()
+func (b *_AdsWriteResponseBuilder) MustBuild() AdsWriteResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsWriteResponseBuilder) DeepCopy() any {
-	return m.CreateAdsWriteResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsWriteResponseBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsWriteResponseBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsWriteResponseBuilder) DeepCopy() any {
+	_copy := b.CreateAdsWriteResponseBuilder().(*_AdsWriteResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsWriteResponseBuilder creates a AdsWriteResponseBuilder
-func (m *_AdsWriteResponse) CreateAdsWriteResponseBuilder() AdsWriteResponseBuilder {
-	if m == nil {
+func (b *_AdsWriteResponse) CreateAdsWriteResponseBuilder() AdsWriteResponseBuilder {
+	if b == nil {
 		return NewAdsWriteResponseBuilder()
 	}
-	return &_AdsWriteResponseBuilder{_AdsWriteResponse: m.deepCopy()}
+	return &_AdsWriteResponseBuilder{_AdsWriteResponse: b.deepCopy()}
 }
 
 ///////////////////////

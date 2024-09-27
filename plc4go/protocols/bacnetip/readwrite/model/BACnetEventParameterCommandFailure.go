@@ -131,136 +131,155 @@ func NewBACnetEventParameterCommandFailureBuilder() BACnetEventParameterCommandF
 type _BACnetEventParameterCommandFailureBuilder struct {
 	*_BACnetEventParameterCommandFailure
 
+	parentBuilder *_BACnetEventParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetEventParameterCommandFailureBuilder) = (*_BACnetEventParameterCommandFailureBuilder)(nil)
 
-func (m *_BACnetEventParameterCommandFailureBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, feedbackPropertyReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) BACnetEventParameterCommandFailureBuilder {
-	return m.WithOpeningTag(openingTag).WithTimeDelay(timeDelay).WithFeedbackPropertyReference(feedbackPropertyReference).WithClosingTag(closingTag)
+func (b *_BACnetEventParameterCommandFailureBuilder) setParent(contract BACnetEventParameterContract) {
+	b.BACnetEventParameterContract = contract
 }
 
-func (m *_BACnetEventParameterCommandFailureBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterCommandFailureBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetEventParameterCommandFailureBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, feedbackPropertyReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) BACnetEventParameterCommandFailureBuilder {
+	return b.WithOpeningTag(openingTag).WithTimeDelay(timeDelay).WithFeedbackPropertyReference(feedbackPropertyReference).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetEventParameterCommandFailureBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterCommandFailureBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetEventParameterCommandFailureBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterCommandFailureBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetEventParameterCommandFailureBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterCommandFailureBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterCommandFailureBuilder) WithTimeDelay(timeDelay BACnetContextTagUnsignedInteger) BACnetEventParameterCommandFailureBuilder {
-	m.TimeDelay = timeDelay
-	return m
+func (b *_BACnetEventParameterCommandFailureBuilder) WithTimeDelay(timeDelay BACnetContextTagUnsignedInteger) BACnetEventParameterCommandFailureBuilder {
+	b.TimeDelay = timeDelay
+	return b
 }
 
-func (m *_BACnetEventParameterCommandFailureBuilder) WithTimeDelayBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventParameterCommandFailureBuilder {
-	builder := builderSupplier(m.TimeDelay.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetEventParameterCommandFailureBuilder) WithTimeDelayBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventParameterCommandFailureBuilder {
+	builder := builderSupplier(b.TimeDelay.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.TimeDelay, err = builder.Build()
+	b.TimeDelay, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterCommandFailureBuilder) WithFeedbackPropertyReference(feedbackPropertyReference BACnetDeviceObjectPropertyReferenceEnclosed) BACnetEventParameterCommandFailureBuilder {
-	m.FeedbackPropertyReference = feedbackPropertyReference
-	return m
+func (b *_BACnetEventParameterCommandFailureBuilder) WithFeedbackPropertyReference(feedbackPropertyReference BACnetDeviceObjectPropertyReferenceEnclosed) BACnetEventParameterCommandFailureBuilder {
+	b.FeedbackPropertyReference = feedbackPropertyReference
+	return b
 }
 
-func (m *_BACnetEventParameterCommandFailureBuilder) WithFeedbackPropertyReferenceBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetEventParameterCommandFailureBuilder {
-	builder := builderSupplier(m.FeedbackPropertyReference.CreateBACnetDeviceObjectPropertyReferenceEnclosedBuilder())
+func (b *_BACnetEventParameterCommandFailureBuilder) WithFeedbackPropertyReferenceBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetEventParameterCommandFailureBuilder {
+	builder := builderSupplier(b.FeedbackPropertyReference.CreateBACnetDeviceObjectPropertyReferenceEnclosedBuilder())
 	var err error
-	m.FeedbackPropertyReference, err = builder.Build()
+	b.FeedbackPropertyReference, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterCommandFailureBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterCommandFailureBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetEventParameterCommandFailureBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterCommandFailureBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetEventParameterCommandFailureBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterCommandFailureBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetEventParameterCommandFailureBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterCommandFailureBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterCommandFailureBuilder) Build() (BACnetEventParameterCommandFailure, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetEventParameterCommandFailureBuilder) Build() (BACnetEventParameterCommandFailure, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.TimeDelay == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TimeDelay == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeDelay' not set"))
+		b.err.Append(errors.New("mandatory field 'timeDelay' not set"))
 	}
-	if m.FeedbackPropertyReference == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.FeedbackPropertyReference == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'feedbackPropertyReference' not set"))
+		b.err.Append(errors.New("mandatory field 'feedbackPropertyReference' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetEventParameterCommandFailure.deepCopy(), nil
+	return b._BACnetEventParameterCommandFailure.deepCopy(), nil
 }
 
-func (m *_BACnetEventParameterCommandFailureBuilder) MustBuild() BACnetEventParameterCommandFailure {
-	build, err := m.Build()
+func (b *_BACnetEventParameterCommandFailureBuilder) MustBuild() BACnetEventParameterCommandFailure {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetEventParameterCommandFailureBuilder) DeepCopy() any {
-	return m.CreateBACnetEventParameterCommandFailureBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetEventParameterCommandFailureBuilder) Done() BACnetEventParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetEventParameterCommandFailureBuilder) buildForBACnetEventParameter() (BACnetEventParameter, error) {
+	return b.Build()
+}
+
+func (b *_BACnetEventParameterCommandFailureBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventParameterCommandFailureBuilder().(*_BACnetEventParameterCommandFailureBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetEventParameterCommandFailureBuilder creates a BACnetEventParameterCommandFailureBuilder
-func (m *_BACnetEventParameterCommandFailure) CreateBACnetEventParameterCommandFailureBuilder() BACnetEventParameterCommandFailureBuilder {
-	if m == nil {
+func (b *_BACnetEventParameterCommandFailure) CreateBACnetEventParameterCommandFailureBuilder() BACnetEventParameterCommandFailureBuilder {
+	if b == nil {
 		return NewBACnetEventParameterCommandFailureBuilder()
 	}
-	return &_BACnetEventParameterCommandFailureBuilder{_BACnetEventParameterCommandFailure: m.deepCopy()}
+	return &_BACnetEventParameterCommandFailureBuilder{_BACnetEventParameterCommandFailure: b.deepCopy()}
 }
 
 ///////////////////////

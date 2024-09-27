@@ -139,154 +139,173 @@ func NewBACnetServiceAckGetEnrollmentSummaryBuilder() BACnetServiceAckGetEnrollm
 type _BACnetServiceAckGetEnrollmentSummaryBuilder struct {
 	*_BACnetServiceAckGetEnrollmentSummary
 
+	parentBuilder *_BACnetServiceAckBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetServiceAckGetEnrollmentSummaryBuilder) = (*_BACnetServiceAckGetEnrollmentSummaryBuilder)(nil)
 
-func (m *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithMandatoryFields(objectIdentifier BACnetApplicationTagObjectIdentifier, eventType BACnetEventTypeTagged, eventState BACnetEventStateTagged, priority BACnetApplicationTagUnsignedInteger) BACnetServiceAckGetEnrollmentSummaryBuilder {
-	return m.WithObjectIdentifier(objectIdentifier).WithEventType(eventType).WithEventState(eventState).WithPriority(priority)
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) setParent(contract BACnetServiceAckContract) {
+	b.BACnetServiceAckContract = contract
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithObjectIdentifier(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetServiceAckGetEnrollmentSummaryBuilder {
-	m.ObjectIdentifier = objectIdentifier
-	return m
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithMandatoryFields(objectIdentifier BACnetApplicationTagObjectIdentifier, eventType BACnetEventTypeTagged, eventState BACnetEventStateTagged, priority BACnetApplicationTagUnsignedInteger) BACnetServiceAckGetEnrollmentSummaryBuilder {
+	return b.WithObjectIdentifier(objectIdentifier).WithEventType(eventType).WithEventState(eventState).WithPriority(priority)
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetServiceAckGetEnrollmentSummaryBuilder {
-	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithObjectIdentifier(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetServiceAckGetEnrollmentSummaryBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
+}
+
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetServiceAckGetEnrollmentSummaryBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
 	var err error
-	m.ObjectIdentifier, err = builder.Build()
+	b.ObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithEventType(eventType BACnetEventTypeTagged) BACnetServiceAckGetEnrollmentSummaryBuilder {
-	m.EventType = eventType
-	return m
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithEventType(eventType BACnetEventTypeTagged) BACnetServiceAckGetEnrollmentSummaryBuilder {
+	b.EventType = eventType
+	return b
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithEventTypeBuilder(builderSupplier func(BACnetEventTypeTaggedBuilder) BACnetEventTypeTaggedBuilder) BACnetServiceAckGetEnrollmentSummaryBuilder {
-	builder := builderSupplier(m.EventType.CreateBACnetEventTypeTaggedBuilder())
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithEventTypeBuilder(builderSupplier func(BACnetEventTypeTaggedBuilder) BACnetEventTypeTaggedBuilder) BACnetServiceAckGetEnrollmentSummaryBuilder {
+	builder := builderSupplier(b.EventType.CreateBACnetEventTypeTaggedBuilder())
 	var err error
-	m.EventType, err = builder.Build()
+	b.EventType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventTypeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventTypeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithEventState(eventState BACnetEventStateTagged) BACnetServiceAckGetEnrollmentSummaryBuilder {
-	m.EventState = eventState
-	return m
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithEventState(eventState BACnetEventStateTagged) BACnetServiceAckGetEnrollmentSummaryBuilder {
+	b.EventState = eventState
+	return b
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithEventStateBuilder(builderSupplier func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetServiceAckGetEnrollmentSummaryBuilder {
-	builder := builderSupplier(m.EventState.CreateBACnetEventStateTaggedBuilder())
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithEventStateBuilder(builderSupplier func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetServiceAckGetEnrollmentSummaryBuilder {
+	builder := builderSupplier(b.EventState.CreateBACnetEventStateTaggedBuilder())
 	var err error
-	m.EventState, err = builder.Build()
+	b.EventState, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithPriority(priority BACnetApplicationTagUnsignedInteger) BACnetServiceAckGetEnrollmentSummaryBuilder {
-	m.Priority = priority
-	return m
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithPriority(priority BACnetApplicationTagUnsignedInteger) BACnetServiceAckGetEnrollmentSummaryBuilder {
+	b.Priority = priority
+	return b
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithPriorityBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckGetEnrollmentSummaryBuilder {
-	builder := builderSupplier(m.Priority.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithPriorityBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckGetEnrollmentSummaryBuilder {
+	builder := builderSupplier(b.Priority.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.Priority, err = builder.Build()
+	b.Priority, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithOptionalNotificationClass(notificationClass BACnetApplicationTagUnsignedInteger) BACnetServiceAckGetEnrollmentSummaryBuilder {
-	m.NotificationClass = notificationClass
-	return m
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithOptionalNotificationClass(notificationClass BACnetApplicationTagUnsignedInteger) BACnetServiceAckGetEnrollmentSummaryBuilder {
+	b.NotificationClass = notificationClass
+	return b
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithOptionalNotificationClassBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckGetEnrollmentSummaryBuilder {
-	builder := builderSupplier(m.NotificationClass.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithOptionalNotificationClassBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckGetEnrollmentSummaryBuilder {
+	builder := builderSupplier(b.NotificationClass.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NotificationClass, err = builder.Build()
+	b.NotificationClass, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummaryBuilder) Build() (BACnetServiceAckGetEnrollmentSummary, error) {
-	if m.ObjectIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) Build() (BACnetServiceAckGetEnrollmentSummary, error) {
+	if b.ObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
 	}
-	if m.EventType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.EventType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'eventType' not set"))
+		b.err.Append(errors.New("mandatory field 'eventType' not set"))
 	}
-	if m.EventState == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.EventState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'eventState' not set"))
+		b.err.Append(errors.New("mandatory field 'eventState' not set"))
 	}
-	if m.Priority == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Priority == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'priority' not set"))
+		b.err.Append(errors.New("mandatory field 'priority' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetServiceAckGetEnrollmentSummary.deepCopy(), nil
+	return b._BACnetServiceAckGetEnrollmentSummary.deepCopy(), nil
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummaryBuilder) MustBuild() BACnetServiceAckGetEnrollmentSummary {
-	build, err := m.Build()
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) MustBuild() BACnetServiceAckGetEnrollmentSummary {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetServiceAckGetEnrollmentSummaryBuilder) DeepCopy() any {
-	return m.CreateBACnetServiceAckGetEnrollmentSummaryBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) Done() BACnetServiceAckBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) buildForBACnetServiceAck() (BACnetServiceAck, error) {
+	return b.Build()
+}
+
+func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetServiceAckGetEnrollmentSummaryBuilder().(*_BACnetServiceAckGetEnrollmentSummaryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetServiceAckGetEnrollmentSummaryBuilder creates a BACnetServiceAckGetEnrollmentSummaryBuilder
-func (m *_BACnetServiceAckGetEnrollmentSummary) CreateBACnetServiceAckGetEnrollmentSummaryBuilder() BACnetServiceAckGetEnrollmentSummaryBuilder {
-	if m == nil {
+func (b *_BACnetServiceAckGetEnrollmentSummary) CreateBACnetServiceAckGetEnrollmentSummaryBuilder() BACnetServiceAckGetEnrollmentSummaryBuilder {
+	if b == nil {
 		return NewBACnetServiceAckGetEnrollmentSummaryBuilder()
 	}
-	return &_BACnetServiceAckGetEnrollmentSummaryBuilder{_BACnetServiceAckGetEnrollmentSummary: m.deepCopy()}
+	return &_BACnetServiceAckGetEnrollmentSummaryBuilder{_BACnetServiceAckGetEnrollmentSummary: b.deepCopy()}
 }
 
 ///////////////////////

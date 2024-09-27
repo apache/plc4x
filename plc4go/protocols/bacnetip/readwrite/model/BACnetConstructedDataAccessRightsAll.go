@@ -85,40 +85,59 @@ func NewBACnetConstructedDataAccessRightsAllBuilder() BACnetConstructedDataAcces
 type _BACnetConstructedDataAccessRightsAllBuilder struct {
 	*_BACnetConstructedDataAccessRightsAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccessRightsAllBuilder) = (*_BACnetConstructedDataAccessRightsAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccessRightsAllBuilder) WithMandatoryFields() BACnetConstructedDataAccessRightsAllBuilder {
-	return m
+func (b *_BACnetConstructedDataAccessRightsAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccessRightsAllBuilder) Build() (BACnetConstructedDataAccessRightsAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataAccessRightsAllBuilder) WithMandatoryFields() BACnetConstructedDataAccessRightsAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataAccessRightsAllBuilder) Build() (BACnetConstructedDataAccessRightsAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAccessRightsAll.deepCopy(), nil
+	return b._BACnetConstructedDataAccessRightsAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAccessRightsAllBuilder) MustBuild() BACnetConstructedDataAccessRightsAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccessRightsAllBuilder) MustBuild() BACnetConstructedDataAccessRightsAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccessRightsAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccessRightsAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccessRightsAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccessRightsAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccessRightsAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccessRightsAllBuilder().(*_BACnetConstructedDataAccessRightsAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccessRightsAllBuilder creates a BACnetConstructedDataAccessRightsAllBuilder
-func (m *_BACnetConstructedDataAccessRightsAll) CreateBACnetConstructedDataAccessRightsAllBuilder() BACnetConstructedDataAccessRightsAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccessRightsAll) CreateBACnetConstructedDataAccessRightsAllBuilder() BACnetConstructedDataAccessRightsAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccessRightsAllBuilder()
 	}
-	return &_BACnetConstructedDataAccessRightsAllBuilder{_BACnetConstructedDataAccessRightsAll: m.deepCopy()}
+	return &_BACnetConstructedDataAccessRightsAllBuilder{_BACnetConstructedDataAccessRightsAll: b.deepCopy()}
 }
 
 ///////////////////////

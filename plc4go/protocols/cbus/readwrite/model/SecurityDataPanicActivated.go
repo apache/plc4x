@@ -85,40 +85,59 @@ func NewSecurityDataPanicActivatedBuilder() SecurityDataPanicActivatedBuilder {
 type _SecurityDataPanicActivatedBuilder struct {
 	*_SecurityDataPanicActivated
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataPanicActivatedBuilder) = (*_SecurityDataPanicActivatedBuilder)(nil)
 
-func (m *_SecurityDataPanicActivatedBuilder) WithMandatoryFields() SecurityDataPanicActivatedBuilder {
-	return m
+func (b *_SecurityDataPanicActivatedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataPanicActivatedBuilder) Build() (SecurityDataPanicActivated, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataPanicActivatedBuilder) WithMandatoryFields() SecurityDataPanicActivatedBuilder {
+	return b
+}
+
+func (b *_SecurityDataPanicActivatedBuilder) Build() (SecurityDataPanicActivated, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataPanicActivated.deepCopy(), nil
+	return b._SecurityDataPanicActivated.deepCopy(), nil
 }
 
-func (m *_SecurityDataPanicActivatedBuilder) MustBuild() SecurityDataPanicActivated {
-	build, err := m.Build()
+func (b *_SecurityDataPanicActivatedBuilder) MustBuild() SecurityDataPanicActivated {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataPanicActivatedBuilder) DeepCopy() any {
-	return m.CreateSecurityDataPanicActivatedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataPanicActivatedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataPanicActivatedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataPanicActivatedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataPanicActivatedBuilder().(*_SecurityDataPanicActivatedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataPanicActivatedBuilder creates a SecurityDataPanicActivatedBuilder
-func (m *_SecurityDataPanicActivated) CreateSecurityDataPanicActivatedBuilder() SecurityDataPanicActivatedBuilder {
-	if m == nil {
+func (b *_SecurityDataPanicActivated) CreateSecurityDataPanicActivatedBuilder() SecurityDataPanicActivatedBuilder {
+	if b == nil {
 		return NewSecurityDataPanicActivatedBuilder()
 	}
-	return &_SecurityDataPanicActivatedBuilder{_SecurityDataPanicActivated: m.deepCopy()}
+	return &_SecurityDataPanicActivatedBuilder{_SecurityDataPanicActivated: b.deepCopy()}
 }
 
 ///////////////////////

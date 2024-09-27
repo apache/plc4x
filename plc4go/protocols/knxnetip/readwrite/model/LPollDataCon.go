@@ -85,40 +85,59 @@ func NewLPollDataConBuilder() LPollDataConBuilder {
 type _LPollDataConBuilder struct {
 	*_LPollDataCon
 
+	parentBuilder *_CEMIBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LPollDataConBuilder) = (*_LPollDataConBuilder)(nil)
 
-func (m *_LPollDataConBuilder) WithMandatoryFields() LPollDataConBuilder {
-	return m
+func (b *_LPollDataConBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
 }
 
-func (m *_LPollDataConBuilder) Build() (LPollDataCon, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_LPollDataConBuilder) WithMandatoryFields() LPollDataConBuilder {
+	return b
+}
+
+func (b *_LPollDataConBuilder) Build() (LPollDataCon, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LPollDataCon.deepCopy(), nil
+	return b._LPollDataCon.deepCopy(), nil
 }
 
-func (m *_LPollDataConBuilder) MustBuild() LPollDataCon {
-	build, err := m.Build()
+func (b *_LPollDataConBuilder) MustBuild() LPollDataCon {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LPollDataConBuilder) DeepCopy() any {
-	return m.CreateLPollDataConBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LPollDataConBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LPollDataConBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_LPollDataConBuilder) DeepCopy() any {
+	_copy := b.CreateLPollDataConBuilder().(*_LPollDataConBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLPollDataConBuilder creates a LPollDataConBuilder
-func (m *_LPollDataCon) CreateLPollDataConBuilder() LPollDataConBuilder {
-	if m == nil {
+func (b *_LPollDataCon) CreateLPollDataConBuilder() LPollDataConBuilder {
+	if b == nil {
 		return NewLPollDataConBuilder()
 	}
-	return &_LPollDataConBuilder{_LPollDataCon: m.deepCopy()}
+	return &_LPollDataConBuilder{_LPollDataCon: b.deepCopy()}
 }
 
 ///////////////////////

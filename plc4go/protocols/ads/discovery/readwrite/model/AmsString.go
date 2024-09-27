@@ -93,40 +93,44 @@ type _AmsStringBuilder struct {
 
 var _ (AmsStringBuilder) = (*_AmsStringBuilder)(nil)
 
-func (m *_AmsStringBuilder) WithMandatoryFields(text string) AmsStringBuilder {
-	return m.WithText(text)
+func (b *_AmsStringBuilder) WithMandatoryFields(text string) AmsStringBuilder {
+	return b.WithText(text)
 }
 
-func (m *_AmsStringBuilder) WithText(text string) AmsStringBuilder {
-	m.Text = text
-	return m
+func (b *_AmsStringBuilder) WithText(text string) AmsStringBuilder {
+	b.Text = text
+	return b
 }
 
-func (m *_AmsStringBuilder) Build() (AmsString, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AmsStringBuilder) Build() (AmsString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AmsString.deepCopy(), nil
+	return b._AmsString.deepCopy(), nil
 }
 
-func (m *_AmsStringBuilder) MustBuild() AmsString {
-	build, err := m.Build()
+func (b *_AmsStringBuilder) MustBuild() AmsString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AmsStringBuilder) DeepCopy() any {
-	return m.CreateAmsStringBuilder()
+func (b *_AmsStringBuilder) DeepCopy() any {
+	_copy := b.CreateAmsStringBuilder().(*_AmsStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAmsStringBuilder creates a AmsStringBuilder
-func (m *_AmsString) CreateAmsStringBuilder() AmsStringBuilder {
-	if m == nil {
+func (b *_AmsString) CreateAmsStringBuilder() AmsStringBuilder {
+	if b == nil {
 		return NewAmsStringBuilder()
 	}
-	return &_AmsStringBuilder{_AmsString: m.deepCopy()}
+	return &_AmsStringBuilder{_AmsString: b.deepCopy()}
 }
 
 ///////////////////////

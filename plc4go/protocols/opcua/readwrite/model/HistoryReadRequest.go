@@ -107,6 +107,8 @@ type HistoryReadRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, historyReadDetails ExtensionObject, timestampsToReturn TimestampsToReturn, releaseContinuationPoints bool, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) HistoryReadRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) HistoryReadRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) HistoryReadRequestBuilder
 	// WithHistoryReadDetails adds HistoryReadDetails (property field)
 	WithHistoryReadDetails(ExtensionObject) HistoryReadRequestBuilder
 	// WithHistoryReadDetailsBuilder adds HistoryReadDetails (property field) which is build by the builder
@@ -133,95 +135,127 @@ func NewHistoryReadRequestBuilder() HistoryReadRequestBuilder {
 type _HistoryReadRequestBuilder struct {
 	*_HistoryReadRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (HistoryReadRequestBuilder) = (*_HistoryReadRequestBuilder)(nil)
 
-func (m *_HistoryReadRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, historyReadDetails ExtensionObject, timestampsToReturn TimestampsToReturn, releaseContinuationPoints bool, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) HistoryReadRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithHistoryReadDetails(historyReadDetails).WithTimestampsToReturn(timestampsToReturn).WithReleaseContinuationPoints(releaseContinuationPoints).WithNoOfNodesToRead(noOfNodesToRead).WithNodesToRead(nodesToRead...)
+func (b *_HistoryReadRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_HistoryReadRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) HistoryReadRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_HistoryReadRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, historyReadDetails ExtensionObject, timestampsToReturn TimestampsToReturn, releaseContinuationPoints bool, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) HistoryReadRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithHistoryReadDetails(historyReadDetails).WithTimestampsToReturn(timestampsToReturn).WithReleaseContinuationPoints(releaseContinuationPoints).WithNoOfNodesToRead(noOfNodesToRead).WithNodesToRead(nodesToRead...)
 }
 
-func (m *_HistoryReadRequestBuilder) WithHistoryReadDetails(historyReadDetails ExtensionObject) HistoryReadRequestBuilder {
-	m.HistoryReadDetails = historyReadDetails
-	return m
+func (b *_HistoryReadRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) HistoryReadRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_HistoryReadRequestBuilder) WithHistoryReadDetailsBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) HistoryReadRequestBuilder {
-	builder := builderSupplier(m.HistoryReadDetails.CreateExtensionObjectBuilder())
+func (b *_HistoryReadRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) HistoryReadRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
 	var err error
-	m.HistoryReadDetails, err = builder.Build()
+	b.RequestHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_HistoryReadRequestBuilder) WithTimestampsToReturn(timestampsToReturn TimestampsToReturn) HistoryReadRequestBuilder {
-	m.TimestampsToReturn = timestampsToReturn
-	return m
+func (b *_HistoryReadRequestBuilder) WithHistoryReadDetails(historyReadDetails ExtensionObject) HistoryReadRequestBuilder {
+	b.HistoryReadDetails = historyReadDetails
+	return b
 }
 
-func (m *_HistoryReadRequestBuilder) WithReleaseContinuationPoints(releaseContinuationPoints bool) HistoryReadRequestBuilder {
-	m.ReleaseContinuationPoints = releaseContinuationPoints
-	return m
-}
-
-func (m *_HistoryReadRequestBuilder) WithNoOfNodesToRead(noOfNodesToRead int32) HistoryReadRequestBuilder {
-	m.NoOfNodesToRead = noOfNodesToRead
-	return m
-}
-
-func (m *_HistoryReadRequestBuilder) WithNodesToRead(nodesToRead ...ExtensionObjectDefinition) HistoryReadRequestBuilder {
-	m.NodesToRead = nodesToRead
-	return m
-}
-
-func (m *_HistoryReadRequestBuilder) Build() (HistoryReadRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_HistoryReadRequestBuilder) WithHistoryReadDetailsBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) HistoryReadRequestBuilder {
+	builder := builderSupplier(b.HistoryReadDetails.CreateExtensionObjectBuilder())
+	var err error
+	b.HistoryReadDetails, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
-	if m.HistoryReadDetails == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'historyReadDetails' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._HistoryReadRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_HistoryReadRequestBuilder) MustBuild() HistoryReadRequest {
-	build, err := m.Build()
+func (b *_HistoryReadRequestBuilder) WithTimestampsToReturn(timestampsToReturn TimestampsToReturn) HistoryReadRequestBuilder {
+	b.TimestampsToReturn = timestampsToReturn
+	return b
+}
+
+func (b *_HistoryReadRequestBuilder) WithReleaseContinuationPoints(releaseContinuationPoints bool) HistoryReadRequestBuilder {
+	b.ReleaseContinuationPoints = releaseContinuationPoints
+	return b
+}
+
+func (b *_HistoryReadRequestBuilder) WithNoOfNodesToRead(noOfNodesToRead int32) HistoryReadRequestBuilder {
+	b.NoOfNodesToRead = noOfNodesToRead
+	return b
+}
+
+func (b *_HistoryReadRequestBuilder) WithNodesToRead(nodesToRead ...ExtensionObjectDefinition) HistoryReadRequestBuilder {
+	b.NodesToRead = nodesToRead
+	return b
+}
+
+func (b *_HistoryReadRequestBuilder) Build() (HistoryReadRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.HistoryReadDetails == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'historyReadDetails' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HistoryReadRequest.deepCopy(), nil
+}
+
+func (b *_HistoryReadRequestBuilder) MustBuild() HistoryReadRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HistoryReadRequestBuilder) DeepCopy() any {
-	return m.CreateHistoryReadRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryReadRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryReadRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryReadRequestBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryReadRequestBuilder().(*_HistoryReadRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHistoryReadRequestBuilder creates a HistoryReadRequestBuilder
-func (m *_HistoryReadRequest) CreateHistoryReadRequestBuilder() HistoryReadRequestBuilder {
-	if m == nil {
+func (b *_HistoryReadRequest) CreateHistoryReadRequestBuilder() HistoryReadRequestBuilder {
+	if b == nil {
 		return NewHistoryReadRequestBuilder()
 	}
-	return &_HistoryReadRequestBuilder{_HistoryReadRequest: m.deepCopy()}
+	return &_HistoryReadRequestBuilder{_HistoryReadRequest: b.deepCopy()}
 }
 
 ///////////////////////

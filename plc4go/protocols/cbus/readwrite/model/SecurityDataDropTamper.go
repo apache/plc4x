@@ -85,40 +85,59 @@ func NewSecurityDataDropTamperBuilder() SecurityDataDropTamperBuilder {
 type _SecurityDataDropTamperBuilder struct {
 	*_SecurityDataDropTamper
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataDropTamperBuilder) = (*_SecurityDataDropTamperBuilder)(nil)
 
-func (m *_SecurityDataDropTamperBuilder) WithMandatoryFields() SecurityDataDropTamperBuilder {
-	return m
+func (b *_SecurityDataDropTamperBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataDropTamperBuilder) Build() (SecurityDataDropTamper, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataDropTamperBuilder) WithMandatoryFields() SecurityDataDropTamperBuilder {
+	return b
+}
+
+func (b *_SecurityDataDropTamperBuilder) Build() (SecurityDataDropTamper, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataDropTamper.deepCopy(), nil
+	return b._SecurityDataDropTamper.deepCopy(), nil
 }
 
-func (m *_SecurityDataDropTamperBuilder) MustBuild() SecurityDataDropTamper {
-	build, err := m.Build()
+func (b *_SecurityDataDropTamperBuilder) MustBuild() SecurityDataDropTamper {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataDropTamperBuilder) DeepCopy() any {
-	return m.CreateSecurityDataDropTamperBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataDropTamperBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataDropTamperBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataDropTamperBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataDropTamperBuilder().(*_SecurityDataDropTamperBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataDropTamperBuilder creates a SecurityDataDropTamperBuilder
-func (m *_SecurityDataDropTamper) CreateSecurityDataDropTamperBuilder() SecurityDataDropTamperBuilder {
-	if m == nil {
+func (b *_SecurityDataDropTamper) CreateSecurityDataDropTamperBuilder() SecurityDataDropTamperBuilder {
+	if b == nil {
 		return NewSecurityDataDropTamperBuilder()
 	}
-	return &_SecurityDataDropTamperBuilder{_SecurityDataDropTamper: m.deepCopy()}
+	return &_SecurityDataDropTamperBuilder{_SecurityDataDropTamper: b.deepCopy()}
 }
 
 ///////////////////////

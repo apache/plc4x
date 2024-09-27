@@ -85,40 +85,59 @@ func NewConnectionRequestInformationDeviceManagementBuilder() ConnectionRequestI
 type _ConnectionRequestInformationDeviceManagementBuilder struct {
 	*_ConnectionRequestInformationDeviceManagement
 
+	parentBuilder *_ConnectionRequestInformationBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ConnectionRequestInformationDeviceManagementBuilder) = (*_ConnectionRequestInformationDeviceManagementBuilder)(nil)
 
-func (m *_ConnectionRequestInformationDeviceManagementBuilder) WithMandatoryFields() ConnectionRequestInformationDeviceManagementBuilder {
-	return m
+func (b *_ConnectionRequestInformationDeviceManagementBuilder) setParent(contract ConnectionRequestInformationContract) {
+	b.ConnectionRequestInformationContract = contract
 }
 
-func (m *_ConnectionRequestInformationDeviceManagementBuilder) Build() (ConnectionRequestInformationDeviceManagement, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ConnectionRequestInformationDeviceManagementBuilder) WithMandatoryFields() ConnectionRequestInformationDeviceManagementBuilder {
+	return b
+}
+
+func (b *_ConnectionRequestInformationDeviceManagementBuilder) Build() (ConnectionRequestInformationDeviceManagement, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ConnectionRequestInformationDeviceManagement.deepCopy(), nil
+	return b._ConnectionRequestInformationDeviceManagement.deepCopy(), nil
 }
 
-func (m *_ConnectionRequestInformationDeviceManagementBuilder) MustBuild() ConnectionRequestInformationDeviceManagement {
-	build, err := m.Build()
+func (b *_ConnectionRequestInformationDeviceManagementBuilder) MustBuild() ConnectionRequestInformationDeviceManagement {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ConnectionRequestInformationDeviceManagementBuilder) DeepCopy() any {
-	return m.CreateConnectionRequestInformationDeviceManagementBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ConnectionRequestInformationDeviceManagementBuilder) Done() ConnectionRequestInformationBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ConnectionRequestInformationDeviceManagementBuilder) buildForConnectionRequestInformation() (ConnectionRequestInformation, error) {
+	return b.Build()
+}
+
+func (b *_ConnectionRequestInformationDeviceManagementBuilder) DeepCopy() any {
+	_copy := b.CreateConnectionRequestInformationDeviceManagementBuilder().(*_ConnectionRequestInformationDeviceManagementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateConnectionRequestInformationDeviceManagementBuilder creates a ConnectionRequestInformationDeviceManagementBuilder
-func (m *_ConnectionRequestInformationDeviceManagement) CreateConnectionRequestInformationDeviceManagementBuilder() ConnectionRequestInformationDeviceManagementBuilder {
-	if m == nil {
+func (b *_ConnectionRequestInformationDeviceManagement) CreateConnectionRequestInformationDeviceManagementBuilder() ConnectionRequestInformationDeviceManagementBuilder {
+	if b == nil {
 		return NewConnectionRequestInformationDeviceManagementBuilder()
 	}
-	return &_ConnectionRequestInformationDeviceManagementBuilder{_ConnectionRequestInformationDeviceManagement: m.deepCopy()}
+	return &_ConnectionRequestInformationDeviceManagementBuilder{_ConnectionRequestInformationDeviceManagement: b.deepCopy()}
 }
 
 ///////////////////////

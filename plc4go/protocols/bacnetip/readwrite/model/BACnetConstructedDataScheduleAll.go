@@ -85,40 +85,59 @@ func NewBACnetConstructedDataScheduleAllBuilder() BACnetConstructedDataScheduleA
 type _BACnetConstructedDataScheduleAllBuilder struct {
 	*_BACnetConstructedDataScheduleAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataScheduleAllBuilder) = (*_BACnetConstructedDataScheduleAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataScheduleAllBuilder) WithMandatoryFields() BACnetConstructedDataScheduleAllBuilder {
-	return m
+func (b *_BACnetConstructedDataScheduleAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataScheduleAllBuilder) Build() (BACnetConstructedDataScheduleAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataScheduleAllBuilder) WithMandatoryFields() BACnetConstructedDataScheduleAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataScheduleAllBuilder) Build() (BACnetConstructedDataScheduleAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataScheduleAll.deepCopy(), nil
+	return b._BACnetConstructedDataScheduleAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataScheduleAllBuilder) MustBuild() BACnetConstructedDataScheduleAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataScheduleAllBuilder) MustBuild() BACnetConstructedDataScheduleAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataScheduleAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataScheduleAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataScheduleAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataScheduleAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataScheduleAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataScheduleAllBuilder().(*_BACnetConstructedDataScheduleAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataScheduleAllBuilder creates a BACnetConstructedDataScheduleAllBuilder
-func (m *_BACnetConstructedDataScheduleAll) CreateBACnetConstructedDataScheduleAllBuilder() BACnetConstructedDataScheduleAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataScheduleAll) CreateBACnetConstructedDataScheduleAllBuilder() BACnetConstructedDataScheduleAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataScheduleAllBuilder()
 	}
-	return &_BACnetConstructedDataScheduleAllBuilder{_BACnetConstructedDataScheduleAll: m.deepCopy()}
+	return &_BACnetConstructedDataScheduleAllBuilder{_BACnetConstructedDataScheduleAll: b.deepCopy()}
 }
 
 ///////////////////////

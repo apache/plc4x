@@ -104,64 +104,68 @@ type _BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBui
 
 var _ (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) = (*_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder {
-	return m.WithHeader(header).WithValue(value)
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) Build() (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) Build() (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) MustBuild() BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) MustBuild() BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder()
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder().(*_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder creates a BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged) CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder() BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged) CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder() BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder{_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder{_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged: b.deepCopy()}
 }
 
 ///////////////////////

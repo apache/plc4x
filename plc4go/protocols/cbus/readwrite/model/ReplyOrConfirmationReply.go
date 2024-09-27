@@ -89,6 +89,8 @@ type ReplyOrConfirmationReplyBuilder interface {
 	WithMandatoryFields(reply Reply, termination ResponseTermination) ReplyOrConfirmationReplyBuilder
 	// WithReply adds Reply (property field)
 	WithReply(Reply) ReplyOrConfirmationReplyBuilder
+	// WithReplyBuilder adds Reply (property field) which is build by the builder
+	WithReplyBuilder(func(ReplyBuilder) ReplyBuilder) ReplyOrConfirmationReplyBuilder
 	// WithTermination adds Termination (property field)
 	WithTermination(ResponseTermination) ReplyOrConfirmationReplyBuilder
 	// WithTerminationBuilder adds Termination (property field) which is build by the builder
@@ -107,75 +109,107 @@ func NewReplyOrConfirmationReplyBuilder() ReplyOrConfirmationReplyBuilder {
 type _ReplyOrConfirmationReplyBuilder struct {
 	*_ReplyOrConfirmationReply
 
+	parentBuilder *_ReplyOrConfirmationBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ReplyOrConfirmationReplyBuilder) = (*_ReplyOrConfirmationReplyBuilder)(nil)
 
-func (m *_ReplyOrConfirmationReplyBuilder) WithMandatoryFields(reply Reply, termination ResponseTermination) ReplyOrConfirmationReplyBuilder {
-	return m.WithReply(reply).WithTermination(termination)
+func (b *_ReplyOrConfirmationReplyBuilder) setParent(contract ReplyOrConfirmationContract) {
+	b.ReplyOrConfirmationContract = contract
 }
 
-func (m *_ReplyOrConfirmationReplyBuilder) WithReply(reply Reply) ReplyOrConfirmationReplyBuilder {
-	m.Reply = reply
-	return m
+func (b *_ReplyOrConfirmationReplyBuilder) WithMandatoryFields(reply Reply, termination ResponseTermination) ReplyOrConfirmationReplyBuilder {
+	return b.WithReply(reply).WithTermination(termination)
 }
 
-func (m *_ReplyOrConfirmationReplyBuilder) WithTermination(termination ResponseTermination) ReplyOrConfirmationReplyBuilder {
-	m.Termination = termination
-	return m
+func (b *_ReplyOrConfirmationReplyBuilder) WithReply(reply Reply) ReplyOrConfirmationReplyBuilder {
+	b.Reply = reply
+	return b
 }
 
-func (m *_ReplyOrConfirmationReplyBuilder) WithTerminationBuilder(builderSupplier func(ResponseTerminationBuilder) ResponseTerminationBuilder) ReplyOrConfirmationReplyBuilder {
-	builder := builderSupplier(m.Termination.CreateResponseTerminationBuilder())
+func (b *_ReplyOrConfirmationReplyBuilder) WithReplyBuilder(builderSupplier func(ReplyBuilder) ReplyBuilder) ReplyOrConfirmationReplyBuilder {
+	builder := builderSupplier(b.Reply.CreateReplyBuilder())
 	var err error
-	m.Termination, err = builder.Build()
+	b.Reply, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ResponseTerminationBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ReplyBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ReplyOrConfirmationReplyBuilder) Build() (ReplyOrConfirmationReply, error) {
-	if m.Reply == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'reply' not set"))
-	}
-	if m.Termination == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'termination' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._ReplyOrConfirmationReply.deepCopy(), nil
+func (b *_ReplyOrConfirmationReplyBuilder) WithTermination(termination ResponseTermination) ReplyOrConfirmationReplyBuilder {
+	b.Termination = termination
+	return b
 }
 
-func (m *_ReplyOrConfirmationReplyBuilder) MustBuild() ReplyOrConfirmationReply {
-	build, err := m.Build()
+func (b *_ReplyOrConfirmationReplyBuilder) WithTerminationBuilder(builderSupplier func(ResponseTerminationBuilder) ResponseTerminationBuilder) ReplyOrConfirmationReplyBuilder {
+	builder := builderSupplier(b.Termination.CreateResponseTerminationBuilder())
+	var err error
+	b.Termination, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ResponseTerminationBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReplyOrConfirmationReplyBuilder) Build() (ReplyOrConfirmationReply, error) {
+	if b.Reply == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'reply' not set"))
+	}
+	if b.Termination == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'termination' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ReplyOrConfirmationReply.deepCopy(), nil
+}
+
+func (b *_ReplyOrConfirmationReplyBuilder) MustBuild() ReplyOrConfirmationReply {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ReplyOrConfirmationReplyBuilder) DeepCopy() any {
-	return m.CreateReplyOrConfirmationReplyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ReplyOrConfirmationReplyBuilder) Done() ReplyOrConfirmationBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ReplyOrConfirmationReplyBuilder) buildForReplyOrConfirmation() (ReplyOrConfirmation, error) {
+	return b.Build()
+}
+
+func (b *_ReplyOrConfirmationReplyBuilder) DeepCopy() any {
+	_copy := b.CreateReplyOrConfirmationReplyBuilder().(*_ReplyOrConfirmationReplyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateReplyOrConfirmationReplyBuilder creates a ReplyOrConfirmationReplyBuilder
-func (m *_ReplyOrConfirmationReply) CreateReplyOrConfirmationReplyBuilder() ReplyOrConfirmationReplyBuilder {
-	if m == nil {
+func (b *_ReplyOrConfirmationReply) CreateReplyOrConfirmationReplyBuilder() ReplyOrConfirmationReplyBuilder {
+	if b == nil {
 		return NewReplyOrConfirmationReplyBuilder()
 	}
-	return &_ReplyOrConfirmationReplyBuilder{_ReplyOrConfirmationReply: m.deepCopy()}
+	return &_ReplyOrConfirmationReplyBuilder{_ReplyOrConfirmationReply: b.deepCopy()}
 }
 
 ///////////////////////

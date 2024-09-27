@@ -97,10 +97,109 @@ type BACnetEventParameterBuilder interface {
 	WithPeekedTagHeader(BACnetTagHeader) BACnetEventParameterBuilder
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventParameterBuilder
+	// AsBACnetEventParameterChangeOfBitstring converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterChangeOfBitstring() interface {
+		BACnetEventParameterChangeOfBitstringBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterChangeOfState converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterChangeOfState() interface {
+		BACnetEventParameterChangeOfStateBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterChangeOfValue converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterChangeOfValue() interface {
+		BACnetEventParameterChangeOfValueBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterCommandFailure converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterCommandFailure() interface {
+		BACnetEventParameterCommandFailureBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterFloatingLimit converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterFloatingLimit() interface {
+		BACnetEventParameterFloatingLimitBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterOutOfRange converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterOutOfRange() interface {
+		BACnetEventParameterOutOfRangeBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterChangeOfLifeSavety converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterChangeOfLifeSavety() interface {
+		BACnetEventParameterChangeOfLifeSavetyBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterExtended converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterExtended() interface {
+		BACnetEventParameterExtendedBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterBufferReady converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterBufferReady() interface {
+		BACnetEventParameterBufferReadyBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterUnsignedRange converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterUnsignedRange() interface {
+		BACnetEventParameterUnsignedRangeBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterAccessEvent converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterAccessEvent() interface {
+		BACnetEventParameterAccessEventBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterDoubleOutOfRange converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterDoubleOutOfRange() interface {
+		BACnetEventParameterDoubleOutOfRangeBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterSignedOutOfRange converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterSignedOutOfRange() interface {
+		BACnetEventParameterSignedOutOfRangeBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterUnsignedOutOfRange converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterUnsignedOutOfRange() interface {
+		BACnetEventParameterUnsignedOutOfRangeBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterChangeOfCharacterString converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterChangeOfCharacterString() interface {
+		BACnetEventParameterChangeOfCharacterStringBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterChangeOfStatusFlags converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterChangeOfStatusFlags() interface {
+		BACnetEventParameterChangeOfStatusFlagsBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterNone converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterNone() interface {
+		BACnetEventParameterNoneBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterChangeOfDiscreteValue converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterChangeOfDiscreteValue() interface {
+		BACnetEventParameterChangeOfDiscreteValueBuilder
+		Done() BACnetEventParameterBuilder
+	}
+	// AsBACnetEventParameterChangeOfTimer converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterChangeOfTimer() interface {
+		BACnetEventParameterChangeOfTimerBuilder
+		Done() BACnetEventParameterBuilder
+	}
 	// Build builds the BACnetEventParameter or returns an error if something is wrong
-	Build() (BACnetEventParameterContract, error)
+	PartialBuild() (BACnetEventParameterContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetEventParameterContract
+	PartialMustBuild() BACnetEventParameterContract
+	// Build builds the BACnetEventParameter or returns an error if something is wrong
+	Build() (BACnetEventParameter, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventParameter
 }
 
 // NewBACnetEventParameterBuilder() creates a BACnetEventParameterBuilder
@@ -108,67 +207,405 @@ func NewBACnetEventParameterBuilder() BACnetEventParameterBuilder {
 	return &_BACnetEventParameterBuilder{_BACnetEventParameter: new(_BACnetEventParameter)}
 }
 
+type _BACnetEventParameterChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetEventParameterContract)
+	buildForBACnetEventParameter() (BACnetEventParameter, error)
+}
+
 type _BACnetEventParameterBuilder struct {
 	*_BACnetEventParameter
+
+	childBuilder _BACnetEventParameterChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetEventParameterBuilder) = (*_BACnetEventParameterBuilder)(nil)
 
-func (m *_BACnetEventParameterBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetEventParameterBuilder {
-	return m.WithPeekedTagHeader(peekedTagHeader)
+func (b *_BACnetEventParameterBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetEventParameterBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
 }
 
-func (m *_BACnetEventParameterBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetEventParameterBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetEventParameterBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetEventParameterBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetEventParameterBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventParameterBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetEventParameterBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventParameterBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterBuilder) Build() (BACnetEventParameterContract, error) {
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetEventParameterBuilder) PartialBuild() (BACnetEventParameterContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetEventParameter.deepCopy(), nil
+	return b._BACnetEventParameter.deepCopy(), nil
 }
 
-func (m *_BACnetEventParameterBuilder) MustBuild() BACnetEventParameterContract {
-	build, err := m.Build()
+func (b *_BACnetEventParameterBuilder) PartialMustBuild() BACnetEventParameterContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetEventParameterBuilder) DeepCopy() any {
-	return m.CreateBACnetEventParameterBuilder()
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfBitstring() interface {
+	BACnetEventParameterChangeOfBitstringBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterChangeOfBitstringBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterChangeOfBitstringBuilder().(*_BACnetEventParameterChangeOfBitstringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfState() interface {
+	BACnetEventParameterChangeOfStateBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterChangeOfStateBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterChangeOfStateBuilder().(*_BACnetEventParameterChangeOfStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfValue() interface {
+	BACnetEventParameterChangeOfValueBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterChangeOfValueBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterChangeOfValueBuilder().(*_BACnetEventParameterChangeOfValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterCommandFailure() interface {
+	BACnetEventParameterCommandFailureBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterCommandFailureBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterCommandFailureBuilder().(*_BACnetEventParameterCommandFailureBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterFloatingLimit() interface {
+	BACnetEventParameterFloatingLimitBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterFloatingLimitBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterFloatingLimitBuilder().(*_BACnetEventParameterFloatingLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterOutOfRange() interface {
+	BACnetEventParameterOutOfRangeBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterOutOfRangeBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterOutOfRangeBuilder().(*_BACnetEventParameterOutOfRangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfLifeSavety() interface {
+	BACnetEventParameterChangeOfLifeSavetyBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterChangeOfLifeSavetyBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterChangeOfLifeSavetyBuilder().(*_BACnetEventParameterChangeOfLifeSavetyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterExtended() interface {
+	BACnetEventParameterExtendedBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterExtendedBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterExtendedBuilder().(*_BACnetEventParameterExtendedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterBufferReady() interface {
+	BACnetEventParameterBufferReadyBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterBufferReadyBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterBufferReadyBuilder().(*_BACnetEventParameterBufferReadyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterUnsignedRange() interface {
+	BACnetEventParameterUnsignedRangeBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterUnsignedRangeBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterUnsignedRangeBuilder().(*_BACnetEventParameterUnsignedRangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterAccessEvent() interface {
+	BACnetEventParameterAccessEventBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterAccessEventBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterAccessEventBuilder().(*_BACnetEventParameterAccessEventBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterDoubleOutOfRange() interface {
+	BACnetEventParameterDoubleOutOfRangeBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterDoubleOutOfRangeBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterDoubleOutOfRangeBuilder().(*_BACnetEventParameterDoubleOutOfRangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterSignedOutOfRange() interface {
+	BACnetEventParameterSignedOutOfRangeBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterSignedOutOfRangeBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterSignedOutOfRangeBuilder().(*_BACnetEventParameterSignedOutOfRangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterUnsignedOutOfRange() interface {
+	BACnetEventParameterUnsignedOutOfRangeBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterUnsignedOutOfRangeBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterUnsignedOutOfRangeBuilder().(*_BACnetEventParameterUnsignedOutOfRangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfCharacterString() interface {
+	BACnetEventParameterChangeOfCharacterStringBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterChangeOfCharacterStringBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterChangeOfCharacterStringBuilder().(*_BACnetEventParameterChangeOfCharacterStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfStatusFlags() interface {
+	BACnetEventParameterChangeOfStatusFlagsBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterChangeOfStatusFlagsBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterChangeOfStatusFlagsBuilder().(*_BACnetEventParameterChangeOfStatusFlagsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterNone() interface {
+	BACnetEventParameterNoneBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterNoneBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterNoneBuilder().(*_BACnetEventParameterNoneBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfDiscreteValue() interface {
+	BACnetEventParameterChangeOfDiscreteValueBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterChangeOfDiscreteValueBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterChangeOfDiscreteValueBuilder().(*_BACnetEventParameterChangeOfDiscreteValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfTimer() interface {
+	BACnetEventParameterChangeOfTimerBuilder
+	Done() BACnetEventParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterChangeOfTimerBuilder
+		Done() BACnetEventParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterChangeOfTimerBuilder().(*_BACnetEventParameterChangeOfTimerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterBuilder) Build() (BACnetEventParameter, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetEventParameter()
+}
+
+func (b *_BACnetEventParameterBuilder) MustBuild() BACnetEventParameter {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetEventParameterBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventParameterBuilder().(*_BACnetEventParameterBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetEventParameterChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetEventParameterBuilder creates a BACnetEventParameterBuilder
-func (m *_BACnetEventParameter) CreateBACnetEventParameterBuilder() BACnetEventParameterBuilder {
-	if m == nil {
+func (b *_BACnetEventParameter) CreateBACnetEventParameterBuilder() BACnetEventParameterBuilder {
+	if b == nil {
 		return NewBACnetEventParameterBuilder()
 	}
-	return &_BACnetEventParameterBuilder{_BACnetEventParameter: m.deepCopy()}
+	return &_BACnetEventParameterBuilder{_BACnetEventParameter: b.deepCopy()}
 }
 
 ///////////////////////

@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesAccessCredentialDisableReasonBuilder() BACnetPropert
 type _BACnetPropertyStatesAccessCredentialDisableReasonBuilder struct {
 	*_BACnetPropertyStatesAccessCredentialDisableReason
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesAccessCredentialDisableReasonBuilder) = (*_BACnetPropertyStatesAccessCredentialDisableReasonBuilder)(nil)
 
-func (m *_BACnetPropertyStatesAccessCredentialDisableReasonBuilder) WithMandatoryFields(accessCredentialDisableReason BACnetAccessCredentialDisableReasonTagged) BACnetPropertyStatesAccessCredentialDisableReasonBuilder {
-	return m.WithAccessCredentialDisableReason(accessCredentialDisableReason)
+func (b *_BACnetPropertyStatesAccessCredentialDisableReasonBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesAccessCredentialDisableReasonBuilder) WithAccessCredentialDisableReason(accessCredentialDisableReason BACnetAccessCredentialDisableReasonTagged) BACnetPropertyStatesAccessCredentialDisableReasonBuilder {
-	m.AccessCredentialDisableReason = accessCredentialDisableReason
-	return m
+func (b *_BACnetPropertyStatesAccessCredentialDisableReasonBuilder) WithMandatoryFields(accessCredentialDisableReason BACnetAccessCredentialDisableReasonTagged) BACnetPropertyStatesAccessCredentialDisableReasonBuilder {
+	return b.WithAccessCredentialDisableReason(accessCredentialDisableReason)
 }
 
-func (m *_BACnetPropertyStatesAccessCredentialDisableReasonBuilder) WithAccessCredentialDisableReasonBuilder(builderSupplier func(BACnetAccessCredentialDisableReasonTaggedBuilder) BACnetAccessCredentialDisableReasonTaggedBuilder) BACnetPropertyStatesAccessCredentialDisableReasonBuilder {
-	builder := builderSupplier(m.AccessCredentialDisableReason.CreateBACnetAccessCredentialDisableReasonTaggedBuilder())
+func (b *_BACnetPropertyStatesAccessCredentialDisableReasonBuilder) WithAccessCredentialDisableReason(accessCredentialDisableReason BACnetAccessCredentialDisableReasonTagged) BACnetPropertyStatesAccessCredentialDisableReasonBuilder {
+	b.AccessCredentialDisableReason = accessCredentialDisableReason
+	return b
+}
+
+func (b *_BACnetPropertyStatesAccessCredentialDisableReasonBuilder) WithAccessCredentialDisableReasonBuilder(builderSupplier func(BACnetAccessCredentialDisableReasonTaggedBuilder) BACnetAccessCredentialDisableReasonTaggedBuilder) BACnetPropertyStatesAccessCredentialDisableReasonBuilder {
+	builder := builderSupplier(b.AccessCredentialDisableReason.CreateBACnetAccessCredentialDisableReasonTaggedBuilder())
 	var err error
-	m.AccessCredentialDisableReason, err = builder.Build()
+	b.AccessCredentialDisableReason, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAccessCredentialDisableReasonTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAccessCredentialDisableReasonTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesAccessCredentialDisableReasonBuilder) Build() (BACnetPropertyStatesAccessCredentialDisableReason, error) {
-	if m.AccessCredentialDisableReason == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesAccessCredentialDisableReasonBuilder) Build() (BACnetPropertyStatesAccessCredentialDisableReason, error) {
+	if b.AccessCredentialDisableReason == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'accessCredentialDisableReason' not set"))
+		b.err.Append(errors.New("mandatory field 'accessCredentialDisableReason' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesAccessCredentialDisableReason.deepCopy(), nil
+	return b._BACnetPropertyStatesAccessCredentialDisableReason.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesAccessCredentialDisableReasonBuilder) MustBuild() BACnetPropertyStatesAccessCredentialDisableReason {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesAccessCredentialDisableReasonBuilder) MustBuild() BACnetPropertyStatesAccessCredentialDisableReason {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesAccessCredentialDisableReasonBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesAccessCredentialDisableReasonBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesAccessCredentialDisableReasonBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesAccessCredentialDisableReasonBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesAccessCredentialDisableReasonBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesAccessCredentialDisableReasonBuilder().(*_BACnetPropertyStatesAccessCredentialDisableReasonBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesAccessCredentialDisableReasonBuilder creates a BACnetPropertyStatesAccessCredentialDisableReasonBuilder
-func (m *_BACnetPropertyStatesAccessCredentialDisableReason) CreateBACnetPropertyStatesAccessCredentialDisableReasonBuilder() BACnetPropertyStatesAccessCredentialDisableReasonBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesAccessCredentialDisableReason) CreateBACnetPropertyStatesAccessCredentialDisableReasonBuilder() BACnetPropertyStatesAccessCredentialDisableReasonBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesAccessCredentialDisableReasonBuilder()
 	}
-	return &_BACnetPropertyStatesAccessCredentialDisableReasonBuilder{_BACnetPropertyStatesAccessCredentialDisableReason: m.deepCopy()}
+	return &_BACnetPropertyStatesAccessCredentialDisableReasonBuilder{_BACnetPropertyStatesAccessCredentialDisableReason: b.deepCopy()}
 }
 
 ///////////////////////

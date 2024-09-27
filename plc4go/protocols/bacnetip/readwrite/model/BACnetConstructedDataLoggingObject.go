@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLoggingObjectBuilder() BACnetConstructedDataLogging
 type _BACnetConstructedDataLoggingObjectBuilder struct {
 	*_BACnetConstructedDataLoggingObject
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLoggingObjectBuilder) = (*_BACnetConstructedDataLoggingObjectBuilder)(nil)
 
-func (m *_BACnetConstructedDataLoggingObjectBuilder) WithMandatoryFields(loggingObject BACnetApplicationTagObjectIdentifier) BACnetConstructedDataLoggingObjectBuilder {
-	return m.WithLoggingObject(loggingObject)
+func (b *_BACnetConstructedDataLoggingObjectBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLoggingObjectBuilder) WithLoggingObject(loggingObject BACnetApplicationTagObjectIdentifier) BACnetConstructedDataLoggingObjectBuilder {
-	m.LoggingObject = loggingObject
-	return m
+func (b *_BACnetConstructedDataLoggingObjectBuilder) WithMandatoryFields(loggingObject BACnetApplicationTagObjectIdentifier) BACnetConstructedDataLoggingObjectBuilder {
+	return b.WithLoggingObject(loggingObject)
 }
 
-func (m *_BACnetConstructedDataLoggingObjectBuilder) WithLoggingObjectBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataLoggingObjectBuilder {
-	builder := builderSupplier(m.LoggingObject.CreateBACnetApplicationTagObjectIdentifierBuilder())
+func (b *_BACnetConstructedDataLoggingObjectBuilder) WithLoggingObject(loggingObject BACnetApplicationTagObjectIdentifier) BACnetConstructedDataLoggingObjectBuilder {
+	b.LoggingObject = loggingObject
+	return b
+}
+
+func (b *_BACnetConstructedDataLoggingObjectBuilder) WithLoggingObjectBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataLoggingObjectBuilder {
+	builder := builderSupplier(b.LoggingObject.CreateBACnetApplicationTagObjectIdentifierBuilder())
 	var err error
-	m.LoggingObject, err = builder.Build()
+	b.LoggingObject, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLoggingObjectBuilder) Build() (BACnetConstructedDataLoggingObject, error) {
-	if m.LoggingObject == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLoggingObjectBuilder) Build() (BACnetConstructedDataLoggingObject, error) {
+	if b.LoggingObject == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'loggingObject' not set"))
+		b.err.Append(errors.New("mandatory field 'loggingObject' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLoggingObject.deepCopy(), nil
+	return b._BACnetConstructedDataLoggingObject.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLoggingObjectBuilder) MustBuild() BACnetConstructedDataLoggingObject {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLoggingObjectBuilder) MustBuild() BACnetConstructedDataLoggingObject {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLoggingObjectBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLoggingObjectBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLoggingObjectBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLoggingObjectBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLoggingObjectBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLoggingObjectBuilder().(*_BACnetConstructedDataLoggingObjectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLoggingObjectBuilder creates a BACnetConstructedDataLoggingObjectBuilder
-func (m *_BACnetConstructedDataLoggingObject) CreateBACnetConstructedDataLoggingObjectBuilder() BACnetConstructedDataLoggingObjectBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLoggingObject) CreateBACnetConstructedDataLoggingObjectBuilder() BACnetConstructedDataLoggingObjectBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLoggingObjectBuilder()
 	}
-	return &_BACnetConstructedDataLoggingObjectBuilder{_BACnetConstructedDataLoggingObject: m.deepCopy()}
+	return &_BACnetConstructedDataLoggingObjectBuilder{_BACnetConstructedDataLoggingObject: b.deepCopy()}
 }
 
 ///////////////////////

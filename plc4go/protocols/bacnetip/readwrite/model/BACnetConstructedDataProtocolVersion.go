@@ -100,64 +100,83 @@ func NewBACnetConstructedDataProtocolVersionBuilder() BACnetConstructedDataProto
 type _BACnetConstructedDataProtocolVersionBuilder struct {
 	*_BACnetConstructedDataProtocolVersion
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataProtocolVersionBuilder) = (*_BACnetConstructedDataProtocolVersionBuilder)(nil)
 
-func (m *_BACnetConstructedDataProtocolVersionBuilder) WithMandatoryFields(protocolVersion BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolVersionBuilder {
-	return m.WithProtocolVersion(protocolVersion)
+func (b *_BACnetConstructedDataProtocolVersionBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataProtocolVersionBuilder) WithProtocolVersion(protocolVersion BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolVersionBuilder {
-	m.ProtocolVersion = protocolVersion
-	return m
+func (b *_BACnetConstructedDataProtocolVersionBuilder) WithMandatoryFields(protocolVersion BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolVersionBuilder {
+	return b.WithProtocolVersion(protocolVersion)
 }
 
-func (m *_BACnetConstructedDataProtocolVersionBuilder) WithProtocolVersionBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataProtocolVersionBuilder {
-	builder := builderSupplier(m.ProtocolVersion.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataProtocolVersionBuilder) WithProtocolVersion(protocolVersion BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolVersionBuilder {
+	b.ProtocolVersion = protocolVersion
+	return b
+}
+
+func (b *_BACnetConstructedDataProtocolVersionBuilder) WithProtocolVersionBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataProtocolVersionBuilder {
+	builder := builderSupplier(b.ProtocolVersion.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.ProtocolVersion, err = builder.Build()
+	b.ProtocolVersion, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataProtocolVersionBuilder) Build() (BACnetConstructedDataProtocolVersion, error) {
-	if m.ProtocolVersion == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataProtocolVersionBuilder) Build() (BACnetConstructedDataProtocolVersion, error) {
+	if b.ProtocolVersion == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'protocolVersion' not set"))
+		b.err.Append(errors.New("mandatory field 'protocolVersion' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataProtocolVersion.deepCopy(), nil
+	return b._BACnetConstructedDataProtocolVersion.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataProtocolVersionBuilder) MustBuild() BACnetConstructedDataProtocolVersion {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataProtocolVersionBuilder) MustBuild() BACnetConstructedDataProtocolVersion {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataProtocolVersionBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataProtocolVersionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataProtocolVersionBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataProtocolVersionBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataProtocolVersionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataProtocolVersionBuilder().(*_BACnetConstructedDataProtocolVersionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataProtocolVersionBuilder creates a BACnetConstructedDataProtocolVersionBuilder
-func (m *_BACnetConstructedDataProtocolVersion) CreateBACnetConstructedDataProtocolVersionBuilder() BACnetConstructedDataProtocolVersionBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataProtocolVersion) CreateBACnetConstructedDataProtocolVersionBuilder() BACnetConstructedDataProtocolVersionBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataProtocolVersionBuilder()
 	}
-	return &_BACnetConstructedDataProtocolVersionBuilder{_BACnetConstructedDataProtocolVersion: m.deepCopy()}
+	return &_BACnetConstructedDataProtocolVersionBuilder{_BACnetConstructedDataProtocolVersion: b.deepCopy()}
 }
 
 ///////////////////////

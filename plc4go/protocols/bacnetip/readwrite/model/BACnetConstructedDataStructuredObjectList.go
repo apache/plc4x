@@ -103,63 +103,82 @@ func NewBACnetConstructedDataStructuredObjectListBuilder() BACnetConstructedData
 type _BACnetConstructedDataStructuredObjectListBuilder struct {
 	*_BACnetConstructedDataStructuredObjectList
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataStructuredObjectListBuilder) = (*_BACnetConstructedDataStructuredObjectListBuilder)(nil)
 
-func (m *_BACnetConstructedDataStructuredObjectListBuilder) WithMandatoryFields(structuredObjectList []BACnetApplicationTagObjectIdentifier) BACnetConstructedDataStructuredObjectListBuilder {
-	return m.WithStructuredObjectList(structuredObjectList...)
+func (b *_BACnetConstructedDataStructuredObjectListBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataStructuredObjectListBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataStructuredObjectListBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataStructuredObjectListBuilder) WithMandatoryFields(structuredObjectList []BACnetApplicationTagObjectIdentifier) BACnetConstructedDataStructuredObjectListBuilder {
+	return b.WithStructuredObjectList(structuredObjectList...)
 }
 
-func (m *_BACnetConstructedDataStructuredObjectListBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataStructuredObjectListBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataStructuredObjectListBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataStructuredObjectListBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataStructuredObjectListBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataStructuredObjectListBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataStructuredObjectListBuilder) WithStructuredObjectList(structuredObjectList ...BACnetApplicationTagObjectIdentifier) BACnetConstructedDataStructuredObjectListBuilder {
-	m.StructuredObjectList = structuredObjectList
-	return m
+func (b *_BACnetConstructedDataStructuredObjectListBuilder) WithStructuredObjectList(structuredObjectList ...BACnetApplicationTagObjectIdentifier) BACnetConstructedDataStructuredObjectListBuilder {
+	b.StructuredObjectList = structuredObjectList
+	return b
 }
 
-func (m *_BACnetConstructedDataStructuredObjectListBuilder) Build() (BACnetConstructedDataStructuredObjectList, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataStructuredObjectListBuilder) Build() (BACnetConstructedDataStructuredObjectList, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataStructuredObjectList.deepCopy(), nil
+	return b._BACnetConstructedDataStructuredObjectList.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataStructuredObjectListBuilder) MustBuild() BACnetConstructedDataStructuredObjectList {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataStructuredObjectListBuilder) MustBuild() BACnetConstructedDataStructuredObjectList {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataStructuredObjectListBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataStructuredObjectListBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataStructuredObjectListBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataStructuredObjectListBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataStructuredObjectListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataStructuredObjectListBuilder().(*_BACnetConstructedDataStructuredObjectListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataStructuredObjectListBuilder creates a BACnetConstructedDataStructuredObjectListBuilder
-func (m *_BACnetConstructedDataStructuredObjectList) CreateBACnetConstructedDataStructuredObjectListBuilder() BACnetConstructedDataStructuredObjectListBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataStructuredObjectList) CreateBACnetConstructedDataStructuredObjectListBuilder() BACnetConstructedDataStructuredObjectListBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataStructuredObjectListBuilder()
 	}
-	return &_BACnetConstructedDataStructuredObjectListBuilder{_BACnetConstructedDataStructuredObjectList: m.deepCopy()}
+	return &_BACnetConstructedDataStructuredObjectListBuilder{_BACnetConstructedDataStructuredObjectList: b.deepCopy()}
 }
 
 ///////////////////////

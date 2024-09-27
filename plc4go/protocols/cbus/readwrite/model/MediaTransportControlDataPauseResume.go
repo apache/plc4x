@@ -97,45 +97,64 @@ func NewMediaTransportControlDataPauseResumeBuilder() MediaTransportControlDataP
 type _MediaTransportControlDataPauseResumeBuilder struct {
 	*_MediaTransportControlDataPauseResume
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataPauseResumeBuilder) = (*_MediaTransportControlDataPauseResumeBuilder)(nil)
 
-func (m *_MediaTransportControlDataPauseResumeBuilder) WithMandatoryFields(operation byte) MediaTransportControlDataPauseResumeBuilder {
-	return m.WithOperation(operation)
+func (b *_MediaTransportControlDataPauseResumeBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataPauseResumeBuilder) WithOperation(operation byte) MediaTransportControlDataPauseResumeBuilder {
-	m.Operation = operation
-	return m
+func (b *_MediaTransportControlDataPauseResumeBuilder) WithMandatoryFields(operation byte) MediaTransportControlDataPauseResumeBuilder {
+	return b.WithOperation(operation)
 }
 
-func (m *_MediaTransportControlDataPauseResumeBuilder) Build() (MediaTransportControlDataPauseResume, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataPauseResumeBuilder) WithOperation(operation byte) MediaTransportControlDataPauseResumeBuilder {
+	b.Operation = operation
+	return b
+}
+
+func (b *_MediaTransportControlDataPauseResumeBuilder) Build() (MediaTransportControlDataPauseResume, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataPauseResume.deepCopy(), nil
+	return b._MediaTransportControlDataPauseResume.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataPauseResumeBuilder) MustBuild() MediaTransportControlDataPauseResume {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataPauseResumeBuilder) MustBuild() MediaTransportControlDataPauseResume {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataPauseResumeBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataPauseResumeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataPauseResumeBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataPauseResumeBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataPauseResumeBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataPauseResumeBuilder().(*_MediaTransportControlDataPauseResumeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataPauseResumeBuilder creates a MediaTransportControlDataPauseResumeBuilder
-func (m *_MediaTransportControlDataPauseResume) CreateMediaTransportControlDataPauseResumeBuilder() MediaTransportControlDataPauseResumeBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataPauseResume) CreateMediaTransportControlDataPauseResumeBuilder() MediaTransportControlDataPauseResumeBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataPauseResumeBuilder()
 	}
-	return &_MediaTransportControlDataPauseResumeBuilder{_MediaTransportControlDataPauseResume: m.deepCopy()}
+	return &_MediaTransportControlDataPauseResumeBuilder{_MediaTransportControlDataPauseResume: b.deepCopy()}
 }
 
 ///////////////////////

@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesDoorStatusBuilder() BACnetPropertyStatesDoorStatusBu
 type _BACnetPropertyStatesDoorStatusBuilder struct {
 	*_BACnetPropertyStatesDoorStatus
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesDoorStatusBuilder) = (*_BACnetPropertyStatesDoorStatusBuilder)(nil)
 
-func (m *_BACnetPropertyStatesDoorStatusBuilder) WithMandatoryFields(doorStatus BACnetDoorStatusTagged) BACnetPropertyStatesDoorStatusBuilder {
-	return m.WithDoorStatus(doorStatus)
+func (b *_BACnetPropertyStatesDoorStatusBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesDoorStatusBuilder) WithDoorStatus(doorStatus BACnetDoorStatusTagged) BACnetPropertyStatesDoorStatusBuilder {
-	m.DoorStatus = doorStatus
-	return m
+func (b *_BACnetPropertyStatesDoorStatusBuilder) WithMandatoryFields(doorStatus BACnetDoorStatusTagged) BACnetPropertyStatesDoorStatusBuilder {
+	return b.WithDoorStatus(doorStatus)
 }
 
-func (m *_BACnetPropertyStatesDoorStatusBuilder) WithDoorStatusBuilder(builderSupplier func(BACnetDoorStatusTaggedBuilder) BACnetDoorStatusTaggedBuilder) BACnetPropertyStatesDoorStatusBuilder {
-	builder := builderSupplier(m.DoorStatus.CreateBACnetDoorStatusTaggedBuilder())
+func (b *_BACnetPropertyStatesDoorStatusBuilder) WithDoorStatus(doorStatus BACnetDoorStatusTagged) BACnetPropertyStatesDoorStatusBuilder {
+	b.DoorStatus = doorStatus
+	return b
+}
+
+func (b *_BACnetPropertyStatesDoorStatusBuilder) WithDoorStatusBuilder(builderSupplier func(BACnetDoorStatusTaggedBuilder) BACnetDoorStatusTaggedBuilder) BACnetPropertyStatesDoorStatusBuilder {
+	builder := builderSupplier(b.DoorStatus.CreateBACnetDoorStatusTaggedBuilder())
 	var err error
-	m.DoorStatus, err = builder.Build()
+	b.DoorStatus, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDoorStatusTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDoorStatusTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesDoorStatusBuilder) Build() (BACnetPropertyStatesDoorStatus, error) {
-	if m.DoorStatus == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesDoorStatusBuilder) Build() (BACnetPropertyStatesDoorStatus, error) {
+	if b.DoorStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'doorStatus' not set"))
+		b.err.Append(errors.New("mandatory field 'doorStatus' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesDoorStatus.deepCopy(), nil
+	return b._BACnetPropertyStatesDoorStatus.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesDoorStatusBuilder) MustBuild() BACnetPropertyStatesDoorStatus {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesDoorStatusBuilder) MustBuild() BACnetPropertyStatesDoorStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesDoorStatusBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesDoorStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesDoorStatusBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesDoorStatusBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesDoorStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesDoorStatusBuilder().(*_BACnetPropertyStatesDoorStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesDoorStatusBuilder creates a BACnetPropertyStatesDoorStatusBuilder
-func (m *_BACnetPropertyStatesDoorStatus) CreateBACnetPropertyStatesDoorStatusBuilder() BACnetPropertyStatesDoorStatusBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesDoorStatus) CreateBACnetPropertyStatesDoorStatusBuilder() BACnetPropertyStatesDoorStatusBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesDoorStatusBuilder()
 	}
-	return &_BACnetPropertyStatesDoorStatusBuilder{_BACnetPropertyStatesDoorStatus: m.deepCopy()}
+	return &_BACnetPropertyStatesDoorStatusBuilder{_BACnetPropertyStatesDoorStatus: b.deepCopy()}
 }
 
 ///////////////////////

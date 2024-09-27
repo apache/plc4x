@@ -85,40 +85,59 @@ func NewSubscribedDataSetDataTypeBuilder() SubscribedDataSetDataTypeBuilder {
 type _SubscribedDataSetDataTypeBuilder struct {
 	*_SubscribedDataSetDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SubscribedDataSetDataTypeBuilder) = (*_SubscribedDataSetDataTypeBuilder)(nil)
 
-func (m *_SubscribedDataSetDataTypeBuilder) WithMandatoryFields() SubscribedDataSetDataTypeBuilder {
-	return m
+func (b *_SubscribedDataSetDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_SubscribedDataSetDataTypeBuilder) Build() (SubscribedDataSetDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SubscribedDataSetDataTypeBuilder) WithMandatoryFields() SubscribedDataSetDataTypeBuilder {
+	return b
+}
+
+func (b *_SubscribedDataSetDataTypeBuilder) Build() (SubscribedDataSetDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SubscribedDataSetDataType.deepCopy(), nil
+	return b._SubscribedDataSetDataType.deepCopy(), nil
 }
 
-func (m *_SubscribedDataSetDataTypeBuilder) MustBuild() SubscribedDataSetDataType {
-	build, err := m.Build()
+func (b *_SubscribedDataSetDataTypeBuilder) MustBuild() SubscribedDataSetDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SubscribedDataSetDataTypeBuilder) DeepCopy() any {
-	return m.CreateSubscribedDataSetDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SubscribedDataSetDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SubscribedDataSetDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SubscribedDataSetDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateSubscribedDataSetDataTypeBuilder().(*_SubscribedDataSetDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSubscribedDataSetDataTypeBuilder creates a SubscribedDataSetDataTypeBuilder
-func (m *_SubscribedDataSetDataType) CreateSubscribedDataSetDataTypeBuilder() SubscribedDataSetDataTypeBuilder {
-	if m == nil {
+func (b *_SubscribedDataSetDataType) CreateSubscribedDataSetDataTypeBuilder() SubscribedDataSetDataTypeBuilder {
+	if b == nil {
 		return NewSubscribedDataSetDataTypeBuilder()
 	}
-	return &_SubscribedDataSetDataTypeBuilder{_SubscribedDataSetDataType: m.deepCopy()}
+	return &_SubscribedDataSetDataTypeBuilder{_SubscribedDataSetDataType: b.deepCopy()}
 }
 
 ///////////////////////

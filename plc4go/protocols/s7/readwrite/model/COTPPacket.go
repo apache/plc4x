@@ -100,10 +100,46 @@ type COTPPacketBuilder interface {
 	WithParameters(...COTPParameter) COTPPacketBuilder
 	// WithPayload adds Payload (property field)
 	WithOptionalPayload(S7Message) COTPPacketBuilder
+	// WithOptionalPayloadBuilder adds Payload (property field) which is build by the builder
+	WithOptionalPayloadBuilder(func(S7MessageBuilder) S7MessageBuilder) COTPPacketBuilder
+	// AsCOTPPacketData converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
+	AsCOTPPacketData() interface {
+		COTPPacketDataBuilder
+		Done() COTPPacketBuilder
+	}
+	// AsCOTPPacketConnectionRequest converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
+	AsCOTPPacketConnectionRequest() interface {
+		COTPPacketConnectionRequestBuilder
+		Done() COTPPacketBuilder
+	}
+	// AsCOTPPacketConnectionResponse converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
+	AsCOTPPacketConnectionResponse() interface {
+		COTPPacketConnectionResponseBuilder
+		Done() COTPPacketBuilder
+	}
+	// AsCOTPPacketDisconnectRequest converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
+	AsCOTPPacketDisconnectRequest() interface {
+		COTPPacketDisconnectRequestBuilder
+		Done() COTPPacketBuilder
+	}
+	// AsCOTPPacketDisconnectResponse converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
+	AsCOTPPacketDisconnectResponse() interface {
+		COTPPacketDisconnectResponseBuilder
+		Done() COTPPacketBuilder
+	}
+	// AsCOTPPacketTpduError converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
+	AsCOTPPacketTpduError() interface {
+		COTPPacketTpduErrorBuilder
+		Done() COTPPacketBuilder
+	}
 	// Build builds the COTPPacket or returns an error if something is wrong
-	Build() (COTPPacketContract, error)
+	PartialBuild() (COTPPacketContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() COTPPacketContract
+	PartialMustBuild() COTPPacketContract
+	// Build builds the COTPPacket or returns an error if something is wrong
+	Build() (COTPPacket, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() COTPPacket
 }
 
 // NewCOTPPacketBuilder() creates a COTPPacketBuilder
@@ -111,53 +147,196 @@ func NewCOTPPacketBuilder() COTPPacketBuilder {
 	return &_COTPPacketBuilder{_COTPPacket: new(_COTPPacket)}
 }
 
+type _COTPPacketChildBuilder interface {
+	utils.Copyable
+	setParent(COTPPacketContract)
+	buildForCOTPPacket() (COTPPacket, error)
+}
+
 type _COTPPacketBuilder struct {
 	*_COTPPacket
+
+	childBuilder _COTPPacketChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (COTPPacketBuilder) = (*_COTPPacketBuilder)(nil)
 
-func (m *_COTPPacketBuilder) WithMandatoryFields(parameters []COTPParameter) COTPPacketBuilder {
-	return m.WithParameters(parameters...)
+func (b *_COTPPacketBuilder) WithMandatoryFields(parameters []COTPParameter) COTPPacketBuilder {
+	return b.WithParameters(parameters...)
 }
 
-func (m *_COTPPacketBuilder) WithParameters(parameters ...COTPParameter) COTPPacketBuilder {
-	m.Parameters = parameters
-	return m
+func (b *_COTPPacketBuilder) WithParameters(parameters ...COTPParameter) COTPPacketBuilder {
+	b.Parameters = parameters
+	return b
 }
 
-func (m *_COTPPacketBuilder) WithOptionalPayload(payload S7Message) COTPPacketBuilder {
-	m.Payload = payload
-	return m
+func (b *_COTPPacketBuilder) WithOptionalPayload(payload S7Message) COTPPacketBuilder {
+	b.Payload = payload
+	return b
 }
 
-func (m *_COTPPacketBuilder) Build() (COTPPacketContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_COTPPacketBuilder) WithOptionalPayloadBuilder(builderSupplier func(S7MessageBuilder) S7MessageBuilder) COTPPacketBuilder {
+	builder := builderSupplier(b.Payload.CreateS7MessageBuilder())
+	var err error
+	b.Payload, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "S7MessageBuilder failed"))
 	}
-	return m._COTPPacket.deepCopy(), nil
+	return b
 }
 
-func (m *_COTPPacketBuilder) MustBuild() COTPPacketContract {
-	build, err := m.Build()
+func (b *_COTPPacketBuilder) PartialBuild() (COTPPacketContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._COTPPacket.deepCopy(), nil
+}
+
+func (b *_COTPPacketBuilder) PartialMustBuild() COTPPacketContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_COTPPacketBuilder) DeepCopy() any {
-	return m.CreateCOTPPacketBuilder()
+func (b *_COTPPacketBuilder) AsCOTPPacketData() interface {
+	COTPPacketDataBuilder
+	Done() COTPPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		COTPPacketDataBuilder
+		Done() COTPPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCOTPPacketDataBuilder().(*_COTPPacketDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_COTPPacketBuilder) AsCOTPPacketConnectionRequest() interface {
+	COTPPacketConnectionRequestBuilder
+	Done() COTPPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		COTPPacketConnectionRequestBuilder
+		Done() COTPPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCOTPPacketConnectionRequestBuilder().(*_COTPPacketConnectionRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_COTPPacketBuilder) AsCOTPPacketConnectionResponse() interface {
+	COTPPacketConnectionResponseBuilder
+	Done() COTPPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		COTPPacketConnectionResponseBuilder
+		Done() COTPPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCOTPPacketConnectionResponseBuilder().(*_COTPPacketConnectionResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_COTPPacketBuilder) AsCOTPPacketDisconnectRequest() interface {
+	COTPPacketDisconnectRequestBuilder
+	Done() COTPPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		COTPPacketDisconnectRequestBuilder
+		Done() COTPPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCOTPPacketDisconnectRequestBuilder().(*_COTPPacketDisconnectRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_COTPPacketBuilder) AsCOTPPacketDisconnectResponse() interface {
+	COTPPacketDisconnectResponseBuilder
+	Done() COTPPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		COTPPacketDisconnectResponseBuilder
+		Done() COTPPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCOTPPacketDisconnectResponseBuilder().(*_COTPPacketDisconnectResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_COTPPacketBuilder) AsCOTPPacketTpduError() interface {
+	COTPPacketTpduErrorBuilder
+	Done() COTPPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		COTPPacketTpduErrorBuilder
+		Done() COTPPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCOTPPacketTpduErrorBuilder().(*_COTPPacketTpduErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_COTPPacketBuilder) Build() (COTPPacket, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForCOTPPacket()
+}
+
+func (b *_COTPPacketBuilder) MustBuild() COTPPacket {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_COTPPacketBuilder) DeepCopy() any {
+	_copy := b.CreateCOTPPacketBuilder().(*_COTPPacketBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_COTPPacketChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCOTPPacketBuilder creates a COTPPacketBuilder
-func (m *_COTPPacket) CreateCOTPPacketBuilder() COTPPacketBuilder {
-	if m == nil {
+func (b *_COTPPacket) CreateCOTPPacketBuilder() COTPPacketBuilder {
+	if b == nil {
 		return NewCOTPPacketBuilder()
 	}
-	return &_COTPPacketBuilder{_COTPPacket: m.deepCopy()}
+	return &_COTPPacketBuilder{_COTPPacket: b.deepCopy()}
 }
 
 ///////////////////////

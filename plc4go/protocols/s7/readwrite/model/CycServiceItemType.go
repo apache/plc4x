@@ -98,10 +98,24 @@ type CycServiceItemTypeBuilder interface {
 	WithByteLength(uint8) CycServiceItemTypeBuilder
 	// WithSyntaxId adds SyntaxId (property field)
 	WithSyntaxId(uint8) CycServiceItemTypeBuilder
+	// AsCycServiceItemAnyType converts this build to a subType of CycServiceItemType. It is always possible to return to current builder using Done()
+	AsCycServiceItemAnyType() interface {
+		CycServiceItemAnyTypeBuilder
+		Done() CycServiceItemTypeBuilder
+	}
+	// AsCycServiceItemDbReadType converts this build to a subType of CycServiceItemType. It is always possible to return to current builder using Done()
+	AsCycServiceItemDbReadType() interface {
+		CycServiceItemDbReadTypeBuilder
+		Done() CycServiceItemTypeBuilder
+	}
 	// Build builds the CycServiceItemType or returns an error if something is wrong
-	Build() (CycServiceItemTypeContract, error)
+	PartialBuild() (CycServiceItemTypeContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() CycServiceItemTypeContract
+	PartialMustBuild() CycServiceItemTypeContract
+	// Build builds the CycServiceItemType or returns an error if something is wrong
+	Build() (CycServiceItemType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CycServiceItemType
 }
 
 // NewCycServiceItemTypeBuilder() creates a CycServiceItemTypeBuilder
@@ -109,53 +123,119 @@ func NewCycServiceItemTypeBuilder() CycServiceItemTypeBuilder {
 	return &_CycServiceItemTypeBuilder{_CycServiceItemType: new(_CycServiceItemType)}
 }
 
+type _CycServiceItemTypeChildBuilder interface {
+	utils.Copyable
+	setParent(CycServiceItemTypeContract)
+	buildForCycServiceItemType() (CycServiceItemType, error)
+}
+
 type _CycServiceItemTypeBuilder struct {
 	*_CycServiceItemType
+
+	childBuilder _CycServiceItemTypeChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (CycServiceItemTypeBuilder) = (*_CycServiceItemTypeBuilder)(nil)
 
-func (m *_CycServiceItemTypeBuilder) WithMandatoryFields(byteLength uint8, syntaxId uint8) CycServiceItemTypeBuilder {
-	return m.WithByteLength(byteLength).WithSyntaxId(syntaxId)
+func (b *_CycServiceItemTypeBuilder) WithMandatoryFields(byteLength uint8, syntaxId uint8) CycServiceItemTypeBuilder {
+	return b.WithByteLength(byteLength).WithSyntaxId(syntaxId)
 }
 
-func (m *_CycServiceItemTypeBuilder) WithByteLength(byteLength uint8) CycServiceItemTypeBuilder {
-	m.ByteLength = byteLength
-	return m
+func (b *_CycServiceItemTypeBuilder) WithByteLength(byteLength uint8) CycServiceItemTypeBuilder {
+	b.ByteLength = byteLength
+	return b
 }
 
-func (m *_CycServiceItemTypeBuilder) WithSyntaxId(syntaxId uint8) CycServiceItemTypeBuilder {
-	m.SyntaxId = syntaxId
-	return m
+func (b *_CycServiceItemTypeBuilder) WithSyntaxId(syntaxId uint8) CycServiceItemTypeBuilder {
+	b.SyntaxId = syntaxId
+	return b
 }
 
-func (m *_CycServiceItemTypeBuilder) Build() (CycServiceItemTypeContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CycServiceItemTypeBuilder) PartialBuild() (CycServiceItemTypeContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CycServiceItemType.deepCopy(), nil
+	return b._CycServiceItemType.deepCopy(), nil
 }
 
-func (m *_CycServiceItemTypeBuilder) MustBuild() CycServiceItemTypeContract {
-	build, err := m.Build()
+func (b *_CycServiceItemTypeBuilder) PartialMustBuild() CycServiceItemTypeContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CycServiceItemTypeBuilder) DeepCopy() any {
-	return m.CreateCycServiceItemTypeBuilder()
+func (b *_CycServiceItemTypeBuilder) AsCycServiceItemAnyType() interface {
+	CycServiceItemAnyTypeBuilder
+	Done() CycServiceItemTypeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CycServiceItemAnyTypeBuilder
+		Done() CycServiceItemTypeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCycServiceItemAnyTypeBuilder().(*_CycServiceItemAnyTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CycServiceItemTypeBuilder) AsCycServiceItemDbReadType() interface {
+	CycServiceItemDbReadTypeBuilder
+	Done() CycServiceItemTypeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CycServiceItemDbReadTypeBuilder
+		Done() CycServiceItemTypeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCycServiceItemDbReadTypeBuilder().(*_CycServiceItemDbReadTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CycServiceItemTypeBuilder) Build() (CycServiceItemType, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForCycServiceItemType()
+}
+
+func (b *_CycServiceItemTypeBuilder) MustBuild() CycServiceItemType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CycServiceItemTypeBuilder) DeepCopy() any {
+	_copy := b.CreateCycServiceItemTypeBuilder().(*_CycServiceItemTypeBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_CycServiceItemTypeChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCycServiceItemTypeBuilder creates a CycServiceItemTypeBuilder
-func (m *_CycServiceItemType) CreateCycServiceItemTypeBuilder() CycServiceItemTypeBuilder {
-	if m == nil {
+func (b *_CycServiceItemType) CreateCycServiceItemTypeBuilder() CycServiceItemTypeBuilder {
+	if b == nil {
 		return NewCycServiceItemTypeBuilder()
 	}
-	return &_CycServiceItemTypeBuilder{_CycServiceItemType: m.deepCopy()}
+	return &_CycServiceItemTypeBuilder{_CycServiceItemType: b.deepCopy()}
 }
 
 ///////////////////////

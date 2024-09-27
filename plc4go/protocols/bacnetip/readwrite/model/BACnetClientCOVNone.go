@@ -98,64 +98,83 @@ func NewBACnetClientCOVNoneBuilder() BACnetClientCOVNoneBuilder {
 type _BACnetClientCOVNoneBuilder struct {
 	*_BACnetClientCOVNone
 
+	parentBuilder *_BACnetClientCOVBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetClientCOVNoneBuilder) = (*_BACnetClientCOVNoneBuilder)(nil)
 
-func (m *_BACnetClientCOVNoneBuilder) WithMandatoryFields(defaultIncrement BACnetApplicationTagNull) BACnetClientCOVNoneBuilder {
-	return m.WithDefaultIncrement(defaultIncrement)
+func (b *_BACnetClientCOVNoneBuilder) setParent(contract BACnetClientCOVContract) {
+	b.BACnetClientCOVContract = contract
 }
 
-func (m *_BACnetClientCOVNoneBuilder) WithDefaultIncrement(defaultIncrement BACnetApplicationTagNull) BACnetClientCOVNoneBuilder {
-	m.DefaultIncrement = defaultIncrement
-	return m
+func (b *_BACnetClientCOVNoneBuilder) WithMandatoryFields(defaultIncrement BACnetApplicationTagNull) BACnetClientCOVNoneBuilder {
+	return b.WithDefaultIncrement(defaultIncrement)
 }
 
-func (m *_BACnetClientCOVNoneBuilder) WithDefaultIncrementBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetClientCOVNoneBuilder {
-	builder := builderSupplier(m.DefaultIncrement.CreateBACnetApplicationTagNullBuilder())
+func (b *_BACnetClientCOVNoneBuilder) WithDefaultIncrement(defaultIncrement BACnetApplicationTagNull) BACnetClientCOVNoneBuilder {
+	b.DefaultIncrement = defaultIncrement
+	return b
+}
+
+func (b *_BACnetClientCOVNoneBuilder) WithDefaultIncrementBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetClientCOVNoneBuilder {
+	builder := builderSupplier(b.DefaultIncrement.CreateBACnetApplicationTagNullBuilder())
 	var err error
-	m.DefaultIncrement, err = builder.Build()
+	b.DefaultIncrement, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetClientCOVNoneBuilder) Build() (BACnetClientCOVNone, error) {
-	if m.DefaultIncrement == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetClientCOVNoneBuilder) Build() (BACnetClientCOVNone, error) {
+	if b.DefaultIncrement == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'defaultIncrement' not set"))
+		b.err.Append(errors.New("mandatory field 'defaultIncrement' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetClientCOVNone.deepCopy(), nil
+	return b._BACnetClientCOVNone.deepCopy(), nil
 }
 
-func (m *_BACnetClientCOVNoneBuilder) MustBuild() BACnetClientCOVNone {
-	build, err := m.Build()
+func (b *_BACnetClientCOVNoneBuilder) MustBuild() BACnetClientCOVNone {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetClientCOVNoneBuilder) DeepCopy() any {
-	return m.CreateBACnetClientCOVNoneBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetClientCOVNoneBuilder) Done() BACnetClientCOVBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetClientCOVNoneBuilder) buildForBACnetClientCOV() (BACnetClientCOV, error) {
+	return b.Build()
+}
+
+func (b *_BACnetClientCOVNoneBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetClientCOVNoneBuilder().(*_BACnetClientCOVNoneBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetClientCOVNoneBuilder creates a BACnetClientCOVNoneBuilder
-func (m *_BACnetClientCOVNone) CreateBACnetClientCOVNoneBuilder() BACnetClientCOVNoneBuilder {
-	if m == nil {
+func (b *_BACnetClientCOVNone) CreateBACnetClientCOVNoneBuilder() BACnetClientCOVNoneBuilder {
+	if b == nil {
 		return NewBACnetClientCOVNoneBuilder()
 	}
-	return &_BACnetClientCOVNoneBuilder{_BACnetClientCOVNone: m.deepCopy()}
+	return &_BACnetClientCOVNoneBuilder{_BACnetClientCOVNone: b.deepCopy()}
 }
 
 ///////////////////////

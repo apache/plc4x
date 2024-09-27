@@ -101,50 +101,54 @@ type _S7VarPayloadDataItemBuilder struct {
 
 var _ (S7VarPayloadDataItemBuilder) = (*_S7VarPayloadDataItemBuilder)(nil)
 
-func (m *_S7VarPayloadDataItemBuilder) WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, data []byte) S7VarPayloadDataItemBuilder {
-	return m.WithReturnCode(returnCode).WithTransportSize(transportSize).WithData(data...)
+func (b *_S7VarPayloadDataItemBuilder) WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, data []byte) S7VarPayloadDataItemBuilder {
+	return b.WithReturnCode(returnCode).WithTransportSize(transportSize).WithData(data...)
 }
 
-func (m *_S7VarPayloadDataItemBuilder) WithReturnCode(returnCode DataTransportErrorCode) S7VarPayloadDataItemBuilder {
-	m.ReturnCode = returnCode
-	return m
+func (b *_S7VarPayloadDataItemBuilder) WithReturnCode(returnCode DataTransportErrorCode) S7VarPayloadDataItemBuilder {
+	b.ReturnCode = returnCode
+	return b
 }
 
-func (m *_S7VarPayloadDataItemBuilder) WithTransportSize(transportSize DataTransportSize) S7VarPayloadDataItemBuilder {
-	m.TransportSize = transportSize
-	return m
+func (b *_S7VarPayloadDataItemBuilder) WithTransportSize(transportSize DataTransportSize) S7VarPayloadDataItemBuilder {
+	b.TransportSize = transportSize
+	return b
 }
 
-func (m *_S7VarPayloadDataItemBuilder) WithData(data ...byte) S7VarPayloadDataItemBuilder {
-	m.Data = data
-	return m
+func (b *_S7VarPayloadDataItemBuilder) WithData(data ...byte) S7VarPayloadDataItemBuilder {
+	b.Data = data
+	return b
 }
 
-func (m *_S7VarPayloadDataItemBuilder) Build() (S7VarPayloadDataItem, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7VarPayloadDataItemBuilder) Build() (S7VarPayloadDataItem, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7VarPayloadDataItem.deepCopy(), nil
+	return b._S7VarPayloadDataItem.deepCopy(), nil
 }
 
-func (m *_S7VarPayloadDataItemBuilder) MustBuild() S7VarPayloadDataItem {
-	build, err := m.Build()
+func (b *_S7VarPayloadDataItemBuilder) MustBuild() S7VarPayloadDataItem {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7VarPayloadDataItemBuilder) DeepCopy() any {
-	return m.CreateS7VarPayloadDataItemBuilder()
+func (b *_S7VarPayloadDataItemBuilder) DeepCopy() any {
+	_copy := b.CreateS7VarPayloadDataItemBuilder().(*_S7VarPayloadDataItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7VarPayloadDataItemBuilder creates a S7VarPayloadDataItemBuilder
-func (m *_S7VarPayloadDataItem) CreateS7VarPayloadDataItemBuilder() S7VarPayloadDataItemBuilder {
-	if m == nil {
+func (b *_S7VarPayloadDataItem) CreateS7VarPayloadDataItemBuilder() S7VarPayloadDataItemBuilder {
+	if b == nil {
 		return NewS7VarPayloadDataItemBuilder()
 	}
-	return &_S7VarPayloadDataItemBuilder{_S7VarPayloadDataItem: m.deepCopy()}
+	return &_S7VarPayloadDataItemBuilder{_S7VarPayloadDataItem: b.deepCopy()}
 }
 
 ///////////////////////

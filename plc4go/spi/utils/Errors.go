@@ -78,6 +78,13 @@ func (m *MultiError) Is(target error) bool {
 	return false
 }
 
+func (m *MultiError) DeepCopy() any {
+	return &MultiError{
+		MainError: m.MainError,
+		Errors:    DeepCopySlice[error, error](m.Errors),
+	}
+}
+
 type ParseAssertError struct {
 	Message string
 	Err     error // TODO: make available as root cause

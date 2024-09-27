@@ -100,64 +100,83 @@ func NewBACnetConstructedDataFileTypeBuilder() BACnetConstructedDataFileTypeBuil
 type _BACnetConstructedDataFileTypeBuilder struct {
 	*_BACnetConstructedDataFileType
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataFileTypeBuilder) = (*_BACnetConstructedDataFileTypeBuilder)(nil)
 
-func (m *_BACnetConstructedDataFileTypeBuilder) WithMandatoryFields(fileType BACnetApplicationTagCharacterString) BACnetConstructedDataFileTypeBuilder {
-	return m.WithFileType(fileType)
+func (b *_BACnetConstructedDataFileTypeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataFileTypeBuilder) WithFileType(fileType BACnetApplicationTagCharacterString) BACnetConstructedDataFileTypeBuilder {
-	m.FileType = fileType
-	return m
+func (b *_BACnetConstructedDataFileTypeBuilder) WithMandatoryFields(fileType BACnetApplicationTagCharacterString) BACnetConstructedDataFileTypeBuilder {
+	return b.WithFileType(fileType)
 }
 
-func (m *_BACnetConstructedDataFileTypeBuilder) WithFileTypeBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataFileTypeBuilder {
-	builder := builderSupplier(m.FileType.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetConstructedDataFileTypeBuilder) WithFileType(fileType BACnetApplicationTagCharacterString) BACnetConstructedDataFileTypeBuilder {
+	b.FileType = fileType
+	return b
+}
+
+func (b *_BACnetConstructedDataFileTypeBuilder) WithFileTypeBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataFileTypeBuilder {
+	builder := builderSupplier(b.FileType.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.FileType, err = builder.Build()
+	b.FileType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataFileTypeBuilder) Build() (BACnetConstructedDataFileType, error) {
-	if m.FileType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataFileTypeBuilder) Build() (BACnetConstructedDataFileType, error) {
+	if b.FileType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'fileType' not set"))
+		b.err.Append(errors.New("mandatory field 'fileType' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataFileType.deepCopy(), nil
+	return b._BACnetConstructedDataFileType.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataFileTypeBuilder) MustBuild() BACnetConstructedDataFileType {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataFileTypeBuilder) MustBuild() BACnetConstructedDataFileType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataFileTypeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataFileTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFileTypeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFileTypeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFileTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFileTypeBuilder().(*_BACnetConstructedDataFileTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataFileTypeBuilder creates a BACnetConstructedDataFileTypeBuilder
-func (m *_BACnetConstructedDataFileType) CreateBACnetConstructedDataFileTypeBuilder() BACnetConstructedDataFileTypeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataFileType) CreateBACnetConstructedDataFileTypeBuilder() BACnetConstructedDataFileTypeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataFileTypeBuilder()
 	}
-	return &_BACnetConstructedDataFileTypeBuilder{_BACnetConstructedDataFileType: m.deepCopy()}
+	return &_BACnetConstructedDataFileTypeBuilder{_BACnetConstructedDataFileType: b.deepCopy()}
 }
 
 ///////////////////////

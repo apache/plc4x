@@ -100,64 +100,83 @@ func NewBACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder() BACn
 type _BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder struct {
 	*_BACnetConstructedDataPositiveIntegerValueRelinquishDefault
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) = (*_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder)(nil)
 
-func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder {
-	return m.WithRelinquishDefault(relinquishDefault)
+func (b *_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder {
-	m.RelinquishDefault = relinquishDefault
-	return m
+func (b *_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder {
+	return b.WithRelinquishDefault(relinquishDefault)
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder {
-	builder := builderSupplier(m.RelinquishDefault.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder {
+	b.RelinquishDefault = relinquishDefault
+	return b
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder {
+	builder := builderSupplier(b.RelinquishDefault.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.RelinquishDefault, err = builder.Build()
+	b.RelinquishDefault, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) Build() (BACnetConstructedDataPositiveIntegerValueRelinquishDefault, error) {
-	if m.RelinquishDefault == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) Build() (BACnetConstructedDataPositiveIntegerValueRelinquishDefault, error) {
+	if b.RelinquishDefault == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
+		b.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataPositiveIntegerValueRelinquishDefault.deepCopy(), nil
+	return b._BACnetConstructedDataPositiveIntegerValueRelinquishDefault.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueRelinquishDefault {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueRelinquishDefault {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder().(*_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder creates a BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder
-func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefault) CreateBACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder() BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataPositiveIntegerValueRelinquishDefault) CreateBACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder() BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder()
 	}
-	return &_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder{_BACnetConstructedDataPositiveIntegerValueRelinquishDefault: m.deepCopy()}
+	return &_BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder{_BACnetConstructedDataPositiveIntegerValueRelinquishDefault: b.deepCopy()}
 }
 
 ///////////////////////

@@ -97,10 +97,24 @@ type BACnetOptionalCharacterStringBuilder interface {
 	WithPeekedTagHeader(BACnetTagHeader) BACnetOptionalCharacterStringBuilder
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalCharacterStringBuilder
+	// AsBACnetOptionalCharacterStringNull converts this build to a subType of BACnetOptionalCharacterString. It is always possible to return to current builder using Done()
+	AsBACnetOptionalCharacterStringNull() interface {
+		BACnetOptionalCharacterStringNullBuilder
+		Done() BACnetOptionalCharacterStringBuilder
+	}
+	// AsBACnetOptionalCharacterStringValue converts this build to a subType of BACnetOptionalCharacterString. It is always possible to return to current builder using Done()
+	AsBACnetOptionalCharacterStringValue() interface {
+		BACnetOptionalCharacterStringValueBuilder
+		Done() BACnetOptionalCharacterStringBuilder
+	}
 	// Build builds the BACnetOptionalCharacterString or returns an error if something is wrong
-	Build() (BACnetOptionalCharacterStringContract, error)
+	PartialBuild() (BACnetOptionalCharacterStringContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetOptionalCharacterStringContract
+	PartialMustBuild() BACnetOptionalCharacterStringContract
+	// Build builds the BACnetOptionalCharacterString or returns an error if something is wrong
+	Build() (BACnetOptionalCharacterString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetOptionalCharacterString
 }
 
 // NewBACnetOptionalCharacterStringBuilder() creates a BACnetOptionalCharacterStringBuilder
@@ -108,67 +122,133 @@ func NewBACnetOptionalCharacterStringBuilder() BACnetOptionalCharacterStringBuil
 	return &_BACnetOptionalCharacterStringBuilder{_BACnetOptionalCharacterString: new(_BACnetOptionalCharacterString)}
 }
 
+type _BACnetOptionalCharacterStringChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetOptionalCharacterStringContract)
+	buildForBACnetOptionalCharacterString() (BACnetOptionalCharacterString, error)
+}
+
 type _BACnetOptionalCharacterStringBuilder struct {
 	*_BACnetOptionalCharacterString
+
+	childBuilder _BACnetOptionalCharacterStringChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetOptionalCharacterStringBuilder) = (*_BACnetOptionalCharacterStringBuilder)(nil)
 
-func (m *_BACnetOptionalCharacterStringBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetOptionalCharacterStringBuilder {
-	return m.WithPeekedTagHeader(peekedTagHeader)
+func (b *_BACnetOptionalCharacterStringBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetOptionalCharacterStringBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
 }
 
-func (m *_BACnetOptionalCharacterStringBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetOptionalCharacterStringBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetOptionalCharacterStringBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetOptionalCharacterStringBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetOptionalCharacterStringBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalCharacterStringBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetOptionalCharacterStringBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalCharacterStringBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetOptionalCharacterStringBuilder) Build() (BACnetOptionalCharacterStringContract, error) {
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetOptionalCharacterStringBuilder) PartialBuild() (BACnetOptionalCharacterStringContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetOptionalCharacterString.deepCopy(), nil
+	return b._BACnetOptionalCharacterString.deepCopy(), nil
 }
 
-func (m *_BACnetOptionalCharacterStringBuilder) MustBuild() BACnetOptionalCharacterStringContract {
-	build, err := m.Build()
+func (b *_BACnetOptionalCharacterStringBuilder) PartialMustBuild() BACnetOptionalCharacterStringContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetOptionalCharacterStringBuilder) DeepCopy() any {
-	return m.CreateBACnetOptionalCharacterStringBuilder()
+func (b *_BACnetOptionalCharacterStringBuilder) AsBACnetOptionalCharacterStringNull() interface {
+	BACnetOptionalCharacterStringNullBuilder
+	Done() BACnetOptionalCharacterStringBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetOptionalCharacterStringNullBuilder
+		Done() BACnetOptionalCharacterStringBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetOptionalCharacterStringNullBuilder().(*_BACnetOptionalCharacterStringNullBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetOptionalCharacterStringBuilder) AsBACnetOptionalCharacterStringValue() interface {
+	BACnetOptionalCharacterStringValueBuilder
+	Done() BACnetOptionalCharacterStringBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetOptionalCharacterStringValueBuilder
+		Done() BACnetOptionalCharacterStringBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetOptionalCharacterStringValueBuilder().(*_BACnetOptionalCharacterStringValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetOptionalCharacterStringBuilder) Build() (BACnetOptionalCharacterString, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetOptionalCharacterString()
+}
+
+func (b *_BACnetOptionalCharacterStringBuilder) MustBuild() BACnetOptionalCharacterString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetOptionalCharacterStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetOptionalCharacterStringBuilder().(*_BACnetOptionalCharacterStringBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetOptionalCharacterStringChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetOptionalCharacterStringBuilder creates a BACnetOptionalCharacterStringBuilder
-func (m *_BACnetOptionalCharacterString) CreateBACnetOptionalCharacterStringBuilder() BACnetOptionalCharacterStringBuilder {
-	if m == nil {
+func (b *_BACnetOptionalCharacterString) CreateBACnetOptionalCharacterStringBuilder() BACnetOptionalCharacterStringBuilder {
+	if b == nil {
 		return NewBACnetOptionalCharacterStringBuilder()
 	}
-	return &_BACnetOptionalCharacterStringBuilder{_BACnetOptionalCharacterString: m.deepCopy()}
+	return &_BACnetOptionalCharacterStringBuilder{_BACnetOptionalCharacterString: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataIPDefaultGatewayBuilder() BACnetConstructedDataIPDe
 type _BACnetConstructedDataIPDefaultGatewayBuilder struct {
 	*_BACnetConstructedDataIPDefaultGateway
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataIPDefaultGatewayBuilder) = (*_BACnetConstructedDataIPDefaultGatewayBuilder)(nil)
 
-func (m *_BACnetConstructedDataIPDefaultGatewayBuilder) WithMandatoryFields(ipDefaultGateway BACnetApplicationTagOctetString) BACnetConstructedDataIPDefaultGatewayBuilder {
-	return m.WithIpDefaultGateway(ipDefaultGateway)
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataIPDefaultGatewayBuilder) WithIpDefaultGateway(ipDefaultGateway BACnetApplicationTagOctetString) BACnetConstructedDataIPDefaultGatewayBuilder {
-	m.IpDefaultGateway = ipDefaultGateway
-	return m
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) WithMandatoryFields(ipDefaultGateway BACnetApplicationTagOctetString) BACnetConstructedDataIPDefaultGatewayBuilder {
+	return b.WithIpDefaultGateway(ipDefaultGateway)
 }
 
-func (m *_BACnetConstructedDataIPDefaultGatewayBuilder) WithIpDefaultGatewayBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPDefaultGatewayBuilder {
-	builder := builderSupplier(m.IpDefaultGateway.CreateBACnetApplicationTagOctetStringBuilder())
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) WithIpDefaultGateway(ipDefaultGateway BACnetApplicationTagOctetString) BACnetConstructedDataIPDefaultGatewayBuilder {
+	b.IpDefaultGateway = ipDefaultGateway
+	return b
+}
+
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) WithIpDefaultGatewayBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPDefaultGatewayBuilder {
+	builder := builderSupplier(b.IpDefaultGateway.CreateBACnetApplicationTagOctetStringBuilder())
 	var err error
-	m.IpDefaultGateway, err = builder.Build()
+	b.IpDefaultGateway, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataIPDefaultGatewayBuilder) Build() (BACnetConstructedDataIPDefaultGateway, error) {
-	if m.IpDefaultGateway == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) Build() (BACnetConstructedDataIPDefaultGateway, error) {
+	if b.IpDefaultGateway == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'ipDefaultGateway' not set"))
+		b.err.Append(errors.New("mandatory field 'ipDefaultGateway' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataIPDefaultGateway.deepCopy(), nil
+	return b._BACnetConstructedDataIPDefaultGateway.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataIPDefaultGatewayBuilder) MustBuild() BACnetConstructedDataIPDefaultGateway {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) MustBuild() BACnetConstructedDataIPDefaultGateway {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataIPDefaultGatewayBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataIPDefaultGatewayBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPDefaultGatewayBuilder().(*_BACnetConstructedDataIPDefaultGatewayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataIPDefaultGatewayBuilder creates a BACnetConstructedDataIPDefaultGatewayBuilder
-func (m *_BACnetConstructedDataIPDefaultGateway) CreateBACnetConstructedDataIPDefaultGatewayBuilder() BACnetConstructedDataIPDefaultGatewayBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataIPDefaultGateway) CreateBACnetConstructedDataIPDefaultGatewayBuilder() BACnetConstructedDataIPDefaultGatewayBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataIPDefaultGatewayBuilder()
 	}
-	return &_BACnetConstructedDataIPDefaultGatewayBuilder{_BACnetConstructedDataIPDefaultGateway: m.deepCopy()}
+	return &_BACnetConstructedDataIPDefaultGatewayBuilder{_BACnetConstructedDataIPDefaultGateway: b.deepCopy()}
 }
 
 ///////////////////////

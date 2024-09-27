@@ -85,40 +85,59 @@ func NewApduDataExtNetworkParameterResponseBuilder() ApduDataExtNetworkParameter
 type _ApduDataExtNetworkParameterResponseBuilder struct {
 	*_ApduDataExtNetworkParameterResponse
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtNetworkParameterResponseBuilder) = (*_ApduDataExtNetworkParameterResponseBuilder)(nil)
 
-func (m *_ApduDataExtNetworkParameterResponseBuilder) WithMandatoryFields() ApduDataExtNetworkParameterResponseBuilder {
-	return m
+func (b *_ApduDataExtNetworkParameterResponseBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtNetworkParameterResponseBuilder) Build() (ApduDataExtNetworkParameterResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtNetworkParameterResponseBuilder) WithMandatoryFields() ApduDataExtNetworkParameterResponseBuilder {
+	return b
+}
+
+func (b *_ApduDataExtNetworkParameterResponseBuilder) Build() (ApduDataExtNetworkParameterResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtNetworkParameterResponse.deepCopy(), nil
+	return b._ApduDataExtNetworkParameterResponse.deepCopy(), nil
 }
 
-func (m *_ApduDataExtNetworkParameterResponseBuilder) MustBuild() ApduDataExtNetworkParameterResponse {
-	build, err := m.Build()
+func (b *_ApduDataExtNetworkParameterResponseBuilder) MustBuild() ApduDataExtNetworkParameterResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtNetworkParameterResponseBuilder) DeepCopy() any {
-	return m.CreateApduDataExtNetworkParameterResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtNetworkParameterResponseBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtNetworkParameterResponseBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtNetworkParameterResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtNetworkParameterResponseBuilder().(*_ApduDataExtNetworkParameterResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtNetworkParameterResponseBuilder creates a ApduDataExtNetworkParameterResponseBuilder
-func (m *_ApduDataExtNetworkParameterResponse) CreateApduDataExtNetworkParameterResponseBuilder() ApduDataExtNetworkParameterResponseBuilder {
-	if m == nil {
+func (b *_ApduDataExtNetworkParameterResponse) CreateApduDataExtNetworkParameterResponseBuilder() ApduDataExtNetworkParameterResponseBuilder {
+	if b == nil {
 		return NewApduDataExtNetworkParameterResponseBuilder()
 	}
-	return &_ApduDataExtNetworkParameterResponseBuilder{_ApduDataExtNetworkParameterResponse: m.deepCopy()}
+	return &_ApduDataExtNetworkParameterResponseBuilder{_ApduDataExtNetworkParameterResponse: b.deepCopy()}
 }
 
 ///////////////////////

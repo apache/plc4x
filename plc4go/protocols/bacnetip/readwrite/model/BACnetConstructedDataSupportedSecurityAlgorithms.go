@@ -93,45 +93,64 @@ func NewBACnetConstructedDataSupportedSecurityAlgorithmsBuilder() BACnetConstruc
 type _BACnetConstructedDataSupportedSecurityAlgorithmsBuilder struct {
 	*_BACnetConstructedDataSupportedSecurityAlgorithms
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) = (*_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder)(nil)
 
-func (m *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) WithMandatoryFields(supportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSupportedSecurityAlgorithmsBuilder {
-	return m.WithSupportedSecurityAlgorithms(supportedSecurityAlgorithms...)
+func (b *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) WithSupportedSecurityAlgorithms(supportedSecurityAlgorithms ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSupportedSecurityAlgorithmsBuilder {
-	m.SupportedSecurityAlgorithms = supportedSecurityAlgorithms
-	return m
+func (b *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) WithMandatoryFields(supportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSupportedSecurityAlgorithmsBuilder {
+	return b.WithSupportedSecurityAlgorithms(supportedSecurityAlgorithms...)
 }
 
-func (m *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) Build() (BACnetConstructedDataSupportedSecurityAlgorithms, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) WithSupportedSecurityAlgorithms(supportedSecurityAlgorithms ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSupportedSecurityAlgorithmsBuilder {
+	b.SupportedSecurityAlgorithms = supportedSecurityAlgorithms
+	return b
+}
+
+func (b *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) Build() (BACnetConstructedDataSupportedSecurityAlgorithms, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSupportedSecurityAlgorithms.deepCopy(), nil
+	return b._BACnetConstructedDataSupportedSecurityAlgorithms.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) MustBuild() BACnetConstructedDataSupportedSecurityAlgorithms {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) MustBuild() BACnetConstructedDataSupportedSecurityAlgorithms {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSupportedSecurityAlgorithmsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSupportedSecurityAlgorithmsBuilder().(*_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSupportedSecurityAlgorithmsBuilder creates a BACnetConstructedDataSupportedSecurityAlgorithmsBuilder
-func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) CreateBACnetConstructedDataSupportedSecurityAlgorithmsBuilder() BACnetConstructedDataSupportedSecurityAlgorithmsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSupportedSecurityAlgorithms) CreateBACnetConstructedDataSupportedSecurityAlgorithmsBuilder() BACnetConstructedDataSupportedSecurityAlgorithmsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSupportedSecurityAlgorithmsBuilder()
 	}
-	return &_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder{_BACnetConstructedDataSupportedSecurityAlgorithms: m.deepCopy()}
+	return &_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder{_BACnetConstructedDataSupportedSecurityAlgorithms: b.deepCopy()}
 }
 
 ///////////////////////

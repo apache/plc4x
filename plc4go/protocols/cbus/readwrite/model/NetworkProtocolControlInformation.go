@@ -97,45 +97,49 @@ type _NetworkProtocolControlInformationBuilder struct {
 
 var _ (NetworkProtocolControlInformationBuilder) = (*_NetworkProtocolControlInformationBuilder)(nil)
 
-func (m *_NetworkProtocolControlInformationBuilder) WithMandatoryFields(stackCounter uint8, stackDepth uint8) NetworkProtocolControlInformationBuilder {
-	return m.WithStackCounter(stackCounter).WithStackDepth(stackDepth)
+func (b *_NetworkProtocolControlInformationBuilder) WithMandatoryFields(stackCounter uint8, stackDepth uint8) NetworkProtocolControlInformationBuilder {
+	return b.WithStackCounter(stackCounter).WithStackDepth(stackDepth)
 }
 
-func (m *_NetworkProtocolControlInformationBuilder) WithStackCounter(stackCounter uint8) NetworkProtocolControlInformationBuilder {
-	m.StackCounter = stackCounter
-	return m
+func (b *_NetworkProtocolControlInformationBuilder) WithStackCounter(stackCounter uint8) NetworkProtocolControlInformationBuilder {
+	b.StackCounter = stackCounter
+	return b
 }
 
-func (m *_NetworkProtocolControlInformationBuilder) WithStackDepth(stackDepth uint8) NetworkProtocolControlInformationBuilder {
-	m.StackDepth = stackDepth
-	return m
+func (b *_NetworkProtocolControlInformationBuilder) WithStackDepth(stackDepth uint8) NetworkProtocolControlInformationBuilder {
+	b.StackDepth = stackDepth
+	return b
 }
 
-func (m *_NetworkProtocolControlInformationBuilder) Build() (NetworkProtocolControlInformation, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NetworkProtocolControlInformationBuilder) Build() (NetworkProtocolControlInformation, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NetworkProtocolControlInformation.deepCopy(), nil
+	return b._NetworkProtocolControlInformation.deepCopy(), nil
 }
 
-func (m *_NetworkProtocolControlInformationBuilder) MustBuild() NetworkProtocolControlInformation {
-	build, err := m.Build()
+func (b *_NetworkProtocolControlInformationBuilder) MustBuild() NetworkProtocolControlInformation {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NetworkProtocolControlInformationBuilder) DeepCopy() any {
-	return m.CreateNetworkProtocolControlInformationBuilder()
+func (b *_NetworkProtocolControlInformationBuilder) DeepCopy() any {
+	_copy := b.CreateNetworkProtocolControlInformationBuilder().(*_NetworkProtocolControlInformationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNetworkProtocolControlInformationBuilder creates a NetworkProtocolControlInformationBuilder
-func (m *_NetworkProtocolControlInformation) CreateNetworkProtocolControlInformationBuilder() NetworkProtocolControlInformationBuilder {
-	if m == nil {
+func (b *_NetworkProtocolControlInformation) CreateNetworkProtocolControlInformationBuilder() NetworkProtocolControlInformationBuilder {
+	if b == nil {
 		return NewNetworkProtocolControlInformationBuilder()
 	}
-	return &_NetworkProtocolControlInformationBuilder{_NetworkProtocolControlInformation: m.deepCopy()}
+	return &_NetworkProtocolControlInformationBuilder{_NetworkProtocolControlInformation: b.deepCopy()}
 }
 
 ///////////////////////

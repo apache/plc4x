@@ -103,63 +103,82 @@ func NewBACnetConstructedDataFloorTextBuilder() BACnetConstructedDataFloorTextBu
 type _BACnetConstructedDataFloorTextBuilder struct {
 	*_BACnetConstructedDataFloorText
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataFloorTextBuilder) = (*_BACnetConstructedDataFloorTextBuilder)(nil)
 
-func (m *_BACnetConstructedDataFloorTextBuilder) WithMandatoryFields(floorText []BACnetApplicationTagCharacterString) BACnetConstructedDataFloorTextBuilder {
-	return m.WithFloorText(floorText...)
+func (b *_BACnetConstructedDataFloorTextBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataFloorTextBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFloorTextBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataFloorTextBuilder) WithMandatoryFields(floorText []BACnetApplicationTagCharacterString) BACnetConstructedDataFloorTextBuilder {
+	return b.WithFloorText(floorText...)
 }
 
-func (m *_BACnetConstructedDataFloorTextBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFloorTextBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataFloorTextBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFloorTextBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataFloorTextBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFloorTextBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataFloorTextBuilder) WithFloorText(floorText ...BACnetApplicationTagCharacterString) BACnetConstructedDataFloorTextBuilder {
-	m.FloorText = floorText
-	return m
+func (b *_BACnetConstructedDataFloorTextBuilder) WithFloorText(floorText ...BACnetApplicationTagCharacterString) BACnetConstructedDataFloorTextBuilder {
+	b.FloorText = floorText
+	return b
 }
 
-func (m *_BACnetConstructedDataFloorTextBuilder) Build() (BACnetConstructedDataFloorText, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataFloorTextBuilder) Build() (BACnetConstructedDataFloorText, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataFloorText.deepCopy(), nil
+	return b._BACnetConstructedDataFloorText.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataFloorTextBuilder) MustBuild() BACnetConstructedDataFloorText {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataFloorTextBuilder) MustBuild() BACnetConstructedDataFloorText {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataFloorTextBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataFloorTextBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFloorTextBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFloorTextBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFloorTextBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFloorTextBuilder().(*_BACnetConstructedDataFloorTextBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataFloorTextBuilder creates a BACnetConstructedDataFloorTextBuilder
-func (m *_BACnetConstructedDataFloorText) CreateBACnetConstructedDataFloorTextBuilder() BACnetConstructedDataFloorTextBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataFloorText) CreateBACnetConstructedDataFloorTextBuilder() BACnetConstructedDataFloorTextBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataFloorTextBuilder()
 	}
-	return &_BACnetConstructedDataFloorTextBuilder{_BACnetConstructedDataFloorText: m.deepCopy()}
+	return &_BACnetConstructedDataFloorTextBuilder{_BACnetConstructedDataFloorText: b.deepCopy()}
 }
 
 ///////////////////////

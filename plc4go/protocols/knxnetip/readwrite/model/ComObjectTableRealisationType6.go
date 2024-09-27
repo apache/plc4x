@@ -98,64 +98,83 @@ func NewComObjectTableRealisationType6Builder() ComObjectTableRealisationType6Bu
 type _ComObjectTableRealisationType6Builder struct {
 	*_ComObjectTableRealisationType6
 
+	parentBuilder *_ComObjectTableBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ComObjectTableRealisationType6Builder) = (*_ComObjectTableRealisationType6Builder)(nil)
 
-func (m *_ComObjectTableRealisationType6Builder) WithMandatoryFields(comObjectDescriptors GroupObjectDescriptorRealisationType6) ComObjectTableRealisationType6Builder {
-	return m.WithComObjectDescriptors(comObjectDescriptors)
+func (b *_ComObjectTableRealisationType6Builder) setParent(contract ComObjectTableContract) {
+	b.ComObjectTableContract = contract
 }
 
-func (m *_ComObjectTableRealisationType6Builder) WithComObjectDescriptors(comObjectDescriptors GroupObjectDescriptorRealisationType6) ComObjectTableRealisationType6Builder {
-	m.ComObjectDescriptors = comObjectDescriptors
-	return m
+func (b *_ComObjectTableRealisationType6Builder) WithMandatoryFields(comObjectDescriptors GroupObjectDescriptorRealisationType6) ComObjectTableRealisationType6Builder {
+	return b.WithComObjectDescriptors(comObjectDescriptors)
 }
 
-func (m *_ComObjectTableRealisationType6Builder) WithComObjectDescriptorsBuilder(builderSupplier func(GroupObjectDescriptorRealisationType6Builder) GroupObjectDescriptorRealisationType6Builder) ComObjectTableRealisationType6Builder {
-	builder := builderSupplier(m.ComObjectDescriptors.CreateGroupObjectDescriptorRealisationType6Builder())
+func (b *_ComObjectTableRealisationType6Builder) WithComObjectDescriptors(comObjectDescriptors GroupObjectDescriptorRealisationType6) ComObjectTableRealisationType6Builder {
+	b.ComObjectDescriptors = comObjectDescriptors
+	return b
+}
+
+func (b *_ComObjectTableRealisationType6Builder) WithComObjectDescriptorsBuilder(builderSupplier func(GroupObjectDescriptorRealisationType6Builder) GroupObjectDescriptorRealisationType6Builder) ComObjectTableRealisationType6Builder {
+	builder := builderSupplier(b.ComObjectDescriptors.CreateGroupObjectDescriptorRealisationType6Builder())
 	var err error
-	m.ComObjectDescriptors, err = builder.Build()
+	b.ComObjectDescriptors, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "GroupObjectDescriptorRealisationType6Builder failed"))
+		b.err.Append(errors.Wrap(err, "GroupObjectDescriptorRealisationType6Builder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ComObjectTableRealisationType6Builder) Build() (ComObjectTableRealisationType6, error) {
-	if m.ComObjectDescriptors == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ComObjectTableRealisationType6Builder) Build() (ComObjectTableRealisationType6, error) {
+	if b.ComObjectDescriptors == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'comObjectDescriptors' not set"))
+		b.err.Append(errors.New("mandatory field 'comObjectDescriptors' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ComObjectTableRealisationType6.deepCopy(), nil
+	return b._ComObjectTableRealisationType6.deepCopy(), nil
 }
 
-func (m *_ComObjectTableRealisationType6Builder) MustBuild() ComObjectTableRealisationType6 {
-	build, err := m.Build()
+func (b *_ComObjectTableRealisationType6Builder) MustBuild() ComObjectTableRealisationType6 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ComObjectTableRealisationType6Builder) DeepCopy() any {
-	return m.CreateComObjectTableRealisationType6Builder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ComObjectTableRealisationType6Builder) Done() ComObjectTableBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ComObjectTableRealisationType6Builder) buildForComObjectTable() (ComObjectTable, error) {
+	return b.Build()
+}
+
+func (b *_ComObjectTableRealisationType6Builder) DeepCopy() any {
+	_copy := b.CreateComObjectTableRealisationType6Builder().(*_ComObjectTableRealisationType6Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateComObjectTableRealisationType6Builder creates a ComObjectTableRealisationType6Builder
-func (m *_ComObjectTableRealisationType6) CreateComObjectTableRealisationType6Builder() ComObjectTableRealisationType6Builder {
-	if m == nil {
+func (b *_ComObjectTableRealisationType6) CreateComObjectTableRealisationType6Builder() ComObjectTableRealisationType6Builder {
+	if b == nil {
 		return NewComObjectTableRealisationType6Builder()
 	}
-	return &_ComObjectTableRealisationType6Builder{_ComObjectTableRealisationType6: m.deepCopy()}
+	return &_ComObjectTableRealisationType6Builder{_ComObjectTableRealisationType6: b.deepCopy()}
 }
 
 ///////////////////////

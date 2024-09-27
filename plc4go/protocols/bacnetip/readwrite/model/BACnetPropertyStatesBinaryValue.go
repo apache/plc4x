@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesBinaryValueBuilder() BACnetPropertyStatesBinaryValue
 type _BACnetPropertyStatesBinaryValueBuilder struct {
 	*_BACnetPropertyStatesBinaryValue
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesBinaryValueBuilder) = (*_BACnetPropertyStatesBinaryValueBuilder)(nil)
 
-func (m *_BACnetPropertyStatesBinaryValueBuilder) WithMandatoryFields(binaryValue BACnetBinaryPVTagged) BACnetPropertyStatesBinaryValueBuilder {
-	return m.WithBinaryValue(binaryValue)
+func (b *_BACnetPropertyStatesBinaryValueBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesBinaryValueBuilder) WithBinaryValue(binaryValue BACnetBinaryPVTagged) BACnetPropertyStatesBinaryValueBuilder {
-	m.BinaryValue = binaryValue
-	return m
+func (b *_BACnetPropertyStatesBinaryValueBuilder) WithMandatoryFields(binaryValue BACnetBinaryPVTagged) BACnetPropertyStatesBinaryValueBuilder {
+	return b.WithBinaryValue(binaryValue)
 }
 
-func (m *_BACnetPropertyStatesBinaryValueBuilder) WithBinaryValueBuilder(builderSupplier func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetPropertyStatesBinaryValueBuilder {
-	builder := builderSupplier(m.BinaryValue.CreateBACnetBinaryPVTaggedBuilder())
+func (b *_BACnetPropertyStatesBinaryValueBuilder) WithBinaryValue(binaryValue BACnetBinaryPVTagged) BACnetPropertyStatesBinaryValueBuilder {
+	b.BinaryValue = binaryValue
+	return b
+}
+
+func (b *_BACnetPropertyStatesBinaryValueBuilder) WithBinaryValueBuilder(builderSupplier func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetPropertyStatesBinaryValueBuilder {
+	builder := builderSupplier(b.BinaryValue.CreateBACnetBinaryPVTaggedBuilder())
 	var err error
-	m.BinaryValue, err = builder.Build()
+	b.BinaryValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetBinaryPVTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetBinaryPVTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesBinaryValueBuilder) Build() (BACnetPropertyStatesBinaryValue, error) {
-	if m.BinaryValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesBinaryValueBuilder) Build() (BACnetPropertyStatesBinaryValue, error) {
+	if b.BinaryValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'binaryValue' not set"))
+		b.err.Append(errors.New("mandatory field 'binaryValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesBinaryValue.deepCopy(), nil
+	return b._BACnetPropertyStatesBinaryValue.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesBinaryValueBuilder) MustBuild() BACnetPropertyStatesBinaryValue {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesBinaryValueBuilder) MustBuild() BACnetPropertyStatesBinaryValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesBinaryValueBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesBinaryValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesBinaryValueBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesBinaryValueBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesBinaryValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesBinaryValueBuilder().(*_BACnetPropertyStatesBinaryValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesBinaryValueBuilder creates a BACnetPropertyStatesBinaryValueBuilder
-func (m *_BACnetPropertyStatesBinaryValue) CreateBACnetPropertyStatesBinaryValueBuilder() BACnetPropertyStatesBinaryValueBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesBinaryValue) CreateBACnetPropertyStatesBinaryValueBuilder() BACnetPropertyStatesBinaryValueBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesBinaryValueBuilder()
 	}
-	return &_BACnetPropertyStatesBinaryValueBuilder{_BACnetPropertyStatesBinaryValue: m.deepCopy()}
+	return &_BACnetPropertyStatesBinaryValueBuilder{_BACnetPropertyStatesBinaryValue: b.deepCopy()}
 }
 
 ///////////////////////

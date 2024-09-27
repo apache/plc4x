@@ -93,45 +93,64 @@ func NewLightingDataOffBuilder() LightingDataOffBuilder {
 type _LightingDataOffBuilder struct {
 	*_LightingDataOff
 
+	parentBuilder *_LightingDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LightingDataOffBuilder) = (*_LightingDataOffBuilder)(nil)
 
-func (m *_LightingDataOffBuilder) WithMandatoryFields(group byte) LightingDataOffBuilder {
-	return m.WithGroup(group)
+func (b *_LightingDataOffBuilder) setParent(contract LightingDataContract) {
+	b.LightingDataContract = contract
 }
 
-func (m *_LightingDataOffBuilder) WithGroup(group byte) LightingDataOffBuilder {
-	m.Group = group
-	return m
+func (b *_LightingDataOffBuilder) WithMandatoryFields(group byte) LightingDataOffBuilder {
+	return b.WithGroup(group)
 }
 
-func (m *_LightingDataOffBuilder) Build() (LightingDataOff, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_LightingDataOffBuilder) WithGroup(group byte) LightingDataOffBuilder {
+	b.Group = group
+	return b
+}
+
+func (b *_LightingDataOffBuilder) Build() (LightingDataOff, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LightingDataOff.deepCopy(), nil
+	return b._LightingDataOff.deepCopy(), nil
 }
 
-func (m *_LightingDataOffBuilder) MustBuild() LightingDataOff {
-	build, err := m.Build()
+func (b *_LightingDataOffBuilder) MustBuild() LightingDataOff {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LightingDataOffBuilder) DeepCopy() any {
-	return m.CreateLightingDataOffBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LightingDataOffBuilder) Done() LightingDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LightingDataOffBuilder) buildForLightingData() (LightingData, error) {
+	return b.Build()
+}
+
+func (b *_LightingDataOffBuilder) DeepCopy() any {
+	_copy := b.CreateLightingDataOffBuilder().(*_LightingDataOffBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLightingDataOffBuilder creates a LightingDataOffBuilder
-func (m *_LightingDataOff) CreateLightingDataOffBuilder() LightingDataOffBuilder {
-	if m == nil {
+func (b *_LightingDataOff) CreateLightingDataOffBuilder() LightingDataOffBuilder {
+	if b == nil {
 		return NewLightingDataOffBuilder()
 	}
-	return &_LightingDataOffBuilder{_LightingDataOff: m.deepCopy()}
+	return &_LightingDataOffBuilder{_LightingDataOff: b.deepCopy()}
 }
 
 ///////////////////////

@@ -123,98 +123,117 @@ func NewRelativePathElementBuilder() RelativePathElementBuilder {
 type _RelativePathElementBuilder struct {
 	*_RelativePathElement
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RelativePathElementBuilder) = (*_RelativePathElementBuilder)(nil)
 
-func (m *_RelativePathElementBuilder) WithMandatoryFields(referenceTypeId NodeId, includeSubtypes bool, isInverse bool, targetName QualifiedName) RelativePathElementBuilder {
-	return m.WithReferenceTypeId(referenceTypeId).WithIncludeSubtypes(includeSubtypes).WithIsInverse(isInverse).WithTargetName(targetName)
+func (b *_RelativePathElementBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_RelativePathElementBuilder) WithReferenceTypeId(referenceTypeId NodeId) RelativePathElementBuilder {
-	m.ReferenceTypeId = referenceTypeId
-	return m
+func (b *_RelativePathElementBuilder) WithMandatoryFields(referenceTypeId NodeId, includeSubtypes bool, isInverse bool, targetName QualifiedName) RelativePathElementBuilder {
+	return b.WithReferenceTypeId(referenceTypeId).WithIncludeSubtypes(includeSubtypes).WithIsInverse(isInverse).WithTargetName(targetName)
 }
 
-func (m *_RelativePathElementBuilder) WithReferenceTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) RelativePathElementBuilder {
-	builder := builderSupplier(m.ReferenceTypeId.CreateNodeIdBuilder())
+func (b *_RelativePathElementBuilder) WithReferenceTypeId(referenceTypeId NodeId) RelativePathElementBuilder {
+	b.ReferenceTypeId = referenceTypeId
+	return b
+}
+
+func (b *_RelativePathElementBuilder) WithReferenceTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) RelativePathElementBuilder {
+	builder := builderSupplier(b.ReferenceTypeId.CreateNodeIdBuilder())
 	var err error
-	m.ReferenceTypeId, err = builder.Build()
+	b.ReferenceTypeId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RelativePathElementBuilder) WithIncludeSubtypes(includeSubtypes bool) RelativePathElementBuilder {
-	m.IncludeSubtypes = includeSubtypes
-	return m
+func (b *_RelativePathElementBuilder) WithIncludeSubtypes(includeSubtypes bool) RelativePathElementBuilder {
+	b.IncludeSubtypes = includeSubtypes
+	return b
 }
 
-func (m *_RelativePathElementBuilder) WithIsInverse(isInverse bool) RelativePathElementBuilder {
-	m.IsInverse = isInverse
-	return m
+func (b *_RelativePathElementBuilder) WithIsInverse(isInverse bool) RelativePathElementBuilder {
+	b.IsInverse = isInverse
+	return b
 }
 
-func (m *_RelativePathElementBuilder) WithTargetName(targetName QualifiedName) RelativePathElementBuilder {
-	m.TargetName = targetName
-	return m
+func (b *_RelativePathElementBuilder) WithTargetName(targetName QualifiedName) RelativePathElementBuilder {
+	b.TargetName = targetName
+	return b
 }
 
-func (m *_RelativePathElementBuilder) WithTargetNameBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) RelativePathElementBuilder {
-	builder := builderSupplier(m.TargetName.CreateQualifiedNameBuilder())
+func (b *_RelativePathElementBuilder) WithTargetNameBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) RelativePathElementBuilder {
+	builder := builderSupplier(b.TargetName.CreateQualifiedNameBuilder())
 	var err error
-	m.TargetName, err = builder.Build()
+	b.TargetName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RelativePathElementBuilder) Build() (RelativePathElement, error) {
-	if m.ReferenceTypeId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_RelativePathElementBuilder) Build() (RelativePathElement, error) {
+	if b.ReferenceTypeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
+		b.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
 	}
-	if m.TargetName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TargetName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'targetName' not set"))
+		b.err.Append(errors.New("mandatory field 'targetName' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._RelativePathElement.deepCopy(), nil
+	return b._RelativePathElement.deepCopy(), nil
 }
 
-func (m *_RelativePathElementBuilder) MustBuild() RelativePathElement {
-	build, err := m.Build()
+func (b *_RelativePathElementBuilder) MustBuild() RelativePathElement {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RelativePathElementBuilder) DeepCopy() any {
-	return m.CreateRelativePathElementBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RelativePathElementBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RelativePathElementBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_RelativePathElementBuilder) DeepCopy() any {
+	_copy := b.CreateRelativePathElementBuilder().(*_RelativePathElementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRelativePathElementBuilder creates a RelativePathElementBuilder
-func (m *_RelativePathElement) CreateRelativePathElementBuilder() RelativePathElementBuilder {
-	if m == nil {
+func (b *_RelativePathElement) CreateRelativePathElementBuilder() RelativePathElementBuilder {
+	if b == nil {
 		return NewRelativePathElementBuilder()
 	}
-	return &_RelativePathElementBuilder{_RelativePathElement: m.deepCopy()}
+	return &_RelativePathElementBuilder{_RelativePathElement: b.deepCopy()}
 }
 
 ///////////////////////

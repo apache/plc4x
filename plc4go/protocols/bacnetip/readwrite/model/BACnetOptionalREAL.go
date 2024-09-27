@@ -97,10 +97,24 @@ type BACnetOptionalREALBuilder interface {
 	WithPeekedTagHeader(BACnetTagHeader) BACnetOptionalREALBuilder
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalREALBuilder
+	// AsBACnetOptionalREALNull converts this build to a subType of BACnetOptionalREAL. It is always possible to return to current builder using Done()
+	AsBACnetOptionalREALNull() interface {
+		BACnetOptionalREALNullBuilder
+		Done() BACnetOptionalREALBuilder
+	}
+	// AsBACnetOptionalREALValue converts this build to a subType of BACnetOptionalREAL. It is always possible to return to current builder using Done()
+	AsBACnetOptionalREALValue() interface {
+		BACnetOptionalREALValueBuilder
+		Done() BACnetOptionalREALBuilder
+	}
 	// Build builds the BACnetOptionalREAL or returns an error if something is wrong
-	Build() (BACnetOptionalREALContract, error)
+	PartialBuild() (BACnetOptionalREALContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetOptionalREALContract
+	PartialMustBuild() BACnetOptionalREALContract
+	// Build builds the BACnetOptionalREAL or returns an error if something is wrong
+	Build() (BACnetOptionalREAL, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetOptionalREAL
 }
 
 // NewBACnetOptionalREALBuilder() creates a BACnetOptionalREALBuilder
@@ -108,67 +122,133 @@ func NewBACnetOptionalREALBuilder() BACnetOptionalREALBuilder {
 	return &_BACnetOptionalREALBuilder{_BACnetOptionalREAL: new(_BACnetOptionalREAL)}
 }
 
+type _BACnetOptionalREALChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetOptionalREALContract)
+	buildForBACnetOptionalREAL() (BACnetOptionalREAL, error)
+}
+
 type _BACnetOptionalREALBuilder struct {
 	*_BACnetOptionalREAL
+
+	childBuilder _BACnetOptionalREALChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetOptionalREALBuilder) = (*_BACnetOptionalREALBuilder)(nil)
 
-func (m *_BACnetOptionalREALBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetOptionalREALBuilder {
-	return m.WithPeekedTagHeader(peekedTagHeader)
+func (b *_BACnetOptionalREALBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetOptionalREALBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
 }
 
-func (m *_BACnetOptionalREALBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetOptionalREALBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetOptionalREALBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetOptionalREALBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetOptionalREALBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalREALBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetOptionalREALBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalREALBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetOptionalREALBuilder) Build() (BACnetOptionalREALContract, error) {
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetOptionalREALBuilder) PartialBuild() (BACnetOptionalREALContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetOptionalREAL.deepCopy(), nil
+	return b._BACnetOptionalREAL.deepCopy(), nil
 }
 
-func (m *_BACnetOptionalREALBuilder) MustBuild() BACnetOptionalREALContract {
-	build, err := m.Build()
+func (b *_BACnetOptionalREALBuilder) PartialMustBuild() BACnetOptionalREALContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetOptionalREALBuilder) DeepCopy() any {
-	return m.CreateBACnetOptionalREALBuilder()
+func (b *_BACnetOptionalREALBuilder) AsBACnetOptionalREALNull() interface {
+	BACnetOptionalREALNullBuilder
+	Done() BACnetOptionalREALBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetOptionalREALNullBuilder
+		Done() BACnetOptionalREALBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetOptionalREALNullBuilder().(*_BACnetOptionalREALNullBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetOptionalREALBuilder) AsBACnetOptionalREALValue() interface {
+	BACnetOptionalREALValueBuilder
+	Done() BACnetOptionalREALBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetOptionalREALValueBuilder
+		Done() BACnetOptionalREALBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetOptionalREALValueBuilder().(*_BACnetOptionalREALValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetOptionalREALBuilder) Build() (BACnetOptionalREAL, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetOptionalREAL()
+}
+
+func (b *_BACnetOptionalREALBuilder) MustBuild() BACnetOptionalREAL {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetOptionalREALBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetOptionalREALBuilder().(*_BACnetOptionalREALBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetOptionalREALChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetOptionalREALBuilder creates a BACnetOptionalREALBuilder
-func (m *_BACnetOptionalREAL) CreateBACnetOptionalREALBuilder() BACnetOptionalREALBuilder {
-	if m == nil {
+func (b *_BACnetOptionalREAL) CreateBACnetOptionalREALBuilder() BACnetOptionalREALBuilder {
+	if b == nil {
 		return NewBACnetOptionalREALBuilder()
 	}
-	return &_BACnetOptionalREALBuilder{_BACnetOptionalREAL: m.deepCopy()}
+	return &_BACnetOptionalREALBuilder{_BACnetOptionalREAL: b.deepCopy()}
 }
 
 ///////////////////////

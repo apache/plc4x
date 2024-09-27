@@ -93,45 +93,64 @@ func NewModbusPDUReadFifoQueueResponseBuilder() ModbusPDUReadFifoQueueResponseBu
 type _ModbusPDUReadFifoQueueResponseBuilder struct {
 	*_ModbusPDUReadFifoQueueResponse
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUReadFifoQueueResponseBuilder) = (*_ModbusPDUReadFifoQueueResponseBuilder)(nil)
 
-func (m *_ModbusPDUReadFifoQueueResponseBuilder) WithMandatoryFields(fifoValue []uint16) ModbusPDUReadFifoQueueResponseBuilder {
-	return m.WithFifoValue(fifoValue...)
+func (b *_ModbusPDUReadFifoQueueResponseBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUReadFifoQueueResponseBuilder) WithFifoValue(fifoValue ...uint16) ModbusPDUReadFifoQueueResponseBuilder {
-	m.FifoValue = fifoValue
-	return m
+func (b *_ModbusPDUReadFifoQueueResponseBuilder) WithMandatoryFields(fifoValue []uint16) ModbusPDUReadFifoQueueResponseBuilder {
+	return b.WithFifoValue(fifoValue...)
 }
 
-func (m *_ModbusPDUReadFifoQueueResponseBuilder) Build() (ModbusPDUReadFifoQueueResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUReadFifoQueueResponseBuilder) WithFifoValue(fifoValue ...uint16) ModbusPDUReadFifoQueueResponseBuilder {
+	b.FifoValue = fifoValue
+	return b
+}
+
+func (b *_ModbusPDUReadFifoQueueResponseBuilder) Build() (ModbusPDUReadFifoQueueResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUReadFifoQueueResponse.deepCopy(), nil
+	return b._ModbusPDUReadFifoQueueResponse.deepCopy(), nil
 }
 
-func (m *_ModbusPDUReadFifoQueueResponseBuilder) MustBuild() ModbusPDUReadFifoQueueResponse {
-	build, err := m.Build()
+func (b *_ModbusPDUReadFifoQueueResponseBuilder) MustBuild() ModbusPDUReadFifoQueueResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUReadFifoQueueResponseBuilder) DeepCopy() any {
-	return m.CreateModbusPDUReadFifoQueueResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUReadFifoQueueResponseBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUReadFifoQueueResponseBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUReadFifoQueueResponseBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUReadFifoQueueResponseBuilder().(*_ModbusPDUReadFifoQueueResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUReadFifoQueueResponseBuilder creates a ModbusPDUReadFifoQueueResponseBuilder
-func (m *_ModbusPDUReadFifoQueueResponse) CreateModbusPDUReadFifoQueueResponseBuilder() ModbusPDUReadFifoQueueResponseBuilder {
-	if m == nil {
+func (b *_ModbusPDUReadFifoQueueResponse) CreateModbusPDUReadFifoQueueResponseBuilder() ModbusPDUReadFifoQueueResponseBuilder {
+	if b == nil {
 		return NewModbusPDUReadFifoQueueResponseBuilder()
 	}
-	return &_ModbusPDUReadFifoQueueResponseBuilder{_ModbusPDUReadFifoQueueResponse: m.deepCopy()}
+	return &_ModbusPDUReadFifoQueueResponseBuilder{_ModbusPDUReadFifoQueueResponse: b.deepCopy()}
 }
 
 ///////////////////////

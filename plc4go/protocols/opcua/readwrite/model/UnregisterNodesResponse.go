@@ -82,6 +82,8 @@ type UnregisterNodesResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition) UnregisterNodesResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) UnregisterNodesResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) UnregisterNodesResponseBuilder
 	// Build builds the UnregisterNodesResponse or returns an error if something is wrong
 	Build() (UnregisterNodesResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewUnregisterNodesResponseBuilder() UnregisterNodesResponseBuilder {
 type _UnregisterNodesResponseBuilder struct {
 	*_UnregisterNodesResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (UnregisterNodesResponseBuilder) = (*_UnregisterNodesResponseBuilder)(nil)
 
-func (m *_UnregisterNodesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) UnregisterNodesResponseBuilder {
-	return m.WithResponseHeader(responseHeader)
+func (b *_UnregisterNodesResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_UnregisterNodesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) UnregisterNodesResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_UnregisterNodesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) UnregisterNodesResponseBuilder {
+	return b.WithResponseHeader(responseHeader)
 }
 
-func (m *_UnregisterNodesResponseBuilder) Build() (UnregisterNodesResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_UnregisterNodesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) UnregisterNodesResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
+}
+
+func (b *_UnregisterNodesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) UnregisterNodesResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._UnregisterNodesResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_UnregisterNodesResponseBuilder) MustBuild() UnregisterNodesResponse {
-	build, err := m.Build()
+func (b *_UnregisterNodesResponseBuilder) Build() (UnregisterNodesResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._UnregisterNodesResponse.deepCopy(), nil
+}
+
+func (b *_UnregisterNodesResponseBuilder) MustBuild() UnregisterNodesResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_UnregisterNodesResponseBuilder) DeepCopy() any {
-	return m.CreateUnregisterNodesResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UnregisterNodesResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UnregisterNodesResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_UnregisterNodesResponseBuilder) DeepCopy() any {
+	_copy := b.CreateUnregisterNodesResponseBuilder().(*_UnregisterNodesResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateUnregisterNodesResponseBuilder creates a UnregisterNodesResponseBuilder
-func (m *_UnregisterNodesResponse) CreateUnregisterNodesResponseBuilder() UnregisterNodesResponseBuilder {
-	if m == nil {
+func (b *_UnregisterNodesResponse) CreateUnregisterNodesResponseBuilder() UnregisterNodesResponseBuilder {
+	if b == nil {
 		return NewUnregisterNodesResponseBuilder()
 	}
-	return &_UnregisterNodesResponseBuilder{_UnregisterNodesResponse: m.deepCopy()}
+	return &_UnregisterNodesResponseBuilder{_UnregisterNodesResponse: b.deepCopy()}
 }
 
 ///////////////////////

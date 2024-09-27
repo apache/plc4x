@@ -128,60 +128,64 @@ type _HVACHumidityModeAndFlagsBuilder struct {
 
 var _ (HVACHumidityModeAndFlagsBuilder) = (*_HVACHumidityModeAndFlagsBuilder)(nil)
 
-func (m *_HVACHumidityModeAndFlagsBuilder) WithMandatoryFields(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACHumidityModeAndFlagsMode) HVACHumidityModeAndFlagsBuilder {
-	return m.WithAuxiliaryLevel(auxiliaryLevel).WithGuard(guard).WithSetback(setback).WithLevel(level).WithMode(mode)
+func (b *_HVACHumidityModeAndFlagsBuilder) WithMandatoryFields(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACHumidityModeAndFlagsMode) HVACHumidityModeAndFlagsBuilder {
+	return b.WithAuxiliaryLevel(auxiliaryLevel).WithGuard(guard).WithSetback(setback).WithLevel(level).WithMode(mode)
 }
 
-func (m *_HVACHumidityModeAndFlagsBuilder) WithAuxiliaryLevel(auxiliaryLevel bool) HVACHumidityModeAndFlagsBuilder {
-	m.AuxiliaryLevel = auxiliaryLevel
-	return m
+func (b *_HVACHumidityModeAndFlagsBuilder) WithAuxiliaryLevel(auxiliaryLevel bool) HVACHumidityModeAndFlagsBuilder {
+	b.AuxiliaryLevel = auxiliaryLevel
+	return b
 }
 
-func (m *_HVACHumidityModeAndFlagsBuilder) WithGuard(guard bool) HVACHumidityModeAndFlagsBuilder {
-	m.Guard = guard
-	return m
+func (b *_HVACHumidityModeAndFlagsBuilder) WithGuard(guard bool) HVACHumidityModeAndFlagsBuilder {
+	b.Guard = guard
+	return b
 }
 
-func (m *_HVACHumidityModeAndFlagsBuilder) WithSetback(setback bool) HVACHumidityModeAndFlagsBuilder {
-	m.Setback = setback
-	return m
+func (b *_HVACHumidityModeAndFlagsBuilder) WithSetback(setback bool) HVACHumidityModeAndFlagsBuilder {
+	b.Setback = setback
+	return b
 }
 
-func (m *_HVACHumidityModeAndFlagsBuilder) WithLevel(level bool) HVACHumidityModeAndFlagsBuilder {
-	m.Level = level
-	return m
+func (b *_HVACHumidityModeAndFlagsBuilder) WithLevel(level bool) HVACHumidityModeAndFlagsBuilder {
+	b.Level = level
+	return b
 }
 
-func (m *_HVACHumidityModeAndFlagsBuilder) WithMode(mode HVACHumidityModeAndFlagsMode) HVACHumidityModeAndFlagsBuilder {
-	m.Mode = mode
-	return m
+func (b *_HVACHumidityModeAndFlagsBuilder) WithMode(mode HVACHumidityModeAndFlagsMode) HVACHumidityModeAndFlagsBuilder {
+	b.Mode = mode
+	return b
 }
 
-func (m *_HVACHumidityModeAndFlagsBuilder) Build() (HVACHumidityModeAndFlags, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_HVACHumidityModeAndFlagsBuilder) Build() (HVACHumidityModeAndFlags, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HVACHumidityModeAndFlags.deepCopy(), nil
+	return b._HVACHumidityModeAndFlags.deepCopy(), nil
 }
 
-func (m *_HVACHumidityModeAndFlagsBuilder) MustBuild() HVACHumidityModeAndFlags {
-	build, err := m.Build()
+func (b *_HVACHumidityModeAndFlagsBuilder) MustBuild() HVACHumidityModeAndFlags {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HVACHumidityModeAndFlagsBuilder) DeepCopy() any {
-	return m.CreateHVACHumidityModeAndFlagsBuilder()
+func (b *_HVACHumidityModeAndFlagsBuilder) DeepCopy() any {
+	_copy := b.CreateHVACHumidityModeAndFlagsBuilder().(*_HVACHumidityModeAndFlagsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHVACHumidityModeAndFlagsBuilder creates a HVACHumidityModeAndFlagsBuilder
-func (m *_HVACHumidityModeAndFlags) CreateHVACHumidityModeAndFlagsBuilder() HVACHumidityModeAndFlagsBuilder {
-	if m == nil {
+func (b *_HVACHumidityModeAndFlags) CreateHVACHumidityModeAndFlagsBuilder() HVACHumidityModeAndFlagsBuilder {
+	if b == nil {
 		return NewHVACHumidityModeAndFlagsBuilder()
 	}
-	return &_HVACHumidityModeAndFlagsBuilder{_HVACHumidityModeAndFlags: m.deepCopy()}
+	return &_HVACHumidityModeAndFlagsBuilder{_HVACHumidityModeAndFlags: b.deepCopy()}
 }
 
 ///////////////////////

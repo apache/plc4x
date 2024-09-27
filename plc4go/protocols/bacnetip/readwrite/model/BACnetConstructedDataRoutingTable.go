@@ -93,45 +93,64 @@ func NewBACnetConstructedDataRoutingTableBuilder() BACnetConstructedDataRoutingT
 type _BACnetConstructedDataRoutingTableBuilder struct {
 	*_BACnetConstructedDataRoutingTable
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataRoutingTableBuilder) = (*_BACnetConstructedDataRoutingTableBuilder)(nil)
 
-func (m *_BACnetConstructedDataRoutingTableBuilder) WithMandatoryFields(routingTable []BACnetRouterEntry) BACnetConstructedDataRoutingTableBuilder {
-	return m.WithRoutingTable(routingTable...)
+func (b *_BACnetConstructedDataRoutingTableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataRoutingTableBuilder) WithRoutingTable(routingTable ...BACnetRouterEntry) BACnetConstructedDataRoutingTableBuilder {
-	m.RoutingTable = routingTable
-	return m
+func (b *_BACnetConstructedDataRoutingTableBuilder) WithMandatoryFields(routingTable []BACnetRouterEntry) BACnetConstructedDataRoutingTableBuilder {
+	return b.WithRoutingTable(routingTable...)
 }
 
-func (m *_BACnetConstructedDataRoutingTableBuilder) Build() (BACnetConstructedDataRoutingTable, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataRoutingTableBuilder) WithRoutingTable(routingTable ...BACnetRouterEntry) BACnetConstructedDataRoutingTableBuilder {
+	b.RoutingTable = routingTable
+	return b
+}
+
+func (b *_BACnetConstructedDataRoutingTableBuilder) Build() (BACnetConstructedDataRoutingTable, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataRoutingTable.deepCopy(), nil
+	return b._BACnetConstructedDataRoutingTable.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataRoutingTableBuilder) MustBuild() BACnetConstructedDataRoutingTable {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataRoutingTableBuilder) MustBuild() BACnetConstructedDataRoutingTable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataRoutingTableBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataRoutingTableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataRoutingTableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataRoutingTableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataRoutingTableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataRoutingTableBuilder().(*_BACnetConstructedDataRoutingTableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataRoutingTableBuilder creates a BACnetConstructedDataRoutingTableBuilder
-func (m *_BACnetConstructedDataRoutingTable) CreateBACnetConstructedDataRoutingTableBuilder() BACnetConstructedDataRoutingTableBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataRoutingTable) CreateBACnetConstructedDataRoutingTableBuilder() BACnetConstructedDataRoutingTableBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataRoutingTableBuilder()
 	}
-	return &_BACnetConstructedDataRoutingTableBuilder{_BACnetConstructedDataRoutingTable: m.deepCopy()}
+	return &_BACnetConstructedDataRoutingTableBuilder{_BACnetConstructedDataRoutingTable: b.deepCopy()}
 }
 
 ///////////////////////

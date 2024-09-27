@@ -100,64 +100,83 @@ func NewBACnetConstructedDataIPv6PrefixLengthBuilder() BACnetConstructedDataIPv6
 type _BACnetConstructedDataIPv6PrefixLengthBuilder struct {
 	*_BACnetConstructedDataIPv6PrefixLength
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataIPv6PrefixLengthBuilder) = (*_BACnetConstructedDataIPv6PrefixLengthBuilder)(nil)
 
-func (m *_BACnetConstructedDataIPv6PrefixLengthBuilder) WithMandatoryFields(ipv6PrefixLength BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPv6PrefixLengthBuilder {
-	return m.WithIpv6PrefixLength(ipv6PrefixLength)
+func (b *_BACnetConstructedDataIPv6PrefixLengthBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataIPv6PrefixLengthBuilder) WithIpv6PrefixLength(ipv6PrefixLength BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPv6PrefixLengthBuilder {
-	m.Ipv6PrefixLength = ipv6PrefixLength
-	return m
+func (b *_BACnetConstructedDataIPv6PrefixLengthBuilder) WithMandatoryFields(ipv6PrefixLength BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPv6PrefixLengthBuilder {
+	return b.WithIpv6PrefixLength(ipv6PrefixLength)
 }
 
-func (m *_BACnetConstructedDataIPv6PrefixLengthBuilder) WithIpv6PrefixLengthBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIPv6PrefixLengthBuilder {
-	builder := builderSupplier(m.Ipv6PrefixLength.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataIPv6PrefixLengthBuilder) WithIpv6PrefixLength(ipv6PrefixLength BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPv6PrefixLengthBuilder {
+	b.Ipv6PrefixLength = ipv6PrefixLength
+	return b
+}
+
+func (b *_BACnetConstructedDataIPv6PrefixLengthBuilder) WithIpv6PrefixLengthBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIPv6PrefixLengthBuilder {
+	builder := builderSupplier(b.Ipv6PrefixLength.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.Ipv6PrefixLength, err = builder.Build()
+	b.Ipv6PrefixLength, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataIPv6PrefixLengthBuilder) Build() (BACnetConstructedDataIPv6PrefixLength, error) {
-	if m.Ipv6PrefixLength == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataIPv6PrefixLengthBuilder) Build() (BACnetConstructedDataIPv6PrefixLength, error) {
+	if b.Ipv6PrefixLength == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'ipv6PrefixLength' not set"))
+		b.err.Append(errors.New("mandatory field 'ipv6PrefixLength' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataIPv6PrefixLength.deepCopy(), nil
+	return b._BACnetConstructedDataIPv6PrefixLength.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataIPv6PrefixLengthBuilder) MustBuild() BACnetConstructedDataIPv6PrefixLength {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataIPv6PrefixLengthBuilder) MustBuild() BACnetConstructedDataIPv6PrefixLength {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataIPv6PrefixLengthBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataIPv6PrefixLengthBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPv6PrefixLengthBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPv6PrefixLengthBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPv6PrefixLengthBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPv6PrefixLengthBuilder().(*_BACnetConstructedDataIPv6PrefixLengthBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataIPv6PrefixLengthBuilder creates a BACnetConstructedDataIPv6PrefixLengthBuilder
-func (m *_BACnetConstructedDataIPv6PrefixLength) CreateBACnetConstructedDataIPv6PrefixLengthBuilder() BACnetConstructedDataIPv6PrefixLengthBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataIPv6PrefixLength) CreateBACnetConstructedDataIPv6PrefixLengthBuilder() BACnetConstructedDataIPv6PrefixLengthBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataIPv6PrefixLengthBuilder()
 	}
-	return &_BACnetConstructedDataIPv6PrefixLengthBuilder{_BACnetConstructedDataIPv6PrefixLength: m.deepCopy()}
+	return &_BACnetConstructedDataIPv6PrefixLengthBuilder{_BACnetConstructedDataIPv6PrefixLength: b.deepCopy()}
 }
 
 ///////////////////////

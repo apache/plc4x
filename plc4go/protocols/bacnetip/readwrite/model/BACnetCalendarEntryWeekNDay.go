@@ -98,64 +98,83 @@ func NewBACnetCalendarEntryWeekNDayBuilder() BACnetCalendarEntryWeekNDayBuilder 
 type _BACnetCalendarEntryWeekNDayBuilder struct {
 	*_BACnetCalendarEntryWeekNDay
 
+	parentBuilder *_BACnetCalendarEntryBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetCalendarEntryWeekNDayBuilder) = (*_BACnetCalendarEntryWeekNDayBuilder)(nil)
 
-func (m *_BACnetCalendarEntryWeekNDayBuilder) WithMandatoryFields(weekNDay BACnetWeekNDayTagged) BACnetCalendarEntryWeekNDayBuilder {
-	return m.WithWeekNDay(weekNDay)
+func (b *_BACnetCalendarEntryWeekNDayBuilder) setParent(contract BACnetCalendarEntryContract) {
+	b.BACnetCalendarEntryContract = contract
 }
 
-func (m *_BACnetCalendarEntryWeekNDayBuilder) WithWeekNDay(weekNDay BACnetWeekNDayTagged) BACnetCalendarEntryWeekNDayBuilder {
-	m.WeekNDay = weekNDay
-	return m
+func (b *_BACnetCalendarEntryWeekNDayBuilder) WithMandatoryFields(weekNDay BACnetWeekNDayTagged) BACnetCalendarEntryWeekNDayBuilder {
+	return b.WithWeekNDay(weekNDay)
 }
 
-func (m *_BACnetCalendarEntryWeekNDayBuilder) WithWeekNDayBuilder(builderSupplier func(BACnetWeekNDayTaggedBuilder) BACnetWeekNDayTaggedBuilder) BACnetCalendarEntryWeekNDayBuilder {
-	builder := builderSupplier(m.WeekNDay.CreateBACnetWeekNDayTaggedBuilder())
+func (b *_BACnetCalendarEntryWeekNDayBuilder) WithWeekNDay(weekNDay BACnetWeekNDayTagged) BACnetCalendarEntryWeekNDayBuilder {
+	b.WeekNDay = weekNDay
+	return b
+}
+
+func (b *_BACnetCalendarEntryWeekNDayBuilder) WithWeekNDayBuilder(builderSupplier func(BACnetWeekNDayTaggedBuilder) BACnetWeekNDayTaggedBuilder) BACnetCalendarEntryWeekNDayBuilder {
+	builder := builderSupplier(b.WeekNDay.CreateBACnetWeekNDayTaggedBuilder())
 	var err error
-	m.WeekNDay, err = builder.Build()
+	b.WeekNDay, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetWeekNDayTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetWeekNDayTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetCalendarEntryWeekNDayBuilder) Build() (BACnetCalendarEntryWeekNDay, error) {
-	if m.WeekNDay == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetCalendarEntryWeekNDayBuilder) Build() (BACnetCalendarEntryWeekNDay, error) {
+	if b.WeekNDay == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'weekNDay' not set"))
+		b.err.Append(errors.New("mandatory field 'weekNDay' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetCalendarEntryWeekNDay.deepCopy(), nil
+	return b._BACnetCalendarEntryWeekNDay.deepCopy(), nil
 }
 
-func (m *_BACnetCalendarEntryWeekNDayBuilder) MustBuild() BACnetCalendarEntryWeekNDay {
-	build, err := m.Build()
+func (b *_BACnetCalendarEntryWeekNDayBuilder) MustBuild() BACnetCalendarEntryWeekNDay {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetCalendarEntryWeekNDayBuilder) DeepCopy() any {
-	return m.CreateBACnetCalendarEntryWeekNDayBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetCalendarEntryWeekNDayBuilder) Done() BACnetCalendarEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetCalendarEntryWeekNDayBuilder) buildForBACnetCalendarEntry() (BACnetCalendarEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetCalendarEntryWeekNDayBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetCalendarEntryWeekNDayBuilder().(*_BACnetCalendarEntryWeekNDayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetCalendarEntryWeekNDayBuilder creates a BACnetCalendarEntryWeekNDayBuilder
-func (m *_BACnetCalendarEntryWeekNDay) CreateBACnetCalendarEntryWeekNDayBuilder() BACnetCalendarEntryWeekNDayBuilder {
-	if m == nil {
+func (b *_BACnetCalendarEntryWeekNDay) CreateBACnetCalendarEntryWeekNDayBuilder() BACnetCalendarEntryWeekNDayBuilder {
+	if b == nil {
 		return NewBACnetCalendarEntryWeekNDayBuilder()
 	}
-	return &_BACnetCalendarEntryWeekNDayBuilder{_BACnetCalendarEntryWeekNDay: m.deepCopy()}
+	return &_BACnetCalendarEntryWeekNDayBuilder{_BACnetCalendarEntryWeekNDay: b.deepCopy()}
 }
 
 ///////////////////////

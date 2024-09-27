@@ -101,50 +101,69 @@ func NewFirmataMessageAnalogIOBuilder() FirmataMessageAnalogIOBuilder {
 type _FirmataMessageAnalogIOBuilder struct {
 	*_FirmataMessageAnalogIO
 
+	parentBuilder *_FirmataMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (FirmataMessageAnalogIOBuilder) = (*_FirmataMessageAnalogIOBuilder)(nil)
 
-func (m *_FirmataMessageAnalogIOBuilder) WithMandatoryFields(pin uint8, data []int8) FirmataMessageAnalogIOBuilder {
-	return m.WithPin(pin).WithData(data...)
+func (b *_FirmataMessageAnalogIOBuilder) setParent(contract FirmataMessageContract) {
+	b.FirmataMessageContract = contract
 }
 
-func (m *_FirmataMessageAnalogIOBuilder) WithPin(pin uint8) FirmataMessageAnalogIOBuilder {
-	m.Pin = pin
-	return m
+func (b *_FirmataMessageAnalogIOBuilder) WithMandatoryFields(pin uint8, data []int8) FirmataMessageAnalogIOBuilder {
+	return b.WithPin(pin).WithData(data...)
 }
 
-func (m *_FirmataMessageAnalogIOBuilder) WithData(data ...int8) FirmataMessageAnalogIOBuilder {
-	m.Data = data
-	return m
+func (b *_FirmataMessageAnalogIOBuilder) WithPin(pin uint8) FirmataMessageAnalogIOBuilder {
+	b.Pin = pin
+	return b
 }
 
-func (m *_FirmataMessageAnalogIOBuilder) Build() (FirmataMessageAnalogIO, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_FirmataMessageAnalogIOBuilder) WithData(data ...int8) FirmataMessageAnalogIOBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_FirmataMessageAnalogIOBuilder) Build() (FirmataMessageAnalogIO, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._FirmataMessageAnalogIO.deepCopy(), nil
+	return b._FirmataMessageAnalogIO.deepCopy(), nil
 }
 
-func (m *_FirmataMessageAnalogIOBuilder) MustBuild() FirmataMessageAnalogIO {
-	build, err := m.Build()
+func (b *_FirmataMessageAnalogIOBuilder) MustBuild() FirmataMessageAnalogIO {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FirmataMessageAnalogIOBuilder) DeepCopy() any {
-	return m.CreateFirmataMessageAnalogIOBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FirmataMessageAnalogIOBuilder) Done() FirmataMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FirmataMessageAnalogIOBuilder) buildForFirmataMessage() (FirmataMessage, error) {
+	return b.Build()
+}
+
+func (b *_FirmataMessageAnalogIOBuilder) DeepCopy() any {
+	_copy := b.CreateFirmataMessageAnalogIOBuilder().(*_FirmataMessageAnalogIOBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFirmataMessageAnalogIOBuilder creates a FirmataMessageAnalogIOBuilder
-func (m *_FirmataMessageAnalogIO) CreateFirmataMessageAnalogIOBuilder() FirmataMessageAnalogIOBuilder {
-	if m == nil {
+func (b *_FirmataMessageAnalogIO) CreateFirmataMessageAnalogIOBuilder() FirmataMessageAnalogIOBuilder {
+	if b == nil {
 		return NewFirmataMessageAnalogIOBuilder()
 	}
-	return &_FirmataMessageAnalogIOBuilder{_FirmataMessageAnalogIO: m.deepCopy()}
+	return &_FirmataMessageAnalogIOBuilder{_FirmataMessageAnalogIO: b.deepCopy()}
 }
 
 ///////////////////////

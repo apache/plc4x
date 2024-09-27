@@ -98,64 +98,83 @@ func NewBACnetHostAddressIpAddressBuilder() BACnetHostAddressIpAddressBuilder {
 type _BACnetHostAddressIpAddressBuilder struct {
 	*_BACnetHostAddressIpAddress
 
+	parentBuilder *_BACnetHostAddressBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetHostAddressIpAddressBuilder) = (*_BACnetHostAddressIpAddressBuilder)(nil)
 
-func (m *_BACnetHostAddressIpAddressBuilder) WithMandatoryFields(ipAddress BACnetContextTagOctetString) BACnetHostAddressIpAddressBuilder {
-	return m.WithIpAddress(ipAddress)
+func (b *_BACnetHostAddressIpAddressBuilder) setParent(contract BACnetHostAddressContract) {
+	b.BACnetHostAddressContract = contract
 }
 
-func (m *_BACnetHostAddressIpAddressBuilder) WithIpAddress(ipAddress BACnetContextTagOctetString) BACnetHostAddressIpAddressBuilder {
-	m.IpAddress = ipAddress
-	return m
+func (b *_BACnetHostAddressIpAddressBuilder) WithMandatoryFields(ipAddress BACnetContextTagOctetString) BACnetHostAddressIpAddressBuilder {
+	return b.WithIpAddress(ipAddress)
 }
 
-func (m *_BACnetHostAddressIpAddressBuilder) WithIpAddressBuilder(builderSupplier func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetHostAddressIpAddressBuilder {
-	builder := builderSupplier(m.IpAddress.CreateBACnetContextTagOctetStringBuilder())
+func (b *_BACnetHostAddressIpAddressBuilder) WithIpAddress(ipAddress BACnetContextTagOctetString) BACnetHostAddressIpAddressBuilder {
+	b.IpAddress = ipAddress
+	return b
+}
+
+func (b *_BACnetHostAddressIpAddressBuilder) WithIpAddressBuilder(builderSupplier func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetHostAddressIpAddressBuilder {
+	builder := builderSupplier(b.IpAddress.CreateBACnetContextTagOctetStringBuilder())
 	var err error
-	m.IpAddress, err = builder.Build()
+	b.IpAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetHostAddressIpAddressBuilder) Build() (BACnetHostAddressIpAddress, error) {
-	if m.IpAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetHostAddressIpAddressBuilder) Build() (BACnetHostAddressIpAddress, error) {
+	if b.IpAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'ipAddress' not set"))
+		b.err.Append(errors.New("mandatory field 'ipAddress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetHostAddressIpAddress.deepCopy(), nil
+	return b._BACnetHostAddressIpAddress.deepCopy(), nil
 }
 
-func (m *_BACnetHostAddressIpAddressBuilder) MustBuild() BACnetHostAddressIpAddress {
-	build, err := m.Build()
+func (b *_BACnetHostAddressIpAddressBuilder) MustBuild() BACnetHostAddressIpAddress {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetHostAddressIpAddressBuilder) DeepCopy() any {
-	return m.CreateBACnetHostAddressIpAddressBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetHostAddressIpAddressBuilder) Done() BACnetHostAddressBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetHostAddressIpAddressBuilder) buildForBACnetHostAddress() (BACnetHostAddress, error) {
+	return b.Build()
+}
+
+func (b *_BACnetHostAddressIpAddressBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetHostAddressIpAddressBuilder().(*_BACnetHostAddressIpAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetHostAddressIpAddressBuilder creates a BACnetHostAddressIpAddressBuilder
-func (m *_BACnetHostAddressIpAddress) CreateBACnetHostAddressIpAddressBuilder() BACnetHostAddressIpAddressBuilder {
-	if m == nil {
+func (b *_BACnetHostAddressIpAddress) CreateBACnetHostAddressIpAddressBuilder() BACnetHostAddressIpAddressBuilder {
+	if b == nil {
 		return NewBACnetHostAddressIpAddressBuilder()
 	}
-	return &_BACnetHostAddressIpAddressBuilder{_BACnetHostAddressIpAddress: m.deepCopy()}
+	return &_BACnetHostAddressIpAddressBuilder{_BACnetHostAddressIpAddress: b.deepCopy()}
 }
 
 ///////////////////////

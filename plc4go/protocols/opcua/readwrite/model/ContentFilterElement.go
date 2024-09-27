@@ -105,55 +105,74 @@ func NewContentFilterElementBuilder() ContentFilterElementBuilder {
 type _ContentFilterElementBuilder struct {
 	*_ContentFilterElement
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ContentFilterElementBuilder) = (*_ContentFilterElementBuilder)(nil)
 
-func (m *_ContentFilterElementBuilder) WithMandatoryFields(filterOperator FilterOperator, noOfFilterOperands int32, filterOperands []ExtensionObject) ContentFilterElementBuilder {
-	return m.WithFilterOperator(filterOperator).WithNoOfFilterOperands(noOfFilterOperands).WithFilterOperands(filterOperands...)
+func (b *_ContentFilterElementBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ContentFilterElementBuilder) WithFilterOperator(filterOperator FilterOperator) ContentFilterElementBuilder {
-	m.FilterOperator = filterOperator
-	return m
+func (b *_ContentFilterElementBuilder) WithMandatoryFields(filterOperator FilterOperator, noOfFilterOperands int32, filterOperands []ExtensionObject) ContentFilterElementBuilder {
+	return b.WithFilterOperator(filterOperator).WithNoOfFilterOperands(noOfFilterOperands).WithFilterOperands(filterOperands...)
 }
 
-func (m *_ContentFilterElementBuilder) WithNoOfFilterOperands(noOfFilterOperands int32) ContentFilterElementBuilder {
-	m.NoOfFilterOperands = noOfFilterOperands
-	return m
+func (b *_ContentFilterElementBuilder) WithFilterOperator(filterOperator FilterOperator) ContentFilterElementBuilder {
+	b.FilterOperator = filterOperator
+	return b
 }
 
-func (m *_ContentFilterElementBuilder) WithFilterOperands(filterOperands ...ExtensionObject) ContentFilterElementBuilder {
-	m.FilterOperands = filterOperands
-	return m
+func (b *_ContentFilterElementBuilder) WithNoOfFilterOperands(noOfFilterOperands int32) ContentFilterElementBuilder {
+	b.NoOfFilterOperands = noOfFilterOperands
+	return b
 }
 
-func (m *_ContentFilterElementBuilder) Build() (ContentFilterElement, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ContentFilterElementBuilder) WithFilterOperands(filterOperands ...ExtensionObject) ContentFilterElementBuilder {
+	b.FilterOperands = filterOperands
+	return b
+}
+
+func (b *_ContentFilterElementBuilder) Build() (ContentFilterElement, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ContentFilterElement.deepCopy(), nil
+	return b._ContentFilterElement.deepCopy(), nil
 }
 
-func (m *_ContentFilterElementBuilder) MustBuild() ContentFilterElement {
-	build, err := m.Build()
+func (b *_ContentFilterElementBuilder) MustBuild() ContentFilterElement {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ContentFilterElementBuilder) DeepCopy() any {
-	return m.CreateContentFilterElementBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ContentFilterElementBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ContentFilterElementBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ContentFilterElementBuilder) DeepCopy() any {
+	_copy := b.CreateContentFilterElementBuilder().(*_ContentFilterElementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateContentFilterElementBuilder creates a ContentFilterElementBuilder
-func (m *_ContentFilterElement) CreateContentFilterElementBuilder() ContentFilterElementBuilder {
-	if m == nil {
+func (b *_ContentFilterElement) CreateContentFilterElementBuilder() ContentFilterElementBuilder {
+	if b == nil {
 		return NewContentFilterElementBuilder()
 	}
-	return &_ContentFilterElementBuilder{_ContentFilterElement: m.deepCopy()}
+	return &_ContentFilterElementBuilder{_ContentFilterElement: b.deepCopy()}
 }
 
 ///////////////////////

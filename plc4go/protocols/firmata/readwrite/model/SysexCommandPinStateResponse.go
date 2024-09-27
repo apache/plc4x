@@ -105,55 +105,74 @@ func NewSysexCommandPinStateResponseBuilder() SysexCommandPinStateResponseBuilde
 type _SysexCommandPinStateResponseBuilder struct {
 	*_SysexCommandPinStateResponse
 
+	parentBuilder *_SysexCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SysexCommandPinStateResponseBuilder) = (*_SysexCommandPinStateResponseBuilder)(nil)
 
-func (m *_SysexCommandPinStateResponseBuilder) WithMandatoryFields(pin uint8, pinMode uint8, pinState uint8) SysexCommandPinStateResponseBuilder {
-	return m.WithPin(pin).WithPinMode(pinMode).WithPinState(pinState)
+func (b *_SysexCommandPinStateResponseBuilder) setParent(contract SysexCommandContract) {
+	b.SysexCommandContract = contract
 }
 
-func (m *_SysexCommandPinStateResponseBuilder) WithPin(pin uint8) SysexCommandPinStateResponseBuilder {
-	m.Pin = pin
-	return m
+func (b *_SysexCommandPinStateResponseBuilder) WithMandatoryFields(pin uint8, pinMode uint8, pinState uint8) SysexCommandPinStateResponseBuilder {
+	return b.WithPin(pin).WithPinMode(pinMode).WithPinState(pinState)
 }
 
-func (m *_SysexCommandPinStateResponseBuilder) WithPinMode(pinMode uint8) SysexCommandPinStateResponseBuilder {
-	m.PinMode = pinMode
-	return m
+func (b *_SysexCommandPinStateResponseBuilder) WithPin(pin uint8) SysexCommandPinStateResponseBuilder {
+	b.Pin = pin
+	return b
 }
 
-func (m *_SysexCommandPinStateResponseBuilder) WithPinState(pinState uint8) SysexCommandPinStateResponseBuilder {
-	m.PinState = pinState
-	return m
+func (b *_SysexCommandPinStateResponseBuilder) WithPinMode(pinMode uint8) SysexCommandPinStateResponseBuilder {
+	b.PinMode = pinMode
+	return b
 }
 
-func (m *_SysexCommandPinStateResponseBuilder) Build() (SysexCommandPinStateResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SysexCommandPinStateResponseBuilder) WithPinState(pinState uint8) SysexCommandPinStateResponseBuilder {
+	b.PinState = pinState
+	return b
+}
+
+func (b *_SysexCommandPinStateResponseBuilder) Build() (SysexCommandPinStateResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SysexCommandPinStateResponse.deepCopy(), nil
+	return b._SysexCommandPinStateResponse.deepCopy(), nil
 }
 
-func (m *_SysexCommandPinStateResponseBuilder) MustBuild() SysexCommandPinStateResponse {
-	build, err := m.Build()
+func (b *_SysexCommandPinStateResponseBuilder) MustBuild() SysexCommandPinStateResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SysexCommandPinStateResponseBuilder) DeepCopy() any {
-	return m.CreateSysexCommandPinStateResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SysexCommandPinStateResponseBuilder) Done() SysexCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SysexCommandPinStateResponseBuilder) buildForSysexCommand() (SysexCommand, error) {
+	return b.Build()
+}
+
+func (b *_SysexCommandPinStateResponseBuilder) DeepCopy() any {
+	_copy := b.CreateSysexCommandPinStateResponseBuilder().(*_SysexCommandPinStateResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSysexCommandPinStateResponseBuilder creates a SysexCommandPinStateResponseBuilder
-func (m *_SysexCommandPinStateResponse) CreateSysexCommandPinStateResponseBuilder() SysexCommandPinStateResponseBuilder {
-	if m == nil {
+func (b *_SysexCommandPinStateResponse) CreateSysexCommandPinStateResponseBuilder() SysexCommandPinStateResponseBuilder {
+	if b == nil {
 		return NewSysexCommandPinStateResponseBuilder()
 	}
-	return &_SysexCommandPinStateResponseBuilder{_SysexCommandPinStateResponse: m.deepCopy()}
+	return &_SysexCommandPinStateResponseBuilder{_SysexCommandPinStateResponse: b.deepCopy()}
 }
 
 ///////////////////////

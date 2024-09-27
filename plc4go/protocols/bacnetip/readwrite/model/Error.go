@@ -105,83 +105,87 @@ type _ErrorBuilder struct {
 
 var _ (ErrorBuilder) = (*_ErrorBuilder)(nil)
 
-func (m *_ErrorBuilder) WithMandatoryFields(errorClass ErrorClassTagged, errorCode ErrorCodeTagged) ErrorBuilder {
-	return m.WithErrorClass(errorClass).WithErrorCode(errorCode)
+func (b *_ErrorBuilder) WithMandatoryFields(errorClass ErrorClassTagged, errorCode ErrorCodeTagged) ErrorBuilder {
+	return b.WithErrorClass(errorClass).WithErrorCode(errorCode)
 }
 
-func (m *_ErrorBuilder) WithErrorClass(errorClass ErrorClassTagged) ErrorBuilder {
-	m.ErrorClass = errorClass
-	return m
+func (b *_ErrorBuilder) WithErrorClass(errorClass ErrorClassTagged) ErrorBuilder {
+	b.ErrorClass = errorClass
+	return b
 }
 
-func (m *_ErrorBuilder) WithErrorClassBuilder(builderSupplier func(ErrorClassTaggedBuilder) ErrorClassTaggedBuilder) ErrorBuilder {
-	builder := builderSupplier(m.ErrorClass.CreateErrorClassTaggedBuilder())
+func (b *_ErrorBuilder) WithErrorClassBuilder(builderSupplier func(ErrorClassTaggedBuilder) ErrorClassTaggedBuilder) ErrorBuilder {
+	builder := builderSupplier(b.ErrorClass.CreateErrorClassTaggedBuilder())
 	var err error
-	m.ErrorClass, err = builder.Build()
+	b.ErrorClass, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ErrorClassTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ErrorClassTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ErrorBuilder) WithErrorCode(errorCode ErrorCodeTagged) ErrorBuilder {
-	m.ErrorCode = errorCode
-	return m
+func (b *_ErrorBuilder) WithErrorCode(errorCode ErrorCodeTagged) ErrorBuilder {
+	b.ErrorCode = errorCode
+	return b
 }
 
-func (m *_ErrorBuilder) WithErrorCodeBuilder(builderSupplier func(ErrorCodeTaggedBuilder) ErrorCodeTaggedBuilder) ErrorBuilder {
-	builder := builderSupplier(m.ErrorCode.CreateErrorCodeTaggedBuilder())
+func (b *_ErrorBuilder) WithErrorCodeBuilder(builderSupplier func(ErrorCodeTaggedBuilder) ErrorCodeTaggedBuilder) ErrorBuilder {
+	builder := builderSupplier(b.ErrorCode.CreateErrorCodeTaggedBuilder())
 	var err error
-	m.ErrorCode, err = builder.Build()
+	b.ErrorCode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ErrorCodeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ErrorCodeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ErrorBuilder) Build() (Error, error) {
-	if m.ErrorClass == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ErrorBuilder) Build() (Error, error) {
+	if b.ErrorClass == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'errorClass' not set"))
+		b.err.Append(errors.New("mandatory field 'errorClass' not set"))
 	}
-	if m.ErrorCode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ErrorCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'errorCode' not set"))
+		b.err.Append(errors.New("mandatory field 'errorCode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Error.deepCopy(), nil
+	return b._Error.deepCopy(), nil
 }
 
-func (m *_ErrorBuilder) MustBuild() Error {
-	build, err := m.Build()
+func (b *_ErrorBuilder) MustBuild() Error {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ErrorBuilder) DeepCopy() any {
-	return m.CreateErrorBuilder()
+func (b *_ErrorBuilder) DeepCopy() any {
+	_copy := b.CreateErrorBuilder().(*_ErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateErrorBuilder creates a ErrorBuilder
-func (m *_Error) CreateErrorBuilder() ErrorBuilder {
-	if m == nil {
+func (b *_Error) CreateErrorBuilder() ErrorBuilder {
+	if b == nil {
 		return NewErrorBuilder()
 	}
-	return &_ErrorBuilder{_Error: m.deepCopy()}
+	return &_ErrorBuilder{_Error: b.deepCopy()}
 }
 
 ///////////////////////

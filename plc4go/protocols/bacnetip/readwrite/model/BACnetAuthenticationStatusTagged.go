@@ -104,64 +104,68 @@ type _BACnetAuthenticationStatusTaggedBuilder struct {
 
 var _ (BACnetAuthenticationStatusTaggedBuilder) = (*_BACnetAuthenticationStatusTaggedBuilder)(nil)
 
-func (m *_BACnetAuthenticationStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAuthenticationStatus) BACnetAuthenticationStatusTaggedBuilder {
-	return m.WithHeader(header).WithValue(value)
+func (b *_BACnetAuthenticationStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAuthenticationStatus) BACnetAuthenticationStatusTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
 }
 
-func (m *_BACnetAuthenticationStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAuthenticationStatusTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetAuthenticationStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAuthenticationStatusTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetAuthenticationStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthenticationStatusTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetAuthenticationStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthenticationStatusTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAuthenticationStatusTaggedBuilder) WithValue(value BACnetAuthenticationStatus) BACnetAuthenticationStatusTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetAuthenticationStatusTaggedBuilder) WithValue(value BACnetAuthenticationStatus) BACnetAuthenticationStatusTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetAuthenticationStatusTaggedBuilder) Build() (BACnetAuthenticationStatusTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAuthenticationStatusTaggedBuilder) Build() (BACnetAuthenticationStatusTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAuthenticationStatusTagged.deepCopy(), nil
+	return b._BACnetAuthenticationStatusTagged.deepCopy(), nil
 }
 
-func (m *_BACnetAuthenticationStatusTaggedBuilder) MustBuild() BACnetAuthenticationStatusTagged {
-	build, err := m.Build()
+func (b *_BACnetAuthenticationStatusTaggedBuilder) MustBuild() BACnetAuthenticationStatusTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAuthenticationStatusTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetAuthenticationStatusTaggedBuilder()
+func (b *_BACnetAuthenticationStatusTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAuthenticationStatusTaggedBuilder().(*_BACnetAuthenticationStatusTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAuthenticationStatusTaggedBuilder creates a BACnetAuthenticationStatusTaggedBuilder
-func (m *_BACnetAuthenticationStatusTagged) CreateBACnetAuthenticationStatusTaggedBuilder() BACnetAuthenticationStatusTaggedBuilder {
-	if m == nil {
+func (b *_BACnetAuthenticationStatusTagged) CreateBACnetAuthenticationStatusTaggedBuilder() BACnetAuthenticationStatusTaggedBuilder {
+	if b == nil {
 		return NewBACnetAuthenticationStatusTaggedBuilder()
 	}
-	return &_BACnetAuthenticationStatusTaggedBuilder{_BACnetAuthenticationStatusTagged: m.deepCopy()}
+	return &_BACnetAuthenticationStatusTaggedBuilder{_BACnetAuthenticationStatusTagged: b.deepCopy()}
 }
 
 ///////////////////////

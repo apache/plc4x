@@ -98,64 +98,83 @@ func NewBACnetChannelValueEnumeratedBuilder() BACnetChannelValueEnumeratedBuilde
 type _BACnetChannelValueEnumeratedBuilder struct {
 	*_BACnetChannelValueEnumerated
 
+	parentBuilder *_BACnetChannelValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetChannelValueEnumeratedBuilder) = (*_BACnetChannelValueEnumeratedBuilder)(nil)
 
-func (m *_BACnetChannelValueEnumeratedBuilder) WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetChannelValueEnumeratedBuilder {
-	return m.WithEnumeratedValue(enumeratedValue)
+func (b *_BACnetChannelValueEnumeratedBuilder) setParent(contract BACnetChannelValueContract) {
+	b.BACnetChannelValueContract = contract
 }
 
-func (m *_BACnetChannelValueEnumeratedBuilder) WithEnumeratedValue(enumeratedValue BACnetApplicationTagEnumerated) BACnetChannelValueEnumeratedBuilder {
-	m.EnumeratedValue = enumeratedValue
-	return m
+func (b *_BACnetChannelValueEnumeratedBuilder) WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetChannelValueEnumeratedBuilder {
+	return b.WithEnumeratedValue(enumeratedValue)
 }
 
-func (m *_BACnetChannelValueEnumeratedBuilder) WithEnumeratedValueBuilder(builderSupplier func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetChannelValueEnumeratedBuilder {
-	builder := builderSupplier(m.EnumeratedValue.CreateBACnetApplicationTagEnumeratedBuilder())
+func (b *_BACnetChannelValueEnumeratedBuilder) WithEnumeratedValue(enumeratedValue BACnetApplicationTagEnumerated) BACnetChannelValueEnumeratedBuilder {
+	b.EnumeratedValue = enumeratedValue
+	return b
+}
+
+func (b *_BACnetChannelValueEnumeratedBuilder) WithEnumeratedValueBuilder(builderSupplier func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetChannelValueEnumeratedBuilder {
+	builder := builderSupplier(b.EnumeratedValue.CreateBACnetApplicationTagEnumeratedBuilder())
 	var err error
-	m.EnumeratedValue, err = builder.Build()
+	b.EnumeratedValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetChannelValueEnumeratedBuilder) Build() (BACnetChannelValueEnumerated, error) {
-	if m.EnumeratedValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetChannelValueEnumeratedBuilder) Build() (BACnetChannelValueEnumerated, error) {
+	if b.EnumeratedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
+		b.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetChannelValueEnumerated.deepCopy(), nil
+	return b._BACnetChannelValueEnumerated.deepCopy(), nil
 }
 
-func (m *_BACnetChannelValueEnumeratedBuilder) MustBuild() BACnetChannelValueEnumerated {
-	build, err := m.Build()
+func (b *_BACnetChannelValueEnumeratedBuilder) MustBuild() BACnetChannelValueEnumerated {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetChannelValueEnumeratedBuilder) DeepCopy() any {
-	return m.CreateBACnetChannelValueEnumeratedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetChannelValueEnumeratedBuilder) Done() BACnetChannelValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetChannelValueEnumeratedBuilder) buildForBACnetChannelValue() (BACnetChannelValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetChannelValueEnumeratedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetChannelValueEnumeratedBuilder().(*_BACnetChannelValueEnumeratedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetChannelValueEnumeratedBuilder creates a BACnetChannelValueEnumeratedBuilder
-func (m *_BACnetChannelValueEnumerated) CreateBACnetChannelValueEnumeratedBuilder() BACnetChannelValueEnumeratedBuilder {
-	if m == nil {
+func (b *_BACnetChannelValueEnumerated) CreateBACnetChannelValueEnumeratedBuilder() BACnetChannelValueEnumeratedBuilder {
+	if b == nil {
 		return NewBACnetChannelValueEnumeratedBuilder()
 	}
-	return &_BACnetChannelValueEnumeratedBuilder{_BACnetChannelValueEnumerated: m.deepCopy()}
+	return &_BACnetChannelValueEnumeratedBuilder{_BACnetChannelValueEnumerated: b.deepCopy()}
 }
 
 ///////////////////////

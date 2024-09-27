@@ -105,69 +105,73 @@ type _HPAIDataEndpointBuilder struct {
 
 var _ (HPAIDataEndpointBuilder) = (*_HPAIDataEndpointBuilder)(nil)
 
-func (m *_HPAIDataEndpointBuilder) WithMandatoryFields(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) HPAIDataEndpointBuilder {
-	return m.WithHostProtocolCode(hostProtocolCode).WithIpAddress(ipAddress).WithIpPort(ipPort)
+func (b *_HPAIDataEndpointBuilder) WithMandatoryFields(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) HPAIDataEndpointBuilder {
+	return b.WithHostProtocolCode(hostProtocolCode).WithIpAddress(ipAddress).WithIpPort(ipPort)
 }
 
-func (m *_HPAIDataEndpointBuilder) WithHostProtocolCode(hostProtocolCode HostProtocolCode) HPAIDataEndpointBuilder {
-	m.HostProtocolCode = hostProtocolCode
-	return m
+func (b *_HPAIDataEndpointBuilder) WithHostProtocolCode(hostProtocolCode HostProtocolCode) HPAIDataEndpointBuilder {
+	b.HostProtocolCode = hostProtocolCode
+	return b
 }
 
-func (m *_HPAIDataEndpointBuilder) WithIpAddress(ipAddress IPAddress) HPAIDataEndpointBuilder {
-	m.IpAddress = ipAddress
-	return m
+func (b *_HPAIDataEndpointBuilder) WithIpAddress(ipAddress IPAddress) HPAIDataEndpointBuilder {
+	b.IpAddress = ipAddress
+	return b
 }
 
-func (m *_HPAIDataEndpointBuilder) WithIpAddressBuilder(builderSupplier func(IPAddressBuilder) IPAddressBuilder) HPAIDataEndpointBuilder {
-	builder := builderSupplier(m.IpAddress.CreateIPAddressBuilder())
+func (b *_HPAIDataEndpointBuilder) WithIpAddressBuilder(builderSupplier func(IPAddressBuilder) IPAddressBuilder) HPAIDataEndpointBuilder {
+	builder := builderSupplier(b.IpAddress.CreateIPAddressBuilder())
 	var err error
-	m.IpAddress, err = builder.Build()
+	b.IpAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "IPAddressBuilder failed"))
+		b.err.Append(errors.Wrap(err, "IPAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_HPAIDataEndpointBuilder) WithIpPort(ipPort uint16) HPAIDataEndpointBuilder {
-	m.IpPort = ipPort
-	return m
+func (b *_HPAIDataEndpointBuilder) WithIpPort(ipPort uint16) HPAIDataEndpointBuilder {
+	b.IpPort = ipPort
+	return b
 }
 
-func (m *_HPAIDataEndpointBuilder) Build() (HPAIDataEndpoint, error) {
-	if m.IpAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_HPAIDataEndpointBuilder) Build() (HPAIDataEndpoint, error) {
+	if b.IpAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'ipAddress' not set"))
+		b.err.Append(errors.New("mandatory field 'ipAddress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HPAIDataEndpoint.deepCopy(), nil
+	return b._HPAIDataEndpoint.deepCopy(), nil
 }
 
-func (m *_HPAIDataEndpointBuilder) MustBuild() HPAIDataEndpoint {
-	build, err := m.Build()
+func (b *_HPAIDataEndpointBuilder) MustBuild() HPAIDataEndpoint {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HPAIDataEndpointBuilder) DeepCopy() any {
-	return m.CreateHPAIDataEndpointBuilder()
+func (b *_HPAIDataEndpointBuilder) DeepCopy() any {
+	_copy := b.CreateHPAIDataEndpointBuilder().(*_HPAIDataEndpointBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHPAIDataEndpointBuilder creates a HPAIDataEndpointBuilder
-func (m *_HPAIDataEndpoint) CreateHPAIDataEndpointBuilder() HPAIDataEndpointBuilder {
-	if m == nil {
+func (b *_HPAIDataEndpoint) CreateHPAIDataEndpointBuilder() HPAIDataEndpointBuilder {
+	if b == nil {
 		return NewHPAIDataEndpointBuilder()
 	}
-	return &_HPAIDataEndpointBuilder{_HPAIDataEndpoint: m.deepCopy()}
+	return &_HPAIDataEndpointBuilder{_HPAIDataEndpoint: b.deepCopy()}
 }
 
 ///////////////////////

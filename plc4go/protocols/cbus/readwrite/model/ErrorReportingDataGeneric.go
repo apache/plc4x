@@ -146,99 +146,118 @@ func NewErrorReportingDataGenericBuilder() ErrorReportingDataGenericBuilder {
 type _ErrorReportingDataGenericBuilder struct {
 	*_ErrorReportingDataGeneric
 
+	parentBuilder *_ErrorReportingDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ErrorReportingDataGenericBuilder) = (*_ErrorReportingDataGenericBuilder)(nil)
 
-func (m *_ErrorReportingDataGenericBuilder) WithMandatoryFields(systemCategory ErrorReportingSystemCategory, mostRecent bool, acknowledge bool, mostSevere bool, severity ErrorReportingSeverity, deviceId uint8, errorData1 uint8, errorData2 uint8) ErrorReportingDataGenericBuilder {
-	return m.WithSystemCategory(systemCategory).WithMostRecent(mostRecent).WithAcknowledge(acknowledge).WithMostSevere(mostSevere).WithSeverity(severity).WithDeviceId(deviceId).WithErrorData1(errorData1).WithErrorData2(errorData2)
+func (b *_ErrorReportingDataGenericBuilder) setParent(contract ErrorReportingDataContract) {
+	b.ErrorReportingDataContract = contract
 }
 
-func (m *_ErrorReportingDataGenericBuilder) WithSystemCategory(systemCategory ErrorReportingSystemCategory) ErrorReportingDataGenericBuilder {
-	m.SystemCategory = systemCategory
-	return m
+func (b *_ErrorReportingDataGenericBuilder) WithMandatoryFields(systemCategory ErrorReportingSystemCategory, mostRecent bool, acknowledge bool, mostSevere bool, severity ErrorReportingSeverity, deviceId uint8, errorData1 uint8, errorData2 uint8) ErrorReportingDataGenericBuilder {
+	return b.WithSystemCategory(systemCategory).WithMostRecent(mostRecent).WithAcknowledge(acknowledge).WithMostSevere(mostSevere).WithSeverity(severity).WithDeviceId(deviceId).WithErrorData1(errorData1).WithErrorData2(errorData2)
 }
 
-func (m *_ErrorReportingDataGenericBuilder) WithSystemCategoryBuilder(builderSupplier func(ErrorReportingSystemCategoryBuilder) ErrorReportingSystemCategoryBuilder) ErrorReportingDataGenericBuilder {
-	builder := builderSupplier(m.SystemCategory.CreateErrorReportingSystemCategoryBuilder())
+func (b *_ErrorReportingDataGenericBuilder) WithSystemCategory(systemCategory ErrorReportingSystemCategory) ErrorReportingDataGenericBuilder {
+	b.SystemCategory = systemCategory
+	return b
+}
+
+func (b *_ErrorReportingDataGenericBuilder) WithSystemCategoryBuilder(builderSupplier func(ErrorReportingSystemCategoryBuilder) ErrorReportingSystemCategoryBuilder) ErrorReportingDataGenericBuilder {
+	builder := builderSupplier(b.SystemCategory.CreateErrorReportingSystemCategoryBuilder())
 	var err error
-	m.SystemCategory, err = builder.Build()
+	b.SystemCategory, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ErrorReportingSystemCategoryBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ErrorReportingSystemCategoryBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ErrorReportingDataGenericBuilder) WithMostRecent(mostRecent bool) ErrorReportingDataGenericBuilder {
-	m.MostRecent = mostRecent
-	return m
+func (b *_ErrorReportingDataGenericBuilder) WithMostRecent(mostRecent bool) ErrorReportingDataGenericBuilder {
+	b.MostRecent = mostRecent
+	return b
 }
 
-func (m *_ErrorReportingDataGenericBuilder) WithAcknowledge(acknowledge bool) ErrorReportingDataGenericBuilder {
-	m.Acknowledge = acknowledge
-	return m
+func (b *_ErrorReportingDataGenericBuilder) WithAcknowledge(acknowledge bool) ErrorReportingDataGenericBuilder {
+	b.Acknowledge = acknowledge
+	return b
 }
 
-func (m *_ErrorReportingDataGenericBuilder) WithMostSevere(mostSevere bool) ErrorReportingDataGenericBuilder {
-	m.MostSevere = mostSevere
-	return m
+func (b *_ErrorReportingDataGenericBuilder) WithMostSevere(mostSevere bool) ErrorReportingDataGenericBuilder {
+	b.MostSevere = mostSevere
+	return b
 }
 
-func (m *_ErrorReportingDataGenericBuilder) WithSeverity(severity ErrorReportingSeverity) ErrorReportingDataGenericBuilder {
-	m.Severity = severity
-	return m
+func (b *_ErrorReportingDataGenericBuilder) WithSeverity(severity ErrorReportingSeverity) ErrorReportingDataGenericBuilder {
+	b.Severity = severity
+	return b
 }
 
-func (m *_ErrorReportingDataGenericBuilder) WithDeviceId(deviceId uint8) ErrorReportingDataGenericBuilder {
-	m.DeviceId = deviceId
-	return m
+func (b *_ErrorReportingDataGenericBuilder) WithDeviceId(deviceId uint8) ErrorReportingDataGenericBuilder {
+	b.DeviceId = deviceId
+	return b
 }
 
-func (m *_ErrorReportingDataGenericBuilder) WithErrorData1(errorData1 uint8) ErrorReportingDataGenericBuilder {
-	m.ErrorData1 = errorData1
-	return m
+func (b *_ErrorReportingDataGenericBuilder) WithErrorData1(errorData1 uint8) ErrorReportingDataGenericBuilder {
+	b.ErrorData1 = errorData1
+	return b
 }
 
-func (m *_ErrorReportingDataGenericBuilder) WithErrorData2(errorData2 uint8) ErrorReportingDataGenericBuilder {
-	m.ErrorData2 = errorData2
-	return m
+func (b *_ErrorReportingDataGenericBuilder) WithErrorData2(errorData2 uint8) ErrorReportingDataGenericBuilder {
+	b.ErrorData2 = errorData2
+	return b
 }
 
-func (m *_ErrorReportingDataGenericBuilder) Build() (ErrorReportingDataGeneric, error) {
-	if m.SystemCategory == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ErrorReportingDataGenericBuilder) Build() (ErrorReportingDataGeneric, error) {
+	if b.SystemCategory == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'systemCategory' not set"))
+		b.err.Append(errors.New("mandatory field 'systemCategory' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ErrorReportingDataGeneric.deepCopy(), nil
+	return b._ErrorReportingDataGeneric.deepCopy(), nil
 }
 
-func (m *_ErrorReportingDataGenericBuilder) MustBuild() ErrorReportingDataGeneric {
-	build, err := m.Build()
+func (b *_ErrorReportingDataGenericBuilder) MustBuild() ErrorReportingDataGeneric {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ErrorReportingDataGenericBuilder) DeepCopy() any {
-	return m.CreateErrorReportingDataGenericBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ErrorReportingDataGenericBuilder) Done() ErrorReportingDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ErrorReportingDataGenericBuilder) buildForErrorReportingData() (ErrorReportingData, error) {
+	return b.Build()
+}
+
+func (b *_ErrorReportingDataGenericBuilder) DeepCopy() any {
+	_copy := b.CreateErrorReportingDataGenericBuilder().(*_ErrorReportingDataGenericBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateErrorReportingDataGenericBuilder creates a ErrorReportingDataGenericBuilder
-func (m *_ErrorReportingDataGeneric) CreateErrorReportingDataGenericBuilder() ErrorReportingDataGenericBuilder {
-	if m == nil {
+func (b *_ErrorReportingDataGeneric) CreateErrorReportingDataGenericBuilder() ErrorReportingDataGenericBuilder {
+	if b == nil {
 		return NewErrorReportingDataGenericBuilder()
 	}
-	return &_ErrorReportingDataGenericBuilder{_ErrorReportingDataGeneric: m.deepCopy()}
+	return &_ErrorReportingDataGenericBuilder{_ErrorReportingDataGeneric: b.deepCopy()}
 }
 
 ///////////////////////

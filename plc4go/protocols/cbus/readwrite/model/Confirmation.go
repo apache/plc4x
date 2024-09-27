@@ -109,82 +109,86 @@ type _ConfirmationBuilder struct {
 
 var _ (ConfirmationBuilder) = (*_ConfirmationBuilder)(nil)
 
-func (m *_ConfirmationBuilder) WithMandatoryFields(alpha Alpha, confirmationType ConfirmationType) ConfirmationBuilder {
-	return m.WithAlpha(alpha).WithConfirmationType(confirmationType)
+func (b *_ConfirmationBuilder) WithMandatoryFields(alpha Alpha, confirmationType ConfirmationType) ConfirmationBuilder {
+	return b.WithAlpha(alpha).WithConfirmationType(confirmationType)
 }
 
-func (m *_ConfirmationBuilder) WithAlpha(alpha Alpha) ConfirmationBuilder {
-	m.Alpha = alpha
-	return m
+func (b *_ConfirmationBuilder) WithAlpha(alpha Alpha) ConfirmationBuilder {
+	b.Alpha = alpha
+	return b
 }
 
-func (m *_ConfirmationBuilder) WithAlphaBuilder(builderSupplier func(AlphaBuilder) AlphaBuilder) ConfirmationBuilder {
-	builder := builderSupplier(m.Alpha.CreateAlphaBuilder())
+func (b *_ConfirmationBuilder) WithAlphaBuilder(builderSupplier func(AlphaBuilder) AlphaBuilder) ConfirmationBuilder {
+	builder := builderSupplier(b.Alpha.CreateAlphaBuilder())
 	var err error
-	m.Alpha, err = builder.Build()
+	b.Alpha, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ConfirmationBuilder) WithOptionalSecondAlpha(secondAlpha Alpha) ConfirmationBuilder {
-	m.SecondAlpha = secondAlpha
-	return m
+func (b *_ConfirmationBuilder) WithOptionalSecondAlpha(secondAlpha Alpha) ConfirmationBuilder {
+	b.SecondAlpha = secondAlpha
+	return b
 }
 
-func (m *_ConfirmationBuilder) WithOptionalSecondAlphaBuilder(builderSupplier func(AlphaBuilder) AlphaBuilder) ConfirmationBuilder {
-	builder := builderSupplier(m.SecondAlpha.CreateAlphaBuilder())
+func (b *_ConfirmationBuilder) WithOptionalSecondAlphaBuilder(builderSupplier func(AlphaBuilder) AlphaBuilder) ConfirmationBuilder {
+	builder := builderSupplier(b.SecondAlpha.CreateAlphaBuilder())
 	var err error
-	m.SecondAlpha, err = builder.Build()
+	b.SecondAlpha, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ConfirmationBuilder) WithConfirmationType(confirmationType ConfirmationType) ConfirmationBuilder {
-	m.ConfirmationType = confirmationType
-	return m
+func (b *_ConfirmationBuilder) WithConfirmationType(confirmationType ConfirmationType) ConfirmationBuilder {
+	b.ConfirmationType = confirmationType
+	return b
 }
 
-func (m *_ConfirmationBuilder) Build() (Confirmation, error) {
-	if m.Alpha == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ConfirmationBuilder) Build() (Confirmation, error) {
+	if b.Alpha == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'alpha' not set"))
+		b.err.Append(errors.New("mandatory field 'alpha' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Confirmation.deepCopy(), nil
+	return b._Confirmation.deepCopy(), nil
 }
 
-func (m *_ConfirmationBuilder) MustBuild() Confirmation {
-	build, err := m.Build()
+func (b *_ConfirmationBuilder) MustBuild() Confirmation {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ConfirmationBuilder) DeepCopy() any {
-	return m.CreateConfirmationBuilder()
+func (b *_ConfirmationBuilder) DeepCopy() any {
+	_copy := b.CreateConfirmationBuilder().(*_ConfirmationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateConfirmationBuilder creates a ConfirmationBuilder
-func (m *_Confirmation) CreateConfirmationBuilder() ConfirmationBuilder {
-	if m == nil {
+func (b *_Confirmation) CreateConfirmationBuilder() ConfirmationBuilder {
+	if b == nil {
 		return NewConfirmationBuilder()
 	}
-	return &_ConfirmationBuilder{_Confirmation: m.deepCopy()}
+	return &_ConfirmationBuilder{_Confirmation: b.deepCopy()}
 }
 
 ///////////////////////

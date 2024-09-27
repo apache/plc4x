@@ -100,64 +100,83 @@ func NewBACnetConstructedDataWindowIntervalBuilder() BACnetConstructedDataWindow
 type _BACnetConstructedDataWindowIntervalBuilder struct {
 	*_BACnetConstructedDataWindowInterval
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataWindowIntervalBuilder) = (*_BACnetConstructedDataWindowIntervalBuilder)(nil)
 
-func (m *_BACnetConstructedDataWindowIntervalBuilder) WithMandatoryFields(windowInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWindowIntervalBuilder {
-	return m.WithWindowInterval(windowInterval)
+func (b *_BACnetConstructedDataWindowIntervalBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataWindowIntervalBuilder) WithWindowInterval(windowInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWindowIntervalBuilder {
-	m.WindowInterval = windowInterval
-	return m
+func (b *_BACnetConstructedDataWindowIntervalBuilder) WithMandatoryFields(windowInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWindowIntervalBuilder {
+	return b.WithWindowInterval(windowInterval)
 }
 
-func (m *_BACnetConstructedDataWindowIntervalBuilder) WithWindowIntervalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataWindowIntervalBuilder {
-	builder := builderSupplier(m.WindowInterval.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataWindowIntervalBuilder) WithWindowInterval(windowInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWindowIntervalBuilder {
+	b.WindowInterval = windowInterval
+	return b
+}
+
+func (b *_BACnetConstructedDataWindowIntervalBuilder) WithWindowIntervalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataWindowIntervalBuilder {
+	builder := builderSupplier(b.WindowInterval.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.WindowInterval, err = builder.Build()
+	b.WindowInterval, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataWindowIntervalBuilder) Build() (BACnetConstructedDataWindowInterval, error) {
-	if m.WindowInterval == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataWindowIntervalBuilder) Build() (BACnetConstructedDataWindowInterval, error) {
+	if b.WindowInterval == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'windowInterval' not set"))
+		b.err.Append(errors.New("mandatory field 'windowInterval' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataWindowInterval.deepCopy(), nil
+	return b._BACnetConstructedDataWindowInterval.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataWindowIntervalBuilder) MustBuild() BACnetConstructedDataWindowInterval {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataWindowIntervalBuilder) MustBuild() BACnetConstructedDataWindowInterval {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataWindowIntervalBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataWindowIntervalBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataWindowIntervalBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataWindowIntervalBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataWindowIntervalBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataWindowIntervalBuilder().(*_BACnetConstructedDataWindowIntervalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataWindowIntervalBuilder creates a BACnetConstructedDataWindowIntervalBuilder
-func (m *_BACnetConstructedDataWindowInterval) CreateBACnetConstructedDataWindowIntervalBuilder() BACnetConstructedDataWindowIntervalBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataWindowInterval) CreateBACnetConstructedDataWindowIntervalBuilder() BACnetConstructedDataWindowIntervalBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataWindowIntervalBuilder()
 	}
-	return &_BACnetConstructedDataWindowIntervalBuilder{_BACnetConstructedDataWindowInterval: m.deepCopy()}
+	return &_BACnetConstructedDataWindowIntervalBuilder{_BACnetConstructedDataWindowInterval: b.deepCopy()}
 }
 
 ///////////////////////

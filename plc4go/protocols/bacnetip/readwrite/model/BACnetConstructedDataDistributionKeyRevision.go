@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDistributionKeyRevisionBuilder() BACnetConstructedD
 type _BACnetConstructedDataDistributionKeyRevisionBuilder struct {
 	*_BACnetConstructedDataDistributionKeyRevision
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDistributionKeyRevisionBuilder) = (*_BACnetConstructedDataDistributionKeyRevisionBuilder)(nil)
 
-func (m *_BACnetConstructedDataDistributionKeyRevisionBuilder) WithMandatoryFields(distributionKeyRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDistributionKeyRevisionBuilder {
-	return m.WithDistributionKeyRevision(distributionKeyRevision)
+func (b *_BACnetConstructedDataDistributionKeyRevisionBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDistributionKeyRevisionBuilder) WithDistributionKeyRevision(distributionKeyRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDistributionKeyRevisionBuilder {
-	m.DistributionKeyRevision = distributionKeyRevision
-	return m
+func (b *_BACnetConstructedDataDistributionKeyRevisionBuilder) WithMandatoryFields(distributionKeyRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDistributionKeyRevisionBuilder {
+	return b.WithDistributionKeyRevision(distributionKeyRevision)
 }
 
-func (m *_BACnetConstructedDataDistributionKeyRevisionBuilder) WithDistributionKeyRevisionBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDistributionKeyRevisionBuilder {
-	builder := builderSupplier(m.DistributionKeyRevision.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataDistributionKeyRevisionBuilder) WithDistributionKeyRevision(distributionKeyRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDistributionKeyRevisionBuilder {
+	b.DistributionKeyRevision = distributionKeyRevision
+	return b
+}
+
+func (b *_BACnetConstructedDataDistributionKeyRevisionBuilder) WithDistributionKeyRevisionBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDistributionKeyRevisionBuilder {
+	builder := builderSupplier(b.DistributionKeyRevision.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.DistributionKeyRevision, err = builder.Build()
+	b.DistributionKeyRevision, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDistributionKeyRevisionBuilder) Build() (BACnetConstructedDataDistributionKeyRevision, error) {
-	if m.DistributionKeyRevision == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDistributionKeyRevisionBuilder) Build() (BACnetConstructedDataDistributionKeyRevision, error) {
+	if b.DistributionKeyRevision == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'distributionKeyRevision' not set"))
+		b.err.Append(errors.New("mandatory field 'distributionKeyRevision' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDistributionKeyRevision.deepCopy(), nil
+	return b._BACnetConstructedDataDistributionKeyRevision.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDistributionKeyRevisionBuilder) MustBuild() BACnetConstructedDataDistributionKeyRevision {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDistributionKeyRevisionBuilder) MustBuild() BACnetConstructedDataDistributionKeyRevision {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDistributionKeyRevisionBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDistributionKeyRevisionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDistributionKeyRevisionBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDistributionKeyRevisionBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDistributionKeyRevisionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDistributionKeyRevisionBuilder().(*_BACnetConstructedDataDistributionKeyRevisionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDistributionKeyRevisionBuilder creates a BACnetConstructedDataDistributionKeyRevisionBuilder
-func (m *_BACnetConstructedDataDistributionKeyRevision) CreateBACnetConstructedDataDistributionKeyRevisionBuilder() BACnetConstructedDataDistributionKeyRevisionBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDistributionKeyRevision) CreateBACnetConstructedDataDistributionKeyRevisionBuilder() BACnetConstructedDataDistributionKeyRevisionBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDistributionKeyRevisionBuilder()
 	}
-	return &_BACnetConstructedDataDistributionKeyRevisionBuilder{_BACnetConstructedDataDistributionKeyRevision: m.deepCopy()}
+	return &_BACnetConstructedDataDistributionKeyRevisionBuilder{_BACnetConstructedDataDistributionKeyRevision: b.deepCopy()}
 }
 
 ///////////////////////

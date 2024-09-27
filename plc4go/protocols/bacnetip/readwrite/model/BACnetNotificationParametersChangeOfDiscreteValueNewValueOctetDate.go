@@ -98,64 +98,83 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilde
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
 
+	parentBuilder *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder)(nil)
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder {
-	return m.WithDateValue(dateValue)
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) setParent(contract BACnetNotificationParametersChangeOfDiscreteValueNewValueContract) {
+	b.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract = contract
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) WithDateValue(dateValue BACnetApplicationTagDate) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder {
-	m.DateValue = dateValue
-	return m
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder {
+	return b.WithDateValue(dateValue)
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) WithDateValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder {
-	builder := builderSupplier(m.DateValue.CreateBACnetApplicationTagDateBuilder())
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) WithDateValue(dateValue BACnetApplicationTagDate) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder {
+	b.DateValue = dateValue
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) WithDateValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder {
+	builder := builderSupplier(b.DateValue.CreateBACnetApplicationTagDateBuilder())
 	var err error
-	m.DateValue, err = builder.Build()
+	b.DateValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate, error) {
-	if m.DateValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate, error) {
+	if b.DateValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dateValue' not set"))
+		b.err.Append(errors.New("mandatory field 'dateValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate.deepCopy(), nil
+	return b._BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate.deepCopy(), nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) buildForBACnetNotificationParametersChangeOfDiscreteValueNewValue() (BACnetNotificationParametersChangeOfDiscreteValueNewValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder()
 	}
-	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate: m.deepCopy()}
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate: b.deepCopy()}
 }
 
 ///////////////////////

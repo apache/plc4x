@@ -83,35 +83,39 @@ type _EccEncryptedSecretBuilder struct {
 
 var _ (EccEncryptedSecretBuilder) = (*_EccEncryptedSecretBuilder)(nil)
 
-func (m *_EccEncryptedSecretBuilder) WithMandatoryFields() EccEncryptedSecretBuilder {
-	return m
+func (b *_EccEncryptedSecretBuilder) WithMandatoryFields() EccEncryptedSecretBuilder {
+	return b
 }
 
-func (m *_EccEncryptedSecretBuilder) Build() (EccEncryptedSecret, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_EccEncryptedSecretBuilder) Build() (EccEncryptedSecret, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EccEncryptedSecret.deepCopy(), nil
+	return b._EccEncryptedSecret.deepCopy(), nil
 }
 
-func (m *_EccEncryptedSecretBuilder) MustBuild() EccEncryptedSecret {
-	build, err := m.Build()
+func (b *_EccEncryptedSecretBuilder) MustBuild() EccEncryptedSecret {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EccEncryptedSecretBuilder) DeepCopy() any {
-	return m.CreateEccEncryptedSecretBuilder()
+func (b *_EccEncryptedSecretBuilder) DeepCopy() any {
+	_copy := b.CreateEccEncryptedSecretBuilder().(*_EccEncryptedSecretBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEccEncryptedSecretBuilder creates a EccEncryptedSecretBuilder
-func (m *_EccEncryptedSecret) CreateEccEncryptedSecretBuilder() EccEncryptedSecretBuilder {
-	if m == nil {
+func (b *_EccEncryptedSecret) CreateEccEncryptedSecretBuilder() EccEncryptedSecretBuilder {
+	if b == nil {
 		return NewEccEncryptedSecretBuilder()
 	}
-	return &_EccEncryptedSecretBuilder{_EccEncryptedSecret: m.deepCopy()}
+	return &_EccEncryptedSecretBuilder{_EccEncryptedSecret: b.deepCopy()}
 }
 
 ///////////////////////

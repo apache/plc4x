@@ -93,45 +93,64 @@ func NewModbusPDUReportServerIdResponseBuilder() ModbusPDUReportServerIdResponse
 type _ModbusPDUReportServerIdResponseBuilder struct {
 	*_ModbusPDUReportServerIdResponse
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUReportServerIdResponseBuilder) = (*_ModbusPDUReportServerIdResponseBuilder)(nil)
 
-func (m *_ModbusPDUReportServerIdResponseBuilder) WithMandatoryFields(value []byte) ModbusPDUReportServerIdResponseBuilder {
-	return m.WithValue(value...)
+func (b *_ModbusPDUReportServerIdResponseBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUReportServerIdResponseBuilder) WithValue(value ...byte) ModbusPDUReportServerIdResponseBuilder {
-	m.Value = value
-	return m
+func (b *_ModbusPDUReportServerIdResponseBuilder) WithMandatoryFields(value []byte) ModbusPDUReportServerIdResponseBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_ModbusPDUReportServerIdResponseBuilder) Build() (ModbusPDUReportServerIdResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUReportServerIdResponseBuilder) WithValue(value ...byte) ModbusPDUReportServerIdResponseBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ModbusPDUReportServerIdResponseBuilder) Build() (ModbusPDUReportServerIdResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUReportServerIdResponse.deepCopy(), nil
+	return b._ModbusPDUReportServerIdResponse.deepCopy(), nil
 }
 
-func (m *_ModbusPDUReportServerIdResponseBuilder) MustBuild() ModbusPDUReportServerIdResponse {
-	build, err := m.Build()
+func (b *_ModbusPDUReportServerIdResponseBuilder) MustBuild() ModbusPDUReportServerIdResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUReportServerIdResponseBuilder) DeepCopy() any {
-	return m.CreateModbusPDUReportServerIdResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUReportServerIdResponseBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUReportServerIdResponseBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUReportServerIdResponseBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUReportServerIdResponseBuilder().(*_ModbusPDUReportServerIdResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUReportServerIdResponseBuilder creates a ModbusPDUReportServerIdResponseBuilder
-func (m *_ModbusPDUReportServerIdResponse) CreateModbusPDUReportServerIdResponseBuilder() ModbusPDUReportServerIdResponseBuilder {
-	if m == nil {
+func (b *_ModbusPDUReportServerIdResponse) CreateModbusPDUReportServerIdResponseBuilder() ModbusPDUReportServerIdResponseBuilder {
+	if b == nil {
 		return NewModbusPDUReportServerIdResponseBuilder()
 	}
-	return &_ModbusPDUReportServerIdResponseBuilder{_ModbusPDUReportServerIdResponse: m.deepCopy()}
+	return &_ModbusPDUReportServerIdResponseBuilder{_ModbusPDUReportServerIdResponse: b.deepCopy()}
 }
 
 ///////////////////////

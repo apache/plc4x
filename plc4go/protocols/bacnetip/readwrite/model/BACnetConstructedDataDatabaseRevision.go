@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDatabaseRevisionBuilder() BACnetConstructedDataData
 type _BACnetConstructedDataDatabaseRevisionBuilder struct {
 	*_BACnetConstructedDataDatabaseRevision
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDatabaseRevisionBuilder) = (*_BACnetConstructedDataDatabaseRevisionBuilder)(nil)
 
-func (m *_BACnetConstructedDataDatabaseRevisionBuilder) WithMandatoryFields(databaseRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDatabaseRevisionBuilder {
-	return m.WithDatabaseRevision(databaseRevision)
+func (b *_BACnetConstructedDataDatabaseRevisionBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDatabaseRevisionBuilder) WithDatabaseRevision(databaseRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDatabaseRevisionBuilder {
-	m.DatabaseRevision = databaseRevision
-	return m
+func (b *_BACnetConstructedDataDatabaseRevisionBuilder) WithMandatoryFields(databaseRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDatabaseRevisionBuilder {
+	return b.WithDatabaseRevision(databaseRevision)
 }
 
-func (m *_BACnetConstructedDataDatabaseRevisionBuilder) WithDatabaseRevisionBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDatabaseRevisionBuilder {
-	builder := builderSupplier(m.DatabaseRevision.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataDatabaseRevisionBuilder) WithDatabaseRevision(databaseRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDatabaseRevisionBuilder {
+	b.DatabaseRevision = databaseRevision
+	return b
+}
+
+func (b *_BACnetConstructedDataDatabaseRevisionBuilder) WithDatabaseRevisionBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDatabaseRevisionBuilder {
+	builder := builderSupplier(b.DatabaseRevision.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.DatabaseRevision, err = builder.Build()
+	b.DatabaseRevision, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDatabaseRevisionBuilder) Build() (BACnetConstructedDataDatabaseRevision, error) {
-	if m.DatabaseRevision == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDatabaseRevisionBuilder) Build() (BACnetConstructedDataDatabaseRevision, error) {
+	if b.DatabaseRevision == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'databaseRevision' not set"))
+		b.err.Append(errors.New("mandatory field 'databaseRevision' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDatabaseRevision.deepCopy(), nil
+	return b._BACnetConstructedDataDatabaseRevision.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDatabaseRevisionBuilder) MustBuild() BACnetConstructedDataDatabaseRevision {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDatabaseRevisionBuilder) MustBuild() BACnetConstructedDataDatabaseRevision {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDatabaseRevisionBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDatabaseRevisionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDatabaseRevisionBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDatabaseRevisionBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDatabaseRevisionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDatabaseRevisionBuilder().(*_BACnetConstructedDataDatabaseRevisionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDatabaseRevisionBuilder creates a BACnetConstructedDataDatabaseRevisionBuilder
-func (m *_BACnetConstructedDataDatabaseRevision) CreateBACnetConstructedDataDatabaseRevisionBuilder() BACnetConstructedDataDatabaseRevisionBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDatabaseRevision) CreateBACnetConstructedDataDatabaseRevisionBuilder() BACnetConstructedDataDatabaseRevisionBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDatabaseRevisionBuilder()
 	}
-	return &_BACnetConstructedDataDatabaseRevisionBuilder{_BACnetConstructedDataDatabaseRevision: m.deepCopy()}
+	return &_BACnetConstructedDataDatabaseRevisionBuilder{_BACnetConstructedDataDatabaseRevision: b.deepCopy()}
 }
 
 ///////////////////////

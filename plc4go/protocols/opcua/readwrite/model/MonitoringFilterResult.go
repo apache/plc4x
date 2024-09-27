@@ -85,40 +85,59 @@ func NewMonitoringFilterResultBuilder() MonitoringFilterResultBuilder {
 type _MonitoringFilterResultBuilder struct {
 	*_MonitoringFilterResult
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MonitoringFilterResultBuilder) = (*_MonitoringFilterResultBuilder)(nil)
 
-func (m *_MonitoringFilterResultBuilder) WithMandatoryFields() MonitoringFilterResultBuilder {
-	return m
+func (b *_MonitoringFilterResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_MonitoringFilterResultBuilder) Build() (MonitoringFilterResult, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MonitoringFilterResultBuilder) WithMandatoryFields() MonitoringFilterResultBuilder {
+	return b
+}
+
+func (b *_MonitoringFilterResultBuilder) Build() (MonitoringFilterResult, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MonitoringFilterResult.deepCopy(), nil
+	return b._MonitoringFilterResult.deepCopy(), nil
 }
 
-func (m *_MonitoringFilterResultBuilder) MustBuild() MonitoringFilterResult {
-	build, err := m.Build()
+func (b *_MonitoringFilterResultBuilder) MustBuild() MonitoringFilterResult {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MonitoringFilterResultBuilder) DeepCopy() any {
-	return m.CreateMonitoringFilterResultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MonitoringFilterResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MonitoringFilterResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_MonitoringFilterResultBuilder) DeepCopy() any {
+	_copy := b.CreateMonitoringFilterResultBuilder().(*_MonitoringFilterResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMonitoringFilterResultBuilder creates a MonitoringFilterResultBuilder
-func (m *_MonitoringFilterResult) CreateMonitoringFilterResultBuilder() MonitoringFilterResultBuilder {
-	if m == nil {
+func (b *_MonitoringFilterResult) CreateMonitoringFilterResultBuilder() MonitoringFilterResultBuilder {
+	if b == nil {
 		return NewMonitoringFilterResultBuilder()
 	}
-	return &_MonitoringFilterResultBuilder{_MonitoringFilterResult: m.deepCopy()}
+	return &_MonitoringFilterResultBuilder{_MonitoringFilterResult: b.deepCopy()}
 }
 
 ///////////////////////

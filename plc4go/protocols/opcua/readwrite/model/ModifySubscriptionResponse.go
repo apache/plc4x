@@ -94,6 +94,8 @@ type ModifySubscriptionResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) ModifySubscriptionResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) ModifySubscriptionResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ModifySubscriptionResponseBuilder
 	// WithRevisedPublishingInterval adds RevisedPublishingInterval (property field)
 	WithRevisedPublishingInterval(float64) ModifySubscriptionResponseBuilder
 	// WithRevisedLifetimeCount adds RevisedLifetimeCount (property field)
@@ -114,66 +116,98 @@ func NewModifySubscriptionResponseBuilder() ModifySubscriptionResponseBuilder {
 type _ModifySubscriptionResponseBuilder struct {
 	*_ModifySubscriptionResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModifySubscriptionResponseBuilder) = (*_ModifySubscriptionResponseBuilder)(nil)
 
-func (m *_ModifySubscriptionResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) ModifySubscriptionResponseBuilder {
-	return m.WithResponseHeader(responseHeader).WithRevisedPublishingInterval(revisedPublishingInterval).WithRevisedLifetimeCount(revisedLifetimeCount).WithRevisedMaxKeepAliveCount(revisedMaxKeepAliveCount)
+func (b *_ModifySubscriptionResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ModifySubscriptionResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) ModifySubscriptionResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_ModifySubscriptionResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) ModifySubscriptionResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithRevisedPublishingInterval(revisedPublishingInterval).WithRevisedLifetimeCount(revisedLifetimeCount).WithRevisedMaxKeepAliveCount(revisedMaxKeepAliveCount)
 }
 
-func (m *_ModifySubscriptionResponseBuilder) WithRevisedPublishingInterval(revisedPublishingInterval float64) ModifySubscriptionResponseBuilder {
-	m.RevisedPublishingInterval = revisedPublishingInterval
-	return m
+func (b *_ModifySubscriptionResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) ModifySubscriptionResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
 }
 
-func (m *_ModifySubscriptionResponseBuilder) WithRevisedLifetimeCount(revisedLifetimeCount uint32) ModifySubscriptionResponseBuilder {
-	m.RevisedLifetimeCount = revisedLifetimeCount
-	return m
-}
-
-func (m *_ModifySubscriptionResponseBuilder) WithRevisedMaxKeepAliveCount(revisedMaxKeepAliveCount uint32) ModifySubscriptionResponseBuilder {
-	m.RevisedMaxKeepAliveCount = revisedMaxKeepAliveCount
-	return m
-}
-
-func (m *_ModifySubscriptionResponseBuilder) Build() (ModifySubscriptionResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ModifySubscriptionResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ModifySubscriptionResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._ModifySubscriptionResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_ModifySubscriptionResponseBuilder) MustBuild() ModifySubscriptionResponse {
-	build, err := m.Build()
+func (b *_ModifySubscriptionResponseBuilder) WithRevisedPublishingInterval(revisedPublishingInterval float64) ModifySubscriptionResponseBuilder {
+	b.RevisedPublishingInterval = revisedPublishingInterval
+	return b
+}
+
+func (b *_ModifySubscriptionResponseBuilder) WithRevisedLifetimeCount(revisedLifetimeCount uint32) ModifySubscriptionResponseBuilder {
+	b.RevisedLifetimeCount = revisedLifetimeCount
+	return b
+}
+
+func (b *_ModifySubscriptionResponseBuilder) WithRevisedMaxKeepAliveCount(revisedMaxKeepAliveCount uint32) ModifySubscriptionResponseBuilder {
+	b.RevisedMaxKeepAliveCount = revisedMaxKeepAliveCount
+	return b
+}
+
+func (b *_ModifySubscriptionResponseBuilder) Build() (ModifySubscriptionResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ModifySubscriptionResponse.deepCopy(), nil
+}
+
+func (b *_ModifySubscriptionResponseBuilder) MustBuild() ModifySubscriptionResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModifySubscriptionResponseBuilder) DeepCopy() any {
-	return m.CreateModifySubscriptionResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModifySubscriptionResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModifySubscriptionResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ModifySubscriptionResponseBuilder) DeepCopy() any {
+	_copy := b.CreateModifySubscriptionResponseBuilder().(*_ModifySubscriptionResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModifySubscriptionResponseBuilder creates a ModifySubscriptionResponseBuilder
-func (m *_ModifySubscriptionResponse) CreateModifySubscriptionResponseBuilder() ModifySubscriptionResponseBuilder {
-	if m == nil {
+func (b *_ModifySubscriptionResponse) CreateModifySubscriptionResponseBuilder() ModifySubscriptionResponseBuilder {
+	if b == nil {
 		return NewModifySubscriptionResponseBuilder()
 	}
-	return &_ModifySubscriptionResponseBuilder{_ModifySubscriptionResponse: m.deepCopy()}
+	return &_ModifySubscriptionResponseBuilder{_ModifySubscriptionResponse: b.deepCopy()}
 }
 
 ///////////////////////

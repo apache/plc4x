@@ -109,88 +109,107 @@ func NewChangeListAddErrorBuilder() ChangeListAddErrorBuilder {
 type _ChangeListAddErrorBuilder struct {
 	*_ChangeListAddError
 
+	parentBuilder *_BACnetErrorBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ChangeListAddErrorBuilder) = (*_ChangeListAddErrorBuilder)(nil)
 
-func (m *_ChangeListAddErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) ChangeListAddErrorBuilder {
-	return m.WithErrorType(errorType).WithFirstFailedElementNumber(firstFailedElementNumber)
+func (b *_ChangeListAddErrorBuilder) setParent(contract BACnetErrorContract) {
+	b.BACnetErrorContract = contract
 }
 
-func (m *_ChangeListAddErrorBuilder) WithErrorType(errorType ErrorEnclosed) ChangeListAddErrorBuilder {
-	m.ErrorType = errorType
-	return m
+func (b *_ChangeListAddErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) ChangeListAddErrorBuilder {
+	return b.WithErrorType(errorType).WithFirstFailedElementNumber(firstFailedElementNumber)
 }
 
-func (m *_ChangeListAddErrorBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) ChangeListAddErrorBuilder {
-	builder := builderSupplier(m.ErrorType.CreateErrorEnclosedBuilder())
+func (b *_ChangeListAddErrorBuilder) WithErrorType(errorType ErrorEnclosed) ChangeListAddErrorBuilder {
+	b.ErrorType = errorType
+	return b
+}
+
+func (b *_ChangeListAddErrorBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) ChangeListAddErrorBuilder {
+	builder := builderSupplier(b.ErrorType.CreateErrorEnclosedBuilder())
 	var err error
-	m.ErrorType, err = builder.Build()
+	b.ErrorType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ChangeListAddErrorBuilder) WithFirstFailedElementNumber(firstFailedElementNumber BACnetContextTagUnsignedInteger) ChangeListAddErrorBuilder {
-	m.FirstFailedElementNumber = firstFailedElementNumber
-	return m
+func (b *_ChangeListAddErrorBuilder) WithFirstFailedElementNumber(firstFailedElementNumber BACnetContextTagUnsignedInteger) ChangeListAddErrorBuilder {
+	b.FirstFailedElementNumber = firstFailedElementNumber
+	return b
 }
 
-func (m *_ChangeListAddErrorBuilder) WithFirstFailedElementNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) ChangeListAddErrorBuilder {
-	builder := builderSupplier(m.FirstFailedElementNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_ChangeListAddErrorBuilder) WithFirstFailedElementNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) ChangeListAddErrorBuilder {
+	builder := builderSupplier(b.FirstFailedElementNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.FirstFailedElementNumber, err = builder.Build()
+	b.FirstFailedElementNumber, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ChangeListAddErrorBuilder) Build() (ChangeListAddError, error) {
-	if m.ErrorType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ChangeListAddErrorBuilder) Build() (ChangeListAddError, error) {
+	if b.ErrorType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'errorType' not set"))
+		b.err.Append(errors.New("mandatory field 'errorType' not set"))
 	}
-	if m.FirstFailedElementNumber == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.FirstFailedElementNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'firstFailedElementNumber' not set"))
+		b.err.Append(errors.New("mandatory field 'firstFailedElementNumber' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ChangeListAddError.deepCopy(), nil
+	return b._ChangeListAddError.deepCopy(), nil
 }
 
-func (m *_ChangeListAddErrorBuilder) MustBuild() ChangeListAddError {
-	build, err := m.Build()
+func (b *_ChangeListAddErrorBuilder) MustBuild() ChangeListAddError {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ChangeListAddErrorBuilder) DeepCopy() any {
-	return m.CreateChangeListAddErrorBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ChangeListAddErrorBuilder) Done() BACnetErrorBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ChangeListAddErrorBuilder) buildForBACnetError() (BACnetError, error) {
+	return b.Build()
+}
+
+func (b *_ChangeListAddErrorBuilder) DeepCopy() any {
+	_copy := b.CreateChangeListAddErrorBuilder().(*_ChangeListAddErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateChangeListAddErrorBuilder creates a ChangeListAddErrorBuilder
-func (m *_ChangeListAddError) CreateChangeListAddErrorBuilder() ChangeListAddErrorBuilder {
-	if m == nil {
+func (b *_ChangeListAddError) CreateChangeListAddErrorBuilder() ChangeListAddErrorBuilder {
+	if b == nil {
 		return NewChangeListAddErrorBuilder()
 	}
-	return &_ChangeListAddErrorBuilder{_ChangeListAddError: m.deepCopy()}
+	return &_ChangeListAddErrorBuilder{_ChangeListAddError: b.deepCopy()}
 }
 
 ///////////////////////

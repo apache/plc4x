@@ -85,40 +85,59 @@ func NewApduDataExtOpenRoutingTableRequestBuilder() ApduDataExtOpenRoutingTableR
 type _ApduDataExtOpenRoutingTableRequestBuilder struct {
 	*_ApduDataExtOpenRoutingTableRequest
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtOpenRoutingTableRequestBuilder) = (*_ApduDataExtOpenRoutingTableRequestBuilder)(nil)
 
-func (m *_ApduDataExtOpenRoutingTableRequestBuilder) WithMandatoryFields() ApduDataExtOpenRoutingTableRequestBuilder {
-	return m
+func (b *_ApduDataExtOpenRoutingTableRequestBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtOpenRoutingTableRequestBuilder) Build() (ApduDataExtOpenRoutingTableRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtOpenRoutingTableRequestBuilder) WithMandatoryFields() ApduDataExtOpenRoutingTableRequestBuilder {
+	return b
+}
+
+func (b *_ApduDataExtOpenRoutingTableRequestBuilder) Build() (ApduDataExtOpenRoutingTableRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtOpenRoutingTableRequest.deepCopy(), nil
+	return b._ApduDataExtOpenRoutingTableRequest.deepCopy(), nil
 }
 
-func (m *_ApduDataExtOpenRoutingTableRequestBuilder) MustBuild() ApduDataExtOpenRoutingTableRequest {
-	build, err := m.Build()
+func (b *_ApduDataExtOpenRoutingTableRequestBuilder) MustBuild() ApduDataExtOpenRoutingTableRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtOpenRoutingTableRequestBuilder) DeepCopy() any {
-	return m.CreateApduDataExtOpenRoutingTableRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtOpenRoutingTableRequestBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtOpenRoutingTableRequestBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtOpenRoutingTableRequestBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtOpenRoutingTableRequestBuilder().(*_ApduDataExtOpenRoutingTableRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtOpenRoutingTableRequestBuilder creates a ApduDataExtOpenRoutingTableRequestBuilder
-func (m *_ApduDataExtOpenRoutingTableRequest) CreateApduDataExtOpenRoutingTableRequestBuilder() ApduDataExtOpenRoutingTableRequestBuilder {
-	if m == nil {
+func (b *_ApduDataExtOpenRoutingTableRequest) CreateApduDataExtOpenRoutingTableRequestBuilder() ApduDataExtOpenRoutingTableRequestBuilder {
+	if b == nil {
 		return NewApduDataExtOpenRoutingTableRequestBuilder()
 	}
-	return &_ApduDataExtOpenRoutingTableRequestBuilder{_ApduDataExtOpenRoutingTableRequest: m.deepCopy()}
+	return &_ApduDataExtOpenRoutingTableRequestBuilder{_ApduDataExtOpenRoutingTableRequest: b.deepCopy()}
 }
 
 ///////////////////////

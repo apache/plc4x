@@ -101,50 +101,69 @@ func NewAPDUSimpleAckBuilder() APDUSimpleAckBuilder {
 type _APDUSimpleAckBuilder struct {
 	*_APDUSimpleAck
 
+	parentBuilder *_APDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (APDUSimpleAckBuilder) = (*_APDUSimpleAckBuilder)(nil)
 
-func (m *_APDUSimpleAckBuilder) WithMandatoryFields(originalInvokeId uint8, serviceChoice BACnetConfirmedServiceChoice) APDUSimpleAckBuilder {
-	return m.WithOriginalInvokeId(originalInvokeId).WithServiceChoice(serviceChoice)
+func (b *_APDUSimpleAckBuilder) setParent(contract APDUContract) {
+	b.APDUContract = contract
 }
 
-func (m *_APDUSimpleAckBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDUSimpleAckBuilder {
-	m.OriginalInvokeId = originalInvokeId
-	return m
+func (b *_APDUSimpleAckBuilder) WithMandatoryFields(originalInvokeId uint8, serviceChoice BACnetConfirmedServiceChoice) APDUSimpleAckBuilder {
+	return b.WithOriginalInvokeId(originalInvokeId).WithServiceChoice(serviceChoice)
 }
 
-func (m *_APDUSimpleAckBuilder) WithServiceChoice(serviceChoice BACnetConfirmedServiceChoice) APDUSimpleAckBuilder {
-	m.ServiceChoice = serviceChoice
-	return m
+func (b *_APDUSimpleAckBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDUSimpleAckBuilder {
+	b.OriginalInvokeId = originalInvokeId
+	return b
 }
 
-func (m *_APDUSimpleAckBuilder) Build() (APDUSimpleAck, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_APDUSimpleAckBuilder) WithServiceChoice(serviceChoice BACnetConfirmedServiceChoice) APDUSimpleAckBuilder {
+	b.ServiceChoice = serviceChoice
+	return b
+}
+
+func (b *_APDUSimpleAckBuilder) Build() (APDUSimpleAck, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._APDUSimpleAck.deepCopy(), nil
+	return b._APDUSimpleAck.deepCopy(), nil
 }
 
-func (m *_APDUSimpleAckBuilder) MustBuild() APDUSimpleAck {
-	build, err := m.Build()
+func (b *_APDUSimpleAckBuilder) MustBuild() APDUSimpleAck {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_APDUSimpleAckBuilder) DeepCopy() any {
-	return m.CreateAPDUSimpleAckBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_APDUSimpleAckBuilder) Done() APDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_APDUSimpleAckBuilder) buildForAPDU() (APDU, error) {
+	return b.Build()
+}
+
+func (b *_APDUSimpleAckBuilder) DeepCopy() any {
+	_copy := b.CreateAPDUSimpleAckBuilder().(*_APDUSimpleAckBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAPDUSimpleAckBuilder creates a APDUSimpleAckBuilder
-func (m *_APDUSimpleAck) CreateAPDUSimpleAckBuilder() APDUSimpleAckBuilder {
-	if m == nil {
+func (b *_APDUSimpleAck) CreateAPDUSimpleAckBuilder() APDUSimpleAckBuilder {
+	if b == nil {
 		return NewAPDUSimpleAckBuilder()
 	}
-	return &_APDUSimpleAckBuilder{_APDUSimpleAck: m.deepCopy()}
+	return &_APDUSimpleAckBuilder{_APDUSimpleAck: b.deepCopy()}
 }
 
 ///////////////////////

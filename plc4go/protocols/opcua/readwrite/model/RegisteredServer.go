@@ -169,166 +169,185 @@ func NewRegisteredServerBuilder() RegisteredServerBuilder {
 type _RegisteredServerBuilder struct {
 	*_RegisteredServer
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RegisteredServerBuilder) = (*_RegisteredServerBuilder)(nil)
 
-func (m *_RegisteredServerBuilder) WithMandatoryFields(serverUri PascalString, productUri PascalString, noOfServerNames int32, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) RegisteredServerBuilder {
-	return m.WithServerUri(serverUri).WithProductUri(productUri).WithNoOfServerNames(noOfServerNames).WithServerNames(serverNames...).WithServerType(serverType).WithGatewayServerUri(gatewayServerUri).WithNoOfDiscoveryUrls(noOfDiscoveryUrls).WithDiscoveryUrls(discoveryUrls...).WithSemaphoreFilePath(semaphoreFilePath).WithIsOnline(isOnline)
+func (b *_RegisteredServerBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_RegisteredServerBuilder) WithServerUri(serverUri PascalString) RegisteredServerBuilder {
-	m.ServerUri = serverUri
-	return m
+func (b *_RegisteredServerBuilder) WithMandatoryFields(serverUri PascalString, productUri PascalString, noOfServerNames int32, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) RegisteredServerBuilder {
+	return b.WithServerUri(serverUri).WithProductUri(productUri).WithNoOfServerNames(noOfServerNames).WithServerNames(serverNames...).WithServerType(serverType).WithGatewayServerUri(gatewayServerUri).WithNoOfDiscoveryUrls(noOfDiscoveryUrls).WithDiscoveryUrls(discoveryUrls...).WithSemaphoreFilePath(semaphoreFilePath).WithIsOnline(isOnline)
 }
 
-func (m *_RegisteredServerBuilder) WithServerUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) RegisteredServerBuilder {
-	builder := builderSupplier(m.ServerUri.CreatePascalStringBuilder())
+func (b *_RegisteredServerBuilder) WithServerUri(serverUri PascalString) RegisteredServerBuilder {
+	b.ServerUri = serverUri
+	return b
+}
+
+func (b *_RegisteredServerBuilder) WithServerUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) RegisteredServerBuilder {
+	builder := builderSupplier(b.ServerUri.CreatePascalStringBuilder())
 	var err error
-	m.ServerUri, err = builder.Build()
+	b.ServerUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RegisteredServerBuilder) WithProductUri(productUri PascalString) RegisteredServerBuilder {
-	m.ProductUri = productUri
-	return m
+func (b *_RegisteredServerBuilder) WithProductUri(productUri PascalString) RegisteredServerBuilder {
+	b.ProductUri = productUri
+	return b
 }
 
-func (m *_RegisteredServerBuilder) WithProductUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) RegisteredServerBuilder {
-	builder := builderSupplier(m.ProductUri.CreatePascalStringBuilder())
+func (b *_RegisteredServerBuilder) WithProductUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) RegisteredServerBuilder {
+	builder := builderSupplier(b.ProductUri.CreatePascalStringBuilder())
 	var err error
-	m.ProductUri, err = builder.Build()
+	b.ProductUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RegisteredServerBuilder) WithNoOfServerNames(noOfServerNames int32) RegisteredServerBuilder {
-	m.NoOfServerNames = noOfServerNames
-	return m
+func (b *_RegisteredServerBuilder) WithNoOfServerNames(noOfServerNames int32) RegisteredServerBuilder {
+	b.NoOfServerNames = noOfServerNames
+	return b
 }
 
-func (m *_RegisteredServerBuilder) WithServerNames(serverNames ...LocalizedText) RegisteredServerBuilder {
-	m.ServerNames = serverNames
-	return m
+func (b *_RegisteredServerBuilder) WithServerNames(serverNames ...LocalizedText) RegisteredServerBuilder {
+	b.ServerNames = serverNames
+	return b
 }
 
-func (m *_RegisteredServerBuilder) WithServerType(serverType ApplicationType) RegisteredServerBuilder {
-	m.ServerType = serverType
-	return m
+func (b *_RegisteredServerBuilder) WithServerType(serverType ApplicationType) RegisteredServerBuilder {
+	b.ServerType = serverType
+	return b
 }
 
-func (m *_RegisteredServerBuilder) WithGatewayServerUri(gatewayServerUri PascalString) RegisteredServerBuilder {
-	m.GatewayServerUri = gatewayServerUri
-	return m
+func (b *_RegisteredServerBuilder) WithGatewayServerUri(gatewayServerUri PascalString) RegisteredServerBuilder {
+	b.GatewayServerUri = gatewayServerUri
+	return b
 }
 
-func (m *_RegisteredServerBuilder) WithGatewayServerUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) RegisteredServerBuilder {
-	builder := builderSupplier(m.GatewayServerUri.CreatePascalStringBuilder())
+func (b *_RegisteredServerBuilder) WithGatewayServerUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) RegisteredServerBuilder {
+	builder := builderSupplier(b.GatewayServerUri.CreatePascalStringBuilder())
 	var err error
-	m.GatewayServerUri, err = builder.Build()
+	b.GatewayServerUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RegisteredServerBuilder) WithNoOfDiscoveryUrls(noOfDiscoveryUrls int32) RegisteredServerBuilder {
-	m.NoOfDiscoveryUrls = noOfDiscoveryUrls
-	return m
+func (b *_RegisteredServerBuilder) WithNoOfDiscoveryUrls(noOfDiscoveryUrls int32) RegisteredServerBuilder {
+	b.NoOfDiscoveryUrls = noOfDiscoveryUrls
+	return b
 }
 
-func (m *_RegisteredServerBuilder) WithDiscoveryUrls(discoveryUrls ...PascalString) RegisteredServerBuilder {
-	m.DiscoveryUrls = discoveryUrls
-	return m
+func (b *_RegisteredServerBuilder) WithDiscoveryUrls(discoveryUrls ...PascalString) RegisteredServerBuilder {
+	b.DiscoveryUrls = discoveryUrls
+	return b
 }
 
-func (m *_RegisteredServerBuilder) WithSemaphoreFilePath(semaphoreFilePath PascalString) RegisteredServerBuilder {
-	m.SemaphoreFilePath = semaphoreFilePath
-	return m
+func (b *_RegisteredServerBuilder) WithSemaphoreFilePath(semaphoreFilePath PascalString) RegisteredServerBuilder {
+	b.SemaphoreFilePath = semaphoreFilePath
+	return b
 }
 
-func (m *_RegisteredServerBuilder) WithSemaphoreFilePathBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) RegisteredServerBuilder {
-	builder := builderSupplier(m.SemaphoreFilePath.CreatePascalStringBuilder())
+func (b *_RegisteredServerBuilder) WithSemaphoreFilePathBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) RegisteredServerBuilder {
+	builder := builderSupplier(b.SemaphoreFilePath.CreatePascalStringBuilder())
 	var err error
-	m.SemaphoreFilePath, err = builder.Build()
+	b.SemaphoreFilePath, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RegisteredServerBuilder) WithIsOnline(isOnline bool) RegisteredServerBuilder {
-	m.IsOnline = isOnline
-	return m
+func (b *_RegisteredServerBuilder) WithIsOnline(isOnline bool) RegisteredServerBuilder {
+	b.IsOnline = isOnline
+	return b
 }
 
-func (m *_RegisteredServerBuilder) Build() (RegisteredServer, error) {
-	if m.ServerUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_RegisteredServerBuilder) Build() (RegisteredServer, error) {
+	if b.ServerUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'serverUri' not set"))
+		b.err.Append(errors.New("mandatory field 'serverUri' not set"))
 	}
-	if m.ProductUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ProductUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'productUri' not set"))
+		b.err.Append(errors.New("mandatory field 'productUri' not set"))
 	}
-	if m.GatewayServerUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.GatewayServerUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'gatewayServerUri' not set"))
+		b.err.Append(errors.New("mandatory field 'gatewayServerUri' not set"))
 	}
-	if m.SemaphoreFilePath == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.SemaphoreFilePath == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'semaphoreFilePath' not set"))
+		b.err.Append(errors.New("mandatory field 'semaphoreFilePath' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._RegisteredServer.deepCopy(), nil
+	return b._RegisteredServer.deepCopy(), nil
 }
 
-func (m *_RegisteredServerBuilder) MustBuild() RegisteredServer {
-	build, err := m.Build()
+func (b *_RegisteredServerBuilder) MustBuild() RegisteredServer {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RegisteredServerBuilder) DeepCopy() any {
-	return m.CreateRegisteredServerBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RegisteredServerBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RegisteredServerBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_RegisteredServerBuilder) DeepCopy() any {
+	_copy := b.CreateRegisteredServerBuilder().(*_RegisteredServerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRegisteredServerBuilder creates a RegisteredServerBuilder
-func (m *_RegisteredServer) CreateRegisteredServerBuilder() RegisteredServerBuilder {
-	if m == nil {
+func (b *_RegisteredServer) CreateRegisteredServerBuilder() RegisteredServerBuilder {
+	if b == nil {
 		return NewRegisteredServerBuilder()
 	}
-	return &_RegisteredServerBuilder{_RegisteredServer: m.deepCopy()}
+	return &_RegisteredServerBuilder{_RegisteredServer: b.deepCopy()}
 }
 
 ///////////////////////

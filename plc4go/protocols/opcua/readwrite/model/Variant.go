@@ -107,10 +107,144 @@ type VariantBuilder interface {
 	WithOptionalNoOfArrayDimensions(int32) VariantBuilder
 	// WithArrayDimensions adds ArrayDimensions (property field)
 	WithArrayDimensions(...bool) VariantBuilder
+	// AsVariantNull converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantNull() interface {
+		VariantNullBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantBoolean converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantBoolean() interface {
+		VariantBooleanBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantSByte converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantSByte() interface {
+		VariantSByteBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantByte converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantByte() interface {
+		VariantByteBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantInt16 converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantInt16() interface {
+		VariantInt16Builder
+		Done() VariantBuilder
+	}
+	// AsVariantUInt16 converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantUInt16() interface {
+		VariantUInt16Builder
+		Done() VariantBuilder
+	}
+	// AsVariantInt32 converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantInt32() interface {
+		VariantInt32Builder
+		Done() VariantBuilder
+	}
+	// AsVariantUInt32 converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantUInt32() interface {
+		VariantUInt32Builder
+		Done() VariantBuilder
+	}
+	// AsVariantInt64 converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantInt64() interface {
+		VariantInt64Builder
+		Done() VariantBuilder
+	}
+	// AsVariantUInt64 converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantUInt64() interface {
+		VariantUInt64Builder
+		Done() VariantBuilder
+	}
+	// AsVariantFloat converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantFloat() interface {
+		VariantFloatBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantDouble converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantDouble() interface {
+		VariantDoubleBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantString converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantString() interface {
+		VariantStringBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantDateTime converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantDateTime() interface {
+		VariantDateTimeBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantGuid converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantGuid() interface {
+		VariantGuidBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantByteString converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantByteString() interface {
+		VariantByteStringBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantXmlElement converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantXmlElement() interface {
+		VariantXmlElementBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantNodeId converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantNodeId() interface {
+		VariantNodeIdBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantExpandedNodeId converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantExpandedNodeId() interface {
+		VariantExpandedNodeIdBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantStatusCode converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantStatusCode() interface {
+		VariantStatusCodeBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantQualifiedName converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantQualifiedName() interface {
+		VariantQualifiedNameBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantLocalizedText converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantLocalizedText() interface {
+		VariantLocalizedTextBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantExtensionObject converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantExtensionObject() interface {
+		VariantExtensionObjectBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantDataValue converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantDataValue() interface {
+		VariantDataValueBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantVariant converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantVariant() interface {
+		VariantVariantBuilder
+		Done() VariantBuilder
+	}
+	// AsVariantDiagnosticInfo converts this build to a subType of Variant. It is always possible to return to current builder using Done()
+	AsVariantDiagnosticInfo() interface {
+		VariantDiagnosticInfoBuilder
+		Done() VariantBuilder
+	}
 	// Build builds the Variant or returns an error if something is wrong
-	Build() (VariantContract, error)
+	PartialBuild() (VariantContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() VariantContract
+	PartialMustBuild() VariantContract
+	// Build builds the Variant or returns an error if something is wrong
+	Build() (Variant, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Variant
 }
 
 // NewVariantBuilder() creates a VariantBuilder
@@ -118,63 +252,513 @@ func NewVariantBuilder() VariantBuilder {
 	return &_VariantBuilder{_Variant: new(_Variant)}
 }
 
+type _VariantChildBuilder interface {
+	utils.Copyable
+	setParent(VariantContract)
+	buildForVariant() (Variant, error)
+}
+
 type _VariantBuilder struct {
 	*_Variant
+
+	childBuilder _VariantChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (VariantBuilder) = (*_VariantBuilder)(nil)
 
-func (m *_VariantBuilder) WithMandatoryFields(arrayLengthSpecified bool, arrayDimensionsSpecified bool, arrayDimensions []bool) VariantBuilder {
-	return m.WithArrayLengthSpecified(arrayLengthSpecified).WithArrayDimensionsSpecified(arrayDimensionsSpecified).WithArrayDimensions(arrayDimensions...)
+func (b *_VariantBuilder) WithMandatoryFields(arrayLengthSpecified bool, arrayDimensionsSpecified bool, arrayDimensions []bool) VariantBuilder {
+	return b.WithArrayLengthSpecified(arrayLengthSpecified).WithArrayDimensionsSpecified(arrayDimensionsSpecified).WithArrayDimensions(arrayDimensions...)
 }
 
-func (m *_VariantBuilder) WithArrayLengthSpecified(arrayLengthSpecified bool) VariantBuilder {
-	m.ArrayLengthSpecified = arrayLengthSpecified
-	return m
+func (b *_VariantBuilder) WithArrayLengthSpecified(arrayLengthSpecified bool) VariantBuilder {
+	b.ArrayLengthSpecified = arrayLengthSpecified
+	return b
 }
 
-func (m *_VariantBuilder) WithArrayDimensionsSpecified(arrayDimensionsSpecified bool) VariantBuilder {
-	m.ArrayDimensionsSpecified = arrayDimensionsSpecified
-	return m
+func (b *_VariantBuilder) WithArrayDimensionsSpecified(arrayDimensionsSpecified bool) VariantBuilder {
+	b.ArrayDimensionsSpecified = arrayDimensionsSpecified
+	return b
 }
 
-func (m *_VariantBuilder) WithOptionalNoOfArrayDimensions(noOfArrayDimensions int32) VariantBuilder {
-	m.NoOfArrayDimensions = &noOfArrayDimensions
-	return m
+func (b *_VariantBuilder) WithOptionalNoOfArrayDimensions(noOfArrayDimensions int32) VariantBuilder {
+	b.NoOfArrayDimensions = &noOfArrayDimensions
+	return b
 }
 
-func (m *_VariantBuilder) WithArrayDimensions(arrayDimensions ...bool) VariantBuilder {
-	m.ArrayDimensions = arrayDimensions
-	return m
+func (b *_VariantBuilder) WithArrayDimensions(arrayDimensions ...bool) VariantBuilder {
+	b.ArrayDimensions = arrayDimensions
+	return b
 }
 
-func (m *_VariantBuilder) Build() (VariantContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantBuilder) PartialBuild() (VariantContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Variant.deepCopy(), nil
+	return b._Variant.deepCopy(), nil
 }
 
-func (m *_VariantBuilder) MustBuild() VariantContract {
-	build, err := m.Build()
+func (b *_VariantBuilder) PartialMustBuild() VariantContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantBuilder) DeepCopy() any {
-	return m.CreateVariantBuilder()
+func (b *_VariantBuilder) AsVariantNull() interface {
+	VariantNullBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantNullBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantNullBuilder().(*_VariantNullBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantBoolean() interface {
+	VariantBooleanBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantBooleanBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantBooleanBuilder().(*_VariantBooleanBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantSByte() interface {
+	VariantSByteBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantSByteBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantSByteBuilder().(*_VariantSByteBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantByte() interface {
+	VariantByteBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantByteBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantByteBuilder().(*_VariantByteBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantInt16() interface {
+	VariantInt16Builder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantInt16Builder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantInt16Builder().(*_VariantInt16Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantUInt16() interface {
+	VariantUInt16Builder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantUInt16Builder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantUInt16Builder().(*_VariantUInt16Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantInt32() interface {
+	VariantInt32Builder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantInt32Builder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantInt32Builder().(*_VariantInt32Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantUInt32() interface {
+	VariantUInt32Builder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantUInt32Builder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantUInt32Builder().(*_VariantUInt32Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantInt64() interface {
+	VariantInt64Builder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantInt64Builder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantInt64Builder().(*_VariantInt64Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantUInt64() interface {
+	VariantUInt64Builder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantUInt64Builder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantUInt64Builder().(*_VariantUInt64Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantFloat() interface {
+	VariantFloatBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantFloatBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantFloatBuilder().(*_VariantFloatBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantDouble() interface {
+	VariantDoubleBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantDoubleBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantDoubleBuilder().(*_VariantDoubleBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantString() interface {
+	VariantStringBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantStringBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantStringBuilder().(*_VariantStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantDateTime() interface {
+	VariantDateTimeBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantDateTimeBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantDateTimeBuilder().(*_VariantDateTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantGuid() interface {
+	VariantGuidBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantGuidBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantGuidBuilder().(*_VariantGuidBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantByteString() interface {
+	VariantByteStringBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantByteStringBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantByteStringBuilder().(*_VariantByteStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantXmlElement() interface {
+	VariantXmlElementBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantXmlElementBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantXmlElementBuilder().(*_VariantXmlElementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantNodeId() interface {
+	VariantNodeIdBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantNodeIdBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantNodeIdBuilder().(*_VariantNodeIdBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantExpandedNodeId() interface {
+	VariantExpandedNodeIdBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantExpandedNodeIdBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantExpandedNodeIdBuilder().(*_VariantExpandedNodeIdBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantStatusCode() interface {
+	VariantStatusCodeBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantStatusCodeBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantStatusCodeBuilder().(*_VariantStatusCodeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantQualifiedName() interface {
+	VariantQualifiedNameBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantQualifiedNameBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantQualifiedNameBuilder().(*_VariantQualifiedNameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantLocalizedText() interface {
+	VariantLocalizedTextBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantLocalizedTextBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantLocalizedTextBuilder().(*_VariantLocalizedTextBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantExtensionObject() interface {
+	VariantExtensionObjectBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantExtensionObjectBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantExtensionObjectBuilder().(*_VariantExtensionObjectBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantDataValue() interface {
+	VariantDataValueBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantDataValueBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantDataValueBuilder().(*_VariantDataValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantVariant() interface {
+	VariantVariantBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantVariantBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantVariantBuilder().(*_VariantVariantBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) AsVariantDiagnosticInfo() interface {
+	VariantDiagnosticInfoBuilder
+	Done() VariantBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VariantDiagnosticInfoBuilder
+		Done() VariantBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVariantDiagnosticInfoBuilder().(*_VariantDiagnosticInfoBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_VariantBuilder) Build() (Variant, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForVariant()
+}
+
+func (b *_VariantBuilder) MustBuild() Variant {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_VariantBuilder) DeepCopy() any {
+	_copy := b.CreateVariantBuilder().(*_VariantBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_VariantChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantBuilder creates a VariantBuilder
-func (m *_Variant) CreateVariantBuilder() VariantBuilder {
-	if m == nil {
+func (b *_Variant) CreateVariantBuilder() VariantBuilder {
+	if b == nil {
 		return NewVariantBuilder()
 	}
-	return &_VariantBuilder{_Variant: m.deepCopy()}
+	return &_VariantBuilder{_Variant: b.deepCopy()}
 }
 
 ///////////////////////

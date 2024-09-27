@@ -100,50 +100,54 @@ type _BVLCBroadcastDistributionTableEntryBuilder struct {
 
 var _ (BVLCBroadcastDistributionTableEntryBuilder) = (*_BVLCBroadcastDistributionTableEntryBuilder)(nil)
 
-func (m *_BVLCBroadcastDistributionTableEntryBuilder) WithMandatoryFields(ip []uint8, port uint16, broadcastDistributionMap []uint8) BVLCBroadcastDistributionTableEntryBuilder {
-	return m.WithIp(ip...).WithPort(port).WithBroadcastDistributionMap(broadcastDistributionMap...)
+func (b *_BVLCBroadcastDistributionTableEntryBuilder) WithMandatoryFields(ip []uint8, port uint16, broadcastDistributionMap []uint8) BVLCBroadcastDistributionTableEntryBuilder {
+	return b.WithIp(ip...).WithPort(port).WithBroadcastDistributionMap(broadcastDistributionMap...)
 }
 
-func (m *_BVLCBroadcastDistributionTableEntryBuilder) WithIp(ip ...uint8) BVLCBroadcastDistributionTableEntryBuilder {
-	m.Ip = ip
-	return m
+func (b *_BVLCBroadcastDistributionTableEntryBuilder) WithIp(ip ...uint8) BVLCBroadcastDistributionTableEntryBuilder {
+	b.Ip = ip
+	return b
 }
 
-func (m *_BVLCBroadcastDistributionTableEntryBuilder) WithPort(port uint16) BVLCBroadcastDistributionTableEntryBuilder {
-	m.Port = port
-	return m
+func (b *_BVLCBroadcastDistributionTableEntryBuilder) WithPort(port uint16) BVLCBroadcastDistributionTableEntryBuilder {
+	b.Port = port
+	return b
 }
 
-func (m *_BVLCBroadcastDistributionTableEntryBuilder) WithBroadcastDistributionMap(broadcastDistributionMap ...uint8) BVLCBroadcastDistributionTableEntryBuilder {
-	m.BroadcastDistributionMap = broadcastDistributionMap
-	return m
+func (b *_BVLCBroadcastDistributionTableEntryBuilder) WithBroadcastDistributionMap(broadcastDistributionMap ...uint8) BVLCBroadcastDistributionTableEntryBuilder {
+	b.BroadcastDistributionMap = broadcastDistributionMap
+	return b
 }
 
-func (m *_BVLCBroadcastDistributionTableEntryBuilder) Build() (BVLCBroadcastDistributionTableEntry, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BVLCBroadcastDistributionTableEntryBuilder) Build() (BVLCBroadcastDistributionTableEntry, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BVLCBroadcastDistributionTableEntry.deepCopy(), nil
+	return b._BVLCBroadcastDistributionTableEntry.deepCopy(), nil
 }
 
-func (m *_BVLCBroadcastDistributionTableEntryBuilder) MustBuild() BVLCBroadcastDistributionTableEntry {
-	build, err := m.Build()
+func (b *_BVLCBroadcastDistributionTableEntryBuilder) MustBuild() BVLCBroadcastDistributionTableEntry {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BVLCBroadcastDistributionTableEntryBuilder) DeepCopy() any {
-	return m.CreateBVLCBroadcastDistributionTableEntryBuilder()
+func (b *_BVLCBroadcastDistributionTableEntryBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCBroadcastDistributionTableEntryBuilder().(*_BVLCBroadcastDistributionTableEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBVLCBroadcastDistributionTableEntryBuilder creates a BVLCBroadcastDistributionTableEntryBuilder
-func (m *_BVLCBroadcastDistributionTableEntry) CreateBVLCBroadcastDistributionTableEntryBuilder() BVLCBroadcastDistributionTableEntryBuilder {
-	if m == nil {
+func (b *_BVLCBroadcastDistributionTableEntry) CreateBVLCBroadcastDistributionTableEntryBuilder() BVLCBroadcastDistributionTableEntryBuilder {
+	if b == nil {
 		return NewBVLCBroadcastDistributionTableEntryBuilder()
 	}
-	return &_BVLCBroadcastDistributionTableEntryBuilder{_BVLCBroadcastDistributionTableEntry: m.deepCopy()}
+	return &_BVLCBroadcastDistributionTableEntryBuilder{_BVLCBroadcastDistributionTableEntry: b.deepCopy()}
 }
 
 ///////////////////////

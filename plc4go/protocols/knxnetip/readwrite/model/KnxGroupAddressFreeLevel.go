@@ -93,45 +93,64 @@ func NewKnxGroupAddressFreeLevelBuilder() KnxGroupAddressFreeLevelBuilder {
 type _KnxGroupAddressFreeLevelBuilder struct {
 	*_KnxGroupAddressFreeLevel
 
+	parentBuilder *_KnxGroupAddressBuilder
+
 	err *utils.MultiError
 }
 
 var _ (KnxGroupAddressFreeLevelBuilder) = (*_KnxGroupAddressFreeLevelBuilder)(nil)
 
-func (m *_KnxGroupAddressFreeLevelBuilder) WithMandatoryFields(subGroup uint16) KnxGroupAddressFreeLevelBuilder {
-	return m.WithSubGroup(subGroup)
+func (b *_KnxGroupAddressFreeLevelBuilder) setParent(contract KnxGroupAddressContract) {
+	b.KnxGroupAddressContract = contract
 }
 
-func (m *_KnxGroupAddressFreeLevelBuilder) WithSubGroup(subGroup uint16) KnxGroupAddressFreeLevelBuilder {
-	m.SubGroup = subGroup
-	return m
+func (b *_KnxGroupAddressFreeLevelBuilder) WithMandatoryFields(subGroup uint16) KnxGroupAddressFreeLevelBuilder {
+	return b.WithSubGroup(subGroup)
 }
 
-func (m *_KnxGroupAddressFreeLevelBuilder) Build() (KnxGroupAddressFreeLevel, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_KnxGroupAddressFreeLevelBuilder) WithSubGroup(subGroup uint16) KnxGroupAddressFreeLevelBuilder {
+	b.SubGroup = subGroup
+	return b
+}
+
+func (b *_KnxGroupAddressFreeLevelBuilder) Build() (KnxGroupAddressFreeLevel, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._KnxGroupAddressFreeLevel.deepCopy(), nil
+	return b._KnxGroupAddressFreeLevel.deepCopy(), nil
 }
 
-func (m *_KnxGroupAddressFreeLevelBuilder) MustBuild() KnxGroupAddressFreeLevel {
-	build, err := m.Build()
+func (b *_KnxGroupAddressFreeLevelBuilder) MustBuild() KnxGroupAddressFreeLevel {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_KnxGroupAddressFreeLevelBuilder) DeepCopy() any {
-	return m.CreateKnxGroupAddressFreeLevelBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_KnxGroupAddressFreeLevelBuilder) Done() KnxGroupAddressBuilder {
+	return b.parentBuilder
+}
+
+func (b *_KnxGroupAddressFreeLevelBuilder) buildForKnxGroupAddress() (KnxGroupAddress, error) {
+	return b.Build()
+}
+
+func (b *_KnxGroupAddressFreeLevelBuilder) DeepCopy() any {
+	_copy := b.CreateKnxGroupAddressFreeLevelBuilder().(*_KnxGroupAddressFreeLevelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateKnxGroupAddressFreeLevelBuilder creates a KnxGroupAddressFreeLevelBuilder
-func (m *_KnxGroupAddressFreeLevel) CreateKnxGroupAddressFreeLevelBuilder() KnxGroupAddressFreeLevelBuilder {
-	if m == nil {
+func (b *_KnxGroupAddressFreeLevel) CreateKnxGroupAddressFreeLevelBuilder() KnxGroupAddressFreeLevelBuilder {
+	if b == nil {
 		return NewKnxGroupAddressFreeLevelBuilder()
 	}
-	return &_KnxGroupAddressFreeLevelBuilder{_KnxGroupAddressFreeLevel: m.deepCopy()}
+	return &_KnxGroupAddressFreeLevelBuilder{_KnxGroupAddressFreeLevel: b.deepCopy()}
 }
 
 ///////////////////////

@@ -109,88 +109,107 @@ func NewSemanticChangeStructureDataTypeBuilder() SemanticChangeStructureDataType
 type _SemanticChangeStructureDataTypeBuilder struct {
 	*_SemanticChangeStructureDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SemanticChangeStructureDataTypeBuilder) = (*_SemanticChangeStructureDataTypeBuilder)(nil)
 
-func (m *_SemanticChangeStructureDataTypeBuilder) WithMandatoryFields(affected NodeId, affectedType NodeId) SemanticChangeStructureDataTypeBuilder {
-	return m.WithAffected(affected).WithAffectedType(affectedType)
+func (b *_SemanticChangeStructureDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_SemanticChangeStructureDataTypeBuilder) WithAffected(affected NodeId) SemanticChangeStructureDataTypeBuilder {
-	m.Affected = affected
-	return m
+func (b *_SemanticChangeStructureDataTypeBuilder) WithMandatoryFields(affected NodeId, affectedType NodeId) SemanticChangeStructureDataTypeBuilder {
+	return b.WithAffected(affected).WithAffectedType(affectedType)
 }
 
-func (m *_SemanticChangeStructureDataTypeBuilder) WithAffectedBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) SemanticChangeStructureDataTypeBuilder {
-	builder := builderSupplier(m.Affected.CreateNodeIdBuilder())
+func (b *_SemanticChangeStructureDataTypeBuilder) WithAffected(affected NodeId) SemanticChangeStructureDataTypeBuilder {
+	b.Affected = affected
+	return b
+}
+
+func (b *_SemanticChangeStructureDataTypeBuilder) WithAffectedBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) SemanticChangeStructureDataTypeBuilder {
+	builder := builderSupplier(b.Affected.CreateNodeIdBuilder())
 	var err error
-	m.Affected, err = builder.Build()
+	b.Affected, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SemanticChangeStructureDataTypeBuilder) WithAffectedType(affectedType NodeId) SemanticChangeStructureDataTypeBuilder {
-	m.AffectedType = affectedType
-	return m
+func (b *_SemanticChangeStructureDataTypeBuilder) WithAffectedType(affectedType NodeId) SemanticChangeStructureDataTypeBuilder {
+	b.AffectedType = affectedType
+	return b
 }
 
-func (m *_SemanticChangeStructureDataTypeBuilder) WithAffectedTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) SemanticChangeStructureDataTypeBuilder {
-	builder := builderSupplier(m.AffectedType.CreateNodeIdBuilder())
+func (b *_SemanticChangeStructureDataTypeBuilder) WithAffectedTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) SemanticChangeStructureDataTypeBuilder {
+	builder := builderSupplier(b.AffectedType.CreateNodeIdBuilder())
 	var err error
-	m.AffectedType, err = builder.Build()
+	b.AffectedType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SemanticChangeStructureDataTypeBuilder) Build() (SemanticChangeStructureDataType, error) {
-	if m.Affected == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SemanticChangeStructureDataTypeBuilder) Build() (SemanticChangeStructureDataType, error) {
+	if b.Affected == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'affected' not set"))
+		b.err.Append(errors.New("mandatory field 'affected' not set"))
 	}
-	if m.AffectedType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.AffectedType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'affectedType' not set"))
+		b.err.Append(errors.New("mandatory field 'affectedType' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SemanticChangeStructureDataType.deepCopy(), nil
+	return b._SemanticChangeStructureDataType.deepCopy(), nil
 }
 
-func (m *_SemanticChangeStructureDataTypeBuilder) MustBuild() SemanticChangeStructureDataType {
-	build, err := m.Build()
+func (b *_SemanticChangeStructureDataTypeBuilder) MustBuild() SemanticChangeStructureDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SemanticChangeStructureDataTypeBuilder) DeepCopy() any {
-	return m.CreateSemanticChangeStructureDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SemanticChangeStructureDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SemanticChangeStructureDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SemanticChangeStructureDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateSemanticChangeStructureDataTypeBuilder().(*_SemanticChangeStructureDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSemanticChangeStructureDataTypeBuilder creates a SemanticChangeStructureDataTypeBuilder
-func (m *_SemanticChangeStructureDataType) CreateSemanticChangeStructureDataTypeBuilder() SemanticChangeStructureDataTypeBuilder {
-	if m == nil {
+func (b *_SemanticChangeStructureDataType) CreateSemanticChangeStructureDataTypeBuilder() SemanticChangeStructureDataTypeBuilder {
+	if b == nil {
 		return NewSemanticChangeStructureDataTypeBuilder()
 	}
-	return &_SemanticChangeStructureDataTypeBuilder{_SemanticChangeStructureDataType: m.deepCopy()}
+	return &_SemanticChangeStructureDataTypeBuilder{_SemanticChangeStructureDataType: b.deepCopy()}
 }
 
 ///////////////////////

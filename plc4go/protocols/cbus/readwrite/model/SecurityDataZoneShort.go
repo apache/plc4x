@@ -93,45 +93,64 @@ func NewSecurityDataZoneShortBuilder() SecurityDataZoneShortBuilder {
 type _SecurityDataZoneShortBuilder struct {
 	*_SecurityDataZoneShort
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataZoneShortBuilder) = (*_SecurityDataZoneShortBuilder)(nil)
 
-func (m *_SecurityDataZoneShortBuilder) WithMandatoryFields(zoneNumber uint8) SecurityDataZoneShortBuilder {
-	return m.WithZoneNumber(zoneNumber)
+func (b *_SecurityDataZoneShortBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataZoneShortBuilder) WithZoneNumber(zoneNumber uint8) SecurityDataZoneShortBuilder {
-	m.ZoneNumber = zoneNumber
-	return m
+func (b *_SecurityDataZoneShortBuilder) WithMandatoryFields(zoneNumber uint8) SecurityDataZoneShortBuilder {
+	return b.WithZoneNumber(zoneNumber)
 }
 
-func (m *_SecurityDataZoneShortBuilder) Build() (SecurityDataZoneShort, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataZoneShortBuilder) WithZoneNumber(zoneNumber uint8) SecurityDataZoneShortBuilder {
+	b.ZoneNumber = zoneNumber
+	return b
+}
+
+func (b *_SecurityDataZoneShortBuilder) Build() (SecurityDataZoneShort, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataZoneShort.deepCopy(), nil
+	return b._SecurityDataZoneShort.deepCopy(), nil
 }
 
-func (m *_SecurityDataZoneShortBuilder) MustBuild() SecurityDataZoneShort {
-	build, err := m.Build()
+func (b *_SecurityDataZoneShortBuilder) MustBuild() SecurityDataZoneShort {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataZoneShortBuilder) DeepCopy() any {
-	return m.CreateSecurityDataZoneShortBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataZoneShortBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataZoneShortBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataZoneShortBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataZoneShortBuilder().(*_SecurityDataZoneShortBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataZoneShortBuilder creates a SecurityDataZoneShortBuilder
-func (m *_SecurityDataZoneShort) CreateSecurityDataZoneShortBuilder() SecurityDataZoneShortBuilder {
-	if m == nil {
+func (b *_SecurityDataZoneShort) CreateSecurityDataZoneShortBuilder() SecurityDataZoneShortBuilder {
+	if b == nil {
 		return NewSecurityDataZoneShortBuilder()
 	}
-	return &_SecurityDataZoneShortBuilder{_SecurityDataZoneShort: m.deepCopy()}
+	return &_SecurityDataZoneShortBuilder{_SecurityDataZoneShort: b.deepCopy()}
 }
 
 ///////////////////////

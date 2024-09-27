@@ -84,6 +84,8 @@ type BACnetConstructedDataTimeOfDeviceRestartBuilder interface {
 	WithMandatoryFields(timeOfDeviceRestart BACnetTimeStamp) BACnetConstructedDataTimeOfDeviceRestartBuilder
 	// WithTimeOfDeviceRestart adds TimeOfDeviceRestart (property field)
 	WithTimeOfDeviceRestart(BACnetTimeStamp) BACnetConstructedDataTimeOfDeviceRestartBuilder
+	// WithTimeOfDeviceRestartBuilder adds TimeOfDeviceRestart (property field) which is build by the builder
+	WithTimeOfDeviceRestartBuilder(func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetConstructedDataTimeOfDeviceRestartBuilder
 	// Build builds the BACnetConstructedDataTimeOfDeviceRestart or returns an error if something is wrong
 	Build() (BACnetConstructedDataTimeOfDeviceRestart, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewBACnetConstructedDataTimeOfDeviceRestartBuilder() BACnetConstructedDataT
 type _BACnetConstructedDataTimeOfDeviceRestartBuilder struct {
 	*_BACnetConstructedDataTimeOfDeviceRestart
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataTimeOfDeviceRestartBuilder) = (*_BACnetConstructedDataTimeOfDeviceRestartBuilder)(nil)
 
-func (m *_BACnetConstructedDataTimeOfDeviceRestartBuilder) WithMandatoryFields(timeOfDeviceRestart BACnetTimeStamp) BACnetConstructedDataTimeOfDeviceRestartBuilder {
-	return m.WithTimeOfDeviceRestart(timeOfDeviceRestart)
+func (b *_BACnetConstructedDataTimeOfDeviceRestartBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataTimeOfDeviceRestartBuilder) WithTimeOfDeviceRestart(timeOfDeviceRestart BACnetTimeStamp) BACnetConstructedDataTimeOfDeviceRestartBuilder {
-	m.TimeOfDeviceRestart = timeOfDeviceRestart
-	return m
+func (b *_BACnetConstructedDataTimeOfDeviceRestartBuilder) WithMandatoryFields(timeOfDeviceRestart BACnetTimeStamp) BACnetConstructedDataTimeOfDeviceRestartBuilder {
+	return b.WithTimeOfDeviceRestart(timeOfDeviceRestart)
 }
 
-func (m *_BACnetConstructedDataTimeOfDeviceRestartBuilder) Build() (BACnetConstructedDataTimeOfDeviceRestart, error) {
-	if m.TimeOfDeviceRestart == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataTimeOfDeviceRestartBuilder) WithTimeOfDeviceRestart(timeOfDeviceRestart BACnetTimeStamp) BACnetConstructedDataTimeOfDeviceRestartBuilder {
+	b.TimeOfDeviceRestart = timeOfDeviceRestart
+	return b
+}
+
+func (b *_BACnetConstructedDataTimeOfDeviceRestartBuilder) WithTimeOfDeviceRestartBuilder(builderSupplier func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetConstructedDataTimeOfDeviceRestartBuilder {
+	builder := builderSupplier(b.TimeOfDeviceRestart.CreateBACnetTimeStampBuilder())
+	var err error
+	b.TimeOfDeviceRestart, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'timeOfDeviceRestart' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetTimeStampBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetConstructedDataTimeOfDeviceRestart.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetConstructedDataTimeOfDeviceRestartBuilder) MustBuild() BACnetConstructedDataTimeOfDeviceRestart {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataTimeOfDeviceRestartBuilder) Build() (BACnetConstructedDataTimeOfDeviceRestart, error) {
+	if b.TimeOfDeviceRestart == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timeOfDeviceRestart' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataTimeOfDeviceRestart.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataTimeOfDeviceRestartBuilder) MustBuild() BACnetConstructedDataTimeOfDeviceRestart {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataTimeOfDeviceRestartBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataTimeOfDeviceRestartBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTimeOfDeviceRestartBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTimeOfDeviceRestartBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTimeOfDeviceRestartBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTimeOfDeviceRestartBuilder().(*_BACnetConstructedDataTimeOfDeviceRestartBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataTimeOfDeviceRestartBuilder creates a BACnetConstructedDataTimeOfDeviceRestartBuilder
-func (m *_BACnetConstructedDataTimeOfDeviceRestart) CreateBACnetConstructedDataTimeOfDeviceRestartBuilder() BACnetConstructedDataTimeOfDeviceRestartBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataTimeOfDeviceRestart) CreateBACnetConstructedDataTimeOfDeviceRestartBuilder() BACnetConstructedDataTimeOfDeviceRestartBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataTimeOfDeviceRestartBuilder()
 	}
-	return &_BACnetConstructedDataTimeOfDeviceRestartBuilder{_BACnetConstructedDataTimeOfDeviceRestart: m.deepCopy()}
+	return &_BACnetConstructedDataTimeOfDeviceRestartBuilder{_BACnetConstructedDataTimeOfDeviceRestart: b.deepCopy()}
 }
 
 ///////////////////////

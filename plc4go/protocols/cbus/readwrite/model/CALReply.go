@@ -106,10 +106,26 @@ type CALReplyBuilder interface {
 	WithCalType(byte) CALReplyBuilder
 	// WithCalData adds CalData (property field)
 	WithCalData(CALData) CALReplyBuilder
+	// WithCalDataBuilder adds CalData (property field) which is build by the builder
+	WithCalDataBuilder(func(CALDataBuilder) CALDataBuilder) CALReplyBuilder
+	// AsCALReplyLong converts this build to a subType of CALReply. It is always possible to return to current builder using Done()
+	AsCALReplyLong() interface {
+		CALReplyLongBuilder
+		Done() CALReplyBuilder
+	}
+	// AsCALReplyShort converts this build to a subType of CALReply. It is always possible to return to current builder using Done()
+	AsCALReplyShort() interface {
+		CALReplyShortBuilder
+		Done() CALReplyBuilder
+	}
 	// Build builds the CALReply or returns an error if something is wrong
-	Build() (CALReplyContract, error)
+	PartialBuild() (CALReplyContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() CALReplyContract
+	PartialMustBuild() CALReplyContract
+	// Build builds the CALReply or returns an error if something is wrong
+	Build() (CALReply, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CALReply
 }
 
 // NewCALReplyBuilder() creates a CALReplyBuilder
@@ -117,59 +133,138 @@ func NewCALReplyBuilder() CALReplyBuilder {
 	return &_CALReplyBuilder{_CALReply: new(_CALReply)}
 }
 
+type _CALReplyChildBuilder interface {
+	utils.Copyable
+	setParent(CALReplyContract)
+	buildForCALReply() (CALReply, error)
+}
+
 type _CALReplyBuilder struct {
 	*_CALReply
+
+	childBuilder _CALReplyChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (CALReplyBuilder) = (*_CALReplyBuilder)(nil)
 
-func (m *_CALReplyBuilder) WithMandatoryFields(calType byte, calData CALData) CALReplyBuilder {
-	return m.WithCalType(calType).WithCalData(calData)
+func (b *_CALReplyBuilder) WithMandatoryFields(calType byte, calData CALData) CALReplyBuilder {
+	return b.WithCalType(calType).WithCalData(calData)
 }
 
-func (m *_CALReplyBuilder) WithCalType(calType byte) CALReplyBuilder {
-	m.CalType = calType
-	return m
+func (b *_CALReplyBuilder) WithCalType(calType byte) CALReplyBuilder {
+	b.CalType = calType
+	return b
 }
 
-func (m *_CALReplyBuilder) WithCalData(calData CALData) CALReplyBuilder {
-	m.CalData = calData
-	return m
+func (b *_CALReplyBuilder) WithCalData(calData CALData) CALReplyBuilder {
+	b.CalData = calData
+	return b
 }
 
-func (m *_CALReplyBuilder) Build() (CALReplyContract, error) {
-	if m.CalData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CALReplyBuilder) WithCalDataBuilder(builderSupplier func(CALDataBuilder) CALDataBuilder) CALReplyBuilder {
+	builder := builderSupplier(b.CalData.CreateCALDataBuilder())
+	var err error
+	b.CalData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'calData' not set"))
+		b.err.Append(errors.Wrap(err, "CALDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._CALReply.deepCopy(), nil
+	return b
 }
 
-func (m *_CALReplyBuilder) MustBuild() CALReplyContract {
-	build, err := m.Build()
+func (b *_CALReplyBuilder) PartialBuild() (CALReplyContract, error) {
+	if b.CalData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'calData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CALReply.deepCopy(), nil
+}
+
+func (b *_CALReplyBuilder) PartialMustBuild() CALReplyContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CALReplyBuilder) DeepCopy() any {
-	return m.CreateCALReplyBuilder()
+func (b *_CALReplyBuilder) AsCALReplyLong() interface {
+	CALReplyLongBuilder
+	Done() CALReplyBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CALReplyLongBuilder
+		Done() CALReplyBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCALReplyLongBuilder().(*_CALReplyLongBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CALReplyBuilder) AsCALReplyShort() interface {
+	CALReplyShortBuilder
+	Done() CALReplyBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CALReplyShortBuilder
+		Done() CALReplyBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCALReplyShortBuilder().(*_CALReplyShortBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CALReplyBuilder) Build() (CALReply, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForCALReply()
+}
+
+func (b *_CALReplyBuilder) MustBuild() CALReply {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CALReplyBuilder) DeepCopy() any {
+	_copy := b.CreateCALReplyBuilder().(*_CALReplyBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_CALReplyChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCALReplyBuilder creates a CALReplyBuilder
-func (m *_CALReply) CreateCALReplyBuilder() CALReplyBuilder {
-	if m == nil {
+func (b *_CALReply) CreateCALReplyBuilder() CALReplyBuilder {
+	if b == nil {
 		return NewCALReplyBuilder()
 	}
-	return &_CALReplyBuilder{_CALReply: m.deepCopy()}
+	return &_CALReplyBuilder{_CALReply: b.deepCopy()}
 }
 
 ///////////////////////

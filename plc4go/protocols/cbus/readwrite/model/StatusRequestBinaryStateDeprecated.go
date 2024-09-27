@@ -96,45 +96,64 @@ func NewStatusRequestBinaryStateDeprecatedBuilder() StatusRequestBinaryStateDepr
 type _StatusRequestBinaryStateDeprecatedBuilder struct {
 	*_StatusRequestBinaryStateDeprecated
 
+	parentBuilder *_StatusRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (StatusRequestBinaryStateDeprecatedBuilder) = (*_StatusRequestBinaryStateDeprecatedBuilder)(nil)
 
-func (m *_StatusRequestBinaryStateDeprecatedBuilder) WithMandatoryFields(application ApplicationIdContainer) StatusRequestBinaryStateDeprecatedBuilder {
-	return m.WithApplication(application)
+func (b *_StatusRequestBinaryStateDeprecatedBuilder) setParent(contract StatusRequestContract) {
+	b.StatusRequestContract = contract
 }
 
-func (m *_StatusRequestBinaryStateDeprecatedBuilder) WithApplication(application ApplicationIdContainer) StatusRequestBinaryStateDeprecatedBuilder {
-	m.Application = application
-	return m
+func (b *_StatusRequestBinaryStateDeprecatedBuilder) WithMandatoryFields(application ApplicationIdContainer) StatusRequestBinaryStateDeprecatedBuilder {
+	return b.WithApplication(application)
 }
 
-func (m *_StatusRequestBinaryStateDeprecatedBuilder) Build() (StatusRequestBinaryStateDeprecated, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_StatusRequestBinaryStateDeprecatedBuilder) WithApplication(application ApplicationIdContainer) StatusRequestBinaryStateDeprecatedBuilder {
+	b.Application = application
+	return b
+}
+
+func (b *_StatusRequestBinaryStateDeprecatedBuilder) Build() (StatusRequestBinaryStateDeprecated, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._StatusRequestBinaryStateDeprecated.deepCopy(), nil
+	return b._StatusRequestBinaryStateDeprecated.deepCopy(), nil
 }
 
-func (m *_StatusRequestBinaryStateDeprecatedBuilder) MustBuild() StatusRequestBinaryStateDeprecated {
-	build, err := m.Build()
+func (b *_StatusRequestBinaryStateDeprecatedBuilder) MustBuild() StatusRequestBinaryStateDeprecated {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_StatusRequestBinaryStateDeprecatedBuilder) DeepCopy() any {
-	return m.CreateStatusRequestBinaryStateDeprecatedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_StatusRequestBinaryStateDeprecatedBuilder) Done() StatusRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_StatusRequestBinaryStateDeprecatedBuilder) buildForStatusRequest() (StatusRequest, error) {
+	return b.Build()
+}
+
+func (b *_StatusRequestBinaryStateDeprecatedBuilder) DeepCopy() any {
+	_copy := b.CreateStatusRequestBinaryStateDeprecatedBuilder().(*_StatusRequestBinaryStateDeprecatedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateStatusRequestBinaryStateDeprecatedBuilder creates a StatusRequestBinaryStateDeprecatedBuilder
-func (m *_StatusRequestBinaryStateDeprecated) CreateStatusRequestBinaryStateDeprecatedBuilder() StatusRequestBinaryStateDeprecatedBuilder {
-	if m == nil {
+func (b *_StatusRequestBinaryStateDeprecated) CreateStatusRequestBinaryStateDeprecatedBuilder() StatusRequestBinaryStateDeprecatedBuilder {
+	if b == nil {
 		return NewStatusRequestBinaryStateDeprecatedBuilder()
 	}
-	return &_StatusRequestBinaryStateDeprecatedBuilder{_StatusRequestBinaryStateDeprecated: m.deepCopy()}
+	return &_StatusRequestBinaryStateDeprecatedBuilder{_StatusRequestBinaryStateDeprecated: b.deepCopy()}
 }
 
 ///////////////////////

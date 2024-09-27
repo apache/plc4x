@@ -91,40 +91,59 @@ func NewEipConnectionResponseBuilder() EipConnectionResponseBuilder {
 type _EipConnectionResponseBuilder struct {
 	*_EipConnectionResponse
 
+	parentBuilder *_EipPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (EipConnectionResponseBuilder) = (*_EipConnectionResponseBuilder)(nil)
 
-func (m *_EipConnectionResponseBuilder) WithMandatoryFields() EipConnectionResponseBuilder {
-	return m
+func (b *_EipConnectionResponseBuilder) setParent(contract EipPacketContract) {
+	b.EipPacketContract = contract
 }
 
-func (m *_EipConnectionResponseBuilder) Build() (EipConnectionResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_EipConnectionResponseBuilder) WithMandatoryFields() EipConnectionResponseBuilder {
+	return b
+}
+
+func (b *_EipConnectionResponseBuilder) Build() (EipConnectionResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EipConnectionResponse.deepCopy(), nil
+	return b._EipConnectionResponse.deepCopy(), nil
 }
 
-func (m *_EipConnectionResponseBuilder) MustBuild() EipConnectionResponse {
-	build, err := m.Build()
+func (b *_EipConnectionResponseBuilder) MustBuild() EipConnectionResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EipConnectionResponseBuilder) DeepCopy() any {
-	return m.CreateEipConnectionResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EipConnectionResponseBuilder) Done() EipPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EipConnectionResponseBuilder) buildForEipPacket() (EipPacket, error) {
+	return b.Build()
+}
+
+func (b *_EipConnectionResponseBuilder) DeepCopy() any {
+	_copy := b.CreateEipConnectionResponseBuilder().(*_EipConnectionResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEipConnectionResponseBuilder creates a EipConnectionResponseBuilder
-func (m *_EipConnectionResponse) CreateEipConnectionResponseBuilder() EipConnectionResponseBuilder {
-	if m == nil {
+func (b *_EipConnectionResponse) CreateEipConnectionResponseBuilder() EipConnectionResponseBuilder {
+	if b == nil {
 		return NewEipConnectionResponseBuilder()
 	}
-	return &_EipConnectionResponseBuilder{_EipConnectionResponse: m.deepCopy()}
+	return &_EipConnectionResponseBuilder{_EipConnectionResponse: b.deepCopy()}
 }
 
 ///////////////////////

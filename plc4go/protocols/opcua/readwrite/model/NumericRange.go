@@ -83,35 +83,39 @@ type _NumericRangeBuilder struct {
 
 var _ (NumericRangeBuilder) = (*_NumericRangeBuilder)(nil)
 
-func (m *_NumericRangeBuilder) WithMandatoryFields() NumericRangeBuilder {
-	return m
+func (b *_NumericRangeBuilder) WithMandatoryFields() NumericRangeBuilder {
+	return b
 }
 
-func (m *_NumericRangeBuilder) Build() (NumericRange, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NumericRangeBuilder) Build() (NumericRange, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NumericRange.deepCopy(), nil
+	return b._NumericRange.deepCopy(), nil
 }
 
-func (m *_NumericRangeBuilder) MustBuild() NumericRange {
-	build, err := m.Build()
+func (b *_NumericRangeBuilder) MustBuild() NumericRange {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NumericRangeBuilder) DeepCopy() any {
-	return m.CreateNumericRangeBuilder()
+func (b *_NumericRangeBuilder) DeepCopy() any {
+	_copy := b.CreateNumericRangeBuilder().(*_NumericRangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNumericRangeBuilder creates a NumericRangeBuilder
-func (m *_NumericRange) CreateNumericRangeBuilder() NumericRangeBuilder {
-	if m == nil {
+func (b *_NumericRange) CreateNumericRangeBuilder() NumericRangeBuilder {
+	if b == nil {
 		return NewNumericRangeBuilder()
 	}
-	return &_NumericRangeBuilder{_NumericRange: m.deepCopy()}
+	return &_NumericRangeBuilder{_NumericRange: b.deepCopy()}
 }
 
 ///////////////////////

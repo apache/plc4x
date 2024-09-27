@@ -100,64 +100,83 @@ func NewBACnetConstructedDataMusterPointBuilder() BACnetConstructedDataMusterPoi
 type _BACnetConstructedDataMusterPointBuilder struct {
 	*_BACnetConstructedDataMusterPoint
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMusterPointBuilder) = (*_BACnetConstructedDataMusterPointBuilder)(nil)
 
-func (m *_BACnetConstructedDataMusterPointBuilder) WithMandatoryFields(musterPoint BACnetApplicationTagBoolean) BACnetConstructedDataMusterPointBuilder {
-	return m.WithMusterPoint(musterPoint)
+func (b *_BACnetConstructedDataMusterPointBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMusterPointBuilder) WithMusterPoint(musterPoint BACnetApplicationTagBoolean) BACnetConstructedDataMusterPointBuilder {
-	m.MusterPoint = musterPoint
-	return m
+func (b *_BACnetConstructedDataMusterPointBuilder) WithMandatoryFields(musterPoint BACnetApplicationTagBoolean) BACnetConstructedDataMusterPointBuilder {
+	return b.WithMusterPoint(musterPoint)
 }
 
-func (m *_BACnetConstructedDataMusterPointBuilder) WithMusterPointBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataMusterPointBuilder {
-	builder := builderSupplier(m.MusterPoint.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataMusterPointBuilder) WithMusterPoint(musterPoint BACnetApplicationTagBoolean) BACnetConstructedDataMusterPointBuilder {
+	b.MusterPoint = musterPoint
+	return b
+}
+
+func (b *_BACnetConstructedDataMusterPointBuilder) WithMusterPointBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataMusterPointBuilder {
+	builder := builderSupplier(b.MusterPoint.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.MusterPoint, err = builder.Build()
+	b.MusterPoint, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataMusterPointBuilder) Build() (BACnetConstructedDataMusterPoint, error) {
-	if m.MusterPoint == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataMusterPointBuilder) Build() (BACnetConstructedDataMusterPoint, error) {
+	if b.MusterPoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'musterPoint' not set"))
+		b.err.Append(errors.New("mandatory field 'musterPoint' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataMusterPoint.deepCopy(), nil
+	return b._BACnetConstructedDataMusterPoint.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataMusterPointBuilder) MustBuild() BACnetConstructedDataMusterPoint {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMusterPointBuilder) MustBuild() BACnetConstructedDataMusterPoint {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMusterPointBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMusterPointBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMusterPointBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMusterPointBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMusterPointBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMusterPointBuilder().(*_BACnetConstructedDataMusterPointBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMusterPointBuilder creates a BACnetConstructedDataMusterPointBuilder
-func (m *_BACnetConstructedDataMusterPoint) CreateBACnetConstructedDataMusterPointBuilder() BACnetConstructedDataMusterPointBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMusterPoint) CreateBACnetConstructedDataMusterPointBuilder() BACnetConstructedDataMusterPointBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMusterPointBuilder()
 	}
-	return &_BACnetConstructedDataMusterPointBuilder{_BACnetConstructedDataMusterPoint: m.deepCopy()}
+	return &_BACnetConstructedDataMusterPointBuilder{_BACnetConstructedDataMusterPoint: b.deepCopy()}
 }
 
 ///////////////////////

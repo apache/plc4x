@@ -93,45 +93,64 @@ func NewBACnetConstructedDataGroupPresentValueBuilder() BACnetConstructedDataGro
 type _BACnetConstructedDataGroupPresentValueBuilder struct {
 	*_BACnetConstructedDataGroupPresentValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataGroupPresentValueBuilder) = (*_BACnetConstructedDataGroupPresentValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataGroupPresentValueBuilder) WithMandatoryFields(presentValue []BACnetReadAccessResult) BACnetConstructedDataGroupPresentValueBuilder {
-	return m.WithPresentValue(presentValue...)
+func (b *_BACnetConstructedDataGroupPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataGroupPresentValueBuilder) WithPresentValue(presentValue ...BACnetReadAccessResult) BACnetConstructedDataGroupPresentValueBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetConstructedDataGroupPresentValueBuilder) WithMandatoryFields(presentValue []BACnetReadAccessResult) BACnetConstructedDataGroupPresentValueBuilder {
+	return b.WithPresentValue(presentValue...)
 }
 
-func (m *_BACnetConstructedDataGroupPresentValueBuilder) Build() (BACnetConstructedDataGroupPresentValue, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataGroupPresentValueBuilder) WithPresentValue(presentValue ...BACnetReadAccessResult) BACnetConstructedDataGroupPresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataGroupPresentValueBuilder) Build() (BACnetConstructedDataGroupPresentValue, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataGroupPresentValue.deepCopy(), nil
+	return b._BACnetConstructedDataGroupPresentValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataGroupPresentValueBuilder) MustBuild() BACnetConstructedDataGroupPresentValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataGroupPresentValueBuilder) MustBuild() BACnetConstructedDataGroupPresentValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataGroupPresentValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataGroupPresentValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataGroupPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataGroupPresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataGroupPresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataGroupPresentValueBuilder().(*_BACnetConstructedDataGroupPresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataGroupPresentValueBuilder creates a BACnetConstructedDataGroupPresentValueBuilder
-func (m *_BACnetConstructedDataGroupPresentValue) CreateBACnetConstructedDataGroupPresentValueBuilder() BACnetConstructedDataGroupPresentValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataGroupPresentValue) CreateBACnetConstructedDataGroupPresentValueBuilder() BACnetConstructedDataGroupPresentValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataGroupPresentValueBuilder()
 	}
-	return &_BACnetConstructedDataGroupPresentValueBuilder{_BACnetConstructedDataGroupPresentValue: m.deepCopy()}
+	return &_BACnetConstructedDataGroupPresentValueBuilder{_BACnetConstructedDataGroupPresentValue: b.deepCopy()}
 }
 
 ///////////////////////

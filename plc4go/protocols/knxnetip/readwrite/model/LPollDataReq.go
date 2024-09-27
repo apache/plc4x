@@ -85,40 +85,59 @@ func NewLPollDataReqBuilder() LPollDataReqBuilder {
 type _LPollDataReqBuilder struct {
 	*_LPollDataReq
 
+	parentBuilder *_CEMIBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LPollDataReqBuilder) = (*_LPollDataReqBuilder)(nil)
 
-func (m *_LPollDataReqBuilder) WithMandatoryFields() LPollDataReqBuilder {
-	return m
+func (b *_LPollDataReqBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
 }
 
-func (m *_LPollDataReqBuilder) Build() (LPollDataReq, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_LPollDataReqBuilder) WithMandatoryFields() LPollDataReqBuilder {
+	return b
+}
+
+func (b *_LPollDataReqBuilder) Build() (LPollDataReq, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LPollDataReq.deepCopy(), nil
+	return b._LPollDataReq.deepCopy(), nil
 }
 
-func (m *_LPollDataReqBuilder) MustBuild() LPollDataReq {
-	build, err := m.Build()
+func (b *_LPollDataReqBuilder) MustBuild() LPollDataReq {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LPollDataReqBuilder) DeepCopy() any {
-	return m.CreateLPollDataReqBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LPollDataReqBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LPollDataReqBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_LPollDataReqBuilder) DeepCopy() any {
+	_copy := b.CreateLPollDataReqBuilder().(*_LPollDataReqBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLPollDataReqBuilder creates a LPollDataReqBuilder
-func (m *_LPollDataReq) CreateLPollDataReqBuilder() LPollDataReqBuilder {
-	if m == nil {
+func (b *_LPollDataReq) CreateLPollDataReqBuilder() LPollDataReqBuilder {
+	if b == nil {
 		return NewLPollDataReqBuilder()
 	}
-	return &_LPollDataReqBuilder{_LPollDataReq: m.deepCopy()}
+	return &_LPollDataReqBuilder{_LPollDataReq: b.deepCopy()}
 }
 
 ///////////////////////

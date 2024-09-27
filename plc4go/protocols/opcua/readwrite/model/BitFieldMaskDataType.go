@@ -83,35 +83,39 @@ type _BitFieldMaskDataTypeBuilder struct {
 
 var _ (BitFieldMaskDataTypeBuilder) = (*_BitFieldMaskDataTypeBuilder)(nil)
 
-func (m *_BitFieldMaskDataTypeBuilder) WithMandatoryFields() BitFieldMaskDataTypeBuilder {
-	return m
+func (b *_BitFieldMaskDataTypeBuilder) WithMandatoryFields() BitFieldMaskDataTypeBuilder {
+	return b
 }
 
-func (m *_BitFieldMaskDataTypeBuilder) Build() (BitFieldMaskDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BitFieldMaskDataTypeBuilder) Build() (BitFieldMaskDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BitFieldMaskDataType.deepCopy(), nil
+	return b._BitFieldMaskDataType.deepCopy(), nil
 }
 
-func (m *_BitFieldMaskDataTypeBuilder) MustBuild() BitFieldMaskDataType {
-	build, err := m.Build()
+func (b *_BitFieldMaskDataTypeBuilder) MustBuild() BitFieldMaskDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BitFieldMaskDataTypeBuilder) DeepCopy() any {
-	return m.CreateBitFieldMaskDataTypeBuilder()
+func (b *_BitFieldMaskDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBitFieldMaskDataTypeBuilder().(*_BitFieldMaskDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBitFieldMaskDataTypeBuilder creates a BitFieldMaskDataTypeBuilder
-func (m *_BitFieldMaskDataType) CreateBitFieldMaskDataTypeBuilder() BitFieldMaskDataTypeBuilder {
-	if m == nil {
+func (b *_BitFieldMaskDataType) CreateBitFieldMaskDataTypeBuilder() BitFieldMaskDataTypeBuilder {
+	if b == nil {
 		return NewBitFieldMaskDataTypeBuilder()
 	}
-	return &_BitFieldMaskDataTypeBuilder{_BitFieldMaskDataType: m.deepCopy()}
+	return &_BitFieldMaskDataTypeBuilder{_BitFieldMaskDataType: b.deepCopy()}
 }
 
 ///////////////////////

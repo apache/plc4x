@@ -105,55 +105,59 @@ type _ClassSegmentBuilder struct {
 
 var _ (ClassSegmentBuilder) = (*_ClassSegmentBuilder)(nil)
 
-func (m *_ClassSegmentBuilder) WithMandatoryFields(pathSegmentType uint8, logicalSegmentType uint8, logicalSegmentFormat uint8, classSegment uint8) ClassSegmentBuilder {
-	return m.WithPathSegmentType(pathSegmentType).WithLogicalSegmentType(logicalSegmentType).WithLogicalSegmentFormat(logicalSegmentFormat).WithClassSegment(classSegment)
+func (b *_ClassSegmentBuilder) WithMandatoryFields(pathSegmentType uint8, logicalSegmentType uint8, logicalSegmentFormat uint8, classSegment uint8) ClassSegmentBuilder {
+	return b.WithPathSegmentType(pathSegmentType).WithLogicalSegmentType(logicalSegmentType).WithLogicalSegmentFormat(logicalSegmentFormat).WithClassSegment(classSegment)
 }
 
-func (m *_ClassSegmentBuilder) WithPathSegmentType(pathSegmentType uint8) ClassSegmentBuilder {
-	m.PathSegmentType = pathSegmentType
-	return m
+func (b *_ClassSegmentBuilder) WithPathSegmentType(pathSegmentType uint8) ClassSegmentBuilder {
+	b.PathSegmentType = pathSegmentType
+	return b
 }
 
-func (m *_ClassSegmentBuilder) WithLogicalSegmentType(logicalSegmentType uint8) ClassSegmentBuilder {
-	m.LogicalSegmentType = logicalSegmentType
-	return m
+func (b *_ClassSegmentBuilder) WithLogicalSegmentType(logicalSegmentType uint8) ClassSegmentBuilder {
+	b.LogicalSegmentType = logicalSegmentType
+	return b
 }
 
-func (m *_ClassSegmentBuilder) WithLogicalSegmentFormat(logicalSegmentFormat uint8) ClassSegmentBuilder {
-	m.LogicalSegmentFormat = logicalSegmentFormat
-	return m
+func (b *_ClassSegmentBuilder) WithLogicalSegmentFormat(logicalSegmentFormat uint8) ClassSegmentBuilder {
+	b.LogicalSegmentFormat = logicalSegmentFormat
+	return b
 }
 
-func (m *_ClassSegmentBuilder) WithClassSegment(classSegment uint8) ClassSegmentBuilder {
-	m.ClassSegment = classSegment
-	return m
+func (b *_ClassSegmentBuilder) WithClassSegment(classSegment uint8) ClassSegmentBuilder {
+	b.ClassSegment = classSegment
+	return b
 }
 
-func (m *_ClassSegmentBuilder) Build() (ClassSegment, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ClassSegmentBuilder) Build() (ClassSegment, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ClassSegment.deepCopy(), nil
+	return b._ClassSegment.deepCopy(), nil
 }
 
-func (m *_ClassSegmentBuilder) MustBuild() ClassSegment {
-	build, err := m.Build()
+func (b *_ClassSegmentBuilder) MustBuild() ClassSegment {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ClassSegmentBuilder) DeepCopy() any {
-	return m.CreateClassSegmentBuilder()
+func (b *_ClassSegmentBuilder) DeepCopy() any {
+	_copy := b.CreateClassSegmentBuilder().(*_ClassSegmentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateClassSegmentBuilder creates a ClassSegmentBuilder
-func (m *_ClassSegment) CreateClassSegmentBuilder() ClassSegmentBuilder {
-	if m == nil {
+func (b *_ClassSegment) CreateClassSegmentBuilder() ClassSegmentBuilder {
+	if b == nil {
 		return NewClassSegmentBuilder()
 	}
-	return &_ClassSegmentBuilder{_ClassSegment: m.deepCopy()}
+	return &_ClassSegmentBuilder{_ClassSegment: b.deepCopy()}
 }
 
 ///////////////////////

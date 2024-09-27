@@ -129,8 +129,12 @@ type CipConnectionManagerCloseRequestBuilder interface {
 	WithRequestPathSize(uint8) CipConnectionManagerCloseRequestBuilder
 	// WithClassSegment adds ClassSegment (property field)
 	WithClassSegment(PathSegment) CipConnectionManagerCloseRequestBuilder
+	// WithClassSegmentBuilder adds ClassSegment (property field) which is build by the builder
+	WithClassSegmentBuilder(func(PathSegmentBuilder) PathSegmentBuilder) CipConnectionManagerCloseRequestBuilder
 	// WithInstanceSegment adds InstanceSegment (property field)
 	WithInstanceSegment(PathSegment) CipConnectionManagerCloseRequestBuilder
+	// WithInstanceSegmentBuilder adds InstanceSegment (property field) which is build by the builder
+	WithInstanceSegmentBuilder(func(PathSegmentBuilder) PathSegmentBuilder) CipConnectionManagerCloseRequestBuilder
 	// WithPriority adds Priority (property field)
 	WithPriority(uint8) CipConnectionManagerCloseRequestBuilder
 	// WithTickTime adds TickTime (property field)
@@ -161,107 +165,152 @@ func NewCipConnectionManagerCloseRequestBuilder() CipConnectionManagerCloseReque
 type _CipConnectionManagerCloseRequestBuilder struct {
 	*_CipConnectionManagerCloseRequest
 
+	parentBuilder *_CipServiceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CipConnectionManagerCloseRequestBuilder) = (*_CipConnectionManagerCloseRequestBuilder)(nil)
 
-func (m *_CipConnectionManagerCloseRequestBuilder) WithMandatoryFields(requestPathSize uint8, classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, connectionPathSize uint8, connectionPaths []PathSegment) CipConnectionManagerCloseRequestBuilder {
-	return m.WithRequestPathSize(requestPathSize).WithClassSegment(classSegment).WithInstanceSegment(instanceSegment).WithPriority(priority).WithTickTime(tickTime).WithTimeoutTicks(timeoutTicks).WithConnectionSerialNumber(connectionSerialNumber).WithOriginatorVendorId(originatorVendorId).WithOriginatorSerialNumber(originatorSerialNumber).WithConnectionPathSize(connectionPathSize).WithConnectionPaths(connectionPaths...)
+func (b *_CipConnectionManagerCloseRequestBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
 }
 
-func (m *_CipConnectionManagerCloseRequestBuilder) WithRequestPathSize(requestPathSize uint8) CipConnectionManagerCloseRequestBuilder {
-	m.RequestPathSize = requestPathSize
-	return m
+func (b *_CipConnectionManagerCloseRequestBuilder) WithMandatoryFields(requestPathSize uint8, classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, connectionPathSize uint8, connectionPaths []PathSegment) CipConnectionManagerCloseRequestBuilder {
+	return b.WithRequestPathSize(requestPathSize).WithClassSegment(classSegment).WithInstanceSegment(instanceSegment).WithPriority(priority).WithTickTime(tickTime).WithTimeoutTicks(timeoutTicks).WithConnectionSerialNumber(connectionSerialNumber).WithOriginatorVendorId(originatorVendorId).WithOriginatorSerialNumber(originatorSerialNumber).WithConnectionPathSize(connectionPathSize).WithConnectionPaths(connectionPaths...)
 }
 
-func (m *_CipConnectionManagerCloseRequestBuilder) WithClassSegment(classSegment PathSegment) CipConnectionManagerCloseRequestBuilder {
-	m.ClassSegment = classSegment
-	return m
+func (b *_CipConnectionManagerCloseRequestBuilder) WithRequestPathSize(requestPathSize uint8) CipConnectionManagerCloseRequestBuilder {
+	b.RequestPathSize = requestPathSize
+	return b
 }
 
-func (m *_CipConnectionManagerCloseRequestBuilder) WithInstanceSegment(instanceSegment PathSegment) CipConnectionManagerCloseRequestBuilder {
-	m.InstanceSegment = instanceSegment
-	return m
+func (b *_CipConnectionManagerCloseRequestBuilder) WithClassSegment(classSegment PathSegment) CipConnectionManagerCloseRequestBuilder {
+	b.ClassSegment = classSegment
+	return b
 }
 
-func (m *_CipConnectionManagerCloseRequestBuilder) WithPriority(priority uint8) CipConnectionManagerCloseRequestBuilder {
-	m.Priority = priority
-	return m
-}
-
-func (m *_CipConnectionManagerCloseRequestBuilder) WithTickTime(tickTime uint8) CipConnectionManagerCloseRequestBuilder {
-	m.TickTime = tickTime
-	return m
-}
-
-func (m *_CipConnectionManagerCloseRequestBuilder) WithTimeoutTicks(timeoutTicks uint8) CipConnectionManagerCloseRequestBuilder {
-	m.TimeoutTicks = timeoutTicks
-	return m
-}
-
-func (m *_CipConnectionManagerCloseRequestBuilder) WithConnectionSerialNumber(connectionSerialNumber uint16) CipConnectionManagerCloseRequestBuilder {
-	m.ConnectionSerialNumber = connectionSerialNumber
-	return m
-}
-
-func (m *_CipConnectionManagerCloseRequestBuilder) WithOriginatorVendorId(originatorVendorId uint16) CipConnectionManagerCloseRequestBuilder {
-	m.OriginatorVendorId = originatorVendorId
-	return m
-}
-
-func (m *_CipConnectionManagerCloseRequestBuilder) WithOriginatorSerialNumber(originatorSerialNumber uint32) CipConnectionManagerCloseRequestBuilder {
-	m.OriginatorSerialNumber = originatorSerialNumber
-	return m
-}
-
-func (m *_CipConnectionManagerCloseRequestBuilder) WithConnectionPathSize(connectionPathSize uint8) CipConnectionManagerCloseRequestBuilder {
-	m.ConnectionPathSize = connectionPathSize
-	return m
-}
-
-func (m *_CipConnectionManagerCloseRequestBuilder) WithConnectionPaths(connectionPaths ...PathSegment) CipConnectionManagerCloseRequestBuilder {
-	m.ConnectionPaths = connectionPaths
-	return m
-}
-
-func (m *_CipConnectionManagerCloseRequestBuilder) Build() (CipConnectionManagerCloseRequest, error) {
-	if m.ClassSegment == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CipConnectionManagerCloseRequestBuilder) WithClassSegmentBuilder(builderSupplier func(PathSegmentBuilder) PathSegmentBuilder) CipConnectionManagerCloseRequestBuilder {
+	builder := builderSupplier(b.ClassSegment.CreatePathSegmentBuilder())
+	var err error
+	b.ClassSegment, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'classSegment' not set"))
+		b.err.Append(errors.Wrap(err, "PathSegmentBuilder failed"))
 	}
-	if m.InstanceSegment == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'instanceSegment' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._CipConnectionManagerCloseRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_CipConnectionManagerCloseRequestBuilder) MustBuild() CipConnectionManagerCloseRequest {
-	build, err := m.Build()
+func (b *_CipConnectionManagerCloseRequestBuilder) WithInstanceSegment(instanceSegment PathSegment) CipConnectionManagerCloseRequestBuilder {
+	b.InstanceSegment = instanceSegment
+	return b
+}
+
+func (b *_CipConnectionManagerCloseRequestBuilder) WithInstanceSegmentBuilder(builderSupplier func(PathSegmentBuilder) PathSegmentBuilder) CipConnectionManagerCloseRequestBuilder {
+	builder := builderSupplier(b.InstanceSegment.CreatePathSegmentBuilder())
+	var err error
+	b.InstanceSegment, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PathSegmentBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CipConnectionManagerCloseRequestBuilder) WithPriority(priority uint8) CipConnectionManagerCloseRequestBuilder {
+	b.Priority = priority
+	return b
+}
+
+func (b *_CipConnectionManagerCloseRequestBuilder) WithTickTime(tickTime uint8) CipConnectionManagerCloseRequestBuilder {
+	b.TickTime = tickTime
+	return b
+}
+
+func (b *_CipConnectionManagerCloseRequestBuilder) WithTimeoutTicks(timeoutTicks uint8) CipConnectionManagerCloseRequestBuilder {
+	b.TimeoutTicks = timeoutTicks
+	return b
+}
+
+func (b *_CipConnectionManagerCloseRequestBuilder) WithConnectionSerialNumber(connectionSerialNumber uint16) CipConnectionManagerCloseRequestBuilder {
+	b.ConnectionSerialNumber = connectionSerialNumber
+	return b
+}
+
+func (b *_CipConnectionManagerCloseRequestBuilder) WithOriginatorVendorId(originatorVendorId uint16) CipConnectionManagerCloseRequestBuilder {
+	b.OriginatorVendorId = originatorVendorId
+	return b
+}
+
+func (b *_CipConnectionManagerCloseRequestBuilder) WithOriginatorSerialNumber(originatorSerialNumber uint32) CipConnectionManagerCloseRequestBuilder {
+	b.OriginatorSerialNumber = originatorSerialNumber
+	return b
+}
+
+func (b *_CipConnectionManagerCloseRequestBuilder) WithConnectionPathSize(connectionPathSize uint8) CipConnectionManagerCloseRequestBuilder {
+	b.ConnectionPathSize = connectionPathSize
+	return b
+}
+
+func (b *_CipConnectionManagerCloseRequestBuilder) WithConnectionPaths(connectionPaths ...PathSegment) CipConnectionManagerCloseRequestBuilder {
+	b.ConnectionPaths = connectionPaths
+	return b
+}
+
+func (b *_CipConnectionManagerCloseRequestBuilder) Build() (CipConnectionManagerCloseRequest, error) {
+	if b.ClassSegment == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'classSegment' not set"))
+	}
+	if b.InstanceSegment == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'instanceSegment' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CipConnectionManagerCloseRequest.deepCopy(), nil
+}
+
+func (b *_CipConnectionManagerCloseRequestBuilder) MustBuild() CipConnectionManagerCloseRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CipConnectionManagerCloseRequestBuilder) DeepCopy() any {
-	return m.CreateCipConnectionManagerCloseRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipConnectionManagerCloseRequestBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipConnectionManagerCloseRequestBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_CipConnectionManagerCloseRequestBuilder) DeepCopy() any {
+	_copy := b.CreateCipConnectionManagerCloseRequestBuilder().(*_CipConnectionManagerCloseRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCipConnectionManagerCloseRequestBuilder creates a CipConnectionManagerCloseRequestBuilder
-func (m *_CipConnectionManagerCloseRequest) CreateCipConnectionManagerCloseRequestBuilder() CipConnectionManagerCloseRequestBuilder {
-	if m == nil {
+func (b *_CipConnectionManagerCloseRequest) CreateCipConnectionManagerCloseRequestBuilder() CipConnectionManagerCloseRequestBuilder {
+	if b == nil {
 		return NewCipConnectionManagerCloseRequestBuilder()
 	}
-	return &_CipConnectionManagerCloseRequestBuilder{_CipConnectionManagerCloseRequest: m.deepCopy()}
+	return &_CipConnectionManagerCloseRequestBuilder{_CipConnectionManagerCloseRequest: b.deepCopy()}
 }
 
 ///////////////////////
