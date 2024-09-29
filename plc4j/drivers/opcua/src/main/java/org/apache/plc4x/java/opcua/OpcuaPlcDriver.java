@@ -29,6 +29,8 @@ import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.values.LegacyPlcValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.Collections;
 import java.util.List;
@@ -60,6 +62,11 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     @Override
     protected List<String> getSupportedTransportCodes() {
         return Collections.singletonList("tcp");
+    }
+
+    @Override
+    protected PlcValueHandler getValueHandler() {
+        return new LegacyPlcValueHandler();
     }
 
     @Override
