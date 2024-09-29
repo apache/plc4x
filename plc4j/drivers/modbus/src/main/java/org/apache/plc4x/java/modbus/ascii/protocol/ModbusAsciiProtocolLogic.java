@@ -26,10 +26,12 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.modbus.ascii.config.ModbusAsciiConfiguration;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.base.protocol.ModbusProtocolLogic;
+import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.*;
 import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
@@ -51,6 +53,11 @@ public class ModbusAsciiProtocolLogic extends ModbusProtocolLogic<ModbusAsciiADU
         this.unitIdentifier = configuration.getDefaultUnitIdentifier();
         this.defaultPayloadByteOrder = configuration.getDefaultPayloadByteOrder();
         this.tm = new RequestTransactionManager(1);
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new ModbusTagHandler();
     }
 
     @Override

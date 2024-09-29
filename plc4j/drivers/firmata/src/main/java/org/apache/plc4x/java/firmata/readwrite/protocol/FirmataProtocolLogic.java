@@ -31,8 +31,10 @@ import org.apache.plc4x.java.firmata.readwrite.model.FirmataSubscriptionHandle;
 import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTag;
 import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTagAnalog;
 import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTagDigital;
+import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTagHandler;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
@@ -69,6 +71,11 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
     private final BitSet digitalValues = new BitSet();
 
     private final Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new FirmataTagHandler();
+    }
 
     @Override
     public void onConnect(ConversationContext<FirmataMessage> context) {

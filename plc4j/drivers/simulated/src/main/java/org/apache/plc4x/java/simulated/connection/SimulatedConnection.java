@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.simulated.tag.SimulatedTag;
 import org.apache.plc4x.java.simulated.tag.SimulatedTagHandler;
 import org.apache.plc4x.java.spi.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
@@ -65,8 +66,13 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     public SimulatedConnection(SimulatedDevice device) {
         super(true, true, true, true, false,
-            new SimulatedTagHandler(), new DefaultPlcValueHandler(), null, null);
+            new DefaultPlcValueHandler(), null, null);
         this.device = device;
+    }
+
+    @Override
+    public PlcTagHandler getPlcTagHandler() {
+        return new SimulatedTagHandler();
     }
 
     @Override
@@ -111,10 +117,14 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         Map<String, PlcResponseCode> tags = new HashMap<>();
         for (String tagName : writeRequest.getTagNames()) {
-            SimulatedTag tag = (SimulatedTag) writeRequest.getTag(tagName);
-            PlcValue value = writeRequest.getPlcValue(tagName);
-            device.set(tag, value);
-            tags.put(tagName, PlcResponseCode.OK);
+            if(writeRequest.getTagResponseCode(tagName) == PlcResponseCode.OK) {
+                SimulatedTag tag = (SimulatedTag) writeRequest.getTag(tagName);
+                PlcValue value = writeRequest.getPlcValue(tagName);
+                device.set(tag, value);
+                tags.put(tagName, PlcResponseCode.OK);
+            } else {
+                tags.put(tagName, writeRequest.getTagResponseCode(tagName));
+            }
         }
         PlcWriteResponse response = new DefaultPlcWriteResponse(writeRequest, tags);
         return CompletableFuture.completedFuture(response);

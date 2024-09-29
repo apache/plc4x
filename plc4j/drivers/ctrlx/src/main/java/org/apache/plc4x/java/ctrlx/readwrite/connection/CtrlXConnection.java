@@ -19,18 +19,19 @@
 
 package org.apache.plc4x.java.ctrlx.readwrite.connection;
 
-import com.hrakaroo.glob.GlobPattern;
 import com.hrakaroo.glob.MatchingEngine;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.ApiClient;
 import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.ApiException;
 import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.api.DataLayerInformationAndSettingsApi;
@@ -42,6 +43,8 @@ import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTag;
 import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTagHandler;
 import org.apache.plc4x.java.ctrlx.readwrite.utils.ApiClientFactory;
 import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +63,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
     private final String password;
 
     private final ExecutorService executorService;
+    private PlcValueHandler valueHandler;
 
     private ApiClient apiClient;
     private NodesApi nodesApi;
@@ -72,6 +76,18 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
         this.username = username;
         this.password = password;
         this.executorService = Executors.newFixedThreadPool(10);
+        this.valueHandler = new DefaultPlcValueHandler();
+    }
+
+    @Override
+    public Optional<PlcValue> parseTagValue(PlcTag tag, Object... values) {
+        PlcValue plcValue;
+        try {
+            plcValue = valueHandler.newPlcValue(tag, values);
+        } catch (Exception e) {
+            throw new PlcRuntimeException("Error parsing tag value " + tag, e);
+        }
+        return Optional.of(plcValue);
     }
 
     @Override

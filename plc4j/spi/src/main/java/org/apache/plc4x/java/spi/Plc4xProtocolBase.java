@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 
 import java.util.concurrent.CompletableFuture;
@@ -53,6 +54,8 @@ public abstract class Plc4xProtocolBase<T> {
     public void onDiscover(ConversationContext<T> context) {
         // Intentionally do nothing here
     }
+
+    public abstract PlcTagHandler getTagHandler();
 
     /**
      * TODO document me

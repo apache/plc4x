@@ -150,9 +150,9 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
         private final Map<String, Supplier<PlcTagValueItem>> tagValues;
 
         public Builder(PlcWriter writer, PlcTagHandler tagHandler, PlcValueHandler valueHandler) {
-            this.writer = writer;
-            this.tagHandler = tagHandler;
-            this.valueHandler = valueHandler;
+            this.writer = Objects.requireNonNull(writer);
+            this.tagHandler = Objects.requireNonNull(tagHandler);
+            this.valueHandler = Objects.requireNonNull(valueHandler);
             tagValues = new TreeMap<>();
         }
 

@@ -22,7 +22,6 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.configuration.AdsConfiguration;
 import org.apache.plc4x.java.ads.configuration.AdsTcpTransportConfiguration;
 import org.apache.plc4x.java.ads.discovery.AdsPlcDiscoverer;
-import org.apache.plc4x.java.ads.tag.AdsTagHandler;
 import org.apache.plc4x.java.ads.protocol.AdsProtocolLogic;
 import org.apache.plc4x.java.ads.readwrite.AmsTCPPacket;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
@@ -113,11 +112,6 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     @Override
     protected List<String> getSupportedTransportCodes() {
         return Collections.singletonList("tcp");
-    }
-
-    @Override
-    protected AdsTagHandler getTagHandler() {
-        return new AdsTagHandler();
     }
 
     /**

@@ -41,6 +41,7 @@ import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
 import org.apache.plc4x.java.s7.utils.S7ParamErrorCode;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
@@ -143,6 +144,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // S7ParameterSetupCommunication response.
         this.tm = new RequestTransactionManager(1);
         eventLogic.start();
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new S7PlcTagHandler();
     }
 
     @Override

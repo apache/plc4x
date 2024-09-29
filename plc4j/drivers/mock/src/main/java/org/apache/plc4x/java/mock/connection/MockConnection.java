@@ -21,6 +21,7 @@ package org.apache.plc4x.java.mock.connection;
 import org.apache.commons.lang3.Validate;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
@@ -32,6 +33,7 @@ import org.apache.plc4x.java.mock.tag.MockTagHandler;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +50,8 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MockConnection.class);
 
+    private PlcValueHandler valueHandler;
+
     private final PlcAuthentication authentication;
 
     private MockDevice device;
@@ -63,7 +67,19 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
     private final MockTagHandler mockTagHandler = new MockTagHandler();
     public void setDevice(MockDevice device) {
         LOGGER.info("Set Mock Device on Mock Connection {} with device {}", this, device);
+        this.valueHandler = new DefaultPlcValueHandler();
         this.device = device;
+    }
+
+    @Override
+    public Optional<PlcValue> parseTagValue(PlcTag tag, Object... values) {
+        PlcValue plcValue;
+        try {
+            plcValue = valueHandler.newPlcValue(tag, values);
+        } catch (Exception e) {
+            throw new PlcRuntimeException("Error parsing tag value " + tag, e);
+        }
+        return Optional.of(plcValue);
     }
 
     @Override

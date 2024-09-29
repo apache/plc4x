@@ -29,7 +29,6 @@ import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpConfiguration;
 import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpTransportConfiguration;
 import org.apache.plc4x.java.modbus.tcp.discovery.ModbusPlcDiscoverer;
-import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU;
 import org.apache.plc4x.java.modbus.tcp.protocol.ModbusTcpProtocolLogic;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
@@ -120,11 +119,6 @@ public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
     @Override
     protected BaseOptimizer getOptimizer() {
         return new /*SingleTagOptimizer();/*/ModbusOptimizer();
-    }
-
-    @Override
-    protected ModbusTagHandler getTagHandler() {
-        return new ModbusTagHandler();
     }
 
     @Override

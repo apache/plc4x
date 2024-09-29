@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.canopen;
 
+import org.apache.plc4x.java.canopen.tag.CANOpenTagHandler;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcTag;
@@ -25,7 +26,6 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.can.adapter.CANDriverAdapter;
 import org.apache.plc4x.java.canopen.configuration.CANOpenConfiguration;
 import org.apache.plc4x.java.canopen.context.CANOpenDriverContext;
-import org.apache.plc4x.java.canopen.tag.CANOpenTagHandler;
 import org.apache.plc4x.java.canopen.protocol.CANOpenProtocolLogic;
 import org.apache.plc4x.java.canopen.transport.CANOpenFrameDataHandler;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
@@ -83,11 +83,6 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
     }
 
     @Override
-    protected CANOpenTagHandler getTagHandler() {
-        return new CANOpenTagHandler();
-    }
-
-    @Override
     protected PlcValueHandler getValueHandler() {
         return new DefaultPlcValueHandler() {
             @Override
@@ -132,7 +127,8 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
                 ConfigurationFactory.configure(cfg, protocolLogic);
                 return new CANDriverAdapter<>(protocolLogic,
                     canTransport.getMessageType(), canTransport.adapter(),
-                    new CANOpenFrameDataHandler(canTransport::getTransportFrameBuilder)
+                    new CANOpenFrameDataHandler(canTransport::getTransportFrameBuilder),
+                    new CANOpenTagHandler()
                 );
             })
             .withDriverContext(cfg -> new CANOpenDriverContext())

@@ -26,6 +26,11 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 
+import java.math.BigInteger;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -76,13 +81,30 @@ public class DefaultPlcValueHandler implements PlcValueHandler {
         }
     }
 
-    private static PlcList ofElements(PlcValueType type, List<ArrayInfo> arrayInfos, Object[] values) {
+    private static PlcValue ofElements(PlcValueType type, List<ArrayInfo> arrayInfos, Object[] values) {
         ArrayInfo arrayInfo = arrayInfos.get(0);
+
+        if(values.length == 1) {
+            if(values[0] instanceof Object[]) {
+                values = (Object[]) values[0];
+            } else if (values[0] instanceof Collection) {
+                values = ((Collection<?>) values[0]).toArray();
+            } else if(values[0] instanceof PlcList) {
+                values = ((PlcList) values[0]).getList().toArray();
+            } else if(values[0] instanceof PlcRawByteArray) {
+                PlcRawByteArray plcRawByteArray = (PlcRawByteArray) values[0];
+                if(plcRawByteArray.getRaw().length != arrayInfo.getSize()) {
+                    throw new PlcRuntimeException(String.format("Expecting %d items, but got %d", arrayInfo.getSize(), plcRawByteArray.getRaw().length));
+                }
+                return plcRawByteArray;
+            }
+        }
+
         List<PlcValue> plcValues = new ArrayList<>(arrayInfo.getSize());
         // In the last layer we'll create a list of PlcValues
         if(arrayInfos.size() == 1) {
-            if((values.length != 1) || ((values[0] instanceof List) && (((List<?>) values[0]).size() != 1))) {
-                throw new PlcRuntimeException("Expecting only one item");
+            if(values.length != arrayInfo.getSize()) {
+                throw new PlcRuntimeException(String.format("Expecting %d items, but got %d", arrayInfo.getSize(), values.length));
             }
             // TODO: Add some size-checks here ...
             for (Object value : values) {
@@ -93,13 +115,17 @@ public class DefaultPlcValueHandler implements PlcValueHandler {
         else {
             // TODO: Add some size-checks here ...
             for (Object value : values) {
-                plcValues.add(ofElements(type, arrayInfos.subList(1, arrayInfos.size()), values));
+                plcValues.add(ofElements(type, arrayInfos.subList(1, arrayInfos.size()), (Object[]) value));
             }
         }
         return new PlcList(plcValues);
     }
 
     private static PlcValue ofElement(PlcValueType type, Object value) {
+        // This is a temporary hack for drivers that don't have type information in their tags (ADS)
+        if(type == null) {
+            return of(value);
+        }
         switch (type) {
             case BOOL:
                 return PlcBOOL.of(value);
@@ -176,6 +202,71 @@ public class DefaultPlcValueHandler implements PlcValueHandler {
                 throw new PlcUnsupportedDataTypeException("Data Type " + value.getClass()
                     + " Is not supported");
         }
+    }
+
+    /**
+     * This is a legacy helper that should help with protocols, that currently don't have PlcValueType information
+     * available at the request-building-time. Such as the ADS driver. We should remove this option as soon as all
+     * drivers are fully PlcValueType-aware.
+     * @param value value
+     * @return PlcValue for the given type
+     */
+    private static PlcValue of(Object value) {
+        /*if (values.length != 1) {
+        PlcList list = new PlcList();
+            for (Object value : values) {
+                list.add(of(new Object[]{value}));
+            }
+            return list;
+        }
+        Object value = values[0];*/
+        if (value instanceof Boolean) {
+            return PlcBOOL.of(value);
+        }
+        if (value instanceof Byte) {
+            return PlcSINT.of(value);
+        }
+        if (value instanceof byte[]) {
+            return PlcRawByteArray.of(value);
+        }
+        if (value instanceof Short) {
+            return PlcINT.of(value);
+        }
+        if (value instanceof Integer) {
+            return PlcDINT.of(value);
+        }
+        if (value instanceof Long) {
+            return PlcLINT.of(value);
+        }
+        if (value instanceof BigInteger) {
+            return PlcLINT.of(value);
+        }
+        if (value instanceof Float) {
+            return PlcREAL.of(value);
+        }
+        if (value instanceof Double) {
+            return PlcLREAL.of(value);
+        }
+        if (value instanceof Duration) {
+            return new PlcTIME((Duration) value);
+        }
+        if (value instanceof LocalTime) {
+            return new PlcTIME_OF_DAY((LocalTime) value);
+        }
+        if (value instanceof LocalDate) {
+            return new PlcDATE((LocalDate) value);
+        }
+        if (value instanceof LocalDateTime) {
+            return new PlcDATE_AND_TIME((LocalDateTime) value);
+        }
+        if (value instanceof String) {
+            return new PlcSTRING((String) value);
+        }
+        if (value instanceof PlcValue) {
+            return (PlcValue) value;
+        }
+        throw new PlcUnsupportedDataTypeException("Data Type " + value.getClass()
+            + " Is not supported");
     }
 
 /*    public static PlcValue customDataType(Object[] values) {

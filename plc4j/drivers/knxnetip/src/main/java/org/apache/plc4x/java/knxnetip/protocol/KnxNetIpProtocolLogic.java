@@ -32,8 +32,10 @@ import org.apache.plc4x.java.knxnetip.ets.model.GroupAddress;
 import org.apache.plc4x.java.knxnetip.model.KnxNetIpSubscriptionHandle;
 import org.apache.plc4x.java.knxnetip.readwrite.*;
 import org.apache.plc4x.java.knxnetip.tag.KnxNetIpTag;
+import org.apache.plc4x.java.knxnetip.tag.KnxNetIpTagHandler;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
@@ -79,6 +81,11 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         // No concurrent requests can be sent anyway. It will be updated when receiving the
         // S7ParameterSetupCommunication response.
         this.tm = new RequestTransactionManager(1);
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new KnxNetIpTagHandler();
     }
 
     @Override

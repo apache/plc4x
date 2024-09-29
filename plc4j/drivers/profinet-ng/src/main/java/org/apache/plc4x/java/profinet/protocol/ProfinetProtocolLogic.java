@@ -33,10 +33,12 @@ import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.packets.PnDcpPacketFactory;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
+import org.apache.plc4x.java.profinet.tag.ProfinetTagHandler;
 import org.apache.plc4x.java.profinet.utils.ProfinetDataTypeMapper;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseItem;
 import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseResponse;
@@ -76,6 +78,11 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     @Override
     public void setConfiguration(ProfinetConfiguration configuration) {
         this.configuration = configuration;
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new ProfinetTagHandler();
     }
 
     @Override

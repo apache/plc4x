@@ -56,6 +56,7 @@ import org.apache.plc4x.java.canopen.readwrite.NMTState;
 import org.apache.plc4x.java.canopen.readwrite.NMTStateRequest;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
@@ -123,6 +124,11 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
         // No concurrent requests can be sent anyway. It will be updated when receiving the
         // S7ParameterSetupCommunication response.
         this.tm = new RequestTransactionManager(1);
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new CANOpenTagHandler();
     }
 
     @Override

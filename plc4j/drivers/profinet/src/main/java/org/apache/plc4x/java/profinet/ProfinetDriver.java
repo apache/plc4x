@@ -30,7 +30,6 @@ import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.apache.plc4x.java.profinet.readwrite.Ethernet_Frame;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
-import org.apache.plc4x.java.profinet.tag.ProfinetTagHandler;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
@@ -133,11 +132,6 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     @Override
     protected BaseOptimizer getOptimizer() {
         return new SingleTagOptimizer();
-    }
-
-    @Override
-    protected ProfinetTagHandler getTagHandler() {
-        return new ProfinetTagHandler();
     }
 
     @Override

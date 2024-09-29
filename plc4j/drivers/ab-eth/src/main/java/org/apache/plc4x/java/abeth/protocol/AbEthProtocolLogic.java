@@ -21,6 +21,7 @@ package org.apache.plc4x.java.abeth.protocol;
 import org.apache.plc4x.java.abeth.configuration.AbEthConfiguration;
 import org.apache.plc4x.java.abeth.readwrite.*;
 import org.apache.plc4x.java.abeth.tag.AbEthTag;
+import org.apache.plc4x.java.abeth.tag.AbEthTagHandler;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcResponse;
@@ -30,6 +31,7 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
@@ -66,6 +68,11 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
         this.configuration = configuration;
         // Set the transaction manager to allow only one message at a time.
         this.tm = new RequestTransactionManager(1);
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new AbEthTagHandler();
     }
 
     @Override

@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -31,13 +30,14 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 public class PlcLDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
 
     public static PlcLDATE_AND_TIME of(Object value) {
-        if (value instanceof LocalDateTime) {
+        if (value instanceof PlcLDATE_AND_TIME) {
+            return (PlcLDATE_AND_TIME) value;
+        } else if (value instanceof LocalDateTime) {
             return new PlcLDATE_AND_TIME((LocalDateTime) value);
         } else if (value instanceof Byte) {
             return new PlcLDATE_AND_TIME((Byte) value);
@@ -64,7 +64,7 @@ public class PlcLDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
         BigInteger epochSecond = nanosecondsSinceEpoch.divide(BigInteger.valueOf(1000_000));
         BigInteger nanoOfSecond = nanosecondsSinceEpoch.mod(BigInteger.valueOf(1000_000));
         return new PlcLDATE_AND_TIME(LocalDateTime.ofEpochSecond(epochSecond.longValue(), nanoOfSecond.intValue(),
-            OffsetDateTime.now().getOffset()));
+            ZoneOffset.UTC));
     }
 
     public PlcLDATE_AND_TIME(Byte millisecondsSinceEpoch) {
@@ -134,7 +134,7 @@ public class PlcLDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
     }
 
     public BigInteger getNanosecondsSinceEpoch() {
-        Instant instant = getDateTime().toInstant(OffsetDateTime.now().getOffset());
+        Instant instant = getDateTime().toInstant(ZoneOffset.UTC);
         return BigInteger.valueOf(instant.getEpochSecond()).multiply(BigInteger.valueOf(1000_000_000)).add(BigInteger.valueOf(instant.getNano()));
     }
 
@@ -145,7 +145,7 @@ public class PlcLDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
 
     @Override
     public long getLong() {
-        Instant instant = value.atZone(OffsetDateTime.now().getOffset()).toInstant();
+        Instant instant = value.atZone(ZoneOffset.UTC).toInstant();
         return instant.getEpochSecond();
     }
 

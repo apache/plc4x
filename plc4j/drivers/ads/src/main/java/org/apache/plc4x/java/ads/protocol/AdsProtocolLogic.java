@@ -24,6 +24,7 @@ import org.apache.plc4x.java.ads.discovery.readwrite.*;
 import org.apache.plc4x.java.ads.model.AdsSubscriptionHandle;
 import org.apache.plc4x.java.ads.readwrite.*;
 import org.apache.plc4x.java.ads.tag.AdsTag;
+import org.apache.plc4x.java.ads.tag.AdsTagHandler;
 import org.apache.plc4x.java.ads.tag.DirectAdsStringTag;
 import org.apache.plc4x.java.ads.tag.DirectAdsTag;
 import org.apache.plc4x.java.ads.tag.SymbolicAdsTag;
@@ -40,6 +41,7 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
@@ -111,6 +113,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     @Override
     public void setConfiguration(AdsConfiguration configuration) {
         this.configuration = configuration;
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new AdsTagHandler();
     }
 
     @Override

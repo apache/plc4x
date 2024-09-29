@@ -32,9 +32,11 @@ import org.apache.plc4x.java.profinet.device.*;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
+import org.apache.plc4x.java.profinet.tag.ProfinetTagHandler;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
@@ -108,6 +110,11 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
             device.getValue().setContext(context, this.profinetDriverContext.getChannel());
         }
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new ProfinetTagHandler();
     }
 
     /**

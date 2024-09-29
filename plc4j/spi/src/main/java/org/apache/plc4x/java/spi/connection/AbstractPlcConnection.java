@@ -57,29 +57,21 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     private boolean canWrite = false;
     private boolean canSubscribe = false;
     private boolean canBrowse = false;
-    private PlcTagHandler tagHandler;
-    private PlcValueHandler valueHandler;
+    private final PlcValueHandler valueHandler;
+    private final BaseOptimizer optimizer;
+    private final PlcAuthentication authentication;
     private Plc4xProtocolBase<? extends Message> protocol;
-    private BaseOptimizer optimizer;
-    private PlcAuthentication authentication;
-
-    /**
-     * @deprecated only for compatibility reasons.
-     */
-    @Deprecated
-    protected AbstractPlcConnection() {
-    }
+    private PlcTagHandler tagHandler;
 
     protected AbstractPlcConnection(boolean canPing, boolean canRead, boolean canWrite,
                                     boolean canSubscribe, boolean canBrowse,
-                                    PlcTagHandler tagHandler, PlcValueHandler valueHandler,
+                                    PlcValueHandler valueHandler,
                                     BaseOptimizer optimizer, PlcAuthentication authentication) {
         this.canPing = canPing;
         this.canRead = canRead;
         this.canWrite = canWrite;
         this.canSubscribe = canSubscribe;
         this.canBrowse = canBrowse;
-        this.tagHandler = tagHandler;
         this.valueHandler = valueHandler;
         this.optimizer = optimizer;
         this.authentication = authentication;
@@ -87,6 +79,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
 
     public void setProtocol(Plc4xProtocolBase<? extends Message> protocol) {
         this.protocol = protocol;
+        this.tagHandler = protocol.getTagHandler();
     }
 
     public Plc4xProtocolBase<? extends Message> getProtocol() {
@@ -104,6 +97,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         future.completeExceptionally(new PlcUnsupportedOperationException("The connection does not support pinging"));
         return future;
     }
+
 
     @Override
     public boolean isReadSupported() {

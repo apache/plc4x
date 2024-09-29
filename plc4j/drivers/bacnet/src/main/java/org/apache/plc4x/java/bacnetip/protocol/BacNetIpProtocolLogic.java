@@ -32,9 +32,11 @@ import org.apache.plc4x.java.bacnetip.ede.model.Datapoint;
 import org.apache.plc4x.java.bacnetip.ede.model.EdeModel;
 import org.apache.plc4x.java.bacnetip.tag.BacNetIpTag;
 import org.apache.plc4x.java.bacnetip.readwrite.*;
+import org.apache.plc4x.java.bacnetip.tag.BacNetIpTagHandler;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
@@ -83,6 +85,11 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             }
             edeModel = new EdeParser().parseDirectory(edeDirectory);
         }
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new BacNetIpTagHandler();
     }
 
     @Override

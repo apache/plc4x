@@ -31,6 +31,7 @@ import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpConfiguration;
 import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
@@ -53,6 +54,11 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
         this.pingAddress = new ModbusTagHandler().parseTag(configuration.getPingAddress());
         this.defaultPayloadByteOrder = configuration.getDefaultPayloadByteOrder();
         this.tm = new RequestTransactionManager(1);
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new ModbusTagHandler();
     }
 
     @Override

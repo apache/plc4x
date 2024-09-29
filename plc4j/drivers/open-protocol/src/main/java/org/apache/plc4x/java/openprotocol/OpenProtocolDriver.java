@@ -26,7 +26,6 @@ import org.apache.plc4x.java.openprotocol.config.OpenProtocolTcpTransportConfigu
 import org.apache.plc4x.java.openprotocol.protocol.OpenProtocolProtocolLogic;
 import org.apache.plc4x.java.openprotocol.readwrite.OpenProtocolMessage;
 import org.apache.plc4x.java.openprotocol.tag.OpenProtocolTag;
-import org.apache.plc4x.java.openprotocol.tag.OpenProtocolTagHandler;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
@@ -97,11 +96,6 @@ public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage>
     @Override
     protected BaseOptimizer getOptimizer() {
         return new SingleTagOptimizer();
-    }
-
-    @Override
-    protected OpenProtocolTagHandler getTagHandler() {
-        return new OpenProtocolTagHandler();
     }
 
     @Override

@@ -25,7 +25,6 @@ import org.apache.plc4x.java.opcua.context.OpcuaDriverContext;
 import org.apache.plc4x.java.opcua.optimizer.OpcuaOptimizer;
 import org.apache.plc4x.java.opcua.protocol.OpcuaProtocolLogic;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaAPU;
-import org.apache.plc4x.java.opcua.tag.OpcuaPlcTagHandler;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -81,11 +80,6 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     @Override
     protected OpcuaOptimizer getOptimizer() {
         return new OpcuaOptimizer();
-    }
-
-    @Override
-    protected OpcuaPlcTagHandler getTagHandler() {
-        return new OpcuaPlcTagHandler();
     }
 
     @Override

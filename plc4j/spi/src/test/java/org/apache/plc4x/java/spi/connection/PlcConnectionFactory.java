@@ -41,7 +41,7 @@ public class PlcConnectionFactory {
     <T extends Message> DefaultNettyPlcConnection create(ChannelFactory channelFactory, ProtocolStackConfigurer<T> stackConfigurer) {
         return new DefaultNettyPlcConnection(
             true, true, true, true, true,
-            null, null, null, channelFactory,
+            null, null, channelFactory,
             fireDiscovery, // force discovery
             true, // await setup
             awaitDisconnect, // await disconnect

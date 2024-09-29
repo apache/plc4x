@@ -31,7 +31,9 @@ import java.time.LocalTime;
 public class PlcLTIME_OF_DAY extends PlcIECValue<LocalTime> {
 
     public static PlcLTIME_OF_DAY of(Object value) {
-        if (value instanceof LocalTime) {
+        if (value instanceof PlcLTIME_OF_DAY) {
+            return (PlcLTIME_OF_DAY) value;
+        } else if (value instanceof LocalTime) {
             return new PlcLTIME_OF_DAY((LocalTime) value);
         } else if (value instanceof Byte) {
             return new PlcLTIME_OF_DAY((Byte) value);

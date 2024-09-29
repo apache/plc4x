@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi.messages;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.exceptions.PlcTagNotFoundException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcTagRequest;
@@ -36,6 +37,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -86,7 +88,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
 
     @Override
     public List<PlcTag> getTags() {
-        return tags.values().stream().map(PlcTagItem::getTag).collect(Collectors.toList());
+        return tags.values().stream().filter(plcTagItem -> plcTagItem instanceof DefaultPlcTagItem).map(PlcTagItem::getTag).collect(Collectors.toList());
     }
 
     public PlcReader getReader() {
@@ -122,8 +124,8 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
         private final Map<String, Supplier<PlcTagItem>> tagItems;
 
         public Builder(PlcReader reader, PlcTagHandler tagHandler) {
-            this.reader = reader;
-            this.tagHandler = tagHandler;
+            this.reader = Objects.requireNonNull(reader);
+            this.tagHandler = Objects.requireNonNull(tagHandler);
             tagItems = new LinkedHashMap<>();
         }
 
@@ -136,6 +138,8 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
                 try {
                     PlcTag tag = tagHandler.parseTag(tagAddress);
                     return new DefaultPlcTagItem(tag);
+                } catch (PlcTagNotFoundException e) {
+                    return new DefaultPlcTagErrorItem(PlcResponseCode.NOT_FOUND);
                 } catch (Exception e) {
                     return new DefaultPlcTagErrorItem(PlcResponseCode.INVALID_ADDRESS);
                 }

@@ -30,13 +30,14 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 public class PlcDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
 
     public static PlcDATE_AND_TIME of(Object value) {
-        if (value instanceof LocalDateTime) {
+        if (value instanceof PlcDATE_AND_TIME) {
+            return (PlcDATE_AND_TIME) value;
+        } else if (value instanceof LocalDateTime) {
             return new PlcDATE_AND_TIME((LocalDateTime) value);
         } else if (value instanceof Byte) {
             return new PlcDATE_AND_TIME((Byte) value);
@@ -61,7 +62,7 @@ public class PlcDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
 
     public static PlcDATE_AND_TIME ofSecondsSinceEpoch(long secondsSinceEpoch) {
         return new PlcDATE_AND_TIME(LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
-            OffsetDateTime.now().getOffset()));
+            ZoneOffset.UTC));
     }
 
     public static PlcDATE_AND_TIME ofSegments(int year, int month, int day, int hour, int minutes, int seconds, int nanoseconds) {
@@ -70,49 +71,49 @@ public class PlcDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
 
     public PlcDATE_AND_TIME(Byte secondsSinceEpoch) {
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
-            OffsetDateTime.now().getOffset());
+            ZoneOffset.UTC);
         this.isNullable = false;
     }
 
     public PlcDATE_AND_TIME(Short secondsSinceEpoch) {
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
-            OffsetDateTime.now().getOffset());
+            ZoneOffset.UTC);
         this.isNullable = false;
     }
 
     public PlcDATE_AND_TIME(Integer secondsSinceEpoch) {
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
-            OffsetDateTime.now().getOffset());
+            ZoneOffset.UTC);
         this.isNullable = false;
     }
 
     public PlcDATE_AND_TIME(Long secondsSinceEpoch) {
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
-            OffsetDateTime.now().getOffset());
+            ZoneOffset.UTC);
         this.isNullable = false;
     }
 
     public PlcDATE_AND_TIME(Float secondsSinceEpoch) {
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
-            OffsetDateTime.now().getOffset());
+            ZoneOffset.UTC);
         this.isNullable = false;
     }
 
     public PlcDATE_AND_TIME(Double secondsSinceEpoch) {
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
-            OffsetDateTime.now().getOffset());
+            ZoneOffset.UTC);
         this.isNullable = false;
     }
 
     public PlcDATE_AND_TIME(BigInteger secondsSinceEpoch) {
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
-            OffsetDateTime.now().getOffset());
+            ZoneOffset.UTC);
         this.isNullable = false;
     }
 
     public PlcDATE_AND_TIME(BigDecimal secondsSinceEpoch) {
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
-            OffsetDateTime.now().getOffset());
+            ZoneOffset.UTC);
         this.isNullable = false;
     }
 
@@ -132,7 +133,7 @@ public class PlcDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
     }
 
     public long getSecondsSinceEpoch() {
-        Instant instant = getDateTime().toInstant(OffsetDateTime.now().getOffset());
+        Instant instant = getDateTime().toInstant(ZoneOffset.UTC);
         return instant.getEpochSecond();
     }
 
@@ -175,7 +176,7 @@ public class PlcDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
 
     @Override
     public long getLong() {
-        Instant instant = value.atZone(OffsetDateTime.now().getOffset()).toInstant();
+        Instant instant = value.atZone(ZoneOffset.UTC).toInstant();
         return instant.getEpochSecond();
     }
 

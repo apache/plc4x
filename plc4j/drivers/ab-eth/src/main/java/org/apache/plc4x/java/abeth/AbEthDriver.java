@@ -22,7 +22,6 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.abeth.configuration.AbEthConfiguration;
 import org.apache.plc4x.java.abeth.configuration.AbEthTcpTransportConfiguration;
 import org.apache.plc4x.java.abeth.tag.AbEthTag;
-import org.apache.plc4x.java.abeth.tag.AbEthTagHandler;
 import org.apache.plc4x.java.abeth.protocol.AbEthProtocolLogic;
 import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
@@ -74,11 +73,6 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
     @Override
     protected List<String> getSupportedTransportCodes() {
         return Collections.singletonList("tcp");
-    }
-
-    @Override
-    protected AbEthTagHandler getTagHandler() {
-        return new AbEthTagHandler();
     }
 
     /**

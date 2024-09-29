@@ -162,6 +162,11 @@ class DefaultNettyPlcConnectionTest {
         }
 
         @Override
+        public PlcTagHandler getTagHandler() {
+            return null;
+        }
+
+        @Override
         public void onDiscover(ConversationContext<Message> context) {
             logger.info("On Discover");
             awaitIn(discover);

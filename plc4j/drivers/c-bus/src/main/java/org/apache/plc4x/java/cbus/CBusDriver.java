@@ -28,7 +28,6 @@ import org.apache.plc4x.java.cbus.context.CBusDriverContext;
 import org.apache.plc4x.java.cbus.protocol.CBusProtocolLogic;
 import org.apache.plc4x.java.cbus.readwrite.CBusCommand;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
@@ -78,11 +77,6 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
     @Override
     protected List<String> getSupportedTransportCodes() {
         return Collections.singletonList("tcp");
-    }
-
-    @Override
-    protected PlcTagHandler getTagHandler() {
-        return null;
     }
 
     @Override

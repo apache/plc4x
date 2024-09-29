@@ -163,7 +163,7 @@ class SimulatedConnectionTest implements WithAssertions {
                 .addTagAddress("state", "STATE/state:STRING", "initialstate")
                 .addTagAddress("event", "STATE/event:STRING", "initialevent")
                 .build();
-            SUT.write(plcWriteRequest).get(1, TimeUnit.SECONDS);
+            PlcWriteResponse plcWriteResponse = SUT.write(plcWriteRequest).get(1, TimeUnit.SECONDS);
             // Note: as we don't have a subscription yet, no callback will be executed
 
             LOGGER.trace("subscribe");

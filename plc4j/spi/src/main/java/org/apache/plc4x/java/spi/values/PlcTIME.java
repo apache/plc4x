@@ -30,7 +30,9 @@ import java.time.temporal.ChronoUnit;
 public class PlcTIME extends PlcIECValue<Duration> {
 
     public static PlcTIME of(Object value) {
-        if (value instanceof Duration) {
+        if (value instanceof PlcTIME) {
+            return (PlcTIME) value;
+        } else if (value instanceof Duration) {
             return new PlcTIME((Duration) value);
         } else if (value instanceof Byte) {
             return new PlcTIME((Byte) value);

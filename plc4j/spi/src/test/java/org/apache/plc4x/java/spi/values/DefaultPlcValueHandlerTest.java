@@ -28,6 +28,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Duration;
@@ -358,7 +359,7 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.LDATE), LocalDate.ofEpochDay(1234), new PlcLDATE(LocalDate.ofEpochDay(1234))),
             Arguments.of(new MockTag("mock", PlcValueType.LDATE), (byte) 123, new PlcLDATE(LocalDate.parse("1970-01-01"))),
             Arguments.of(new MockTag("mock", PlcValueType.LDATE), (short) 12345, new PlcLDATE(LocalDate.parse("1970-01-01"))),
-            Arguments.of(new MockTag("mock", PlcValueType.LDATE), 1234567890, new PlcLDATE(LocalDate.parse("2009-02-14"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE), 1234567890, new PlcLDATE(LocalDate.parse("2009-02-13"))),
             Arguments.of(new MockTag("mock", PlcValueType.LDATE), 12345678901L, new PlcLDATE(LocalDate.parse("2361-03-21"))),
             Arguments.of(new MockTag("mock", PlcValueType.LDATE), (float) 123456.56, new PlcLDATE(LocalDate.parse("1970-01-02"))),
             Arguments.of(new MockTag("mock", PlcValueType.LDATE), (double) 12345678.9, new PlcLDATE(LocalDate.parse("1970-05-23"))),
@@ -392,26 +393,26 @@ class DefaultPlcValueHandlerTest {
 
             // DATE_AND_TIME values (Numeric values are interpreted as seconds since epoch)
             Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), LocalDateTime.ofEpochSecond(1234, 0, OffsetDateTime.now().getOffset()), new PlcDATE_AND_TIME(LocalDateTime.parse("1970-01-01T02:20:34"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), (byte) 123, new PlcDATE_AND_TIME(LocalDateTime.parse("1970-01-01T02:02:03"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), (short) 12345, new PlcDATE_AND_TIME(LocalDateTime.parse("1970-01-01T05:25:45"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), 12345678, new PlcDATE_AND_TIME(LocalDateTime.parse("1970-05-23T23:21:18"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), 12345678L, new PlcDATE_AND_TIME(LocalDateTime.parse("1970-05-23T23:21:18"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), (float) 123456.56, new PlcDATE_AND_TIME(LocalDateTime.parse("1970-01-02T12:17:36"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), (double) 12345678.9, new PlcDATE_AND_TIME(LocalDateTime.parse("1970-05-23T23:21:18"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), BigInteger.valueOf(12345678L), new PlcDATE_AND_TIME(LocalDateTime.parse("1970-05-23T23:21:18"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), BigDecimal.valueOf(12345678L), new PlcDATE_AND_TIME(LocalDateTime.parse("1970-05-23T23:21:18"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), (byte) 123, new PlcDATE_AND_TIME(LocalDateTime.parse("1970-01-01T00:02:03"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), (short) 12345, new PlcDATE_AND_TIME(LocalDateTime.parse("1970-01-01T03:25:45"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), 12345678, new PlcDATE_AND_TIME(LocalDateTime.parse("1970-05-23T21:21:18"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), 12345678L, new PlcDATE_AND_TIME(LocalDateTime.parse("1970-05-23T21:21:18"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), (float) 123456.56, new PlcDATE_AND_TIME(LocalDateTime.parse("1970-01-02T10:17:36"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), (double) 12345678.9, new PlcDATE_AND_TIME(LocalDateTime.parse("1970-05-23T21:21:18"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), BigInteger.valueOf(12345678L), new PlcDATE_AND_TIME(LocalDateTime.parse("1970-05-23T21:21:18"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), BigDecimal.valueOf(12345678L), new PlcDATE_AND_TIME(LocalDateTime.parse("1970-05-23T21:21:18"))),
             Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), "1978-03-28T12:34:56", new PlcDATE_AND_TIME(LocalDateTime.parse("1978-03-28T12:34:56"))),
 
             // DATE_AND_LTIME values (Numeric values are interpreted as milliseconds since epoch)
             Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), LocalDateTime.ofEpochSecond(1234, 5678, OffsetDateTime.now().getOffset()), new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T02:20:34.000005678"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), (byte) 123, new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T00:00:00.123"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), (short) 12345, new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T00:00:12.345"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), 1234567890, new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-15T06:56:07.890"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), 12345678901L, new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-05-23T21:21:18.901"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), (float) 123456.56, new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T00:02:03.456"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), (double) 12345678.9, new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T03:25:45.678"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), BigInteger.valueOf(12345678901L), new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-05-23T21:21:18.901"))),
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), BigDecimal.valueOf(12345678901L), new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-05-23T21:21:18.901"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), (byte) 123, new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T00:00:00.000000123"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), (short) 12345, new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T00:00:00.000012345"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), 1234567890, new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T00:00:01.234567890"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), 12345678901L, new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T00:00:12.345678901"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), (float) 123456.56, new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T00:00:00.000123456"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), (double) 12345678.9, new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T00:00:00.012345678"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), BigInteger.valueOf(12345678901L), new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T00:00:12.345678901"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), BigDecimal.valueOf(12345678901L), new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T00:00:12.345678901"))),
             Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), "1978-03-28T01:02:03", new PlcDATE_AND_LTIME(LocalDateTime.parse("1978-03-28T01:02:03"))),
 
             // LDATE_AND_TIME values
@@ -433,7 +434,7 @@ class DefaultPlcValueHandlerTest {
 
     @ParameterizedTest
     @MethodSource("getSingleElementPlcValues")
-    void newPlcValue(PlcTag plcTag, Object input, PlcValue expected) {
+    void testSingleElementPlcValues(PlcTag plcTag, Object input, PlcValue expected) {
         PlcValueHandler sut = new DefaultPlcValueHandler();
 
         PlcValue plcValue = sut.newPlcValue(plcTag, input);
@@ -441,6 +442,88 @@ class DefaultPlcValueHandlerTest {
         assertNotNull(plcValue);
         assertEquals(expected, plcValue);
     }
+
+    private static Stream<Arguments> getPlcValueTypesRanges() {
+        return Stream.of(
+            Arguments.of(PlcBYTE.class),
+            Arguments.of(PlcWORD.class),
+            Arguments.of(PlcDWORD.class),
+            // TODO: Need to find out how to test these ...
+            //Arguments.of(PlcLWORD.class),
+            Arguments.of(PlcUSINT.class),
+            Arguments.of(PlcUINT.class),
+            Arguments.of(PlcUDINT.class),
+            // TODO: Need to find out how to test these ...
+            //Arguments.of(PlcULINT.class),
+            Arguments.of(PlcSINT.class),
+            Arguments.of(PlcINT.class),
+            Arguments.of(PlcDINT.class),
+            // TODO: Need to find out how to test these ...
+            //Arguments.of(PlcLINT.class),
+            //Arguments.of(PlcREAL.class),
+            //Arguments.of(PlcLREAL.class),
+            Arguments.of(PlcCHAR.class),
+            Arguments.of(PlcWCHAR.class)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("getPlcValueTypesRanges")
+    void testPlcValueTypesRanges(Class<? extends PlcValue> plcValueType) throws Exception {
+        Field minValueField = plcValueType.getField("MIN_VALUE");
+        Number minValue = (Number) minValueField.get(null);
+        Field maxValueField = plcValueType.getField("MAX_VALUE");
+        Number maxValue = (Number) maxValueField.get(null);
+
+        // Set value to one less than the lower bound (Should fail)
+        try {
+            plcValueType.getConstructor(Long.class).newInstance(minValue.longValue() - 1);
+            fail("Set value to one less than the lower bound should have failed");
+        } catch (Exception e) {
+            // We want an exception here ...
+        }
+
+        // Set value to exactly the lower bound (Should succeed)
+        try {
+            PlcValue plcValue = plcValueType.getConstructor(Long.class).newInstance(minValue.longValue());
+            assertEquals(minValue.longValue(), plcValue.getLong());
+        } catch (Exception e) {
+            fail("Set value to exactly the lower bound should have succeeded");
+        }
+
+        // Set value to one more than the lower bound (Should succeed)
+        try {
+            PlcValue plcValue = plcValueType.getConstructor(Long.class).newInstance(minValue.longValue() + 1);
+            assertEquals(minValue.longValue() + 1, plcValue.getLong());
+        } catch (Exception e) {
+            fail("Set value to one more than the lower bound should have succeeded");
+        }
+
+        // Set value to one less than the upper bound (Should succeed)
+        try {
+            PlcValue plcValue = plcValueType.getConstructor(Long.class).newInstance(maxValue.longValue() - 1);
+            assertEquals(maxValue.longValue() - 1, plcValue.getLong());
+        } catch (Exception e) {
+            fail("Set value to one less than the upper bound should have succeeded");
+        }
+
+        // Set value to exactly the upper bound (Should succeed)
+        try {
+            PlcValue plcValue = plcValueType.getConstructor(Long.class).newInstance(maxValue.longValue());
+            assertEquals(maxValue.longValue(), plcValue.getLong());
+        } catch (Exception e) {
+            fail("Set value to exactly the upper bound should have succeeded");
+        }
+
+        // Set value to one more than the upper bound (Should fail)
+        try {
+            plcValueType.getConstructor(Long.class).newInstance(maxValue.longValue() + 1);
+            fail("Set value to one more than the upper bound should have failed");
+        } catch (Exception e) {
+            // We want an exception here ...
+        }
+    }
+
 
     @Test
     void newPlcValues() {

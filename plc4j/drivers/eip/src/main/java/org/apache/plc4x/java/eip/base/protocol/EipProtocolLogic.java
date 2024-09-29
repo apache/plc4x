@@ -30,11 +30,13 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.eip.base.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.base.tag.EipTag;
+import org.apache.plc4x.java.eip.base.tag.EipTagHandler;
 import org.apache.plc4x.java.eip.logix.configuration.LogixConfiguration;
 import org.apache.plc4x.java.eip.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -145,6 +147,11 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
         // Set the transaction manager to allow only one message at a time.
         this.tm = new RequestTransactionManager(1);
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new EipTagHandler();
     }
 
     @Override

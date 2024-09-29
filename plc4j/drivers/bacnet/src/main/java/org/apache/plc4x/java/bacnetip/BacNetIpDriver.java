@@ -25,7 +25,6 @@ import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetPcapReplayTransportConfiguration;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetRawSocketTransportConfiguration;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetUdpTransportConfiguration;
-import org.apache.plc4x.java.bacnetip.tag.BacNetIpTagHandler;
 import org.apache.plc4x.java.bacnetip.protocol.BacNetIpProtocolLogic;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -91,11 +90,6 @@ public class BacNetIpDriver extends GeneratedDriverBase<BVLC> {
     @Override
     protected boolean canSubscribe() {
         return true;
-    }
-
-    @Override
-    protected BacNetIpTagHandler getTagHandler() {
-        return new BacNetIpTagHandler();
     }
 
     @Override

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,27 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.plc4x.java.api.exceptions;
 
-package org.apache.plc4x.java.simulated.tag;
+/**
+ * Indicates an invalid tag address.
+ */
+public class PlcTagNotFoundException extends PlcRuntimeException {
 
-import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
-import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
+    private static final long serialVersionUID = 1L;
+    private final String tagToBeParsed;
 
-public class SimulatedTagHandler implements PlcTagHandler {
-
-    @Override
-    public PlcTag parseTag(String tagAddress) {
-        if (SimulatedTag.matches(tagAddress)) {
-            return SimulatedTag.of(tagAddress);
-        }
-        throw new PlcInvalidTagException(tagAddress);
+    public PlcTagNotFoundException(String tagToBeParsed) {
+        super(tagToBeParsed + " not found");
+        this.tagToBeParsed = tagToBeParsed;
     }
 
-    @Override
-    public PlcQuery parseQuery(String query) {
-        throw new UnsupportedOperationException("This driver doesn't support browsing");
+    public PlcTagNotFoundException(String tagToBeParsed, Throwable cause) {
+        super(tagToBeParsed + " not found", cause);
+        this.tagToBeParsed = tagToBeParsed;
+    }
+
+    public String getTagToBeParsed() {
+        return tagToBeParsed;
     }
 
 }

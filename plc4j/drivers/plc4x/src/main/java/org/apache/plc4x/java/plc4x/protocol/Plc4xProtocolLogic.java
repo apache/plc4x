@@ -23,10 +23,12 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
 import org.apache.plc4x.java.plc4x.readwrite.*;
+import org.apache.plc4x.java.plc4x.tag.Plc4XTagHandler;
 import org.apache.plc4x.java.plc4x.tag.Plc4xTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
@@ -59,6 +61,11 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
         this.remoteConnectionString = configuration.getRemoteConnectionString();
         this.requestTimeout = Duration.ofMillis(configuration.getRequestTimeout());
         this.connectionId = 0;
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new Plc4XTagHandler();
     }
 
     @Override

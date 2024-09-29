@@ -22,8 +22,10 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.openprotocol.readwrite.OpenProtocolMessage;
+import org.apache.plc4x.java.openprotocol.tag.OpenProtocolTagHandler;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 
@@ -32,6 +34,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class OpenProtocolProtocolLogic extends Plc4xProtocolBase<OpenProtocolMessage> implements PlcSubscriber {
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new OpenProtocolTagHandler();
+    }
 
     @Override
     public void onConnect(ConversationContext<OpenProtocolMessage> context) {

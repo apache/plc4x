@@ -26,7 +26,6 @@ import org.apache.plc4x.java.eip.base.protocol.EipProtocolLogic;
 import org.apache.plc4x.java.eip.logix.configuration.LogixConfiguration;
 import org.apache.plc4x.java.eip.logix.configuration.LogixTcpTransportConfiguration;
 import org.apache.plc4x.java.eip.readwrite.EipPacket;
-import org.apache.plc4x.java.eip.base.tag.EipTagHandler;
 import org.apache.plc4x.java.spi.connection.*;
 
 import java.util.Collections;
@@ -69,11 +68,6 @@ public class LogixDriver extends GeneratedDriverBase<EipPacket> {
     @Override
     protected List<String> getSupportedTransportCodes() {
         return Collections.singletonList("tcp");
-    }
-
-    @Override
-    protected PlcTagHandler getTagHandler() {
-        return new EipTagHandler();
     }
 
     @Override

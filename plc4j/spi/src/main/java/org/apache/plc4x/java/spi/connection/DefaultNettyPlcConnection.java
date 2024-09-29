@@ -66,7 +66,6 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                                      boolean canWrite,
                                      boolean canSubscribe,
                                      boolean canBrowse,
-                                     PlcTagHandler tagHandler,
                                      PlcValueHandler valueHandler,
                                      PlcConnectionConfiguration configuration,
                                      ChannelFactory channelFactory,
@@ -77,7 +76,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                                      ProtocolStackConfigurer<?> stackConfigurer,
                                      BaseOptimizer optimizer,
                                      PlcAuthentication authentication) {
-        super(canPing, canRead, canWrite, canSubscribe, canBrowse, tagHandler, valueHandler, optimizer, authentication);
+        super(canPing, canRead, canWrite, canSubscribe, canBrowse, valueHandler, optimizer, authentication);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.fireDiscoverEvent = fireDiscoverEvent;

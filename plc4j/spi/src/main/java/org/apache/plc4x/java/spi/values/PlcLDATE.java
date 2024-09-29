@@ -29,13 +29,14 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 public class PlcLDATE extends PlcIECValue<LocalDate> {
 
     public static PlcLDATE of(Object value) {
-        if (value instanceof LocalDate) {
+        if (value instanceof PlcLDATE) {
+            return (PlcLDATE) value;
+        } else if (value instanceof LocalDate) {
             return new PlcLDATE((LocalDate) value);
         } else if (value instanceof Byte) {
             return new PlcLDATE((Byte) value);
@@ -62,7 +63,7 @@ public class PlcLDATE extends PlcIECValue<LocalDate> {
         BigInteger epochSecond = nanosecondsSinceEpoch.divide(BigInteger.valueOf(1000_000));
         BigInteger nanoOfSecond = nanosecondsSinceEpoch.mod(BigInteger.valueOf(1000_000));
         return new PlcLDATE(LocalDateTime.ofEpochSecond(epochSecond.longValue(), nanoOfSecond.intValue(),
-            OffsetDateTime.now().getOffset()).toLocalDate());
+            ZoneOffset.UTC).toLocalDate());
     }
 
     public PlcLDATE(LocalDate value) {
@@ -73,56 +74,56 @@ public class PlcLDATE extends PlcIECValue<LocalDate> {
     public PlcLDATE(Byte secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond((long) secondsSinceEpoch, 0,
-            OffsetDateTime.now().getOffset()).toLocalDate();
+            ZoneOffset.UTC).toLocalDate();
         this.isNullable = false;
     }
 
     public PlcLDATE(Short secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond((long) secondsSinceEpoch, 0,
-            OffsetDateTime.now().getOffset()).toLocalDate();
+            ZoneOffset.UTC).toLocalDate();
         this.isNullable = false;
     }
 
     public PlcLDATE(Integer secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond((long) secondsSinceEpoch, 0,
-            OffsetDateTime.now().getOffset()).toLocalDate();
+            ZoneOffset.UTC).toLocalDate();
         this.isNullable = false;
     }
 
     public PlcLDATE(Long secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond((long) secondsSinceEpoch, 0,
-            OffsetDateTime.now().getOffset()).toLocalDate();
+            ZoneOffset.UTC).toLocalDate();
         this.isNullable = false;
     }
 
     public PlcLDATE(Float secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
-            OffsetDateTime.now().getOffset()).toLocalDate();
+            ZoneOffset.UTC).toLocalDate();
         this.isNullable = false;
     }
 
     public PlcLDATE(Double secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
-            OffsetDateTime.now().getOffset()).toLocalDate();
+            ZoneOffset.UTC).toLocalDate();
         this.isNullable = false;
     }
 
     public PlcLDATE(BigInteger secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
-            OffsetDateTime.now().getOffset()).toLocalDate();
+            ZoneOffset.UTC).toLocalDate();
         this.isNullable = false;
     }
 
     public PlcLDATE(BigDecimal secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
-            OffsetDateTime.now().getOffset()).toLocalDate();
+            ZoneOffset.UTC).toLocalDate();
         this.isNullable = false;
     }
 
@@ -132,7 +133,7 @@ public class PlcLDATE extends PlcIECValue<LocalDate> {
     }
 
     public BigInteger getNanosecondsSinceEpoch() {
-        Instant instant = getDateTime().toInstant(OffsetDateTime.now().getOffset());
+        Instant instant = getDateTime().toInstant(ZoneOffset.UTC);
         return BigInteger.valueOf(instant.getEpochSecond()).multiply(BigInteger.valueOf(1000_000_000)).add(BigInteger.valueOf(instant.getNano()));
     }
 
@@ -143,7 +144,7 @@ public class PlcLDATE extends PlcIECValue<LocalDate> {
 
     @Override
     public long getLong() {
-        Instant instant = value.atStartOfDay(OffsetDateTime.now().getOffset()).toInstant();
+        Instant instant = value.atStartOfDay(ZoneOffset.UTC).toInstant();
         return (instant.toEpochMilli() / 1000);
     }
 

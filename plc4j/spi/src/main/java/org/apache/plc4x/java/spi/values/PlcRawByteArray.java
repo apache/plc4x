@@ -26,7 +26,9 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 public class PlcRawByteArray extends PlcIECValue<byte[]> {
 
     public static PlcRawByteArray of(Object value) {
-        if (value instanceof byte[]) {
+        if (value instanceof PlcRawByteArray) {
+            return (PlcRawByteArray) value;
+        } else if (value instanceof byte[]) {
             return new PlcRawByteArray((byte[]) value);
         }
         throw new IllegalArgumentException("Only byte[] supported here");

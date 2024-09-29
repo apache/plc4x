@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.cbus.readwrite.CBusCommand;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
@@ -46,6 +47,11 @@ public class CBusProtocolLogic extends Plc4xProtocolBase<CBusCommand> {
         // No concurrent requests can be sent anyway. It will be updated when receiving the
         // S7ParameterSetupCommunication response.
         this.tm = new RequestTransactionManager(1);
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return null;
     }
 
     @Override

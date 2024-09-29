@@ -37,10 +37,12 @@ import org.apache.plc4x.java.opcua.context.Conversation;
 import org.apache.plc4x.java.opcua.context.OpcuaDriverContext;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
 import org.apache.plc4x.java.opcua.readwrite.*;
+import org.apache.plc4x.java.opcua.tag.OpcuaPlcTagHandler;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
@@ -91,6 +93,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     @Override
     public void setConfiguration(OpcuaConfiguration configuration) {
         this.configuration = configuration;
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new OpcuaPlcTagHandler();
     }
 
     @Override

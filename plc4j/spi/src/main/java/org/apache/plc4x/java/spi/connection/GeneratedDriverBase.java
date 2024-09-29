@@ -285,8 +285,6 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         return null;
     }
 
-    protected abstract PlcTagHandler getTagHandler();
-
     protected PlcValueHandler getValueHandler() {
         return new DefaultPlcValueHandler();
     }
@@ -400,7 +398,6 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
         return new DefaultNettyPlcConnection(
             canPing(), canRead(), canWrite(), canSubscribe(), canBrowse(),
-            getTagHandler(),
             getValueHandler(),
             configuration,
             channelFactory,

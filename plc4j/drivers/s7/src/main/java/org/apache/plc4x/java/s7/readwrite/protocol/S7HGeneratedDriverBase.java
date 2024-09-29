@@ -29,7 +29,6 @@ import org.apache.plc4x.java.s7.readwrite.configuration.S7TcpTransportConfigurat
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.transport.Transport;
 import org.slf4j.Logger;
@@ -162,7 +161,6 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         return new S7HPlcConnection(
             canPing(),
             canRead(), canWrite(), canSubscribe(), canBrowse(),
-            getTagHandler(),
             getValueHandler(),
             configuration,
             channelFactory,
@@ -174,11 +172,6 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
             getStackConfigurer(transport),
             getOptimizer(),
             getAuthentication());
-    }
-
-    @Override
-    protected PlcTagHandler getTagHandler() {
-        throw new UnsupportedOperationException("getTagHandler, Not supported yet.");
     }
 
     @Override

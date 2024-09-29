@@ -24,10 +24,8 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.firmata.readwrite.configuration.FirmataConfiguration;
 import org.apache.plc4x.java.firmata.readwrite.context.FirmataDriverContext;
 import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTag;
-import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTagHandler;
 import org.apache.plc4x.java.firmata.readwrite.protocol.FirmataProtocolLogic;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
@@ -72,11 +70,6 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
     @Override
     protected boolean canSubscribe() {
         return true;
-    }
-
-    @Override
-    protected PlcTagHandler getTagHandler() {
-        return new FirmataTagHandler();
     }
 
     /**

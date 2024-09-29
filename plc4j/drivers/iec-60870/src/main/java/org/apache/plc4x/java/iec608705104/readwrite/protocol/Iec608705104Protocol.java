@@ -31,9 +31,11 @@ import org.apache.plc4x.java.iec608705104.readwrite.configuration.Iec608705014Co
 import org.apache.plc4x.java.iec608705104.readwrite.messages.Iec608705104PlcSubscriptionEvent;
 import org.apache.plc4x.java.iec608705104.readwrite.model.Iec608705104SubscriptionHandle;
 import org.apache.plc4x.java.iec608705104.readwrite.tag.Iec608705104Tag;
+import org.apache.plc4x.java.iec608705104.readwrite.tag.Iec608705104TagHandler;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.PlcBrowser;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
@@ -69,6 +71,11 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
     @Override
     public void setConfiguration(Iec608705014Configuration configuration) {
         this.configuration = configuration;
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new Iec608705104TagHandler();
     }
 
     @Override

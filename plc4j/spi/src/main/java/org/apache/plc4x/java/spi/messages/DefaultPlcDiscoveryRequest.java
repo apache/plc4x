@@ -25,6 +25,7 @@ import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class DefaultPlcDiscoveryRequest implements PlcDiscoveryRequest, Serializable {
@@ -73,7 +74,7 @@ public class DefaultPlcDiscoveryRequest implements PlcDiscoveryRequest, Serializ
         private final LinkedHashMap<String, String> queries;
 
         public Builder(PlcDiscoverer discoverer) {
-            this.discoverer = discoverer;
+            this.discoverer = Objects.requireNonNull(discoverer);
             queries = new LinkedHashMap<>();
         }
 

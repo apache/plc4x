@@ -29,7 +29,6 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.spi.values.PlcRawByteArray;
 import org.apache.plc4x.java.spi.values.PlcStruct;
-import org.apache.plc4x.java.spi.values.PlcValues;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;
@@ -145,16 +144,10 @@ public abstract class ManualTest {
                     // Try writing the value to the PLC.
                     if (testWrite) {
                         System.out.println(" - Writing: " + tagName);
-                        PlcValue plcValue;
-                        if (testCase.expectedReadValue instanceof PlcValue) {
-                            plcValue = ((PlcValue) testCase.expectedReadValue);
-                        } else {
-                            plcValue = PlcValues.of(testCase.expectedReadValue);
-                        }
 
                         // Prepare the write request
                         PlcWriteRequest writeRequest = plcConnection.writeRequestBuilder().addTagAddress(
-                            tagName, testCase.address, plcValue).build();
+                            tagName, testCase.address, testCase.expectedReadValue).build();
 
                         // Execute the write request
                         long startTime = System.currentTimeMillis();

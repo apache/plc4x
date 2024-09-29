@@ -30,7 +30,9 @@ import java.nio.charset.StandardCharsets;
 public class PlcSTRING extends PlcIECValue<String> {
 
     public static PlcSTRING of(Object value) {
-        if (value instanceof String) {
+        if (value instanceof PlcSTRING) {
+            return (PlcSTRING) value;
+        } else if (value instanceof String) {
             return new PlcSTRING((String) value);
         }
         return new PlcSTRING(String.valueOf(value));
@@ -201,7 +203,7 @@ public class PlcSTRING extends PlcIECValue<String> {
 
     @Override
     public String toString() {
-        return "\"" + value + "\"";
+        return value;
     }
 
     @Override
