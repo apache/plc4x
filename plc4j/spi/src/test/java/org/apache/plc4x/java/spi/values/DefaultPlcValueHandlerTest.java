@@ -36,6 +36,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
@@ -392,7 +393,7 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.LTIME_OF_DAY), "12:34:56", new PlcLTIME_OF_DAY(LocalTime.parse("12:34:56"))),
 
             // DATE_AND_TIME values (Numeric values are interpreted as seconds since epoch)
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), LocalDateTime.ofEpochSecond(1234, 0, OffsetDateTime.now().getOffset()), new PlcDATE_AND_TIME(LocalDateTime.parse("1970-01-01T02:20:34"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), LocalDateTime.ofEpochSecond(1234, 0, ZoneOffset.UTC), new PlcDATE_AND_TIME(LocalDateTime.parse("1970-01-01T00:20:34"))),
             Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), (byte) 123, new PlcDATE_AND_TIME(LocalDateTime.parse("1970-01-01T00:02:03"))),
             Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), (short) 12345, new PlcDATE_AND_TIME(LocalDateTime.parse("1970-01-01T03:25:45"))),
             Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), 12345678, new PlcDATE_AND_TIME(LocalDateTime.parse("1970-05-23T21:21:18"))),
@@ -404,7 +405,7 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_TIME), "1978-03-28T12:34:56", new PlcDATE_AND_TIME(LocalDateTime.parse("1978-03-28T12:34:56"))),
 
             // DATE_AND_LTIME values (Numeric values are interpreted as milliseconds since epoch)
-            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), LocalDateTime.ofEpochSecond(1234, 5678, OffsetDateTime.now().getOffset()), new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T02:20:34.000005678"))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), LocalDateTime.ofEpochSecond(1234, 5678, ZoneOffset.UTC), new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T00:20:34.000005678"))),
             Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), (byte) 123, new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T00:00:00.000000123"))),
             Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), (short) 12345, new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T00:00:00.000012345"))),
             Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), 1234567890, new PlcDATE_AND_LTIME(LocalDateTime.parse("1970-01-01T00:00:01.234567890"))),
@@ -416,7 +417,7 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), "1978-03-28T01:02:03", new PlcDATE_AND_LTIME(LocalDateTime.parse("1978-03-28T01:02:03"))),
 
             // LDATE_AND_TIME values
-            Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), LocalDateTime.ofEpochSecond(1234, 5678, OffsetDateTime.now().getOffset()), new PlcLDATE_AND_TIME(LocalDateTime.parse("1970-01-01T02:20:34.000005678"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), LocalDateTime.ofEpochSecond(1234, 5678, ZoneOffset.UTC), new PlcLDATE_AND_TIME(LocalDateTime.parse("1970-01-01T00:20:34.000005678"))),
             Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), (byte) 123, new PlcLDATE_AND_TIME(LocalDateTime.parse("1970-01-01T00:00:00.123"))),
             Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), (short) 12345, new PlcLDATE_AND_TIME(LocalDateTime.parse("1970-01-01T00:00:12.345"))),
             Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), 1234567890, new PlcLDATE_AND_TIME(LocalDateTime.parse("1970-01-15T06:56:07.890"))),
