@@ -31,11 +31,13 @@ public class MiloTestContainer extends GenericContainer<MiloTestContainer> {
 
     private final static Logger logger = LoggerFactory.getLogger(MiloTestContainer.class);
 
+    private final static ImageFromDockerfile IMAGE = inlineImage();
+
     public MiloTestContainer() {
-        super(inlineImage());
+        super(IMAGE);
 
         waitingFor(Wait.forLogMessage("Server started\\s*", 1));
-        addFixedExposedPort(12686, 12686);
+        addExposedPort(12686);
     }
 
     private static ImageFromDockerfile inlineImage() {

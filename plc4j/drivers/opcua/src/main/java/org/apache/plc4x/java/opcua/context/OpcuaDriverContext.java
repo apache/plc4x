@@ -111,10 +111,6 @@ public class OpcuaDriverContext implements DriverContext, HasConfiguration<Opcua
         return host;
     }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
-
     public String getPort() {
         return port;
     }
@@ -125,10 +121,6 @@ public class OpcuaDriverContext implements DriverContext, HasConfiguration<Opcua
 
     public String getTransportEndpoint() {
         return transportEndpoint;
-    }
-    
-    public void setTransportEndpoint(String transportEndpoint) {
-        this.transportEndpoint = transportEndpoint;
     }
 
     public X509Certificate getServerCertificate() {
@@ -146,6 +138,13 @@ public class OpcuaDriverContext implements DriverContext, HasConfiguration<Opcua
         host = matcher.group("transportHost");
         port = matcher.group("transportPort");
         transportEndpoint = matcher.group("transportEndpoint");
+
+        if (configuration.getEndpointHost() != null) {
+            host = configuration.getEndpointHost();
+        }
+        if (configuration.getEndpointPort() != null) {
+            port = String.valueOf(configuration.getEndpointPort());
+        }
 
         String portAddition = port != null ? ":" + port : "";
         endpoint = "opc." + code + "://" + host + portAddition + transportEndpoint;
