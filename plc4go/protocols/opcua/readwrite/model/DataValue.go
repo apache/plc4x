@@ -642,7 +642,11 @@ func (m *_DataValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedMergeSingleBoxes(), utils.WithWriteBufferBoxBasedOmitEmptyBoxes())
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
 	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}

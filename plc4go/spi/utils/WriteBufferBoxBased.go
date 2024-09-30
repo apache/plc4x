@@ -283,26 +283,25 @@ func (b *boxedWriteBuffer) WriteVirtual(ctx context.Context, logicalName string,
 	switch value.(type) {
 	case bool:
 		stringValue := fmt.Sprintf("%t", value)
-		asciiBox = b.asciiBoxWriterLight.BoxString(stringValue, WithAsciiBoxName(logicalName), WithAsciiBoxFooter(b.getPosFooter(int(-1))))
+		asciiBox = b.asciiBoxWriterLight.BoxString(stringValue, WithAsciiBoxName(logicalName))
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
 		stringValue := fmt.Sprintf("%#x %d%s", value, value, additionalStringRepresentation)
-		asciiBox = b.asciiBoxWriterLight.BoxString(stringValue, WithAsciiBoxName(logicalName), WithAsciiBoxFooter(b.getPosFooter(int(-1))))
+		asciiBox = b.asciiBoxWriterLight.BoxString(stringValue, WithAsciiBoxName(logicalName))
 	case float32, float64:
 		stringValue := fmt.Sprintf("%x %f%s", value, value, additionalStringRepresentation)
-		asciiBox = b.asciiBoxWriterLight.BoxString(stringValue, WithAsciiBoxName(logicalName), WithAsciiBoxFooter(b.getPosFooter(int(-1))))
+		asciiBox = b.asciiBoxWriterLight.BoxString(stringValue, WithAsciiBoxName(logicalName))
 	case Serializable:
 		virtualBoxedWriteBuffer := NewWriteBufferBoxBased().(*boxedWriteBuffer)
 		virtualBoxedWriteBuffer.mergeSingleBoxes = b.mergeSingleBoxes
 		virtualBoxedWriteBuffer.omitEmptyBoxes = b.omitEmptyBoxes
 		virtualBoxedWriteBuffer.printPosLengthFooter = b.printPosLengthFooter
 		if err := value.(Serializable).SerializeWithWriteBuffer(ctx, virtualBoxedWriteBuffer); err == nil {
-			length := int(value.(LengthAware).GetLengthInBits(ctx))
-			asciiBox = b.asciiBoxWriterLight.BoxBox(virtualBoxedWriteBuffer.GetBox(), WithAsciiBoxName(logicalName), WithAsciiBoxFooter(b.getPosFooter(length)))
+			asciiBox = b.asciiBoxWriterLight.BoxBox(virtualBoxedWriteBuffer.GetBox(), WithAsciiBoxName(logicalName))
 		} else {
-			b.asciiBoxWriterLight.BoxString(err.Error(), WithAsciiBoxName(logicalName), WithAsciiBoxFooter(b.getPosFooter(int(-1))))
+			b.asciiBoxWriterLight.BoxString(err.Error(), WithAsciiBoxName(logicalName))
 		}
 	default:
-		asciiBox = b.asciiBoxWriterLight.BoxString(fmt.Sprintf("%v%s", value, additionalStringRepresentation), WithAsciiBoxName(logicalName), WithAsciiBoxFooter(b.getPosFooter(int(-1))))
+		asciiBox = b.asciiBoxWriterLight.BoxString(fmt.Sprintf("%v%s", value, additionalStringRepresentation), WithAsciiBoxName(logicalName))
 	}
 	b.PushBack(asciiBox)
 	return nil
