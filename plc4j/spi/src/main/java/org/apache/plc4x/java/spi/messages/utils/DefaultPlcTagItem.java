@@ -38,13 +38,13 @@ public class DefaultPlcTagItem implements PlcTagItem, Serializable {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext("DefaultPlcTagItem");
+        writeBuffer.pushContext("PlcTagItem");
         if(tag instanceof Serializable) {
             writeBuffer.pushContext("tag");
             writeBuffer.writeSerializable((Serializable) tag);
             writeBuffer.popContext("tag");
         }
-        writeBuffer.popContext("DefaultPlcTagItem");
+        writeBuffer.popContext("PlcTagItem");
     }
 
 }

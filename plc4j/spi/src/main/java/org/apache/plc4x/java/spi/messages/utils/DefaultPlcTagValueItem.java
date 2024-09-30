@@ -39,7 +39,7 @@ public class DefaultPlcTagValueItem extends DefaultPlcTagItem implements PlcTagV
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext("DefaultPlcTagValueItem");
+        writeBuffer.pushContext("PlcTagValueItem");
         if(getTag() instanceof Serializable) {
             writeBuffer.pushContext("tag");
             writeBuffer.writeSerializable((Serializable) getTag());
@@ -50,7 +50,7 @@ public class DefaultPlcTagValueItem extends DefaultPlcTagItem implements PlcTagV
             writeBuffer.writeSerializable((Serializable) value);
             writeBuffer.popContext("value");
         }
-        writeBuffer.popContext("DefaultPlcTagValueItem");
+        writeBuffer.popContext("PlcTagValueItem");
     }
 
 }

@@ -38,9 +38,9 @@ public class DefaultPlcTagErrorItem implements PlcTagItem, PlcTagValueItem, Seri
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext("DefaultPlcTagErrorItem");
+        writeBuffer.pushContext("PlcTagErrorItem");
         writeBuffer.writeString("responseCode", responseCode.name().length() * 8, responseCode.name());
-        writeBuffer.popContext("DefaultPlcTagErrorItem");
+        writeBuffer.popContext("PlcTagErrorItem");
     }
 
 }

@@ -137,7 +137,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext(getClass().getSimpleName());
+        writeBuffer.pushContext("PlcBrowseItem");
         writeBuffer.writeString("address",
             tag.getAddressString().getBytes(StandardCharsets.UTF_8).length * 8,
             tag.getAddressString(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
@@ -169,7 +169,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
             }
             writeBuffer.popContext("options");
         }
-        writeBuffer.popContext(getClass().getSimpleName());
+        writeBuffer.popContext("PlcBrowseItem");
     }
 
 }

@@ -103,7 +103,7 @@ public class DefaultPlcDiscoveryItem implements PlcDiscoveryItem, Serializable {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext(getClass().getSimpleName());
+        writeBuffer.pushContext("PlcDiscoveryItem");
 
         writeBuffer.writeString("protocolCode",
             protocolCode.getBytes(StandardCharsets.UTF_8).length * 8,
@@ -134,7 +134,7 @@ public class DefaultPlcDiscoveryItem implements PlcDiscoveryItem, Serializable {
                 name, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         }
 
-        writeBuffer.popContext(getClass().getSimpleName());
+        writeBuffer.popContext("PlcDiscoveryItem");
     }
 
 }

@@ -48,7 +48,7 @@ public class DefaultPlcResponseItem<T> implements Serializable, PlcResponseItem<
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext("DefaultPlcResponseItem");
+        writeBuffer.pushContext("PlcResponseItem");
         String codeName = code.name();
         writeBuffer.writeString("code",
             codeName.getBytes(StandardCharsets.UTF_8).length * 8,
@@ -61,7 +61,7 @@ public class DefaultPlcResponseItem<T> implements Serializable, PlcResponseItem<
             ((Serializable) value).serialize(writeBuffer);
             writeBuffer.popContext("value");
         }
-        writeBuffer.popContext("DefaultPlcResponseItem");
+        writeBuffer.popContext("PlcResponseItem");
     }
 
 }

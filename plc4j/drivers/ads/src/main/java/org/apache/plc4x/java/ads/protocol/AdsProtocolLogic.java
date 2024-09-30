@@ -521,7 +521,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     itemArrayInfo.add(new DefaultPlcBrowseItemArrayInfo(
                         adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
                 }
-                DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo), symbol.getName(),
+                DefaultPlcBrowseItemList item = new DefaultPlcBrowseItemList(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo), symbol.getName(),
                     true, !symbol.getFlagReadOnly(), true, false, childMap, options, itemArrayInfo);
 
                 // Check if this item should be added to the result
@@ -584,7 +584,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
             }
             // Add the type itself.
-            values.add(new DefaultListPlcBrowseItem(new SymbolicAdsTag(
+            values.add(new DefaultPlcBrowseItemList(new SymbolicAdsTag(
                 basePath + "." + child.getPropertyName(), plc4xPlcValueType, arrayInfo), child.getPropertyName(),
                 true, parentWritable, true, false, childMap, options, itemArrayInfo));
         }

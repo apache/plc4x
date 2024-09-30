@@ -27,15 +27,14 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
+public class DefaultPlcBrowseItemList extends DefaultPlcBrowseItem {
 
     private final List<PlcBrowseItemArrayInfo> arrayInformation;
 
-    public DefaultListPlcBrowseItem(PlcTag tag,
+    public DefaultPlcBrowseItemList(PlcTag tag,
                                     String name,
                                     boolean readable,
                                     boolean writable,
@@ -80,7 +79,7 @@ public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext(getClass().getSimpleName());
+        writeBuffer.pushContext("PlcBrowseItemList");
         writeBuffer.writeString("address",
             getTag().getAddressString().getBytes(StandardCharsets.UTF_8).length * 8,
             getTag().getAddressString(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
@@ -93,7 +92,7 @@ public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
             writeBuffer.pushContext("children");
             for (PlcBrowseItem child : getChildren().values()) {
                 writeBuffer.pushContext("child");
-                ((DefaultListPlcBrowseItem) child).serialize(writeBuffer);
+                ((DefaultPlcBrowseItemList) child).serialize(writeBuffer);
                 writeBuffer.popContext("child");
             }
             writeBuffer.popContext("children");
@@ -107,12 +106,12 @@ public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
                     optionEntry.getKey(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
                 // TODO: Find out how to serialize a PlcValue
                 //writeBuffer.writeString("value", optionEntry.getValue().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), optionEntry.getValue());
-                ((DefaultListPlcBrowseItem) optionEntry).serialize(writeBuffer);
+                ((DefaultPlcBrowseItemList) optionEntry).serialize(writeBuffer);
                 writeBuffer.popContext("option");
             }
             writeBuffer.popContext("options");
         }
-        writeBuffer.popContext(getClass().getSimpleName());
+        writeBuffer.popContext("PlcBrowseItemList");
     }
 
 }
