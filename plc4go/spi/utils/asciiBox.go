@@ -44,8 +44,8 @@ var ANSI_PATTERN = regexp.MustCompile("[\u001b\u009b][\\[()#;?]*(?:[0-9]{1,4}(?:
 
 // AsciiBoxer is used to render something in a box
 type AsciiBoxer interface {
-	// Box where int param is the proposed width
-	Box(string, int) AsciiBox
+	// Box with options
+	Box(...func(*BoxOptions)) AsciiBox
 }
 
 var AsciiBoxWriterDefault = NewAsciiBoxWriter()
@@ -60,11 +60,11 @@ var AsciiBoxWriterLight = NewAsciiBoxWriterWithCustomBorders(
 )
 
 type AsciiBoxWriter interface {
-	BoxBox(name string, box AsciiBox, charWidth int) AsciiBox
-	BoxString(name string, data string, charWidth int) AsciiBox
-	AlignBoxes(asciiBoxes []AsciiBox, desiredWith int) AsciiBox
-	BoxSideBySide(box1 AsciiBox, box2 AsciiBox) AsciiBox
-	BoxBelowBox(box1 AsciiBox, box2 AsciiBox) AsciiBox
+	BoxBox(box AsciiBox, options ...func(*BoxOptions)) AsciiBox
+	BoxString(data string, options ...func(*BoxOptions)) AsciiBox
+	AlignBoxes(asciiBoxes []AsciiBox, desiredWith int, options ...func(*BoxOptions)) AsciiBox
+	BoxSideBySide(box1 AsciiBox, box2 AsciiBox, options ...func(*BoxOptions)) AsciiBox
+	BoxBelowBox(box1 AsciiBox, box2 AsciiBox, options ...func(*BoxOptions)) AsciiBox
 }
 
 func NewAsciiBoxWriter() AsciiBoxWriter {
@@ -90,12 +90,35 @@ func NewAsciiBoxWriterWithCustomBorders(upperLeftCorner string, upperRightCorner
 		},
 		newLine:      '\n',
 		emptyPadding: " ",
-		// the name gets prefixed with a extra symbol for indent
+		// the name gets prefixed with an extra symbol for indent
 		extraNameCharIndent: 1,
 		borderWidth:         1,
 		newLineCharWidth:    1,
 		boxNameRegex:        regexp.MustCompile(`^` + upperLeftCorner + horizontalLine + `(?P<name>[\w /]+)` + horizontalLine + `*` + upperRightCorner),
 	}
+}
+
+func WithAsciiBoxName(name string) func(*BoxOptions) {
+	return func(opts *BoxOptions) {
+		opts.name = name
+	}
+}
+
+func WithAsciiBoxCharWidth(charWidth int) func(*BoxOptions) {
+	return func(opts *BoxOptions) {
+		opts.charWidth = charWidth
+	}
+}
+
+func WithAsciiBoxOptions(boxOptions BoxOptions) func(*BoxOptions) {
+	return func(opts *BoxOptions) {
+		*opts = boxOptions
+	}
+}
+
+type BoxOptions struct {
+	name      string
+	charWidth int
 }
 
 ///////////////////////////////////////
@@ -153,14 +176,23 @@ type asciiBoxWriter struct {
 	boxSet
 	newLine      rune
 	emptyPadding string
-	// the name gets prefixed with a extra symbol for indent
+	// the name gets prefixed with an extra symbol for indent
 	extraNameCharIndent int
 	borderWidth         int
 	newLineCharWidth    int
 	boxNameRegex        *regexp.Regexp
 }
 
-func (a *asciiBoxWriter) boxString(name string, data string, charWidth int) AsciiBox {
+var _ AsciiBoxWriter = (*asciiBoxWriter)(nil)
+
+func (a *asciiBoxWriter) boxString(data string, options ...func(*BoxOptions)) AsciiBox {
+	var opts BoxOptions
+	for _, opt := range options {
+		opt(&opts)
+	}
+	name := opts.name
+	charWidth := opts.charWidth
+
 	data = strings.ReplaceAll(data, "\r\n", "\n") // carriage return just messes with boxes
 	data = strings.ReplaceAll(data, "\t", "  ")   // Tabs just don't work well as they distort the boxes so we convert them to a double space
 	rawBox := AsciiBox{data, a, a.compressBoxSet()}
@@ -207,11 +239,11 @@ func (a *asciiBoxWriter) getBoxName(box AsciiBox) string {
 
 func (a *asciiBoxWriter) changeBoxName(box AsciiBox, newName string) AsciiBox {
 	if !a.hasBorders(box) {
-		return a.boxString(newName, box.String(), 0)
+		return a.boxString(box.String(), WithAsciiBoxName(newName))
 	}
 	minimumWidthWithNewName := countChars(a.upperLeftCorner + a.horizontalLine + newName + a.upperRightCorner)
 	nameLengthDifference := minimumWidthWithNewName - (a.unwrap(box).Width() + a.borderWidth + a.borderWidth)
-	newBox := a.BoxString(newName, a.unwrap(box).String(), box.Width()+nameLengthDifference)
+	newBox := a.BoxString(a.unwrap(box).String(), WithAsciiBoxName(newName), WithAsciiBoxCharWidth(box.Width()+nameLengthDifference))
 	newBox.compressedBoxSet = a.contributeToCompressedBoxSet(box)
 	return newBox
 }
@@ -338,20 +370,20 @@ func (m AsciiBox) String() string {
 }
 
 // BoxBox boxes a box
-func (a *asciiBoxWriter) BoxBox(name string, box AsciiBox, charWidth int) AsciiBox {
+func (a *asciiBoxWriter) BoxBox(box AsciiBox, options ...func(*BoxOptions)) AsciiBox {
 	// TODO: if there is a box bigger then others in that this will get distorted
-	newBox := a.BoxString(name, box.data, charWidth)
+	newBox := a.BoxString(box.data, options...)
 	newBox.compressedBoxSet = a.contributeToCompressedBoxSet(box)
 	return newBox
 }
 
 // BoxString boxes a newline separated string into a beautiful box
-func (a *asciiBoxWriter) BoxString(name string, data string, charWidth int) AsciiBox {
-	return a.boxString(name, data, charWidth)
+func (a *asciiBoxWriter) BoxString(data string, options ...func(*BoxOptions)) AsciiBox {
+	return a.boxString(data, options...)
 }
 
 // AlignBoxes aligns all boxes to a desiredWidth and orders them from left to right and top to bottom (size will be at min the size of the biggest box)
-func (a *asciiBoxWriter) AlignBoxes(boxes []AsciiBox, desiredWidth int) AsciiBox {
+func (a *asciiBoxWriter) AlignBoxes(boxes []AsciiBox, desiredWidth int, options ...func(*BoxOptions)) AsciiBox {
 	if len(boxes) == 0 {
 		return AsciiBox{"", a, a.compressBoxSet()}
 	}
@@ -398,7 +430,7 @@ func (a *asciiBoxWriter) AlignBoxes(boxes []AsciiBox, desiredWidth int) AsciiBox
 }
 
 // BoxSideBySide renders two boxes side by side
-func (a *asciiBoxWriter) BoxSideBySide(box1, box2 AsciiBox) AsciiBox {
+func (a *asciiBoxWriter) BoxSideBySide(box1, box2 AsciiBox, options ...func(*BoxOptions)) AsciiBox {
 	const newLineCharWidth = 1
 	var aggregateBox strings.Builder
 	box1Width := box1.Width()
@@ -436,7 +468,7 @@ func (a *asciiBoxWriter) BoxSideBySide(box1, box2 AsciiBox) AsciiBox {
 }
 
 // BoxBelowBox renders two boxes below
-func (a *asciiBoxWriter) BoxBelowBox(box1, box2 AsciiBox) AsciiBox {
+func (a *asciiBoxWriter) BoxBelowBox(box1, box2 AsciiBox, options ...func(*BoxOptions)) AsciiBox {
 	box1Width := box1.Width()
 	box2Width := box2.Width()
 	if box1Width < box2Width {

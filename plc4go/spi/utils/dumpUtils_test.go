@@ -28,7 +28,7 @@ import (
 type _TestBoxAnythingTestBoxer struct {
 }
 
-func (_TestBoxAnythingTestBoxer) Box(string, int) AsciiBox {
+func (_TestBoxAnythingTestBoxer) Box(options ...func(*BoxOptions)) AsciiBox {
 	return AsciiBox{data: "i did it"}
 }
 
@@ -46,9 +46,8 @@ type _TestBoxAnythingTestBoxerAnything struct {
 
 func TestBoxAnything(t *testing.T) {
 	type args struct {
-		name      string
-		anything  any
-		charWidth int
+		anything any
+		options  []func(*BoxOptions)
 	}
 	tests := []struct {
 		name string
@@ -79,9 +78,10 @@ func TestBoxAnything(t *testing.T) {
 		{
 			name: "test bool",
 			args: args{
-				name:      "exampleBool",
-				anything:  true,
-				charWidth: 0,
+				anything: true,
+				options: []func(*BoxOptions){
+					WithAsciiBoxName("exampleBool"),
+				},
 			},
 			want: asciiBoxForTest(`
 ╔═exampleBool╗
@@ -91,9 +91,10 @@ func TestBoxAnything(t *testing.T) {
 		{
 			name: "test int",
 			args: args{
-				name:      "exampleInt",
-				anything:  1,
-				charWidth: 0,
+				anything: 1,
+				options: []func(*BoxOptions){
+					WithAsciiBoxName("exampleInt"),
+				},
 			},
 			want: asciiBoxForTest(`
 ╔═exampleInt═════════╗
@@ -103,9 +104,10 @@ func TestBoxAnything(t *testing.T) {
 		{
 			name: "test int 123123123",
 			args: args{
-				name:      "exampleInt",
-				anything:  123123123,
-				charWidth: 0,
+				anything: 123123123,
+				options: []func(*BoxOptions){
+					WithAsciiBoxName("exampleInt"),
+				},
 			},
 			want: asciiBoxForTest(`
 ╔═exampleInt═════════════════╗
@@ -115,9 +117,10 @@ func TestBoxAnything(t *testing.T) {
 		{
 			name: "test []byte",
 			args: args{
-				name:      "example byte[]",
-				anything:  []byte{1, 2, 3},
-				charWidth: 0,
+				anything: []byte{1, 2, 3},
+				options: []func(*BoxOptions){
+					WithAsciiBoxName("example byte[]"),
+				},
 			},
 			want: asciiBoxForTest(`
 ╔═example byte[]╗
@@ -129,9 +132,10 @@ func TestBoxAnything(t *testing.T) {
 		{
 			name: "box string",
 			args: args{
-				name:      "example string",
-				anything:  "asdasdasdasdasd",
-				charWidth: 0,
+				anything: "asdasdasdasdasd",
+				options: []func(*BoxOptions){
+					WithAsciiBoxName("example string"),
+				},
 			},
 			want: asciiBoxForTest(`
 ╔═example string╗
@@ -141,9 +145,10 @@ func TestBoxAnything(t *testing.T) {
 		{
 			name: "box stringer",
 			args: args{
-				name:      "example stringer",
-				anything:  _TestBoxAnythingTestBoxerStringer{},
-				charWidth: 0,
+				anything: _TestBoxAnythingTestBoxerStringer{},
+				options: []func(*BoxOptions){
+					WithAsciiBoxName("example stringer"),
+				},
 			},
 			want: asciiBoxForTest(`
 ╔═example stringer╗
@@ -153,12 +158,13 @@ func TestBoxAnything(t *testing.T) {
 		{
 			name: "anything struct",
 			args: args{
-				name: "any struct",
 				anything: _TestBoxAnythingTestBoxerAnything{
 					someField: "a field value",
 					someInt:   234243,
 				},
-				charWidth: 0,
+				options: []func(*BoxOptions){
+					WithAsciiBoxName("any struct"),
+				},
 			},
 			want: asciiBoxForTest(`
 ╔═any struct═══════════╗
@@ -168,12 +174,13 @@ func TestBoxAnything(t *testing.T) {
 		{
 			name: "anything struct pointer",
 			args: args{
-				name: "any struct",
 				anything: &_TestBoxAnythingTestBoxerAnything{
 					someField: "a field value",
 					someInt:   234243,
 				},
-				charWidth: 0,
+				options: []func(*BoxOptions){
+					WithAsciiBoxName("any struct"),
+				},
 			},
 			want: asciiBoxForTest(`
 ╔═any struct═══════════╗
@@ -183,12 +190,13 @@ func TestBoxAnything(t *testing.T) {
 		{
 			name: "int pointer",
 			args: args{
-				name: "int pointer",
 				anything: func() *int {
 					a := 13
 					return &a
 				}(),
-				charWidth: 0,
+				options: []func(*BoxOptions){
+					WithAsciiBoxName("int pointer"),
+				},
 			},
 			want: asciiBoxForTest(`
 ╔═int pointer═════════╗
@@ -198,7 +206,6 @@ func TestBoxAnything(t *testing.T) {
 		{
 			name: "array",
 			args: args{
-				name: "array",
 				anything: []any{1, "1,2,3", 2, _TestBoxAnythingTestBoxerAnything{
 					someField: "a field value",
 					someInt:   234243,
@@ -206,7 +213,9 @@ func TestBoxAnything(t *testing.T) {
 					someField: "a field value",
 					someInt:   234243,
 				}},
-				charWidth: 0,
+				options: []func(*BoxOptions){
+					WithAsciiBoxName("array"),
+				},
 			},
 			want: asciiBoxForTest(`
 ╔═array══════════════════╗
@@ -230,7 +239,6 @@ func TestBoxAnything(t *testing.T) {
 		{
 			name: "slice",
 			args: args{
-				name: "array",
 				anything: []any{1, "1,2,3", 2, _TestBoxAnythingTestBoxerAnything{
 					someField: "a field value",
 					someInt:   234243,
@@ -238,7 +246,9 @@ func TestBoxAnything(t *testing.T) {
 					someField: "a field value",
 					someInt:   234243,
 				}}[:],
-				charWidth: 0,
+				options: []func(*BoxOptions){
+					WithAsciiBoxName("array"),
+				},
 			},
 			want: asciiBoxForTest(`
 ╔═array══════════════════╗
@@ -262,7 +272,7 @@ func TestBoxAnything(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := BoxAnything(tt.args.name, tt.args.anything, tt.args.charWidth); !assert.Equal(t, tt.want, got) {
+			if got := BoxAnything(tt.args.anything, tt.args.options...); !assert.Equal(t, tt.want, got) {
 				t.Errorf("BoxAnything() = '\n%v'\n, want '\n%v'", got, tt.want)
 			}
 		})
@@ -271,8 +281,8 @@ func TestBoxAnything(t *testing.T) {
 
 func TestBoxedDump(t *testing.T) {
 	type args struct {
-		name string
-		data []byte
+		data    []byte
+		options []func(*BoxOptions)
 	}
 	tests := []struct {
 		name string
@@ -280,10 +290,12 @@ func TestBoxedDump(t *testing.T) {
 		want AsciiBox
 	}{
 		{
-			name: "Test Dump",
+			name: "Test Dump 1",
 			args: args{
-				name: "super nice data",
 				data: []byte("1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aa1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aab"),
+				options: []func(*BoxOptions){
+					WithAsciiBoxName("super nice data"),
+				},
 			},
 			want: asciiBoxForTest(`
 ╔═super nice data══════════════════════════════╗
@@ -305,10 +317,30 @@ func TestBoxedDump(t *testing.T) {
 ║150|61 61 62                      'aab       '║
 ╚══════════════════════════════════════════════╝`[1:]),
 		},
+		{
+			name: "Test Dump 2",
+			args: args{
+				data: []byte("1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aa1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aab"),
+				options: []func(*BoxOptions){
+					WithAsciiBoxName("super nice data"),
+					WithAsciiBoxCharWidth(110),
+				},
+			},
+			want: asciiBoxForTest(`
+╔═super nice data════════════════════════════════════════════════════════════════════════════════════════════╗
+║ 000|31 32 33 34 35 36 37 38 39 30 61 62 63 64 65 66 67 68 69 6a 6b 6c 6d 6e 6f '1234567890abcdefghijklmno' ║
+║ 025|70 71 72 73 74 75 76 77 78 79 7a d3 31 32 33 34 35 36 37 38 39 30 61 62 63 'pqrstuvwxyz.1234567890abc' ║
+║ 050|64 65 66 67 68 69 6a 6b 6c 6d 6e 6f 70 71 72 73 74 75 76 77 78 79 7a d3 61 'defghijklmnopqrstuvwxyz.a' ║
+║ 075|61 31 32 33 34 35 36 37 38 39 30 61 62 63 64 65 66 67 68 69 6a 6b 6c 6d 6e 'a1234567890abcdefghijklmn' ║
+║ 100|6f 70 71 72 73 74 75 76 77 78 79 7a d3 31 32 33 34 35 36 37 38 39 30 61 62 'opqrstuvwxyz.1234567890ab' ║
+║ 125|63 64 65 66 67 68 69 6a 6b 6c 6d 6e 6f 70 71 72 73 74 75 76 77 78 79 7a d3 'cdefghijklmnopqrstuvwxyz.' ║
+║ 150|61 61 62                                                                   'aab                      ' ║
+╚════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:]),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := BoxedDump(tt.args.name, tt.args.data); !assert.Equal(t, tt.want, got) {
+			if got := BoxedDump(tt.args.data, tt.args.options...); !assert.Equal(t, tt.want, got) {
 				t.Errorf("Dump() = \n%v\n, want \n%v\n", got, tt.want)
 			}
 		})
@@ -319,6 +351,7 @@ func TestDumpAnything(t *testing.T) {
 	t.Skip("That seems to be platform dependent, so not sure how to fix that")
 	type args struct {
 		anything any
+		options  []func(*BoxOptions)
 	}
 	tests := []struct {
 		name string
@@ -370,46 +403,7 @@ func TestDumpAnything(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := DumpAnything(tt.args.anything); !assert.Equal(t, tt.want, got) {
-				t.Errorf("Dump() = \n%v\n, want \n%v\n", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestBoxedDumpFixedWidth(t *testing.T) {
-	type args struct {
-		name      string
-		data      []byte
-		charWidth int
-	}
-	tests := []struct {
-		name string
-		args args
-		want AsciiBox
-	}{
-		{
-			name: "Test Dump",
-			args: args{
-				name:      "super nice data",
-				data:      []byte("1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aa1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aab"),
-				charWidth: 110,
-			},
-			want: asciiBoxForTest(`
-╔═super nice data════════════════════════════════════════════════════════════════════════════════════════════╗
-║ 000|31 32 33 34 35 36 37 38 39 30 61 62 63 64 65 66 67 68 69 6a 6b 6c 6d 6e 6f '1234567890abcdefghijklmno' ║
-║ 025|70 71 72 73 74 75 76 77 78 79 7a d3 31 32 33 34 35 36 37 38 39 30 61 62 63 'pqrstuvwxyz.1234567890abc' ║
-║ 050|64 65 66 67 68 69 6a 6b 6c 6d 6e 6f 70 71 72 73 74 75 76 77 78 79 7a d3 61 'defghijklmnopqrstuvwxyz.a' ║
-║ 075|61 31 32 33 34 35 36 37 38 39 30 61 62 63 64 65 66 67 68 69 6a 6b 6c 6d 6e 'a1234567890abcdefghijklmn' ║
-║ 100|6f 70 71 72 73 74 75 76 77 78 79 7a d3 31 32 33 34 35 36 37 38 39 30 61 62 'opqrstuvwxyz.1234567890ab' ║
-║ 125|63 64 65 66 67 68 69 6a 6b 6c 6d 6e 6f 70 71 72 73 74 75 76 77 78 79 7a d3 'cdefghijklmnopqrstuvwxyz.' ║
-║ 150|61 61 62                                                                   'aab                      ' ║
-╚════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:]),
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := BoxedDumpFixedWidth(tt.args.name, tt.args.data, tt.args.charWidth); !assert.Equal(t, tt.want, got) {
+			if got := DumpAnything(tt.args.anything, tt.args.options...); !assert.Equal(t, tt.want, got) {
 				t.Errorf("Dump() = \n%v\n, want \n%v\n", got, tt.want)
 			}
 		})
@@ -418,8 +412,8 @@ func TestBoxedDumpFixedWidth(t *testing.T) {
 
 func TestBoxedDumpAnything(t *testing.T) {
 	type args struct {
-		name     string
 		anything any
+		options  []func(*BoxOptions)
 	}
 	tests := []struct {
 		name string
@@ -436,60 +430,8 @@ func TestBoxedDumpAnything(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := BoxedDumpAnything(tt.args.name, tt.args.anything); !assert.Equal(t, tt.want, got) {
+			if got := BoxedDumpAnything(tt.args.anything, tt.args.options...); !assert.Equal(t, tt.want, got) {
 				t.Errorf("BoxedDumpAnything() = \n%v\n, want \n%v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestBoxedDumpAnythingFixedWidth(t *testing.T) {
-	type args struct {
-		name      string
-		anything  any
-		charWidth int
-	}
-	tests := []struct {
-		name string
-		args args
-		want AsciiBox
-	}{
-		{
-			name: "dump it",
-			want: asciiBoxForTest(`
-╔════════════╗
-║<undumpable>║
-╚════════════╝`[1:]),
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := BoxedDumpAnythingFixedWidth(tt.args.name, tt.args.anything, tt.args.charWidth); !assert.Equal(t, tt.want, got) {
-				t.Errorf("BoxedDumpAnythingFixedWidth() = \n%v\n, want \n%v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestDumpAnythingFixedWidth(t *testing.T) {
-	type args struct {
-		anything  any
-		charWidth int
-	}
-	tests := []struct {
-		name string
-		args args
-		want string
-	}{
-		{
-			name: "dump it",
-			want: "<undumpable>",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := DumpAnythingFixedWidth(tt.args.anything, tt.args.charWidth); !assert.Equal(t, tt.want, got) {
-				t.Errorf("DumpAnythingFixedWidth() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -1102,8 +1102,8 @@ func TestTagToCBusMessage(t *testing.T) {
 				return
 			}
 			if !assert.Equal(t, gotCBusMessage, tt.wantCBusMessage) {
-				gotBox := utils.BoxAnything("got", gotCBusMessage, 120)
-				wantBox := utils.BoxAnything("want", tt.wantCBusMessage, 120)
+				gotBox := utils.BoxAnything(gotCBusMessage, utils.WithAsciiBoxName("got"), utils.WithAsciiBoxCharWidth(120))
+				wantBox := utils.BoxAnything(tt.wantCBusMessage, utils.WithAsciiBoxName("want"), utils.WithAsciiBoxCharWidth(120))
 				t.Errorf("TagToCBusMessage():\n%s", utils.NewAsciiBoxWriter().BoxSideBySide(gotBox, wantBox))
 			}
 			if gotSupportsRead != tt.wantSupportsRead {
