@@ -45,7 +45,7 @@ func (d *ResponseItem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	if d == nil {
 		return fmt.Errorf("(*DeviceInfoCache)(nil)")
 	}
-	if err := writeBuffer.PushContext("ResponseItem"); err != nil {
+	if err := writeBuffer.PushContext("PlcResponseItem"); err != nil {
 		return err
 	}
 
@@ -71,7 +71,7 @@ func (d *ResponseItem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}
 		}
 	}
-	if err := writeBuffer.PopContext("ResponseItem"); err != nil {
+	if err := writeBuffer.PopContext("PlcResponseItem"); err != nil {
 		return err
 	}
 	return nil
