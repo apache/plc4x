@@ -398,7 +398,7 @@
               <PlcTagRequest>
                 <tags isList="true">
                   <hurz>
-                    <DefaultTagItem>
+                    <DefaultPlcTagItem>
                       <tag>
                         <EipTag>
                           <node dataType="string" bitLength="40" encoding="UTF-8">%rate</node>
@@ -406,7 +406,7 @@
                           <elementNb dataType="uint" bitLength="16">1</elementNb>
                         </EipTag>
                       </tag>
-                    </DefaultTagItem>
+                    </DefaultPlcTagItem>
                   </hurz>
                 </tags>
               </PlcTagRequest>
@@ -414,12 +414,12 @@
           </request>
           <values isList="true">
             <hurz>
-              <ResponseItem>
+              <DefaultPlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcDINT dataType="int" bitLength="32">369229824</PlcDINT>
                 </value>
-              </ResponseItem>
+              </DefaultPlcResponseItem>
             </hurz>
           </values>
         </PlcReadResponse>
