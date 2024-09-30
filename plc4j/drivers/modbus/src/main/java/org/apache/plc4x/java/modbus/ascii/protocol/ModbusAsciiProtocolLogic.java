@@ -77,7 +77,7 @@ public class ModbusAsciiProtocolLogic extends ModbusProtocolLogic<ModbusAsciiADU
         ModbusAsciiADU modbusTcpADU = new ModbusAsciiADU(unitId, readRequestPdu);
 
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(modbusTcpADU)
+        transaction.submit(() -> conversationContext.sendRequest(modbusTcpADU)
             .expectResponse(ModbusAsciiADU.class, requestTimeout)
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
@@ -113,7 +113,7 @@ public class ModbusAsciiProtocolLogic extends ModbusProtocolLogic<ModbusAsciiADU
 
             ModbusAsciiADU modbusAsciiADU = new ModbusAsciiADU(unitId, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-            transaction.submit(() -> context.sendRequest(modbusAsciiADU)
+            transaction.submit(() -> conversationContext.sendRequest(modbusAsciiADU)
                 .expectResponse(ModbusAsciiADU.class, requestTimeout)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
@@ -176,7 +176,7 @@ public class ModbusAsciiProtocolLogic extends ModbusProtocolLogic<ModbusAsciiADU
             final short unitId = getUnitId(tag);
             ModbusAsciiADU modbusAsciiADU = new ModbusAsciiADU(unitId, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-            transaction.submit(() -> context.sendRequest(modbusAsciiADU)
+            transaction.submit(() -> conversationContext.sendRequest(modbusAsciiADU)
                 .expectResponse(ModbusAsciiADU.class, requestTimeout)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))

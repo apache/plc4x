@@ -490,7 +490,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     typeIds);
 
                 RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-                transaction.submit(() -> context.sendRequest(rrdata)
+                transaction.submit(() -> conversationContext.sendRequest(rrdata)
                     .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
                     .onTimeout(internalFuture::completeExceptionally)
                     .onError((p, e) -> internalFuture.completeExceptionally(e))
@@ -593,7 +593,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             typeIds
         );
 
-        transaction.submit(() -> context.sendRequest(pkt)
+        transaction.submit(() -> conversationContext.sendRequest(pkt)
             .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
@@ -670,7 +670,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
         this.sequenceCount += 1;
 
-        transaction.submit(() -> context.sendRequest(pkt)
+        transaction.submit(() -> conversationContext.sendRequest(pkt)
             .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
@@ -975,7 +975,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     typeIds);
 
                 RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-                transaction.submit(() -> context.sendRequest(rrdata)
+                transaction.submit(() -> conversationContext.sendRequest(rrdata)
                     .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
                     .onTimeout(internalFuture::completeExceptionally)
                     .onError((p, e) -> internalFuture.completeExceptionally(e))
@@ -1057,7 +1057,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 0,
                 typeIds);
 
-            transaction.submit(() -> context.sendRequest(rrdata)
+            transaction.submit(() -> conversationContext.sendRequest(rrdata)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
@@ -1112,7 +1112,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 0,
                 typeIds);
 
-            transaction.submit(() -> context.sendRequest(pkt)
+            transaction.submit(() -> conversationContext.sendRequest(pkt)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
@@ -1176,7 +1176,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 0,
                 typeIds);
 
-            transaction.submit(() -> context.sendRequest(rrdata)
+            transaction.submit(() -> conversationContext.sendRequest(rrdata)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
@@ -1222,7 +1222,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 0,
                 typeIds);
 
-            transaction.submit(() -> context.sendRequest(pkt)
+            transaction.submit(() -> conversationContext.sendRequest(pkt)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))

@@ -95,8 +95,8 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     }
 
     @Override
-    public void setContext(ConversationContext<Ethernet_Frame> context) {
-        super.setContext(context);
+    public void setConversationContext(ConversationContext<Ethernet_Frame> conversationContext) {
+        super.setConversationContext(conversationContext);
 
         // Open the receiving UDP port and keep it open.
         try {
@@ -108,7 +108,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         profinetDriverContext.getHandler().setConfiguredDevices(devices);
 
         for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
-            device.getValue().setContext(context, this.profinetDriverContext.getChannel());
+            device.getValue().setContext(conversationContext, this.profinetDriverContext.getChannel());
         }
     }
 

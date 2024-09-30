@@ -266,7 +266,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 new HPAIControlEndpoint(HostProtocolCode.IPV4_UDP,
                     knxNetIpDriverContext.getLocalIPAddress(),
                     knxNetIpDriverContext.getLocalPort()));
-        context.sendRequest(connectionStateRequest)
+        conversationContext.sendRequest(connectionStateRequest)
             .expectResponse(KnxNetIpMessage.class, Duration.ofMillis(1000))
             .only(ConnectionStateResponse.class)
             .handle(connectionStateResponse -> {
@@ -382,7 +382,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
             // Start a new request-transaction (Is ended in the response-handler)
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             // Start a new request-transaction (Is ended in the response-handler)
-            transaction.submit(() -> context.sendRequest(knxRequest)
+            transaction.submit(() -> conversationContext.sendRequest(knxRequest)
                 .expectResponse(KnxNetIpMessage.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((tr, e) -> future.completeExceptionally(e))

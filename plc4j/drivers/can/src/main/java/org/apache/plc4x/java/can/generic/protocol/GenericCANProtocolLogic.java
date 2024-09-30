@@ -70,8 +70,8 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
     }
 
     @Override
-    public void setContext(ConversationContext<GenericFrame> context) {
-        super.setContext(context);
+    public void setConversationContext(ConversationContext<GenericFrame> conversationContext) {
+        super.setConversationContext(conversationContext);
     }
 
     @Override
@@ -184,7 +184,7 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
                 if (!discarded) {
                     byte[] data = message.getValue().getBytes();
                     logger.debug("Writing message with id {} and {} bytes of data", message.getKey(), data.length);
-                    context.sendToWire(new GenericFrame(message.getKey(), data));
+                    conversationContext.sendToWire(new GenericFrame(message.getKey(), data));
                 }
             }
 

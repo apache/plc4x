@@ -27,7 +27,7 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class Plc4xProtocolBase<T> {
 
-    protected ConversationContext<T> context;
+    protected ConversationContext<T> conversationContext;
 
     protected DriverContext driverContext;
 
@@ -39,8 +39,12 @@ public abstract class Plc4xProtocolBase<T> {
         return driverContext;
     }
 
-    public void setContext(ConversationContext<T> context) {
-        this.context = context;
+    public void setConversationContext(ConversationContext<T> conversationContext) {
+        this.conversationContext = conversationContext;
+    }
+
+    public ConversationContext<T> getConversationContext() {
+        return conversationContext;
     }
 
     public void onConnect(ConversationContext<T> context) {
@@ -58,9 +62,7 @@ public abstract class Plc4xProtocolBase<T> {
     public abstract PlcTagHandler getTagHandler();
 
     /**
-     * TODO document me
-     * <p>
-     * Can be used for non requested incoming messages
+     * Default callback, called if an incoming message can't be correlated with an expected response.
      *
      * @param context
      * @param msg

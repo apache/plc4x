@@ -161,9 +161,9 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
     }
 
     @Override
-    public void setContext(ConversationContext<CANOpenFrame> context) {
-        super.setContext(context);
-        this.conversation = new CANTransportConversation(configuration.getNodeId(), context, configuration.getRequestTimeout());
+    public void setConversationContext(ConversationContext<CANOpenFrame> conversationContext) {
+        super.setConversationContext(conversationContext);
+        this.conversation = new CANTransportConversation(configuration.getNodeId(), conversationContext, configuration.getRequestTimeout());
     }
 
     private CANOpenFrame createFrame(CANOpenHeartbeatPayload state) throws ParseException {
@@ -231,7 +231,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(writeValue, tag.getCanOpenDataType(), writeValue.getLength()), ByteOrder.LITTLE_ENDIAN);
             DataItem.staticSerialize(writeBuffer, writeValue, tag.getCanOpenDataType(), writeValue.getLength(), ByteOrder.LITTLE_ENDIAN);
             final CANOpenPDOPayload payload = new CANOpenPDOPayload(new CANOpenPDO(writeBuffer.getBytes()));
-            context.sendToWire(new CANOpenFrame((short) tag.getNodeId(), tag.getService(), payload));
+            conversationContext.sendToWire(new CANOpenFrame((short) tag.getNodeId(), tag.getService(), payload));
             response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(tagName, PlcResponseCode.OK)));
         } catch (Exception e) {
             response.completeExceptionally(e);

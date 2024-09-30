@@ -114,7 +114,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
             final List<FirmataMessage> firmataMessages =
                 ((FirmataDriverContext) getDriverContext()).processWriteRequest(writeRequest);
             for (FirmataMessage firmataMessage : firmataMessages) {
-                context.sendToWire(firmataMessage);
+                conversationContext.sendToWire(firmataMessage);
             }
             // There's unfortunately no ack response :-(
             Map<String, PlcResponseCode> result = new HashMap<>();
@@ -135,7 +135,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
             final List<FirmataMessage> firmataMessages =
                 ((FirmataDriverContext) getDriverContext()).processSubscriptionRequest(subscriptionRequest);
             for (FirmataMessage firmataMessage : firmataMessages) {
-                context.sendToWire(firmataMessage);
+                conversationContext.sendToWire(firmataMessage);
             }
             Map<String, PlcResponseItem<PlcSubscriptionHandle>> result = new HashMap<>();
             for (String tagName : subscriptionRequest.getTagNames()) {

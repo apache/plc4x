@@ -117,7 +117,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
 
         // Send the request and await a response.
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        context.sendRequest(plc4xReadRequest)
+        conversationContext.sendRequest(plc4xReadRequest)
             .expectResponse(Plc4xMessage.class, requestTimeout)
             .onTimeout(future::completeExceptionally)
             .check(plc4xMessage -> plc4xMessage.getRequestId() == requestId)
@@ -161,7 +161,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
 
         // Send the request and await a response.
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        context.sendRequest(write)
+        conversationContext.sendRequest(write)
             .expectResponse(Plc4xMessage.class, requestTimeout)
             .onTimeout(future::completeExceptionally)
             .check(p -> p.getRequestId() == requestId)

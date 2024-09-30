@@ -64,8 +64,8 @@ public class CANDriverAdapter<C, T> extends Plc4xProtocolBase<C> {
     }
 
     @Override
-    public void setContext(ConversationContext<C> context) {
-        delegate.setContext(new ConversationContextWrapper<>(context, wireType, adapter, frameHandler, context.getAuthentication()));
+    public void setConversationContext(ConversationContext<C> conversationContext) {
+        delegate.setConversationContext(new ConversationContextWrapper<>(conversationContext, wireType, adapter, frameHandler, conversationContext.getAuthentication()));
     }
 
     @Override

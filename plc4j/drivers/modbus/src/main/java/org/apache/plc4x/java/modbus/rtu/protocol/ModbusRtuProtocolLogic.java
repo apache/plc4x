@@ -77,7 +77,7 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
         ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitId, readRequestPdu);
 
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(modbusRtuADU)
+        transaction.submit(() -> conversationContext.sendRequest(modbusRtuADU)
             .expectResponse(ModbusRtuADU.class, requestTimeout)
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
@@ -113,7 +113,7 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
 
             ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitId, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-            transaction.submit(() -> context.sendRequest(modbusRtuADU)
+            transaction.submit(() -> conversationContext.sendRequest(modbusRtuADU)
                 .expectResponse(ModbusRtuADU.class, requestTimeout)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
@@ -176,7 +176,7 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
             final short unitId = getUnitId(tag);
             ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitId, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-            transaction.submit(() -> context.sendRequest(modbusRtuADU)
+            transaction.submit(() -> conversationContext.sendRequest(modbusRtuADU)
                 .expectResponse(ModbusRtuADU.class, requestTimeout)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))

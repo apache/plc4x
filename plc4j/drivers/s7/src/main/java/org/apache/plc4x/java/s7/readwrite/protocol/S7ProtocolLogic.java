@@ -453,7 +453,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
             // Start a new request-transaction (Is ended in the response-handler)
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-            transaction.submit(() -> context.sendRequest(tpktPacket)
+            transaction.submit(() -> conversationContext.sendRequest(tpktPacket)
                 .onTimeout(new TransactionErrorCallback<>(future, transaction))
                 .onError(new TransactionErrorCallback<>(future, transaction))
                 .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
@@ -534,7 +534,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(tpktPacket)
+        transaction.submit(() -> conversationContext.sendRequest(tpktPacket)
             .onTimeout(new TransactionErrorCallback<>(future, transaction))
             .onError(new TransactionErrorCallback<>(future, transaction))
             .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
@@ -1507,7 +1507,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         // Send the request.
-        transaction.submit(() -> context.sendRequest(tpktPacket)
+        transaction.submit(() -> conversationContext.sendRequest(tpktPacket)
             .onTimeout(new TransactionErrorCallback<>(future, transaction))
             .onError(new TransactionErrorCallback<>(future, transaction))
             .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
@@ -2166,19 +2166,19 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
     private boolean isConnected() {
-        return context.getChannel().attr(S7HMuxImpl.IS_CONNECTED).get();
+        return conversationContext.getChannel().attr(S7HMuxImpl.IS_CONNECTED).get();
         //return true;
     }
 
     private boolean isPrimaryChannel() {
-        return context.getChannel().attr(S7HMuxImpl.IS_PRIMARY).get() == null || context.getChannel().attr(S7HMuxImpl.IS_PRIMARY).get();
+        return conversationContext.getChannel().attr(S7HMuxImpl.IS_PRIMARY).get() == null || conversationContext.getChannel().attr(S7HMuxImpl.IS_PRIMARY).get();
     }
 
     private void setChannelFeatures() {
-        context.getChannel().attr(S7HMuxImpl.READ_TIME_OUT).set(s7DriverContext.getReadTimeout());
-        context.getChannel().attr(S7HMuxImpl.IS_PING_ACTIVE).set(s7DriverContext.getPing());
-        context.getChannel().attr(S7HMuxImpl.PING_TIME).set(s7DriverContext.getPingTime());
-        context.getChannel().attr(S7HMuxImpl.RETRY_TIME).set(s7DriverContext.getRetryTime());
+        conversationContext.getChannel().attr(S7HMuxImpl.READ_TIME_OUT).set(s7DriverContext.getReadTimeout());
+        conversationContext.getChannel().attr(S7HMuxImpl.IS_PING_ACTIVE).set(s7DriverContext.getPing());
+        conversationContext.getChannel().attr(S7HMuxImpl.PING_TIME).set(s7DriverContext.getPingTime());
+        conversationContext.getChannel().attr(S7HMuxImpl.RETRY_TIME).set(s7DriverContext.getRetryTime());
     }
 
 
@@ -2196,7 +2196,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         TPKTPacket request = createSzlReassembledRequest(tpduId, sequenceNumber);
 
-        context.sendRequest(request)
+        conversationContext.sendRequest(request)
             .onTimeout(e -> {
                 logger.warn("Timeout during Connection establishing, closing channel...");
                 //context.getChannel().close();
@@ -2236,7 +2236,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         TPKTPacket request = createAlarmQueryReassembledRequest(tpduId, sequenceNumber);
 
-        context.sendRequest(request)
+        conversationContext.sendRequest(request)
             .onTimeout(e -> {
                 logger.warn("Timeout during Connection establishing, closing channel...");
                 //context.getChannel().close();

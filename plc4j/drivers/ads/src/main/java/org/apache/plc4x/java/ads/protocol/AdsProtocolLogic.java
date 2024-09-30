@@ -255,7 +255,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         new Thread(() -> {
             LOGGER.debug("Setting up remote AMS routes.");
-            SocketAddress localSocketAddress = context.getChannel().localAddress();
+            SocketAddress localSocketAddress = conversationContext.getChannel().localAddress();
             InetAddress localAddress = ((InetSocketAddress) localSocketAddress).getAddress();
 
             // Prepare the request message.
@@ -282,7 +282,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 addOrUpdateRouteRequest.serialize(writeBuffer);
 
                 // Get the target IP from the connection
-                SocketAddress remoteSocketAddress = context.getChannel().remoteAddress();
+                SocketAddress remoteSocketAddress = conversationContext.getChannel().remoteAddress();
                 InetAddress remoteAddress = ((InetSocketAddress) remoteSocketAddress).getAddress();
 
                 // Create the UDP packet to the broadcast address.
@@ -600,10 +600,10 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             configuration.getSourceAmsNetId(), 800, 0, getInvokeId());
 
         RequestTransactionManager.RequestTransaction readDeviceInfoTx = tm.startRequest();
-        readDeviceInfoTx.submit(() -> context.sendRequest(new AmsTCPPacket(readDeviceInfoRequest))
+        readDeviceInfoTx.submit(() -> conversationContext.sendRequest(new AmsTCPPacket(readDeviceInfoRequest))
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
-            .onTimeout(e -> context.getChannel().pipeline().fireExceptionCaught(e))
-            .onError((p, e) -> context.getChannel().pipeline().fireExceptionCaught(e))
+            .onTimeout(e -> conversationContext.getChannel().pipeline().fireExceptionCaught(e))
+            .onError((p, e) -> conversationContext.getChannel().pipeline().fireExceptionCaught(e))
             .unwrap(AmsTCPPacket::getUserdata)
             .check(userdata -> userdata.getInvokeId() == readDeviceInfoRequest.getInvokeId())
             .only(AdsReadDeviceInfoResponse.class)
@@ -701,7 +701,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+        transaction.submit(() -> conversationContext.sendRequest(amsTCPPacket)
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
@@ -774,7 +774,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+        transaction.submit(() -> conversationContext.sendRequest(amsTCPPacket)
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
@@ -1054,7 +1054,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+        transaction.submit(() -> conversationContext.sendRequest(amsTCPPacket)
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
@@ -1132,7 +1132,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+        transaction.submit(() -> conversationContext.sendRequest(amsTCPPacket)
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
@@ -1363,7 +1363,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             AmsTCPPacket packet = amsTCPPackets.next();
             boolean hasMorePackets = amsTCPPackets.hasNext();
             String tagName = tagNames.next();
-            context.sendRequest(packet)
+            conversationContext.sendRequest(packet)
                 .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
@@ -1444,7 +1444,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         return () -> {
             AmsTCPPacket packet = amsTCPPackets.next();
             boolean hasMorePackets = amsTCPPackets.hasNext();
-            context.sendRequest(packet)
+            conversationContext.sendRequest(packet)
                 .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
@@ -1622,7 +1622,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+        transaction.submit(() -> conversationContext.sendRequest(amsTCPPacket)
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
@@ -1673,7 +1673,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+        transaction.submit(() -> conversationContext.sendRequest(amsTCPPacket)
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))

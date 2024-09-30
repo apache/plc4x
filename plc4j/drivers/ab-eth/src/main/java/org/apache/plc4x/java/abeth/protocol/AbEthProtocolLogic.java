@@ -123,7 +123,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
 
             CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-            transaction.submit(() -> context.sendRequest(read)
+            transaction.submit(() -> conversationContext.sendRequest(read)
                 .expectResponse(CIPEncapsulationPacket.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
