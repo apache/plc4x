@@ -29,14 +29,15 @@ import (
 // BoxedDump dumps a 56+2 char wide hex string
 func BoxedDump(data []byte, options ...func(*BoxOptions)) AsciiBox {
 	var opts BoxOptions
+	opts.BoxSet = DefaultBoxSet()
 	for _, opt := range options {
 		opt(&opts)
 	}
-	if opts.charWidth <= 0 {
-		opts.charWidth = DefaultWidth + boxLineOverheat
+	if opts.CharWidth <= 0 {
+		opts.CharWidth = DefaultWidth + boxLineOverheat
 	}
 	// we substract the 2 lines at the side
-	dumpWidth := opts.charWidth - 1 - 1
+	dumpWidth := opts.CharWidth - 1 - 1
 	return AsciiBoxWriterDefault.BoxString(DumpFixedWidth(data, dumpWidth), WithAsciiBoxOptions(opts))
 }
 
@@ -51,8 +52,8 @@ func DumpAnything(anything any, options ...func(*BoxOptions)) string {
 	for _, opt := range options {
 		opt(&opts)
 	}
-	if opts.charWidth <= 0 {
-		opts.charWidth = DefaultWidth
+	if opts.CharWidth <= 0 {
+		opts.CharWidth = DefaultWidth
 	}
 	convertedBytes, err := toBytes(anything)
 	if err != nil {
@@ -61,7 +62,7 @@ func DumpAnything(anything any, options ...func(*BoxOptions)) string {
 		}
 		return "<undumpable>"
 	}
-	return DumpFixedWidth(convertedBytes, opts.charWidth)
+	return DumpFixedWidth(convertedBytes, opts.CharWidth)
 }
 
 func BoxAnything(anything any, options ...func(*BoxOptions)) AsciiBox {
@@ -85,7 +86,7 @@ func BoxAnything(anything any, options ...func(*BoxOptions)) AsciiBox {
 		return AsciiBoxWriterDefault.BoxString(fmt.Sprintf("%#0*x %d", hexDigits, anything, anything), options...)
 	case []byte:
 		//return AsciiBox{DumpFixedWidth(anything.([]byte), charWidth), AsciiBoxWriterDefault.(*asciiBoxWriter), AsciiBoxWriterDefault.(*asciiBoxWriter).compressBoxSet()}
-		return AsciiBoxWriterDefault.BoxString(DumpFixedWidth(anything.([]byte), opts.charWidth), options...)
+		return AsciiBoxWriterDefault.BoxString(DumpFixedWidth(anything.([]byte), opts.CharWidth), options...)
 	case string:
 		return AsciiBoxWriterDefault.BoxString(anything.(string), options...)
 	case fmt.Stringer:
@@ -97,9 +98,9 @@ func BoxAnything(anything any, options ...func(*BoxOptions)) AsciiBox {
 			boxes := make([]AsciiBox, valueOf.Len())
 			for i := 0; i < valueOf.Len(); i++ {
 				index := valueOf.Index(i)
-				boxes[i] = BoxAnything(index.Interface(), WithAsciiBoxCharWidth(opts.charWidth-2))
+				boxes[i] = BoxAnything(index.Interface(), WithAsciiBoxCharWidth(opts.CharWidth-2))
 			}
-			return AsciiBoxWriterDefault.BoxBox(AsciiBoxWriterDefault.AlignBoxes(boxes, opts.charWidth), options...)
+			return AsciiBoxWriterDefault.BoxBox(AsciiBoxWriterDefault.AlignBoxes(boxes, opts.CharWidth), options...)
 		case reflect.Ptr, reflect.Uintptr:
 			return BoxAnything(valueOf.Elem().Interface(), options...)
 		default:
