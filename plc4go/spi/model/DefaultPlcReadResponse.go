@@ -30,14 +30,14 @@ var _ apiModel.PlcReadResponse = &DefaultPlcReadResponse{}
 //go:generate plc4xGenerator -type=DefaultPlcReadResponse
 type DefaultPlcReadResponse struct {
 	request apiModel.PlcReadRequest
-	values  map[string]*ResponseItem
+	values  map[string]*PlcResponseItem
 }
 
 func NewDefaultPlcReadResponse(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]apiValues.PlcValue) apiModel.PlcReadResponse {
-	valueMap := map[string]*ResponseItem{}
+	valueMap := map[string]*PlcResponseItem{}
 	for name, code := range responseCodes {
 		value := values[name]
-		valueMap[name] = NewResponseItem(code, value)
+		valueMap[name] = NewPlcResponseItem(code, value)
 	}
 	return &DefaultPlcReadResponse{
 		request: request,

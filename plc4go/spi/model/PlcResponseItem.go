@@ -24,23 +24,23 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
-//go:generate plc4xGenerator -type=ResponseItem
-type ResponseItem struct {
+//go:generate plc4xGenerator -type=PlcResponseItem
+type PlcResponseItem struct {
 	code  apiModel.PlcResponseCode `stringer:"true"`
 	value values.PlcValue
 }
 
-func NewResponseItem(code apiModel.PlcResponseCode, value values.PlcValue) *ResponseItem {
-	return &ResponseItem{
+func NewPlcResponseItem(code apiModel.PlcResponseCode, value values.PlcValue) *PlcResponseItem {
+	return &PlcResponseItem{
 		code:  code,
 		value: value,
 	}
 }
 
-func (r *ResponseItem) GetCode() apiModel.PlcResponseCode {
+func (r *PlcResponseItem) GetCode() apiModel.PlcResponseCode {
 	return r.code
 }
 
-func (r *ResponseItem) GetValue() values.PlcValue {
+func (r *PlcResponseItem) GetValue() values.PlcValue {
 	return r.value
 }
