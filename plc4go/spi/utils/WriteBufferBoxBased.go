@@ -49,11 +49,6 @@ func NewWriteBufferBoxBased(opts ...func(buffer *boxedWriteBuffer)) WriteBufferB
 	return wb
 }
 
-// Deprecated: use WithWriteBufferBoxBasedMergeSingleBoxes and WithWriteBufferBoxBasedOmitEmptyBoxes
-func NewWriteBufferBoxBasedWithOptions(mergeSingleBoxes bool, omitEmptyBoxes bool) WriteBufferBoxBased {
-	return NewWriteBufferBoxBased(WithWriteBufferBoxBasedMergeSingleBoxes(), WithWriteBufferBoxBasedOmitEmptyBoxes())
-}
-
 func WithWriteBufferBoxBasedMergeSingleBoxes() func(*boxedWriteBuffer) {
 	return func(wb *boxedWriteBuffer) {
 		wb.mergeSingleBoxes = true
@@ -63,6 +58,12 @@ func WithWriteBufferBoxBasedMergeSingleBoxes() func(*boxedWriteBuffer) {
 func WithWriteBufferBoxBasedOmitEmptyBoxes() func(*boxedWriteBuffer) {
 	return func(wb *boxedWriteBuffer) {
 		wb.omitEmptyBoxes = true
+	}
+}
+
+func WithWriteBufferBoxBasedPrintPosLengthFooter() func(*boxedWriteBuffer) {
+	return func(wb *boxedWriteBuffer) {
+		wb.printPosLengthFooter = true
 	}
 }
 
@@ -290,7 +291,10 @@ func (b *boxedWriteBuffer) WriteVirtual(ctx context.Context, logicalName string,
 		stringValue := fmt.Sprintf("%x %f%s", value, value, additionalStringRepresentation)
 		asciiBox = b.asciiBoxWriterLight.BoxString(stringValue, WithAsciiBoxName(logicalName), WithAsciiBoxFooter(b.getPosFooter(int(-1))))
 	case Serializable:
-		virtualBoxedWriteBuffer := NewWriteBufferBoxBasedWithOptions(b.mergeSingleBoxes, b.omitEmptyBoxes)
+		virtualBoxedWriteBuffer := NewWriteBufferBoxBased().(*boxedWriteBuffer)
+		virtualBoxedWriteBuffer.mergeSingleBoxes = b.mergeSingleBoxes
+		virtualBoxedWriteBuffer.omitEmptyBoxes = b.omitEmptyBoxes
+		virtualBoxedWriteBuffer.printPosLengthFooter = b.printPosLengthFooter
 		if err := value.(Serializable).SerializeWithWriteBuffer(ctx, virtualBoxedWriteBuffer); err == nil {
 			length := int(value.(LengthAware).GetLengthInBits(ctx))
 			asciiBox = b.asciiBoxWriterLight.BoxBox(virtualBoxedWriteBuffer.GetBox(), WithAsciiBoxName(logicalName), WithAsciiBoxFooter(b.getPosFooter(length)))
@@ -370,13 +374,13 @@ func (b *boxedWriteBuffer) getPosFooter(bitLength int) string {
 	bitRemainder := int(b.pos) % 8
 	pos := strconv.Itoa(bytePos)
 	if bitRemainder != 0 {
-		pos += "," + strconv.Itoa(bitRemainder)
+		pos += "." + strconv.Itoa(bitRemainder)
 	}
 	byteLength := bitLength / 8
 	bitLengthRemainder := bitLength % 8
 	length := strconv.Itoa(byteLength)
 	if bitLengthRemainder != 0 {
-		length += "," + strconv.Itoa(bitLengthRemainder)
+		length += "." + strconv.Itoa(bitLengthRemainder)
 	}
 	return fmt.Sprintf("%s/%s", pos, length)
 }

@@ -110,16 +110,16 @@ func (m *_Time) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m *_Time) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	positionAware := writeBuffer
+func (m *_Time) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuffer) error {
+	positionAware := wb
 	_ = positionAware
 	log := zerolog.Ctx(ctx)
 	_ = log
-	if pushErr := writeBuffer.PushContext("Time"); pushErr != nil {
+	if pushErr := wb.PushContext("Time"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for Time")
 	}
 
-	if popErr := writeBuffer.PopContext("Time"); popErr != nil {
+	if popErr := wb.PopContext("Time"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for Time")
 	}
 	return nil
@@ -133,9 +133,9 @@ func (m *_Time) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedOmitEmptyBoxes(), utils.WithWriteBufferBoxBasedMergeSingleBoxes())
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }
