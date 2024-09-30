@@ -154,7 +154,7 @@ func NewAsciiBoxWriter(opts ...func(writer *asciiBoxWriter)) AsciiBoxWriter {
 		opt(a)
 	}
 	a.boxHeaderRegex = regexp.MustCompile(`^` + a.defaultBoxSet.UpperLeftCorner + a.defaultBoxSet.HorizontalLine + `(?P<name>[\w /]+)` + a.defaultBoxSet.HorizontalLine + `*` + `(?P<header>[\w /]+)?` + a.defaultBoxSet.HorizontalLine + `*` + a.defaultBoxSet.UpperRightCorner)
-	a.boxFooterRegex = regexp.MustCompile(`^` + a.defaultBoxSet.LowerLeftCorner + a.defaultBoxSet.HorizontalLine + `(?P<footer>[\w /]+)` + a.defaultBoxSet.HorizontalLine + `*` + a.defaultBoxSet.LowerRightCorner)
+	a.boxFooterRegex = regexp.MustCompile(`(?m)^` + a.defaultBoxSet.LowerLeftCorner + a.defaultBoxSet.HorizontalLine + `*` + `(?P<footer>[\w /]+)` + a.defaultBoxSet.HorizontalLine + `*` + a.defaultBoxSet.LowerRightCorner)
 	return a
 }
 
@@ -324,13 +324,20 @@ func (a *asciiBoxWriter) changeBoxName(box AsciiBox, newName string) AsciiBox {
 	}
 	header := box.asciiBoxWriter.getBoxHeader(box)
 	footer := box.asciiBoxWriter.getBoxFooter(box)
-	minimumWidthWithNewName := countChars(a.defaultBoxSet.UpperLeftCorner + a.defaultBoxSet.HorizontalLine + newName + a.defaultBoxSet.UpperRightCorner)
+	minimumWidth := countChars(a.defaultBoxSet.UpperLeftCorner + a.defaultBoxSet.HorizontalLine + newName + a.defaultBoxSet.UpperRightCorner)
 	if header != "" {
-		minimumWidthWithNewName += countChars(a.defaultBoxSet.HorizontalLine + header)
+		minimumWidth += countChars(a.defaultBoxSet.HorizontalLine + header)
 	}
-	minimumWidthWithNewName = max(minimumWidthWithNewName, countChars(a.defaultBoxSet.LowerLeftCorner+footer+a.defaultBoxSet.LowerRightCorner))
-	nameLengthDifference := minimumWidthWithNewName - (a.unwrap(box).Width() + a.borderWidth + a.borderWidth)
-	newBox := a.BoxString(a.unwrap(box).String(), WithAsciiBoxName(newName), WithAsciiBoxCharWidth(box.Width()+nameLengthDifference), WithAsciiBoxHeader(header), WithAsciiBoxFooter(footer))
+	boxContent := a.unwrap(box)
+	rawWidth := boxContent.Width()
+	minimumWidth = max(minimumWidth, rawWidth+2)
+	newBox := a.BoxString(
+		boxContent.String(),
+		WithAsciiBoxName(newName),
+		WithAsciiBoxHeader(header),
+		WithAsciiBoxFooter(footer),
+		WithAsciiBoxCharWidth(minimumWidth),
+	)
 	newBox.compressedBoxSet = a.defaultBoxSet.contributeToCompressedBoxSet(box)
 	return newBox
 }

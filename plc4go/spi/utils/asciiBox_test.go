@@ -1023,7 +1023,7 @@ func TestNewAsciiBoxWriter(t *testing.T) {
 				borderWidth:         1,
 				newLineCharWidth:    1,
 				boxHeaderRegex:      regexp.MustCompile(`^` + upperLeftCorner + horizontalLine + `(?P<name>[\w /]+)` + horizontalLine + `*` + `(?P<header>[\w /]+)?` + horizontalLine + `*` + upperRightCorner),
-				boxFooterRegex:      regexp.MustCompile(`^` + lowerLeftCorner + horizontalLine + `(?P<footer>[\w /]+)` + horizontalLine + `*` + lowerRightCorner),
+				boxFooterRegex:      regexp.MustCompile(`(?m)^` + lowerLeftCorner + horizontalLine + `*` + `(?P<footer>[\w /]+)` + horizontalLine + `*` + lowerRightCorner),
 			},
 		},
 	}
@@ -1595,7 +1595,8 @@ func Test_asciiBoxWriter_changeBoxName(t *testing.T) {
 		extraNameCharIndent int
 		borderWidth         int
 		newLineCharWidth    int
-		boxNameRegex        *regexp.Regexp
+		boxHeaderRegex      *regexp.Regexp
+		boxFooterRegex      *regexp.Regexp
 	}
 	type args struct {
 		box     AsciiBox
@@ -1611,6 +1612,38 @@ func Test_asciiBoxWriter_changeBoxName(t *testing.T) {
 			name: "change a name",
 			want: AsciiBox{data: "\x00\x00"},
 		},
+		{
+			name: "full box name",
+			fields: fields{
+				newLine:             '\n',
+				emptyPadding:        " ",
+				extraNameCharIndent: 1,
+				borderWidth:         1,
+				newLineCharWidth:    1,
+				defaultBoxSet:       DefaultBoxSet(),
+				boxHeaderRegex:      regexp.MustCompile(`^` + DefaultBoxSet().UpperLeftCorner + DefaultBoxSet().HorizontalLine + `(?P<name>[\w /]+)` + DefaultBoxSet().HorizontalLine + `*` + `(?P<header>[\w /]+)?` + DefaultBoxSet().HorizontalLine + `*` + DefaultBoxSet().UpperRightCorner),
+				boxFooterRegex:      regexp.MustCompile(`(?m)^` + DefaultBoxSet().LowerLeftCorner + DefaultBoxSet().HorizontalLine + `*` + `(?P<footer>[\w /]+)` + DefaultBoxSet().HorizontalLine + `*` + DefaultBoxSet().LowerRightCorner),
+			},
+			args: args{
+				box: AsciiBox{data: `
+╔═the name is long══testHeader verrrrrrrrrrrryyyyyyy looooooooooooonnnnnnggggg═╗
+║                              some random string                              ║
+║                              with another line                               ║
+╚═════════════════testFooter verrrrrrrrrrrryyyyyyy looooooooooooonnnnnnggggger═╝`[1:],
+					compressedBoxSet: "╔╗═║╚╝",
+					asciiBoxWriter:   NewAsciiBoxWriter().(*asciiBoxWriter),
+				},
+				newName: "the name is short",
+			},
+			want: AsciiBox{
+				data: `
+╔═the name is short══testHeader verrrrrrrrrrrryyyyyyy looooooooooooonnnnnnggggg═╗
+║                              some random string                               ║
+║                               with another line                               ║
+╚══════════════════testFooter verrrrrrrrrrrryyyyyyy looooooooooooonnnnnnggggger═╝`[1:],
+				compressedBoxSet: "╔╗═║╚╝",
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1621,7 +1654,8 @@ func Test_asciiBoxWriter_changeBoxName(t *testing.T) {
 				extraNameCharIndent: tt.fields.extraNameCharIndent,
 				borderWidth:         tt.fields.borderWidth,
 				newLineCharWidth:    tt.fields.newLineCharWidth,
-				boxHeaderRegex:      tt.fields.boxNameRegex,
+				boxHeaderRegex:      tt.fields.boxHeaderRegex,
+				boxFooterRegex:      tt.fields.boxFooterRegex,
 			}
 			tt.want.asciiBoxWriter = a
 			assert.Equalf(t, tt.want, a.changeBoxName(tt.args.box, tt.args.newName), "changeBoxName(%v, %v)", tt.args.box, tt.args.newName)
@@ -1677,7 +1711,7 @@ func Test_asciiBoxWriter_getBoxName(t *testing.T) {
 		extraNameCharIndent int
 		borderWidth         int
 		newLineCharWidth    int
-		boxNameRegex        *regexp.Regexp
+		boxHeaderRegex      *regexp.Regexp
 	}
 	type args struct {
 		box AsciiBox
@@ -1691,7 +1725,7 @@ func Test_asciiBoxWriter_getBoxName(t *testing.T) {
 		{
 			name: "get a name",
 			fields: fields{
-				boxNameRegex: regexp.MustCompile("(?P<name>[\\w /]+)"),
+				boxHeaderRegex: regexp.MustCompile("(?P<name>[\\w /]+)"),
 			},
 		},
 	}
@@ -1704,9 +1738,87 @@ func Test_asciiBoxWriter_getBoxName(t *testing.T) {
 				extraNameCharIndent: tt.fields.extraNameCharIndent,
 				borderWidth:         tt.fields.borderWidth,
 				newLineCharWidth:    tt.fields.newLineCharWidth,
-				boxHeaderRegex:      tt.fields.boxNameRegex,
+				boxHeaderRegex:      tt.fields.boxHeaderRegex,
 			}
 			assert.Equalf(t, tt.want, a.getBoxName(tt.args.box), "getBoxName(%v)", tt.args.box)
+		})
+	}
+}
+
+func Test_asciiBoxWriter_getBoxHeader(t *testing.T) {
+	type fields struct {
+		newLine             rune
+		emptyPadding        string
+		extraNameCharIndent int
+		borderWidth         int
+		newLineCharWidth    int
+		defaultBoxSet       BoxSet
+		boxHeaderRegex      *regexp.Regexp
+		boxFooterRegex      *regexp.Regexp
+	}
+	type args struct {
+		box AsciiBox
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   string
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			a := &asciiBoxWriter{
+				newLine:             tt.fields.newLine,
+				emptyPadding:        tt.fields.emptyPadding,
+				extraNameCharIndent: tt.fields.extraNameCharIndent,
+				borderWidth:         tt.fields.borderWidth,
+				newLineCharWidth:    tt.fields.newLineCharWidth,
+				defaultBoxSet:       tt.fields.defaultBoxSet,
+				boxHeaderRegex:      tt.fields.boxHeaderRegex,
+				boxFooterRegex:      tt.fields.boxFooterRegex,
+			}
+			assert.Equalf(t, tt.want, a.getBoxHeader(tt.args.box), "getBoxHeader(%v)", tt.args.box)
+		})
+	}
+}
+
+func Test_asciiBoxWriter_getBoxFooter(t *testing.T) {
+	type fields struct {
+		newLine             rune
+		emptyPadding        string
+		extraNameCharIndent int
+		borderWidth         int
+		newLineCharWidth    int
+		defaultBoxSet       BoxSet
+		boxHeaderRegex      *regexp.Regexp
+		boxFooterRegex      *regexp.Regexp
+	}
+	type args struct {
+		box AsciiBox
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   string
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			a := &asciiBoxWriter{
+				newLine:             tt.fields.newLine,
+				emptyPadding:        tt.fields.emptyPadding,
+				extraNameCharIndent: tt.fields.extraNameCharIndent,
+				borderWidth:         tt.fields.borderWidth,
+				newLineCharWidth:    tt.fields.newLineCharWidth,
+				defaultBoxSet:       tt.fields.defaultBoxSet,
+				boxHeaderRegex:      tt.fields.boxHeaderRegex,
+				boxFooterRegex:      tt.fields.boxFooterRegex,
+			}
+			assert.Equalf(t, tt.want, a.getBoxFooter(tt.args.box), "getBoxFooter(%v)", tt.args.box)
 		})
 	}
 }
