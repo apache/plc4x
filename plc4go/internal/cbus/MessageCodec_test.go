@@ -865,9 +865,9 @@ func TestMessageCodec_String(t *testing.T) {
 ║║║           b0 false            ║                                                                      ║            ║
 ║║╚═══════════════════════════════╝                                                                      ║            ║
 ║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝            ║
-║╔═requestContext/RequestContext/sendIdentifyRequestBefore═════════════════════════════════════════════════════╗      ║
-║║                                                   b1 true                                                   ║      ║
-║╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════╝      ║
+║╔═requestContext/RequestContext/sendIdentifyRequestBefore╗                                                           ║
+║║                        b1 true                         ║                                                           ║
+║╚════════════════════════════════════════════════════════╝                                                           ║
 ║╔═cbusOptions/CBusOptions═══════════════════════════════════════════════════════════╗╔═monitoredMMIs╗╔═monitoredSALs╗║
 ║║╔═connect╗╔═smart═╗╔═idmon═╗╔═exstat╗╔═monitor╗╔═monall╗╔═pun═══╗╔═pcn═══╗╔═srchk═╗║║ 0 element(s) ║║ 0 element(s) ║║
 ║║║b1 true ║║b1 true║║b1 true║║b1 true║║b1 true ║║b1 true║║b1 true║║b1 true║║b1 true║║╚══════════════╝╚══════════════╝║

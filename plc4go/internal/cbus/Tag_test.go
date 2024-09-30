@@ -810,9 +810,9 @@ func Test_calIdentifyTag_String(t *testing.T) {
 		{
 			name: "default to string",
 			want: `
-╔═STATUS/Attribute╗
+╔═STATUS/Attribute══╗
 ║0x00 0 Manufacturer║
-╚═════════════════╝`[1:],
+╚═══════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {
@@ -2278,9 +2278,9 @@ func Test_salTag_String(t *testing.T) {
 		{
 			name: "default to string",
 			want: `
-╔═STATUS/ApplicationIdContainer═════╗
-║        0x00 0 RESERVED_00         ║
-╚═══════════════════════════════════╝`[1:],
+╔═STATUS/ApplicationIdContainer╗
+║      0x00 0 RESERVED_00      ║
+╚══════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {
