@@ -105,55 +105,59 @@ type _AssociatedValueTypeBuilder struct {
 
 var _ (AssociatedValueTypeBuilder) = (*_AssociatedValueTypeBuilder)(nil)
 
-func (m *_AssociatedValueTypeBuilder) WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) AssociatedValueTypeBuilder {
-	return m.WithReturnCode(returnCode).WithTransportSize(transportSize).WithValueLength(valueLength).WithData(data...)
+func (b *_AssociatedValueTypeBuilder) WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) AssociatedValueTypeBuilder {
+	return b.WithReturnCode(returnCode).WithTransportSize(transportSize).WithValueLength(valueLength).WithData(data...)
 }
 
-func (m *_AssociatedValueTypeBuilder) WithReturnCode(returnCode DataTransportErrorCode) AssociatedValueTypeBuilder {
-	m.ReturnCode = returnCode
-	return m
+func (b *_AssociatedValueTypeBuilder) WithReturnCode(returnCode DataTransportErrorCode) AssociatedValueTypeBuilder {
+	b.ReturnCode = returnCode
+	return b
 }
 
-func (m *_AssociatedValueTypeBuilder) WithTransportSize(transportSize DataTransportSize) AssociatedValueTypeBuilder {
-	m.TransportSize = transportSize
-	return m
+func (b *_AssociatedValueTypeBuilder) WithTransportSize(transportSize DataTransportSize) AssociatedValueTypeBuilder {
+	b.TransportSize = transportSize
+	return b
 }
 
-func (m *_AssociatedValueTypeBuilder) WithValueLength(valueLength uint16) AssociatedValueTypeBuilder {
-	m.ValueLength = valueLength
-	return m
+func (b *_AssociatedValueTypeBuilder) WithValueLength(valueLength uint16) AssociatedValueTypeBuilder {
+	b.ValueLength = valueLength
+	return b
 }
 
-func (m *_AssociatedValueTypeBuilder) WithData(data ...uint8) AssociatedValueTypeBuilder {
-	m.Data = data
-	return m
+func (b *_AssociatedValueTypeBuilder) WithData(data ...uint8) AssociatedValueTypeBuilder {
+	b.Data = data
+	return b
 }
 
-func (m *_AssociatedValueTypeBuilder) Build() (AssociatedValueType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AssociatedValueTypeBuilder) Build() (AssociatedValueType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AssociatedValueType.deepCopy(), nil
+	return b._AssociatedValueType.deepCopy(), nil
 }
 
-func (m *_AssociatedValueTypeBuilder) MustBuild() AssociatedValueType {
-	build, err := m.Build()
+func (b *_AssociatedValueTypeBuilder) MustBuild() AssociatedValueType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AssociatedValueTypeBuilder) DeepCopy() any {
-	return m.CreateAssociatedValueTypeBuilder()
+func (b *_AssociatedValueTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAssociatedValueTypeBuilder().(*_AssociatedValueTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAssociatedValueTypeBuilder creates a AssociatedValueTypeBuilder
-func (m *_AssociatedValueType) CreateAssociatedValueTypeBuilder() AssociatedValueTypeBuilder {
-	if m == nil {
+func (b *_AssociatedValueType) CreateAssociatedValueTypeBuilder() AssociatedValueTypeBuilder {
+	if b == nil {
 		return NewAssociatedValueTypeBuilder()
 	}
-	return &_AssociatedValueTypeBuilder{_AssociatedValueType: m.deepCopy()}
+	return &_AssociatedValueTypeBuilder{_AssociatedValueType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -346,9 +350,13 @@ func (m *_AssociatedValueType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

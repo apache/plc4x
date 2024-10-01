@@ -100,64 +100,83 @@ func NewBACnetConstructedDataErrorLimitBuilder() BACnetConstructedDataErrorLimit
 type _BACnetConstructedDataErrorLimitBuilder struct {
 	*_BACnetConstructedDataErrorLimit
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataErrorLimitBuilder) = (*_BACnetConstructedDataErrorLimitBuilder)(nil)
 
-func (m *_BACnetConstructedDataErrorLimitBuilder) WithMandatoryFields(errorLimit BACnetApplicationTagReal) BACnetConstructedDataErrorLimitBuilder {
-	return m.WithErrorLimit(errorLimit)
+func (b *_BACnetConstructedDataErrorLimitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataErrorLimitBuilder) WithErrorLimit(errorLimit BACnetApplicationTagReal) BACnetConstructedDataErrorLimitBuilder {
-	m.ErrorLimit = errorLimit
-	return m
+func (b *_BACnetConstructedDataErrorLimitBuilder) WithMandatoryFields(errorLimit BACnetApplicationTagReal) BACnetConstructedDataErrorLimitBuilder {
+	return b.WithErrorLimit(errorLimit)
 }
 
-func (m *_BACnetConstructedDataErrorLimitBuilder) WithErrorLimitBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataErrorLimitBuilder {
-	builder := builderSupplier(m.ErrorLimit.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataErrorLimitBuilder) WithErrorLimit(errorLimit BACnetApplicationTagReal) BACnetConstructedDataErrorLimitBuilder {
+	b.ErrorLimit = errorLimit
+	return b
+}
+
+func (b *_BACnetConstructedDataErrorLimitBuilder) WithErrorLimitBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataErrorLimitBuilder {
+	builder := builderSupplier(b.ErrorLimit.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.ErrorLimit, err = builder.Build()
+	b.ErrorLimit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataErrorLimitBuilder) Build() (BACnetConstructedDataErrorLimit, error) {
-	if m.ErrorLimit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataErrorLimitBuilder) Build() (BACnetConstructedDataErrorLimit, error) {
+	if b.ErrorLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'errorLimit' not set"))
+		b.err.Append(errors.New("mandatory field 'errorLimit' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataErrorLimit.deepCopy(), nil
+	return b._BACnetConstructedDataErrorLimit.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataErrorLimitBuilder) MustBuild() BACnetConstructedDataErrorLimit {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataErrorLimitBuilder) MustBuild() BACnetConstructedDataErrorLimit {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataErrorLimitBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataErrorLimitBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataErrorLimitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataErrorLimitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataErrorLimitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataErrorLimitBuilder().(*_BACnetConstructedDataErrorLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataErrorLimitBuilder creates a BACnetConstructedDataErrorLimitBuilder
-func (m *_BACnetConstructedDataErrorLimit) CreateBACnetConstructedDataErrorLimitBuilder() BACnetConstructedDataErrorLimitBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataErrorLimit) CreateBACnetConstructedDataErrorLimitBuilder() BACnetConstructedDataErrorLimitBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataErrorLimitBuilder()
 	}
-	return &_BACnetConstructedDataErrorLimitBuilder{_BACnetConstructedDataErrorLimit: m.deepCopy()}
+	return &_BACnetConstructedDataErrorLimitBuilder{_BACnetConstructedDataErrorLimit: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataErrorLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

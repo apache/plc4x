@@ -97,45 +97,64 @@ func NewSecurityDataLowBatteryChargingBuilder() SecurityDataLowBatteryChargingBu
 type _SecurityDataLowBatteryChargingBuilder struct {
 	*_SecurityDataLowBatteryCharging
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataLowBatteryChargingBuilder) = (*_SecurityDataLowBatteryChargingBuilder)(nil)
 
-func (m *_SecurityDataLowBatteryChargingBuilder) WithMandatoryFields(startStop byte) SecurityDataLowBatteryChargingBuilder {
-	return m.WithStartStop(startStop)
+func (b *_SecurityDataLowBatteryChargingBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataLowBatteryChargingBuilder) WithStartStop(startStop byte) SecurityDataLowBatteryChargingBuilder {
-	m.StartStop = startStop
-	return m
+func (b *_SecurityDataLowBatteryChargingBuilder) WithMandatoryFields(startStop byte) SecurityDataLowBatteryChargingBuilder {
+	return b.WithStartStop(startStop)
 }
 
-func (m *_SecurityDataLowBatteryChargingBuilder) Build() (SecurityDataLowBatteryCharging, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataLowBatteryChargingBuilder) WithStartStop(startStop byte) SecurityDataLowBatteryChargingBuilder {
+	b.StartStop = startStop
+	return b
+}
+
+func (b *_SecurityDataLowBatteryChargingBuilder) Build() (SecurityDataLowBatteryCharging, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataLowBatteryCharging.deepCopy(), nil
+	return b._SecurityDataLowBatteryCharging.deepCopy(), nil
 }
 
-func (m *_SecurityDataLowBatteryChargingBuilder) MustBuild() SecurityDataLowBatteryCharging {
-	build, err := m.Build()
+func (b *_SecurityDataLowBatteryChargingBuilder) MustBuild() SecurityDataLowBatteryCharging {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataLowBatteryChargingBuilder) DeepCopy() any {
-	return m.CreateSecurityDataLowBatteryChargingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataLowBatteryChargingBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataLowBatteryChargingBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataLowBatteryChargingBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataLowBatteryChargingBuilder().(*_SecurityDataLowBatteryChargingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataLowBatteryChargingBuilder creates a SecurityDataLowBatteryChargingBuilder
-func (m *_SecurityDataLowBatteryCharging) CreateSecurityDataLowBatteryChargingBuilder() SecurityDataLowBatteryChargingBuilder {
-	if m == nil {
+func (b *_SecurityDataLowBatteryCharging) CreateSecurityDataLowBatteryChargingBuilder() SecurityDataLowBatteryChargingBuilder {
+	if b == nil {
 		return NewSecurityDataLowBatteryChargingBuilder()
 	}
-	return &_SecurityDataLowBatteryChargingBuilder{_SecurityDataLowBatteryCharging: m.deepCopy()}
+	return &_SecurityDataLowBatteryChargingBuilder{_SecurityDataLowBatteryCharging: b.deepCopy()}
 }
 
 ///////////////////////
@@ -324,9 +343,13 @@ func (m *_SecurityDataLowBatteryCharging) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

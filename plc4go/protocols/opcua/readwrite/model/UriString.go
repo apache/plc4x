@@ -83,35 +83,39 @@ type _UriStringBuilder struct {
 
 var _ (UriStringBuilder) = (*_UriStringBuilder)(nil)
 
-func (m *_UriStringBuilder) WithMandatoryFields() UriStringBuilder {
-	return m
+func (b *_UriStringBuilder) WithMandatoryFields() UriStringBuilder {
+	return b
 }
 
-func (m *_UriStringBuilder) Build() (UriString, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_UriStringBuilder) Build() (UriString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._UriString.deepCopy(), nil
+	return b._UriString.deepCopy(), nil
 }
 
-func (m *_UriStringBuilder) MustBuild() UriString {
-	build, err := m.Build()
+func (b *_UriStringBuilder) MustBuild() UriString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_UriStringBuilder) DeepCopy() any {
-	return m.CreateUriStringBuilder()
+func (b *_UriStringBuilder) DeepCopy() any {
+	_copy := b.CreateUriStringBuilder().(*_UriStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateUriStringBuilder creates a UriStringBuilder
-func (m *_UriString) CreateUriStringBuilder() UriStringBuilder {
-	if m == nil {
+func (b *_UriString) CreateUriStringBuilder() UriStringBuilder {
+	if b == nil {
 		return NewUriStringBuilder()
 	}
-	return &_UriStringBuilder{_UriString: m.deepCopy()}
+	return &_UriStringBuilder{_UriString: b.deepCopy()}
 }
 
 ///////////////////////
@@ -219,9 +223,13 @@ func (m *_UriString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

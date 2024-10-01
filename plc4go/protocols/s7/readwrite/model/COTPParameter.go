@@ -90,10 +90,39 @@ type COTPParameterBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() COTPParameterBuilder
+	// AsCOTPParameterTpduSize converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
+	AsCOTPParameterTpduSize() interface {
+		COTPParameterTpduSizeBuilder
+		Done() COTPParameterBuilder
+	}
+	// AsCOTPParameterCallingTsap converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
+	AsCOTPParameterCallingTsap() interface {
+		COTPParameterCallingTsapBuilder
+		Done() COTPParameterBuilder
+	}
+	// AsCOTPParameterCalledTsap converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
+	AsCOTPParameterCalledTsap() interface {
+		COTPParameterCalledTsapBuilder
+		Done() COTPParameterBuilder
+	}
+	// AsCOTPParameterChecksum converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
+	AsCOTPParameterChecksum() interface {
+		COTPParameterChecksumBuilder
+		Done() COTPParameterBuilder
+	}
+	// AsCOTPParameterDisconnectAdditionalInformation converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
+	AsCOTPParameterDisconnectAdditionalInformation() interface {
+		COTPParameterDisconnectAdditionalInformationBuilder
+		Done() COTPParameterBuilder
+	}
 	// Build builds the COTPParameter or returns an error if something is wrong
-	Build() (COTPParameterContract, error)
+	PartialBuild() (COTPParameterContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() COTPParameterContract
+	PartialMustBuild() COTPParameterContract
+	// Build builds the COTPParameter or returns an error if something is wrong
+	Build() (COTPParameter, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() COTPParameter
 }
 
 // NewCOTPParameterBuilder() creates a COTPParameterBuilder
@@ -101,43 +130,157 @@ func NewCOTPParameterBuilder() COTPParameterBuilder {
 	return &_COTPParameterBuilder{_COTPParameter: new(_COTPParameter)}
 }
 
+type _COTPParameterChildBuilder interface {
+	utils.Copyable
+	setParent(COTPParameterContract)
+	buildForCOTPParameter() (COTPParameter, error)
+}
+
 type _COTPParameterBuilder struct {
 	*_COTPParameter
+
+	childBuilder _COTPParameterChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (COTPParameterBuilder) = (*_COTPParameterBuilder)(nil)
 
-func (m *_COTPParameterBuilder) WithMandatoryFields() COTPParameterBuilder {
-	return m
+func (b *_COTPParameterBuilder) WithMandatoryFields() COTPParameterBuilder {
+	return b
 }
 
-func (m *_COTPParameterBuilder) Build() (COTPParameterContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_COTPParameterBuilder) PartialBuild() (COTPParameterContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._COTPParameter.deepCopy(), nil
+	return b._COTPParameter.deepCopy(), nil
 }
 
-func (m *_COTPParameterBuilder) MustBuild() COTPParameterContract {
-	build, err := m.Build()
+func (b *_COTPParameterBuilder) PartialMustBuild() COTPParameterContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_COTPParameterBuilder) DeepCopy() any {
-	return m.CreateCOTPParameterBuilder()
+func (b *_COTPParameterBuilder) AsCOTPParameterTpduSize() interface {
+	COTPParameterTpduSizeBuilder
+	Done() COTPParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		COTPParameterTpduSizeBuilder
+		Done() COTPParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCOTPParameterTpduSizeBuilder().(*_COTPParameterTpduSizeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_COTPParameterBuilder) AsCOTPParameterCallingTsap() interface {
+	COTPParameterCallingTsapBuilder
+	Done() COTPParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		COTPParameterCallingTsapBuilder
+		Done() COTPParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCOTPParameterCallingTsapBuilder().(*_COTPParameterCallingTsapBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_COTPParameterBuilder) AsCOTPParameterCalledTsap() interface {
+	COTPParameterCalledTsapBuilder
+	Done() COTPParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		COTPParameterCalledTsapBuilder
+		Done() COTPParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCOTPParameterCalledTsapBuilder().(*_COTPParameterCalledTsapBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_COTPParameterBuilder) AsCOTPParameterChecksum() interface {
+	COTPParameterChecksumBuilder
+	Done() COTPParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		COTPParameterChecksumBuilder
+		Done() COTPParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCOTPParameterChecksumBuilder().(*_COTPParameterChecksumBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_COTPParameterBuilder) AsCOTPParameterDisconnectAdditionalInformation() interface {
+	COTPParameterDisconnectAdditionalInformationBuilder
+	Done() COTPParameterBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		COTPParameterDisconnectAdditionalInformationBuilder
+		Done() COTPParameterBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCOTPParameterDisconnectAdditionalInformationBuilder().(*_COTPParameterDisconnectAdditionalInformationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_COTPParameterBuilder) Build() (COTPParameter, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForCOTPParameter()
+}
+
+func (b *_COTPParameterBuilder) MustBuild() COTPParameter {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_COTPParameterBuilder) DeepCopy() any {
+	_copy := b.CreateCOTPParameterBuilder().(*_COTPParameterBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_COTPParameterChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCOTPParameterBuilder creates a COTPParameterBuilder
-func (m *_COTPParameter) CreateCOTPParameterBuilder() COTPParameterBuilder {
-	if m == nil {
+func (b *_COTPParameter) CreateCOTPParameterBuilder() COTPParameterBuilder {
+	if b == nil {
 		return NewCOTPParameterBuilder()
 	}
-	return &_COTPParameterBuilder{_COTPParameter: m.deepCopy()}
+	return &_COTPParameterBuilder{_COTPParameter: b.deepCopy()}
 }
 
 ///////////////////////

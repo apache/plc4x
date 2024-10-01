@@ -84,6 +84,8 @@ type BACnetLogMultipleRecordBuilder interface {
 	WithTimestampBuilder(func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetLogMultipleRecordBuilder
 	// WithLogData adds LogData (property field)
 	WithLogData(BACnetLogData) BACnetLogMultipleRecordBuilder
+	// WithLogDataBuilder adds LogData (property field) which is build by the builder
+	WithLogDataBuilder(func(BACnetLogDataBuilder) BACnetLogDataBuilder) BACnetLogMultipleRecordBuilder
 	// Build builds the BACnetLogMultipleRecord or returns an error if something is wrong
 	Build() (BACnetLogMultipleRecord, error)
 	// MustBuild does the same as Build but panics on error
@@ -103,70 +105,87 @@ type _BACnetLogMultipleRecordBuilder struct {
 
 var _ (BACnetLogMultipleRecordBuilder) = (*_BACnetLogMultipleRecordBuilder)(nil)
 
-func (m *_BACnetLogMultipleRecordBuilder) WithMandatoryFields(timestamp BACnetDateTimeEnclosed, logData BACnetLogData) BACnetLogMultipleRecordBuilder {
-	return m.WithTimestamp(timestamp).WithLogData(logData)
+func (b *_BACnetLogMultipleRecordBuilder) WithMandatoryFields(timestamp BACnetDateTimeEnclosed, logData BACnetLogData) BACnetLogMultipleRecordBuilder {
+	return b.WithTimestamp(timestamp).WithLogData(logData)
 }
 
-func (m *_BACnetLogMultipleRecordBuilder) WithTimestamp(timestamp BACnetDateTimeEnclosed) BACnetLogMultipleRecordBuilder {
-	m.Timestamp = timestamp
-	return m
+func (b *_BACnetLogMultipleRecordBuilder) WithTimestamp(timestamp BACnetDateTimeEnclosed) BACnetLogMultipleRecordBuilder {
+	b.Timestamp = timestamp
+	return b
 }
 
-func (m *_BACnetLogMultipleRecordBuilder) WithTimestampBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetLogMultipleRecordBuilder {
-	builder := builderSupplier(m.Timestamp.CreateBACnetDateTimeEnclosedBuilder())
+func (b *_BACnetLogMultipleRecordBuilder) WithTimestampBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetLogMultipleRecordBuilder {
+	builder := builderSupplier(b.Timestamp.CreateBACnetDateTimeEnclosedBuilder())
 	var err error
-	m.Timestamp, err = builder.Build()
+	b.Timestamp, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogMultipleRecordBuilder) WithLogData(logData BACnetLogData) BACnetLogMultipleRecordBuilder {
-	m.LogData = logData
-	return m
+func (b *_BACnetLogMultipleRecordBuilder) WithLogData(logData BACnetLogData) BACnetLogMultipleRecordBuilder {
+	b.LogData = logData
+	return b
 }
 
-func (m *_BACnetLogMultipleRecordBuilder) Build() (BACnetLogMultipleRecord, error) {
-	if m.Timestamp == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLogMultipleRecordBuilder) WithLogDataBuilder(builderSupplier func(BACnetLogDataBuilder) BACnetLogDataBuilder) BACnetLogMultipleRecordBuilder {
+	builder := builderSupplier(b.LogData.CreateBACnetLogDataBuilder())
+	var err error
+	b.LogData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'timestamp' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetLogDataBuilder failed"))
 	}
-	if m.LogData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'logData' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetLogMultipleRecord.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetLogMultipleRecordBuilder) MustBuild() BACnetLogMultipleRecord {
-	build, err := m.Build()
+func (b *_BACnetLogMultipleRecordBuilder) Build() (BACnetLogMultipleRecord, error) {
+	if b.Timestamp == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timestamp' not set"))
+	}
+	if b.LogData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'logData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLogMultipleRecord.deepCopy(), nil
+}
+
+func (b *_BACnetLogMultipleRecordBuilder) MustBuild() BACnetLogMultipleRecord {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLogMultipleRecordBuilder) DeepCopy() any {
-	return m.CreateBACnetLogMultipleRecordBuilder()
+func (b *_BACnetLogMultipleRecordBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogMultipleRecordBuilder().(*_BACnetLogMultipleRecordBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLogMultipleRecordBuilder creates a BACnetLogMultipleRecordBuilder
-func (m *_BACnetLogMultipleRecord) CreateBACnetLogMultipleRecordBuilder() BACnetLogMultipleRecordBuilder {
-	if m == nil {
+func (b *_BACnetLogMultipleRecord) CreateBACnetLogMultipleRecordBuilder() BACnetLogMultipleRecordBuilder {
+	if b == nil {
 		return NewBACnetLogMultipleRecordBuilder()
 	}
-	return &_BACnetLogMultipleRecordBuilder{_BACnetLogMultipleRecord: m.deepCopy()}
+	return &_BACnetLogMultipleRecordBuilder{_BACnetLogMultipleRecord: b.deepCopy()}
 }
 
 ///////////////////////
@@ -321,9 +340,13 @@ func (m *_BACnetLogMultipleRecord) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

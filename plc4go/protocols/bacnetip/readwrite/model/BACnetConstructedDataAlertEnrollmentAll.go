@@ -85,40 +85,59 @@ func NewBACnetConstructedDataAlertEnrollmentAllBuilder() BACnetConstructedDataAl
 type _BACnetConstructedDataAlertEnrollmentAllBuilder struct {
 	*_BACnetConstructedDataAlertEnrollmentAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAlertEnrollmentAllBuilder) = (*_BACnetConstructedDataAlertEnrollmentAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataAlertEnrollmentAllBuilder) WithMandatoryFields() BACnetConstructedDataAlertEnrollmentAllBuilder {
-	return m
+func (b *_BACnetConstructedDataAlertEnrollmentAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAlertEnrollmentAllBuilder) Build() (BACnetConstructedDataAlertEnrollmentAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataAlertEnrollmentAllBuilder) WithMandatoryFields() BACnetConstructedDataAlertEnrollmentAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataAlertEnrollmentAllBuilder) Build() (BACnetConstructedDataAlertEnrollmentAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAlertEnrollmentAll.deepCopy(), nil
+	return b._BACnetConstructedDataAlertEnrollmentAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAlertEnrollmentAllBuilder) MustBuild() BACnetConstructedDataAlertEnrollmentAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAlertEnrollmentAllBuilder) MustBuild() BACnetConstructedDataAlertEnrollmentAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAlertEnrollmentAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAlertEnrollmentAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAlertEnrollmentAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAlertEnrollmentAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAlertEnrollmentAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAlertEnrollmentAllBuilder().(*_BACnetConstructedDataAlertEnrollmentAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAlertEnrollmentAllBuilder creates a BACnetConstructedDataAlertEnrollmentAllBuilder
-func (m *_BACnetConstructedDataAlertEnrollmentAll) CreateBACnetConstructedDataAlertEnrollmentAllBuilder() BACnetConstructedDataAlertEnrollmentAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAlertEnrollmentAll) CreateBACnetConstructedDataAlertEnrollmentAllBuilder() BACnetConstructedDataAlertEnrollmentAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAlertEnrollmentAllBuilder()
 	}
-	return &_BACnetConstructedDataAlertEnrollmentAllBuilder{_BACnetConstructedDataAlertEnrollmentAll: m.deepCopy()}
+	return &_BACnetConstructedDataAlertEnrollmentAllBuilder{_BACnetConstructedDataAlertEnrollmentAll: b.deepCopy()}
 }
 
 ///////////////////////
@@ -243,9 +262,13 @@ func (m *_BACnetConstructedDataAlertEnrollmentAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

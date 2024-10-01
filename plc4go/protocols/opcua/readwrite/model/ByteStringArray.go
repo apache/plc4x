@@ -95,45 +95,49 @@ type _ByteStringArrayBuilder struct {
 
 var _ (ByteStringArrayBuilder) = (*_ByteStringArrayBuilder)(nil)
 
-func (m *_ByteStringArrayBuilder) WithMandatoryFields(arrayLength int32, value []uint8) ByteStringArrayBuilder {
-	return m.WithArrayLength(arrayLength).WithValue(value...)
+func (b *_ByteStringArrayBuilder) WithMandatoryFields(arrayLength int32, value []uint8) ByteStringArrayBuilder {
+	return b.WithArrayLength(arrayLength).WithValue(value...)
 }
 
-func (m *_ByteStringArrayBuilder) WithArrayLength(arrayLength int32) ByteStringArrayBuilder {
-	m.ArrayLength = arrayLength
-	return m
+func (b *_ByteStringArrayBuilder) WithArrayLength(arrayLength int32) ByteStringArrayBuilder {
+	b.ArrayLength = arrayLength
+	return b
 }
 
-func (m *_ByteStringArrayBuilder) WithValue(value ...uint8) ByteStringArrayBuilder {
-	m.Value = value
-	return m
+func (b *_ByteStringArrayBuilder) WithValue(value ...uint8) ByteStringArrayBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_ByteStringArrayBuilder) Build() (ByteStringArray, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ByteStringArrayBuilder) Build() (ByteStringArray, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ByteStringArray.deepCopy(), nil
+	return b._ByteStringArray.deepCopy(), nil
 }
 
-func (m *_ByteStringArrayBuilder) MustBuild() ByteStringArray {
-	build, err := m.Build()
+func (b *_ByteStringArrayBuilder) MustBuild() ByteStringArray {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ByteStringArrayBuilder) DeepCopy() any {
-	return m.CreateByteStringArrayBuilder()
+func (b *_ByteStringArrayBuilder) DeepCopy() any {
+	_copy := b.CreateByteStringArrayBuilder().(*_ByteStringArrayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateByteStringArrayBuilder creates a ByteStringArrayBuilder
-func (m *_ByteStringArray) CreateByteStringArrayBuilder() ByteStringArrayBuilder {
-	if m == nil {
+func (b *_ByteStringArray) CreateByteStringArrayBuilder() ByteStringArrayBuilder {
+	if b == nil {
 		return NewByteStringArrayBuilder()
 	}
-	return &_ByteStringArrayBuilder{_ByteStringArray: m.deepCopy()}
+	return &_ByteStringArrayBuilder{_ByteStringArray: b.deepCopy()}
 }
 
 ///////////////////////
@@ -290,9 +294,13 @@ func (m *_ByteStringArray) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

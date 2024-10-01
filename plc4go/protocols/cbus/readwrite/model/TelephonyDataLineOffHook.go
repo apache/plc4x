@@ -99,50 +99,69 @@ func NewTelephonyDataLineOffHookBuilder() TelephonyDataLineOffHookBuilder {
 type _TelephonyDataLineOffHookBuilder struct {
 	*_TelephonyDataLineOffHook
 
+	parentBuilder *_TelephonyDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TelephonyDataLineOffHookBuilder) = (*_TelephonyDataLineOffHookBuilder)(nil)
 
-func (m *_TelephonyDataLineOffHookBuilder) WithMandatoryFields(reason LineOffHookReason, number string) TelephonyDataLineOffHookBuilder {
-	return m.WithReason(reason).WithNumber(number)
+func (b *_TelephonyDataLineOffHookBuilder) setParent(contract TelephonyDataContract) {
+	b.TelephonyDataContract = contract
 }
 
-func (m *_TelephonyDataLineOffHookBuilder) WithReason(reason LineOffHookReason) TelephonyDataLineOffHookBuilder {
-	m.Reason = reason
-	return m
+func (b *_TelephonyDataLineOffHookBuilder) WithMandatoryFields(reason LineOffHookReason, number string) TelephonyDataLineOffHookBuilder {
+	return b.WithReason(reason).WithNumber(number)
 }
 
-func (m *_TelephonyDataLineOffHookBuilder) WithNumber(number string) TelephonyDataLineOffHookBuilder {
-	m.Number = number
-	return m
+func (b *_TelephonyDataLineOffHookBuilder) WithReason(reason LineOffHookReason) TelephonyDataLineOffHookBuilder {
+	b.Reason = reason
+	return b
 }
 
-func (m *_TelephonyDataLineOffHookBuilder) Build() (TelephonyDataLineOffHook, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TelephonyDataLineOffHookBuilder) WithNumber(number string) TelephonyDataLineOffHookBuilder {
+	b.Number = number
+	return b
+}
+
+func (b *_TelephonyDataLineOffHookBuilder) Build() (TelephonyDataLineOffHook, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TelephonyDataLineOffHook.deepCopy(), nil
+	return b._TelephonyDataLineOffHook.deepCopy(), nil
 }
 
-func (m *_TelephonyDataLineOffHookBuilder) MustBuild() TelephonyDataLineOffHook {
-	build, err := m.Build()
+func (b *_TelephonyDataLineOffHookBuilder) MustBuild() TelephonyDataLineOffHook {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TelephonyDataLineOffHookBuilder) DeepCopy() any {
-	return m.CreateTelephonyDataLineOffHookBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TelephonyDataLineOffHookBuilder) Done() TelephonyDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TelephonyDataLineOffHookBuilder) buildForTelephonyData() (TelephonyData, error) {
+	return b.Build()
+}
+
+func (b *_TelephonyDataLineOffHookBuilder) DeepCopy() any {
+	_copy := b.CreateTelephonyDataLineOffHookBuilder().(*_TelephonyDataLineOffHookBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTelephonyDataLineOffHookBuilder creates a TelephonyDataLineOffHookBuilder
-func (m *_TelephonyDataLineOffHook) CreateTelephonyDataLineOffHookBuilder() TelephonyDataLineOffHookBuilder {
-	if m == nil {
+func (b *_TelephonyDataLineOffHook) CreateTelephonyDataLineOffHookBuilder() TelephonyDataLineOffHookBuilder {
+	if b == nil {
 		return NewTelephonyDataLineOffHookBuilder()
 	}
-	return &_TelephonyDataLineOffHookBuilder{_TelephonyDataLineOffHook: m.deepCopy()}
+	return &_TelephonyDataLineOffHookBuilder{_TelephonyDataLineOffHook: b.deepCopy()}
 }
 
 ///////////////////////
@@ -300,9 +319,13 @@ func (m *_TelephonyDataLineOffHook) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataIntegerValueCOVIncrementBuilder() BACnetConstructed
 type _BACnetConstructedDataIntegerValueCOVIncrementBuilder struct {
 	*_BACnetConstructedDataIntegerValueCOVIncrement
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataIntegerValueCOVIncrementBuilder) = (*_BACnetConstructedDataIntegerValueCOVIncrementBuilder)(nil)
 
-func (m *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) WithMandatoryFields(covIncrement BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntegerValueCOVIncrementBuilder {
-	return m.WithCovIncrement(covIncrement)
+func (b *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) WithCovIncrement(covIncrement BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntegerValueCOVIncrementBuilder {
-	m.CovIncrement = covIncrement
-	return m
+func (b *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) WithMandatoryFields(covIncrement BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntegerValueCOVIncrementBuilder {
+	return b.WithCovIncrement(covIncrement)
 }
 
-func (m *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) WithCovIncrementBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIntegerValueCOVIncrementBuilder {
-	builder := builderSupplier(m.CovIncrement.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) WithCovIncrement(covIncrement BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntegerValueCOVIncrementBuilder {
+	b.CovIncrement = covIncrement
+	return b
+}
+
+func (b *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) WithCovIncrementBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIntegerValueCOVIncrementBuilder {
+	builder := builderSupplier(b.CovIncrement.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.CovIncrement, err = builder.Build()
+	b.CovIncrement, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) Build() (BACnetConstructedDataIntegerValueCOVIncrement, error) {
-	if m.CovIncrement == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) Build() (BACnetConstructedDataIntegerValueCOVIncrement, error) {
+	if b.CovIncrement == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'covIncrement' not set"))
+		b.err.Append(errors.New("mandatory field 'covIncrement' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataIntegerValueCOVIncrement.deepCopy(), nil
+	return b._BACnetConstructedDataIntegerValueCOVIncrement.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) MustBuild() BACnetConstructedDataIntegerValueCOVIncrement {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) MustBuild() BACnetConstructedDataIntegerValueCOVIncrement {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataIntegerValueCOVIncrementBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIntegerValueCOVIncrementBuilder().(*_BACnetConstructedDataIntegerValueCOVIncrementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataIntegerValueCOVIncrementBuilder creates a BACnetConstructedDataIntegerValueCOVIncrementBuilder
-func (m *_BACnetConstructedDataIntegerValueCOVIncrement) CreateBACnetConstructedDataIntegerValueCOVIncrementBuilder() BACnetConstructedDataIntegerValueCOVIncrementBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataIntegerValueCOVIncrement) CreateBACnetConstructedDataIntegerValueCOVIncrementBuilder() BACnetConstructedDataIntegerValueCOVIncrementBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataIntegerValueCOVIncrementBuilder()
 	}
-	return &_BACnetConstructedDataIntegerValueCOVIncrementBuilder{_BACnetConstructedDataIntegerValueCOVIncrement: m.deepCopy()}
+	return &_BACnetConstructedDataIntegerValueCOVIncrementBuilder{_BACnetConstructedDataIntegerValueCOVIncrement: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataIntegerValueCOVIncrement) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

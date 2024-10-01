@@ -111,69 +111,73 @@ type _BACnetObjectTypeTaggedBuilder struct {
 
 var _ (BACnetObjectTypeTaggedBuilder) = (*_BACnetObjectTypeTaggedBuilder)(nil)
 
-func (m *_BACnetObjectTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetObjectType, proprietaryValue uint32) BACnetObjectTypeTaggedBuilder {
-	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetObjectTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetObjectType, proprietaryValue uint32) BACnetObjectTypeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_BACnetObjectTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetObjectTypeTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetObjectTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetObjectTypeTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetObjectTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetObjectTypeTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetObjectTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetObjectTypeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetObjectTypeTaggedBuilder) WithValue(value BACnetObjectType) BACnetObjectTypeTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetObjectTypeTaggedBuilder) WithValue(value BACnetObjectType) BACnetObjectTypeTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetObjectTypeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetObjectTypeTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetObjectTypeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetObjectTypeTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetObjectTypeTaggedBuilder) Build() (BACnetObjectTypeTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetObjectTypeTaggedBuilder) Build() (BACnetObjectTypeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetObjectTypeTagged.deepCopy(), nil
+	return b._BACnetObjectTypeTagged.deepCopy(), nil
 }
 
-func (m *_BACnetObjectTypeTaggedBuilder) MustBuild() BACnetObjectTypeTagged {
-	build, err := m.Build()
+func (b *_BACnetObjectTypeTaggedBuilder) MustBuild() BACnetObjectTypeTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetObjectTypeTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetObjectTypeTaggedBuilder()
+func (b *_BACnetObjectTypeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetObjectTypeTaggedBuilder().(*_BACnetObjectTypeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetObjectTypeTaggedBuilder creates a BACnetObjectTypeTaggedBuilder
-func (m *_BACnetObjectTypeTagged) CreateBACnetObjectTypeTaggedBuilder() BACnetObjectTypeTaggedBuilder {
-	if m == nil {
+func (b *_BACnetObjectTypeTagged) CreateBACnetObjectTypeTaggedBuilder() BACnetObjectTypeTaggedBuilder {
+	if b == nil {
 		return NewBACnetObjectTypeTaggedBuilder()
 	}
-	return &_BACnetObjectTypeTaggedBuilder{_BACnetObjectTypeTagged: m.deepCopy()}
+	return &_BACnetObjectTypeTaggedBuilder{_BACnetObjectTypeTagged: b.deepCopy()}
 }
 
 ///////////////////////
@@ -402,9 +406,13 @@ func (m *_BACnetObjectTypeTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -98,64 +98,83 @@ func NewBACnetChannelValueUnsignedBuilder() BACnetChannelValueUnsignedBuilder {
 type _BACnetChannelValueUnsignedBuilder struct {
 	*_BACnetChannelValueUnsigned
 
+	parentBuilder *_BACnetChannelValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetChannelValueUnsignedBuilder) = (*_BACnetChannelValueUnsignedBuilder)(nil)
 
-func (m *_BACnetChannelValueUnsignedBuilder) WithMandatoryFields(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetChannelValueUnsignedBuilder {
-	return m.WithUnsignedValue(unsignedValue)
+func (b *_BACnetChannelValueUnsignedBuilder) setParent(contract BACnetChannelValueContract) {
+	b.BACnetChannelValueContract = contract
 }
 
-func (m *_BACnetChannelValueUnsignedBuilder) WithUnsignedValue(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetChannelValueUnsignedBuilder {
-	m.UnsignedValue = unsignedValue
-	return m
+func (b *_BACnetChannelValueUnsignedBuilder) WithMandatoryFields(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetChannelValueUnsignedBuilder {
+	return b.WithUnsignedValue(unsignedValue)
 }
 
-func (m *_BACnetChannelValueUnsignedBuilder) WithUnsignedValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetChannelValueUnsignedBuilder {
-	builder := builderSupplier(m.UnsignedValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetChannelValueUnsignedBuilder) WithUnsignedValue(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetChannelValueUnsignedBuilder {
+	b.UnsignedValue = unsignedValue
+	return b
+}
+
+func (b *_BACnetChannelValueUnsignedBuilder) WithUnsignedValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetChannelValueUnsignedBuilder {
+	builder := builderSupplier(b.UnsignedValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.UnsignedValue, err = builder.Build()
+	b.UnsignedValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetChannelValueUnsignedBuilder) Build() (BACnetChannelValueUnsigned, error) {
-	if m.UnsignedValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetChannelValueUnsignedBuilder) Build() (BACnetChannelValueUnsigned, error) {
+	if b.UnsignedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'unsignedValue' not set"))
+		b.err.Append(errors.New("mandatory field 'unsignedValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetChannelValueUnsigned.deepCopy(), nil
+	return b._BACnetChannelValueUnsigned.deepCopy(), nil
 }
 
-func (m *_BACnetChannelValueUnsignedBuilder) MustBuild() BACnetChannelValueUnsigned {
-	build, err := m.Build()
+func (b *_BACnetChannelValueUnsignedBuilder) MustBuild() BACnetChannelValueUnsigned {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetChannelValueUnsignedBuilder) DeepCopy() any {
-	return m.CreateBACnetChannelValueUnsignedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetChannelValueUnsignedBuilder) Done() BACnetChannelValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetChannelValueUnsignedBuilder) buildForBACnetChannelValue() (BACnetChannelValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetChannelValueUnsignedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetChannelValueUnsignedBuilder().(*_BACnetChannelValueUnsignedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetChannelValueUnsignedBuilder creates a BACnetChannelValueUnsignedBuilder
-func (m *_BACnetChannelValueUnsigned) CreateBACnetChannelValueUnsignedBuilder() BACnetChannelValueUnsignedBuilder {
-	if m == nil {
+func (b *_BACnetChannelValueUnsigned) CreateBACnetChannelValueUnsignedBuilder() BACnetChannelValueUnsignedBuilder {
+	if b == nil {
 		return NewBACnetChannelValueUnsignedBuilder()
 	}
-	return &_BACnetChannelValueUnsignedBuilder{_BACnetChannelValueUnsigned: m.deepCopy()}
+	return &_BACnetChannelValueUnsignedBuilder{_BACnetChannelValueUnsigned: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetChannelValueUnsigned) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

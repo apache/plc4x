@@ -93,45 +93,64 @@ func NewAdsWriteControlResponseBuilder() AdsWriteControlResponseBuilder {
 type _AdsWriteControlResponseBuilder struct {
 	*_AdsWriteControlResponse
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsWriteControlResponseBuilder) = (*_AdsWriteControlResponseBuilder)(nil)
 
-func (m *_AdsWriteControlResponseBuilder) WithMandatoryFields(result ReturnCode) AdsWriteControlResponseBuilder {
-	return m.WithResult(result)
+func (b *_AdsWriteControlResponseBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_AdsWriteControlResponseBuilder) WithResult(result ReturnCode) AdsWriteControlResponseBuilder {
-	m.Result = result
-	return m
+func (b *_AdsWriteControlResponseBuilder) WithMandatoryFields(result ReturnCode) AdsWriteControlResponseBuilder {
+	return b.WithResult(result)
 }
 
-func (m *_AdsWriteControlResponseBuilder) Build() (AdsWriteControlResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsWriteControlResponseBuilder) WithResult(result ReturnCode) AdsWriteControlResponseBuilder {
+	b.Result = result
+	return b
+}
+
+func (b *_AdsWriteControlResponseBuilder) Build() (AdsWriteControlResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsWriteControlResponse.deepCopy(), nil
+	return b._AdsWriteControlResponse.deepCopy(), nil
 }
 
-func (m *_AdsWriteControlResponseBuilder) MustBuild() AdsWriteControlResponse {
-	build, err := m.Build()
+func (b *_AdsWriteControlResponseBuilder) MustBuild() AdsWriteControlResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsWriteControlResponseBuilder) DeepCopy() any {
-	return m.CreateAdsWriteControlResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsWriteControlResponseBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsWriteControlResponseBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsWriteControlResponseBuilder) DeepCopy() any {
+	_copy := b.CreateAdsWriteControlResponseBuilder().(*_AdsWriteControlResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsWriteControlResponseBuilder creates a AdsWriteControlResponseBuilder
-func (m *_AdsWriteControlResponse) CreateAdsWriteControlResponseBuilder() AdsWriteControlResponseBuilder {
-	if m == nil {
+func (b *_AdsWriteControlResponse) CreateAdsWriteControlResponseBuilder() AdsWriteControlResponseBuilder {
+	if b == nil {
 		return NewAdsWriteControlResponseBuilder()
 	}
-	return &_AdsWriteControlResponseBuilder{_AdsWriteControlResponse: m.deepCopy()}
+	return &_AdsWriteControlResponseBuilder{_AdsWriteControlResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -279,9 +298,13 @@ func (m *_AdsWriteControlResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

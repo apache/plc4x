@@ -113,88 +113,92 @@ type _BACnetFaultParameterFaultExtendedParametersBuilder struct {
 
 var _ (BACnetFaultParameterFaultExtendedParametersBuilder) = (*_BACnetFaultParameterFaultExtendedParametersBuilder)(nil)
 
-func (m *_BACnetFaultParameterFaultExtendedParametersBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, parameters []BACnetFaultParameterFaultExtendedParametersEntry, closingTag BACnetClosingTag) BACnetFaultParameterFaultExtendedParametersBuilder {
-	return m.WithOpeningTag(openingTag).WithParameters(parameters...).WithClosingTag(closingTag)
+func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, parameters []BACnetFaultParameterFaultExtendedParametersEntry, closingTag BACnetClosingTag) BACnetFaultParameterFaultExtendedParametersBuilder {
+	return b.WithOpeningTag(openingTag).WithParameters(parameters...).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetFaultParameterFaultExtendedParametersBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetFaultParameterFaultExtendedParametersBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetFaultParameterFaultExtendedParametersBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetFaultParameterFaultExtendedParametersBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersBuilder) WithParameters(parameters ...BACnetFaultParameterFaultExtendedParametersEntry) BACnetFaultParameterFaultExtendedParametersBuilder {
-	m.Parameters = parameters
-	return m
+func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) WithParameters(parameters ...BACnetFaultParameterFaultExtendedParametersEntry) BACnetFaultParameterFaultExtendedParametersBuilder {
+	b.Parameters = parameters
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetFaultParameterFaultExtendedParametersBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetFaultParameterFaultExtendedParametersBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultExtendedParametersBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultExtendedParametersBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersBuilder) Build() (BACnetFaultParameterFaultExtendedParameters, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) Build() (BACnetFaultParameterFaultExtendedParameters, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetFaultParameterFaultExtendedParameters.deepCopy(), nil
+	return b._BACnetFaultParameterFaultExtendedParameters.deepCopy(), nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersBuilder) MustBuild() BACnetFaultParameterFaultExtendedParameters {
-	build, err := m.Build()
+func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) MustBuild() BACnetFaultParameterFaultExtendedParameters {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersBuilder) DeepCopy() any {
-	return m.CreateBACnetFaultParameterFaultExtendedParametersBuilder()
+func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultParameterFaultExtendedParametersBuilder().(*_BACnetFaultParameterFaultExtendedParametersBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetFaultParameterFaultExtendedParametersBuilder creates a BACnetFaultParameterFaultExtendedParametersBuilder
-func (m *_BACnetFaultParameterFaultExtendedParameters) CreateBACnetFaultParameterFaultExtendedParametersBuilder() BACnetFaultParameterFaultExtendedParametersBuilder {
-	if m == nil {
+func (b *_BACnetFaultParameterFaultExtendedParameters) CreateBACnetFaultParameterFaultExtendedParametersBuilder() BACnetFaultParameterFaultExtendedParametersBuilder {
+	if b == nil {
 		return NewBACnetFaultParameterFaultExtendedParametersBuilder()
 	}
-	return &_BACnetFaultParameterFaultExtendedParametersBuilder{_BACnetFaultParameterFaultExtendedParameters: m.deepCopy()}
+	return &_BACnetFaultParameterFaultExtendedParametersBuilder{_BACnetFaultParameterFaultExtendedParameters: b.deepCopy()}
 }
 
 ///////////////////////
@@ -383,9 +387,13 @@ func (m *_BACnetFaultParameterFaultExtendedParameters) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

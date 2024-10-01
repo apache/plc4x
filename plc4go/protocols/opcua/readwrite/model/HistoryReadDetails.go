@@ -85,40 +85,59 @@ func NewHistoryReadDetailsBuilder() HistoryReadDetailsBuilder {
 type _HistoryReadDetailsBuilder struct {
 	*_HistoryReadDetails
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (HistoryReadDetailsBuilder) = (*_HistoryReadDetailsBuilder)(nil)
 
-func (m *_HistoryReadDetailsBuilder) WithMandatoryFields() HistoryReadDetailsBuilder {
-	return m
+func (b *_HistoryReadDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_HistoryReadDetailsBuilder) Build() (HistoryReadDetails, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_HistoryReadDetailsBuilder) WithMandatoryFields() HistoryReadDetailsBuilder {
+	return b
+}
+
+func (b *_HistoryReadDetailsBuilder) Build() (HistoryReadDetails, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HistoryReadDetails.deepCopy(), nil
+	return b._HistoryReadDetails.deepCopy(), nil
 }
 
-func (m *_HistoryReadDetailsBuilder) MustBuild() HistoryReadDetails {
-	build, err := m.Build()
+func (b *_HistoryReadDetailsBuilder) MustBuild() HistoryReadDetails {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HistoryReadDetailsBuilder) DeepCopy() any {
-	return m.CreateHistoryReadDetailsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryReadDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryReadDetailsBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryReadDetailsBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryReadDetailsBuilder().(*_HistoryReadDetailsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHistoryReadDetailsBuilder creates a HistoryReadDetailsBuilder
-func (m *_HistoryReadDetails) CreateHistoryReadDetailsBuilder() HistoryReadDetailsBuilder {
-	if m == nil {
+func (b *_HistoryReadDetails) CreateHistoryReadDetailsBuilder() HistoryReadDetailsBuilder {
+	if b == nil {
 		return NewHistoryReadDetailsBuilder()
 	}
-	return &_HistoryReadDetailsBuilder{_HistoryReadDetails: m.deepCopy()}
+	return &_HistoryReadDetailsBuilder{_HistoryReadDetails: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_HistoryReadDetails) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

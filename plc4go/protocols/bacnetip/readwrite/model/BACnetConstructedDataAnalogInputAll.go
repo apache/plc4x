@@ -85,40 +85,59 @@ func NewBACnetConstructedDataAnalogInputAllBuilder() BACnetConstructedDataAnalog
 type _BACnetConstructedDataAnalogInputAllBuilder struct {
 	*_BACnetConstructedDataAnalogInputAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAnalogInputAllBuilder) = (*_BACnetConstructedDataAnalogInputAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataAnalogInputAllBuilder) WithMandatoryFields() BACnetConstructedDataAnalogInputAllBuilder {
-	return m
+func (b *_BACnetConstructedDataAnalogInputAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAnalogInputAllBuilder) Build() (BACnetConstructedDataAnalogInputAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataAnalogInputAllBuilder) WithMandatoryFields() BACnetConstructedDataAnalogInputAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataAnalogInputAllBuilder) Build() (BACnetConstructedDataAnalogInputAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAnalogInputAll.deepCopy(), nil
+	return b._BACnetConstructedDataAnalogInputAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAnalogInputAllBuilder) MustBuild() BACnetConstructedDataAnalogInputAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAnalogInputAllBuilder) MustBuild() BACnetConstructedDataAnalogInputAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAnalogInputAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAnalogInputAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAnalogInputAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAnalogInputAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAnalogInputAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAnalogInputAllBuilder().(*_BACnetConstructedDataAnalogInputAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAnalogInputAllBuilder creates a BACnetConstructedDataAnalogInputAllBuilder
-func (m *_BACnetConstructedDataAnalogInputAll) CreateBACnetConstructedDataAnalogInputAllBuilder() BACnetConstructedDataAnalogInputAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAnalogInputAll) CreateBACnetConstructedDataAnalogInputAllBuilder() BACnetConstructedDataAnalogInputAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAnalogInputAllBuilder()
 	}
-	return &_BACnetConstructedDataAnalogInputAllBuilder{_BACnetConstructedDataAnalogInputAll: m.deepCopy()}
+	return &_BACnetConstructedDataAnalogInputAllBuilder{_BACnetConstructedDataAnalogInputAll: b.deepCopy()}
 }
 
 ///////////////////////
@@ -243,9 +262,13 @@ func (m *_BACnetConstructedDataAnalogInputAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

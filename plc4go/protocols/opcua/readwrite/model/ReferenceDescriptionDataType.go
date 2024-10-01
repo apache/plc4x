@@ -128,117 +128,136 @@ func NewReferenceDescriptionDataTypeBuilder() ReferenceDescriptionDataTypeBuilde
 type _ReferenceDescriptionDataTypeBuilder struct {
 	*_ReferenceDescriptionDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ReferenceDescriptionDataTypeBuilder) = (*_ReferenceDescriptionDataTypeBuilder)(nil)
 
-func (m *_ReferenceDescriptionDataTypeBuilder) WithMandatoryFields(sourceNode NodeId, referenceType NodeId, isForward bool, targetNode ExpandedNodeId) ReferenceDescriptionDataTypeBuilder {
-	return m.WithSourceNode(sourceNode).WithReferenceType(referenceType).WithIsForward(isForward).WithTargetNode(targetNode)
+func (b *_ReferenceDescriptionDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ReferenceDescriptionDataTypeBuilder) WithSourceNode(sourceNode NodeId) ReferenceDescriptionDataTypeBuilder {
-	m.SourceNode = sourceNode
-	return m
+func (b *_ReferenceDescriptionDataTypeBuilder) WithMandatoryFields(sourceNode NodeId, referenceType NodeId, isForward bool, targetNode ExpandedNodeId) ReferenceDescriptionDataTypeBuilder {
+	return b.WithSourceNode(sourceNode).WithReferenceType(referenceType).WithIsForward(isForward).WithTargetNode(targetNode)
 }
 
-func (m *_ReferenceDescriptionDataTypeBuilder) WithSourceNodeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ReferenceDescriptionDataTypeBuilder {
-	builder := builderSupplier(m.SourceNode.CreateNodeIdBuilder())
+func (b *_ReferenceDescriptionDataTypeBuilder) WithSourceNode(sourceNode NodeId) ReferenceDescriptionDataTypeBuilder {
+	b.SourceNode = sourceNode
+	return b
+}
+
+func (b *_ReferenceDescriptionDataTypeBuilder) WithSourceNodeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ReferenceDescriptionDataTypeBuilder {
+	builder := builderSupplier(b.SourceNode.CreateNodeIdBuilder())
 	var err error
-	m.SourceNode, err = builder.Build()
+	b.SourceNode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ReferenceDescriptionDataTypeBuilder) WithReferenceType(referenceType NodeId) ReferenceDescriptionDataTypeBuilder {
-	m.ReferenceType = referenceType
-	return m
+func (b *_ReferenceDescriptionDataTypeBuilder) WithReferenceType(referenceType NodeId) ReferenceDescriptionDataTypeBuilder {
+	b.ReferenceType = referenceType
+	return b
 }
 
-func (m *_ReferenceDescriptionDataTypeBuilder) WithReferenceTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ReferenceDescriptionDataTypeBuilder {
-	builder := builderSupplier(m.ReferenceType.CreateNodeIdBuilder())
+func (b *_ReferenceDescriptionDataTypeBuilder) WithReferenceTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ReferenceDescriptionDataTypeBuilder {
+	builder := builderSupplier(b.ReferenceType.CreateNodeIdBuilder())
 	var err error
-	m.ReferenceType, err = builder.Build()
+	b.ReferenceType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ReferenceDescriptionDataTypeBuilder) WithIsForward(isForward bool) ReferenceDescriptionDataTypeBuilder {
-	m.IsForward = isForward
-	return m
+func (b *_ReferenceDescriptionDataTypeBuilder) WithIsForward(isForward bool) ReferenceDescriptionDataTypeBuilder {
+	b.IsForward = isForward
+	return b
 }
 
-func (m *_ReferenceDescriptionDataTypeBuilder) WithTargetNode(targetNode ExpandedNodeId) ReferenceDescriptionDataTypeBuilder {
-	m.TargetNode = targetNode
-	return m
+func (b *_ReferenceDescriptionDataTypeBuilder) WithTargetNode(targetNode ExpandedNodeId) ReferenceDescriptionDataTypeBuilder {
+	b.TargetNode = targetNode
+	return b
 }
 
-func (m *_ReferenceDescriptionDataTypeBuilder) WithTargetNodeBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ReferenceDescriptionDataTypeBuilder {
-	builder := builderSupplier(m.TargetNode.CreateExpandedNodeIdBuilder())
+func (b *_ReferenceDescriptionDataTypeBuilder) WithTargetNodeBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ReferenceDescriptionDataTypeBuilder {
+	builder := builderSupplier(b.TargetNode.CreateExpandedNodeIdBuilder())
 	var err error
-	m.TargetNode, err = builder.Build()
+	b.TargetNode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ReferenceDescriptionDataTypeBuilder) Build() (ReferenceDescriptionDataType, error) {
-	if m.SourceNode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ReferenceDescriptionDataTypeBuilder) Build() (ReferenceDescriptionDataType, error) {
+	if b.SourceNode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'sourceNode' not set"))
+		b.err.Append(errors.New("mandatory field 'sourceNode' not set"))
 	}
-	if m.ReferenceType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ReferenceType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'referenceType' not set"))
+		b.err.Append(errors.New("mandatory field 'referenceType' not set"))
 	}
-	if m.TargetNode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TargetNode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'targetNode' not set"))
+		b.err.Append(errors.New("mandatory field 'targetNode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ReferenceDescriptionDataType.deepCopy(), nil
+	return b._ReferenceDescriptionDataType.deepCopy(), nil
 }
 
-func (m *_ReferenceDescriptionDataTypeBuilder) MustBuild() ReferenceDescriptionDataType {
-	build, err := m.Build()
+func (b *_ReferenceDescriptionDataTypeBuilder) MustBuild() ReferenceDescriptionDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ReferenceDescriptionDataTypeBuilder) DeepCopy() any {
-	return m.CreateReferenceDescriptionDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ReferenceDescriptionDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ReferenceDescriptionDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ReferenceDescriptionDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateReferenceDescriptionDataTypeBuilder().(*_ReferenceDescriptionDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateReferenceDescriptionDataTypeBuilder creates a ReferenceDescriptionDataTypeBuilder
-func (m *_ReferenceDescriptionDataType) CreateReferenceDescriptionDataTypeBuilder() ReferenceDescriptionDataTypeBuilder {
-	if m == nil {
+func (b *_ReferenceDescriptionDataType) CreateReferenceDescriptionDataTypeBuilder() ReferenceDescriptionDataTypeBuilder {
+	if b == nil {
 		return NewReferenceDescriptionDataTypeBuilder()
 	}
-	return &_ReferenceDescriptionDataTypeBuilder{_ReferenceDescriptionDataType: m.deepCopy()}
+	return &_ReferenceDescriptionDataTypeBuilder{_ReferenceDescriptionDataType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -450,9 +469,13 @@ func (m *_ReferenceDescriptionDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

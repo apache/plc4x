@@ -85,40 +85,59 @@ func NewPublishedDataSetSourceDataTypeBuilder() PublishedDataSetSourceDataTypeBu
 type _PublishedDataSetSourceDataTypeBuilder struct {
 	*_PublishedDataSetSourceDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (PublishedDataSetSourceDataTypeBuilder) = (*_PublishedDataSetSourceDataTypeBuilder)(nil)
 
-func (m *_PublishedDataSetSourceDataTypeBuilder) WithMandatoryFields() PublishedDataSetSourceDataTypeBuilder {
-	return m
+func (b *_PublishedDataSetSourceDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_PublishedDataSetSourceDataTypeBuilder) Build() (PublishedDataSetSourceDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_PublishedDataSetSourceDataTypeBuilder) WithMandatoryFields() PublishedDataSetSourceDataTypeBuilder {
+	return b
+}
+
+func (b *_PublishedDataSetSourceDataTypeBuilder) Build() (PublishedDataSetSourceDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._PublishedDataSetSourceDataType.deepCopy(), nil
+	return b._PublishedDataSetSourceDataType.deepCopy(), nil
 }
 
-func (m *_PublishedDataSetSourceDataTypeBuilder) MustBuild() PublishedDataSetSourceDataType {
-	build, err := m.Build()
+func (b *_PublishedDataSetSourceDataTypeBuilder) MustBuild() PublishedDataSetSourceDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PublishedDataSetSourceDataTypeBuilder) DeepCopy() any {
-	return m.CreatePublishedDataSetSourceDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PublishedDataSetSourceDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PublishedDataSetSourceDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PublishedDataSetSourceDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreatePublishedDataSetSourceDataTypeBuilder().(*_PublishedDataSetSourceDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePublishedDataSetSourceDataTypeBuilder creates a PublishedDataSetSourceDataTypeBuilder
-func (m *_PublishedDataSetSourceDataType) CreatePublishedDataSetSourceDataTypeBuilder() PublishedDataSetSourceDataTypeBuilder {
-	if m == nil {
+func (b *_PublishedDataSetSourceDataType) CreatePublishedDataSetSourceDataTypeBuilder() PublishedDataSetSourceDataTypeBuilder {
+	if b == nil {
 		return NewPublishedDataSetSourceDataTypeBuilder()
 	}
-	return &_PublishedDataSetSourceDataTypeBuilder{_PublishedDataSetSourceDataType: m.deepCopy()}
+	return &_PublishedDataSetSourceDataTypeBuilder{_PublishedDataSetSourceDataType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_PublishedDataSetSourceDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

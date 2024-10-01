@@ -93,45 +93,64 @@ func NewBACnetConstructedDataExitPointsBuilder() BACnetConstructedDataExitPoints
 type _BACnetConstructedDataExitPointsBuilder struct {
 	*_BACnetConstructedDataExitPoints
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataExitPointsBuilder) = (*_BACnetConstructedDataExitPointsBuilder)(nil)
 
-func (m *_BACnetConstructedDataExitPointsBuilder) WithMandatoryFields(exitPoints []BACnetDeviceObjectReference) BACnetConstructedDataExitPointsBuilder {
-	return m.WithExitPoints(exitPoints...)
+func (b *_BACnetConstructedDataExitPointsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataExitPointsBuilder) WithExitPoints(exitPoints ...BACnetDeviceObjectReference) BACnetConstructedDataExitPointsBuilder {
-	m.ExitPoints = exitPoints
-	return m
+func (b *_BACnetConstructedDataExitPointsBuilder) WithMandatoryFields(exitPoints []BACnetDeviceObjectReference) BACnetConstructedDataExitPointsBuilder {
+	return b.WithExitPoints(exitPoints...)
 }
 
-func (m *_BACnetConstructedDataExitPointsBuilder) Build() (BACnetConstructedDataExitPoints, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataExitPointsBuilder) WithExitPoints(exitPoints ...BACnetDeviceObjectReference) BACnetConstructedDataExitPointsBuilder {
+	b.ExitPoints = exitPoints
+	return b
+}
+
+func (b *_BACnetConstructedDataExitPointsBuilder) Build() (BACnetConstructedDataExitPoints, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataExitPoints.deepCopy(), nil
+	return b._BACnetConstructedDataExitPoints.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataExitPointsBuilder) MustBuild() BACnetConstructedDataExitPoints {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataExitPointsBuilder) MustBuild() BACnetConstructedDataExitPoints {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataExitPointsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataExitPointsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataExitPointsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataExitPointsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataExitPointsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataExitPointsBuilder().(*_BACnetConstructedDataExitPointsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataExitPointsBuilder creates a BACnetConstructedDataExitPointsBuilder
-func (m *_BACnetConstructedDataExitPoints) CreateBACnetConstructedDataExitPointsBuilder() BACnetConstructedDataExitPointsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataExitPoints) CreateBACnetConstructedDataExitPointsBuilder() BACnetConstructedDataExitPointsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataExitPointsBuilder()
 	}
-	return &_BACnetConstructedDataExitPointsBuilder{_BACnetConstructedDataExitPoints: m.deepCopy()}
+	return &_BACnetConstructedDataExitPointsBuilder{_BACnetConstructedDataExitPoints: b.deepCopy()}
 }
 
 ///////////////////////
@@ -283,9 +302,13 @@ func (m *_BACnetConstructedDataExitPoints) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

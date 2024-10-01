@@ -92,10 +92,19 @@ type MeasurementDataBuilder interface {
 	WithMandatoryFields(commandTypeContainer MeasurementCommandTypeContainer) MeasurementDataBuilder
 	// WithCommandTypeContainer adds CommandTypeContainer (property field)
 	WithCommandTypeContainer(MeasurementCommandTypeContainer) MeasurementDataBuilder
+	// AsMeasurementDataChannelMeasurementData converts this build to a subType of MeasurementData. It is always possible to return to current builder using Done()
+	AsMeasurementDataChannelMeasurementData() interface {
+		MeasurementDataChannelMeasurementDataBuilder
+		Done() MeasurementDataBuilder
+	}
 	// Build builds the MeasurementData or returns an error if something is wrong
-	Build() (MeasurementDataContract, error)
+	PartialBuild() (MeasurementDataContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() MeasurementDataContract
+	PartialMustBuild() MeasurementDataContract
+	// Build builds the MeasurementData or returns an error if something is wrong
+	Build() (MeasurementData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MeasurementData
 }
 
 // NewMeasurementDataBuilder() creates a MeasurementDataBuilder
@@ -103,48 +112,98 @@ func NewMeasurementDataBuilder() MeasurementDataBuilder {
 	return &_MeasurementDataBuilder{_MeasurementData: new(_MeasurementData)}
 }
 
+type _MeasurementDataChildBuilder interface {
+	utils.Copyable
+	setParent(MeasurementDataContract)
+	buildForMeasurementData() (MeasurementData, error)
+}
+
 type _MeasurementDataBuilder struct {
 	*_MeasurementData
+
+	childBuilder _MeasurementDataChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (MeasurementDataBuilder) = (*_MeasurementDataBuilder)(nil)
 
-func (m *_MeasurementDataBuilder) WithMandatoryFields(commandTypeContainer MeasurementCommandTypeContainer) MeasurementDataBuilder {
-	return m.WithCommandTypeContainer(commandTypeContainer)
+func (b *_MeasurementDataBuilder) WithMandatoryFields(commandTypeContainer MeasurementCommandTypeContainer) MeasurementDataBuilder {
+	return b.WithCommandTypeContainer(commandTypeContainer)
 }
 
-func (m *_MeasurementDataBuilder) WithCommandTypeContainer(commandTypeContainer MeasurementCommandTypeContainer) MeasurementDataBuilder {
-	m.CommandTypeContainer = commandTypeContainer
-	return m
+func (b *_MeasurementDataBuilder) WithCommandTypeContainer(commandTypeContainer MeasurementCommandTypeContainer) MeasurementDataBuilder {
+	b.CommandTypeContainer = commandTypeContainer
+	return b
 }
 
-func (m *_MeasurementDataBuilder) Build() (MeasurementDataContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MeasurementDataBuilder) PartialBuild() (MeasurementDataContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MeasurementData.deepCopy(), nil
+	return b._MeasurementData.deepCopy(), nil
 }
 
-func (m *_MeasurementDataBuilder) MustBuild() MeasurementDataContract {
-	build, err := m.Build()
+func (b *_MeasurementDataBuilder) PartialMustBuild() MeasurementDataContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MeasurementDataBuilder) DeepCopy() any {
-	return m.CreateMeasurementDataBuilder()
+func (b *_MeasurementDataBuilder) AsMeasurementDataChannelMeasurementData() interface {
+	MeasurementDataChannelMeasurementDataBuilder
+	Done() MeasurementDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		MeasurementDataChannelMeasurementDataBuilder
+		Done() MeasurementDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewMeasurementDataChannelMeasurementDataBuilder().(*_MeasurementDataChannelMeasurementDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_MeasurementDataBuilder) Build() (MeasurementData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForMeasurementData()
+}
+
+func (b *_MeasurementDataBuilder) MustBuild() MeasurementData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_MeasurementDataBuilder) DeepCopy() any {
+	_copy := b.CreateMeasurementDataBuilder().(*_MeasurementDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_MeasurementDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMeasurementDataBuilder creates a MeasurementDataBuilder
-func (m *_MeasurementData) CreateMeasurementDataBuilder() MeasurementDataBuilder {
-	if m == nil {
+func (b *_MeasurementData) CreateMeasurementDataBuilder() MeasurementDataBuilder {
+	if b == nil {
 		return NewMeasurementDataBuilder()
 	}
-	return &_MeasurementDataBuilder{_MeasurementData: m.deepCopy()}
+	return &_MeasurementDataBuilder{_MeasurementData: b.deepCopy()}
 }
 
 ///////////////////////

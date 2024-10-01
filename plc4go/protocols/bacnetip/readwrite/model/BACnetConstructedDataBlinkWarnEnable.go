@@ -100,64 +100,83 @@ func NewBACnetConstructedDataBlinkWarnEnableBuilder() BACnetConstructedDataBlink
 type _BACnetConstructedDataBlinkWarnEnableBuilder struct {
 	*_BACnetConstructedDataBlinkWarnEnable
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBlinkWarnEnableBuilder) = (*_BACnetConstructedDataBlinkWarnEnableBuilder)(nil)
 
-func (m *_BACnetConstructedDataBlinkWarnEnableBuilder) WithMandatoryFields(blinkWarnEnable BACnetApplicationTagBoolean) BACnetConstructedDataBlinkWarnEnableBuilder {
-	return m.WithBlinkWarnEnable(blinkWarnEnable)
+func (b *_BACnetConstructedDataBlinkWarnEnableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBlinkWarnEnableBuilder) WithBlinkWarnEnable(blinkWarnEnable BACnetApplicationTagBoolean) BACnetConstructedDataBlinkWarnEnableBuilder {
-	m.BlinkWarnEnable = blinkWarnEnable
-	return m
+func (b *_BACnetConstructedDataBlinkWarnEnableBuilder) WithMandatoryFields(blinkWarnEnable BACnetApplicationTagBoolean) BACnetConstructedDataBlinkWarnEnableBuilder {
+	return b.WithBlinkWarnEnable(blinkWarnEnable)
 }
 
-func (m *_BACnetConstructedDataBlinkWarnEnableBuilder) WithBlinkWarnEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataBlinkWarnEnableBuilder {
-	builder := builderSupplier(m.BlinkWarnEnable.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataBlinkWarnEnableBuilder) WithBlinkWarnEnable(blinkWarnEnable BACnetApplicationTagBoolean) BACnetConstructedDataBlinkWarnEnableBuilder {
+	b.BlinkWarnEnable = blinkWarnEnable
+	return b
+}
+
+func (b *_BACnetConstructedDataBlinkWarnEnableBuilder) WithBlinkWarnEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataBlinkWarnEnableBuilder {
+	builder := builderSupplier(b.BlinkWarnEnable.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.BlinkWarnEnable, err = builder.Build()
+	b.BlinkWarnEnable, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBlinkWarnEnableBuilder) Build() (BACnetConstructedDataBlinkWarnEnable, error) {
-	if m.BlinkWarnEnable == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBlinkWarnEnableBuilder) Build() (BACnetConstructedDataBlinkWarnEnable, error) {
+	if b.BlinkWarnEnable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'blinkWarnEnable' not set"))
+		b.err.Append(errors.New("mandatory field 'blinkWarnEnable' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBlinkWarnEnable.deepCopy(), nil
+	return b._BACnetConstructedDataBlinkWarnEnable.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBlinkWarnEnableBuilder) MustBuild() BACnetConstructedDataBlinkWarnEnable {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBlinkWarnEnableBuilder) MustBuild() BACnetConstructedDataBlinkWarnEnable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBlinkWarnEnableBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBlinkWarnEnableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBlinkWarnEnableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBlinkWarnEnableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBlinkWarnEnableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBlinkWarnEnableBuilder().(*_BACnetConstructedDataBlinkWarnEnableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBlinkWarnEnableBuilder creates a BACnetConstructedDataBlinkWarnEnableBuilder
-func (m *_BACnetConstructedDataBlinkWarnEnable) CreateBACnetConstructedDataBlinkWarnEnableBuilder() BACnetConstructedDataBlinkWarnEnableBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBlinkWarnEnable) CreateBACnetConstructedDataBlinkWarnEnableBuilder() BACnetConstructedDataBlinkWarnEnableBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBlinkWarnEnableBuilder()
 	}
-	return &_BACnetConstructedDataBlinkWarnEnableBuilder{_BACnetConstructedDataBlinkWarnEnable: m.deepCopy()}
+	return &_BACnetConstructedDataBlinkWarnEnableBuilder{_BACnetConstructedDataBlinkWarnEnable: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

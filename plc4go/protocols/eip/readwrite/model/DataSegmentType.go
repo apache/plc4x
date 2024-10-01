@@ -85,10 +85,19 @@ type DataSegmentTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() DataSegmentTypeBuilder
+	// AsAnsiExtendedSymbolSegment converts this build to a subType of DataSegmentType. It is always possible to return to current builder using Done()
+	AsAnsiExtendedSymbolSegment() interface {
+		AnsiExtendedSymbolSegmentBuilder
+		Done() DataSegmentTypeBuilder
+	}
 	// Build builds the DataSegmentType or returns an error if something is wrong
-	Build() (DataSegmentTypeContract, error)
+	PartialBuild() (DataSegmentTypeContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() DataSegmentTypeContract
+	PartialMustBuild() DataSegmentTypeContract
+	// Build builds the DataSegmentType or returns an error if something is wrong
+	Build() (DataSegmentType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DataSegmentType
 }
 
 // NewDataSegmentTypeBuilder() creates a DataSegmentTypeBuilder
@@ -96,43 +105,93 @@ func NewDataSegmentTypeBuilder() DataSegmentTypeBuilder {
 	return &_DataSegmentTypeBuilder{_DataSegmentType: new(_DataSegmentType)}
 }
 
+type _DataSegmentTypeChildBuilder interface {
+	utils.Copyable
+	setParent(DataSegmentTypeContract)
+	buildForDataSegmentType() (DataSegmentType, error)
+}
+
 type _DataSegmentTypeBuilder struct {
 	*_DataSegmentType
+
+	childBuilder _DataSegmentTypeChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (DataSegmentTypeBuilder) = (*_DataSegmentTypeBuilder)(nil)
 
-func (m *_DataSegmentTypeBuilder) WithMandatoryFields() DataSegmentTypeBuilder {
-	return m
+func (b *_DataSegmentTypeBuilder) WithMandatoryFields() DataSegmentTypeBuilder {
+	return b
 }
 
-func (m *_DataSegmentTypeBuilder) Build() (DataSegmentTypeContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DataSegmentTypeBuilder) PartialBuild() (DataSegmentTypeContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DataSegmentType.deepCopy(), nil
+	return b._DataSegmentType.deepCopy(), nil
 }
 
-func (m *_DataSegmentTypeBuilder) MustBuild() DataSegmentTypeContract {
-	build, err := m.Build()
+func (b *_DataSegmentTypeBuilder) PartialMustBuild() DataSegmentTypeContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DataSegmentTypeBuilder) DeepCopy() any {
-	return m.CreateDataSegmentTypeBuilder()
+func (b *_DataSegmentTypeBuilder) AsAnsiExtendedSymbolSegment() interface {
+	AnsiExtendedSymbolSegmentBuilder
+	Done() DataSegmentTypeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AnsiExtendedSymbolSegmentBuilder
+		Done() DataSegmentTypeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAnsiExtendedSymbolSegmentBuilder().(*_AnsiExtendedSymbolSegmentBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_DataSegmentTypeBuilder) Build() (DataSegmentType, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForDataSegmentType()
+}
+
+func (b *_DataSegmentTypeBuilder) MustBuild() DataSegmentType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DataSegmentTypeBuilder) DeepCopy() any {
+	_copy := b.CreateDataSegmentTypeBuilder().(*_DataSegmentTypeBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_DataSegmentTypeChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDataSegmentTypeBuilder creates a DataSegmentTypeBuilder
-func (m *_DataSegmentType) CreateDataSegmentTypeBuilder() DataSegmentTypeBuilder {
-	if m == nil {
+func (b *_DataSegmentType) CreateDataSegmentTypeBuilder() DataSegmentTypeBuilder {
+	if b == nil {
 		return NewDataSegmentTypeBuilder()
 	}
-	return &_DataSegmentTypeBuilder{_DataSegmentType: m.deepCopy()}
+	return &_DataSegmentTypeBuilder{_DataSegmentType: b.deepCopy()}
 }
 
 ///////////////////////

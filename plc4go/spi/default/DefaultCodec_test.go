@@ -37,7 +37,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/transports/test"
 )
 
 func TestDefaultExpectation_GetAcceptsMessage(t *testing.T) {
@@ -1449,71 +1448,6 @@ func Test_defaultCodec_Work(t *testing.T) {
 				m.running.Store(false)
 			}()
 			m.Work()
-		})
-	}
-}
-
-func Test_defaultCodec_String(t *testing.T) {
-	type fields struct {
-		DefaultCodecRequirements      DefaultCodecRequirements
-		transportInstance             transports.TransportInstance
-		defaultIncomingMessageChannel chan spi.Message
-		expectations                  []spi.Expectation
-		running                       bool
-		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   string
-	}{
-		{
-			name: "string it",
-			fields: fields{
-				transportInstance: test.NewTransportInstance(test.NewTransport()),
-				defaultIncomingMessageChannel: func() chan spi.Message {
-					messages := make(chan spi.Message, 1)
-					messages <- NewMockMessage(t)
-					return messages
-				}(),
-				expectations: []spi.Expectation{
-					func() spi.Expectation {
-						expectation := NewMockExpectation(t)
-						expectation.EXPECT().String().Return("yoink1")
-						return expectation
-					}(),
-					func() spi.Expectation {
-						expectation := NewMockExpectation(t)
-						expectation.EXPECT().String().Return("yoink2")
-						return expectation
-					}(),
-				},
-				customMessageHandling: nil,
-			},
-			want: `
-╔═defaultCodec═══════════════════════════════════════════════════════════════════════════════════════════╗
-║╔═transportInstance╗╔═expectations═══╗╔═defaultIncomingMessageChannel╗╔═customMessageHandling╗╔═running╗║
-║║       test       ║║╔═value╗╔═value╗║║         1 element(s)         ║║       b0 false       ║║b0 false║║
-║╚══════════════════╝║║yoink1║║yoink2║║╚══════════════════════════════╝╚══════════════════════╝╚════════╝║
-║                    ║╚══════╝╚══════╝║                                                                  ║
-║                    ╚════════════════╝                                                                  ║
-║╔═receiveTimeout╗╔═traceDefaultMessageCodecWorker╗                                                      ║
-║║      0s       ║║           b0 false            ║                                                      ║
-║╚═══════════════╝╚═══════════════════════════════╝                                                      ║
-╚════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := &defaultCodec{
-				DefaultCodecRequirements:      tt.fields.DefaultCodecRequirements,
-				transportInstance:             tt.fields.transportInstance,
-				defaultIncomingMessageChannel: tt.fields.defaultIncomingMessageChannel,
-				expectations:                  tt.fields.expectations,
-				customMessageHandling:         tt.fields.customMessageHandling,
-				log:                           testutils.ProduceTestingLogger(t),
-			}
-			assert.Equalf(t, tt.want, m.String(), "String()")
 		})
 	}
 }

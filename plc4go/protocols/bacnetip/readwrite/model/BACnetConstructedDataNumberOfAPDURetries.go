@@ -100,64 +100,83 @@ func NewBACnetConstructedDataNumberOfAPDURetriesBuilder() BACnetConstructedDataN
 type _BACnetConstructedDataNumberOfAPDURetriesBuilder struct {
 	*_BACnetConstructedDataNumberOfAPDURetries
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataNumberOfAPDURetriesBuilder) = (*_BACnetConstructedDataNumberOfAPDURetriesBuilder)(nil)
 
-func (m *_BACnetConstructedDataNumberOfAPDURetriesBuilder) WithMandatoryFields(numberOfApduRetries BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfAPDURetriesBuilder {
-	return m.WithNumberOfApduRetries(numberOfApduRetries)
+func (b *_BACnetConstructedDataNumberOfAPDURetriesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataNumberOfAPDURetriesBuilder) WithNumberOfApduRetries(numberOfApduRetries BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfAPDURetriesBuilder {
-	m.NumberOfApduRetries = numberOfApduRetries
-	return m
+func (b *_BACnetConstructedDataNumberOfAPDURetriesBuilder) WithMandatoryFields(numberOfApduRetries BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfAPDURetriesBuilder {
+	return b.WithNumberOfApduRetries(numberOfApduRetries)
 }
 
-func (m *_BACnetConstructedDataNumberOfAPDURetriesBuilder) WithNumberOfApduRetriesBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNumberOfAPDURetriesBuilder {
-	builder := builderSupplier(m.NumberOfApduRetries.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataNumberOfAPDURetriesBuilder) WithNumberOfApduRetries(numberOfApduRetries BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfAPDURetriesBuilder {
+	b.NumberOfApduRetries = numberOfApduRetries
+	return b
+}
+
+func (b *_BACnetConstructedDataNumberOfAPDURetriesBuilder) WithNumberOfApduRetriesBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNumberOfAPDURetriesBuilder {
+	builder := builderSupplier(b.NumberOfApduRetries.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfApduRetries, err = builder.Build()
+	b.NumberOfApduRetries, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataNumberOfAPDURetriesBuilder) Build() (BACnetConstructedDataNumberOfAPDURetries, error) {
-	if m.NumberOfApduRetries == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataNumberOfAPDURetriesBuilder) Build() (BACnetConstructedDataNumberOfAPDURetries, error) {
+	if b.NumberOfApduRetries == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'numberOfApduRetries' not set"))
+		b.err.Append(errors.New("mandatory field 'numberOfApduRetries' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataNumberOfAPDURetries.deepCopy(), nil
+	return b._BACnetConstructedDataNumberOfAPDURetries.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataNumberOfAPDURetriesBuilder) MustBuild() BACnetConstructedDataNumberOfAPDURetries {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataNumberOfAPDURetriesBuilder) MustBuild() BACnetConstructedDataNumberOfAPDURetries {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataNumberOfAPDURetriesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataNumberOfAPDURetriesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNumberOfAPDURetriesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNumberOfAPDURetriesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNumberOfAPDURetriesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNumberOfAPDURetriesBuilder().(*_BACnetConstructedDataNumberOfAPDURetriesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataNumberOfAPDURetriesBuilder creates a BACnetConstructedDataNumberOfAPDURetriesBuilder
-func (m *_BACnetConstructedDataNumberOfAPDURetries) CreateBACnetConstructedDataNumberOfAPDURetriesBuilder() BACnetConstructedDataNumberOfAPDURetriesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataNumberOfAPDURetries) CreateBACnetConstructedDataNumberOfAPDURetriesBuilder() BACnetConstructedDataNumberOfAPDURetriesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataNumberOfAPDURetriesBuilder()
 	}
-	return &_BACnetConstructedDataNumberOfAPDURetriesBuilder{_BACnetConstructedDataNumberOfAPDURetries: m.deepCopy()}
+	return &_BACnetConstructedDataNumberOfAPDURetriesBuilder{_BACnetConstructedDataNumberOfAPDURetries: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

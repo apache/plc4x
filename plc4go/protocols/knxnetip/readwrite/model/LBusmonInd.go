@@ -98,6 +98,8 @@ type LBusmonIndBuilder interface {
 	WithAdditionalInformation(...CEMIAdditionalInformation) LBusmonIndBuilder
 	// WithDataFrame adds DataFrame (property field)
 	WithDataFrame(LDataFrame) LBusmonIndBuilder
+	// WithDataFrameBuilder adds DataFrame (property field) which is build by the builder
+	WithDataFrameBuilder(func(LDataFrameBuilder) LDataFrameBuilder) LBusmonIndBuilder
 	// WithCrc adds Crc (property field)
 	WithOptionalCrc(uint8) LBusmonIndBuilder
 	// Build builds the LBusmonInd or returns an error if something is wrong
@@ -114,66 +116,98 @@ func NewLBusmonIndBuilder() LBusmonIndBuilder {
 type _LBusmonIndBuilder struct {
 	*_LBusmonInd
 
+	parentBuilder *_CEMIBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LBusmonIndBuilder) = (*_LBusmonIndBuilder)(nil)
 
-func (m *_LBusmonIndBuilder) WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LBusmonIndBuilder {
-	return m.WithAdditionalInformationLength(additionalInformationLength).WithAdditionalInformation(additionalInformation...).WithDataFrame(dataFrame)
+func (b *_LBusmonIndBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
 }
 
-func (m *_LBusmonIndBuilder) WithAdditionalInformationLength(additionalInformationLength uint8) LBusmonIndBuilder {
-	m.AdditionalInformationLength = additionalInformationLength
-	return m
+func (b *_LBusmonIndBuilder) WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LBusmonIndBuilder {
+	return b.WithAdditionalInformationLength(additionalInformationLength).WithAdditionalInformation(additionalInformation...).WithDataFrame(dataFrame)
 }
 
-func (m *_LBusmonIndBuilder) WithAdditionalInformation(additionalInformation ...CEMIAdditionalInformation) LBusmonIndBuilder {
-	m.AdditionalInformation = additionalInformation
-	return m
+func (b *_LBusmonIndBuilder) WithAdditionalInformationLength(additionalInformationLength uint8) LBusmonIndBuilder {
+	b.AdditionalInformationLength = additionalInformationLength
+	return b
 }
 
-func (m *_LBusmonIndBuilder) WithDataFrame(dataFrame LDataFrame) LBusmonIndBuilder {
-	m.DataFrame = dataFrame
-	return m
+func (b *_LBusmonIndBuilder) WithAdditionalInformation(additionalInformation ...CEMIAdditionalInformation) LBusmonIndBuilder {
+	b.AdditionalInformation = additionalInformation
+	return b
 }
 
-func (m *_LBusmonIndBuilder) WithOptionalCrc(crc uint8) LBusmonIndBuilder {
-	m.Crc = &crc
-	return m
+func (b *_LBusmonIndBuilder) WithDataFrame(dataFrame LDataFrame) LBusmonIndBuilder {
+	b.DataFrame = dataFrame
+	return b
 }
 
-func (m *_LBusmonIndBuilder) Build() (LBusmonInd, error) {
-	if m.DataFrame == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_LBusmonIndBuilder) WithDataFrameBuilder(builderSupplier func(LDataFrameBuilder) LDataFrameBuilder) LBusmonIndBuilder {
+	builder := builderSupplier(b.DataFrame.CreateLDataFrameBuilder())
+	var err error
+	b.DataFrame, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'dataFrame' not set"))
+		b.err.Append(errors.Wrap(err, "LDataFrameBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._LBusmonInd.deepCopy(), nil
+	return b
 }
 
-func (m *_LBusmonIndBuilder) MustBuild() LBusmonInd {
-	build, err := m.Build()
+func (b *_LBusmonIndBuilder) WithOptionalCrc(crc uint8) LBusmonIndBuilder {
+	b.Crc = &crc
+	return b
+}
+
+func (b *_LBusmonIndBuilder) Build() (LBusmonInd, error) {
+	if b.DataFrame == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataFrame' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LBusmonInd.deepCopy(), nil
+}
+
+func (b *_LBusmonIndBuilder) MustBuild() LBusmonInd {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LBusmonIndBuilder) DeepCopy() any {
-	return m.CreateLBusmonIndBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LBusmonIndBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LBusmonIndBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_LBusmonIndBuilder) DeepCopy() any {
+	_copy := b.CreateLBusmonIndBuilder().(*_LBusmonIndBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLBusmonIndBuilder creates a LBusmonIndBuilder
-func (m *_LBusmonInd) CreateLBusmonIndBuilder() LBusmonIndBuilder {
-	if m == nil {
+func (b *_LBusmonInd) CreateLBusmonIndBuilder() LBusmonIndBuilder {
+	if b == nil {
 		return NewLBusmonIndBuilder()
 	}
-	return &_LBusmonIndBuilder{_LBusmonInd: m.deepCopy()}
+	return &_LBusmonIndBuilder{_LBusmonInd: b.deepCopy()}
 }
 
 ///////////////////////
@@ -378,9 +412,13 @@ func (m *_LBusmonInd) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

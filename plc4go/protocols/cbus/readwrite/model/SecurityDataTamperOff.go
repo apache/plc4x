@@ -85,40 +85,59 @@ func NewSecurityDataTamperOffBuilder() SecurityDataTamperOffBuilder {
 type _SecurityDataTamperOffBuilder struct {
 	*_SecurityDataTamperOff
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataTamperOffBuilder) = (*_SecurityDataTamperOffBuilder)(nil)
 
-func (m *_SecurityDataTamperOffBuilder) WithMandatoryFields() SecurityDataTamperOffBuilder {
-	return m
+func (b *_SecurityDataTamperOffBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataTamperOffBuilder) Build() (SecurityDataTamperOff, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataTamperOffBuilder) WithMandatoryFields() SecurityDataTamperOffBuilder {
+	return b
+}
+
+func (b *_SecurityDataTamperOffBuilder) Build() (SecurityDataTamperOff, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataTamperOff.deepCopy(), nil
+	return b._SecurityDataTamperOff.deepCopy(), nil
 }
 
-func (m *_SecurityDataTamperOffBuilder) MustBuild() SecurityDataTamperOff {
-	build, err := m.Build()
+func (b *_SecurityDataTamperOffBuilder) MustBuild() SecurityDataTamperOff {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataTamperOffBuilder) DeepCopy() any {
-	return m.CreateSecurityDataTamperOffBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataTamperOffBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataTamperOffBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataTamperOffBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataTamperOffBuilder().(*_SecurityDataTamperOffBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataTamperOffBuilder creates a SecurityDataTamperOffBuilder
-func (m *_SecurityDataTamperOff) CreateSecurityDataTamperOffBuilder() SecurityDataTamperOffBuilder {
-	if m == nil {
+func (b *_SecurityDataTamperOff) CreateSecurityDataTamperOffBuilder() SecurityDataTamperOffBuilder {
+	if b == nil {
 		return NewSecurityDataTamperOffBuilder()
 	}
-	return &_SecurityDataTamperOffBuilder{_SecurityDataTamperOff: m.deepCopy()}
+	return &_SecurityDataTamperOffBuilder{_SecurityDataTamperOff: b.deepCopy()}
 }
 
 ///////////////////////
@@ -230,9 +249,13 @@ func (m *_SecurityDataTamperOff) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

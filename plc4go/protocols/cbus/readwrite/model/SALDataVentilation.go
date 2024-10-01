@@ -82,6 +82,8 @@ type SALDataVentilationBuilder interface {
 	WithMandatoryFields(ventilationData LightingData) SALDataVentilationBuilder
 	// WithVentilationData adds VentilationData (property field)
 	WithVentilationData(LightingData) SALDataVentilationBuilder
+	// WithVentilationDataBuilder adds VentilationData (property field) which is build by the builder
+	WithVentilationDataBuilder(func(LightingDataBuilder) LightingDataBuilder) SALDataVentilationBuilder
 	// Build builds the SALDataVentilation or returns an error if something is wrong
 	Build() (SALDataVentilation, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewSALDataVentilationBuilder() SALDataVentilationBuilder {
 type _SALDataVentilationBuilder struct {
 	*_SALDataVentilation
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataVentilationBuilder) = (*_SALDataVentilationBuilder)(nil)
 
-func (m *_SALDataVentilationBuilder) WithMandatoryFields(ventilationData LightingData) SALDataVentilationBuilder {
-	return m.WithVentilationData(ventilationData)
+func (b *_SALDataVentilationBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataVentilationBuilder) WithVentilationData(ventilationData LightingData) SALDataVentilationBuilder {
-	m.VentilationData = ventilationData
-	return m
+func (b *_SALDataVentilationBuilder) WithMandatoryFields(ventilationData LightingData) SALDataVentilationBuilder {
+	return b.WithVentilationData(ventilationData)
 }
 
-func (m *_SALDataVentilationBuilder) Build() (SALDataVentilation, error) {
-	if m.VentilationData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SALDataVentilationBuilder) WithVentilationData(ventilationData LightingData) SALDataVentilationBuilder {
+	b.VentilationData = ventilationData
+	return b
+}
+
+func (b *_SALDataVentilationBuilder) WithVentilationDataBuilder(builderSupplier func(LightingDataBuilder) LightingDataBuilder) SALDataVentilationBuilder {
+	builder := builderSupplier(b.VentilationData.CreateLightingDataBuilder())
+	var err error
+	b.VentilationData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'ventilationData' not set"))
+		b.err.Append(errors.Wrap(err, "LightingDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._SALDataVentilation.deepCopy(), nil
+	return b
 }
 
-func (m *_SALDataVentilationBuilder) MustBuild() SALDataVentilation {
-	build, err := m.Build()
+func (b *_SALDataVentilationBuilder) Build() (SALDataVentilation, error) {
+	if b.VentilationData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'ventilationData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataVentilation.deepCopy(), nil
+}
+
+func (b *_SALDataVentilationBuilder) MustBuild() SALDataVentilation {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataVentilationBuilder) DeepCopy() any {
-	return m.CreateSALDataVentilationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataVentilationBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataVentilationBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataVentilationBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataVentilationBuilder().(*_SALDataVentilationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataVentilationBuilder creates a SALDataVentilationBuilder
-func (m *_SALDataVentilation) CreateSALDataVentilationBuilder() SALDataVentilationBuilder {
-	if m == nil {
+func (b *_SALDataVentilation) CreateSALDataVentilationBuilder() SALDataVentilationBuilder {
+	if b == nil {
 		return NewSALDataVentilationBuilder()
 	}
-	return &_SALDataVentilationBuilder{_SALDataVentilation: m.deepCopy()}
+	return &_SALDataVentilationBuilder{_SALDataVentilation: b.deepCopy()}
 }
 
 ///////////////////////
@@ -284,9 +318,13 @@ func (m *_SALDataVentilation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

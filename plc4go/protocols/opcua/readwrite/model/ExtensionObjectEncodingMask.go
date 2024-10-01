@@ -102,50 +102,54 @@ type _ExtensionObjectEncodingMaskBuilder struct {
 
 var _ (ExtensionObjectEncodingMaskBuilder) = (*_ExtensionObjectEncodingMaskBuilder)(nil)
 
-func (m *_ExtensionObjectEncodingMaskBuilder) WithMandatoryFields(typeIdSpecified bool, xmlbody bool, binaryBody bool) ExtensionObjectEncodingMaskBuilder {
-	return m.WithTypeIdSpecified(typeIdSpecified).WithXmlbody(xmlbody).WithBinaryBody(binaryBody)
+func (b *_ExtensionObjectEncodingMaskBuilder) WithMandatoryFields(typeIdSpecified bool, xmlbody bool, binaryBody bool) ExtensionObjectEncodingMaskBuilder {
+	return b.WithTypeIdSpecified(typeIdSpecified).WithXmlbody(xmlbody).WithBinaryBody(binaryBody)
 }
 
-func (m *_ExtensionObjectEncodingMaskBuilder) WithTypeIdSpecified(typeIdSpecified bool) ExtensionObjectEncodingMaskBuilder {
-	m.TypeIdSpecified = typeIdSpecified
-	return m
+func (b *_ExtensionObjectEncodingMaskBuilder) WithTypeIdSpecified(typeIdSpecified bool) ExtensionObjectEncodingMaskBuilder {
+	b.TypeIdSpecified = typeIdSpecified
+	return b
 }
 
-func (m *_ExtensionObjectEncodingMaskBuilder) WithXmlbody(xmlbody bool) ExtensionObjectEncodingMaskBuilder {
-	m.Xmlbody = xmlbody
-	return m
+func (b *_ExtensionObjectEncodingMaskBuilder) WithXmlbody(xmlbody bool) ExtensionObjectEncodingMaskBuilder {
+	b.Xmlbody = xmlbody
+	return b
 }
 
-func (m *_ExtensionObjectEncodingMaskBuilder) WithBinaryBody(binaryBody bool) ExtensionObjectEncodingMaskBuilder {
-	m.BinaryBody = binaryBody
-	return m
+func (b *_ExtensionObjectEncodingMaskBuilder) WithBinaryBody(binaryBody bool) ExtensionObjectEncodingMaskBuilder {
+	b.BinaryBody = binaryBody
+	return b
 }
 
-func (m *_ExtensionObjectEncodingMaskBuilder) Build() (ExtensionObjectEncodingMask, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ExtensionObjectEncodingMaskBuilder) Build() (ExtensionObjectEncodingMask, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ExtensionObjectEncodingMask.deepCopy(), nil
+	return b._ExtensionObjectEncodingMask.deepCopy(), nil
 }
 
-func (m *_ExtensionObjectEncodingMaskBuilder) MustBuild() ExtensionObjectEncodingMask {
-	build, err := m.Build()
+func (b *_ExtensionObjectEncodingMaskBuilder) MustBuild() ExtensionObjectEncodingMask {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ExtensionObjectEncodingMaskBuilder) DeepCopy() any {
-	return m.CreateExtensionObjectEncodingMaskBuilder()
+func (b *_ExtensionObjectEncodingMaskBuilder) DeepCopy() any {
+	_copy := b.CreateExtensionObjectEncodingMaskBuilder().(*_ExtensionObjectEncodingMaskBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateExtensionObjectEncodingMaskBuilder creates a ExtensionObjectEncodingMaskBuilder
-func (m *_ExtensionObjectEncodingMask) CreateExtensionObjectEncodingMaskBuilder() ExtensionObjectEncodingMaskBuilder {
-	if m == nil {
+func (b *_ExtensionObjectEncodingMask) CreateExtensionObjectEncodingMaskBuilder() ExtensionObjectEncodingMaskBuilder {
+	if b == nil {
 		return NewExtensionObjectEncodingMaskBuilder()
 	}
-	return &_ExtensionObjectEncodingMaskBuilder{_ExtensionObjectEncodingMask: m.deepCopy()}
+	return &_ExtensionObjectEncodingMaskBuilder{_ExtensionObjectEncodingMask: b.deepCopy()}
 }
 
 ///////////////////////
@@ -332,9 +336,13 @@ func (m *_ExtensionObjectEncodingMask) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

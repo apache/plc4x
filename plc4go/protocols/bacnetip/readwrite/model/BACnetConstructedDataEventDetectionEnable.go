@@ -100,64 +100,83 @@ func NewBACnetConstructedDataEventDetectionEnableBuilder() BACnetConstructedData
 type _BACnetConstructedDataEventDetectionEnableBuilder struct {
 	*_BACnetConstructedDataEventDetectionEnable
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataEventDetectionEnableBuilder) = (*_BACnetConstructedDataEventDetectionEnableBuilder)(nil)
 
-func (m *_BACnetConstructedDataEventDetectionEnableBuilder) WithMandatoryFields(eventDetectionEnable BACnetApplicationTagBoolean) BACnetConstructedDataEventDetectionEnableBuilder {
-	return m.WithEventDetectionEnable(eventDetectionEnable)
+func (b *_BACnetConstructedDataEventDetectionEnableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataEventDetectionEnableBuilder) WithEventDetectionEnable(eventDetectionEnable BACnetApplicationTagBoolean) BACnetConstructedDataEventDetectionEnableBuilder {
-	m.EventDetectionEnable = eventDetectionEnable
-	return m
+func (b *_BACnetConstructedDataEventDetectionEnableBuilder) WithMandatoryFields(eventDetectionEnable BACnetApplicationTagBoolean) BACnetConstructedDataEventDetectionEnableBuilder {
+	return b.WithEventDetectionEnable(eventDetectionEnable)
 }
 
-func (m *_BACnetConstructedDataEventDetectionEnableBuilder) WithEventDetectionEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataEventDetectionEnableBuilder {
-	builder := builderSupplier(m.EventDetectionEnable.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataEventDetectionEnableBuilder) WithEventDetectionEnable(eventDetectionEnable BACnetApplicationTagBoolean) BACnetConstructedDataEventDetectionEnableBuilder {
+	b.EventDetectionEnable = eventDetectionEnable
+	return b
+}
+
+func (b *_BACnetConstructedDataEventDetectionEnableBuilder) WithEventDetectionEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataEventDetectionEnableBuilder {
+	builder := builderSupplier(b.EventDetectionEnable.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.EventDetectionEnable, err = builder.Build()
+	b.EventDetectionEnable, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataEventDetectionEnableBuilder) Build() (BACnetConstructedDataEventDetectionEnable, error) {
-	if m.EventDetectionEnable == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataEventDetectionEnableBuilder) Build() (BACnetConstructedDataEventDetectionEnable, error) {
+	if b.EventDetectionEnable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'eventDetectionEnable' not set"))
+		b.err.Append(errors.New("mandatory field 'eventDetectionEnable' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataEventDetectionEnable.deepCopy(), nil
+	return b._BACnetConstructedDataEventDetectionEnable.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataEventDetectionEnableBuilder) MustBuild() BACnetConstructedDataEventDetectionEnable {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataEventDetectionEnableBuilder) MustBuild() BACnetConstructedDataEventDetectionEnable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataEventDetectionEnableBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataEventDetectionEnableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEventDetectionEnableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEventDetectionEnableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEventDetectionEnableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEventDetectionEnableBuilder().(*_BACnetConstructedDataEventDetectionEnableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataEventDetectionEnableBuilder creates a BACnetConstructedDataEventDetectionEnableBuilder
-func (m *_BACnetConstructedDataEventDetectionEnable) CreateBACnetConstructedDataEventDetectionEnableBuilder() BACnetConstructedDataEventDetectionEnableBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataEventDetectionEnable) CreateBACnetConstructedDataEventDetectionEnableBuilder() BACnetConstructedDataEventDetectionEnableBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataEventDetectionEnableBuilder()
 	}
-	return &_BACnetConstructedDataEventDetectionEnableBuilder{_BACnetConstructedDataEventDetectionEnable: m.deepCopy()}
+	return &_BACnetConstructedDataEventDetectionEnableBuilder{_BACnetConstructedDataEventDetectionEnable: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataEventDetectionEnable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

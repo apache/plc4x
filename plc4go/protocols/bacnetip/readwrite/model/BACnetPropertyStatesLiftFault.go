@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesLiftFaultBuilder() BACnetPropertyStatesLiftFaultBuil
 type _BACnetPropertyStatesLiftFaultBuilder struct {
 	*_BACnetPropertyStatesLiftFault
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesLiftFaultBuilder) = (*_BACnetPropertyStatesLiftFaultBuilder)(nil)
 
-func (m *_BACnetPropertyStatesLiftFaultBuilder) WithMandatoryFields(liftFault BACnetLiftFaultTagged) BACnetPropertyStatesLiftFaultBuilder {
-	return m.WithLiftFault(liftFault)
+func (b *_BACnetPropertyStatesLiftFaultBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesLiftFaultBuilder) WithLiftFault(liftFault BACnetLiftFaultTagged) BACnetPropertyStatesLiftFaultBuilder {
-	m.LiftFault = liftFault
-	return m
+func (b *_BACnetPropertyStatesLiftFaultBuilder) WithMandatoryFields(liftFault BACnetLiftFaultTagged) BACnetPropertyStatesLiftFaultBuilder {
+	return b.WithLiftFault(liftFault)
 }
 
-func (m *_BACnetPropertyStatesLiftFaultBuilder) WithLiftFaultBuilder(builderSupplier func(BACnetLiftFaultTaggedBuilder) BACnetLiftFaultTaggedBuilder) BACnetPropertyStatesLiftFaultBuilder {
-	builder := builderSupplier(m.LiftFault.CreateBACnetLiftFaultTaggedBuilder())
+func (b *_BACnetPropertyStatesLiftFaultBuilder) WithLiftFault(liftFault BACnetLiftFaultTagged) BACnetPropertyStatesLiftFaultBuilder {
+	b.LiftFault = liftFault
+	return b
+}
+
+func (b *_BACnetPropertyStatesLiftFaultBuilder) WithLiftFaultBuilder(builderSupplier func(BACnetLiftFaultTaggedBuilder) BACnetLiftFaultTaggedBuilder) BACnetPropertyStatesLiftFaultBuilder {
+	builder := builderSupplier(b.LiftFault.CreateBACnetLiftFaultTaggedBuilder())
 	var err error
-	m.LiftFault, err = builder.Build()
+	b.LiftFault, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLiftFaultTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLiftFaultTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesLiftFaultBuilder) Build() (BACnetPropertyStatesLiftFault, error) {
-	if m.LiftFault == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesLiftFaultBuilder) Build() (BACnetPropertyStatesLiftFault, error) {
+	if b.LiftFault == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'liftFault' not set"))
+		b.err.Append(errors.New("mandatory field 'liftFault' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesLiftFault.deepCopy(), nil
+	return b._BACnetPropertyStatesLiftFault.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesLiftFaultBuilder) MustBuild() BACnetPropertyStatesLiftFault {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesLiftFaultBuilder) MustBuild() BACnetPropertyStatesLiftFault {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesLiftFaultBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesLiftFaultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesLiftFaultBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesLiftFaultBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesLiftFaultBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesLiftFaultBuilder().(*_BACnetPropertyStatesLiftFaultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesLiftFaultBuilder creates a BACnetPropertyStatesLiftFaultBuilder
-func (m *_BACnetPropertyStatesLiftFault) CreateBACnetPropertyStatesLiftFaultBuilder() BACnetPropertyStatesLiftFaultBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesLiftFault) CreateBACnetPropertyStatesLiftFaultBuilder() BACnetPropertyStatesLiftFaultBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesLiftFaultBuilder()
 	}
-	return &_BACnetPropertyStatesLiftFaultBuilder{_BACnetPropertyStatesLiftFault: m.deepCopy()}
+	return &_BACnetPropertyStatesLiftFaultBuilder{_BACnetPropertyStatesLiftFault: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPropertyStatesLiftFault) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

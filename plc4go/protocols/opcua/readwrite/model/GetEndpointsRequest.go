@@ -105,6 +105,8 @@ type GetEndpointsRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfProfileUris int32, profileUris []PascalString) GetEndpointsRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) GetEndpointsRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) GetEndpointsRequestBuilder
 	// WithEndpointUrl adds EndpointUrl (property field)
 	WithEndpointUrl(PascalString) GetEndpointsRequestBuilder
 	// WithEndpointUrlBuilder adds EndpointUrl (property field) which is build by the builder
@@ -131,95 +133,127 @@ func NewGetEndpointsRequestBuilder() GetEndpointsRequestBuilder {
 type _GetEndpointsRequestBuilder struct {
 	*_GetEndpointsRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (GetEndpointsRequestBuilder) = (*_GetEndpointsRequestBuilder)(nil)
 
-func (m *_GetEndpointsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfProfileUris int32, profileUris []PascalString) GetEndpointsRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithEndpointUrl(endpointUrl).WithNoOfLocaleIds(noOfLocaleIds).WithLocaleIds(localeIds...).WithNoOfProfileUris(noOfProfileUris).WithProfileUris(profileUris...)
+func (b *_GetEndpointsRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_GetEndpointsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) GetEndpointsRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_GetEndpointsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfProfileUris int32, profileUris []PascalString) GetEndpointsRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithEndpointUrl(endpointUrl).WithNoOfLocaleIds(noOfLocaleIds).WithLocaleIds(localeIds...).WithNoOfProfileUris(noOfProfileUris).WithProfileUris(profileUris...)
 }
 
-func (m *_GetEndpointsRequestBuilder) WithEndpointUrl(endpointUrl PascalString) GetEndpointsRequestBuilder {
-	m.EndpointUrl = endpointUrl
-	return m
+func (b *_GetEndpointsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) GetEndpointsRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_GetEndpointsRequestBuilder) WithEndpointUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) GetEndpointsRequestBuilder {
-	builder := builderSupplier(m.EndpointUrl.CreatePascalStringBuilder())
+func (b *_GetEndpointsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) GetEndpointsRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
 	var err error
-	m.EndpointUrl, err = builder.Build()
+	b.RequestHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_GetEndpointsRequestBuilder) WithNoOfLocaleIds(noOfLocaleIds int32) GetEndpointsRequestBuilder {
-	m.NoOfLocaleIds = noOfLocaleIds
-	return m
+func (b *_GetEndpointsRequestBuilder) WithEndpointUrl(endpointUrl PascalString) GetEndpointsRequestBuilder {
+	b.EndpointUrl = endpointUrl
+	return b
 }
 
-func (m *_GetEndpointsRequestBuilder) WithLocaleIds(localeIds ...PascalString) GetEndpointsRequestBuilder {
-	m.LocaleIds = localeIds
-	return m
-}
-
-func (m *_GetEndpointsRequestBuilder) WithNoOfProfileUris(noOfProfileUris int32) GetEndpointsRequestBuilder {
-	m.NoOfProfileUris = noOfProfileUris
-	return m
-}
-
-func (m *_GetEndpointsRequestBuilder) WithProfileUris(profileUris ...PascalString) GetEndpointsRequestBuilder {
-	m.ProfileUris = profileUris
-	return m
-}
-
-func (m *_GetEndpointsRequestBuilder) Build() (GetEndpointsRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_GetEndpointsRequestBuilder) WithEndpointUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) GetEndpointsRequestBuilder {
+	builder := builderSupplier(b.EndpointUrl.CreatePascalStringBuilder())
+	var err error
+	b.EndpointUrl, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	if m.EndpointUrl == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._GetEndpointsRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_GetEndpointsRequestBuilder) MustBuild() GetEndpointsRequest {
-	build, err := m.Build()
+func (b *_GetEndpointsRequestBuilder) WithNoOfLocaleIds(noOfLocaleIds int32) GetEndpointsRequestBuilder {
+	b.NoOfLocaleIds = noOfLocaleIds
+	return b
+}
+
+func (b *_GetEndpointsRequestBuilder) WithLocaleIds(localeIds ...PascalString) GetEndpointsRequestBuilder {
+	b.LocaleIds = localeIds
+	return b
+}
+
+func (b *_GetEndpointsRequestBuilder) WithNoOfProfileUris(noOfProfileUris int32) GetEndpointsRequestBuilder {
+	b.NoOfProfileUris = noOfProfileUris
+	return b
+}
+
+func (b *_GetEndpointsRequestBuilder) WithProfileUris(profileUris ...PascalString) GetEndpointsRequestBuilder {
+	b.ProfileUris = profileUris
+	return b
+}
+
+func (b *_GetEndpointsRequestBuilder) Build() (GetEndpointsRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.EndpointUrl == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._GetEndpointsRequest.deepCopy(), nil
+}
+
+func (b *_GetEndpointsRequestBuilder) MustBuild() GetEndpointsRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_GetEndpointsRequestBuilder) DeepCopy() any {
-	return m.CreateGetEndpointsRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_GetEndpointsRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_GetEndpointsRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_GetEndpointsRequestBuilder) DeepCopy() any {
+	_copy := b.CreateGetEndpointsRequestBuilder().(*_GetEndpointsRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateGetEndpointsRequestBuilder creates a GetEndpointsRequestBuilder
-func (m *_GetEndpointsRequest) CreateGetEndpointsRequestBuilder() GetEndpointsRequestBuilder {
-	if m == nil {
+func (b *_GetEndpointsRequest) CreateGetEndpointsRequestBuilder() GetEndpointsRequestBuilder {
+	if b == nil {
 		return NewGetEndpointsRequestBuilder()
 	}
-	return &_GetEndpointsRequestBuilder{_GetEndpointsRequest: m.deepCopy()}
+	return &_GetEndpointsRequestBuilder{_GetEndpointsRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -467,9 +501,13 @@ func (m *_GetEndpointsRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

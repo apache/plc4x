@@ -96,45 +96,64 @@ func NewAdsDiscoveryBlockStatusBuilder() AdsDiscoveryBlockStatusBuilder {
 type _AdsDiscoveryBlockStatusBuilder struct {
 	*_AdsDiscoveryBlockStatus
 
+	parentBuilder *_AdsDiscoveryBlockBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsDiscoveryBlockStatusBuilder) = (*_AdsDiscoveryBlockStatusBuilder)(nil)
 
-func (m *_AdsDiscoveryBlockStatusBuilder) WithMandatoryFields(status Status) AdsDiscoveryBlockStatusBuilder {
-	return m.WithStatus(status)
+func (b *_AdsDiscoveryBlockStatusBuilder) setParent(contract AdsDiscoveryBlockContract) {
+	b.AdsDiscoveryBlockContract = contract
 }
 
-func (m *_AdsDiscoveryBlockStatusBuilder) WithStatus(status Status) AdsDiscoveryBlockStatusBuilder {
-	m.Status = status
-	return m
+func (b *_AdsDiscoveryBlockStatusBuilder) WithMandatoryFields(status Status) AdsDiscoveryBlockStatusBuilder {
+	return b.WithStatus(status)
 }
 
-func (m *_AdsDiscoveryBlockStatusBuilder) Build() (AdsDiscoveryBlockStatus, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsDiscoveryBlockStatusBuilder) WithStatus(status Status) AdsDiscoveryBlockStatusBuilder {
+	b.Status = status
+	return b
+}
+
+func (b *_AdsDiscoveryBlockStatusBuilder) Build() (AdsDiscoveryBlockStatus, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsDiscoveryBlockStatus.deepCopy(), nil
+	return b._AdsDiscoveryBlockStatus.deepCopy(), nil
 }
 
-func (m *_AdsDiscoveryBlockStatusBuilder) MustBuild() AdsDiscoveryBlockStatus {
-	build, err := m.Build()
+func (b *_AdsDiscoveryBlockStatusBuilder) MustBuild() AdsDiscoveryBlockStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsDiscoveryBlockStatusBuilder) DeepCopy() any {
-	return m.CreateAdsDiscoveryBlockStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsDiscoveryBlockStatusBuilder) Done() AdsDiscoveryBlockBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsDiscoveryBlockStatusBuilder) buildForAdsDiscoveryBlock() (AdsDiscoveryBlock, error) {
+	return b.Build()
+}
+
+func (b *_AdsDiscoveryBlockStatusBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryBlockStatusBuilder().(*_AdsDiscoveryBlockStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsDiscoveryBlockStatusBuilder creates a AdsDiscoveryBlockStatusBuilder
-func (m *_AdsDiscoveryBlockStatus) CreateAdsDiscoveryBlockStatusBuilder() AdsDiscoveryBlockStatusBuilder {
-	if m == nil {
+func (b *_AdsDiscoveryBlockStatus) CreateAdsDiscoveryBlockStatusBuilder() AdsDiscoveryBlockStatusBuilder {
+	if b == nil {
 		return NewAdsDiscoveryBlockStatusBuilder()
 	}
-	return &_AdsDiscoveryBlockStatusBuilder{_AdsDiscoveryBlockStatus: m.deepCopy()}
+	return &_AdsDiscoveryBlockStatusBuilder{_AdsDiscoveryBlockStatus: b.deepCopy()}
 }
 
 ///////////////////////
@@ -304,9 +323,13 @@ func (m *_AdsDiscoveryBlockStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

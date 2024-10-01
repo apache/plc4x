@@ -103,63 +103,82 @@ func NewBACnetConstructedDataConfigurationFilesBuilder() BACnetConstructedDataCo
 type _BACnetConstructedDataConfigurationFilesBuilder struct {
 	*_BACnetConstructedDataConfigurationFiles
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataConfigurationFilesBuilder) = (*_BACnetConstructedDataConfigurationFilesBuilder)(nil)
 
-func (m *_BACnetConstructedDataConfigurationFilesBuilder) WithMandatoryFields(configurationFiles []BACnetApplicationTagObjectIdentifier) BACnetConstructedDataConfigurationFilesBuilder {
-	return m.WithConfigurationFiles(configurationFiles...)
+func (b *_BACnetConstructedDataConfigurationFilesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataConfigurationFilesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataConfigurationFilesBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataConfigurationFilesBuilder) WithMandatoryFields(configurationFiles []BACnetApplicationTagObjectIdentifier) BACnetConstructedDataConfigurationFilesBuilder {
+	return b.WithConfigurationFiles(configurationFiles...)
 }
 
-func (m *_BACnetConstructedDataConfigurationFilesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataConfigurationFilesBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataConfigurationFilesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataConfigurationFilesBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataConfigurationFilesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataConfigurationFilesBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataConfigurationFilesBuilder) WithConfigurationFiles(configurationFiles ...BACnetApplicationTagObjectIdentifier) BACnetConstructedDataConfigurationFilesBuilder {
-	m.ConfigurationFiles = configurationFiles
-	return m
+func (b *_BACnetConstructedDataConfigurationFilesBuilder) WithConfigurationFiles(configurationFiles ...BACnetApplicationTagObjectIdentifier) BACnetConstructedDataConfigurationFilesBuilder {
+	b.ConfigurationFiles = configurationFiles
+	return b
 }
 
-func (m *_BACnetConstructedDataConfigurationFilesBuilder) Build() (BACnetConstructedDataConfigurationFiles, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataConfigurationFilesBuilder) Build() (BACnetConstructedDataConfigurationFiles, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataConfigurationFiles.deepCopy(), nil
+	return b._BACnetConstructedDataConfigurationFiles.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataConfigurationFilesBuilder) MustBuild() BACnetConstructedDataConfigurationFiles {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataConfigurationFilesBuilder) MustBuild() BACnetConstructedDataConfigurationFiles {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataConfigurationFilesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataConfigurationFilesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataConfigurationFilesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataConfigurationFilesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataConfigurationFilesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataConfigurationFilesBuilder().(*_BACnetConstructedDataConfigurationFilesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataConfigurationFilesBuilder creates a BACnetConstructedDataConfigurationFilesBuilder
-func (m *_BACnetConstructedDataConfigurationFiles) CreateBACnetConstructedDataConfigurationFilesBuilder() BACnetConstructedDataConfigurationFilesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataConfigurationFiles) CreateBACnetConstructedDataConfigurationFilesBuilder() BACnetConstructedDataConfigurationFilesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataConfigurationFilesBuilder()
 	}
-	return &_BACnetConstructedDataConfigurationFilesBuilder{_BACnetConstructedDataConfigurationFiles: m.deepCopy()}
+	return &_BACnetConstructedDataConfigurationFilesBuilder{_BACnetConstructedDataConfigurationFiles: b.deepCopy()}
 }
 
 ///////////////////////
@@ -366,9 +385,13 @@ func (m *_BACnetConstructedDataConfigurationFiles) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

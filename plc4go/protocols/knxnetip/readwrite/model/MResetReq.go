@@ -85,40 +85,59 @@ func NewMResetReqBuilder() MResetReqBuilder {
 type _MResetReqBuilder struct {
 	*_MResetReq
 
+	parentBuilder *_CEMIBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MResetReqBuilder) = (*_MResetReqBuilder)(nil)
 
-func (m *_MResetReqBuilder) WithMandatoryFields() MResetReqBuilder {
-	return m
+func (b *_MResetReqBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
 }
 
-func (m *_MResetReqBuilder) Build() (MResetReq, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MResetReqBuilder) WithMandatoryFields() MResetReqBuilder {
+	return b
+}
+
+func (b *_MResetReqBuilder) Build() (MResetReq, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MResetReq.deepCopy(), nil
+	return b._MResetReq.deepCopy(), nil
 }
 
-func (m *_MResetReqBuilder) MustBuild() MResetReq {
-	build, err := m.Build()
+func (b *_MResetReqBuilder) MustBuild() MResetReq {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MResetReqBuilder) DeepCopy() any {
-	return m.CreateMResetReqBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MResetReqBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MResetReqBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_MResetReqBuilder) DeepCopy() any {
+	_copy := b.CreateMResetReqBuilder().(*_MResetReqBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMResetReqBuilder creates a MResetReqBuilder
-func (m *_MResetReq) CreateMResetReqBuilder() MResetReqBuilder {
-	if m == nil {
+func (b *_MResetReq) CreateMResetReqBuilder() MResetReqBuilder {
+	if b == nil {
 		return NewMResetReqBuilder()
 	}
-	return &_MResetReqBuilder{_MResetReq: m.deepCopy()}
+	return &_MResetReqBuilder{_MResetReq: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_MResetReq) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

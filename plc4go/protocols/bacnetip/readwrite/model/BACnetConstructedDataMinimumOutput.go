@@ -100,64 +100,83 @@ func NewBACnetConstructedDataMinimumOutputBuilder() BACnetConstructedDataMinimum
 type _BACnetConstructedDataMinimumOutputBuilder struct {
 	*_BACnetConstructedDataMinimumOutput
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMinimumOutputBuilder) = (*_BACnetConstructedDataMinimumOutputBuilder)(nil)
 
-func (m *_BACnetConstructedDataMinimumOutputBuilder) WithMandatoryFields(minimumOutput BACnetApplicationTagReal) BACnetConstructedDataMinimumOutputBuilder {
-	return m.WithMinimumOutput(minimumOutput)
+func (b *_BACnetConstructedDataMinimumOutputBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMinimumOutputBuilder) WithMinimumOutput(minimumOutput BACnetApplicationTagReal) BACnetConstructedDataMinimumOutputBuilder {
-	m.MinimumOutput = minimumOutput
-	return m
+func (b *_BACnetConstructedDataMinimumOutputBuilder) WithMandatoryFields(minimumOutput BACnetApplicationTagReal) BACnetConstructedDataMinimumOutputBuilder {
+	return b.WithMinimumOutput(minimumOutput)
 }
 
-func (m *_BACnetConstructedDataMinimumOutputBuilder) WithMinimumOutputBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMinimumOutputBuilder {
-	builder := builderSupplier(m.MinimumOutput.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataMinimumOutputBuilder) WithMinimumOutput(minimumOutput BACnetApplicationTagReal) BACnetConstructedDataMinimumOutputBuilder {
+	b.MinimumOutput = minimumOutput
+	return b
+}
+
+func (b *_BACnetConstructedDataMinimumOutputBuilder) WithMinimumOutputBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMinimumOutputBuilder {
+	builder := builderSupplier(b.MinimumOutput.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.MinimumOutput, err = builder.Build()
+	b.MinimumOutput, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataMinimumOutputBuilder) Build() (BACnetConstructedDataMinimumOutput, error) {
-	if m.MinimumOutput == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataMinimumOutputBuilder) Build() (BACnetConstructedDataMinimumOutput, error) {
+	if b.MinimumOutput == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'minimumOutput' not set"))
+		b.err.Append(errors.New("mandatory field 'minimumOutput' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataMinimumOutput.deepCopy(), nil
+	return b._BACnetConstructedDataMinimumOutput.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataMinimumOutputBuilder) MustBuild() BACnetConstructedDataMinimumOutput {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMinimumOutputBuilder) MustBuild() BACnetConstructedDataMinimumOutput {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMinimumOutputBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMinimumOutputBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMinimumOutputBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMinimumOutputBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMinimumOutputBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMinimumOutputBuilder().(*_BACnetConstructedDataMinimumOutputBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMinimumOutputBuilder creates a BACnetConstructedDataMinimumOutputBuilder
-func (m *_BACnetConstructedDataMinimumOutput) CreateBACnetConstructedDataMinimumOutputBuilder() BACnetConstructedDataMinimumOutputBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMinimumOutput) CreateBACnetConstructedDataMinimumOutputBuilder() BACnetConstructedDataMinimumOutputBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMinimumOutputBuilder()
 	}
-	return &_BACnetConstructedDataMinimumOutputBuilder{_BACnetConstructedDataMinimumOutput: m.deepCopy()}
+	return &_BACnetConstructedDataMinimumOutputBuilder{_BACnetConstructedDataMinimumOutput: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataMinimumOutput) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

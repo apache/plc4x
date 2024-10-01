@@ -93,6 +93,8 @@ type BACnetTimeStampEnclosedBuilder interface {
 	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetTimeStampEnclosedBuilder
 	// WithTimestamp adds Timestamp (property field)
 	WithTimestamp(BACnetTimeStamp) BACnetTimeStampEnclosedBuilder
+	// WithTimestampBuilder adds Timestamp (property field) which is build by the builder
+	WithTimestampBuilder(func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetTimeStampEnclosedBuilder
 	// WithClosingTag adds ClosingTag (property field)
 	WithClosingTag(BACnetClosingTag) BACnetTimeStampEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
@@ -116,94 +118,111 @@ type _BACnetTimeStampEnclosedBuilder struct {
 
 var _ (BACnetTimeStampEnclosedBuilder) = (*_BACnetTimeStampEnclosedBuilder)(nil)
 
-func (m *_BACnetTimeStampEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timestamp BACnetTimeStamp, closingTag BACnetClosingTag) BACnetTimeStampEnclosedBuilder {
-	return m.WithOpeningTag(openingTag).WithTimestamp(timestamp).WithClosingTag(closingTag)
+func (b *_BACnetTimeStampEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timestamp BACnetTimeStamp, closingTag BACnetClosingTag) BACnetTimeStampEnclosedBuilder {
+	return b.WithOpeningTag(openingTag).WithTimestamp(timestamp).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetTimeStampEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetTimeStampEnclosedBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetTimeStampEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetTimeStampEnclosedBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetTimeStampEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetTimeStampEnclosedBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetTimeStampEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetTimeStampEnclosedBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetTimeStampEnclosedBuilder) WithTimestamp(timestamp BACnetTimeStamp) BACnetTimeStampEnclosedBuilder {
-	m.Timestamp = timestamp
-	return m
+func (b *_BACnetTimeStampEnclosedBuilder) WithTimestamp(timestamp BACnetTimeStamp) BACnetTimeStampEnclosedBuilder {
+	b.Timestamp = timestamp
+	return b
 }
 
-func (m *_BACnetTimeStampEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetTimeStampEnclosedBuilder {
-	m.ClosingTag = closingTag
-	return m
-}
-
-func (m *_BACnetTimeStampEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetTimeStampEnclosedBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetTimeStampEnclosedBuilder) WithTimestampBuilder(builderSupplier func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetTimeStampEnclosedBuilder {
+	builder := builderSupplier(b.Timestamp.CreateBACnetTimeStampBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.Timestamp, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTimeStampBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetTimeStampEnclosedBuilder) Build() (BACnetTimeStampEnclosed, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
-	}
-	if m.Timestamp == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'timestamp' not set"))
-	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetTimeStampEnclosed.deepCopy(), nil
+func (b *_BACnetTimeStampEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetTimeStampEnclosedBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetTimeStampEnclosedBuilder) MustBuild() BACnetTimeStampEnclosed {
-	build, err := m.Build()
+func (b *_BACnetTimeStampEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetTimeStampEnclosedBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetTimeStampEnclosedBuilder) Build() (BACnetTimeStampEnclosed, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.Timestamp == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timestamp' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetTimeStampEnclosed.deepCopy(), nil
+}
+
+func (b *_BACnetTimeStampEnclosedBuilder) MustBuild() BACnetTimeStampEnclosed {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTimeStampEnclosedBuilder) DeepCopy() any {
-	return m.CreateBACnetTimeStampEnclosedBuilder()
+func (b *_BACnetTimeStampEnclosedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimeStampEnclosedBuilder().(*_BACnetTimeStampEnclosedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTimeStampEnclosedBuilder creates a BACnetTimeStampEnclosedBuilder
-func (m *_BACnetTimeStampEnclosed) CreateBACnetTimeStampEnclosedBuilder() BACnetTimeStampEnclosedBuilder {
-	if m == nil {
+func (b *_BACnetTimeStampEnclosed) CreateBACnetTimeStampEnclosedBuilder() BACnetTimeStampEnclosedBuilder {
+	if b == nil {
 		return NewBACnetTimeStampEnclosedBuilder()
 	}
-	return &_BACnetTimeStampEnclosedBuilder{_BACnetTimeStampEnclosed: m.deepCopy()}
+	return &_BACnetTimeStampEnclosedBuilder{_BACnetTimeStampEnclosed: b.deepCopy()}
 }
 
 ///////////////////////
@@ -387,9 +406,13 @@ func (m *_BACnetTimeStampEnclosed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

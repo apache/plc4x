@@ -109,88 +109,107 @@ func NewStatusChangeNotificationBuilder() StatusChangeNotificationBuilder {
 type _StatusChangeNotificationBuilder struct {
 	*_StatusChangeNotification
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (StatusChangeNotificationBuilder) = (*_StatusChangeNotificationBuilder)(nil)
 
-func (m *_StatusChangeNotificationBuilder) WithMandatoryFields(status StatusCode, diagnosticInfo DiagnosticInfo) StatusChangeNotificationBuilder {
-	return m.WithStatus(status).WithDiagnosticInfo(diagnosticInfo)
+func (b *_StatusChangeNotificationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_StatusChangeNotificationBuilder) WithStatus(status StatusCode) StatusChangeNotificationBuilder {
-	m.Status = status
-	return m
+func (b *_StatusChangeNotificationBuilder) WithMandatoryFields(status StatusCode, diagnosticInfo DiagnosticInfo) StatusChangeNotificationBuilder {
+	return b.WithStatus(status).WithDiagnosticInfo(diagnosticInfo)
 }
 
-func (m *_StatusChangeNotificationBuilder) WithStatusBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) StatusChangeNotificationBuilder {
-	builder := builderSupplier(m.Status.CreateStatusCodeBuilder())
+func (b *_StatusChangeNotificationBuilder) WithStatus(status StatusCode) StatusChangeNotificationBuilder {
+	b.Status = status
+	return b
+}
+
+func (b *_StatusChangeNotificationBuilder) WithStatusBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) StatusChangeNotificationBuilder {
+	builder := builderSupplier(b.Status.CreateStatusCodeBuilder())
 	var err error
-	m.Status, err = builder.Build()
+	b.Status, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_StatusChangeNotificationBuilder) WithDiagnosticInfo(diagnosticInfo DiagnosticInfo) StatusChangeNotificationBuilder {
-	m.DiagnosticInfo = diagnosticInfo
-	return m
+func (b *_StatusChangeNotificationBuilder) WithDiagnosticInfo(diagnosticInfo DiagnosticInfo) StatusChangeNotificationBuilder {
+	b.DiagnosticInfo = diagnosticInfo
+	return b
 }
 
-func (m *_StatusChangeNotificationBuilder) WithDiagnosticInfoBuilder(builderSupplier func(DiagnosticInfoBuilder) DiagnosticInfoBuilder) StatusChangeNotificationBuilder {
-	builder := builderSupplier(m.DiagnosticInfo.CreateDiagnosticInfoBuilder())
+func (b *_StatusChangeNotificationBuilder) WithDiagnosticInfoBuilder(builderSupplier func(DiagnosticInfoBuilder) DiagnosticInfoBuilder) StatusChangeNotificationBuilder {
+	builder := builderSupplier(b.DiagnosticInfo.CreateDiagnosticInfoBuilder())
 	var err error
-	m.DiagnosticInfo, err = builder.Build()
+	b.DiagnosticInfo, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "DiagnosticInfoBuilder failed"))
+		b.err.Append(errors.Wrap(err, "DiagnosticInfoBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_StatusChangeNotificationBuilder) Build() (StatusChangeNotification, error) {
-	if m.Status == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_StatusChangeNotificationBuilder) Build() (StatusChangeNotification, error) {
+	if b.Status == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'status' not set"))
+		b.err.Append(errors.New("mandatory field 'status' not set"))
 	}
-	if m.DiagnosticInfo == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.DiagnosticInfo == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'diagnosticInfo' not set"))
+		b.err.Append(errors.New("mandatory field 'diagnosticInfo' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._StatusChangeNotification.deepCopy(), nil
+	return b._StatusChangeNotification.deepCopy(), nil
 }
 
-func (m *_StatusChangeNotificationBuilder) MustBuild() StatusChangeNotification {
-	build, err := m.Build()
+func (b *_StatusChangeNotificationBuilder) MustBuild() StatusChangeNotification {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_StatusChangeNotificationBuilder) DeepCopy() any {
-	return m.CreateStatusChangeNotificationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_StatusChangeNotificationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_StatusChangeNotificationBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_StatusChangeNotificationBuilder) DeepCopy() any {
+	_copy := b.CreateStatusChangeNotificationBuilder().(*_StatusChangeNotificationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateStatusChangeNotificationBuilder creates a StatusChangeNotificationBuilder
-func (m *_StatusChangeNotification) CreateStatusChangeNotificationBuilder() StatusChangeNotificationBuilder {
-	if m == nil {
+func (b *_StatusChangeNotification) CreateStatusChangeNotificationBuilder() StatusChangeNotificationBuilder {
+	if b == nil {
 		return NewStatusChangeNotificationBuilder()
 	}
-	return &_StatusChangeNotificationBuilder{_StatusChangeNotification: m.deepCopy()}
+	return &_StatusChangeNotificationBuilder{_StatusChangeNotification: b.deepCopy()}
 }
 
 ///////////////////////
@@ -365,9 +384,13 @@ func (m *_StatusChangeNotification) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

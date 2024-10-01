@@ -85,10 +85,39 @@ type TypeIdBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() TypeIdBuilder
+	// AsNullAddressItem converts this build to a subType of TypeId. It is always possible to return to current builder using Done()
+	AsNullAddressItem() interface {
+		NullAddressItemBuilder
+		Done() TypeIdBuilder
+	}
+	// AsServicesResponse converts this build to a subType of TypeId. It is always possible to return to current builder using Done()
+	AsServicesResponse() interface {
+		ServicesResponseBuilder
+		Done() TypeIdBuilder
+	}
+	// AsConnectedAddressItem converts this build to a subType of TypeId. It is always possible to return to current builder using Done()
+	AsConnectedAddressItem() interface {
+		ConnectedAddressItemBuilder
+		Done() TypeIdBuilder
+	}
+	// AsConnectedDataItem converts this build to a subType of TypeId. It is always possible to return to current builder using Done()
+	AsConnectedDataItem() interface {
+		ConnectedDataItemBuilder
+		Done() TypeIdBuilder
+	}
+	// AsUnConnectedDataItem converts this build to a subType of TypeId. It is always possible to return to current builder using Done()
+	AsUnConnectedDataItem() interface {
+		UnConnectedDataItemBuilder
+		Done() TypeIdBuilder
+	}
 	// Build builds the TypeId or returns an error if something is wrong
-	Build() (TypeIdContract, error)
+	PartialBuild() (TypeIdContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() TypeIdContract
+	PartialMustBuild() TypeIdContract
+	// Build builds the TypeId or returns an error if something is wrong
+	Build() (TypeId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TypeId
 }
 
 // NewTypeIdBuilder() creates a TypeIdBuilder
@@ -96,43 +125,157 @@ func NewTypeIdBuilder() TypeIdBuilder {
 	return &_TypeIdBuilder{_TypeId: new(_TypeId)}
 }
 
+type _TypeIdChildBuilder interface {
+	utils.Copyable
+	setParent(TypeIdContract)
+	buildForTypeId() (TypeId, error)
+}
+
 type _TypeIdBuilder struct {
 	*_TypeId
+
+	childBuilder _TypeIdChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (TypeIdBuilder) = (*_TypeIdBuilder)(nil)
 
-func (m *_TypeIdBuilder) WithMandatoryFields() TypeIdBuilder {
-	return m
+func (b *_TypeIdBuilder) WithMandatoryFields() TypeIdBuilder {
+	return b
 }
 
-func (m *_TypeIdBuilder) Build() (TypeIdContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TypeIdBuilder) PartialBuild() (TypeIdContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TypeId.deepCopy(), nil
+	return b._TypeId.deepCopy(), nil
 }
 
-func (m *_TypeIdBuilder) MustBuild() TypeIdContract {
-	build, err := m.Build()
+func (b *_TypeIdBuilder) PartialMustBuild() TypeIdContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TypeIdBuilder) DeepCopy() any {
-	return m.CreateTypeIdBuilder()
+func (b *_TypeIdBuilder) AsNullAddressItem() interface {
+	NullAddressItemBuilder
+	Done() TypeIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		NullAddressItemBuilder
+		Done() TypeIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewNullAddressItemBuilder().(*_NullAddressItemBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TypeIdBuilder) AsServicesResponse() interface {
+	ServicesResponseBuilder
+	Done() TypeIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ServicesResponseBuilder
+		Done() TypeIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewServicesResponseBuilder().(*_ServicesResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TypeIdBuilder) AsConnectedAddressItem() interface {
+	ConnectedAddressItemBuilder
+	Done() TypeIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectedAddressItemBuilder
+		Done() TypeIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectedAddressItemBuilder().(*_ConnectedAddressItemBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TypeIdBuilder) AsConnectedDataItem() interface {
+	ConnectedDataItemBuilder
+	Done() TypeIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectedDataItemBuilder
+		Done() TypeIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectedDataItemBuilder().(*_ConnectedDataItemBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TypeIdBuilder) AsUnConnectedDataItem() interface {
+	UnConnectedDataItemBuilder
+	Done() TypeIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UnConnectedDataItemBuilder
+		Done() TypeIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUnConnectedDataItemBuilder().(*_UnConnectedDataItemBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TypeIdBuilder) Build() (TypeId, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForTypeId()
+}
+
+func (b *_TypeIdBuilder) MustBuild() TypeId {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_TypeIdBuilder) DeepCopy() any {
+	_copy := b.CreateTypeIdBuilder().(*_TypeIdBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_TypeIdChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTypeIdBuilder creates a TypeIdBuilder
-func (m *_TypeId) CreateTypeIdBuilder() TypeIdBuilder {
-	if m == nil {
+func (b *_TypeId) CreateTypeIdBuilder() TypeIdBuilder {
+	if b == nil {
 		return NewTypeIdBuilder()
 	}
-	return &_TypeIdBuilder{_TypeId: m.deepCopy()}
+	return &_TypeIdBuilder{_TypeId: b.deepCopy()}
 }
 
 ///////////////////////

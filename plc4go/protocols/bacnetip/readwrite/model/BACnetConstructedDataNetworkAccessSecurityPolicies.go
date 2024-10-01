@@ -103,63 +103,82 @@ func NewBACnetConstructedDataNetworkAccessSecurityPoliciesBuilder() BACnetConstr
 type _BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder struct {
 	*_BACnetConstructedDataNetworkAccessSecurityPolicies
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) = (*_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder)(nil)
 
-func (m *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) WithMandatoryFields(networkAccessSecurityPolicies []BACnetNetworkSecurityPolicy) BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder {
-	return m.WithNetworkAccessSecurityPolicies(networkAccessSecurityPolicies...)
+func (b *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) WithMandatoryFields(networkAccessSecurityPolicies []BACnetNetworkSecurityPolicy) BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder {
+	return b.WithNetworkAccessSecurityPolicies(networkAccessSecurityPolicies...)
 }
 
-func (m *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) WithNetworkAccessSecurityPolicies(networkAccessSecurityPolicies ...BACnetNetworkSecurityPolicy) BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder {
-	m.NetworkAccessSecurityPolicies = networkAccessSecurityPolicies
-	return m
+func (b *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) WithNetworkAccessSecurityPolicies(networkAccessSecurityPolicies ...BACnetNetworkSecurityPolicy) BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder {
+	b.NetworkAccessSecurityPolicies = networkAccessSecurityPolicies
+	return b
 }
 
-func (m *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) Build() (BACnetConstructedDataNetworkAccessSecurityPolicies, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) Build() (BACnetConstructedDataNetworkAccessSecurityPolicies, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataNetworkAccessSecurityPolicies.deepCopy(), nil
+	return b._BACnetConstructedDataNetworkAccessSecurityPolicies.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) MustBuild() BACnetConstructedDataNetworkAccessSecurityPolicies {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) MustBuild() BACnetConstructedDataNetworkAccessSecurityPolicies {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataNetworkAccessSecurityPoliciesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNetworkAccessSecurityPoliciesBuilder().(*_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataNetworkAccessSecurityPoliciesBuilder creates a BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder
-func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) CreateBACnetConstructedDataNetworkAccessSecurityPoliciesBuilder() BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataNetworkAccessSecurityPolicies) CreateBACnetConstructedDataNetworkAccessSecurityPoliciesBuilder() BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataNetworkAccessSecurityPoliciesBuilder()
 	}
-	return &_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder{_BACnetConstructedDataNetworkAccessSecurityPolicies: m.deepCopy()}
+	return &_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder{_BACnetConstructedDataNetworkAccessSecurityPolicies: b.deepCopy()}
 }
 
 ///////////////////////
@@ -367,9 +386,13 @@ func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

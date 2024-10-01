@@ -93,45 +93,64 @@ func NewModbusPDUErrorBuilder() ModbusPDUErrorBuilder {
 type _ModbusPDUErrorBuilder struct {
 	*_ModbusPDUError
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUErrorBuilder) = (*_ModbusPDUErrorBuilder)(nil)
 
-func (m *_ModbusPDUErrorBuilder) WithMandatoryFields(exceptionCode ModbusErrorCode) ModbusPDUErrorBuilder {
-	return m.WithExceptionCode(exceptionCode)
+func (b *_ModbusPDUErrorBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUErrorBuilder) WithExceptionCode(exceptionCode ModbusErrorCode) ModbusPDUErrorBuilder {
-	m.ExceptionCode = exceptionCode
-	return m
+func (b *_ModbusPDUErrorBuilder) WithMandatoryFields(exceptionCode ModbusErrorCode) ModbusPDUErrorBuilder {
+	return b.WithExceptionCode(exceptionCode)
 }
 
-func (m *_ModbusPDUErrorBuilder) Build() (ModbusPDUError, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUErrorBuilder) WithExceptionCode(exceptionCode ModbusErrorCode) ModbusPDUErrorBuilder {
+	b.ExceptionCode = exceptionCode
+	return b
+}
+
+func (b *_ModbusPDUErrorBuilder) Build() (ModbusPDUError, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUError.deepCopy(), nil
+	return b._ModbusPDUError.deepCopy(), nil
 }
 
-func (m *_ModbusPDUErrorBuilder) MustBuild() ModbusPDUError {
-	build, err := m.Build()
+func (b *_ModbusPDUErrorBuilder) MustBuild() ModbusPDUError {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUErrorBuilder) DeepCopy() any {
-	return m.CreateModbusPDUErrorBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUErrorBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUErrorBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUErrorBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUErrorBuilder().(*_ModbusPDUErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUErrorBuilder creates a ModbusPDUErrorBuilder
-func (m *_ModbusPDUError) CreateModbusPDUErrorBuilder() ModbusPDUErrorBuilder {
-	if m == nil {
+func (b *_ModbusPDUError) CreateModbusPDUErrorBuilder() ModbusPDUErrorBuilder {
+	if b == nil {
 		return NewModbusPDUErrorBuilder()
 	}
-	return &_ModbusPDUErrorBuilder{_ModbusPDUError: m.deepCopy()}
+	return &_ModbusPDUErrorBuilder{_ModbusPDUError: b.deepCopy()}
 }
 
 ///////////////////////
@@ -283,9 +302,13 @@ func (m *_ModbusPDUError) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

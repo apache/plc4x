@@ -100,64 +100,83 @@ func NewBACnetConstructedDataExpirationTimeBuilder() BACnetConstructedDataExpira
 type _BACnetConstructedDataExpirationTimeBuilder struct {
 	*_BACnetConstructedDataExpirationTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataExpirationTimeBuilder) = (*_BACnetConstructedDataExpirationTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataExpirationTimeBuilder) WithMandatoryFields(expirationTime BACnetDateTime) BACnetConstructedDataExpirationTimeBuilder {
-	return m.WithExpirationTime(expirationTime)
+func (b *_BACnetConstructedDataExpirationTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataExpirationTimeBuilder) WithExpirationTime(expirationTime BACnetDateTime) BACnetConstructedDataExpirationTimeBuilder {
-	m.ExpirationTime = expirationTime
-	return m
+func (b *_BACnetConstructedDataExpirationTimeBuilder) WithMandatoryFields(expirationTime BACnetDateTime) BACnetConstructedDataExpirationTimeBuilder {
+	return b.WithExpirationTime(expirationTime)
 }
 
-func (m *_BACnetConstructedDataExpirationTimeBuilder) WithExpirationTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataExpirationTimeBuilder {
-	builder := builderSupplier(m.ExpirationTime.CreateBACnetDateTimeBuilder())
+func (b *_BACnetConstructedDataExpirationTimeBuilder) WithExpirationTime(expirationTime BACnetDateTime) BACnetConstructedDataExpirationTimeBuilder {
+	b.ExpirationTime = expirationTime
+	return b
+}
+
+func (b *_BACnetConstructedDataExpirationTimeBuilder) WithExpirationTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataExpirationTimeBuilder {
+	builder := builderSupplier(b.ExpirationTime.CreateBACnetDateTimeBuilder())
 	var err error
-	m.ExpirationTime, err = builder.Build()
+	b.ExpirationTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataExpirationTimeBuilder) Build() (BACnetConstructedDataExpirationTime, error) {
-	if m.ExpirationTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataExpirationTimeBuilder) Build() (BACnetConstructedDataExpirationTime, error) {
+	if b.ExpirationTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'expirationTime' not set"))
+		b.err.Append(errors.New("mandatory field 'expirationTime' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataExpirationTime.deepCopy(), nil
+	return b._BACnetConstructedDataExpirationTime.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataExpirationTimeBuilder) MustBuild() BACnetConstructedDataExpirationTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataExpirationTimeBuilder) MustBuild() BACnetConstructedDataExpirationTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataExpirationTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataExpirationTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataExpirationTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataExpirationTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataExpirationTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataExpirationTimeBuilder().(*_BACnetConstructedDataExpirationTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataExpirationTimeBuilder creates a BACnetConstructedDataExpirationTimeBuilder
-func (m *_BACnetConstructedDataExpirationTime) CreateBACnetConstructedDataExpirationTimeBuilder() BACnetConstructedDataExpirationTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataExpirationTime) CreateBACnetConstructedDataExpirationTimeBuilder() BACnetConstructedDataExpirationTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataExpirationTimeBuilder()
 	}
-	return &_BACnetConstructedDataExpirationTimeBuilder{_BACnetConstructedDataExpirationTime: m.deepCopy()}
+	return &_BACnetConstructedDataExpirationTimeBuilder{_BACnetConstructedDataExpirationTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataExpirationTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

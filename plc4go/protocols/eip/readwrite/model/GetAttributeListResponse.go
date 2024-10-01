@@ -85,40 +85,59 @@ func NewGetAttributeListResponseBuilder() GetAttributeListResponseBuilder {
 type _GetAttributeListResponseBuilder struct {
 	*_GetAttributeListResponse
 
+	parentBuilder *_CipServiceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (GetAttributeListResponseBuilder) = (*_GetAttributeListResponseBuilder)(nil)
 
-func (m *_GetAttributeListResponseBuilder) WithMandatoryFields() GetAttributeListResponseBuilder {
-	return m
+func (b *_GetAttributeListResponseBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
 }
 
-func (m *_GetAttributeListResponseBuilder) Build() (GetAttributeListResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_GetAttributeListResponseBuilder) WithMandatoryFields() GetAttributeListResponseBuilder {
+	return b
+}
+
+func (b *_GetAttributeListResponseBuilder) Build() (GetAttributeListResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._GetAttributeListResponse.deepCopy(), nil
+	return b._GetAttributeListResponse.deepCopy(), nil
 }
 
-func (m *_GetAttributeListResponseBuilder) MustBuild() GetAttributeListResponse {
-	build, err := m.Build()
+func (b *_GetAttributeListResponseBuilder) MustBuild() GetAttributeListResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_GetAttributeListResponseBuilder) DeepCopy() any {
-	return m.CreateGetAttributeListResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_GetAttributeListResponseBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_GetAttributeListResponseBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_GetAttributeListResponseBuilder) DeepCopy() any {
+	_copy := b.CreateGetAttributeListResponseBuilder().(*_GetAttributeListResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateGetAttributeListResponseBuilder creates a GetAttributeListResponseBuilder
-func (m *_GetAttributeListResponse) CreateGetAttributeListResponseBuilder() GetAttributeListResponseBuilder {
-	if m == nil {
+func (b *_GetAttributeListResponse) CreateGetAttributeListResponseBuilder() GetAttributeListResponseBuilder {
+	if b == nil {
 		return NewGetAttributeListResponseBuilder()
 	}
-	return &_GetAttributeListResponseBuilder{_GetAttributeListResponse: m.deepCopy()}
+	return &_GetAttributeListResponseBuilder{_GetAttributeListResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -242,9 +261,13 @@ func (m *_GetAttributeListResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

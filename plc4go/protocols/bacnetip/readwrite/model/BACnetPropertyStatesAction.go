@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesActionBuilder() BACnetPropertyStatesActionBuilder {
 type _BACnetPropertyStatesActionBuilder struct {
 	*_BACnetPropertyStatesAction
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesActionBuilder) = (*_BACnetPropertyStatesActionBuilder)(nil)
 
-func (m *_BACnetPropertyStatesActionBuilder) WithMandatoryFields(action BACnetActionTagged) BACnetPropertyStatesActionBuilder {
-	return m.WithAction(action)
+func (b *_BACnetPropertyStatesActionBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesActionBuilder) WithAction(action BACnetActionTagged) BACnetPropertyStatesActionBuilder {
-	m.Action = action
-	return m
+func (b *_BACnetPropertyStatesActionBuilder) WithMandatoryFields(action BACnetActionTagged) BACnetPropertyStatesActionBuilder {
+	return b.WithAction(action)
 }
 
-func (m *_BACnetPropertyStatesActionBuilder) WithActionBuilder(builderSupplier func(BACnetActionTaggedBuilder) BACnetActionTaggedBuilder) BACnetPropertyStatesActionBuilder {
-	builder := builderSupplier(m.Action.CreateBACnetActionTaggedBuilder())
+func (b *_BACnetPropertyStatesActionBuilder) WithAction(action BACnetActionTagged) BACnetPropertyStatesActionBuilder {
+	b.Action = action
+	return b
+}
+
+func (b *_BACnetPropertyStatesActionBuilder) WithActionBuilder(builderSupplier func(BACnetActionTaggedBuilder) BACnetActionTaggedBuilder) BACnetPropertyStatesActionBuilder {
+	builder := builderSupplier(b.Action.CreateBACnetActionTaggedBuilder())
 	var err error
-	m.Action, err = builder.Build()
+	b.Action, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetActionTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetActionTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesActionBuilder) Build() (BACnetPropertyStatesAction, error) {
-	if m.Action == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesActionBuilder) Build() (BACnetPropertyStatesAction, error) {
+	if b.Action == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'action' not set"))
+		b.err.Append(errors.New("mandatory field 'action' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesAction.deepCopy(), nil
+	return b._BACnetPropertyStatesAction.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesActionBuilder) MustBuild() BACnetPropertyStatesAction {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesActionBuilder) MustBuild() BACnetPropertyStatesAction {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesActionBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesActionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesActionBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesActionBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesActionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesActionBuilder().(*_BACnetPropertyStatesActionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesActionBuilder creates a BACnetPropertyStatesActionBuilder
-func (m *_BACnetPropertyStatesAction) CreateBACnetPropertyStatesActionBuilder() BACnetPropertyStatesActionBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesAction) CreateBACnetPropertyStatesActionBuilder() BACnetPropertyStatesActionBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesActionBuilder()
 	}
-	return &_BACnetPropertyStatesActionBuilder{_BACnetPropertyStatesAction: m.deepCopy()}
+	return &_BACnetPropertyStatesActionBuilder{_BACnetPropertyStatesAction: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPropertyStatesAction) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

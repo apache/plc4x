@@ -93,45 +93,64 @@ func NewLightingDataOnBuilder() LightingDataOnBuilder {
 type _LightingDataOnBuilder struct {
 	*_LightingDataOn
 
+	parentBuilder *_LightingDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LightingDataOnBuilder) = (*_LightingDataOnBuilder)(nil)
 
-func (m *_LightingDataOnBuilder) WithMandatoryFields(group byte) LightingDataOnBuilder {
-	return m.WithGroup(group)
+func (b *_LightingDataOnBuilder) setParent(contract LightingDataContract) {
+	b.LightingDataContract = contract
 }
 
-func (m *_LightingDataOnBuilder) WithGroup(group byte) LightingDataOnBuilder {
-	m.Group = group
-	return m
+func (b *_LightingDataOnBuilder) WithMandatoryFields(group byte) LightingDataOnBuilder {
+	return b.WithGroup(group)
 }
 
-func (m *_LightingDataOnBuilder) Build() (LightingDataOn, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_LightingDataOnBuilder) WithGroup(group byte) LightingDataOnBuilder {
+	b.Group = group
+	return b
+}
+
+func (b *_LightingDataOnBuilder) Build() (LightingDataOn, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LightingDataOn.deepCopy(), nil
+	return b._LightingDataOn.deepCopy(), nil
 }
 
-func (m *_LightingDataOnBuilder) MustBuild() LightingDataOn {
-	build, err := m.Build()
+func (b *_LightingDataOnBuilder) MustBuild() LightingDataOn {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LightingDataOnBuilder) DeepCopy() any {
-	return m.CreateLightingDataOnBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LightingDataOnBuilder) Done() LightingDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LightingDataOnBuilder) buildForLightingData() (LightingData, error) {
+	return b.Build()
+}
+
+func (b *_LightingDataOnBuilder) DeepCopy() any {
+	_copy := b.CreateLightingDataOnBuilder().(*_LightingDataOnBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLightingDataOnBuilder creates a LightingDataOnBuilder
-func (m *_LightingDataOn) CreateLightingDataOnBuilder() LightingDataOnBuilder {
-	if m == nil {
+func (b *_LightingDataOn) CreateLightingDataOnBuilder() LightingDataOnBuilder {
+	if b == nil {
 		return NewLightingDataOnBuilder()
 	}
-	return &_LightingDataOnBuilder{_LightingDataOn: m.deepCopy()}
+	return &_LightingDataOnBuilder{_LightingDataOn: b.deepCopy()}
 }
 
 ///////////////////////
@@ -271,9 +290,13 @@ func (m *_LightingDataOn) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

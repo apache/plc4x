@@ -86,6 +86,8 @@ type CancelRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, requestHandle uint32) CancelRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) CancelRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CancelRequestBuilder
 	// WithRequestHandle adds RequestHandle (property field)
 	WithRequestHandle(uint32) CancelRequestBuilder
 	// Build builds the CancelRequest or returns an error if something is wrong
@@ -102,56 +104,88 @@ func NewCancelRequestBuilder() CancelRequestBuilder {
 type _CancelRequestBuilder struct {
 	*_CancelRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CancelRequestBuilder) = (*_CancelRequestBuilder)(nil)
 
-func (m *_CancelRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, requestHandle uint32) CancelRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithRequestHandle(requestHandle)
+func (b *_CancelRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_CancelRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CancelRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_CancelRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, requestHandle uint32) CancelRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithRequestHandle(requestHandle)
 }
 
-func (m *_CancelRequestBuilder) WithRequestHandle(requestHandle uint32) CancelRequestBuilder {
-	m.RequestHandle = requestHandle
-	return m
+func (b *_CancelRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CancelRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_CancelRequestBuilder) Build() (CancelRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CancelRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CancelRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._CancelRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_CancelRequestBuilder) MustBuild() CancelRequest {
-	build, err := m.Build()
+func (b *_CancelRequestBuilder) WithRequestHandle(requestHandle uint32) CancelRequestBuilder {
+	b.RequestHandle = requestHandle
+	return b
+}
+
+func (b *_CancelRequestBuilder) Build() (CancelRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CancelRequest.deepCopy(), nil
+}
+
+func (b *_CancelRequestBuilder) MustBuild() CancelRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CancelRequestBuilder) DeepCopy() any {
-	return m.CreateCancelRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CancelRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CancelRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_CancelRequestBuilder) DeepCopy() any {
+	_copy := b.CreateCancelRequestBuilder().(*_CancelRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCancelRequestBuilder creates a CancelRequestBuilder
-func (m *_CancelRequest) CreateCancelRequestBuilder() CancelRequestBuilder {
-	if m == nil {
+func (b *_CancelRequest) CreateCancelRequestBuilder() CancelRequestBuilder {
+	if b == nil {
 		return NewCancelRequestBuilder()
 	}
-	return &_CancelRequestBuilder{_CancelRequest: m.deepCopy()}
+	return &_CancelRequestBuilder{_CancelRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -313,9 +347,13 @@ func (m *_CancelRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

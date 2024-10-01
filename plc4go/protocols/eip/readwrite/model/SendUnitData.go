@@ -102,50 +102,69 @@ func NewSendUnitDataBuilder() SendUnitDataBuilder {
 type _SendUnitDataBuilder struct {
 	*_SendUnitData
 
+	parentBuilder *_EipPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SendUnitDataBuilder) = (*_SendUnitDataBuilder)(nil)
 
-func (m *_SendUnitDataBuilder) WithMandatoryFields(timeout uint16, typeIds []TypeId) SendUnitDataBuilder {
-	return m.WithTimeout(timeout).WithTypeIds(typeIds...)
+func (b *_SendUnitDataBuilder) setParent(contract EipPacketContract) {
+	b.EipPacketContract = contract
 }
 
-func (m *_SendUnitDataBuilder) WithTimeout(timeout uint16) SendUnitDataBuilder {
-	m.Timeout = timeout
-	return m
+func (b *_SendUnitDataBuilder) WithMandatoryFields(timeout uint16, typeIds []TypeId) SendUnitDataBuilder {
+	return b.WithTimeout(timeout).WithTypeIds(typeIds...)
 }
 
-func (m *_SendUnitDataBuilder) WithTypeIds(typeIds ...TypeId) SendUnitDataBuilder {
-	m.TypeIds = typeIds
-	return m
+func (b *_SendUnitDataBuilder) WithTimeout(timeout uint16) SendUnitDataBuilder {
+	b.Timeout = timeout
+	return b
 }
 
-func (m *_SendUnitDataBuilder) Build() (SendUnitData, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SendUnitDataBuilder) WithTypeIds(typeIds ...TypeId) SendUnitDataBuilder {
+	b.TypeIds = typeIds
+	return b
+}
+
+func (b *_SendUnitDataBuilder) Build() (SendUnitData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SendUnitData.deepCopy(), nil
+	return b._SendUnitData.deepCopy(), nil
 }
 
-func (m *_SendUnitDataBuilder) MustBuild() SendUnitData {
-	build, err := m.Build()
+func (b *_SendUnitDataBuilder) MustBuild() SendUnitData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SendUnitDataBuilder) DeepCopy() any {
-	return m.CreateSendUnitDataBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SendUnitDataBuilder) Done() EipPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SendUnitDataBuilder) buildForEipPacket() (EipPacket, error) {
+	return b.Build()
+}
+
+func (b *_SendUnitDataBuilder) DeepCopy() any {
+	_copy := b.CreateSendUnitDataBuilder().(*_SendUnitDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSendUnitDataBuilder creates a SendUnitDataBuilder
-func (m *_SendUnitData) CreateSendUnitDataBuilder() SendUnitDataBuilder {
-	if m == nil {
+func (b *_SendUnitData) CreateSendUnitDataBuilder() SendUnitDataBuilder {
+	if b == nil {
 		return NewSendUnitDataBuilder()
 	}
-	return &_SendUnitDataBuilder{_SendUnitData: m.deepCopy()}
+	return &_SendUnitDataBuilder{_SendUnitData: b.deepCopy()}
 }
 
 ///////////////////////
@@ -361,9 +380,13 @@ func (m *_SendUnitData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -120,65 +120,84 @@ func NewAggregateConfigurationBuilder() AggregateConfigurationBuilder {
 type _AggregateConfigurationBuilder struct {
 	*_AggregateConfiguration
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AggregateConfigurationBuilder) = (*_AggregateConfigurationBuilder)(nil)
 
-func (m *_AggregateConfigurationBuilder) WithMandatoryFields(treatUncertainAsBad bool, useServerCapabilitiesDefaults bool, percentDataBad uint8, percentDataGood uint8, useSlopedExtrapolation bool) AggregateConfigurationBuilder {
-	return m.WithTreatUncertainAsBad(treatUncertainAsBad).WithUseServerCapabilitiesDefaults(useServerCapabilitiesDefaults).WithPercentDataBad(percentDataBad).WithPercentDataGood(percentDataGood).WithUseSlopedExtrapolation(useSlopedExtrapolation)
+func (b *_AggregateConfigurationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_AggregateConfigurationBuilder) WithTreatUncertainAsBad(treatUncertainAsBad bool) AggregateConfigurationBuilder {
-	m.TreatUncertainAsBad = treatUncertainAsBad
-	return m
+func (b *_AggregateConfigurationBuilder) WithMandatoryFields(treatUncertainAsBad bool, useServerCapabilitiesDefaults bool, percentDataBad uint8, percentDataGood uint8, useSlopedExtrapolation bool) AggregateConfigurationBuilder {
+	return b.WithTreatUncertainAsBad(treatUncertainAsBad).WithUseServerCapabilitiesDefaults(useServerCapabilitiesDefaults).WithPercentDataBad(percentDataBad).WithPercentDataGood(percentDataGood).WithUseSlopedExtrapolation(useSlopedExtrapolation)
 }
 
-func (m *_AggregateConfigurationBuilder) WithUseServerCapabilitiesDefaults(useServerCapabilitiesDefaults bool) AggregateConfigurationBuilder {
-	m.UseServerCapabilitiesDefaults = useServerCapabilitiesDefaults
-	return m
+func (b *_AggregateConfigurationBuilder) WithTreatUncertainAsBad(treatUncertainAsBad bool) AggregateConfigurationBuilder {
+	b.TreatUncertainAsBad = treatUncertainAsBad
+	return b
 }
 
-func (m *_AggregateConfigurationBuilder) WithPercentDataBad(percentDataBad uint8) AggregateConfigurationBuilder {
-	m.PercentDataBad = percentDataBad
-	return m
+func (b *_AggregateConfigurationBuilder) WithUseServerCapabilitiesDefaults(useServerCapabilitiesDefaults bool) AggregateConfigurationBuilder {
+	b.UseServerCapabilitiesDefaults = useServerCapabilitiesDefaults
+	return b
 }
 
-func (m *_AggregateConfigurationBuilder) WithPercentDataGood(percentDataGood uint8) AggregateConfigurationBuilder {
-	m.PercentDataGood = percentDataGood
-	return m
+func (b *_AggregateConfigurationBuilder) WithPercentDataBad(percentDataBad uint8) AggregateConfigurationBuilder {
+	b.PercentDataBad = percentDataBad
+	return b
 }
 
-func (m *_AggregateConfigurationBuilder) WithUseSlopedExtrapolation(useSlopedExtrapolation bool) AggregateConfigurationBuilder {
-	m.UseSlopedExtrapolation = useSlopedExtrapolation
-	return m
+func (b *_AggregateConfigurationBuilder) WithPercentDataGood(percentDataGood uint8) AggregateConfigurationBuilder {
+	b.PercentDataGood = percentDataGood
+	return b
 }
 
-func (m *_AggregateConfigurationBuilder) Build() (AggregateConfiguration, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AggregateConfigurationBuilder) WithUseSlopedExtrapolation(useSlopedExtrapolation bool) AggregateConfigurationBuilder {
+	b.UseSlopedExtrapolation = useSlopedExtrapolation
+	return b
+}
+
+func (b *_AggregateConfigurationBuilder) Build() (AggregateConfiguration, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AggregateConfiguration.deepCopy(), nil
+	return b._AggregateConfiguration.deepCopy(), nil
 }
 
-func (m *_AggregateConfigurationBuilder) MustBuild() AggregateConfiguration {
-	build, err := m.Build()
+func (b *_AggregateConfigurationBuilder) MustBuild() AggregateConfiguration {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AggregateConfigurationBuilder) DeepCopy() any {
-	return m.CreateAggregateConfigurationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AggregateConfigurationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AggregateConfigurationBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AggregateConfigurationBuilder) DeepCopy() any {
+	_copy := b.CreateAggregateConfigurationBuilder().(*_AggregateConfigurationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAggregateConfigurationBuilder creates a AggregateConfigurationBuilder
-func (m *_AggregateConfiguration) CreateAggregateConfigurationBuilder() AggregateConfigurationBuilder {
-	if m == nil {
+func (b *_AggregateConfiguration) CreateAggregateConfigurationBuilder() AggregateConfigurationBuilder {
+	if b == nil {
 		return NewAggregateConfigurationBuilder()
 	}
-	return &_AggregateConfigurationBuilder{_AggregateConfiguration: m.deepCopy()}
+	return &_AggregateConfigurationBuilder{_AggregateConfiguration: b.deepCopy()}
 }
 
 ///////////////////////
@@ -422,9 +441,13 @@ func (m *_AggregateConfiguration) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

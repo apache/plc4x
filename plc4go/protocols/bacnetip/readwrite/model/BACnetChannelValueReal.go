@@ -98,64 +98,83 @@ func NewBACnetChannelValueRealBuilder() BACnetChannelValueRealBuilder {
 type _BACnetChannelValueRealBuilder struct {
 	*_BACnetChannelValueReal
 
+	parentBuilder *_BACnetChannelValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetChannelValueRealBuilder) = (*_BACnetChannelValueRealBuilder)(nil)
 
-func (m *_BACnetChannelValueRealBuilder) WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetChannelValueRealBuilder {
-	return m.WithRealValue(realValue)
+func (b *_BACnetChannelValueRealBuilder) setParent(contract BACnetChannelValueContract) {
+	b.BACnetChannelValueContract = contract
 }
 
-func (m *_BACnetChannelValueRealBuilder) WithRealValue(realValue BACnetApplicationTagReal) BACnetChannelValueRealBuilder {
-	m.RealValue = realValue
-	return m
+func (b *_BACnetChannelValueRealBuilder) WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetChannelValueRealBuilder {
+	return b.WithRealValue(realValue)
 }
 
-func (m *_BACnetChannelValueRealBuilder) WithRealValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetChannelValueRealBuilder {
-	builder := builderSupplier(m.RealValue.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetChannelValueRealBuilder) WithRealValue(realValue BACnetApplicationTagReal) BACnetChannelValueRealBuilder {
+	b.RealValue = realValue
+	return b
+}
+
+func (b *_BACnetChannelValueRealBuilder) WithRealValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetChannelValueRealBuilder {
+	builder := builderSupplier(b.RealValue.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.RealValue, err = builder.Build()
+	b.RealValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetChannelValueRealBuilder) Build() (BACnetChannelValueReal, error) {
-	if m.RealValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetChannelValueRealBuilder) Build() (BACnetChannelValueReal, error) {
+	if b.RealValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'realValue' not set"))
+		b.err.Append(errors.New("mandatory field 'realValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetChannelValueReal.deepCopy(), nil
+	return b._BACnetChannelValueReal.deepCopy(), nil
 }
 
-func (m *_BACnetChannelValueRealBuilder) MustBuild() BACnetChannelValueReal {
-	build, err := m.Build()
+func (b *_BACnetChannelValueRealBuilder) MustBuild() BACnetChannelValueReal {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetChannelValueRealBuilder) DeepCopy() any {
-	return m.CreateBACnetChannelValueRealBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetChannelValueRealBuilder) Done() BACnetChannelValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetChannelValueRealBuilder) buildForBACnetChannelValue() (BACnetChannelValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetChannelValueRealBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetChannelValueRealBuilder().(*_BACnetChannelValueRealBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetChannelValueRealBuilder creates a BACnetChannelValueRealBuilder
-func (m *_BACnetChannelValueReal) CreateBACnetChannelValueRealBuilder() BACnetChannelValueRealBuilder {
-	if m == nil {
+func (b *_BACnetChannelValueReal) CreateBACnetChannelValueRealBuilder() BACnetChannelValueRealBuilder {
+	if b == nil {
 		return NewBACnetChannelValueRealBuilder()
 	}
-	return &_BACnetChannelValueRealBuilder{_BACnetChannelValueReal: m.deepCopy()}
+	return &_BACnetChannelValueRealBuilder{_BACnetChannelValueReal: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetChannelValueReal) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

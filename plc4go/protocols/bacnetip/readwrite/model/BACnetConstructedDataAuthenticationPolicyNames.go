@@ -103,63 +103,82 @@ func NewBACnetConstructedDataAuthenticationPolicyNamesBuilder() BACnetConstructe
 type _BACnetConstructedDataAuthenticationPolicyNamesBuilder struct {
 	*_BACnetConstructedDataAuthenticationPolicyNames
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAuthenticationPolicyNamesBuilder) = (*_BACnetConstructedDataAuthenticationPolicyNamesBuilder)(nil)
 
-func (m *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) WithMandatoryFields(authenticationPolicyNames []BACnetApplicationTagCharacterString) BACnetConstructedDataAuthenticationPolicyNamesBuilder {
-	return m.WithAuthenticationPolicyNames(authenticationPolicyNames...)
+func (b *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAuthenticationPolicyNamesBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) WithMandatoryFields(authenticationPolicyNames []BACnetApplicationTagCharacterString) BACnetConstructedDataAuthenticationPolicyNamesBuilder {
+	return b.WithAuthenticationPolicyNames(authenticationPolicyNames...)
 }
 
-func (m *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAuthenticationPolicyNamesBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAuthenticationPolicyNamesBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAuthenticationPolicyNamesBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) WithAuthenticationPolicyNames(authenticationPolicyNames ...BACnetApplicationTagCharacterString) BACnetConstructedDataAuthenticationPolicyNamesBuilder {
-	m.AuthenticationPolicyNames = authenticationPolicyNames
-	return m
+func (b *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) WithAuthenticationPolicyNames(authenticationPolicyNames ...BACnetApplicationTagCharacterString) BACnetConstructedDataAuthenticationPolicyNamesBuilder {
+	b.AuthenticationPolicyNames = authenticationPolicyNames
+	return b
 }
 
-func (m *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) Build() (BACnetConstructedDataAuthenticationPolicyNames, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) Build() (BACnetConstructedDataAuthenticationPolicyNames, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAuthenticationPolicyNames.deepCopy(), nil
+	return b._BACnetConstructedDataAuthenticationPolicyNames.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) MustBuild() BACnetConstructedDataAuthenticationPolicyNames {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) MustBuild() BACnetConstructedDataAuthenticationPolicyNames {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAuthenticationPolicyNamesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAuthenticationPolicyNamesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAuthenticationPolicyNamesBuilder().(*_BACnetConstructedDataAuthenticationPolicyNamesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAuthenticationPolicyNamesBuilder creates a BACnetConstructedDataAuthenticationPolicyNamesBuilder
-func (m *_BACnetConstructedDataAuthenticationPolicyNames) CreateBACnetConstructedDataAuthenticationPolicyNamesBuilder() BACnetConstructedDataAuthenticationPolicyNamesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAuthenticationPolicyNames) CreateBACnetConstructedDataAuthenticationPolicyNamesBuilder() BACnetConstructedDataAuthenticationPolicyNamesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAuthenticationPolicyNamesBuilder()
 	}
-	return &_BACnetConstructedDataAuthenticationPolicyNamesBuilder{_BACnetConstructedDataAuthenticationPolicyNames: m.deepCopy()}
+	return &_BACnetConstructedDataAuthenticationPolicyNamesBuilder{_BACnetConstructedDataAuthenticationPolicyNames: b.deepCopy()}
 }
 
 ///////////////////////
@@ -367,9 +386,13 @@ func (m *_BACnetConstructedDataAuthenticationPolicyNames) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

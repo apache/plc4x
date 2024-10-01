@@ -100,64 +100,83 @@ func NewBACnetConstructedDataBACnetIPUDPPortBuilder() BACnetConstructedDataBACne
 type _BACnetConstructedDataBACnetIPUDPPortBuilder struct {
 	*_BACnetConstructedDataBACnetIPUDPPort
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBACnetIPUDPPortBuilder) = (*_BACnetConstructedDataBACnetIPUDPPortBuilder)(nil)
 
-func (m *_BACnetConstructedDataBACnetIPUDPPortBuilder) WithMandatoryFields(ipUdpPort BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBACnetIPUDPPortBuilder {
-	return m.WithIpUdpPort(ipUdpPort)
+func (b *_BACnetConstructedDataBACnetIPUDPPortBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBACnetIPUDPPortBuilder) WithIpUdpPort(ipUdpPort BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBACnetIPUDPPortBuilder {
-	m.IpUdpPort = ipUdpPort
-	return m
+func (b *_BACnetConstructedDataBACnetIPUDPPortBuilder) WithMandatoryFields(ipUdpPort BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBACnetIPUDPPortBuilder {
+	return b.WithIpUdpPort(ipUdpPort)
 }
 
-func (m *_BACnetConstructedDataBACnetIPUDPPortBuilder) WithIpUdpPortBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBACnetIPUDPPortBuilder {
-	builder := builderSupplier(m.IpUdpPort.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataBACnetIPUDPPortBuilder) WithIpUdpPort(ipUdpPort BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBACnetIPUDPPortBuilder {
+	b.IpUdpPort = ipUdpPort
+	return b
+}
+
+func (b *_BACnetConstructedDataBACnetIPUDPPortBuilder) WithIpUdpPortBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBACnetIPUDPPortBuilder {
+	builder := builderSupplier(b.IpUdpPort.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.IpUdpPort, err = builder.Build()
+	b.IpUdpPort, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBACnetIPUDPPortBuilder) Build() (BACnetConstructedDataBACnetIPUDPPort, error) {
-	if m.IpUdpPort == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBACnetIPUDPPortBuilder) Build() (BACnetConstructedDataBACnetIPUDPPort, error) {
+	if b.IpUdpPort == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'ipUdpPort' not set"))
+		b.err.Append(errors.New("mandatory field 'ipUdpPort' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBACnetIPUDPPort.deepCopy(), nil
+	return b._BACnetConstructedDataBACnetIPUDPPort.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPUDPPortBuilder) MustBuild() BACnetConstructedDataBACnetIPUDPPort {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBACnetIPUDPPortBuilder) MustBuild() BACnetConstructedDataBACnetIPUDPPort {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBACnetIPUDPPortBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBACnetIPUDPPortBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBACnetIPUDPPortBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBACnetIPUDPPortBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBACnetIPUDPPortBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBACnetIPUDPPortBuilder().(*_BACnetConstructedDataBACnetIPUDPPortBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBACnetIPUDPPortBuilder creates a BACnetConstructedDataBACnetIPUDPPortBuilder
-func (m *_BACnetConstructedDataBACnetIPUDPPort) CreateBACnetConstructedDataBACnetIPUDPPortBuilder() BACnetConstructedDataBACnetIPUDPPortBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBACnetIPUDPPort) CreateBACnetConstructedDataBACnetIPUDPPortBuilder() BACnetConstructedDataBACnetIPUDPPortBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBACnetIPUDPPortBuilder()
 	}
-	return &_BACnetConstructedDataBACnetIPUDPPortBuilder{_BACnetConstructedDataBACnetIPUDPPort: m.deepCopy()}
+	return &_BACnetConstructedDataBACnetIPUDPPortBuilder{_BACnetConstructedDataBACnetIPUDPPort: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

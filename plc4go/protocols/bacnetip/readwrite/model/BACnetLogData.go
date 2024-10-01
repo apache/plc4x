@@ -122,10 +122,29 @@ type BACnetLogDataBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetLogDataBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogDataBuilder
+	// AsBACnetLogDataLogStatus converts this build to a subType of BACnetLogData. It is always possible to return to current builder using Done()
+	AsBACnetLogDataLogStatus() interface {
+		BACnetLogDataLogStatusBuilder
+		Done() BACnetLogDataBuilder
+	}
+	// AsBACnetLogDataLogData converts this build to a subType of BACnetLogData. It is always possible to return to current builder using Done()
+	AsBACnetLogDataLogData() interface {
+		BACnetLogDataLogDataBuilder
+		Done() BACnetLogDataBuilder
+	}
+	// AsBACnetLogDataLogDataTimeChange converts this build to a subType of BACnetLogData. It is always possible to return to current builder using Done()
+	AsBACnetLogDataLogDataTimeChange() interface {
+		BACnetLogDataLogDataTimeChangeBuilder
+		Done() BACnetLogDataBuilder
+	}
 	// Build builds the BACnetLogData or returns an error if something is wrong
-	Build() (BACnetLogDataContract, error)
+	PartialBuild() (BACnetLogDataContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetLogDataContract
+	PartialMustBuild() BACnetLogDataContract
+	// Build builds the BACnetLogData or returns an error if something is wrong
+	Build() (BACnetLogData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogData
 }
 
 // NewBACnetLogDataBuilder() creates a BACnetLogDataBuilder
@@ -133,115 +152,197 @@ func NewBACnetLogDataBuilder() BACnetLogDataBuilder {
 	return &_BACnetLogDataBuilder{_BACnetLogData: new(_BACnetLogData)}
 }
 
+type _BACnetLogDataChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetLogDataContract)
+	buildForBACnetLogData() (BACnetLogData, error)
+}
+
 type _BACnetLogDataBuilder struct {
 	*_BACnetLogData
+
+	childBuilder _BACnetLogDataChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetLogDataBuilder) = (*_BACnetLogDataBuilder)(nil)
 
-func (m *_BACnetLogDataBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetLogDataBuilder {
-	return m.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+func (b *_BACnetLogDataBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetLogDataBuilder {
+	return b.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetLogDataBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetLogDataBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetLogDataBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetLogDataBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetLogDataBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLogDataBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetLogDataBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLogDataBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogDataBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetLogDataBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetLogDataBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetLogDataBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetLogDataBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLogDataBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetLogDataBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLogDataBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogDataBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetLogDataBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetLogDataBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetLogDataBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetLogDataBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogDataBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetLogDataBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogDataBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogDataBuilder) Build() (BACnetLogDataContract, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLogDataBuilder) PartialBuild() (BACnetLogDataContract, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLogData.deepCopy(), nil
+	return b._BACnetLogData.deepCopy(), nil
 }
 
-func (m *_BACnetLogDataBuilder) MustBuild() BACnetLogDataContract {
-	build, err := m.Build()
+func (b *_BACnetLogDataBuilder) PartialMustBuild() BACnetLogDataContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLogDataBuilder) DeepCopy() any {
-	return m.CreateBACnetLogDataBuilder()
+func (b *_BACnetLogDataBuilder) AsBACnetLogDataLogStatus() interface {
+	BACnetLogDataLogStatusBuilder
+	Done() BACnetLogDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogDataLogStatusBuilder
+		Done() BACnetLogDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogDataLogStatusBuilder().(*_BACnetLogDataLogStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogDataBuilder) AsBACnetLogDataLogData() interface {
+	BACnetLogDataLogDataBuilder
+	Done() BACnetLogDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogDataLogDataBuilder
+		Done() BACnetLogDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogDataLogDataBuilder().(*_BACnetLogDataLogDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogDataBuilder) AsBACnetLogDataLogDataTimeChange() interface {
+	BACnetLogDataLogDataTimeChangeBuilder
+	Done() BACnetLogDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogDataLogDataTimeChangeBuilder
+		Done() BACnetLogDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogDataLogDataTimeChangeBuilder().(*_BACnetLogDataLogDataTimeChangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogDataBuilder) Build() (BACnetLogData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetLogData()
+}
+
+func (b *_BACnetLogDataBuilder) MustBuild() BACnetLogData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetLogDataBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogDataBuilder().(*_BACnetLogDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetLogDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLogDataBuilder creates a BACnetLogDataBuilder
-func (m *_BACnetLogData) CreateBACnetLogDataBuilder() BACnetLogDataBuilder {
-	if m == nil {
+func (b *_BACnetLogData) CreateBACnetLogDataBuilder() BACnetLogDataBuilder {
+	if b == nil {
 		return NewBACnetLogDataBuilder()
 	}
-	return &_BACnetLogDataBuilder{_BACnetLogData: m.deepCopy()}
+	return &_BACnetLogDataBuilder{_BACnetLogData: b.deepCopy()}
 }
 
 ///////////////////////

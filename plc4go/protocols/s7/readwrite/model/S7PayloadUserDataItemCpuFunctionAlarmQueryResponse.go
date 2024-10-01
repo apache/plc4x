@@ -93,45 +93,64 @@ func NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder() S7PayloadUse
 type _S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder struct {
 	*_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder)(nil)
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) WithMandatoryFields(items []byte) S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder {
-	return m.WithItems(items...)
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) WithItems(items ...byte) S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder {
-	m.Items = items
-	return m
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) WithMandatoryFields(items []byte) S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder {
+	return b.WithItems(items...)
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) WithItems(items ...byte) S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadUserDataItemCpuFunctionAlarmQueryResponse.deepCopy(), nil
+	return b._S7PayloadUserDataItemCpuFunctionAlarmQueryResponse.deepCopy(), nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
-	build, err := m.Build()
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) DeepCopy() any {
-	return m.CreateS7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder creates a S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) CreateS7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder() S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder {
-	if m == nil {
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) CreateS7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder() S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder {
+	if b == nil {
 		return NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder()
 	}
-	return &_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder{_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse: m.deepCopy()}
+	return &_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder{_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -286,9 +305,13 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

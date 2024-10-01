@@ -94,6 +94,8 @@ type DeleteMonitoredItemsRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, noOfMonitoredItemIds int32, monitoredItemIds []uint32) DeleteMonitoredItemsRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) DeleteMonitoredItemsRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteMonitoredItemsRequestBuilder
 	// WithSubscriptionId adds SubscriptionId (property field)
 	WithSubscriptionId(uint32) DeleteMonitoredItemsRequestBuilder
 	// WithNoOfMonitoredItemIds adds NoOfMonitoredItemIds (property field)
@@ -114,66 +116,98 @@ func NewDeleteMonitoredItemsRequestBuilder() DeleteMonitoredItemsRequestBuilder 
 type _DeleteMonitoredItemsRequestBuilder struct {
 	*_DeleteMonitoredItemsRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DeleteMonitoredItemsRequestBuilder) = (*_DeleteMonitoredItemsRequestBuilder)(nil)
 
-func (m *_DeleteMonitoredItemsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, noOfMonitoredItemIds int32, monitoredItemIds []uint32) DeleteMonitoredItemsRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithNoOfMonitoredItemIds(noOfMonitoredItemIds).WithMonitoredItemIds(monitoredItemIds...)
+func (b *_DeleteMonitoredItemsRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_DeleteMonitoredItemsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteMonitoredItemsRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_DeleteMonitoredItemsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, noOfMonitoredItemIds int32, monitoredItemIds []uint32) DeleteMonitoredItemsRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithNoOfMonitoredItemIds(noOfMonitoredItemIds).WithMonitoredItemIds(monitoredItemIds...)
 }
 
-func (m *_DeleteMonitoredItemsRequestBuilder) WithSubscriptionId(subscriptionId uint32) DeleteMonitoredItemsRequestBuilder {
-	m.SubscriptionId = subscriptionId
-	return m
+func (b *_DeleteMonitoredItemsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteMonitoredItemsRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_DeleteMonitoredItemsRequestBuilder) WithNoOfMonitoredItemIds(noOfMonitoredItemIds int32) DeleteMonitoredItemsRequestBuilder {
-	m.NoOfMonitoredItemIds = noOfMonitoredItemIds
-	return m
-}
-
-func (m *_DeleteMonitoredItemsRequestBuilder) WithMonitoredItemIds(monitoredItemIds ...uint32) DeleteMonitoredItemsRequestBuilder {
-	m.MonitoredItemIds = monitoredItemIds
-	return m
-}
-
-func (m *_DeleteMonitoredItemsRequestBuilder) Build() (DeleteMonitoredItemsRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_DeleteMonitoredItemsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteMonitoredItemsRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._DeleteMonitoredItemsRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_DeleteMonitoredItemsRequestBuilder) MustBuild() DeleteMonitoredItemsRequest {
-	build, err := m.Build()
+func (b *_DeleteMonitoredItemsRequestBuilder) WithSubscriptionId(subscriptionId uint32) DeleteMonitoredItemsRequestBuilder {
+	b.SubscriptionId = subscriptionId
+	return b
+}
+
+func (b *_DeleteMonitoredItemsRequestBuilder) WithNoOfMonitoredItemIds(noOfMonitoredItemIds int32) DeleteMonitoredItemsRequestBuilder {
+	b.NoOfMonitoredItemIds = noOfMonitoredItemIds
+	return b
+}
+
+func (b *_DeleteMonitoredItemsRequestBuilder) WithMonitoredItemIds(monitoredItemIds ...uint32) DeleteMonitoredItemsRequestBuilder {
+	b.MonitoredItemIds = monitoredItemIds
+	return b
+}
+
+func (b *_DeleteMonitoredItemsRequestBuilder) Build() (DeleteMonitoredItemsRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DeleteMonitoredItemsRequest.deepCopy(), nil
+}
+
+func (b *_DeleteMonitoredItemsRequestBuilder) MustBuild() DeleteMonitoredItemsRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DeleteMonitoredItemsRequestBuilder) DeepCopy() any {
-	return m.CreateDeleteMonitoredItemsRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DeleteMonitoredItemsRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DeleteMonitoredItemsRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DeleteMonitoredItemsRequestBuilder) DeepCopy() any {
+	_copy := b.CreateDeleteMonitoredItemsRequestBuilder().(*_DeleteMonitoredItemsRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDeleteMonitoredItemsRequestBuilder creates a DeleteMonitoredItemsRequestBuilder
-func (m *_DeleteMonitoredItemsRequest) CreateDeleteMonitoredItemsRequestBuilder() DeleteMonitoredItemsRequestBuilder {
-	if m == nil {
+func (b *_DeleteMonitoredItemsRequest) CreateDeleteMonitoredItemsRequestBuilder() DeleteMonitoredItemsRequestBuilder {
+	if b == nil {
 		return NewDeleteMonitoredItemsRequestBuilder()
 	}
-	return &_DeleteMonitoredItemsRequestBuilder{_DeleteMonitoredItemsRequest: m.deepCopy()}
+	return &_DeleteMonitoredItemsRequestBuilder{_DeleteMonitoredItemsRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -373,9 +407,13 @@ func (m *_DeleteMonitoredItemsRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -90,6 +90,8 @@ type AddNodesRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToAdd int32, nodesToAdd []ExtensionObjectDefinition) AddNodesRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) AddNodesRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AddNodesRequestBuilder
 	// WithNoOfNodesToAdd adds NoOfNodesToAdd (property field)
 	WithNoOfNodesToAdd(int32) AddNodesRequestBuilder
 	// WithNodesToAdd adds NodesToAdd (property field)
@@ -108,61 +110,93 @@ func NewAddNodesRequestBuilder() AddNodesRequestBuilder {
 type _AddNodesRequestBuilder struct {
 	*_AddNodesRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AddNodesRequestBuilder) = (*_AddNodesRequestBuilder)(nil)
 
-func (m *_AddNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToAdd int32, nodesToAdd []ExtensionObjectDefinition) AddNodesRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithNoOfNodesToAdd(noOfNodesToAdd).WithNodesToAdd(nodesToAdd...)
+func (b *_AddNodesRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_AddNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) AddNodesRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_AddNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToAdd int32, nodesToAdd []ExtensionObjectDefinition) AddNodesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNoOfNodesToAdd(noOfNodesToAdd).WithNodesToAdd(nodesToAdd...)
 }
 
-func (m *_AddNodesRequestBuilder) WithNoOfNodesToAdd(noOfNodesToAdd int32) AddNodesRequestBuilder {
-	m.NoOfNodesToAdd = noOfNodesToAdd
-	return m
+func (b *_AddNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) AddNodesRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_AddNodesRequestBuilder) WithNodesToAdd(nodesToAdd ...ExtensionObjectDefinition) AddNodesRequestBuilder {
-	m.NodesToAdd = nodesToAdd
-	return m
-}
-
-func (m *_AddNodesRequestBuilder) Build() (AddNodesRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AddNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AddNodesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._AddNodesRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_AddNodesRequestBuilder) MustBuild() AddNodesRequest {
-	build, err := m.Build()
+func (b *_AddNodesRequestBuilder) WithNoOfNodesToAdd(noOfNodesToAdd int32) AddNodesRequestBuilder {
+	b.NoOfNodesToAdd = noOfNodesToAdd
+	return b
+}
+
+func (b *_AddNodesRequestBuilder) WithNodesToAdd(nodesToAdd ...ExtensionObjectDefinition) AddNodesRequestBuilder {
+	b.NodesToAdd = nodesToAdd
+	return b
+}
+
+func (b *_AddNodesRequestBuilder) Build() (AddNodesRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AddNodesRequest.deepCopy(), nil
+}
+
+func (b *_AddNodesRequestBuilder) MustBuild() AddNodesRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AddNodesRequestBuilder) DeepCopy() any {
-	return m.CreateAddNodesRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AddNodesRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AddNodesRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AddNodesRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAddNodesRequestBuilder().(*_AddNodesRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAddNodesRequestBuilder creates a AddNodesRequestBuilder
-func (m *_AddNodesRequest) CreateAddNodesRequestBuilder() AddNodesRequestBuilder {
-	if m == nil {
+func (b *_AddNodesRequest) CreateAddNodesRequestBuilder() AddNodesRequestBuilder {
+	if b == nil {
 		return NewAddNodesRequestBuilder()
 	}
-	return &_AddNodesRequestBuilder{_AddNodesRequest: m.deepCopy()}
+	return &_AddNodesRequestBuilder{_AddNodesRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -349,9 +383,13 @@ func (m *_AddNodesRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

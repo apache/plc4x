@@ -99,50 +99,69 @@ func NewCALDataAcknowledgeBuilder() CALDataAcknowledgeBuilder {
 type _CALDataAcknowledgeBuilder struct {
 	*_CALDataAcknowledge
 
+	parentBuilder *_CALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CALDataAcknowledgeBuilder) = (*_CALDataAcknowledgeBuilder)(nil)
 
-func (m *_CALDataAcknowledgeBuilder) WithMandatoryFields(paramNo Parameter, code uint8) CALDataAcknowledgeBuilder {
-	return m.WithParamNo(paramNo).WithCode(code)
+func (b *_CALDataAcknowledgeBuilder) setParent(contract CALDataContract) {
+	b.CALDataContract = contract
 }
 
-func (m *_CALDataAcknowledgeBuilder) WithParamNo(paramNo Parameter) CALDataAcknowledgeBuilder {
-	m.ParamNo = paramNo
-	return m
+func (b *_CALDataAcknowledgeBuilder) WithMandatoryFields(paramNo Parameter, code uint8) CALDataAcknowledgeBuilder {
+	return b.WithParamNo(paramNo).WithCode(code)
 }
 
-func (m *_CALDataAcknowledgeBuilder) WithCode(code uint8) CALDataAcknowledgeBuilder {
-	m.Code = code
-	return m
+func (b *_CALDataAcknowledgeBuilder) WithParamNo(paramNo Parameter) CALDataAcknowledgeBuilder {
+	b.ParamNo = paramNo
+	return b
 }
 
-func (m *_CALDataAcknowledgeBuilder) Build() (CALDataAcknowledge, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CALDataAcknowledgeBuilder) WithCode(code uint8) CALDataAcknowledgeBuilder {
+	b.Code = code
+	return b
+}
+
+func (b *_CALDataAcknowledgeBuilder) Build() (CALDataAcknowledge, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CALDataAcknowledge.deepCopy(), nil
+	return b._CALDataAcknowledge.deepCopy(), nil
 }
 
-func (m *_CALDataAcknowledgeBuilder) MustBuild() CALDataAcknowledge {
-	build, err := m.Build()
+func (b *_CALDataAcknowledgeBuilder) MustBuild() CALDataAcknowledge {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CALDataAcknowledgeBuilder) DeepCopy() any {
-	return m.CreateCALDataAcknowledgeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CALDataAcknowledgeBuilder) Done() CALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CALDataAcknowledgeBuilder) buildForCALData() (CALData, error) {
+	return b.Build()
+}
+
+func (b *_CALDataAcknowledgeBuilder) DeepCopy() any {
+	_copy := b.CreateCALDataAcknowledgeBuilder().(*_CALDataAcknowledgeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCALDataAcknowledgeBuilder creates a CALDataAcknowledgeBuilder
-func (m *_CALDataAcknowledge) CreateCALDataAcknowledgeBuilder() CALDataAcknowledgeBuilder {
-	if m == nil {
+func (b *_CALDataAcknowledge) CreateCALDataAcknowledgeBuilder() CALDataAcknowledgeBuilder {
+	if b == nil {
 		return NewCALDataAcknowledgeBuilder()
 	}
-	return &_CALDataAcknowledgeBuilder{_CALDataAcknowledge: m.deepCopy()}
+	return &_CALDataAcknowledgeBuilder{_CALDataAcknowledge: b.deepCopy()}
 }
 
 ///////////////////////
@@ -300,9 +319,13 @@ func (m *_CALDataAcknowledge) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

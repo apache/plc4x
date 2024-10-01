@@ -98,64 +98,83 @@ func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuil
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder struct {
 	*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
 
+	parentBuilder *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) WithMandatoryFields(numericValue BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder {
-	return m.WithNumericValue(numericValue)
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) setParent(contract BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract) {
+	b.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) WithNumericValue(numericValue BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder {
-	m.NumericValue = numericValue
-	return m
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) WithMandatoryFields(numericValue BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder {
+	return b.WithNumericValue(numericValue)
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) WithNumericValueBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder {
-	builder := builderSupplier(m.NumericValue.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) WithNumericValue(numericValue BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder {
+	b.NumericValue = numericValue
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) WithNumericValueBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder {
+	builder := builderSupplier(b.NumericValue.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.NumericValue, err = builder.Build()
+	b.NumericValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) Build() (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric, error) {
-	if m.NumericValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) Build() (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric, error) {
+	if b.NumericValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'numericValue' not set"))
+		b.err.Append(errors.New("mandatory field 'numericValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) MustBuild() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) MustBuild() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) Done() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) buildForBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass() (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder().(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder creates a BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder{_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder{_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric: b.deepCopy()}
 }
 
 ///////////////////////
@@ -296,9 +315,13 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) 
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesNetworkNumberQualityBuilder() BACnetPropertyStatesNe
 type _BACnetPropertyStatesNetworkNumberQualityBuilder struct {
 	*_BACnetPropertyStatesNetworkNumberQuality
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesNetworkNumberQualityBuilder) = (*_BACnetPropertyStatesNetworkNumberQualityBuilder)(nil)
 
-func (m *_BACnetPropertyStatesNetworkNumberQualityBuilder) WithMandatoryFields(networkNumberQuality BACnetNetworkNumberQualityTagged) BACnetPropertyStatesNetworkNumberQualityBuilder {
-	return m.WithNetworkNumberQuality(networkNumberQuality)
+func (b *_BACnetPropertyStatesNetworkNumberQualityBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesNetworkNumberQualityBuilder) WithNetworkNumberQuality(networkNumberQuality BACnetNetworkNumberQualityTagged) BACnetPropertyStatesNetworkNumberQualityBuilder {
-	m.NetworkNumberQuality = networkNumberQuality
-	return m
+func (b *_BACnetPropertyStatesNetworkNumberQualityBuilder) WithMandatoryFields(networkNumberQuality BACnetNetworkNumberQualityTagged) BACnetPropertyStatesNetworkNumberQualityBuilder {
+	return b.WithNetworkNumberQuality(networkNumberQuality)
 }
 
-func (m *_BACnetPropertyStatesNetworkNumberQualityBuilder) WithNetworkNumberQualityBuilder(builderSupplier func(BACnetNetworkNumberQualityTaggedBuilder) BACnetNetworkNumberQualityTaggedBuilder) BACnetPropertyStatesNetworkNumberQualityBuilder {
-	builder := builderSupplier(m.NetworkNumberQuality.CreateBACnetNetworkNumberQualityTaggedBuilder())
+func (b *_BACnetPropertyStatesNetworkNumberQualityBuilder) WithNetworkNumberQuality(networkNumberQuality BACnetNetworkNumberQualityTagged) BACnetPropertyStatesNetworkNumberQualityBuilder {
+	b.NetworkNumberQuality = networkNumberQuality
+	return b
+}
+
+func (b *_BACnetPropertyStatesNetworkNumberQualityBuilder) WithNetworkNumberQualityBuilder(builderSupplier func(BACnetNetworkNumberQualityTaggedBuilder) BACnetNetworkNumberQualityTaggedBuilder) BACnetPropertyStatesNetworkNumberQualityBuilder {
+	builder := builderSupplier(b.NetworkNumberQuality.CreateBACnetNetworkNumberQualityTaggedBuilder())
 	var err error
-	m.NetworkNumberQuality, err = builder.Build()
+	b.NetworkNumberQuality, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetNetworkNumberQualityTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetNetworkNumberQualityTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesNetworkNumberQualityBuilder) Build() (BACnetPropertyStatesNetworkNumberQuality, error) {
-	if m.NetworkNumberQuality == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesNetworkNumberQualityBuilder) Build() (BACnetPropertyStatesNetworkNumberQuality, error) {
+	if b.NetworkNumberQuality == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'networkNumberQuality' not set"))
+		b.err.Append(errors.New("mandatory field 'networkNumberQuality' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesNetworkNumberQuality.deepCopy(), nil
+	return b._BACnetPropertyStatesNetworkNumberQuality.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesNetworkNumberQualityBuilder) MustBuild() BACnetPropertyStatesNetworkNumberQuality {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesNetworkNumberQualityBuilder) MustBuild() BACnetPropertyStatesNetworkNumberQuality {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesNetworkNumberQualityBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesNetworkNumberQualityBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesNetworkNumberQualityBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesNetworkNumberQualityBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesNetworkNumberQualityBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesNetworkNumberQualityBuilder().(*_BACnetPropertyStatesNetworkNumberQualityBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesNetworkNumberQualityBuilder creates a BACnetPropertyStatesNetworkNumberQualityBuilder
-func (m *_BACnetPropertyStatesNetworkNumberQuality) CreateBACnetPropertyStatesNetworkNumberQualityBuilder() BACnetPropertyStatesNetworkNumberQualityBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesNetworkNumberQuality) CreateBACnetPropertyStatesNetworkNumberQualityBuilder() BACnetPropertyStatesNetworkNumberQualityBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesNetworkNumberQualityBuilder()
 	}
-	return &_BACnetPropertyStatesNetworkNumberQualityBuilder{_BACnetPropertyStatesNetworkNumberQuality: m.deepCopy()}
+	return &_BACnetPropertyStatesNetworkNumberQualityBuilder{_BACnetPropertyStatesNetworkNumberQuality: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPropertyStatesNetworkNumberQuality) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

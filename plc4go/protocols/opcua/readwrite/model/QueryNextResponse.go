@@ -97,6 +97,8 @@ type QueryNextResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfQueryDataSets int32, queryDataSets []ExtensionObjectDefinition, revisedContinuationPoint PascalByteString) QueryNextResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) QueryNextResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryNextResponseBuilder
 	// WithNoOfQueryDataSets adds NoOfQueryDataSets (property field)
 	WithNoOfQueryDataSets(int32) QueryNextResponseBuilder
 	// WithQueryDataSets adds QueryDataSets (property field)
@@ -119,85 +121,117 @@ func NewQueryNextResponseBuilder() QueryNextResponseBuilder {
 type _QueryNextResponseBuilder struct {
 	*_QueryNextResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (QueryNextResponseBuilder) = (*_QueryNextResponseBuilder)(nil)
 
-func (m *_QueryNextResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfQueryDataSets int32, queryDataSets []ExtensionObjectDefinition, revisedContinuationPoint PascalByteString) QueryNextResponseBuilder {
-	return m.WithResponseHeader(responseHeader).WithNoOfQueryDataSets(noOfQueryDataSets).WithQueryDataSets(queryDataSets...).WithRevisedContinuationPoint(revisedContinuationPoint)
+func (b *_QueryNextResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_QueryNextResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) QueryNextResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_QueryNextResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfQueryDataSets int32, queryDataSets []ExtensionObjectDefinition, revisedContinuationPoint PascalByteString) QueryNextResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfQueryDataSets(noOfQueryDataSets).WithQueryDataSets(queryDataSets...).WithRevisedContinuationPoint(revisedContinuationPoint)
 }
 
-func (m *_QueryNextResponseBuilder) WithNoOfQueryDataSets(noOfQueryDataSets int32) QueryNextResponseBuilder {
-	m.NoOfQueryDataSets = noOfQueryDataSets
-	return m
+func (b *_QueryNextResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) QueryNextResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
 }
 
-func (m *_QueryNextResponseBuilder) WithQueryDataSets(queryDataSets ...ExtensionObjectDefinition) QueryNextResponseBuilder {
-	m.QueryDataSets = queryDataSets
-	return m
-}
-
-func (m *_QueryNextResponseBuilder) WithRevisedContinuationPoint(revisedContinuationPoint PascalByteString) QueryNextResponseBuilder {
-	m.RevisedContinuationPoint = revisedContinuationPoint
-	return m
-}
-
-func (m *_QueryNextResponseBuilder) WithRevisedContinuationPointBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) QueryNextResponseBuilder {
-	builder := builderSupplier(m.RevisedContinuationPoint.CreatePascalByteStringBuilder())
+func (b *_QueryNextResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryNextResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
 	var err error
-	m.RevisedContinuationPoint, err = builder.Build()
+	b.ResponseHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_QueryNextResponseBuilder) Build() (QueryNextResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
-	}
-	if m.RevisedContinuationPoint == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'revisedContinuationPoint' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._QueryNextResponse.deepCopy(), nil
+func (b *_QueryNextResponseBuilder) WithNoOfQueryDataSets(noOfQueryDataSets int32) QueryNextResponseBuilder {
+	b.NoOfQueryDataSets = noOfQueryDataSets
+	return b
 }
 
-func (m *_QueryNextResponseBuilder) MustBuild() QueryNextResponse {
-	build, err := m.Build()
+func (b *_QueryNextResponseBuilder) WithQueryDataSets(queryDataSets ...ExtensionObjectDefinition) QueryNextResponseBuilder {
+	b.QueryDataSets = queryDataSets
+	return b
+}
+
+func (b *_QueryNextResponseBuilder) WithRevisedContinuationPoint(revisedContinuationPoint PascalByteString) QueryNextResponseBuilder {
+	b.RevisedContinuationPoint = revisedContinuationPoint
+	return b
+}
+
+func (b *_QueryNextResponseBuilder) WithRevisedContinuationPointBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) QueryNextResponseBuilder {
+	builder := builderSupplier(b.RevisedContinuationPoint.CreatePascalByteStringBuilder())
+	var err error
+	b.RevisedContinuationPoint, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_QueryNextResponseBuilder) Build() (QueryNextResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.RevisedContinuationPoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'revisedContinuationPoint' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._QueryNextResponse.deepCopy(), nil
+}
+
+func (b *_QueryNextResponseBuilder) MustBuild() QueryNextResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_QueryNextResponseBuilder) DeepCopy() any {
-	return m.CreateQueryNextResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_QueryNextResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_QueryNextResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_QueryNextResponseBuilder) DeepCopy() any {
+	_copy := b.CreateQueryNextResponseBuilder().(*_QueryNextResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateQueryNextResponseBuilder creates a QueryNextResponseBuilder
-func (m *_QueryNextResponse) CreateQueryNextResponseBuilder() QueryNextResponseBuilder {
-	if m == nil {
+func (b *_QueryNextResponse) CreateQueryNextResponseBuilder() QueryNextResponseBuilder {
+	if b == nil {
 		return NewQueryNextResponseBuilder()
 	}
-	return &_QueryNextResponseBuilder{_QueryNextResponse: m.deepCopy()}
+	return &_QueryNextResponseBuilder{_QueryNextResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -402,9 +436,13 @@ func (m *_QueryNextResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -95,59 +95,63 @@ type _BACnetLandingDoorStatusBuilder struct {
 
 var _ (BACnetLandingDoorStatusBuilder) = (*_BACnetLandingDoorStatusBuilder)(nil)
 
-func (m *_BACnetLandingDoorStatusBuilder) WithMandatoryFields(landingDoors BACnetLandingDoorStatusLandingDoorsList) BACnetLandingDoorStatusBuilder {
-	return m.WithLandingDoors(landingDoors)
+func (b *_BACnetLandingDoorStatusBuilder) WithMandatoryFields(landingDoors BACnetLandingDoorStatusLandingDoorsList) BACnetLandingDoorStatusBuilder {
+	return b.WithLandingDoors(landingDoors)
 }
 
-func (m *_BACnetLandingDoorStatusBuilder) WithLandingDoors(landingDoors BACnetLandingDoorStatusLandingDoorsList) BACnetLandingDoorStatusBuilder {
-	m.LandingDoors = landingDoors
-	return m
+func (b *_BACnetLandingDoorStatusBuilder) WithLandingDoors(landingDoors BACnetLandingDoorStatusLandingDoorsList) BACnetLandingDoorStatusBuilder {
+	b.LandingDoors = landingDoors
+	return b
 }
 
-func (m *_BACnetLandingDoorStatusBuilder) WithLandingDoorsBuilder(builderSupplier func(BACnetLandingDoorStatusLandingDoorsListBuilder) BACnetLandingDoorStatusLandingDoorsListBuilder) BACnetLandingDoorStatusBuilder {
-	builder := builderSupplier(m.LandingDoors.CreateBACnetLandingDoorStatusLandingDoorsListBuilder())
+func (b *_BACnetLandingDoorStatusBuilder) WithLandingDoorsBuilder(builderSupplier func(BACnetLandingDoorStatusLandingDoorsListBuilder) BACnetLandingDoorStatusLandingDoorsListBuilder) BACnetLandingDoorStatusBuilder {
+	builder := builderSupplier(b.LandingDoors.CreateBACnetLandingDoorStatusLandingDoorsListBuilder())
 	var err error
-	m.LandingDoors, err = builder.Build()
+	b.LandingDoors, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLandingDoorStatusLandingDoorsListBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLandingDoorStatusLandingDoorsListBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLandingDoorStatusBuilder) Build() (BACnetLandingDoorStatus, error) {
-	if m.LandingDoors == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLandingDoorStatusBuilder) Build() (BACnetLandingDoorStatus, error) {
+	if b.LandingDoors == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'landingDoors' not set"))
+		b.err.Append(errors.New("mandatory field 'landingDoors' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLandingDoorStatus.deepCopy(), nil
+	return b._BACnetLandingDoorStatus.deepCopy(), nil
 }
 
-func (m *_BACnetLandingDoorStatusBuilder) MustBuild() BACnetLandingDoorStatus {
-	build, err := m.Build()
+func (b *_BACnetLandingDoorStatusBuilder) MustBuild() BACnetLandingDoorStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLandingDoorStatusBuilder) DeepCopy() any {
-	return m.CreateBACnetLandingDoorStatusBuilder()
+func (b *_BACnetLandingDoorStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLandingDoorStatusBuilder().(*_BACnetLandingDoorStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLandingDoorStatusBuilder creates a BACnetLandingDoorStatusBuilder
-func (m *_BACnetLandingDoorStatus) CreateBACnetLandingDoorStatusBuilder() BACnetLandingDoorStatusBuilder {
-	if m == nil {
+func (b *_BACnetLandingDoorStatus) CreateBACnetLandingDoorStatusBuilder() BACnetLandingDoorStatusBuilder {
+	if b == nil {
 		return NewBACnetLandingDoorStatusBuilder()
 	}
-	return &_BACnetLandingDoorStatusBuilder{_BACnetLandingDoorStatus: m.deepCopy()}
+	return &_BACnetLandingDoorStatusBuilder{_BACnetLandingDoorStatus: b.deepCopy()}
 }
 
 ///////////////////////
@@ -284,9 +288,13 @@ func (m *_BACnetLandingDoorStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

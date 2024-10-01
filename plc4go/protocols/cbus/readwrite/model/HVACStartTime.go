@@ -100,40 +100,44 @@ type _HVACStartTimeBuilder struct {
 
 var _ (HVACStartTimeBuilder) = (*_HVACStartTimeBuilder)(nil)
 
-func (m *_HVACStartTimeBuilder) WithMandatoryFields(minutesSinceSunday12AM uint16) HVACStartTimeBuilder {
-	return m.WithMinutesSinceSunday12AM(minutesSinceSunday12AM)
+func (b *_HVACStartTimeBuilder) WithMandatoryFields(minutesSinceSunday12AM uint16) HVACStartTimeBuilder {
+	return b.WithMinutesSinceSunday12AM(minutesSinceSunday12AM)
 }
 
-func (m *_HVACStartTimeBuilder) WithMinutesSinceSunday12AM(minutesSinceSunday12AM uint16) HVACStartTimeBuilder {
-	m.MinutesSinceSunday12AM = minutesSinceSunday12AM
-	return m
+func (b *_HVACStartTimeBuilder) WithMinutesSinceSunday12AM(minutesSinceSunday12AM uint16) HVACStartTimeBuilder {
+	b.MinutesSinceSunday12AM = minutesSinceSunday12AM
+	return b
 }
 
-func (m *_HVACStartTimeBuilder) Build() (HVACStartTime, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_HVACStartTimeBuilder) Build() (HVACStartTime, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HVACStartTime.deepCopy(), nil
+	return b._HVACStartTime.deepCopy(), nil
 }
 
-func (m *_HVACStartTimeBuilder) MustBuild() HVACStartTime {
-	build, err := m.Build()
+func (b *_HVACStartTimeBuilder) MustBuild() HVACStartTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HVACStartTimeBuilder) DeepCopy() any {
-	return m.CreateHVACStartTimeBuilder()
+func (b *_HVACStartTimeBuilder) DeepCopy() any {
+	_copy := b.CreateHVACStartTimeBuilder().(*_HVACStartTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHVACStartTimeBuilder creates a HVACStartTimeBuilder
-func (m *_HVACStartTime) CreateHVACStartTimeBuilder() HVACStartTimeBuilder {
-	if m == nil {
+func (b *_HVACStartTime) CreateHVACStartTimeBuilder() HVACStartTimeBuilder {
+	if b == nil {
 		return NewHVACStartTimeBuilder()
 	}
-	return &_HVACStartTimeBuilder{_HVACStartTime: m.deepCopy()}
+	return &_HVACStartTimeBuilder{_HVACStartTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -379,9 +383,13 @@ func (m *_HVACStartTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

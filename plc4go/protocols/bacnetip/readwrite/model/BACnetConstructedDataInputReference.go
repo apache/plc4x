@@ -100,64 +100,83 @@ func NewBACnetConstructedDataInputReferenceBuilder() BACnetConstructedDataInputR
 type _BACnetConstructedDataInputReferenceBuilder struct {
 	*_BACnetConstructedDataInputReference
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataInputReferenceBuilder) = (*_BACnetConstructedDataInputReferenceBuilder)(nil)
 
-func (m *_BACnetConstructedDataInputReferenceBuilder) WithMandatoryFields(inputReference BACnetObjectPropertyReference) BACnetConstructedDataInputReferenceBuilder {
-	return m.WithInputReference(inputReference)
+func (b *_BACnetConstructedDataInputReferenceBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataInputReferenceBuilder) WithInputReference(inputReference BACnetObjectPropertyReference) BACnetConstructedDataInputReferenceBuilder {
-	m.InputReference = inputReference
-	return m
+func (b *_BACnetConstructedDataInputReferenceBuilder) WithMandatoryFields(inputReference BACnetObjectPropertyReference) BACnetConstructedDataInputReferenceBuilder {
+	return b.WithInputReference(inputReference)
 }
 
-func (m *_BACnetConstructedDataInputReferenceBuilder) WithInputReferenceBuilder(builderSupplier func(BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceBuilder) BACnetConstructedDataInputReferenceBuilder {
-	builder := builderSupplier(m.InputReference.CreateBACnetObjectPropertyReferenceBuilder())
+func (b *_BACnetConstructedDataInputReferenceBuilder) WithInputReference(inputReference BACnetObjectPropertyReference) BACnetConstructedDataInputReferenceBuilder {
+	b.InputReference = inputReference
+	return b
+}
+
+func (b *_BACnetConstructedDataInputReferenceBuilder) WithInputReferenceBuilder(builderSupplier func(BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceBuilder) BACnetConstructedDataInputReferenceBuilder {
+	builder := builderSupplier(b.InputReference.CreateBACnetObjectPropertyReferenceBuilder())
 	var err error
-	m.InputReference, err = builder.Build()
+	b.InputReference, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataInputReferenceBuilder) Build() (BACnetConstructedDataInputReference, error) {
-	if m.InputReference == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataInputReferenceBuilder) Build() (BACnetConstructedDataInputReference, error) {
+	if b.InputReference == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'inputReference' not set"))
+		b.err.Append(errors.New("mandatory field 'inputReference' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataInputReference.deepCopy(), nil
+	return b._BACnetConstructedDataInputReference.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataInputReferenceBuilder) MustBuild() BACnetConstructedDataInputReference {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataInputReferenceBuilder) MustBuild() BACnetConstructedDataInputReference {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataInputReferenceBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataInputReferenceBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataInputReferenceBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataInputReferenceBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataInputReferenceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataInputReferenceBuilder().(*_BACnetConstructedDataInputReferenceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataInputReferenceBuilder creates a BACnetConstructedDataInputReferenceBuilder
-func (m *_BACnetConstructedDataInputReference) CreateBACnetConstructedDataInputReferenceBuilder() BACnetConstructedDataInputReferenceBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataInputReference) CreateBACnetConstructedDataInputReferenceBuilder() BACnetConstructedDataInputReferenceBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataInputReferenceBuilder()
 	}
-	return &_BACnetConstructedDataInputReferenceBuilder{_BACnetConstructedDataInputReference: m.deepCopy()}
+	return &_BACnetConstructedDataInputReferenceBuilder{_BACnetConstructedDataInputReference: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataInputReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

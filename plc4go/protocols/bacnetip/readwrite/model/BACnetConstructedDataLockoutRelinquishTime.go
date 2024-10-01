@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLockoutRelinquishTimeBuilder() BACnetConstructedDat
 type _BACnetConstructedDataLockoutRelinquishTimeBuilder struct {
 	*_BACnetConstructedDataLockoutRelinquishTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLockoutRelinquishTimeBuilder) = (*_BACnetConstructedDataLockoutRelinquishTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataLockoutRelinquishTimeBuilder) WithMandatoryFields(lockoutRelinquishTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLockoutRelinquishTimeBuilder {
-	return m.WithLockoutRelinquishTime(lockoutRelinquishTime)
+func (b *_BACnetConstructedDataLockoutRelinquishTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLockoutRelinquishTimeBuilder) WithLockoutRelinquishTime(lockoutRelinquishTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLockoutRelinquishTimeBuilder {
-	m.LockoutRelinquishTime = lockoutRelinquishTime
-	return m
+func (b *_BACnetConstructedDataLockoutRelinquishTimeBuilder) WithMandatoryFields(lockoutRelinquishTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLockoutRelinquishTimeBuilder {
+	return b.WithLockoutRelinquishTime(lockoutRelinquishTime)
 }
 
-func (m *_BACnetConstructedDataLockoutRelinquishTimeBuilder) WithLockoutRelinquishTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLockoutRelinquishTimeBuilder {
-	builder := builderSupplier(m.LockoutRelinquishTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataLockoutRelinquishTimeBuilder) WithLockoutRelinquishTime(lockoutRelinquishTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLockoutRelinquishTimeBuilder {
+	b.LockoutRelinquishTime = lockoutRelinquishTime
+	return b
+}
+
+func (b *_BACnetConstructedDataLockoutRelinquishTimeBuilder) WithLockoutRelinquishTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLockoutRelinquishTimeBuilder {
+	builder := builderSupplier(b.LockoutRelinquishTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.LockoutRelinquishTime, err = builder.Build()
+	b.LockoutRelinquishTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLockoutRelinquishTimeBuilder) Build() (BACnetConstructedDataLockoutRelinquishTime, error) {
-	if m.LockoutRelinquishTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLockoutRelinquishTimeBuilder) Build() (BACnetConstructedDataLockoutRelinquishTime, error) {
+	if b.LockoutRelinquishTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lockoutRelinquishTime' not set"))
+		b.err.Append(errors.New("mandatory field 'lockoutRelinquishTime' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLockoutRelinquishTime.deepCopy(), nil
+	return b._BACnetConstructedDataLockoutRelinquishTime.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLockoutRelinquishTimeBuilder) MustBuild() BACnetConstructedDataLockoutRelinquishTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLockoutRelinquishTimeBuilder) MustBuild() BACnetConstructedDataLockoutRelinquishTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLockoutRelinquishTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLockoutRelinquishTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLockoutRelinquishTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLockoutRelinquishTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLockoutRelinquishTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLockoutRelinquishTimeBuilder().(*_BACnetConstructedDataLockoutRelinquishTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLockoutRelinquishTimeBuilder creates a BACnetConstructedDataLockoutRelinquishTimeBuilder
-func (m *_BACnetConstructedDataLockoutRelinquishTime) CreateBACnetConstructedDataLockoutRelinquishTimeBuilder() BACnetConstructedDataLockoutRelinquishTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLockoutRelinquishTime) CreateBACnetConstructedDataLockoutRelinquishTimeBuilder() BACnetConstructedDataLockoutRelinquishTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLockoutRelinquishTimeBuilder()
 	}
-	return &_BACnetConstructedDataLockoutRelinquishTimeBuilder{_BACnetConstructedDataLockoutRelinquishTime: m.deepCopy()}
+	return &_BACnetConstructedDataLockoutRelinquishTimeBuilder{_BACnetConstructedDataLockoutRelinquishTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

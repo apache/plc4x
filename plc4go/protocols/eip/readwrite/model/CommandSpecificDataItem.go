@@ -85,10 +85,24 @@ type CommandSpecificDataItemBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CommandSpecificDataItemBuilder
+	// AsCipIdentity converts this build to a subType of CommandSpecificDataItem. It is always possible to return to current builder using Done()
+	AsCipIdentity() interface {
+		CipIdentityBuilder
+		Done() CommandSpecificDataItemBuilder
+	}
+	// AsCipSecurityInformation converts this build to a subType of CommandSpecificDataItem. It is always possible to return to current builder using Done()
+	AsCipSecurityInformation() interface {
+		CipSecurityInformationBuilder
+		Done() CommandSpecificDataItemBuilder
+	}
 	// Build builds the CommandSpecificDataItem or returns an error if something is wrong
-	Build() (CommandSpecificDataItemContract, error)
+	PartialBuild() (CommandSpecificDataItemContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() CommandSpecificDataItemContract
+	PartialMustBuild() CommandSpecificDataItemContract
+	// Build builds the CommandSpecificDataItem or returns an error if something is wrong
+	Build() (CommandSpecificDataItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CommandSpecificDataItem
 }
 
 // NewCommandSpecificDataItemBuilder() creates a CommandSpecificDataItemBuilder
@@ -96,43 +110,109 @@ func NewCommandSpecificDataItemBuilder() CommandSpecificDataItemBuilder {
 	return &_CommandSpecificDataItemBuilder{_CommandSpecificDataItem: new(_CommandSpecificDataItem)}
 }
 
+type _CommandSpecificDataItemChildBuilder interface {
+	utils.Copyable
+	setParent(CommandSpecificDataItemContract)
+	buildForCommandSpecificDataItem() (CommandSpecificDataItem, error)
+}
+
 type _CommandSpecificDataItemBuilder struct {
 	*_CommandSpecificDataItem
+
+	childBuilder _CommandSpecificDataItemChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (CommandSpecificDataItemBuilder) = (*_CommandSpecificDataItemBuilder)(nil)
 
-func (m *_CommandSpecificDataItemBuilder) WithMandatoryFields() CommandSpecificDataItemBuilder {
-	return m
+func (b *_CommandSpecificDataItemBuilder) WithMandatoryFields() CommandSpecificDataItemBuilder {
+	return b
 }
 
-func (m *_CommandSpecificDataItemBuilder) Build() (CommandSpecificDataItemContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CommandSpecificDataItemBuilder) PartialBuild() (CommandSpecificDataItemContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CommandSpecificDataItem.deepCopy(), nil
+	return b._CommandSpecificDataItem.deepCopy(), nil
 }
 
-func (m *_CommandSpecificDataItemBuilder) MustBuild() CommandSpecificDataItemContract {
-	build, err := m.Build()
+func (b *_CommandSpecificDataItemBuilder) PartialMustBuild() CommandSpecificDataItemContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CommandSpecificDataItemBuilder) DeepCopy() any {
-	return m.CreateCommandSpecificDataItemBuilder()
+func (b *_CommandSpecificDataItemBuilder) AsCipIdentity() interface {
+	CipIdentityBuilder
+	Done() CommandSpecificDataItemBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CipIdentityBuilder
+		Done() CommandSpecificDataItemBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCipIdentityBuilder().(*_CipIdentityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CommandSpecificDataItemBuilder) AsCipSecurityInformation() interface {
+	CipSecurityInformationBuilder
+	Done() CommandSpecificDataItemBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CipSecurityInformationBuilder
+		Done() CommandSpecificDataItemBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCipSecurityInformationBuilder().(*_CipSecurityInformationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CommandSpecificDataItemBuilder) Build() (CommandSpecificDataItem, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForCommandSpecificDataItem()
+}
+
+func (b *_CommandSpecificDataItemBuilder) MustBuild() CommandSpecificDataItem {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CommandSpecificDataItemBuilder) DeepCopy() any {
+	_copy := b.CreateCommandSpecificDataItemBuilder().(*_CommandSpecificDataItemBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_CommandSpecificDataItemChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCommandSpecificDataItemBuilder creates a CommandSpecificDataItemBuilder
-func (m *_CommandSpecificDataItem) CreateCommandSpecificDataItemBuilder() CommandSpecificDataItemBuilder {
-	if m == nil {
+func (b *_CommandSpecificDataItem) CreateCommandSpecificDataItemBuilder() CommandSpecificDataItemBuilder {
+	if b == nil {
 		return NewCommandSpecificDataItemBuilder()
 	}
-	return &_CommandSpecificDataItemBuilder{_CommandSpecificDataItem: m.deepCopy()}
+	return &_CommandSpecificDataItemBuilder{_CommandSpecificDataItem: b.deepCopy()}
 }
 
 ///////////////////////

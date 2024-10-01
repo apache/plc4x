@@ -93,40 +93,44 @@ type _CustomTypesBuilder struct {
 
 var _ (CustomTypesBuilder) = (*_CustomTypesBuilder)(nil)
 
-func (m *_CustomTypesBuilder) WithMandatoryFields(customString string) CustomTypesBuilder {
-	return m.WithCustomString(customString)
+func (b *_CustomTypesBuilder) WithMandatoryFields(customString string) CustomTypesBuilder {
+	return b.WithCustomString(customString)
 }
 
-func (m *_CustomTypesBuilder) WithCustomString(customString string) CustomTypesBuilder {
-	m.CustomString = customString
-	return m
+func (b *_CustomTypesBuilder) WithCustomString(customString string) CustomTypesBuilder {
+	b.CustomString = customString
+	return b
 }
 
-func (m *_CustomTypesBuilder) Build() (CustomTypes, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CustomTypesBuilder) Build() (CustomTypes, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CustomTypes.deepCopy(), nil
+	return b._CustomTypes.deepCopy(), nil
 }
 
-func (m *_CustomTypesBuilder) MustBuild() CustomTypes {
-	build, err := m.Build()
+func (b *_CustomTypesBuilder) MustBuild() CustomTypes {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CustomTypesBuilder) DeepCopy() any {
-	return m.CreateCustomTypesBuilder()
+func (b *_CustomTypesBuilder) DeepCopy() any {
+	_copy := b.CreateCustomTypesBuilder().(*_CustomTypesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCustomTypesBuilder creates a CustomTypesBuilder
-func (m *_CustomTypes) CreateCustomTypesBuilder() CustomTypesBuilder {
-	if m == nil {
+func (b *_CustomTypes) CreateCustomTypesBuilder() CustomTypesBuilder {
+	if b == nil {
 		return NewCustomTypesBuilder()
 	}
-	return &_CustomTypesBuilder{_CustomTypes: m.deepCopy()}
+	return &_CustomTypesBuilder{_CustomTypes: b.deepCopy()}
 }
 
 ///////////////////////
@@ -274,9 +278,13 @@ func (m *_CustomTypes) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

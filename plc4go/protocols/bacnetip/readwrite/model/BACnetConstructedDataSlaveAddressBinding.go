@@ -93,45 +93,64 @@ func NewBACnetConstructedDataSlaveAddressBindingBuilder() BACnetConstructedDataS
 type _BACnetConstructedDataSlaveAddressBindingBuilder struct {
 	*_BACnetConstructedDataSlaveAddressBinding
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSlaveAddressBindingBuilder) = (*_BACnetConstructedDataSlaveAddressBindingBuilder)(nil)
 
-func (m *_BACnetConstructedDataSlaveAddressBindingBuilder) WithMandatoryFields(slaveAddressBinding []BACnetAddressBinding) BACnetConstructedDataSlaveAddressBindingBuilder {
-	return m.WithSlaveAddressBinding(slaveAddressBinding...)
+func (b *_BACnetConstructedDataSlaveAddressBindingBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSlaveAddressBindingBuilder) WithSlaveAddressBinding(slaveAddressBinding ...BACnetAddressBinding) BACnetConstructedDataSlaveAddressBindingBuilder {
-	m.SlaveAddressBinding = slaveAddressBinding
-	return m
+func (b *_BACnetConstructedDataSlaveAddressBindingBuilder) WithMandatoryFields(slaveAddressBinding []BACnetAddressBinding) BACnetConstructedDataSlaveAddressBindingBuilder {
+	return b.WithSlaveAddressBinding(slaveAddressBinding...)
 }
 
-func (m *_BACnetConstructedDataSlaveAddressBindingBuilder) Build() (BACnetConstructedDataSlaveAddressBinding, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataSlaveAddressBindingBuilder) WithSlaveAddressBinding(slaveAddressBinding ...BACnetAddressBinding) BACnetConstructedDataSlaveAddressBindingBuilder {
+	b.SlaveAddressBinding = slaveAddressBinding
+	return b
+}
+
+func (b *_BACnetConstructedDataSlaveAddressBindingBuilder) Build() (BACnetConstructedDataSlaveAddressBinding, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSlaveAddressBinding.deepCopy(), nil
+	return b._BACnetConstructedDataSlaveAddressBinding.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSlaveAddressBindingBuilder) MustBuild() BACnetConstructedDataSlaveAddressBinding {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSlaveAddressBindingBuilder) MustBuild() BACnetConstructedDataSlaveAddressBinding {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSlaveAddressBindingBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSlaveAddressBindingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSlaveAddressBindingBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSlaveAddressBindingBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSlaveAddressBindingBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSlaveAddressBindingBuilder().(*_BACnetConstructedDataSlaveAddressBindingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSlaveAddressBindingBuilder creates a BACnetConstructedDataSlaveAddressBindingBuilder
-func (m *_BACnetConstructedDataSlaveAddressBinding) CreateBACnetConstructedDataSlaveAddressBindingBuilder() BACnetConstructedDataSlaveAddressBindingBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSlaveAddressBinding) CreateBACnetConstructedDataSlaveAddressBindingBuilder() BACnetConstructedDataSlaveAddressBindingBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSlaveAddressBindingBuilder()
 	}
-	return &_BACnetConstructedDataSlaveAddressBindingBuilder{_BACnetConstructedDataSlaveAddressBinding: m.deepCopy()}
+	return &_BACnetConstructedDataSlaveAddressBindingBuilder{_BACnetConstructedDataSlaveAddressBinding: b.deepCopy()}
 }
 
 ///////////////////////
@@ -283,9 +302,13 @@ func (m *_BACnetConstructedDataSlaveAddressBinding) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

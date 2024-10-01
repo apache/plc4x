@@ -93,45 +93,64 @@ func NewCOTPParameterDisconnectAdditionalInformationBuilder() COTPParameterDisco
 type _COTPParameterDisconnectAdditionalInformationBuilder struct {
 	*_COTPParameterDisconnectAdditionalInformation
 
+	parentBuilder *_COTPParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (COTPParameterDisconnectAdditionalInformationBuilder) = (*_COTPParameterDisconnectAdditionalInformationBuilder)(nil)
 
-func (m *_COTPParameterDisconnectAdditionalInformationBuilder) WithMandatoryFields(data []byte) COTPParameterDisconnectAdditionalInformationBuilder {
-	return m.WithData(data...)
+func (b *_COTPParameterDisconnectAdditionalInformationBuilder) setParent(contract COTPParameterContract) {
+	b.COTPParameterContract = contract
 }
 
-func (m *_COTPParameterDisconnectAdditionalInformationBuilder) WithData(data ...byte) COTPParameterDisconnectAdditionalInformationBuilder {
-	m.Data = data
-	return m
+func (b *_COTPParameterDisconnectAdditionalInformationBuilder) WithMandatoryFields(data []byte) COTPParameterDisconnectAdditionalInformationBuilder {
+	return b.WithData(data...)
 }
 
-func (m *_COTPParameterDisconnectAdditionalInformationBuilder) Build() (COTPParameterDisconnectAdditionalInformation, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_COTPParameterDisconnectAdditionalInformationBuilder) WithData(data ...byte) COTPParameterDisconnectAdditionalInformationBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_COTPParameterDisconnectAdditionalInformationBuilder) Build() (COTPParameterDisconnectAdditionalInformation, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._COTPParameterDisconnectAdditionalInformation.deepCopy(), nil
+	return b._COTPParameterDisconnectAdditionalInformation.deepCopy(), nil
 }
 
-func (m *_COTPParameterDisconnectAdditionalInformationBuilder) MustBuild() COTPParameterDisconnectAdditionalInformation {
-	build, err := m.Build()
+func (b *_COTPParameterDisconnectAdditionalInformationBuilder) MustBuild() COTPParameterDisconnectAdditionalInformation {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_COTPParameterDisconnectAdditionalInformationBuilder) DeepCopy() any {
-	return m.CreateCOTPParameterDisconnectAdditionalInformationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_COTPParameterDisconnectAdditionalInformationBuilder) Done() COTPParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_COTPParameterDisconnectAdditionalInformationBuilder) buildForCOTPParameter() (COTPParameter, error) {
+	return b.Build()
+}
+
+func (b *_COTPParameterDisconnectAdditionalInformationBuilder) DeepCopy() any {
+	_copy := b.CreateCOTPParameterDisconnectAdditionalInformationBuilder().(*_COTPParameterDisconnectAdditionalInformationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCOTPParameterDisconnectAdditionalInformationBuilder creates a COTPParameterDisconnectAdditionalInformationBuilder
-func (m *_COTPParameterDisconnectAdditionalInformation) CreateCOTPParameterDisconnectAdditionalInformationBuilder() COTPParameterDisconnectAdditionalInformationBuilder {
-	if m == nil {
+func (b *_COTPParameterDisconnectAdditionalInformation) CreateCOTPParameterDisconnectAdditionalInformationBuilder() COTPParameterDisconnectAdditionalInformationBuilder {
+	if b == nil {
 		return NewCOTPParameterDisconnectAdditionalInformationBuilder()
 	}
-	return &_COTPParameterDisconnectAdditionalInformationBuilder{_COTPParameterDisconnectAdditionalInformation: m.deepCopy()}
+	return &_COTPParameterDisconnectAdditionalInformationBuilder{_COTPParameterDisconnectAdditionalInformation: b.deepCopy()}
 }
 
 ///////////////////////
@@ -278,9 +297,13 @@ func (m *_COTPParameterDisconnectAdditionalInformation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -126,117 +126,136 @@ func NewAirConditioningDataSetHumidityLowerGuardLimitBuilder() AirConditioningDa
 type _AirConditioningDataSetHumidityLowerGuardLimitBuilder struct {
 	*_AirConditioningDataSetHumidityLowerGuardLimit
 
+	parentBuilder *_AirConditioningDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AirConditioningDataSetHumidityLowerGuardLimitBuilder) = (*_AirConditioningDataSetHumidityLowerGuardLimitBuilder)(nil)
 
-func (m *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, limit HVACHumidity, hvacModeAndFlags HVACHumidityModeAndFlags) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
-	return m.WithZoneGroup(zoneGroup).WithZoneList(zoneList).WithLimit(limit).WithHvacModeAndFlags(hvacModeAndFlags)
+func (b *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) setParent(contract AirConditioningDataContract) {
+	b.AirConditioningDataContract = contract
 }
 
-func (m *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
-	m.ZoneGroup = zoneGroup
-	return m
+func (b *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, limit HVACHumidity, hvacModeAndFlags HVACHumidityModeAndFlags) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
+	return b.WithZoneGroup(zoneGroup).WithZoneList(zoneList).WithLimit(limit).WithHvacModeAndFlags(hvacModeAndFlags)
 }
 
-func (m *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithZoneList(zoneList HVACZoneList) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
-	m.ZoneList = zoneList
-	return m
+func (b *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
+	b.ZoneGroup = zoneGroup
+	return b
 }
 
-func (m *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithZoneListBuilder(builderSupplier func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
-	builder := builderSupplier(m.ZoneList.CreateHVACZoneListBuilder())
+func (b *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithZoneList(zoneList HVACZoneList) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
+	b.ZoneList = zoneList
+	return b
+}
+
+func (b *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithZoneListBuilder(builderSupplier func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
+	builder := builderSupplier(b.ZoneList.CreateHVACZoneListBuilder())
 	var err error
-	m.ZoneList, err = builder.Build()
+	b.ZoneList, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithLimit(limit HVACHumidity) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
-	m.Limit = limit
-	return m
+func (b *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithLimit(limit HVACHumidity) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
+	b.Limit = limit
+	return b
 }
 
-func (m *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithLimitBuilder(builderSupplier func(HVACHumidityBuilder) HVACHumidityBuilder) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
-	builder := builderSupplier(m.Limit.CreateHVACHumidityBuilder())
+func (b *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithLimitBuilder(builderSupplier func(HVACHumidityBuilder) HVACHumidityBuilder) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
+	builder := builderSupplier(b.Limit.CreateHVACHumidityBuilder())
 	var err error
-	m.Limit, err = builder.Build()
+	b.Limit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACHumidityBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACHumidityBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithHvacModeAndFlags(hvacModeAndFlags HVACHumidityModeAndFlags) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
-	m.HvacModeAndFlags = hvacModeAndFlags
-	return m
+func (b *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithHvacModeAndFlags(hvacModeAndFlags HVACHumidityModeAndFlags) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
+	b.HvacModeAndFlags = hvacModeAndFlags
+	return b
 }
 
-func (m *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithHvacModeAndFlagsBuilder(builderSupplier func(HVACHumidityModeAndFlagsBuilder) HVACHumidityModeAndFlagsBuilder) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
-	builder := builderSupplier(m.HvacModeAndFlags.CreateHVACHumidityModeAndFlagsBuilder())
+func (b *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) WithHvacModeAndFlagsBuilder(builderSupplier func(HVACHumidityModeAndFlagsBuilder) HVACHumidityModeAndFlagsBuilder) AirConditioningDataSetHumidityLowerGuardLimitBuilder {
+	builder := builderSupplier(b.HvacModeAndFlags.CreateHVACHumidityModeAndFlagsBuilder())
 	var err error
-	m.HvacModeAndFlags, err = builder.Build()
+	b.HvacModeAndFlags, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACHumidityModeAndFlagsBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACHumidityModeAndFlagsBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) Build() (AirConditioningDataSetHumidityLowerGuardLimit, error) {
-	if m.ZoneList == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) Build() (AirConditioningDataSetHumidityLowerGuardLimit, error) {
+	if b.ZoneList == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'zoneList' not set"))
+		b.err.Append(errors.New("mandatory field 'zoneList' not set"))
 	}
-	if m.Limit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Limit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'limit' not set"))
+		b.err.Append(errors.New("mandatory field 'limit' not set"))
 	}
-	if m.HvacModeAndFlags == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.HvacModeAndFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'hvacModeAndFlags' not set"))
+		b.err.Append(errors.New("mandatory field 'hvacModeAndFlags' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AirConditioningDataSetHumidityLowerGuardLimit.deepCopy(), nil
+	return b._AirConditioningDataSetHumidityLowerGuardLimit.deepCopy(), nil
 }
 
-func (m *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) MustBuild() AirConditioningDataSetHumidityLowerGuardLimit {
-	build, err := m.Build()
+func (b *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) MustBuild() AirConditioningDataSetHumidityLowerGuardLimit {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) DeepCopy() any {
-	return m.CreateAirConditioningDataSetHumidityLowerGuardLimitBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) Done() AirConditioningDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) buildForAirConditioningData() (AirConditioningData, error) {
+	return b.Build()
+}
+
+func (b *_AirConditioningDataSetHumidityLowerGuardLimitBuilder) DeepCopy() any {
+	_copy := b.CreateAirConditioningDataSetHumidityLowerGuardLimitBuilder().(*_AirConditioningDataSetHumidityLowerGuardLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAirConditioningDataSetHumidityLowerGuardLimitBuilder creates a AirConditioningDataSetHumidityLowerGuardLimitBuilder
-func (m *_AirConditioningDataSetHumidityLowerGuardLimit) CreateAirConditioningDataSetHumidityLowerGuardLimitBuilder() AirConditioningDataSetHumidityLowerGuardLimitBuilder {
-	if m == nil {
+func (b *_AirConditioningDataSetHumidityLowerGuardLimit) CreateAirConditioningDataSetHumidityLowerGuardLimitBuilder() AirConditioningDataSetHumidityLowerGuardLimitBuilder {
+	if b == nil {
 		return NewAirConditioningDataSetHumidityLowerGuardLimitBuilder()
 	}
-	return &_AirConditioningDataSetHumidityLowerGuardLimitBuilder{_AirConditioningDataSetHumidityLowerGuardLimit: m.deepCopy()}
+	return &_AirConditioningDataSetHumidityLowerGuardLimitBuilder{_AirConditioningDataSetHumidityLowerGuardLimit: b.deepCopy()}
 }
 
 ///////////////////////
@@ -431,9 +450,13 @@ func (m *_AirConditioningDataSetHumidityLowerGuardLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

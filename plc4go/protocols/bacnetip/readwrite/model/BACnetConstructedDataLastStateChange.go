@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLastStateChangeBuilder() BACnetConstructedDataLastS
 type _BACnetConstructedDataLastStateChangeBuilder struct {
 	*_BACnetConstructedDataLastStateChange
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLastStateChangeBuilder) = (*_BACnetConstructedDataLastStateChangeBuilder)(nil)
 
-func (m *_BACnetConstructedDataLastStateChangeBuilder) WithMandatoryFields(lastStateChange BACnetTimerTransitionTagged) BACnetConstructedDataLastStateChangeBuilder {
-	return m.WithLastStateChange(lastStateChange)
+func (b *_BACnetConstructedDataLastStateChangeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLastStateChangeBuilder) WithLastStateChange(lastStateChange BACnetTimerTransitionTagged) BACnetConstructedDataLastStateChangeBuilder {
-	m.LastStateChange = lastStateChange
-	return m
+func (b *_BACnetConstructedDataLastStateChangeBuilder) WithMandatoryFields(lastStateChange BACnetTimerTransitionTagged) BACnetConstructedDataLastStateChangeBuilder {
+	return b.WithLastStateChange(lastStateChange)
 }
 
-func (m *_BACnetConstructedDataLastStateChangeBuilder) WithLastStateChangeBuilder(builderSupplier func(BACnetTimerTransitionTaggedBuilder) BACnetTimerTransitionTaggedBuilder) BACnetConstructedDataLastStateChangeBuilder {
-	builder := builderSupplier(m.LastStateChange.CreateBACnetTimerTransitionTaggedBuilder())
+func (b *_BACnetConstructedDataLastStateChangeBuilder) WithLastStateChange(lastStateChange BACnetTimerTransitionTagged) BACnetConstructedDataLastStateChangeBuilder {
+	b.LastStateChange = lastStateChange
+	return b
+}
+
+func (b *_BACnetConstructedDataLastStateChangeBuilder) WithLastStateChangeBuilder(builderSupplier func(BACnetTimerTransitionTaggedBuilder) BACnetTimerTransitionTaggedBuilder) BACnetConstructedDataLastStateChangeBuilder {
+	builder := builderSupplier(b.LastStateChange.CreateBACnetTimerTransitionTaggedBuilder())
 	var err error
-	m.LastStateChange, err = builder.Build()
+	b.LastStateChange, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTimerTransitionTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTimerTransitionTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLastStateChangeBuilder) Build() (BACnetConstructedDataLastStateChange, error) {
-	if m.LastStateChange == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLastStateChangeBuilder) Build() (BACnetConstructedDataLastStateChange, error) {
+	if b.LastStateChange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lastStateChange' not set"))
+		b.err.Append(errors.New("mandatory field 'lastStateChange' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLastStateChange.deepCopy(), nil
+	return b._BACnetConstructedDataLastStateChange.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLastStateChangeBuilder) MustBuild() BACnetConstructedDataLastStateChange {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLastStateChangeBuilder) MustBuild() BACnetConstructedDataLastStateChange {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLastStateChangeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLastStateChangeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLastStateChangeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLastStateChangeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLastStateChangeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLastStateChangeBuilder().(*_BACnetConstructedDataLastStateChangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLastStateChangeBuilder creates a BACnetConstructedDataLastStateChangeBuilder
-func (m *_BACnetConstructedDataLastStateChange) CreateBACnetConstructedDataLastStateChangeBuilder() BACnetConstructedDataLastStateChangeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLastStateChange) CreateBACnetConstructedDataLastStateChangeBuilder() BACnetConstructedDataLastStateChangeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLastStateChangeBuilder()
 	}
-	return &_BACnetConstructedDataLastStateChangeBuilder{_BACnetConstructedDataLastStateChange: m.deepCopy()}
+	return &_BACnetConstructedDataLastStateChangeBuilder{_BACnetConstructedDataLastStateChange: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataLastStateChange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

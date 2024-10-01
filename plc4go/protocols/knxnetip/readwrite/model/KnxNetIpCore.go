@@ -93,45 +93,64 @@ func NewKnxNetIpCoreBuilder() KnxNetIpCoreBuilder {
 type _KnxNetIpCoreBuilder struct {
 	*_KnxNetIpCore
 
+	parentBuilder *_ServiceIdBuilder
+
 	err *utils.MultiError
 }
 
 var _ (KnxNetIpCoreBuilder) = (*_KnxNetIpCoreBuilder)(nil)
 
-func (m *_KnxNetIpCoreBuilder) WithMandatoryFields(version uint8) KnxNetIpCoreBuilder {
-	return m.WithVersion(version)
+func (b *_KnxNetIpCoreBuilder) setParent(contract ServiceIdContract) {
+	b.ServiceIdContract = contract
 }
 
-func (m *_KnxNetIpCoreBuilder) WithVersion(version uint8) KnxNetIpCoreBuilder {
-	m.Version = version
-	return m
+func (b *_KnxNetIpCoreBuilder) WithMandatoryFields(version uint8) KnxNetIpCoreBuilder {
+	return b.WithVersion(version)
 }
 
-func (m *_KnxNetIpCoreBuilder) Build() (KnxNetIpCore, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_KnxNetIpCoreBuilder) WithVersion(version uint8) KnxNetIpCoreBuilder {
+	b.Version = version
+	return b
+}
+
+func (b *_KnxNetIpCoreBuilder) Build() (KnxNetIpCore, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._KnxNetIpCore.deepCopy(), nil
+	return b._KnxNetIpCore.deepCopy(), nil
 }
 
-func (m *_KnxNetIpCoreBuilder) MustBuild() KnxNetIpCore {
-	build, err := m.Build()
+func (b *_KnxNetIpCoreBuilder) MustBuild() KnxNetIpCore {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_KnxNetIpCoreBuilder) DeepCopy() any {
-	return m.CreateKnxNetIpCoreBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_KnxNetIpCoreBuilder) Done() ServiceIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_KnxNetIpCoreBuilder) buildForServiceId() (ServiceId, error) {
+	return b.Build()
+}
+
+func (b *_KnxNetIpCoreBuilder) DeepCopy() any {
+	_copy := b.CreateKnxNetIpCoreBuilder().(*_KnxNetIpCoreBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateKnxNetIpCoreBuilder creates a KnxNetIpCoreBuilder
-func (m *_KnxNetIpCore) CreateKnxNetIpCoreBuilder() KnxNetIpCoreBuilder {
-	if m == nil {
+func (b *_KnxNetIpCore) CreateKnxNetIpCoreBuilder() KnxNetIpCoreBuilder {
+	if b == nil {
 		return NewKnxNetIpCoreBuilder()
 	}
-	return &_KnxNetIpCoreBuilder{_KnxNetIpCore: m.deepCopy()}
+	return &_KnxNetIpCoreBuilder{_KnxNetIpCore: b.deepCopy()}
 }
 
 ///////////////////////
@@ -275,9 +294,13 @@ func (m *_KnxNetIpCore) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

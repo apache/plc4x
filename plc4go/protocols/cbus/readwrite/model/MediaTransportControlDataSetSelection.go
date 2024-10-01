@@ -99,50 +99,69 @@ func NewMediaTransportControlDataSetSelectionBuilder() MediaTransportControlData
 type _MediaTransportControlDataSetSelectionBuilder struct {
 	*_MediaTransportControlDataSetSelection
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataSetSelectionBuilder) = (*_MediaTransportControlDataSetSelectionBuilder)(nil)
 
-func (m *_MediaTransportControlDataSetSelectionBuilder) WithMandatoryFields(selectionHi byte, selectionLo byte) MediaTransportControlDataSetSelectionBuilder {
-	return m.WithSelectionHi(selectionHi).WithSelectionLo(selectionLo)
+func (b *_MediaTransportControlDataSetSelectionBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataSetSelectionBuilder) WithSelectionHi(selectionHi byte) MediaTransportControlDataSetSelectionBuilder {
-	m.SelectionHi = selectionHi
-	return m
+func (b *_MediaTransportControlDataSetSelectionBuilder) WithMandatoryFields(selectionHi byte, selectionLo byte) MediaTransportControlDataSetSelectionBuilder {
+	return b.WithSelectionHi(selectionHi).WithSelectionLo(selectionLo)
 }
 
-func (m *_MediaTransportControlDataSetSelectionBuilder) WithSelectionLo(selectionLo byte) MediaTransportControlDataSetSelectionBuilder {
-	m.SelectionLo = selectionLo
-	return m
+func (b *_MediaTransportControlDataSetSelectionBuilder) WithSelectionHi(selectionHi byte) MediaTransportControlDataSetSelectionBuilder {
+	b.SelectionHi = selectionHi
+	return b
 }
 
-func (m *_MediaTransportControlDataSetSelectionBuilder) Build() (MediaTransportControlDataSetSelection, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataSetSelectionBuilder) WithSelectionLo(selectionLo byte) MediaTransportControlDataSetSelectionBuilder {
+	b.SelectionLo = selectionLo
+	return b
+}
+
+func (b *_MediaTransportControlDataSetSelectionBuilder) Build() (MediaTransportControlDataSetSelection, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataSetSelection.deepCopy(), nil
+	return b._MediaTransportControlDataSetSelection.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataSetSelectionBuilder) MustBuild() MediaTransportControlDataSetSelection {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataSetSelectionBuilder) MustBuild() MediaTransportControlDataSetSelection {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataSetSelectionBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataSetSelectionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataSetSelectionBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataSetSelectionBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataSetSelectionBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataSetSelectionBuilder().(*_MediaTransportControlDataSetSelectionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataSetSelectionBuilder creates a MediaTransportControlDataSetSelectionBuilder
-func (m *_MediaTransportControlDataSetSelection) CreateMediaTransportControlDataSetSelectionBuilder() MediaTransportControlDataSetSelectionBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataSetSelection) CreateMediaTransportControlDataSetSelectionBuilder() MediaTransportControlDataSetSelectionBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataSetSelectionBuilder()
 	}
-	return &_MediaTransportControlDataSetSelectionBuilder{_MediaTransportControlDataSetSelection: m.deepCopy()}
+	return &_MediaTransportControlDataSetSelectionBuilder{_MediaTransportControlDataSetSelection: b.deepCopy()}
 }
 
 ///////////////////////
@@ -300,9 +319,13 @@ func (m *_MediaTransportControlDataSetSelection) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

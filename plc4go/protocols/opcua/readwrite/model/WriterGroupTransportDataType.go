@@ -85,40 +85,59 @@ func NewWriterGroupTransportDataTypeBuilder() WriterGroupTransportDataTypeBuilde
 type _WriterGroupTransportDataTypeBuilder struct {
 	*_WriterGroupTransportDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (WriterGroupTransportDataTypeBuilder) = (*_WriterGroupTransportDataTypeBuilder)(nil)
 
-func (m *_WriterGroupTransportDataTypeBuilder) WithMandatoryFields() WriterGroupTransportDataTypeBuilder {
-	return m
+func (b *_WriterGroupTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_WriterGroupTransportDataTypeBuilder) Build() (WriterGroupTransportDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_WriterGroupTransportDataTypeBuilder) WithMandatoryFields() WriterGroupTransportDataTypeBuilder {
+	return b
+}
+
+func (b *_WriterGroupTransportDataTypeBuilder) Build() (WriterGroupTransportDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._WriterGroupTransportDataType.deepCopy(), nil
+	return b._WriterGroupTransportDataType.deepCopy(), nil
 }
 
-func (m *_WriterGroupTransportDataTypeBuilder) MustBuild() WriterGroupTransportDataType {
-	build, err := m.Build()
+func (b *_WriterGroupTransportDataTypeBuilder) MustBuild() WriterGroupTransportDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_WriterGroupTransportDataTypeBuilder) DeepCopy() any {
-	return m.CreateWriterGroupTransportDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_WriterGroupTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_WriterGroupTransportDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_WriterGroupTransportDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateWriterGroupTransportDataTypeBuilder().(*_WriterGroupTransportDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateWriterGroupTransportDataTypeBuilder creates a WriterGroupTransportDataTypeBuilder
-func (m *_WriterGroupTransportDataType) CreateWriterGroupTransportDataTypeBuilder() WriterGroupTransportDataTypeBuilder {
-	if m == nil {
+func (b *_WriterGroupTransportDataType) CreateWriterGroupTransportDataTypeBuilder() WriterGroupTransportDataTypeBuilder {
+	if b == nil {
 		return NewWriterGroupTransportDataTypeBuilder()
 	}
-	return &_WriterGroupTransportDataTypeBuilder{_WriterGroupTransportDataType: m.deepCopy()}
+	return &_WriterGroupTransportDataTypeBuilder{_WriterGroupTransportDataType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_WriterGroupTransportDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

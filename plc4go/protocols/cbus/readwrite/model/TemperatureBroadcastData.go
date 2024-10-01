@@ -104,50 +104,54 @@ type _TemperatureBroadcastDataBuilder struct {
 
 var _ (TemperatureBroadcastDataBuilder) = (*_TemperatureBroadcastDataBuilder)(nil)
 
-func (m *_TemperatureBroadcastDataBuilder) WithMandatoryFields(commandTypeContainer TemperatureBroadcastCommandTypeContainer, temperatureGroup byte, temperatureByte byte) TemperatureBroadcastDataBuilder {
-	return m.WithCommandTypeContainer(commandTypeContainer).WithTemperatureGroup(temperatureGroup).WithTemperatureByte(temperatureByte)
+func (b *_TemperatureBroadcastDataBuilder) WithMandatoryFields(commandTypeContainer TemperatureBroadcastCommandTypeContainer, temperatureGroup byte, temperatureByte byte) TemperatureBroadcastDataBuilder {
+	return b.WithCommandTypeContainer(commandTypeContainer).WithTemperatureGroup(temperatureGroup).WithTemperatureByte(temperatureByte)
 }
 
-func (m *_TemperatureBroadcastDataBuilder) WithCommandTypeContainer(commandTypeContainer TemperatureBroadcastCommandTypeContainer) TemperatureBroadcastDataBuilder {
-	m.CommandTypeContainer = commandTypeContainer
-	return m
+func (b *_TemperatureBroadcastDataBuilder) WithCommandTypeContainer(commandTypeContainer TemperatureBroadcastCommandTypeContainer) TemperatureBroadcastDataBuilder {
+	b.CommandTypeContainer = commandTypeContainer
+	return b
 }
 
-func (m *_TemperatureBroadcastDataBuilder) WithTemperatureGroup(temperatureGroup byte) TemperatureBroadcastDataBuilder {
-	m.TemperatureGroup = temperatureGroup
-	return m
+func (b *_TemperatureBroadcastDataBuilder) WithTemperatureGroup(temperatureGroup byte) TemperatureBroadcastDataBuilder {
+	b.TemperatureGroup = temperatureGroup
+	return b
 }
 
-func (m *_TemperatureBroadcastDataBuilder) WithTemperatureByte(temperatureByte byte) TemperatureBroadcastDataBuilder {
-	m.TemperatureByte = temperatureByte
-	return m
+func (b *_TemperatureBroadcastDataBuilder) WithTemperatureByte(temperatureByte byte) TemperatureBroadcastDataBuilder {
+	b.TemperatureByte = temperatureByte
+	return b
 }
 
-func (m *_TemperatureBroadcastDataBuilder) Build() (TemperatureBroadcastData, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TemperatureBroadcastDataBuilder) Build() (TemperatureBroadcastData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TemperatureBroadcastData.deepCopy(), nil
+	return b._TemperatureBroadcastData.deepCopy(), nil
 }
 
-func (m *_TemperatureBroadcastDataBuilder) MustBuild() TemperatureBroadcastData {
-	build, err := m.Build()
+func (b *_TemperatureBroadcastDataBuilder) MustBuild() TemperatureBroadcastData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TemperatureBroadcastDataBuilder) DeepCopy() any {
-	return m.CreateTemperatureBroadcastDataBuilder()
+func (b *_TemperatureBroadcastDataBuilder) DeepCopy() any {
+	_copy := b.CreateTemperatureBroadcastDataBuilder().(*_TemperatureBroadcastDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTemperatureBroadcastDataBuilder creates a TemperatureBroadcastDataBuilder
-func (m *_TemperatureBroadcastData) CreateTemperatureBroadcastDataBuilder() TemperatureBroadcastDataBuilder {
-	if m == nil {
+func (b *_TemperatureBroadcastData) CreateTemperatureBroadcastDataBuilder() TemperatureBroadcastDataBuilder {
+	if b == nil {
 		return NewTemperatureBroadcastDataBuilder()
 	}
-	return &_TemperatureBroadcastDataBuilder{_TemperatureBroadcastData: m.deepCopy()}
+	return &_TemperatureBroadcastDataBuilder{_TemperatureBroadcastData: b.deepCopy()}
 }
 
 ///////////////////////
@@ -374,9 +378,13 @@ func (m *_TemperatureBroadcastData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDefaultFadeTimeBuilder() BACnetConstructedDataDefau
 type _BACnetConstructedDataDefaultFadeTimeBuilder struct {
 	*_BACnetConstructedDataDefaultFadeTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDefaultFadeTimeBuilder) = (*_BACnetConstructedDataDefaultFadeTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataDefaultFadeTimeBuilder) WithMandatoryFields(defaultFadeTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDefaultFadeTimeBuilder {
-	return m.WithDefaultFadeTime(defaultFadeTime)
+func (b *_BACnetConstructedDataDefaultFadeTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDefaultFadeTimeBuilder) WithDefaultFadeTime(defaultFadeTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDefaultFadeTimeBuilder {
-	m.DefaultFadeTime = defaultFadeTime
-	return m
+func (b *_BACnetConstructedDataDefaultFadeTimeBuilder) WithMandatoryFields(defaultFadeTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDefaultFadeTimeBuilder {
+	return b.WithDefaultFadeTime(defaultFadeTime)
 }
 
-func (m *_BACnetConstructedDataDefaultFadeTimeBuilder) WithDefaultFadeTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDefaultFadeTimeBuilder {
-	builder := builderSupplier(m.DefaultFadeTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataDefaultFadeTimeBuilder) WithDefaultFadeTime(defaultFadeTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDefaultFadeTimeBuilder {
+	b.DefaultFadeTime = defaultFadeTime
+	return b
+}
+
+func (b *_BACnetConstructedDataDefaultFadeTimeBuilder) WithDefaultFadeTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDefaultFadeTimeBuilder {
+	builder := builderSupplier(b.DefaultFadeTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.DefaultFadeTime, err = builder.Build()
+	b.DefaultFadeTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDefaultFadeTimeBuilder) Build() (BACnetConstructedDataDefaultFadeTime, error) {
-	if m.DefaultFadeTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDefaultFadeTimeBuilder) Build() (BACnetConstructedDataDefaultFadeTime, error) {
+	if b.DefaultFadeTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'defaultFadeTime' not set"))
+		b.err.Append(errors.New("mandatory field 'defaultFadeTime' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDefaultFadeTime.deepCopy(), nil
+	return b._BACnetConstructedDataDefaultFadeTime.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDefaultFadeTimeBuilder) MustBuild() BACnetConstructedDataDefaultFadeTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDefaultFadeTimeBuilder) MustBuild() BACnetConstructedDataDefaultFadeTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDefaultFadeTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDefaultFadeTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDefaultFadeTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDefaultFadeTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDefaultFadeTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDefaultFadeTimeBuilder().(*_BACnetConstructedDataDefaultFadeTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDefaultFadeTimeBuilder creates a BACnetConstructedDataDefaultFadeTimeBuilder
-func (m *_BACnetConstructedDataDefaultFadeTime) CreateBACnetConstructedDataDefaultFadeTimeBuilder() BACnetConstructedDataDefaultFadeTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDefaultFadeTime) CreateBACnetConstructedDataDefaultFadeTimeBuilder() BACnetConstructedDataDefaultFadeTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDefaultFadeTimeBuilder()
 	}
-	return &_BACnetConstructedDataDefaultFadeTimeBuilder{_BACnetConstructedDataDefaultFadeTime: m.deepCopy()}
+	return &_BACnetConstructedDataDefaultFadeTimeBuilder{_BACnetConstructedDataDefaultFadeTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataDefaultFadeTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

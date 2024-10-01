@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAPDULengthBuilder() BACnetConstructedDataAPDULength
 type _BACnetConstructedDataAPDULengthBuilder struct {
 	*_BACnetConstructedDataAPDULength
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAPDULengthBuilder) = (*_BACnetConstructedDataAPDULengthBuilder)(nil)
 
-func (m *_BACnetConstructedDataAPDULengthBuilder) WithMandatoryFields(apduLength BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDULengthBuilder {
-	return m.WithApduLength(apduLength)
+func (b *_BACnetConstructedDataAPDULengthBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAPDULengthBuilder) WithApduLength(apduLength BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDULengthBuilder {
-	m.ApduLength = apduLength
-	return m
+func (b *_BACnetConstructedDataAPDULengthBuilder) WithMandatoryFields(apduLength BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDULengthBuilder {
+	return b.WithApduLength(apduLength)
 }
 
-func (m *_BACnetConstructedDataAPDULengthBuilder) WithApduLengthBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAPDULengthBuilder {
-	builder := builderSupplier(m.ApduLength.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataAPDULengthBuilder) WithApduLength(apduLength BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDULengthBuilder {
+	b.ApduLength = apduLength
+	return b
+}
+
+func (b *_BACnetConstructedDataAPDULengthBuilder) WithApduLengthBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAPDULengthBuilder {
+	builder := builderSupplier(b.ApduLength.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.ApduLength, err = builder.Build()
+	b.ApduLength, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAPDULengthBuilder) Build() (BACnetConstructedDataAPDULength, error) {
-	if m.ApduLength == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAPDULengthBuilder) Build() (BACnetConstructedDataAPDULength, error) {
+	if b.ApduLength == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'apduLength' not set"))
+		b.err.Append(errors.New("mandatory field 'apduLength' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAPDULength.deepCopy(), nil
+	return b._BACnetConstructedDataAPDULength.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAPDULengthBuilder) MustBuild() BACnetConstructedDataAPDULength {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAPDULengthBuilder) MustBuild() BACnetConstructedDataAPDULength {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAPDULengthBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAPDULengthBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAPDULengthBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAPDULengthBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAPDULengthBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAPDULengthBuilder().(*_BACnetConstructedDataAPDULengthBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAPDULengthBuilder creates a BACnetConstructedDataAPDULengthBuilder
-func (m *_BACnetConstructedDataAPDULength) CreateBACnetConstructedDataAPDULengthBuilder() BACnetConstructedDataAPDULengthBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAPDULength) CreateBACnetConstructedDataAPDULengthBuilder() BACnetConstructedDataAPDULengthBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAPDULengthBuilder()
 	}
-	return &_BACnetConstructedDataAPDULengthBuilder{_BACnetConstructedDataAPDULength: m.deepCopy()}
+	return &_BACnetConstructedDataAPDULengthBuilder{_BACnetConstructedDataAPDULength: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataAPDULength) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

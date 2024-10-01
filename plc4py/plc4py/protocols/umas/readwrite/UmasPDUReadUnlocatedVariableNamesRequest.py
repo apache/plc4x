@@ -71,7 +71,7 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
         )
 
         # Const Field (blank)
-        write_buffer.write_unsigned_short(self.BLANK, logical_name="blank")
+        write_buffer.write_unsigned_byte(self.BLANK, logical_name="blank")
 
         write_buffer.pop_context("UmasPDUReadUnlocatedVariableNamesRequest")
 
@@ -98,7 +98,7 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
         length_in_bits += 16
 
         # Const Field (blank)
-        length_in_bits += 16
+        length_in_bits += 8
 
         return length_in_bits
 
@@ -153,7 +153,7 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
             byte_length=byte_length,
         )
 
-        BLANK: int = read_buffer.read_unsigned_short(
+        BLANK: int = read_buffer.read_unsigned_byte(
             logical_name="blank",
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,

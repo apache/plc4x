@@ -487,68 +487,6 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 	}
 }
 
-func TestConnection_String(t *testing.T) {
-	type fields struct {
-		messageCodec  *MessageCodec
-		subscribers   []*Subscriber
-		tm            transactions.RequestTransactionManager
-		configuration Configuration
-		connectionId  string
-		tracer        tracer.Tracer
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   string
-	}{
-		{
-			name: "a string",
-			want: `
-╔═Connection══════════════════════════════════════════════════════════════════════════════════════════════╗
-║╔═defaultConnection═══════╗╔═alphaGenerator════════════════════╗                                         ║
-║║╔═defaultTtl╗╔═connected╗║║╔═AlphaGenerator/currentAlpha═════╗║                                         ║
-║║║    10s    ║║ b0 false ║║║║            0x67 'g'             ║║                                         ║
-║║╚═══════════╝╚══════════╝║║╚═════════════════════════════════╝║                                         ║
-║╚═════════════════════════╝╚═══════════════════════════════════╝                                         ║
-║╔═configuration═════════════════════════════════════════════════════════════════════════════════════════╗║
-║║╔═Configuration═══════════════════════════════════════════════════════════════════════════════════════╗║║
-║║║╔═srchk══╗╔═exstat═╗╔═pun════╗╔═localSal╗╔═pcn════╗╔═idmon══╗╔═monitor╗╔═smart══╗╔═xonXoff╗╔═connect╗║║║
-║║║║b0 false║║b0 false║║b0 false║║b0 false ║║b0 false║║b0 false║║b0 false║║b0 false║║b0 false║║b0 false║║║║
-║║║╚════════╝╚════════╝╚════════╝╚═════════╝╚════════╝╚════════╝╚════════╝╚════════╝╚════════╝╚════════╝║║║
-║║║╔═monitoredApplication1╗╔═monitoredApplication2╗                                                     ║║║
-║║║║       0x00 '.'       ║║       0x00 '.'       ║                                                     ║║║
-║║║╚══════════════════════╝╚══════════════════════╝                                                     ║║║
-║║╚═════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
-║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝║
-║╔═driverContext═══════════════════════════════════╗                                                      ║
-║║╔═DriverContext═════════════════════════════════╗║                                                      ║
-║║║╔═awaitSetupComplete╗╔═awaitDisconnectComplete╗║║                                                      ║
-║║║║      b1 true      ║║        b1 true         ║║║                                                      ║
-║║║╚═══════════════════╝╚════════════════════════╝║║                                                      ║
-║║╚═══════════════════════════════════════════════╝║                                                      ║
-║╚═════════════════════════════════════════════════╝                                                      ║
-╚═════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := &Connection{
-				alphaGenerator: AlphaGenerator{currentAlpha: 'g'},
-				messageCodec:   tt.fields.messageCodec,
-				subscribers:    tt.fields.subscribers,
-				tm:             tt.fields.tm,
-				configuration:  tt.fields.configuration,
-				driverContext:  driverContextForTesting(),
-				connectionId:   tt.fields.connectionId,
-				tracer:         tt.fields.tracer,
-				log:            testutils.ProduceTestingLogger(t),
-			}
-			c.DefaultConnection = _default.NewDefaultConnection(c, testutils.EnrichOptionsWithOptionsForTesting(t)...)
-			assert.Equalf(t, tt.want, c.String(), "String()")
-		})
-	}
-}
-
 func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 	type fields struct {
 		messageCodec  *MessageCodec

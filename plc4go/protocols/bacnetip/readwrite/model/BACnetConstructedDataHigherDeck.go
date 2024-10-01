@@ -100,64 +100,83 @@ func NewBACnetConstructedDataHigherDeckBuilder() BACnetConstructedDataHigherDeck
 type _BACnetConstructedDataHigherDeckBuilder struct {
 	*_BACnetConstructedDataHigherDeck
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataHigherDeckBuilder) = (*_BACnetConstructedDataHigherDeckBuilder)(nil)
 
-func (m *_BACnetConstructedDataHigherDeckBuilder) WithMandatoryFields(higherDeck BACnetApplicationTagObjectIdentifier) BACnetConstructedDataHigherDeckBuilder {
-	return m.WithHigherDeck(higherDeck)
+func (b *_BACnetConstructedDataHigherDeckBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataHigherDeckBuilder) WithHigherDeck(higherDeck BACnetApplicationTagObjectIdentifier) BACnetConstructedDataHigherDeckBuilder {
-	m.HigherDeck = higherDeck
-	return m
+func (b *_BACnetConstructedDataHigherDeckBuilder) WithMandatoryFields(higherDeck BACnetApplicationTagObjectIdentifier) BACnetConstructedDataHigherDeckBuilder {
+	return b.WithHigherDeck(higherDeck)
 }
 
-func (m *_BACnetConstructedDataHigherDeckBuilder) WithHigherDeckBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataHigherDeckBuilder {
-	builder := builderSupplier(m.HigherDeck.CreateBACnetApplicationTagObjectIdentifierBuilder())
+func (b *_BACnetConstructedDataHigherDeckBuilder) WithHigherDeck(higherDeck BACnetApplicationTagObjectIdentifier) BACnetConstructedDataHigherDeckBuilder {
+	b.HigherDeck = higherDeck
+	return b
+}
+
+func (b *_BACnetConstructedDataHigherDeckBuilder) WithHigherDeckBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataHigherDeckBuilder {
+	builder := builderSupplier(b.HigherDeck.CreateBACnetApplicationTagObjectIdentifierBuilder())
 	var err error
-	m.HigherDeck, err = builder.Build()
+	b.HigherDeck, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataHigherDeckBuilder) Build() (BACnetConstructedDataHigherDeck, error) {
-	if m.HigherDeck == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataHigherDeckBuilder) Build() (BACnetConstructedDataHigherDeck, error) {
+	if b.HigherDeck == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'higherDeck' not set"))
+		b.err.Append(errors.New("mandatory field 'higherDeck' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataHigherDeck.deepCopy(), nil
+	return b._BACnetConstructedDataHigherDeck.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataHigherDeckBuilder) MustBuild() BACnetConstructedDataHigherDeck {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataHigherDeckBuilder) MustBuild() BACnetConstructedDataHigherDeck {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataHigherDeckBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataHigherDeckBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataHigherDeckBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataHigherDeckBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataHigherDeckBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataHigherDeckBuilder().(*_BACnetConstructedDataHigherDeckBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataHigherDeckBuilder creates a BACnetConstructedDataHigherDeckBuilder
-func (m *_BACnetConstructedDataHigherDeck) CreateBACnetConstructedDataHigherDeckBuilder() BACnetConstructedDataHigherDeckBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataHigherDeck) CreateBACnetConstructedDataHigherDeckBuilder() BACnetConstructedDataHigherDeckBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataHigherDeckBuilder()
 	}
-	return &_BACnetConstructedDataHigherDeckBuilder{_BACnetConstructedDataHigherDeck: m.deepCopy()}
+	return &_BACnetConstructedDataHigherDeckBuilder{_BACnetConstructedDataHigherDeck: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataHigherDeck) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

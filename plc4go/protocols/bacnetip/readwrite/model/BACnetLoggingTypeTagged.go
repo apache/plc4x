@@ -111,69 +111,73 @@ type _BACnetLoggingTypeTaggedBuilder struct {
 
 var _ (BACnetLoggingTypeTaggedBuilder) = (*_BACnetLoggingTypeTaggedBuilder)(nil)
 
-func (m *_BACnetLoggingTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLoggingType, proprietaryValue uint32) BACnetLoggingTypeTaggedBuilder {
-	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetLoggingTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLoggingType, proprietaryValue uint32) BACnetLoggingTypeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_BACnetLoggingTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLoggingTypeTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetLoggingTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLoggingTypeTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetLoggingTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLoggingTypeTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetLoggingTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLoggingTypeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLoggingTypeTaggedBuilder) WithValue(value BACnetLoggingType) BACnetLoggingTypeTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetLoggingTypeTaggedBuilder) WithValue(value BACnetLoggingType) BACnetLoggingTypeTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetLoggingTypeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLoggingTypeTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetLoggingTypeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLoggingTypeTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetLoggingTypeTaggedBuilder) Build() (BACnetLoggingTypeTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLoggingTypeTaggedBuilder) Build() (BACnetLoggingTypeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLoggingTypeTagged.deepCopy(), nil
+	return b._BACnetLoggingTypeTagged.deepCopy(), nil
 }
 
-func (m *_BACnetLoggingTypeTaggedBuilder) MustBuild() BACnetLoggingTypeTagged {
-	build, err := m.Build()
+func (b *_BACnetLoggingTypeTaggedBuilder) MustBuild() BACnetLoggingTypeTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLoggingTypeTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetLoggingTypeTaggedBuilder()
+func (b *_BACnetLoggingTypeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLoggingTypeTaggedBuilder().(*_BACnetLoggingTypeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLoggingTypeTaggedBuilder creates a BACnetLoggingTypeTaggedBuilder
-func (m *_BACnetLoggingTypeTagged) CreateBACnetLoggingTypeTaggedBuilder() BACnetLoggingTypeTaggedBuilder {
-	if m == nil {
+func (b *_BACnetLoggingTypeTagged) CreateBACnetLoggingTypeTaggedBuilder() BACnetLoggingTypeTaggedBuilder {
+	if b == nil {
 		return NewBACnetLoggingTypeTaggedBuilder()
 	}
-	return &_BACnetLoggingTypeTaggedBuilder{_BACnetLoggingTypeTagged: m.deepCopy()}
+	return &_BACnetLoggingTypeTaggedBuilder{_BACnetLoggingTypeTagged: b.deepCopy()}
 }
 
 ///////////////////////
@@ -402,9 +406,13 @@ func (m *_BACnetLoggingTypeTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -143,85 +143,104 @@ func NewEndpointConfigurationBuilder() EndpointConfigurationBuilder {
 type _EndpointConfigurationBuilder struct {
 	*_EndpointConfiguration
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (EndpointConfigurationBuilder) = (*_EndpointConfigurationBuilder)(nil)
 
-func (m *_EndpointConfigurationBuilder) WithMandatoryFields(operationTimeout int32, useBinaryEncoding bool, maxStringLength int32, maxByteStringLength int32, maxArrayLength int32, maxMessageSize int32, maxBufferSize int32, channelLifetime int32, securityTokenLifetime int32) EndpointConfigurationBuilder {
-	return m.WithOperationTimeout(operationTimeout).WithUseBinaryEncoding(useBinaryEncoding).WithMaxStringLength(maxStringLength).WithMaxByteStringLength(maxByteStringLength).WithMaxArrayLength(maxArrayLength).WithMaxMessageSize(maxMessageSize).WithMaxBufferSize(maxBufferSize).WithChannelLifetime(channelLifetime).WithSecurityTokenLifetime(securityTokenLifetime)
+func (b *_EndpointConfigurationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_EndpointConfigurationBuilder) WithOperationTimeout(operationTimeout int32) EndpointConfigurationBuilder {
-	m.OperationTimeout = operationTimeout
-	return m
+func (b *_EndpointConfigurationBuilder) WithMandatoryFields(operationTimeout int32, useBinaryEncoding bool, maxStringLength int32, maxByteStringLength int32, maxArrayLength int32, maxMessageSize int32, maxBufferSize int32, channelLifetime int32, securityTokenLifetime int32) EndpointConfigurationBuilder {
+	return b.WithOperationTimeout(operationTimeout).WithUseBinaryEncoding(useBinaryEncoding).WithMaxStringLength(maxStringLength).WithMaxByteStringLength(maxByteStringLength).WithMaxArrayLength(maxArrayLength).WithMaxMessageSize(maxMessageSize).WithMaxBufferSize(maxBufferSize).WithChannelLifetime(channelLifetime).WithSecurityTokenLifetime(securityTokenLifetime)
 }
 
-func (m *_EndpointConfigurationBuilder) WithUseBinaryEncoding(useBinaryEncoding bool) EndpointConfigurationBuilder {
-	m.UseBinaryEncoding = useBinaryEncoding
-	return m
+func (b *_EndpointConfigurationBuilder) WithOperationTimeout(operationTimeout int32) EndpointConfigurationBuilder {
+	b.OperationTimeout = operationTimeout
+	return b
 }
 
-func (m *_EndpointConfigurationBuilder) WithMaxStringLength(maxStringLength int32) EndpointConfigurationBuilder {
-	m.MaxStringLength = maxStringLength
-	return m
+func (b *_EndpointConfigurationBuilder) WithUseBinaryEncoding(useBinaryEncoding bool) EndpointConfigurationBuilder {
+	b.UseBinaryEncoding = useBinaryEncoding
+	return b
 }
 
-func (m *_EndpointConfigurationBuilder) WithMaxByteStringLength(maxByteStringLength int32) EndpointConfigurationBuilder {
-	m.MaxByteStringLength = maxByteStringLength
-	return m
+func (b *_EndpointConfigurationBuilder) WithMaxStringLength(maxStringLength int32) EndpointConfigurationBuilder {
+	b.MaxStringLength = maxStringLength
+	return b
 }
 
-func (m *_EndpointConfigurationBuilder) WithMaxArrayLength(maxArrayLength int32) EndpointConfigurationBuilder {
-	m.MaxArrayLength = maxArrayLength
-	return m
+func (b *_EndpointConfigurationBuilder) WithMaxByteStringLength(maxByteStringLength int32) EndpointConfigurationBuilder {
+	b.MaxByteStringLength = maxByteStringLength
+	return b
 }
 
-func (m *_EndpointConfigurationBuilder) WithMaxMessageSize(maxMessageSize int32) EndpointConfigurationBuilder {
-	m.MaxMessageSize = maxMessageSize
-	return m
+func (b *_EndpointConfigurationBuilder) WithMaxArrayLength(maxArrayLength int32) EndpointConfigurationBuilder {
+	b.MaxArrayLength = maxArrayLength
+	return b
 }
 
-func (m *_EndpointConfigurationBuilder) WithMaxBufferSize(maxBufferSize int32) EndpointConfigurationBuilder {
-	m.MaxBufferSize = maxBufferSize
-	return m
+func (b *_EndpointConfigurationBuilder) WithMaxMessageSize(maxMessageSize int32) EndpointConfigurationBuilder {
+	b.MaxMessageSize = maxMessageSize
+	return b
 }
 
-func (m *_EndpointConfigurationBuilder) WithChannelLifetime(channelLifetime int32) EndpointConfigurationBuilder {
-	m.ChannelLifetime = channelLifetime
-	return m
+func (b *_EndpointConfigurationBuilder) WithMaxBufferSize(maxBufferSize int32) EndpointConfigurationBuilder {
+	b.MaxBufferSize = maxBufferSize
+	return b
 }
 
-func (m *_EndpointConfigurationBuilder) WithSecurityTokenLifetime(securityTokenLifetime int32) EndpointConfigurationBuilder {
-	m.SecurityTokenLifetime = securityTokenLifetime
-	return m
+func (b *_EndpointConfigurationBuilder) WithChannelLifetime(channelLifetime int32) EndpointConfigurationBuilder {
+	b.ChannelLifetime = channelLifetime
+	return b
 }
 
-func (m *_EndpointConfigurationBuilder) Build() (EndpointConfiguration, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_EndpointConfigurationBuilder) WithSecurityTokenLifetime(securityTokenLifetime int32) EndpointConfigurationBuilder {
+	b.SecurityTokenLifetime = securityTokenLifetime
+	return b
+}
+
+func (b *_EndpointConfigurationBuilder) Build() (EndpointConfiguration, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EndpointConfiguration.deepCopy(), nil
+	return b._EndpointConfiguration.deepCopy(), nil
 }
 
-func (m *_EndpointConfigurationBuilder) MustBuild() EndpointConfiguration {
-	build, err := m.Build()
+func (b *_EndpointConfigurationBuilder) MustBuild() EndpointConfiguration {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EndpointConfigurationBuilder) DeepCopy() any {
-	return m.CreateEndpointConfigurationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EndpointConfigurationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EndpointConfigurationBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_EndpointConfigurationBuilder) DeepCopy() any {
+	_copy := b.CreateEndpointConfigurationBuilder().(*_EndpointConfigurationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEndpointConfigurationBuilder creates a EndpointConfigurationBuilder
-func (m *_EndpointConfiguration) CreateEndpointConfigurationBuilder() EndpointConfigurationBuilder {
-	if m == nil {
+func (b *_EndpointConfiguration) CreateEndpointConfigurationBuilder() EndpointConfigurationBuilder {
+	if b == nil {
 		return NewEndpointConfigurationBuilder()
 	}
-	return &_EndpointConfigurationBuilder{_EndpointConfiguration: m.deepCopy()}
+	return &_EndpointConfigurationBuilder{_EndpointConfiguration: b.deepCopy()}
 }
 
 ///////////////////////
@@ -523,9 +542,13 @@ func (m *_EndpointConfiguration) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -93,45 +93,64 @@ func NewSecurityDataDisplayMessageBuilder() SecurityDataDisplayMessageBuilder {
 type _SecurityDataDisplayMessageBuilder struct {
 	*_SecurityDataDisplayMessage
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataDisplayMessageBuilder) = (*_SecurityDataDisplayMessageBuilder)(nil)
 
-func (m *_SecurityDataDisplayMessageBuilder) WithMandatoryFields(message string) SecurityDataDisplayMessageBuilder {
-	return m.WithMessage(message)
+func (b *_SecurityDataDisplayMessageBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataDisplayMessageBuilder) WithMessage(message string) SecurityDataDisplayMessageBuilder {
-	m.Message = message
-	return m
+func (b *_SecurityDataDisplayMessageBuilder) WithMandatoryFields(message string) SecurityDataDisplayMessageBuilder {
+	return b.WithMessage(message)
 }
 
-func (m *_SecurityDataDisplayMessageBuilder) Build() (SecurityDataDisplayMessage, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataDisplayMessageBuilder) WithMessage(message string) SecurityDataDisplayMessageBuilder {
+	b.Message = message
+	return b
+}
+
+func (b *_SecurityDataDisplayMessageBuilder) Build() (SecurityDataDisplayMessage, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataDisplayMessage.deepCopy(), nil
+	return b._SecurityDataDisplayMessage.deepCopy(), nil
 }
 
-func (m *_SecurityDataDisplayMessageBuilder) MustBuild() SecurityDataDisplayMessage {
-	build, err := m.Build()
+func (b *_SecurityDataDisplayMessageBuilder) MustBuild() SecurityDataDisplayMessage {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataDisplayMessageBuilder) DeepCopy() any {
-	return m.CreateSecurityDataDisplayMessageBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataDisplayMessageBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataDisplayMessageBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataDisplayMessageBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataDisplayMessageBuilder().(*_SecurityDataDisplayMessageBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataDisplayMessageBuilder creates a SecurityDataDisplayMessageBuilder
-func (m *_SecurityDataDisplayMessage) CreateSecurityDataDisplayMessageBuilder() SecurityDataDisplayMessageBuilder {
-	if m == nil {
+func (b *_SecurityDataDisplayMessage) CreateSecurityDataDisplayMessageBuilder() SecurityDataDisplayMessageBuilder {
+	if b == nil {
 		return NewSecurityDataDisplayMessageBuilder()
 	}
-	return &_SecurityDataDisplayMessageBuilder{_SecurityDataDisplayMessage: m.deepCopy()}
+	return &_SecurityDataDisplayMessageBuilder{_SecurityDataDisplayMessage: b.deepCopy()}
 }
 
 ///////////////////////
@@ -271,9 +290,13 @@ func (m *_SecurityDataDisplayMessage) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

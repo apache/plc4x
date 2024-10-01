@@ -82,6 +82,8 @@ type CBusMessageToClientBuilder interface {
 	WithMandatoryFields(reply ReplyOrConfirmation) CBusMessageToClientBuilder
 	// WithReply adds Reply (property field)
 	WithReply(ReplyOrConfirmation) CBusMessageToClientBuilder
+	// WithReplyBuilder adds Reply (property field) which is build by the builder
+	WithReplyBuilder(func(ReplyOrConfirmationBuilder) ReplyOrConfirmationBuilder) CBusMessageToClientBuilder
 	// Build builds the CBusMessageToClient or returns an error if something is wrong
 	Build() (CBusMessageToClient, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewCBusMessageToClientBuilder() CBusMessageToClientBuilder {
 type _CBusMessageToClientBuilder struct {
 	*_CBusMessageToClient
 
+	parentBuilder *_CBusMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CBusMessageToClientBuilder) = (*_CBusMessageToClientBuilder)(nil)
 
-func (m *_CBusMessageToClientBuilder) WithMandatoryFields(reply ReplyOrConfirmation) CBusMessageToClientBuilder {
-	return m.WithReply(reply)
+func (b *_CBusMessageToClientBuilder) setParent(contract CBusMessageContract) {
+	b.CBusMessageContract = contract
 }
 
-func (m *_CBusMessageToClientBuilder) WithReply(reply ReplyOrConfirmation) CBusMessageToClientBuilder {
-	m.Reply = reply
-	return m
+func (b *_CBusMessageToClientBuilder) WithMandatoryFields(reply ReplyOrConfirmation) CBusMessageToClientBuilder {
+	return b.WithReply(reply)
 }
 
-func (m *_CBusMessageToClientBuilder) Build() (CBusMessageToClient, error) {
-	if m.Reply == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CBusMessageToClientBuilder) WithReply(reply ReplyOrConfirmation) CBusMessageToClientBuilder {
+	b.Reply = reply
+	return b
+}
+
+func (b *_CBusMessageToClientBuilder) WithReplyBuilder(builderSupplier func(ReplyOrConfirmationBuilder) ReplyOrConfirmationBuilder) CBusMessageToClientBuilder {
+	builder := builderSupplier(b.Reply.CreateReplyOrConfirmationBuilder())
+	var err error
+	b.Reply, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'reply' not set"))
+		b.err.Append(errors.Wrap(err, "ReplyOrConfirmationBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._CBusMessageToClient.deepCopy(), nil
+	return b
 }
 
-func (m *_CBusMessageToClientBuilder) MustBuild() CBusMessageToClient {
-	build, err := m.Build()
+func (b *_CBusMessageToClientBuilder) Build() (CBusMessageToClient, error) {
+	if b.Reply == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'reply' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CBusMessageToClient.deepCopy(), nil
+}
+
+func (b *_CBusMessageToClientBuilder) MustBuild() CBusMessageToClient {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CBusMessageToClientBuilder) DeepCopy() any {
-	return m.CreateCBusMessageToClientBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CBusMessageToClientBuilder) Done() CBusMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CBusMessageToClientBuilder) buildForCBusMessage() (CBusMessage, error) {
+	return b.Build()
+}
+
+func (b *_CBusMessageToClientBuilder) DeepCopy() any {
+	_copy := b.CreateCBusMessageToClientBuilder().(*_CBusMessageToClientBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCBusMessageToClientBuilder creates a CBusMessageToClientBuilder
-func (m *_CBusMessageToClient) CreateCBusMessageToClientBuilder() CBusMessageToClientBuilder {
-	if m == nil {
+func (b *_CBusMessageToClient) CreateCBusMessageToClientBuilder() CBusMessageToClientBuilder {
+	if b == nil {
 		return NewCBusMessageToClientBuilder()
 	}
-	return &_CBusMessageToClientBuilder{_CBusMessageToClient: m.deepCopy()}
+	return &_CBusMessageToClientBuilder{_CBusMessageToClient: b.deepCopy()}
 }
 
 ///////////////////////
@@ -284,9 +318,13 @@ func (m *_CBusMessageToClient) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

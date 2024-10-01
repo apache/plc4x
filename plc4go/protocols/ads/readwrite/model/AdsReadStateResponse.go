@@ -105,55 +105,74 @@ func NewAdsReadStateResponseBuilder() AdsReadStateResponseBuilder {
 type _AdsReadStateResponseBuilder struct {
 	*_AdsReadStateResponse
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsReadStateResponseBuilder) = (*_AdsReadStateResponseBuilder)(nil)
 
-func (m *_AdsReadStateResponseBuilder) WithMandatoryFields(result ReturnCode, adsState uint16, deviceState uint16) AdsReadStateResponseBuilder {
-	return m.WithResult(result).WithAdsState(adsState).WithDeviceState(deviceState)
+func (b *_AdsReadStateResponseBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_AdsReadStateResponseBuilder) WithResult(result ReturnCode) AdsReadStateResponseBuilder {
-	m.Result = result
-	return m
+func (b *_AdsReadStateResponseBuilder) WithMandatoryFields(result ReturnCode, adsState uint16, deviceState uint16) AdsReadStateResponseBuilder {
+	return b.WithResult(result).WithAdsState(adsState).WithDeviceState(deviceState)
 }
 
-func (m *_AdsReadStateResponseBuilder) WithAdsState(adsState uint16) AdsReadStateResponseBuilder {
-	m.AdsState = adsState
-	return m
+func (b *_AdsReadStateResponseBuilder) WithResult(result ReturnCode) AdsReadStateResponseBuilder {
+	b.Result = result
+	return b
 }
 
-func (m *_AdsReadStateResponseBuilder) WithDeviceState(deviceState uint16) AdsReadStateResponseBuilder {
-	m.DeviceState = deviceState
-	return m
+func (b *_AdsReadStateResponseBuilder) WithAdsState(adsState uint16) AdsReadStateResponseBuilder {
+	b.AdsState = adsState
+	return b
 }
 
-func (m *_AdsReadStateResponseBuilder) Build() (AdsReadStateResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsReadStateResponseBuilder) WithDeviceState(deviceState uint16) AdsReadStateResponseBuilder {
+	b.DeviceState = deviceState
+	return b
+}
+
+func (b *_AdsReadStateResponseBuilder) Build() (AdsReadStateResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsReadStateResponse.deepCopy(), nil
+	return b._AdsReadStateResponse.deepCopy(), nil
 }
 
-func (m *_AdsReadStateResponseBuilder) MustBuild() AdsReadStateResponse {
-	build, err := m.Build()
+func (b *_AdsReadStateResponseBuilder) MustBuild() AdsReadStateResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsReadStateResponseBuilder) DeepCopy() any {
-	return m.CreateAdsReadStateResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsReadStateResponseBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsReadStateResponseBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsReadStateResponseBuilder) DeepCopy() any {
+	_copy := b.CreateAdsReadStateResponseBuilder().(*_AdsReadStateResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsReadStateResponseBuilder creates a AdsReadStateResponseBuilder
-func (m *_AdsReadStateResponse) CreateAdsReadStateResponseBuilder() AdsReadStateResponseBuilder {
-	if m == nil {
+func (b *_AdsReadStateResponse) CreateAdsReadStateResponseBuilder() AdsReadStateResponseBuilder {
+	if b == nil {
 		return NewAdsReadStateResponseBuilder()
 	}
-	return &_AdsReadStateResponseBuilder{_AdsReadStateResponse: m.deepCopy()}
+	return &_AdsReadStateResponseBuilder{_AdsReadStateResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -337,9 +356,13 @@ func (m *_AdsReadStateResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

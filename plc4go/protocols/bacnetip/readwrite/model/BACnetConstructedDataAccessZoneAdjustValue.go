@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAccessZoneAdjustValueBuilder() BACnetConstructedDat
 type _BACnetConstructedDataAccessZoneAdjustValueBuilder struct {
 	*_BACnetConstructedDataAccessZoneAdjustValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccessZoneAdjustValueBuilder) = (*_BACnetConstructedDataAccessZoneAdjustValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccessZoneAdjustValueBuilder) WithMandatoryFields(adjustValue BACnetApplicationTagSignedInteger) BACnetConstructedDataAccessZoneAdjustValueBuilder {
-	return m.WithAdjustValue(adjustValue)
+func (b *_BACnetConstructedDataAccessZoneAdjustValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccessZoneAdjustValueBuilder) WithAdjustValue(adjustValue BACnetApplicationTagSignedInteger) BACnetConstructedDataAccessZoneAdjustValueBuilder {
-	m.AdjustValue = adjustValue
-	return m
+func (b *_BACnetConstructedDataAccessZoneAdjustValueBuilder) WithMandatoryFields(adjustValue BACnetApplicationTagSignedInteger) BACnetConstructedDataAccessZoneAdjustValueBuilder {
+	return b.WithAdjustValue(adjustValue)
 }
 
-func (m *_BACnetConstructedDataAccessZoneAdjustValueBuilder) WithAdjustValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataAccessZoneAdjustValueBuilder {
-	builder := builderSupplier(m.AdjustValue.CreateBACnetApplicationTagSignedIntegerBuilder())
+func (b *_BACnetConstructedDataAccessZoneAdjustValueBuilder) WithAdjustValue(adjustValue BACnetApplicationTagSignedInteger) BACnetConstructedDataAccessZoneAdjustValueBuilder {
+	b.AdjustValue = adjustValue
+	return b
+}
+
+func (b *_BACnetConstructedDataAccessZoneAdjustValueBuilder) WithAdjustValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataAccessZoneAdjustValueBuilder {
+	builder := builderSupplier(b.AdjustValue.CreateBACnetApplicationTagSignedIntegerBuilder())
 	var err error
-	m.AdjustValue, err = builder.Build()
+	b.AdjustValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAccessZoneAdjustValueBuilder) Build() (BACnetConstructedDataAccessZoneAdjustValue, error) {
-	if m.AdjustValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAccessZoneAdjustValueBuilder) Build() (BACnetConstructedDataAccessZoneAdjustValue, error) {
+	if b.AdjustValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'adjustValue' not set"))
+		b.err.Append(errors.New("mandatory field 'adjustValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAccessZoneAdjustValue.deepCopy(), nil
+	return b._BACnetConstructedDataAccessZoneAdjustValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAccessZoneAdjustValueBuilder) MustBuild() BACnetConstructedDataAccessZoneAdjustValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccessZoneAdjustValueBuilder) MustBuild() BACnetConstructedDataAccessZoneAdjustValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccessZoneAdjustValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccessZoneAdjustValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccessZoneAdjustValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccessZoneAdjustValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccessZoneAdjustValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccessZoneAdjustValueBuilder().(*_BACnetConstructedDataAccessZoneAdjustValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccessZoneAdjustValueBuilder creates a BACnetConstructedDataAccessZoneAdjustValueBuilder
-func (m *_BACnetConstructedDataAccessZoneAdjustValue) CreateBACnetConstructedDataAccessZoneAdjustValueBuilder() BACnetConstructedDataAccessZoneAdjustValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccessZoneAdjustValue) CreateBACnetConstructedDataAccessZoneAdjustValueBuilder() BACnetConstructedDataAccessZoneAdjustValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccessZoneAdjustValueBuilder()
 	}
-	return &_BACnetConstructedDataAccessZoneAdjustValueBuilder{_BACnetConstructedDataAccessZoneAdjustValue: m.deepCopy()}
+	return &_BACnetConstructedDataAccessZoneAdjustValueBuilder{_BACnetConstructedDataAccessZoneAdjustValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataAccessZoneAdjustValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

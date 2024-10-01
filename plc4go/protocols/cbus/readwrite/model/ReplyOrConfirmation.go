@@ -102,10 +102,29 @@ type ReplyOrConfirmationBuilder interface {
 	WithMandatoryFields(peekedByte byte) ReplyOrConfirmationBuilder
 	// WithPeekedByte adds PeekedByte (property field)
 	WithPeekedByte(byte) ReplyOrConfirmationBuilder
+	// AsServerErrorReply converts this build to a subType of ReplyOrConfirmation. It is always possible to return to current builder using Done()
+	AsServerErrorReply() interface {
+		ServerErrorReplyBuilder
+		Done() ReplyOrConfirmationBuilder
+	}
+	// AsReplyOrConfirmationConfirmation converts this build to a subType of ReplyOrConfirmation. It is always possible to return to current builder using Done()
+	AsReplyOrConfirmationConfirmation() interface {
+		ReplyOrConfirmationConfirmationBuilder
+		Done() ReplyOrConfirmationBuilder
+	}
+	// AsReplyOrConfirmationReply converts this build to a subType of ReplyOrConfirmation. It is always possible to return to current builder using Done()
+	AsReplyOrConfirmationReply() interface {
+		ReplyOrConfirmationReplyBuilder
+		Done() ReplyOrConfirmationBuilder
+	}
 	// Build builds the ReplyOrConfirmation or returns an error if something is wrong
-	Build() (ReplyOrConfirmationContract, error)
+	PartialBuild() (ReplyOrConfirmationContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() ReplyOrConfirmationContract
+	PartialMustBuild() ReplyOrConfirmationContract
+	// Build builds the ReplyOrConfirmation or returns an error if something is wrong
+	Build() (ReplyOrConfirmation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReplyOrConfirmation
 }
 
 // NewReplyOrConfirmationBuilder() creates a ReplyOrConfirmationBuilder
@@ -113,48 +132,130 @@ func NewReplyOrConfirmationBuilder() ReplyOrConfirmationBuilder {
 	return &_ReplyOrConfirmationBuilder{_ReplyOrConfirmation: new(_ReplyOrConfirmation)}
 }
 
+type _ReplyOrConfirmationChildBuilder interface {
+	utils.Copyable
+	setParent(ReplyOrConfirmationContract)
+	buildForReplyOrConfirmation() (ReplyOrConfirmation, error)
+}
+
 type _ReplyOrConfirmationBuilder struct {
 	*_ReplyOrConfirmation
+
+	childBuilder _ReplyOrConfirmationChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (ReplyOrConfirmationBuilder) = (*_ReplyOrConfirmationBuilder)(nil)
 
-func (m *_ReplyOrConfirmationBuilder) WithMandatoryFields(peekedByte byte) ReplyOrConfirmationBuilder {
-	return m.WithPeekedByte(peekedByte)
+func (b *_ReplyOrConfirmationBuilder) WithMandatoryFields(peekedByte byte) ReplyOrConfirmationBuilder {
+	return b.WithPeekedByte(peekedByte)
 }
 
-func (m *_ReplyOrConfirmationBuilder) WithPeekedByte(peekedByte byte) ReplyOrConfirmationBuilder {
-	m.PeekedByte = peekedByte
-	return m
+func (b *_ReplyOrConfirmationBuilder) WithPeekedByte(peekedByte byte) ReplyOrConfirmationBuilder {
+	b.PeekedByte = peekedByte
+	return b
 }
 
-func (m *_ReplyOrConfirmationBuilder) Build() (ReplyOrConfirmationContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ReplyOrConfirmationBuilder) PartialBuild() (ReplyOrConfirmationContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ReplyOrConfirmation.deepCopy(), nil
+	return b._ReplyOrConfirmation.deepCopy(), nil
 }
 
-func (m *_ReplyOrConfirmationBuilder) MustBuild() ReplyOrConfirmationContract {
-	build, err := m.Build()
+func (b *_ReplyOrConfirmationBuilder) PartialMustBuild() ReplyOrConfirmationContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ReplyOrConfirmationBuilder) DeepCopy() any {
-	return m.CreateReplyOrConfirmationBuilder()
+func (b *_ReplyOrConfirmationBuilder) AsServerErrorReply() interface {
+	ServerErrorReplyBuilder
+	Done() ReplyOrConfirmationBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ServerErrorReplyBuilder
+		Done() ReplyOrConfirmationBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewServerErrorReplyBuilder().(*_ServerErrorReplyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ReplyOrConfirmationBuilder) AsReplyOrConfirmationConfirmation() interface {
+	ReplyOrConfirmationConfirmationBuilder
+	Done() ReplyOrConfirmationBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReplyOrConfirmationConfirmationBuilder
+		Done() ReplyOrConfirmationBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReplyOrConfirmationConfirmationBuilder().(*_ReplyOrConfirmationConfirmationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ReplyOrConfirmationBuilder) AsReplyOrConfirmationReply() interface {
+	ReplyOrConfirmationReplyBuilder
+	Done() ReplyOrConfirmationBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReplyOrConfirmationReplyBuilder
+		Done() ReplyOrConfirmationBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReplyOrConfirmationReplyBuilder().(*_ReplyOrConfirmationReplyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ReplyOrConfirmationBuilder) Build() (ReplyOrConfirmation, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForReplyOrConfirmation()
+}
+
+func (b *_ReplyOrConfirmationBuilder) MustBuild() ReplyOrConfirmation {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ReplyOrConfirmationBuilder) DeepCopy() any {
+	_copy := b.CreateReplyOrConfirmationBuilder().(*_ReplyOrConfirmationBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ReplyOrConfirmationChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateReplyOrConfirmationBuilder creates a ReplyOrConfirmationBuilder
-func (m *_ReplyOrConfirmation) CreateReplyOrConfirmationBuilder() ReplyOrConfirmationBuilder {
-	if m == nil {
+func (b *_ReplyOrConfirmation) CreateReplyOrConfirmationBuilder() ReplyOrConfirmationBuilder {
+	if b == nil {
 		return NewReplyOrConfirmationBuilder()
 	}
-	return &_ReplyOrConfirmationBuilder{_ReplyOrConfirmation: m.deepCopy()}
+	return &_ReplyOrConfirmationBuilder{_ReplyOrConfirmation: b.deepCopy()}
 }
 
 ///////////////////////

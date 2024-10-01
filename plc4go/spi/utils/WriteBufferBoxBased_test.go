@@ -54,40 +54,6 @@ func TestNewWriteBufferBoxBased(t *testing.T) {
 	}
 }
 
-func TestNewWriteBufferBoxBasedWithOptions(t *testing.T) {
-	type args struct {
-		mergeSingleBoxes bool
-		omitEmptyBoxes   bool
-	}
-	tests := []struct {
-		name string
-		args args
-		want WriteBufferBoxBased
-	}{
-		{
-			name: "create it",
-			args: args{
-				mergeSingleBoxes: true,
-				omitEmptyBoxes:   true,
-			},
-			want: &boxedWriteBuffer{
-				List:                list.New(),
-				desiredWidth:        120,
-				currentWidth:        118,
-				mergeSingleBoxes:    true,
-				omitEmptyBoxes:      true,
-				asciiBoxWriter:      AsciiBoxWriterDefault,
-				asciiBoxWriterLight: AsciiBoxWriterLight,
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewWriteBufferBoxBasedWithOptions(tt.args.mergeSingleBoxes, tt.args.omitEmptyBoxes), "NewWriteBufferBoxBasedWithOptions(%v, %v)", tt.args.mergeSingleBoxes, tt.args.omitEmptyBoxes)
-		})
-	}
-}
-
 func Test_boxedWriteBuffer_GetBox(t *testing.T) {
 	type fields struct {
 		BufferCommons       BufferCommons

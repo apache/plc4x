@@ -132,149 +132,153 @@ type _BACnetCOVSubscriptionBuilder struct {
 
 var _ (BACnetCOVSubscriptionBuilder) = (*_BACnetCOVSubscriptionBuilder)(nil)
 
-func (m *_BACnetCOVSubscriptionBuilder) WithMandatoryFields(recipient BACnetRecipientProcessEnclosed, monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger) BACnetCOVSubscriptionBuilder {
-	return m.WithRecipient(recipient).WithMonitoredPropertyReference(monitoredPropertyReference).WithIssueConfirmedNotifications(issueConfirmedNotifications).WithTimeRemaining(timeRemaining)
+func (b *_BACnetCOVSubscriptionBuilder) WithMandatoryFields(recipient BACnetRecipientProcessEnclosed, monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger) BACnetCOVSubscriptionBuilder {
+	return b.WithRecipient(recipient).WithMonitoredPropertyReference(monitoredPropertyReference).WithIssueConfirmedNotifications(issueConfirmedNotifications).WithTimeRemaining(timeRemaining)
 }
 
-func (m *_BACnetCOVSubscriptionBuilder) WithRecipient(recipient BACnetRecipientProcessEnclosed) BACnetCOVSubscriptionBuilder {
-	m.Recipient = recipient
-	return m
+func (b *_BACnetCOVSubscriptionBuilder) WithRecipient(recipient BACnetRecipientProcessEnclosed) BACnetCOVSubscriptionBuilder {
+	b.Recipient = recipient
+	return b
 }
 
-func (m *_BACnetCOVSubscriptionBuilder) WithRecipientBuilder(builderSupplier func(BACnetRecipientProcessEnclosedBuilder) BACnetRecipientProcessEnclosedBuilder) BACnetCOVSubscriptionBuilder {
-	builder := builderSupplier(m.Recipient.CreateBACnetRecipientProcessEnclosedBuilder())
+func (b *_BACnetCOVSubscriptionBuilder) WithRecipientBuilder(builderSupplier func(BACnetRecipientProcessEnclosedBuilder) BACnetRecipientProcessEnclosedBuilder) BACnetCOVSubscriptionBuilder {
+	builder := builderSupplier(b.Recipient.CreateBACnetRecipientProcessEnclosedBuilder())
 	var err error
-	m.Recipient, err = builder.Build()
+	b.Recipient, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetRecipientProcessEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetRecipientProcessEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetCOVSubscriptionBuilder) WithMonitoredPropertyReference(monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed) BACnetCOVSubscriptionBuilder {
-	m.MonitoredPropertyReference = monitoredPropertyReference
-	return m
+func (b *_BACnetCOVSubscriptionBuilder) WithMonitoredPropertyReference(monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed) BACnetCOVSubscriptionBuilder {
+	b.MonitoredPropertyReference = monitoredPropertyReference
+	return b
 }
 
-func (m *_BACnetCOVSubscriptionBuilder) WithMonitoredPropertyReferenceBuilder(builderSupplier func(BACnetObjectPropertyReferenceEnclosedBuilder) BACnetObjectPropertyReferenceEnclosedBuilder) BACnetCOVSubscriptionBuilder {
-	builder := builderSupplier(m.MonitoredPropertyReference.CreateBACnetObjectPropertyReferenceEnclosedBuilder())
+func (b *_BACnetCOVSubscriptionBuilder) WithMonitoredPropertyReferenceBuilder(builderSupplier func(BACnetObjectPropertyReferenceEnclosedBuilder) BACnetObjectPropertyReferenceEnclosedBuilder) BACnetCOVSubscriptionBuilder {
+	builder := builderSupplier(b.MonitoredPropertyReference.CreateBACnetObjectPropertyReferenceEnclosedBuilder())
 	var err error
-	m.MonitoredPropertyReference, err = builder.Build()
+	b.MonitoredPropertyReference, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetCOVSubscriptionBuilder) WithIssueConfirmedNotifications(issueConfirmedNotifications BACnetContextTagBoolean) BACnetCOVSubscriptionBuilder {
-	m.IssueConfirmedNotifications = issueConfirmedNotifications
-	return m
+func (b *_BACnetCOVSubscriptionBuilder) WithIssueConfirmedNotifications(issueConfirmedNotifications BACnetContextTagBoolean) BACnetCOVSubscriptionBuilder {
+	b.IssueConfirmedNotifications = issueConfirmedNotifications
+	return b
 }
 
-func (m *_BACnetCOVSubscriptionBuilder) WithIssueConfirmedNotificationsBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetCOVSubscriptionBuilder {
-	builder := builderSupplier(m.IssueConfirmedNotifications.CreateBACnetContextTagBooleanBuilder())
+func (b *_BACnetCOVSubscriptionBuilder) WithIssueConfirmedNotificationsBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetCOVSubscriptionBuilder {
+	builder := builderSupplier(b.IssueConfirmedNotifications.CreateBACnetContextTagBooleanBuilder())
 	var err error
-	m.IssueConfirmedNotifications, err = builder.Build()
+	b.IssueConfirmedNotifications, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetCOVSubscriptionBuilder) WithTimeRemaining(timeRemaining BACnetContextTagUnsignedInteger) BACnetCOVSubscriptionBuilder {
-	m.TimeRemaining = timeRemaining
-	return m
+func (b *_BACnetCOVSubscriptionBuilder) WithTimeRemaining(timeRemaining BACnetContextTagUnsignedInteger) BACnetCOVSubscriptionBuilder {
+	b.TimeRemaining = timeRemaining
+	return b
 }
 
-func (m *_BACnetCOVSubscriptionBuilder) WithTimeRemainingBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetCOVSubscriptionBuilder {
-	builder := builderSupplier(m.TimeRemaining.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetCOVSubscriptionBuilder) WithTimeRemainingBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetCOVSubscriptionBuilder {
+	builder := builderSupplier(b.TimeRemaining.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.TimeRemaining, err = builder.Build()
+	b.TimeRemaining, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetCOVSubscriptionBuilder) WithOptionalCovIncrement(covIncrement BACnetContextTagReal) BACnetCOVSubscriptionBuilder {
-	m.CovIncrement = covIncrement
-	return m
+func (b *_BACnetCOVSubscriptionBuilder) WithOptionalCovIncrement(covIncrement BACnetContextTagReal) BACnetCOVSubscriptionBuilder {
+	b.CovIncrement = covIncrement
+	return b
 }
 
-func (m *_BACnetCOVSubscriptionBuilder) WithOptionalCovIncrementBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetCOVSubscriptionBuilder {
-	builder := builderSupplier(m.CovIncrement.CreateBACnetContextTagRealBuilder())
+func (b *_BACnetCOVSubscriptionBuilder) WithOptionalCovIncrementBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetCOVSubscriptionBuilder {
+	builder := builderSupplier(b.CovIncrement.CreateBACnetContextTagRealBuilder())
 	var err error
-	m.CovIncrement, err = builder.Build()
+	b.CovIncrement, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetCOVSubscriptionBuilder) Build() (BACnetCOVSubscription, error) {
-	if m.Recipient == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetCOVSubscriptionBuilder) Build() (BACnetCOVSubscription, error) {
+	if b.Recipient == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'recipient' not set"))
+		b.err.Append(errors.New("mandatory field 'recipient' not set"))
 	}
-	if m.MonitoredPropertyReference == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.MonitoredPropertyReference == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'monitoredPropertyReference' not set"))
+		b.err.Append(errors.New("mandatory field 'monitoredPropertyReference' not set"))
 	}
-	if m.IssueConfirmedNotifications == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.IssueConfirmedNotifications == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'issueConfirmedNotifications' not set"))
+		b.err.Append(errors.New("mandatory field 'issueConfirmedNotifications' not set"))
 	}
-	if m.TimeRemaining == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TimeRemaining == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeRemaining' not set"))
+		b.err.Append(errors.New("mandatory field 'timeRemaining' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetCOVSubscription.deepCopy(), nil
+	return b._BACnetCOVSubscription.deepCopy(), nil
 }
 
-func (m *_BACnetCOVSubscriptionBuilder) MustBuild() BACnetCOVSubscription {
-	build, err := m.Build()
+func (b *_BACnetCOVSubscriptionBuilder) MustBuild() BACnetCOVSubscription {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetCOVSubscriptionBuilder) DeepCopy() any {
-	return m.CreateBACnetCOVSubscriptionBuilder()
+func (b *_BACnetCOVSubscriptionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetCOVSubscriptionBuilder().(*_BACnetCOVSubscriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetCOVSubscriptionBuilder creates a BACnetCOVSubscriptionBuilder
-func (m *_BACnetCOVSubscription) CreateBACnetCOVSubscriptionBuilder() BACnetCOVSubscriptionBuilder {
-	if m == nil {
+func (b *_BACnetCOVSubscription) CreateBACnetCOVSubscriptionBuilder() BACnetCOVSubscriptionBuilder {
+	if b == nil {
 		return NewBACnetCOVSubscriptionBuilder()
 	}
-	return &_BACnetCOVSubscriptionBuilder{_BACnetCOVSubscription: m.deepCopy()}
+	return &_BACnetCOVSubscriptionBuilder{_BACnetCOVSubscription: b.deepCopy()}
 }
 
 ///////////////////////
@@ -489,9 +493,13 @@ func (m *_BACnetCOVSubscription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -107,55 +107,74 @@ func NewS7ParameterSetupCommunicationBuilder() S7ParameterSetupCommunicationBuil
 type _S7ParameterSetupCommunicationBuilder struct {
 	*_S7ParameterSetupCommunication
 
+	parentBuilder *_S7ParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7ParameterSetupCommunicationBuilder) = (*_S7ParameterSetupCommunicationBuilder)(nil)
 
-func (m *_S7ParameterSetupCommunicationBuilder) WithMandatoryFields(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) S7ParameterSetupCommunicationBuilder {
-	return m.WithMaxAmqCaller(maxAmqCaller).WithMaxAmqCallee(maxAmqCallee).WithPduLength(pduLength)
+func (b *_S7ParameterSetupCommunicationBuilder) setParent(contract S7ParameterContract) {
+	b.S7ParameterContract = contract
 }
 
-func (m *_S7ParameterSetupCommunicationBuilder) WithMaxAmqCaller(maxAmqCaller uint16) S7ParameterSetupCommunicationBuilder {
-	m.MaxAmqCaller = maxAmqCaller
-	return m
+func (b *_S7ParameterSetupCommunicationBuilder) WithMandatoryFields(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) S7ParameterSetupCommunicationBuilder {
+	return b.WithMaxAmqCaller(maxAmqCaller).WithMaxAmqCallee(maxAmqCallee).WithPduLength(pduLength)
 }
 
-func (m *_S7ParameterSetupCommunicationBuilder) WithMaxAmqCallee(maxAmqCallee uint16) S7ParameterSetupCommunicationBuilder {
-	m.MaxAmqCallee = maxAmqCallee
-	return m
+func (b *_S7ParameterSetupCommunicationBuilder) WithMaxAmqCaller(maxAmqCaller uint16) S7ParameterSetupCommunicationBuilder {
+	b.MaxAmqCaller = maxAmqCaller
+	return b
 }
 
-func (m *_S7ParameterSetupCommunicationBuilder) WithPduLength(pduLength uint16) S7ParameterSetupCommunicationBuilder {
-	m.PduLength = pduLength
-	return m
+func (b *_S7ParameterSetupCommunicationBuilder) WithMaxAmqCallee(maxAmqCallee uint16) S7ParameterSetupCommunicationBuilder {
+	b.MaxAmqCallee = maxAmqCallee
+	return b
 }
 
-func (m *_S7ParameterSetupCommunicationBuilder) Build() (S7ParameterSetupCommunication, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7ParameterSetupCommunicationBuilder) WithPduLength(pduLength uint16) S7ParameterSetupCommunicationBuilder {
+	b.PduLength = pduLength
+	return b
+}
+
+func (b *_S7ParameterSetupCommunicationBuilder) Build() (S7ParameterSetupCommunication, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7ParameterSetupCommunication.deepCopy(), nil
+	return b._S7ParameterSetupCommunication.deepCopy(), nil
 }
 
-func (m *_S7ParameterSetupCommunicationBuilder) MustBuild() S7ParameterSetupCommunication {
-	build, err := m.Build()
+func (b *_S7ParameterSetupCommunicationBuilder) MustBuild() S7ParameterSetupCommunication {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7ParameterSetupCommunicationBuilder) DeepCopy() any {
-	return m.CreateS7ParameterSetupCommunicationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7ParameterSetupCommunicationBuilder) Done() S7ParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7ParameterSetupCommunicationBuilder) buildForS7Parameter() (S7Parameter, error) {
+	return b.Build()
+}
+
+func (b *_S7ParameterSetupCommunicationBuilder) DeepCopy() any {
+	_copy := b.CreateS7ParameterSetupCommunicationBuilder().(*_S7ParameterSetupCommunicationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7ParameterSetupCommunicationBuilder creates a S7ParameterSetupCommunicationBuilder
-func (m *_S7ParameterSetupCommunication) CreateS7ParameterSetupCommunicationBuilder() S7ParameterSetupCommunicationBuilder {
-	if m == nil {
+func (b *_S7ParameterSetupCommunication) CreateS7ParameterSetupCommunicationBuilder() S7ParameterSetupCommunicationBuilder {
+	if b == nil {
 		return NewS7ParameterSetupCommunicationBuilder()
 	}
-	return &_S7ParameterSetupCommunicationBuilder{_S7ParameterSetupCommunication: m.deepCopy()}
+	return &_S7ParameterSetupCommunicationBuilder{_S7ParameterSetupCommunication: b.deepCopy()}
 }
 
 ///////////////////////
@@ -353,9 +372,13 @@ func (m *_S7ParameterSetupCommunication) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -113,88 +113,92 @@ type _BACnetAssignedLandingCallsLandingCallsListBuilder struct {
 
 var _ (BACnetAssignedLandingCallsLandingCallsListBuilder) = (*_BACnetAssignedLandingCallsLandingCallsListBuilder)(nil)
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, landingCalls []BACnetAssignedLandingCallsLandingCallsListEntry, closingTag BACnetClosingTag) BACnetAssignedLandingCallsLandingCallsListBuilder {
-	return m.WithOpeningTag(openingTag).WithLandingCalls(landingCalls...).WithClosingTag(closingTag)
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, landingCalls []BACnetAssignedLandingCallsLandingCallsListEntry, closingTag BACnetClosingTag) BACnetAssignedLandingCallsLandingCallsListBuilder {
+	return b.WithOpeningTag(openingTag).WithLandingCalls(landingCalls...).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetAssignedLandingCallsLandingCallsListBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetAssignedLandingCallsLandingCallsListBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetAssignedLandingCallsLandingCallsListBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetAssignedLandingCallsLandingCallsListBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithLandingCalls(landingCalls ...BACnetAssignedLandingCallsLandingCallsListEntry) BACnetAssignedLandingCallsLandingCallsListBuilder {
-	m.LandingCalls = landingCalls
-	return m
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithLandingCalls(landingCalls ...BACnetAssignedLandingCallsLandingCallsListEntry) BACnetAssignedLandingCallsLandingCallsListBuilder {
+	b.LandingCalls = landingCalls
+	return b
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetAssignedLandingCallsLandingCallsListBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetAssignedLandingCallsLandingCallsListBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetAssignedLandingCallsLandingCallsListBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetAssignedLandingCallsLandingCallsListBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListBuilder) Build() (BACnetAssignedLandingCallsLandingCallsList, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) Build() (BACnetAssignedLandingCallsLandingCallsList, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAssignedLandingCallsLandingCallsList.deepCopy(), nil
+	return b._BACnetAssignedLandingCallsLandingCallsList.deepCopy(), nil
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListBuilder) MustBuild() BACnetAssignedLandingCallsLandingCallsList {
-	build, err := m.Build()
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) MustBuild() BACnetAssignedLandingCallsLandingCallsList {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListBuilder) DeepCopy() any {
-	return m.CreateBACnetAssignedLandingCallsLandingCallsListBuilder()
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAssignedLandingCallsLandingCallsListBuilder().(*_BACnetAssignedLandingCallsLandingCallsListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAssignedLandingCallsLandingCallsListBuilder creates a BACnetAssignedLandingCallsLandingCallsListBuilder
-func (m *_BACnetAssignedLandingCallsLandingCallsList) CreateBACnetAssignedLandingCallsLandingCallsListBuilder() BACnetAssignedLandingCallsLandingCallsListBuilder {
-	if m == nil {
+func (b *_BACnetAssignedLandingCallsLandingCallsList) CreateBACnetAssignedLandingCallsLandingCallsListBuilder() BACnetAssignedLandingCallsLandingCallsListBuilder {
+	if b == nil {
 		return NewBACnetAssignedLandingCallsLandingCallsListBuilder()
 	}
-	return &_BACnetAssignedLandingCallsLandingCallsListBuilder{_BACnetAssignedLandingCallsLandingCallsList: m.deepCopy()}
+	return &_BACnetAssignedLandingCallsLandingCallsListBuilder{_BACnetAssignedLandingCallsLandingCallsList: b.deepCopy()}
 }
 
 ///////////////////////
@@ -383,9 +387,13 @@ func (m *_BACnetAssignedLandingCallsLandingCallsList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

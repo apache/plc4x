@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLowerDeckBuilder() BACnetConstructedDataLowerDeckBu
 type _BACnetConstructedDataLowerDeckBuilder struct {
 	*_BACnetConstructedDataLowerDeck
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLowerDeckBuilder) = (*_BACnetConstructedDataLowerDeckBuilder)(nil)
 
-func (m *_BACnetConstructedDataLowerDeckBuilder) WithMandatoryFields(lowerDeck BACnetApplicationTagObjectIdentifier) BACnetConstructedDataLowerDeckBuilder {
-	return m.WithLowerDeck(lowerDeck)
+func (b *_BACnetConstructedDataLowerDeckBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLowerDeckBuilder) WithLowerDeck(lowerDeck BACnetApplicationTagObjectIdentifier) BACnetConstructedDataLowerDeckBuilder {
-	m.LowerDeck = lowerDeck
-	return m
+func (b *_BACnetConstructedDataLowerDeckBuilder) WithMandatoryFields(lowerDeck BACnetApplicationTagObjectIdentifier) BACnetConstructedDataLowerDeckBuilder {
+	return b.WithLowerDeck(lowerDeck)
 }
 
-func (m *_BACnetConstructedDataLowerDeckBuilder) WithLowerDeckBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataLowerDeckBuilder {
-	builder := builderSupplier(m.LowerDeck.CreateBACnetApplicationTagObjectIdentifierBuilder())
+func (b *_BACnetConstructedDataLowerDeckBuilder) WithLowerDeck(lowerDeck BACnetApplicationTagObjectIdentifier) BACnetConstructedDataLowerDeckBuilder {
+	b.LowerDeck = lowerDeck
+	return b
+}
+
+func (b *_BACnetConstructedDataLowerDeckBuilder) WithLowerDeckBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataLowerDeckBuilder {
+	builder := builderSupplier(b.LowerDeck.CreateBACnetApplicationTagObjectIdentifierBuilder())
 	var err error
-	m.LowerDeck, err = builder.Build()
+	b.LowerDeck, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLowerDeckBuilder) Build() (BACnetConstructedDataLowerDeck, error) {
-	if m.LowerDeck == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLowerDeckBuilder) Build() (BACnetConstructedDataLowerDeck, error) {
+	if b.LowerDeck == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lowerDeck' not set"))
+		b.err.Append(errors.New("mandatory field 'lowerDeck' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLowerDeck.deepCopy(), nil
+	return b._BACnetConstructedDataLowerDeck.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLowerDeckBuilder) MustBuild() BACnetConstructedDataLowerDeck {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLowerDeckBuilder) MustBuild() BACnetConstructedDataLowerDeck {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLowerDeckBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLowerDeckBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLowerDeckBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLowerDeckBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLowerDeckBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLowerDeckBuilder().(*_BACnetConstructedDataLowerDeckBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLowerDeckBuilder creates a BACnetConstructedDataLowerDeckBuilder
-func (m *_BACnetConstructedDataLowerDeck) CreateBACnetConstructedDataLowerDeckBuilder() BACnetConstructedDataLowerDeckBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLowerDeck) CreateBACnetConstructedDataLowerDeckBuilder() BACnetConstructedDataLowerDeckBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLowerDeckBuilder()
 	}
-	return &_BACnetConstructedDataLowerDeckBuilder{_BACnetConstructedDataLowerDeck: m.deepCopy()}
+	return &_BACnetConstructedDataLowerDeckBuilder{_BACnetConstructedDataLowerDeck: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataLowerDeck) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

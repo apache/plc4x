@@ -92,40 +92,44 @@ type _HVACTemperatureBuilder struct {
 
 var _ (HVACTemperatureBuilder) = (*_HVACTemperatureBuilder)(nil)
 
-func (m *_HVACTemperatureBuilder) WithMandatoryFields(temperatureValue int16) HVACTemperatureBuilder {
-	return m.WithTemperatureValue(temperatureValue)
+func (b *_HVACTemperatureBuilder) WithMandatoryFields(temperatureValue int16) HVACTemperatureBuilder {
+	return b.WithTemperatureValue(temperatureValue)
 }
 
-func (m *_HVACTemperatureBuilder) WithTemperatureValue(temperatureValue int16) HVACTemperatureBuilder {
-	m.TemperatureValue = temperatureValue
-	return m
+func (b *_HVACTemperatureBuilder) WithTemperatureValue(temperatureValue int16) HVACTemperatureBuilder {
+	b.TemperatureValue = temperatureValue
+	return b
 }
 
-func (m *_HVACTemperatureBuilder) Build() (HVACTemperature, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_HVACTemperatureBuilder) Build() (HVACTemperature, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HVACTemperature.deepCopy(), nil
+	return b._HVACTemperature.deepCopy(), nil
 }
 
-func (m *_HVACTemperatureBuilder) MustBuild() HVACTemperature {
-	build, err := m.Build()
+func (b *_HVACTemperatureBuilder) MustBuild() HVACTemperature {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HVACTemperatureBuilder) DeepCopy() any {
-	return m.CreateHVACTemperatureBuilder()
+func (b *_HVACTemperatureBuilder) DeepCopy() any {
+	_copy := b.CreateHVACTemperatureBuilder().(*_HVACTemperatureBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHVACTemperatureBuilder creates a HVACTemperatureBuilder
-func (m *_HVACTemperature) CreateHVACTemperatureBuilder() HVACTemperatureBuilder {
-	if m == nil {
+func (b *_HVACTemperature) CreateHVACTemperatureBuilder() HVACTemperatureBuilder {
+	if b == nil {
 		return NewHVACTemperatureBuilder()
 	}
-	return &_HVACTemperatureBuilder{_HVACTemperature: m.deepCopy()}
+	return &_HVACTemperatureBuilder{_HVACTemperature: b.deepCopy()}
 }
 
 ///////////////////////
@@ -291,9 +295,13 @@ func (m *_HVACTemperature) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

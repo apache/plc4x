@@ -100,64 +100,83 @@ func NewBACnetConstructedDataCarDoorZoneBuilder() BACnetConstructedDataCarDoorZo
 type _BACnetConstructedDataCarDoorZoneBuilder struct {
 	*_BACnetConstructedDataCarDoorZone
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCarDoorZoneBuilder) = (*_BACnetConstructedDataCarDoorZoneBuilder)(nil)
 
-func (m *_BACnetConstructedDataCarDoorZoneBuilder) WithMandatoryFields(carDoorZone BACnetApplicationTagBoolean) BACnetConstructedDataCarDoorZoneBuilder {
-	return m.WithCarDoorZone(carDoorZone)
+func (b *_BACnetConstructedDataCarDoorZoneBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCarDoorZoneBuilder) WithCarDoorZone(carDoorZone BACnetApplicationTagBoolean) BACnetConstructedDataCarDoorZoneBuilder {
-	m.CarDoorZone = carDoorZone
-	return m
+func (b *_BACnetConstructedDataCarDoorZoneBuilder) WithMandatoryFields(carDoorZone BACnetApplicationTagBoolean) BACnetConstructedDataCarDoorZoneBuilder {
+	return b.WithCarDoorZone(carDoorZone)
 }
 
-func (m *_BACnetConstructedDataCarDoorZoneBuilder) WithCarDoorZoneBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataCarDoorZoneBuilder {
-	builder := builderSupplier(m.CarDoorZone.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataCarDoorZoneBuilder) WithCarDoorZone(carDoorZone BACnetApplicationTagBoolean) BACnetConstructedDataCarDoorZoneBuilder {
+	b.CarDoorZone = carDoorZone
+	return b
+}
+
+func (b *_BACnetConstructedDataCarDoorZoneBuilder) WithCarDoorZoneBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataCarDoorZoneBuilder {
+	builder := builderSupplier(b.CarDoorZone.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.CarDoorZone, err = builder.Build()
+	b.CarDoorZone, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataCarDoorZoneBuilder) Build() (BACnetConstructedDataCarDoorZone, error) {
-	if m.CarDoorZone == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataCarDoorZoneBuilder) Build() (BACnetConstructedDataCarDoorZone, error) {
+	if b.CarDoorZone == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'carDoorZone' not set"))
+		b.err.Append(errors.New("mandatory field 'carDoorZone' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCarDoorZone.deepCopy(), nil
+	return b._BACnetConstructedDataCarDoorZone.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCarDoorZoneBuilder) MustBuild() BACnetConstructedDataCarDoorZone {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCarDoorZoneBuilder) MustBuild() BACnetConstructedDataCarDoorZone {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCarDoorZoneBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCarDoorZoneBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCarDoorZoneBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCarDoorZoneBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCarDoorZoneBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCarDoorZoneBuilder().(*_BACnetConstructedDataCarDoorZoneBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCarDoorZoneBuilder creates a BACnetConstructedDataCarDoorZoneBuilder
-func (m *_BACnetConstructedDataCarDoorZone) CreateBACnetConstructedDataCarDoorZoneBuilder() BACnetConstructedDataCarDoorZoneBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCarDoorZone) CreateBACnetConstructedDataCarDoorZoneBuilder() BACnetConstructedDataCarDoorZoneBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCarDoorZoneBuilder()
 	}
-	return &_BACnetConstructedDataCarDoorZoneBuilder{_BACnetConstructedDataCarDoorZone: m.deepCopy()}
+	return &_BACnetConstructedDataCarDoorZoneBuilder{_BACnetConstructedDataCarDoorZone: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataCarDoorZone) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

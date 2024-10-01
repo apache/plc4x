@@ -120,112 +120,131 @@ func NewBACnetServiceAckGetAlarmSummaryBuilder() BACnetServiceAckGetAlarmSummary
 type _BACnetServiceAckGetAlarmSummaryBuilder struct {
 	*_BACnetServiceAckGetAlarmSummary
 
+	parentBuilder *_BACnetServiceAckBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetServiceAckGetAlarmSummaryBuilder) = (*_BACnetServiceAckGetAlarmSummaryBuilder)(nil)
 
-func (m *_BACnetServiceAckGetAlarmSummaryBuilder) WithMandatoryFields(objectIdentifier BACnetApplicationTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged) BACnetServiceAckGetAlarmSummaryBuilder {
-	return m.WithObjectIdentifier(objectIdentifier).WithEventState(eventState).WithAcknowledgedTransitions(acknowledgedTransitions)
+func (b *_BACnetServiceAckGetAlarmSummaryBuilder) setParent(contract BACnetServiceAckContract) {
+	b.BACnetServiceAckContract = contract
 }
 
-func (m *_BACnetServiceAckGetAlarmSummaryBuilder) WithObjectIdentifier(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetServiceAckGetAlarmSummaryBuilder {
-	m.ObjectIdentifier = objectIdentifier
-	return m
+func (b *_BACnetServiceAckGetAlarmSummaryBuilder) WithMandatoryFields(objectIdentifier BACnetApplicationTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged) BACnetServiceAckGetAlarmSummaryBuilder {
+	return b.WithObjectIdentifier(objectIdentifier).WithEventState(eventState).WithAcknowledgedTransitions(acknowledgedTransitions)
 }
 
-func (m *_BACnetServiceAckGetAlarmSummaryBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetServiceAckGetAlarmSummaryBuilder {
-	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
+func (b *_BACnetServiceAckGetAlarmSummaryBuilder) WithObjectIdentifier(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetServiceAckGetAlarmSummaryBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
+}
+
+func (b *_BACnetServiceAckGetAlarmSummaryBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetServiceAckGetAlarmSummaryBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
 	var err error
-	m.ObjectIdentifier, err = builder.Build()
+	b.ObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckGetAlarmSummaryBuilder) WithEventState(eventState BACnetEventStateTagged) BACnetServiceAckGetAlarmSummaryBuilder {
-	m.EventState = eventState
-	return m
+func (b *_BACnetServiceAckGetAlarmSummaryBuilder) WithEventState(eventState BACnetEventStateTagged) BACnetServiceAckGetAlarmSummaryBuilder {
+	b.EventState = eventState
+	return b
 }
 
-func (m *_BACnetServiceAckGetAlarmSummaryBuilder) WithEventStateBuilder(builderSupplier func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetServiceAckGetAlarmSummaryBuilder {
-	builder := builderSupplier(m.EventState.CreateBACnetEventStateTaggedBuilder())
+func (b *_BACnetServiceAckGetAlarmSummaryBuilder) WithEventStateBuilder(builderSupplier func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetServiceAckGetAlarmSummaryBuilder {
+	builder := builderSupplier(b.EventState.CreateBACnetEventStateTaggedBuilder())
 	var err error
-	m.EventState, err = builder.Build()
+	b.EventState, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckGetAlarmSummaryBuilder) WithAcknowledgedTransitions(acknowledgedTransitions BACnetEventTransitionBitsTagged) BACnetServiceAckGetAlarmSummaryBuilder {
-	m.AcknowledgedTransitions = acknowledgedTransitions
-	return m
+func (b *_BACnetServiceAckGetAlarmSummaryBuilder) WithAcknowledgedTransitions(acknowledgedTransitions BACnetEventTransitionBitsTagged) BACnetServiceAckGetAlarmSummaryBuilder {
+	b.AcknowledgedTransitions = acknowledgedTransitions
+	return b
 }
 
-func (m *_BACnetServiceAckGetAlarmSummaryBuilder) WithAcknowledgedTransitionsBuilder(builderSupplier func(BACnetEventTransitionBitsTaggedBuilder) BACnetEventTransitionBitsTaggedBuilder) BACnetServiceAckGetAlarmSummaryBuilder {
-	builder := builderSupplier(m.AcknowledgedTransitions.CreateBACnetEventTransitionBitsTaggedBuilder())
+func (b *_BACnetServiceAckGetAlarmSummaryBuilder) WithAcknowledgedTransitionsBuilder(builderSupplier func(BACnetEventTransitionBitsTaggedBuilder) BACnetEventTransitionBitsTaggedBuilder) BACnetServiceAckGetAlarmSummaryBuilder {
+	builder := builderSupplier(b.AcknowledgedTransitions.CreateBACnetEventTransitionBitsTaggedBuilder())
 	var err error
-	m.AcknowledgedTransitions, err = builder.Build()
+	b.AcknowledgedTransitions, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventTransitionBitsTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventTransitionBitsTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckGetAlarmSummaryBuilder) Build() (BACnetServiceAckGetAlarmSummary, error) {
-	if m.ObjectIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetServiceAckGetAlarmSummaryBuilder) Build() (BACnetServiceAckGetAlarmSummary, error) {
+	if b.ObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
 	}
-	if m.EventState == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.EventState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'eventState' not set"))
+		b.err.Append(errors.New("mandatory field 'eventState' not set"))
 	}
-	if m.AcknowledgedTransitions == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.AcknowledgedTransitions == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'acknowledgedTransitions' not set"))
+		b.err.Append(errors.New("mandatory field 'acknowledgedTransitions' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetServiceAckGetAlarmSummary.deepCopy(), nil
+	return b._BACnetServiceAckGetAlarmSummary.deepCopy(), nil
 }
 
-func (m *_BACnetServiceAckGetAlarmSummaryBuilder) MustBuild() BACnetServiceAckGetAlarmSummary {
-	build, err := m.Build()
+func (b *_BACnetServiceAckGetAlarmSummaryBuilder) MustBuild() BACnetServiceAckGetAlarmSummary {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetServiceAckGetAlarmSummaryBuilder) DeepCopy() any {
-	return m.CreateBACnetServiceAckGetAlarmSummaryBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetServiceAckGetAlarmSummaryBuilder) Done() BACnetServiceAckBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetServiceAckGetAlarmSummaryBuilder) buildForBACnetServiceAck() (BACnetServiceAck, error) {
+	return b.Build()
+}
+
+func (b *_BACnetServiceAckGetAlarmSummaryBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetServiceAckGetAlarmSummaryBuilder().(*_BACnetServiceAckGetAlarmSummaryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetServiceAckGetAlarmSummaryBuilder creates a BACnetServiceAckGetAlarmSummaryBuilder
-func (m *_BACnetServiceAckGetAlarmSummary) CreateBACnetServiceAckGetAlarmSummaryBuilder() BACnetServiceAckGetAlarmSummaryBuilder {
-	if m == nil {
+func (b *_BACnetServiceAckGetAlarmSummary) CreateBACnetServiceAckGetAlarmSummaryBuilder() BACnetServiceAckGetAlarmSummaryBuilder {
+	if b == nil {
 		return NewBACnetServiceAckGetAlarmSummaryBuilder()
 	}
-	return &_BACnetServiceAckGetAlarmSummaryBuilder{_BACnetServiceAckGetAlarmSummary: m.deepCopy()}
+	return &_BACnetServiceAckGetAlarmSummaryBuilder{_BACnetServiceAckGetAlarmSummary: b.deepCopy()}
 }
 
 ///////////////////////
@@ -405,9 +424,13 @@ func (m *_BACnetServiceAckGetAlarmSummary) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

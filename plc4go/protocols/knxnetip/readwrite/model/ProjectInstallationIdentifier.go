@@ -95,45 +95,49 @@ type _ProjectInstallationIdentifierBuilder struct {
 
 var _ (ProjectInstallationIdentifierBuilder) = (*_ProjectInstallationIdentifierBuilder)(nil)
 
-func (m *_ProjectInstallationIdentifierBuilder) WithMandatoryFields(projectNumber uint8, installationNumber uint8) ProjectInstallationIdentifierBuilder {
-	return m.WithProjectNumber(projectNumber).WithInstallationNumber(installationNumber)
+func (b *_ProjectInstallationIdentifierBuilder) WithMandatoryFields(projectNumber uint8, installationNumber uint8) ProjectInstallationIdentifierBuilder {
+	return b.WithProjectNumber(projectNumber).WithInstallationNumber(installationNumber)
 }
 
-func (m *_ProjectInstallationIdentifierBuilder) WithProjectNumber(projectNumber uint8) ProjectInstallationIdentifierBuilder {
-	m.ProjectNumber = projectNumber
-	return m
+func (b *_ProjectInstallationIdentifierBuilder) WithProjectNumber(projectNumber uint8) ProjectInstallationIdentifierBuilder {
+	b.ProjectNumber = projectNumber
+	return b
 }
 
-func (m *_ProjectInstallationIdentifierBuilder) WithInstallationNumber(installationNumber uint8) ProjectInstallationIdentifierBuilder {
-	m.InstallationNumber = installationNumber
-	return m
+func (b *_ProjectInstallationIdentifierBuilder) WithInstallationNumber(installationNumber uint8) ProjectInstallationIdentifierBuilder {
+	b.InstallationNumber = installationNumber
+	return b
 }
 
-func (m *_ProjectInstallationIdentifierBuilder) Build() (ProjectInstallationIdentifier, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ProjectInstallationIdentifierBuilder) Build() (ProjectInstallationIdentifier, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ProjectInstallationIdentifier.deepCopy(), nil
+	return b._ProjectInstallationIdentifier.deepCopy(), nil
 }
 
-func (m *_ProjectInstallationIdentifierBuilder) MustBuild() ProjectInstallationIdentifier {
-	build, err := m.Build()
+func (b *_ProjectInstallationIdentifierBuilder) MustBuild() ProjectInstallationIdentifier {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ProjectInstallationIdentifierBuilder) DeepCopy() any {
-	return m.CreateProjectInstallationIdentifierBuilder()
+func (b *_ProjectInstallationIdentifierBuilder) DeepCopy() any {
+	_copy := b.CreateProjectInstallationIdentifierBuilder().(*_ProjectInstallationIdentifierBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateProjectInstallationIdentifierBuilder creates a ProjectInstallationIdentifierBuilder
-func (m *_ProjectInstallationIdentifier) CreateProjectInstallationIdentifierBuilder() ProjectInstallationIdentifierBuilder {
-	if m == nil {
+func (b *_ProjectInstallationIdentifier) CreateProjectInstallationIdentifierBuilder() ProjectInstallationIdentifierBuilder {
+	if b == nil {
 		return NewProjectInstallationIdentifierBuilder()
 	}
-	return &_ProjectInstallationIdentifierBuilder{_ProjectInstallationIdentifier: m.deepCopy()}
+	return &_ProjectInstallationIdentifierBuilder{_ProjectInstallationIdentifier: b.deepCopy()}
 }
 
 ///////////////////////
@@ -288,9 +292,13 @@ func (m *_ProjectInstallationIdentifier) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -127,103 +127,122 @@ func NewAirConditioningDataZoneHvacPlantStatusBuilder() AirConditioningDataZoneH
 type _AirConditioningDataZoneHvacPlantStatusBuilder struct {
 	*_AirConditioningDataZoneHvacPlantStatus
 
+	parentBuilder *_AirConditioningDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AirConditioningDataZoneHvacPlantStatusBuilder) = (*_AirConditioningDataZoneHvacPlantStatusBuilder)(nil)
 
-func (m *_AirConditioningDataZoneHvacPlantStatusBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, hvacType HVACType, hvacStatus HVACStatusFlags, hvacErrorCode HVACError) AirConditioningDataZoneHvacPlantStatusBuilder {
-	return m.WithZoneGroup(zoneGroup).WithZoneList(zoneList).WithHvacType(hvacType).WithHvacStatus(hvacStatus).WithHvacErrorCode(hvacErrorCode)
+func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) setParent(contract AirConditioningDataContract) {
+	b.AirConditioningDataContract = contract
 }
 
-func (m *_AirConditioningDataZoneHvacPlantStatusBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataZoneHvacPlantStatusBuilder {
-	m.ZoneGroup = zoneGroup
-	return m
+func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, hvacType HVACType, hvacStatus HVACStatusFlags, hvacErrorCode HVACError) AirConditioningDataZoneHvacPlantStatusBuilder {
+	return b.WithZoneGroup(zoneGroup).WithZoneList(zoneList).WithHvacType(hvacType).WithHvacStatus(hvacStatus).WithHvacErrorCode(hvacErrorCode)
 }
 
-func (m *_AirConditioningDataZoneHvacPlantStatusBuilder) WithZoneList(zoneList HVACZoneList) AirConditioningDataZoneHvacPlantStatusBuilder {
-	m.ZoneList = zoneList
-	return m
+func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataZoneHvacPlantStatusBuilder {
+	b.ZoneGroup = zoneGroup
+	return b
 }
 
-func (m *_AirConditioningDataZoneHvacPlantStatusBuilder) WithZoneListBuilder(builderSupplier func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataZoneHvacPlantStatusBuilder {
-	builder := builderSupplier(m.ZoneList.CreateHVACZoneListBuilder())
+func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) WithZoneList(zoneList HVACZoneList) AirConditioningDataZoneHvacPlantStatusBuilder {
+	b.ZoneList = zoneList
+	return b
+}
+
+func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) WithZoneListBuilder(builderSupplier func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataZoneHvacPlantStatusBuilder {
+	builder := builderSupplier(b.ZoneList.CreateHVACZoneListBuilder())
 	var err error
-	m.ZoneList, err = builder.Build()
+	b.ZoneList, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataZoneHvacPlantStatusBuilder) WithHvacType(hvacType HVACType) AirConditioningDataZoneHvacPlantStatusBuilder {
-	m.HvacType = hvacType
-	return m
+func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) WithHvacType(hvacType HVACType) AirConditioningDataZoneHvacPlantStatusBuilder {
+	b.HvacType = hvacType
+	return b
 }
 
-func (m *_AirConditioningDataZoneHvacPlantStatusBuilder) WithHvacStatus(hvacStatus HVACStatusFlags) AirConditioningDataZoneHvacPlantStatusBuilder {
-	m.HvacStatus = hvacStatus
-	return m
+func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) WithHvacStatus(hvacStatus HVACStatusFlags) AirConditioningDataZoneHvacPlantStatusBuilder {
+	b.HvacStatus = hvacStatus
+	return b
 }
 
-func (m *_AirConditioningDataZoneHvacPlantStatusBuilder) WithHvacStatusBuilder(builderSupplier func(HVACStatusFlagsBuilder) HVACStatusFlagsBuilder) AirConditioningDataZoneHvacPlantStatusBuilder {
-	builder := builderSupplier(m.HvacStatus.CreateHVACStatusFlagsBuilder())
+func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) WithHvacStatusBuilder(builderSupplier func(HVACStatusFlagsBuilder) HVACStatusFlagsBuilder) AirConditioningDataZoneHvacPlantStatusBuilder {
+	builder := builderSupplier(b.HvacStatus.CreateHVACStatusFlagsBuilder())
 	var err error
-	m.HvacStatus, err = builder.Build()
+	b.HvacStatus, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACStatusFlagsBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACStatusFlagsBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataZoneHvacPlantStatusBuilder) WithHvacErrorCode(hvacErrorCode HVACError) AirConditioningDataZoneHvacPlantStatusBuilder {
-	m.HvacErrorCode = hvacErrorCode
-	return m
+func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) WithHvacErrorCode(hvacErrorCode HVACError) AirConditioningDataZoneHvacPlantStatusBuilder {
+	b.HvacErrorCode = hvacErrorCode
+	return b
 }
 
-func (m *_AirConditioningDataZoneHvacPlantStatusBuilder) Build() (AirConditioningDataZoneHvacPlantStatus, error) {
-	if m.ZoneList == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) Build() (AirConditioningDataZoneHvacPlantStatus, error) {
+	if b.ZoneList == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'zoneList' not set"))
+		b.err.Append(errors.New("mandatory field 'zoneList' not set"))
 	}
-	if m.HvacStatus == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.HvacStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'hvacStatus' not set"))
+		b.err.Append(errors.New("mandatory field 'hvacStatus' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AirConditioningDataZoneHvacPlantStatus.deepCopy(), nil
+	return b._AirConditioningDataZoneHvacPlantStatus.deepCopy(), nil
 }
 
-func (m *_AirConditioningDataZoneHvacPlantStatusBuilder) MustBuild() AirConditioningDataZoneHvacPlantStatus {
-	build, err := m.Build()
+func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) MustBuild() AirConditioningDataZoneHvacPlantStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AirConditioningDataZoneHvacPlantStatusBuilder) DeepCopy() any {
-	return m.CreateAirConditioningDataZoneHvacPlantStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) Done() AirConditioningDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) buildForAirConditioningData() (AirConditioningData, error) {
+	return b.Build()
+}
+
+func (b *_AirConditioningDataZoneHvacPlantStatusBuilder) DeepCopy() any {
+	_copy := b.CreateAirConditioningDataZoneHvacPlantStatusBuilder().(*_AirConditioningDataZoneHvacPlantStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAirConditioningDataZoneHvacPlantStatusBuilder creates a AirConditioningDataZoneHvacPlantStatusBuilder
-func (m *_AirConditioningDataZoneHvacPlantStatus) CreateAirConditioningDataZoneHvacPlantStatusBuilder() AirConditioningDataZoneHvacPlantStatusBuilder {
-	if m == nil {
+func (b *_AirConditioningDataZoneHvacPlantStatus) CreateAirConditioningDataZoneHvacPlantStatusBuilder() AirConditioningDataZoneHvacPlantStatusBuilder {
+	if b == nil {
 		return NewAirConditioningDataZoneHvacPlantStatusBuilder()
 	}
-	return &_AirConditioningDataZoneHvacPlantStatusBuilder{_AirConditioningDataZoneHvacPlantStatus: m.deepCopy()}
+	return &_AirConditioningDataZoneHvacPlantStatusBuilder{_AirConditioningDataZoneHvacPlantStatus: b.deepCopy()}
 }
 
 ///////////////////////
@@ -435,9 +454,13 @@ func (m *_AirConditioningDataZoneHvacPlantStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

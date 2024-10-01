@@ -99,50 +99,69 @@ func NewInstanceIDBuilder() InstanceIDBuilder {
 type _InstanceIDBuilder struct {
 	*_InstanceID
 
+	parentBuilder *_LogicalSegmentTypeBuilder
+
 	err *utils.MultiError
 }
 
 var _ (InstanceIDBuilder) = (*_InstanceIDBuilder)(nil)
 
-func (m *_InstanceIDBuilder) WithMandatoryFields(format uint8, instance uint8) InstanceIDBuilder {
-	return m.WithFormat(format).WithInstance(instance)
+func (b *_InstanceIDBuilder) setParent(contract LogicalSegmentTypeContract) {
+	b.LogicalSegmentTypeContract = contract
 }
 
-func (m *_InstanceIDBuilder) WithFormat(format uint8) InstanceIDBuilder {
-	m.Format = format
-	return m
+func (b *_InstanceIDBuilder) WithMandatoryFields(format uint8, instance uint8) InstanceIDBuilder {
+	return b.WithFormat(format).WithInstance(instance)
 }
 
-func (m *_InstanceIDBuilder) WithInstance(instance uint8) InstanceIDBuilder {
-	m.Instance = instance
-	return m
+func (b *_InstanceIDBuilder) WithFormat(format uint8) InstanceIDBuilder {
+	b.Format = format
+	return b
 }
 
-func (m *_InstanceIDBuilder) Build() (InstanceID, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_InstanceIDBuilder) WithInstance(instance uint8) InstanceIDBuilder {
+	b.Instance = instance
+	return b
+}
+
+func (b *_InstanceIDBuilder) Build() (InstanceID, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._InstanceID.deepCopy(), nil
+	return b._InstanceID.deepCopy(), nil
 }
 
-func (m *_InstanceIDBuilder) MustBuild() InstanceID {
-	build, err := m.Build()
+func (b *_InstanceIDBuilder) MustBuild() InstanceID {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_InstanceIDBuilder) DeepCopy() any {
-	return m.CreateInstanceIDBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_InstanceIDBuilder) Done() LogicalSegmentTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_InstanceIDBuilder) buildForLogicalSegmentType() (LogicalSegmentType, error) {
+	return b.Build()
+}
+
+func (b *_InstanceIDBuilder) DeepCopy() any {
+	_copy := b.CreateInstanceIDBuilder().(*_InstanceIDBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateInstanceIDBuilder creates a InstanceIDBuilder
-func (m *_InstanceID) CreateInstanceIDBuilder() InstanceIDBuilder {
-	if m == nil {
+func (b *_InstanceID) CreateInstanceIDBuilder() InstanceIDBuilder {
+	if b == nil {
 		return NewInstanceIDBuilder()
 	}
-	return &_InstanceIDBuilder{_InstanceID: m.deepCopy()}
+	return &_InstanceIDBuilder{_InstanceID: b.deepCopy()}
 }
 
 ///////////////////////
@@ -304,9 +323,13 @@ func (m *_InstanceID) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

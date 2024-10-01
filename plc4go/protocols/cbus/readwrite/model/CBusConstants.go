@@ -88,35 +88,39 @@ type _CBusConstantsBuilder struct {
 
 var _ (CBusConstantsBuilder) = (*_CBusConstantsBuilder)(nil)
 
-func (m *_CBusConstantsBuilder) WithMandatoryFields() CBusConstantsBuilder {
-	return m
+func (b *_CBusConstantsBuilder) WithMandatoryFields() CBusConstantsBuilder {
+	return b
 }
 
-func (m *_CBusConstantsBuilder) Build() (CBusConstants, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CBusConstantsBuilder) Build() (CBusConstants, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CBusConstants.deepCopy(), nil
+	return b._CBusConstants.deepCopy(), nil
 }
 
-func (m *_CBusConstantsBuilder) MustBuild() CBusConstants {
-	build, err := m.Build()
+func (b *_CBusConstantsBuilder) MustBuild() CBusConstants {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CBusConstantsBuilder) DeepCopy() any {
-	return m.CreateCBusConstantsBuilder()
+func (b *_CBusConstantsBuilder) DeepCopy() any {
+	_copy := b.CreateCBusConstantsBuilder().(*_CBusConstantsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCBusConstantsBuilder creates a CBusConstantsBuilder
-func (m *_CBusConstants) CreateCBusConstantsBuilder() CBusConstantsBuilder {
-	if m == nil {
+func (b *_CBusConstants) CreateCBusConstantsBuilder() CBusConstantsBuilder {
+	if b == nil {
 		return NewCBusConstantsBuilder()
 	}
-	return &_CBusConstantsBuilder{_CBusConstants: m.deepCopy()}
+	return &_CBusConstantsBuilder{_CBusConstants: b.deepCopy()}
 }
 
 ///////////////////////
@@ -251,9 +255,13 @@ func (m *_CBusConstants) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

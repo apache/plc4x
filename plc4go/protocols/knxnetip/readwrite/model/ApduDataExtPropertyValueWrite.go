@@ -117,65 +117,84 @@ func NewApduDataExtPropertyValueWriteBuilder() ApduDataExtPropertyValueWriteBuil
 type _ApduDataExtPropertyValueWriteBuilder struct {
 	*_ApduDataExtPropertyValueWrite
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtPropertyValueWriteBuilder) = (*_ApduDataExtPropertyValueWriteBuilder)(nil)
 
-func (m *_ApduDataExtPropertyValueWriteBuilder) WithMandatoryFields(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte) ApduDataExtPropertyValueWriteBuilder {
-	return m.WithObjectIndex(objectIndex).WithPropertyId(propertyId).WithCount(count).WithIndex(index).WithData(data...)
+func (b *_ApduDataExtPropertyValueWriteBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtPropertyValueWriteBuilder) WithObjectIndex(objectIndex uint8) ApduDataExtPropertyValueWriteBuilder {
-	m.ObjectIndex = objectIndex
-	return m
+func (b *_ApduDataExtPropertyValueWriteBuilder) WithMandatoryFields(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte) ApduDataExtPropertyValueWriteBuilder {
+	return b.WithObjectIndex(objectIndex).WithPropertyId(propertyId).WithCount(count).WithIndex(index).WithData(data...)
 }
 
-func (m *_ApduDataExtPropertyValueWriteBuilder) WithPropertyId(propertyId uint8) ApduDataExtPropertyValueWriteBuilder {
-	m.PropertyId = propertyId
-	return m
+func (b *_ApduDataExtPropertyValueWriteBuilder) WithObjectIndex(objectIndex uint8) ApduDataExtPropertyValueWriteBuilder {
+	b.ObjectIndex = objectIndex
+	return b
 }
 
-func (m *_ApduDataExtPropertyValueWriteBuilder) WithCount(count uint8) ApduDataExtPropertyValueWriteBuilder {
-	m.Count = count
-	return m
+func (b *_ApduDataExtPropertyValueWriteBuilder) WithPropertyId(propertyId uint8) ApduDataExtPropertyValueWriteBuilder {
+	b.PropertyId = propertyId
+	return b
 }
 
-func (m *_ApduDataExtPropertyValueWriteBuilder) WithIndex(index uint16) ApduDataExtPropertyValueWriteBuilder {
-	m.Index = index
-	return m
+func (b *_ApduDataExtPropertyValueWriteBuilder) WithCount(count uint8) ApduDataExtPropertyValueWriteBuilder {
+	b.Count = count
+	return b
 }
 
-func (m *_ApduDataExtPropertyValueWriteBuilder) WithData(data ...byte) ApduDataExtPropertyValueWriteBuilder {
-	m.Data = data
-	return m
+func (b *_ApduDataExtPropertyValueWriteBuilder) WithIndex(index uint16) ApduDataExtPropertyValueWriteBuilder {
+	b.Index = index
+	return b
 }
 
-func (m *_ApduDataExtPropertyValueWriteBuilder) Build() (ApduDataExtPropertyValueWrite, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtPropertyValueWriteBuilder) WithData(data ...byte) ApduDataExtPropertyValueWriteBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ApduDataExtPropertyValueWriteBuilder) Build() (ApduDataExtPropertyValueWrite, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtPropertyValueWrite.deepCopy(), nil
+	return b._ApduDataExtPropertyValueWrite.deepCopy(), nil
 }
 
-func (m *_ApduDataExtPropertyValueWriteBuilder) MustBuild() ApduDataExtPropertyValueWrite {
-	build, err := m.Build()
+func (b *_ApduDataExtPropertyValueWriteBuilder) MustBuild() ApduDataExtPropertyValueWrite {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtPropertyValueWriteBuilder) DeepCopy() any {
-	return m.CreateApduDataExtPropertyValueWriteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtPropertyValueWriteBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtPropertyValueWriteBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtPropertyValueWriteBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtPropertyValueWriteBuilder().(*_ApduDataExtPropertyValueWriteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtPropertyValueWriteBuilder creates a ApduDataExtPropertyValueWriteBuilder
-func (m *_ApduDataExtPropertyValueWrite) CreateApduDataExtPropertyValueWriteBuilder() ApduDataExtPropertyValueWriteBuilder {
-	if m == nil {
+func (b *_ApduDataExtPropertyValueWrite) CreateApduDataExtPropertyValueWriteBuilder() ApduDataExtPropertyValueWriteBuilder {
+	if b == nil {
 		return NewApduDataExtPropertyValueWriteBuilder()
 	}
-	return &_ApduDataExtPropertyValueWriteBuilder{_ApduDataExtPropertyValueWrite: m.deepCopy()}
+	return &_ApduDataExtPropertyValueWriteBuilder{_ApduDataExtPropertyValueWrite: b.deepCopy()}
 }
 
 ///////////////////////
@@ -393,9 +412,13 @@ func (m *_ApduDataExtPropertyValueWrite) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

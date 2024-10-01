@@ -85,40 +85,59 @@ func NewBACnetContextTagNullBuilder() BACnetContextTagNullBuilder {
 type _BACnetContextTagNullBuilder struct {
 	*_BACnetContextTagNull
 
+	parentBuilder *_BACnetContextTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetContextTagNullBuilder) = (*_BACnetContextTagNullBuilder)(nil)
 
-func (m *_BACnetContextTagNullBuilder) WithMandatoryFields() BACnetContextTagNullBuilder {
-	return m
+func (b *_BACnetContextTagNullBuilder) setParent(contract BACnetContextTagContract) {
+	b.BACnetContextTagContract = contract
 }
 
-func (m *_BACnetContextTagNullBuilder) Build() (BACnetContextTagNull, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetContextTagNullBuilder) WithMandatoryFields() BACnetContextTagNullBuilder {
+	return b
+}
+
+func (b *_BACnetContextTagNullBuilder) Build() (BACnetContextTagNull, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetContextTagNull.deepCopy(), nil
+	return b._BACnetContextTagNull.deepCopy(), nil
 }
 
-func (m *_BACnetContextTagNullBuilder) MustBuild() BACnetContextTagNull {
-	build, err := m.Build()
+func (b *_BACnetContextTagNullBuilder) MustBuild() BACnetContextTagNull {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetContextTagNullBuilder) DeepCopy() any {
-	return m.CreateBACnetContextTagNullBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetContextTagNullBuilder) Done() BACnetContextTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetContextTagNullBuilder) buildForBACnetContextTag() (BACnetContextTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetContextTagNullBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetContextTagNullBuilder().(*_BACnetContextTagNullBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetContextTagNullBuilder creates a BACnetContextTagNullBuilder
-func (m *_BACnetContextTagNull) CreateBACnetContextTagNullBuilder() BACnetContextTagNullBuilder {
-	if m == nil {
+func (b *_BACnetContextTagNull) CreateBACnetContextTagNullBuilder() BACnetContextTagNullBuilder {
+	if b == nil {
 		return NewBACnetContextTagNullBuilder()
 	}
-	return &_BACnetContextTagNullBuilder{_BACnetContextTagNull: m.deepCopy()}
+	return &_BACnetContextTagNullBuilder{_BACnetContextTagNull: b.deepCopy()}
 }
 
 ///////////////////////
@@ -239,9 +258,13 @@ func (m *_BACnetContextTagNull) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

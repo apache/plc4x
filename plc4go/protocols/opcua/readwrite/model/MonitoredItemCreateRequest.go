@@ -93,10 +93,14 @@ type MonitoredItemCreateRequestBuilder interface {
 	WithMandatoryFields(itemToMonitor ExtensionObjectDefinition, monitoringMode MonitoringMode, requestedParameters ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder
 	// WithItemToMonitor adds ItemToMonitor (property field)
 	WithItemToMonitor(ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder
+	// WithItemToMonitorBuilder adds ItemToMonitor (property field) which is build by the builder
+	WithItemToMonitorBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) MonitoredItemCreateRequestBuilder
 	// WithMonitoringMode adds MonitoringMode (property field)
 	WithMonitoringMode(MonitoringMode) MonitoredItemCreateRequestBuilder
 	// WithRequestedParameters adds RequestedParameters (property field)
 	WithRequestedParameters(ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder
+	// WithRequestedParametersBuilder adds RequestedParameters (property field) which is build by the builder
+	WithRequestedParametersBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) MonitoredItemCreateRequestBuilder
 	// Build builds the MonitoredItemCreateRequest or returns an error if something is wrong
 	Build() (MonitoredItemCreateRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -111,67 +115,112 @@ func NewMonitoredItemCreateRequestBuilder() MonitoredItemCreateRequestBuilder {
 type _MonitoredItemCreateRequestBuilder struct {
 	*_MonitoredItemCreateRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MonitoredItemCreateRequestBuilder) = (*_MonitoredItemCreateRequestBuilder)(nil)
 
-func (m *_MonitoredItemCreateRequestBuilder) WithMandatoryFields(itemToMonitor ExtensionObjectDefinition, monitoringMode MonitoringMode, requestedParameters ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder {
-	return m.WithItemToMonitor(itemToMonitor).WithMonitoringMode(monitoringMode).WithRequestedParameters(requestedParameters)
+func (b *_MonitoredItemCreateRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_MonitoredItemCreateRequestBuilder) WithItemToMonitor(itemToMonitor ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder {
-	m.ItemToMonitor = itemToMonitor
-	return m
+func (b *_MonitoredItemCreateRequestBuilder) WithMandatoryFields(itemToMonitor ExtensionObjectDefinition, monitoringMode MonitoringMode, requestedParameters ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder {
+	return b.WithItemToMonitor(itemToMonitor).WithMonitoringMode(monitoringMode).WithRequestedParameters(requestedParameters)
 }
 
-func (m *_MonitoredItemCreateRequestBuilder) WithMonitoringMode(monitoringMode MonitoringMode) MonitoredItemCreateRequestBuilder {
-	m.MonitoringMode = monitoringMode
-	return m
+func (b *_MonitoredItemCreateRequestBuilder) WithItemToMonitor(itemToMonitor ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder {
+	b.ItemToMonitor = itemToMonitor
+	return b
 }
 
-func (m *_MonitoredItemCreateRequestBuilder) WithRequestedParameters(requestedParameters ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder {
-	m.RequestedParameters = requestedParameters
-	return m
-}
-
-func (m *_MonitoredItemCreateRequestBuilder) Build() (MonitoredItemCreateRequest, error) {
-	if m.ItemToMonitor == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_MonitoredItemCreateRequestBuilder) WithItemToMonitorBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) MonitoredItemCreateRequestBuilder {
+	builder := builderSupplier(b.ItemToMonitor.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ItemToMonitor, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'itemToMonitor' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.RequestedParameters == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'requestedParameters' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._MonitoredItemCreateRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_MonitoredItemCreateRequestBuilder) MustBuild() MonitoredItemCreateRequest {
-	build, err := m.Build()
+func (b *_MonitoredItemCreateRequestBuilder) WithMonitoringMode(monitoringMode MonitoringMode) MonitoredItemCreateRequestBuilder {
+	b.MonitoringMode = monitoringMode
+	return b
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) WithRequestedParameters(requestedParameters ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder {
+	b.RequestedParameters = requestedParameters
+	return b
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) WithRequestedParametersBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) MonitoredItemCreateRequestBuilder {
+	builder := builderSupplier(b.RequestedParameters.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestedParameters, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) Build() (MonitoredItemCreateRequest, error) {
+	if b.ItemToMonitor == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'itemToMonitor' not set"))
+	}
+	if b.RequestedParameters == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestedParameters' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MonitoredItemCreateRequest.deepCopy(), nil
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) MustBuild() MonitoredItemCreateRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MonitoredItemCreateRequestBuilder) DeepCopy() any {
-	return m.CreateMonitoredItemCreateRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MonitoredItemCreateRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) DeepCopy() any {
+	_copy := b.CreateMonitoredItemCreateRequestBuilder().(*_MonitoredItemCreateRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMonitoredItemCreateRequestBuilder creates a MonitoredItemCreateRequestBuilder
-func (m *_MonitoredItemCreateRequest) CreateMonitoredItemCreateRequestBuilder() MonitoredItemCreateRequestBuilder {
-	if m == nil {
+func (b *_MonitoredItemCreateRequest) CreateMonitoredItemCreateRequestBuilder() MonitoredItemCreateRequestBuilder {
+	if b == nil {
 		return NewMonitoredItemCreateRequestBuilder()
 	}
-	return &_MonitoredItemCreateRequestBuilder{_MonitoredItemCreateRequest: m.deepCopy()}
+	return &_MonitoredItemCreateRequestBuilder{_MonitoredItemCreateRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -351,9 +400,13 @@ func (m *_MonitoredItemCreateRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

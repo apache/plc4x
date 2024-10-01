@@ -100,64 +100,83 @@ func NewBACnetConstructedDataTimeOfStateCountResetBuilder() BACnetConstructedDat
 type _BACnetConstructedDataTimeOfStateCountResetBuilder struct {
 	*_BACnetConstructedDataTimeOfStateCountReset
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataTimeOfStateCountResetBuilder) = (*_BACnetConstructedDataTimeOfStateCountResetBuilder)(nil)
 
-func (m *_BACnetConstructedDataTimeOfStateCountResetBuilder) WithMandatoryFields(timeOfStateCountReset BACnetDateTime) BACnetConstructedDataTimeOfStateCountResetBuilder {
-	return m.WithTimeOfStateCountReset(timeOfStateCountReset)
+func (b *_BACnetConstructedDataTimeOfStateCountResetBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataTimeOfStateCountResetBuilder) WithTimeOfStateCountReset(timeOfStateCountReset BACnetDateTime) BACnetConstructedDataTimeOfStateCountResetBuilder {
-	m.TimeOfStateCountReset = timeOfStateCountReset
-	return m
+func (b *_BACnetConstructedDataTimeOfStateCountResetBuilder) WithMandatoryFields(timeOfStateCountReset BACnetDateTime) BACnetConstructedDataTimeOfStateCountResetBuilder {
+	return b.WithTimeOfStateCountReset(timeOfStateCountReset)
 }
 
-func (m *_BACnetConstructedDataTimeOfStateCountResetBuilder) WithTimeOfStateCountResetBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataTimeOfStateCountResetBuilder {
-	builder := builderSupplier(m.TimeOfStateCountReset.CreateBACnetDateTimeBuilder())
+func (b *_BACnetConstructedDataTimeOfStateCountResetBuilder) WithTimeOfStateCountReset(timeOfStateCountReset BACnetDateTime) BACnetConstructedDataTimeOfStateCountResetBuilder {
+	b.TimeOfStateCountReset = timeOfStateCountReset
+	return b
+}
+
+func (b *_BACnetConstructedDataTimeOfStateCountResetBuilder) WithTimeOfStateCountResetBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataTimeOfStateCountResetBuilder {
+	builder := builderSupplier(b.TimeOfStateCountReset.CreateBACnetDateTimeBuilder())
 	var err error
-	m.TimeOfStateCountReset, err = builder.Build()
+	b.TimeOfStateCountReset, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataTimeOfStateCountResetBuilder) Build() (BACnetConstructedDataTimeOfStateCountReset, error) {
-	if m.TimeOfStateCountReset == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataTimeOfStateCountResetBuilder) Build() (BACnetConstructedDataTimeOfStateCountReset, error) {
+	if b.TimeOfStateCountReset == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeOfStateCountReset' not set"))
+		b.err.Append(errors.New("mandatory field 'timeOfStateCountReset' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataTimeOfStateCountReset.deepCopy(), nil
+	return b._BACnetConstructedDataTimeOfStateCountReset.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataTimeOfStateCountResetBuilder) MustBuild() BACnetConstructedDataTimeOfStateCountReset {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataTimeOfStateCountResetBuilder) MustBuild() BACnetConstructedDataTimeOfStateCountReset {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataTimeOfStateCountResetBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataTimeOfStateCountResetBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTimeOfStateCountResetBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTimeOfStateCountResetBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTimeOfStateCountResetBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTimeOfStateCountResetBuilder().(*_BACnetConstructedDataTimeOfStateCountResetBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataTimeOfStateCountResetBuilder creates a BACnetConstructedDataTimeOfStateCountResetBuilder
-func (m *_BACnetConstructedDataTimeOfStateCountReset) CreateBACnetConstructedDataTimeOfStateCountResetBuilder() BACnetConstructedDataTimeOfStateCountResetBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataTimeOfStateCountReset) CreateBACnetConstructedDataTimeOfStateCountResetBuilder() BACnetConstructedDataTimeOfStateCountResetBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataTimeOfStateCountResetBuilder()
 	}
-	return &_BACnetConstructedDataTimeOfStateCountResetBuilder{_BACnetConstructedDataTimeOfStateCountReset: m.deepCopy()}
+	return &_BACnetConstructedDataTimeOfStateCountResetBuilder{_BACnetConstructedDataTimeOfStateCountReset: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataTimeOfStateCountReset) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

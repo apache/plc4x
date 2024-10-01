@@ -88,10 +88,69 @@ type ParameterValueBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ParameterValueBuilder
+	// AsParameterValueApplicationAddress1 converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
+	AsParameterValueApplicationAddress1() interface {
+		ParameterValueApplicationAddress1Builder
+		Done() ParameterValueBuilder
+	}
+	// AsParameterValueApplicationAddress2 converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
+	AsParameterValueApplicationAddress2() interface {
+		ParameterValueApplicationAddress2Builder
+		Done() ParameterValueBuilder
+	}
+	// AsParameterValueInterfaceOptions1 converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
+	AsParameterValueInterfaceOptions1() interface {
+		ParameterValueInterfaceOptions1Builder
+		Done() ParameterValueBuilder
+	}
+	// AsParameterValueBaudRateSelector converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
+	AsParameterValueBaudRateSelector() interface {
+		ParameterValueBaudRateSelectorBuilder
+		Done() ParameterValueBuilder
+	}
+	// AsParameterValueInterfaceOptions2 converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
+	AsParameterValueInterfaceOptions2() interface {
+		ParameterValueInterfaceOptions2Builder
+		Done() ParameterValueBuilder
+	}
+	// AsParameterValueInterfaceOptions1PowerUpSettings converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
+	AsParameterValueInterfaceOptions1PowerUpSettings() interface {
+		ParameterValueInterfaceOptions1PowerUpSettingsBuilder
+		Done() ParameterValueBuilder
+	}
+	// AsParameterValueInterfaceOptions3 converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
+	AsParameterValueInterfaceOptions3() interface {
+		ParameterValueInterfaceOptions3Builder
+		Done() ParameterValueBuilder
+	}
+	// AsParameterValueCustomManufacturer converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
+	AsParameterValueCustomManufacturer() interface {
+		ParameterValueCustomManufacturerBuilder
+		Done() ParameterValueBuilder
+	}
+	// AsParameterValueSerialNumber converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
+	AsParameterValueSerialNumber() interface {
+		ParameterValueSerialNumberBuilder
+		Done() ParameterValueBuilder
+	}
+	// AsParameterValueCustomTypes converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
+	AsParameterValueCustomTypes() interface {
+		ParameterValueCustomTypesBuilder
+		Done() ParameterValueBuilder
+	}
+	// AsParameterValueRaw converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
+	AsParameterValueRaw() interface {
+		ParameterValueRawBuilder
+		Done() ParameterValueBuilder
+	}
 	// Build builds the ParameterValue or returns an error if something is wrong
-	Build() (ParameterValueContract, error)
+	PartialBuild() (ParameterValueContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() ParameterValueContract
+	PartialMustBuild() ParameterValueContract
+	// Build builds the ParameterValue or returns an error if something is wrong
+	Build() (ParameterValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParameterValue
 }
 
 // NewParameterValueBuilder() creates a ParameterValueBuilder
@@ -99,43 +158,253 @@ func NewParameterValueBuilder() ParameterValueBuilder {
 	return &_ParameterValueBuilder{_ParameterValue: new(_ParameterValue)}
 }
 
+type _ParameterValueChildBuilder interface {
+	utils.Copyable
+	setParent(ParameterValueContract)
+	buildForParameterValue() (ParameterValue, error)
+}
+
 type _ParameterValueBuilder struct {
 	*_ParameterValue
+
+	childBuilder _ParameterValueChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (ParameterValueBuilder) = (*_ParameterValueBuilder)(nil)
 
-func (m *_ParameterValueBuilder) WithMandatoryFields() ParameterValueBuilder {
-	return m
+func (b *_ParameterValueBuilder) WithMandatoryFields() ParameterValueBuilder {
+	return b
 }
 
-func (m *_ParameterValueBuilder) Build() (ParameterValueContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ParameterValueBuilder) PartialBuild() (ParameterValueContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ParameterValue.deepCopy(), nil
+	return b._ParameterValue.deepCopy(), nil
 }
 
-func (m *_ParameterValueBuilder) MustBuild() ParameterValueContract {
-	build, err := m.Build()
+func (b *_ParameterValueBuilder) PartialMustBuild() ParameterValueContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ParameterValueBuilder) DeepCopy() any {
-	return m.CreateParameterValueBuilder()
+func (b *_ParameterValueBuilder) AsParameterValueApplicationAddress1() interface {
+	ParameterValueApplicationAddress1Builder
+	Done() ParameterValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ParameterValueApplicationAddress1Builder
+		Done() ParameterValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewParameterValueApplicationAddress1Builder().(*_ParameterValueApplicationAddress1Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ParameterValueBuilder) AsParameterValueApplicationAddress2() interface {
+	ParameterValueApplicationAddress2Builder
+	Done() ParameterValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ParameterValueApplicationAddress2Builder
+		Done() ParameterValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewParameterValueApplicationAddress2Builder().(*_ParameterValueApplicationAddress2Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ParameterValueBuilder) AsParameterValueInterfaceOptions1() interface {
+	ParameterValueInterfaceOptions1Builder
+	Done() ParameterValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ParameterValueInterfaceOptions1Builder
+		Done() ParameterValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewParameterValueInterfaceOptions1Builder().(*_ParameterValueInterfaceOptions1Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ParameterValueBuilder) AsParameterValueBaudRateSelector() interface {
+	ParameterValueBaudRateSelectorBuilder
+	Done() ParameterValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ParameterValueBaudRateSelectorBuilder
+		Done() ParameterValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewParameterValueBaudRateSelectorBuilder().(*_ParameterValueBaudRateSelectorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ParameterValueBuilder) AsParameterValueInterfaceOptions2() interface {
+	ParameterValueInterfaceOptions2Builder
+	Done() ParameterValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ParameterValueInterfaceOptions2Builder
+		Done() ParameterValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewParameterValueInterfaceOptions2Builder().(*_ParameterValueInterfaceOptions2Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ParameterValueBuilder) AsParameterValueInterfaceOptions1PowerUpSettings() interface {
+	ParameterValueInterfaceOptions1PowerUpSettingsBuilder
+	Done() ParameterValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ParameterValueInterfaceOptions1PowerUpSettingsBuilder
+		Done() ParameterValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewParameterValueInterfaceOptions1PowerUpSettingsBuilder().(*_ParameterValueInterfaceOptions1PowerUpSettingsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ParameterValueBuilder) AsParameterValueInterfaceOptions3() interface {
+	ParameterValueInterfaceOptions3Builder
+	Done() ParameterValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ParameterValueInterfaceOptions3Builder
+		Done() ParameterValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewParameterValueInterfaceOptions3Builder().(*_ParameterValueInterfaceOptions3Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ParameterValueBuilder) AsParameterValueCustomManufacturer() interface {
+	ParameterValueCustomManufacturerBuilder
+	Done() ParameterValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ParameterValueCustomManufacturerBuilder
+		Done() ParameterValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewParameterValueCustomManufacturerBuilder().(*_ParameterValueCustomManufacturerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ParameterValueBuilder) AsParameterValueSerialNumber() interface {
+	ParameterValueSerialNumberBuilder
+	Done() ParameterValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ParameterValueSerialNumberBuilder
+		Done() ParameterValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewParameterValueSerialNumberBuilder().(*_ParameterValueSerialNumberBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ParameterValueBuilder) AsParameterValueCustomTypes() interface {
+	ParameterValueCustomTypesBuilder
+	Done() ParameterValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ParameterValueCustomTypesBuilder
+		Done() ParameterValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewParameterValueCustomTypesBuilder().(*_ParameterValueCustomTypesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ParameterValueBuilder) AsParameterValueRaw() interface {
+	ParameterValueRawBuilder
+	Done() ParameterValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ParameterValueRawBuilder
+		Done() ParameterValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewParameterValueRawBuilder().(*_ParameterValueRawBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ParameterValueBuilder) Build() (ParameterValue, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForParameterValue()
+}
+
+func (b *_ParameterValueBuilder) MustBuild() ParameterValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ParameterValueBuilder) DeepCopy() any {
+	_copy := b.CreateParameterValueBuilder().(*_ParameterValueBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ParameterValueChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateParameterValueBuilder creates a ParameterValueBuilder
-func (m *_ParameterValue) CreateParameterValueBuilder() ParameterValueBuilder {
-	if m == nil {
+func (b *_ParameterValue) CreateParameterValueBuilder() ParameterValueBuilder {
+	if b == nil {
 		return NewParameterValueBuilder()
 	}
-	return &_ParameterValueBuilder{_ParameterValue: m.deepCopy()}
+	return &_ParameterValueBuilder{_ParameterValue: b.deepCopy()}
 }
 
 ///////////////////////

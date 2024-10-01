@@ -108,10 +108,24 @@ type BACnetPropertyAccessResultAccessResultBuilder interface {
 	WithPeekedTagHeader(BACnetTagHeader) BACnetPropertyAccessResultAccessResultBuilder
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPropertyAccessResultAccessResultBuilder
+	// AsBACnetPropertyAccessResultAccessResultPropertyValue converts this build to a subType of BACnetPropertyAccessResultAccessResult. It is always possible to return to current builder using Done()
+	AsBACnetPropertyAccessResultAccessResultPropertyValue() interface {
+		BACnetPropertyAccessResultAccessResultPropertyValueBuilder
+		Done() BACnetPropertyAccessResultAccessResultBuilder
+	}
+	// AsBACnetPropertyAccessResultAccessResultPropertyAccessError converts this build to a subType of BACnetPropertyAccessResultAccessResult. It is always possible to return to current builder using Done()
+	AsBACnetPropertyAccessResultAccessResultPropertyAccessError() interface {
+		BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder
+		Done() BACnetPropertyAccessResultAccessResultBuilder
+	}
 	// Build builds the BACnetPropertyAccessResultAccessResult or returns an error if something is wrong
-	Build() (BACnetPropertyAccessResultAccessResultContract, error)
+	PartialBuild() (BACnetPropertyAccessResultAccessResultContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetPropertyAccessResultAccessResultContract
+	PartialMustBuild() BACnetPropertyAccessResultAccessResultContract
+	// Build builds the BACnetPropertyAccessResultAccessResult or returns an error if something is wrong
+	Build() (BACnetPropertyAccessResultAccessResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyAccessResultAccessResult
 }
 
 // NewBACnetPropertyAccessResultAccessResultBuilder() creates a BACnetPropertyAccessResultAccessResultBuilder
@@ -119,67 +133,133 @@ func NewBACnetPropertyAccessResultAccessResultBuilder() BACnetPropertyAccessResu
 	return &_BACnetPropertyAccessResultAccessResultBuilder{_BACnetPropertyAccessResultAccessResult: new(_BACnetPropertyAccessResultAccessResult)}
 }
 
+type _BACnetPropertyAccessResultAccessResultChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetPropertyAccessResultAccessResultContract)
+	buildForBACnetPropertyAccessResultAccessResult() (BACnetPropertyAccessResultAccessResult, error)
+}
+
 type _BACnetPropertyAccessResultAccessResultBuilder struct {
 	*_BACnetPropertyAccessResultAccessResult
+
+	childBuilder _BACnetPropertyAccessResultAccessResultChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyAccessResultAccessResultBuilder) = (*_BACnetPropertyAccessResultAccessResultBuilder)(nil)
 
-func (m *_BACnetPropertyAccessResultAccessResultBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetPropertyAccessResultAccessResultBuilder {
-	return m.WithPeekedTagHeader(peekedTagHeader)
+func (b *_BACnetPropertyAccessResultAccessResultBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetPropertyAccessResultAccessResultBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetPropertyAccessResultAccessResultBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetPropertyAccessResultAccessResultBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetPropertyAccessResultAccessResultBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPropertyAccessResultAccessResultBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetPropertyAccessResultAccessResultBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPropertyAccessResultAccessResultBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultBuilder) Build() (BACnetPropertyAccessResultAccessResultContract, error) {
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyAccessResultAccessResultBuilder) PartialBuild() (BACnetPropertyAccessResultAccessResultContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyAccessResultAccessResult.deepCopy(), nil
+	return b._BACnetPropertyAccessResultAccessResult.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultBuilder) MustBuild() BACnetPropertyAccessResultAccessResultContract {
-	build, err := m.Build()
+func (b *_BACnetPropertyAccessResultAccessResultBuilder) PartialMustBuild() BACnetPropertyAccessResultAccessResultContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyAccessResultAccessResultBuilder()
+func (b *_BACnetPropertyAccessResultAccessResultBuilder) AsBACnetPropertyAccessResultAccessResultPropertyValue() interface {
+	BACnetPropertyAccessResultAccessResultPropertyValueBuilder
+	Done() BACnetPropertyAccessResultAccessResultBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyAccessResultAccessResultPropertyValueBuilder
+		Done() BACnetPropertyAccessResultAccessResultBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyAccessResultAccessResultPropertyValueBuilder().(*_BACnetPropertyAccessResultAccessResultPropertyValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyAccessResultAccessResultBuilder) AsBACnetPropertyAccessResultAccessResultPropertyAccessError() interface {
+	BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder
+	Done() BACnetPropertyAccessResultAccessResultBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder
+		Done() BACnetPropertyAccessResultAccessResultBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder().(*_BACnetPropertyAccessResultAccessResultPropertyAccessErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyAccessResultAccessResultBuilder) Build() (BACnetPropertyAccessResultAccessResult, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetPropertyAccessResultAccessResult()
+}
+
+func (b *_BACnetPropertyAccessResultAccessResultBuilder) MustBuild() BACnetPropertyAccessResultAccessResult {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetPropertyAccessResultAccessResultBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyAccessResultAccessResultBuilder().(*_BACnetPropertyAccessResultAccessResultBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetPropertyAccessResultAccessResultChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyAccessResultAccessResultBuilder creates a BACnetPropertyAccessResultAccessResultBuilder
-func (m *_BACnetPropertyAccessResultAccessResult) CreateBACnetPropertyAccessResultAccessResultBuilder() BACnetPropertyAccessResultAccessResultBuilder {
-	if m == nil {
+func (b *_BACnetPropertyAccessResultAccessResult) CreateBACnetPropertyAccessResultAccessResultBuilder() BACnetPropertyAccessResultAccessResultBuilder {
+	if b == nil {
 		return NewBACnetPropertyAccessResultAccessResultBuilder()
 	}
-	return &_BACnetPropertyAccessResultAccessResultBuilder{_BACnetPropertyAccessResultAccessResult: m.deepCopy()}
+	return &_BACnetPropertyAccessResultAccessResultBuilder{_BACnetPropertyAccessResultAccessResult: b.deepCopy()}
 }
 
 ///////////////////////

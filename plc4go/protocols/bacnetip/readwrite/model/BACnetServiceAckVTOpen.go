@@ -98,64 +98,83 @@ func NewBACnetServiceAckVTOpenBuilder() BACnetServiceAckVTOpenBuilder {
 type _BACnetServiceAckVTOpenBuilder struct {
 	*_BACnetServiceAckVTOpen
 
+	parentBuilder *_BACnetServiceAckBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetServiceAckVTOpenBuilder) = (*_BACnetServiceAckVTOpenBuilder)(nil)
 
-func (m *_BACnetServiceAckVTOpenBuilder) WithMandatoryFields(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTOpenBuilder {
-	return m.WithRemoteVtSessionIdentifier(remoteVtSessionIdentifier)
+func (b *_BACnetServiceAckVTOpenBuilder) setParent(contract BACnetServiceAckContract) {
+	b.BACnetServiceAckContract = contract
 }
 
-func (m *_BACnetServiceAckVTOpenBuilder) WithRemoteVtSessionIdentifier(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTOpenBuilder {
-	m.RemoteVtSessionIdentifier = remoteVtSessionIdentifier
-	return m
+func (b *_BACnetServiceAckVTOpenBuilder) WithMandatoryFields(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTOpenBuilder {
+	return b.WithRemoteVtSessionIdentifier(remoteVtSessionIdentifier)
 }
 
-func (m *_BACnetServiceAckVTOpenBuilder) WithRemoteVtSessionIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckVTOpenBuilder {
-	builder := builderSupplier(m.RemoteVtSessionIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetServiceAckVTOpenBuilder) WithRemoteVtSessionIdentifier(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTOpenBuilder {
+	b.RemoteVtSessionIdentifier = remoteVtSessionIdentifier
+	return b
+}
+
+func (b *_BACnetServiceAckVTOpenBuilder) WithRemoteVtSessionIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckVTOpenBuilder {
+	builder := builderSupplier(b.RemoteVtSessionIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.RemoteVtSessionIdentifier, err = builder.Build()
+	b.RemoteVtSessionIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetServiceAckVTOpenBuilder) Build() (BACnetServiceAckVTOpen, error) {
-	if m.RemoteVtSessionIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetServiceAckVTOpenBuilder) Build() (BACnetServiceAckVTOpen, error) {
+	if b.RemoteVtSessionIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'remoteVtSessionIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'remoteVtSessionIdentifier' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetServiceAckVTOpen.deepCopy(), nil
+	return b._BACnetServiceAckVTOpen.deepCopy(), nil
 }
 
-func (m *_BACnetServiceAckVTOpenBuilder) MustBuild() BACnetServiceAckVTOpen {
-	build, err := m.Build()
+func (b *_BACnetServiceAckVTOpenBuilder) MustBuild() BACnetServiceAckVTOpen {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetServiceAckVTOpenBuilder) DeepCopy() any {
-	return m.CreateBACnetServiceAckVTOpenBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetServiceAckVTOpenBuilder) Done() BACnetServiceAckBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetServiceAckVTOpenBuilder) buildForBACnetServiceAck() (BACnetServiceAck, error) {
+	return b.Build()
+}
+
+func (b *_BACnetServiceAckVTOpenBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetServiceAckVTOpenBuilder().(*_BACnetServiceAckVTOpenBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetServiceAckVTOpenBuilder creates a BACnetServiceAckVTOpenBuilder
-func (m *_BACnetServiceAckVTOpen) CreateBACnetServiceAckVTOpenBuilder() BACnetServiceAckVTOpenBuilder {
-	if m == nil {
+func (b *_BACnetServiceAckVTOpen) CreateBACnetServiceAckVTOpenBuilder() BACnetServiceAckVTOpenBuilder {
+	if b == nil {
 		return NewBACnetServiceAckVTOpenBuilder()
 	}
-	return &_BACnetServiceAckVTOpenBuilder{_BACnetServiceAckVTOpen: m.deepCopy()}
+	return &_BACnetServiceAckVTOpenBuilder{_BACnetServiceAckVTOpen: b.deepCopy()}
 }
 
 ///////////////////////
@@ -299,9 +318,13 @@ func (m *_BACnetServiceAckVTOpen) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

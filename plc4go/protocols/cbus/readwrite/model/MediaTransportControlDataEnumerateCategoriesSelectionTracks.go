@@ -107,50 +107,69 @@ func NewMediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder() Med
 type _MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder struct {
 	*_MediaTransportControlDataEnumerateCategoriesSelectionTracks
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) = (*_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder)(nil)
 
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) WithMandatoryFields(enumerateType byte, start uint8) MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder {
-	return m.WithEnumerateType(enumerateType).WithStart(start)
+func (b *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) WithEnumerateType(enumerateType byte) MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder {
-	m.EnumerateType = enumerateType
-	return m
+func (b *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) WithMandatoryFields(enumerateType byte, start uint8) MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder {
+	return b.WithEnumerateType(enumerateType).WithStart(start)
 }
 
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) WithStart(start uint8) MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder {
-	m.Start = start
-	return m
+func (b *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) WithEnumerateType(enumerateType byte) MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder {
+	b.EnumerateType = enumerateType
+	return b
 }
 
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) Build() (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) WithStart(start uint8) MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder {
+	b.Start = start
+	return b
+}
+
+func (b *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) Build() (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataEnumerateCategoriesSelectionTracks.deepCopy(), nil
+	return b._MediaTransportControlDataEnumerateCategoriesSelectionTracks.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) MustBuild() MediaTransportControlDataEnumerateCategoriesSelectionTracks {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) MustBuild() MediaTransportControlDataEnumerateCategoriesSelectionTracks {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder().(*_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder creates a MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) CreateMediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder() MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) CreateMediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder() MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder()
 	}
-	return &_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder{_MediaTransportControlDataEnumerateCategoriesSelectionTracks: m.deepCopy()}
+	return &_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder{_MediaTransportControlDataEnumerateCategoriesSelectionTracks: b.deepCopy()}
 }
 
 ///////////////////////
@@ -398,9 +417,13 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) String() 
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -99,6 +99,8 @@ type ModbusTcpADUBuilder interface {
 	WithUnitIdentifier(uint8) ModbusTcpADUBuilder
 	// WithPdu adds Pdu (property field)
 	WithPdu(ModbusPDU) ModbusTcpADUBuilder
+	// WithPduBuilder adds Pdu (property field) which is build by the builder
+	WithPduBuilder(func(ModbusPDUBuilder) ModbusPDUBuilder) ModbusTcpADUBuilder
 	// Build builds the ModbusTcpADU or returns an error if something is wrong
 	Build() (ModbusTcpADU, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,61 +115,93 @@ func NewModbusTcpADUBuilder() ModbusTcpADUBuilder {
 type _ModbusTcpADUBuilder struct {
 	*_ModbusTcpADU
 
+	parentBuilder *_ModbusADUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusTcpADUBuilder) = (*_ModbusTcpADUBuilder)(nil)
 
-func (m *_ModbusTcpADUBuilder) WithMandatoryFields(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU) ModbusTcpADUBuilder {
-	return m.WithTransactionIdentifier(transactionIdentifier).WithUnitIdentifier(unitIdentifier).WithPdu(pdu)
+func (b *_ModbusTcpADUBuilder) setParent(contract ModbusADUContract) {
+	b.ModbusADUContract = contract
 }
 
-func (m *_ModbusTcpADUBuilder) WithTransactionIdentifier(transactionIdentifier uint16) ModbusTcpADUBuilder {
-	m.TransactionIdentifier = transactionIdentifier
-	return m
+func (b *_ModbusTcpADUBuilder) WithMandatoryFields(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU) ModbusTcpADUBuilder {
+	return b.WithTransactionIdentifier(transactionIdentifier).WithUnitIdentifier(unitIdentifier).WithPdu(pdu)
 }
 
-func (m *_ModbusTcpADUBuilder) WithUnitIdentifier(unitIdentifier uint8) ModbusTcpADUBuilder {
-	m.UnitIdentifier = unitIdentifier
-	return m
+func (b *_ModbusTcpADUBuilder) WithTransactionIdentifier(transactionIdentifier uint16) ModbusTcpADUBuilder {
+	b.TransactionIdentifier = transactionIdentifier
+	return b
 }
 
-func (m *_ModbusTcpADUBuilder) WithPdu(pdu ModbusPDU) ModbusTcpADUBuilder {
-	m.Pdu = pdu
-	return m
+func (b *_ModbusTcpADUBuilder) WithUnitIdentifier(unitIdentifier uint8) ModbusTcpADUBuilder {
+	b.UnitIdentifier = unitIdentifier
+	return b
 }
 
-func (m *_ModbusTcpADUBuilder) Build() (ModbusTcpADU, error) {
-	if m.Pdu == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ModbusTcpADUBuilder) WithPdu(pdu ModbusPDU) ModbusTcpADUBuilder {
+	b.Pdu = pdu
+	return b
+}
+
+func (b *_ModbusTcpADUBuilder) WithPduBuilder(builderSupplier func(ModbusPDUBuilder) ModbusPDUBuilder) ModbusTcpADUBuilder {
+	builder := builderSupplier(b.Pdu.CreateModbusPDUBuilder())
+	var err error
+	b.Pdu, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'pdu' not set"))
+		b.err.Append(errors.Wrap(err, "ModbusPDUBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._ModbusTcpADU.deepCopy(), nil
+	return b
 }
 
-func (m *_ModbusTcpADUBuilder) MustBuild() ModbusTcpADU {
-	build, err := m.Build()
+func (b *_ModbusTcpADUBuilder) Build() (ModbusTcpADU, error) {
+	if b.Pdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'pdu' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ModbusTcpADU.deepCopy(), nil
+}
+
+func (b *_ModbusTcpADUBuilder) MustBuild() ModbusTcpADU {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusTcpADUBuilder) DeepCopy() any {
-	return m.CreateModbusTcpADUBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusTcpADUBuilder) Done() ModbusADUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusTcpADUBuilder) buildForModbusADU() (ModbusADU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusTcpADUBuilder) DeepCopy() any {
+	_copy := b.CreateModbusTcpADUBuilder().(*_ModbusTcpADUBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusTcpADUBuilder creates a ModbusTcpADUBuilder
-func (m *_ModbusTcpADU) CreateModbusTcpADUBuilder() ModbusTcpADUBuilder {
-	if m == nil {
+func (b *_ModbusTcpADU) CreateModbusTcpADUBuilder() ModbusTcpADUBuilder {
+	if b == nil {
 		return NewModbusTcpADUBuilder()
 	}
-	return &_ModbusTcpADUBuilder{_ModbusTcpADU: m.deepCopy()}
+	return &_ModbusTcpADUBuilder{_ModbusTcpADU: b.deepCopy()}
 }
 
 ///////////////////////
@@ -386,9 +420,13 @@ func (m *_ModbusTcpADU) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -89,35 +89,39 @@ type _ResponseTerminationBuilder struct {
 
 var _ (ResponseTerminationBuilder) = (*_ResponseTerminationBuilder)(nil)
 
-func (m *_ResponseTerminationBuilder) WithMandatoryFields() ResponseTerminationBuilder {
-	return m
+func (b *_ResponseTerminationBuilder) WithMandatoryFields() ResponseTerminationBuilder {
+	return b
 }
 
-func (m *_ResponseTerminationBuilder) Build() (ResponseTermination, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ResponseTerminationBuilder) Build() (ResponseTermination, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ResponseTermination.deepCopy(), nil
+	return b._ResponseTermination.deepCopy(), nil
 }
 
-func (m *_ResponseTerminationBuilder) MustBuild() ResponseTermination {
-	build, err := m.Build()
+func (b *_ResponseTerminationBuilder) MustBuild() ResponseTermination {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ResponseTerminationBuilder) DeepCopy() any {
-	return m.CreateResponseTerminationBuilder()
+func (b *_ResponseTerminationBuilder) DeepCopy() any {
+	_copy := b.CreateResponseTerminationBuilder().(*_ResponseTerminationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateResponseTerminationBuilder creates a ResponseTerminationBuilder
-func (m *_ResponseTermination) CreateResponseTerminationBuilder() ResponseTerminationBuilder {
-	if m == nil {
+func (b *_ResponseTermination) CreateResponseTerminationBuilder() ResponseTerminationBuilder {
+	if b == nil {
 		return NewResponseTerminationBuilder()
 	}
-	return &_ResponseTerminationBuilder{_ResponseTermination: m.deepCopy()}
+	return &_ResponseTerminationBuilder{_ResponseTermination: b.deepCopy()}
 }
 
 ///////////////////////
@@ -269,9 +273,13 @@ func (m *_ResponseTermination) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -93,45 +93,64 @@ func NewBACnetConstructedDataBBMDBroadcastDistributionTableBuilder() BACnetConst
 type _BACnetConstructedDataBBMDBroadcastDistributionTableBuilder struct {
 	*_BACnetConstructedDataBBMDBroadcastDistributionTable
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) = (*_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder)(nil)
 
-func (m *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) WithMandatoryFields(bbmdBroadcastDistributionTable []BACnetBDTEntry) BACnetConstructedDataBBMDBroadcastDistributionTableBuilder {
-	return m.WithBbmdBroadcastDistributionTable(bbmdBroadcastDistributionTable...)
+func (b *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) WithBbmdBroadcastDistributionTable(bbmdBroadcastDistributionTable ...BACnetBDTEntry) BACnetConstructedDataBBMDBroadcastDistributionTableBuilder {
-	m.BbmdBroadcastDistributionTable = bbmdBroadcastDistributionTable
-	return m
+func (b *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) WithMandatoryFields(bbmdBroadcastDistributionTable []BACnetBDTEntry) BACnetConstructedDataBBMDBroadcastDistributionTableBuilder {
+	return b.WithBbmdBroadcastDistributionTable(bbmdBroadcastDistributionTable...)
 }
 
-func (m *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) Build() (BACnetConstructedDataBBMDBroadcastDistributionTable, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) WithBbmdBroadcastDistributionTable(bbmdBroadcastDistributionTable ...BACnetBDTEntry) BACnetConstructedDataBBMDBroadcastDistributionTableBuilder {
+	b.BbmdBroadcastDistributionTable = bbmdBroadcastDistributionTable
+	return b
+}
+
+func (b *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) Build() (BACnetConstructedDataBBMDBroadcastDistributionTable, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBBMDBroadcastDistributionTable.deepCopy(), nil
+	return b._BACnetConstructedDataBBMDBroadcastDistributionTable.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) MustBuild() BACnetConstructedDataBBMDBroadcastDistributionTable {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) MustBuild() BACnetConstructedDataBBMDBroadcastDistributionTable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBBMDBroadcastDistributionTableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBBMDBroadcastDistributionTableBuilder().(*_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBBMDBroadcastDistributionTableBuilder creates a BACnetConstructedDataBBMDBroadcastDistributionTableBuilder
-func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) CreateBACnetConstructedDataBBMDBroadcastDistributionTableBuilder() BACnetConstructedDataBBMDBroadcastDistributionTableBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBBMDBroadcastDistributionTable) CreateBACnetConstructedDataBBMDBroadcastDistributionTableBuilder() BACnetConstructedDataBBMDBroadcastDistributionTableBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBBMDBroadcastDistributionTableBuilder()
 	}
-	return &_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder{_BACnetConstructedDataBBMDBroadcastDistributionTable: m.deepCopy()}
+	return &_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder{_BACnetConstructedDataBBMDBroadcastDistributionTable: b.deepCopy()}
 }
 
 ///////////////////////
@@ -284,9 +303,13 @@ func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

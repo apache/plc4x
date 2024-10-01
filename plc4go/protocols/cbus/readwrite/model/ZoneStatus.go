@@ -90,40 +90,44 @@ type _ZoneStatusBuilder struct {
 
 var _ (ZoneStatusBuilder) = (*_ZoneStatusBuilder)(nil)
 
-func (m *_ZoneStatusBuilder) WithMandatoryFields(value ZoneStatusTemp) ZoneStatusBuilder {
-	return m.WithValue(value)
+func (b *_ZoneStatusBuilder) WithMandatoryFields(value ZoneStatusTemp) ZoneStatusBuilder {
+	return b.WithValue(value)
 }
 
-func (m *_ZoneStatusBuilder) WithValue(value ZoneStatusTemp) ZoneStatusBuilder {
-	m.Value = value
-	return m
+func (b *_ZoneStatusBuilder) WithValue(value ZoneStatusTemp) ZoneStatusBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_ZoneStatusBuilder) Build() (ZoneStatus, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ZoneStatusBuilder) Build() (ZoneStatus, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ZoneStatus.deepCopy(), nil
+	return b._ZoneStatus.deepCopy(), nil
 }
 
-func (m *_ZoneStatusBuilder) MustBuild() ZoneStatus {
-	build, err := m.Build()
+func (b *_ZoneStatusBuilder) MustBuild() ZoneStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ZoneStatusBuilder) DeepCopy() any {
-	return m.CreateZoneStatusBuilder()
+func (b *_ZoneStatusBuilder) DeepCopy() any {
+	_copy := b.CreateZoneStatusBuilder().(*_ZoneStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateZoneStatusBuilder creates a ZoneStatusBuilder
-func (m *_ZoneStatus) CreateZoneStatusBuilder() ZoneStatusBuilder {
-	if m == nil {
+func (b *_ZoneStatus) CreateZoneStatusBuilder() ZoneStatusBuilder {
+	if b == nil {
 		return NewZoneStatusBuilder()
 	}
-	return &_ZoneStatusBuilder{_ZoneStatus: m.deepCopy()}
+	return &_ZoneStatusBuilder{_ZoneStatus: b.deepCopy()}
 }
 
 ///////////////////////
@@ -260,9 +264,13 @@ func (m *_ZoneStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

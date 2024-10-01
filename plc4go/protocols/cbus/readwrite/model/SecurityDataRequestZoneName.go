@@ -93,45 +93,64 @@ func NewSecurityDataRequestZoneNameBuilder() SecurityDataRequestZoneNameBuilder 
 type _SecurityDataRequestZoneNameBuilder struct {
 	*_SecurityDataRequestZoneName
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataRequestZoneNameBuilder) = (*_SecurityDataRequestZoneNameBuilder)(nil)
 
-func (m *_SecurityDataRequestZoneNameBuilder) WithMandatoryFields(zoneNumber uint8) SecurityDataRequestZoneNameBuilder {
-	return m.WithZoneNumber(zoneNumber)
+func (b *_SecurityDataRequestZoneNameBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataRequestZoneNameBuilder) WithZoneNumber(zoneNumber uint8) SecurityDataRequestZoneNameBuilder {
-	m.ZoneNumber = zoneNumber
-	return m
+func (b *_SecurityDataRequestZoneNameBuilder) WithMandatoryFields(zoneNumber uint8) SecurityDataRequestZoneNameBuilder {
+	return b.WithZoneNumber(zoneNumber)
 }
 
-func (m *_SecurityDataRequestZoneNameBuilder) Build() (SecurityDataRequestZoneName, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataRequestZoneNameBuilder) WithZoneNumber(zoneNumber uint8) SecurityDataRequestZoneNameBuilder {
+	b.ZoneNumber = zoneNumber
+	return b
+}
+
+func (b *_SecurityDataRequestZoneNameBuilder) Build() (SecurityDataRequestZoneName, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataRequestZoneName.deepCopy(), nil
+	return b._SecurityDataRequestZoneName.deepCopy(), nil
 }
 
-func (m *_SecurityDataRequestZoneNameBuilder) MustBuild() SecurityDataRequestZoneName {
-	build, err := m.Build()
+func (b *_SecurityDataRequestZoneNameBuilder) MustBuild() SecurityDataRequestZoneName {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataRequestZoneNameBuilder) DeepCopy() any {
-	return m.CreateSecurityDataRequestZoneNameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataRequestZoneNameBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataRequestZoneNameBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataRequestZoneNameBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataRequestZoneNameBuilder().(*_SecurityDataRequestZoneNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataRequestZoneNameBuilder creates a SecurityDataRequestZoneNameBuilder
-func (m *_SecurityDataRequestZoneName) CreateSecurityDataRequestZoneNameBuilder() SecurityDataRequestZoneNameBuilder {
-	if m == nil {
+func (b *_SecurityDataRequestZoneName) CreateSecurityDataRequestZoneNameBuilder() SecurityDataRequestZoneNameBuilder {
+	if b == nil {
 		return NewSecurityDataRequestZoneNameBuilder()
 	}
-	return &_SecurityDataRequestZoneNameBuilder{_SecurityDataRequestZoneName: m.deepCopy()}
+	return &_SecurityDataRequestZoneNameBuilder{_SecurityDataRequestZoneName: b.deepCopy()}
 }
 
 ///////////////////////
@@ -271,9 +290,13 @@ func (m *_SecurityDataRequestZoneName) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

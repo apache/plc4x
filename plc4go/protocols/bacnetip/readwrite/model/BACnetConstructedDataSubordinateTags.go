@@ -103,63 +103,82 @@ func NewBACnetConstructedDataSubordinateTagsBuilder() BACnetConstructedDataSubor
 type _BACnetConstructedDataSubordinateTagsBuilder struct {
 	*_BACnetConstructedDataSubordinateTags
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSubordinateTagsBuilder) = (*_BACnetConstructedDataSubordinateTagsBuilder)(nil)
 
-func (m *_BACnetConstructedDataSubordinateTagsBuilder) WithMandatoryFields(subordinateList []BACnetNameValueCollection) BACnetConstructedDataSubordinateTagsBuilder {
-	return m.WithSubordinateList(subordinateList...)
+func (b *_BACnetConstructedDataSubordinateTagsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSubordinateTagsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSubordinateTagsBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataSubordinateTagsBuilder) WithMandatoryFields(subordinateList []BACnetNameValueCollection) BACnetConstructedDataSubordinateTagsBuilder {
+	return b.WithSubordinateList(subordinateList...)
 }
 
-func (m *_BACnetConstructedDataSubordinateTagsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSubordinateTagsBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataSubordinateTagsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSubordinateTagsBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataSubordinateTagsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSubordinateTagsBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataSubordinateTagsBuilder) WithSubordinateList(subordinateList ...BACnetNameValueCollection) BACnetConstructedDataSubordinateTagsBuilder {
-	m.SubordinateList = subordinateList
-	return m
+func (b *_BACnetConstructedDataSubordinateTagsBuilder) WithSubordinateList(subordinateList ...BACnetNameValueCollection) BACnetConstructedDataSubordinateTagsBuilder {
+	b.SubordinateList = subordinateList
+	return b
 }
 
-func (m *_BACnetConstructedDataSubordinateTagsBuilder) Build() (BACnetConstructedDataSubordinateTags, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataSubordinateTagsBuilder) Build() (BACnetConstructedDataSubordinateTags, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSubordinateTags.deepCopy(), nil
+	return b._BACnetConstructedDataSubordinateTags.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSubordinateTagsBuilder) MustBuild() BACnetConstructedDataSubordinateTags {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSubordinateTagsBuilder) MustBuild() BACnetConstructedDataSubordinateTags {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSubordinateTagsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSubordinateTagsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSubordinateTagsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSubordinateTagsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSubordinateTagsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSubordinateTagsBuilder().(*_BACnetConstructedDataSubordinateTagsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSubordinateTagsBuilder creates a BACnetConstructedDataSubordinateTagsBuilder
-func (m *_BACnetConstructedDataSubordinateTags) CreateBACnetConstructedDataSubordinateTagsBuilder() BACnetConstructedDataSubordinateTagsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSubordinateTags) CreateBACnetConstructedDataSubordinateTagsBuilder() BACnetConstructedDataSubordinateTagsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSubordinateTagsBuilder()
 	}
-	return &_BACnetConstructedDataSubordinateTagsBuilder{_BACnetConstructedDataSubordinateTags: m.deepCopy()}
+	return &_BACnetConstructedDataSubordinateTagsBuilder{_BACnetConstructedDataSubordinateTags: b.deepCopy()}
 }
 
 ///////////////////////
@@ -366,9 +385,13 @@ func (m *_BACnetConstructedDataSubordinateTags) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -85,40 +85,59 @@ func NewModbusPDUGetComEventLogRequestBuilder() ModbusPDUGetComEventLogRequestBu
 type _ModbusPDUGetComEventLogRequestBuilder struct {
 	*_ModbusPDUGetComEventLogRequest
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUGetComEventLogRequestBuilder) = (*_ModbusPDUGetComEventLogRequestBuilder)(nil)
 
-func (m *_ModbusPDUGetComEventLogRequestBuilder) WithMandatoryFields() ModbusPDUGetComEventLogRequestBuilder {
-	return m
+func (b *_ModbusPDUGetComEventLogRequestBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUGetComEventLogRequestBuilder) Build() (ModbusPDUGetComEventLogRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUGetComEventLogRequestBuilder) WithMandatoryFields() ModbusPDUGetComEventLogRequestBuilder {
+	return b
+}
+
+func (b *_ModbusPDUGetComEventLogRequestBuilder) Build() (ModbusPDUGetComEventLogRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUGetComEventLogRequest.deepCopy(), nil
+	return b._ModbusPDUGetComEventLogRequest.deepCopy(), nil
 }
 
-func (m *_ModbusPDUGetComEventLogRequestBuilder) MustBuild() ModbusPDUGetComEventLogRequest {
-	build, err := m.Build()
+func (b *_ModbusPDUGetComEventLogRequestBuilder) MustBuild() ModbusPDUGetComEventLogRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUGetComEventLogRequestBuilder) DeepCopy() any {
-	return m.CreateModbusPDUGetComEventLogRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUGetComEventLogRequestBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUGetComEventLogRequestBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUGetComEventLogRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUGetComEventLogRequestBuilder().(*_ModbusPDUGetComEventLogRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUGetComEventLogRequestBuilder creates a ModbusPDUGetComEventLogRequestBuilder
-func (m *_ModbusPDUGetComEventLogRequest) CreateModbusPDUGetComEventLogRequestBuilder() ModbusPDUGetComEventLogRequestBuilder {
-	if m == nil {
+func (b *_ModbusPDUGetComEventLogRequest) CreateModbusPDUGetComEventLogRequestBuilder() ModbusPDUGetComEventLogRequestBuilder {
+	if b == nil {
 		return NewModbusPDUGetComEventLogRequestBuilder()
 	}
-	return &_ModbusPDUGetComEventLogRequestBuilder{_ModbusPDUGetComEventLogRequest: m.deepCopy()}
+	return &_ModbusPDUGetComEventLogRequestBuilder{_ModbusPDUGetComEventLogRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -242,9 +261,13 @@ func (m *_ModbusPDUGetComEventLogRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

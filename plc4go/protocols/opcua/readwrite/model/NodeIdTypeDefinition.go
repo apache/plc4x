@@ -89,10 +89,44 @@ type NodeIdTypeDefinitionBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() NodeIdTypeDefinitionBuilder
+	// AsNodeIdTwoByte converts this build to a subType of NodeIdTypeDefinition. It is always possible to return to current builder using Done()
+	AsNodeIdTwoByte() interface {
+		NodeIdTwoByteBuilder
+		Done() NodeIdTypeDefinitionBuilder
+	}
+	// AsNodeIdFourByte converts this build to a subType of NodeIdTypeDefinition. It is always possible to return to current builder using Done()
+	AsNodeIdFourByte() interface {
+		NodeIdFourByteBuilder
+		Done() NodeIdTypeDefinitionBuilder
+	}
+	// AsNodeIdNumeric converts this build to a subType of NodeIdTypeDefinition. It is always possible to return to current builder using Done()
+	AsNodeIdNumeric() interface {
+		NodeIdNumericBuilder
+		Done() NodeIdTypeDefinitionBuilder
+	}
+	// AsNodeIdString converts this build to a subType of NodeIdTypeDefinition. It is always possible to return to current builder using Done()
+	AsNodeIdString() interface {
+		NodeIdStringBuilder
+		Done() NodeIdTypeDefinitionBuilder
+	}
+	// AsNodeIdGuid converts this build to a subType of NodeIdTypeDefinition. It is always possible to return to current builder using Done()
+	AsNodeIdGuid() interface {
+		NodeIdGuidBuilder
+		Done() NodeIdTypeDefinitionBuilder
+	}
+	// AsNodeIdByteString converts this build to a subType of NodeIdTypeDefinition. It is always possible to return to current builder using Done()
+	AsNodeIdByteString() interface {
+		NodeIdByteStringBuilder
+		Done() NodeIdTypeDefinitionBuilder
+	}
 	// Build builds the NodeIdTypeDefinition or returns an error if something is wrong
-	Build() (NodeIdTypeDefinitionContract, error)
+	PartialBuild() (NodeIdTypeDefinitionContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() NodeIdTypeDefinitionContract
+	PartialMustBuild() NodeIdTypeDefinitionContract
+	// Build builds the NodeIdTypeDefinition or returns an error if something is wrong
+	Build() (NodeIdTypeDefinition, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NodeIdTypeDefinition
 }
 
 // NewNodeIdTypeDefinitionBuilder() creates a NodeIdTypeDefinitionBuilder
@@ -100,43 +134,173 @@ func NewNodeIdTypeDefinitionBuilder() NodeIdTypeDefinitionBuilder {
 	return &_NodeIdTypeDefinitionBuilder{_NodeIdTypeDefinition: new(_NodeIdTypeDefinition)}
 }
 
+type _NodeIdTypeDefinitionChildBuilder interface {
+	utils.Copyable
+	setParent(NodeIdTypeDefinitionContract)
+	buildForNodeIdTypeDefinition() (NodeIdTypeDefinition, error)
+}
+
 type _NodeIdTypeDefinitionBuilder struct {
 	*_NodeIdTypeDefinition
+
+	childBuilder _NodeIdTypeDefinitionChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (NodeIdTypeDefinitionBuilder) = (*_NodeIdTypeDefinitionBuilder)(nil)
 
-func (m *_NodeIdTypeDefinitionBuilder) WithMandatoryFields() NodeIdTypeDefinitionBuilder {
-	return m
+func (b *_NodeIdTypeDefinitionBuilder) WithMandatoryFields() NodeIdTypeDefinitionBuilder {
+	return b
 }
 
-func (m *_NodeIdTypeDefinitionBuilder) Build() (NodeIdTypeDefinitionContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NodeIdTypeDefinitionBuilder) PartialBuild() (NodeIdTypeDefinitionContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NodeIdTypeDefinition.deepCopy(), nil
+	return b._NodeIdTypeDefinition.deepCopy(), nil
 }
 
-func (m *_NodeIdTypeDefinitionBuilder) MustBuild() NodeIdTypeDefinitionContract {
-	build, err := m.Build()
+func (b *_NodeIdTypeDefinitionBuilder) PartialMustBuild() NodeIdTypeDefinitionContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NodeIdTypeDefinitionBuilder) DeepCopy() any {
-	return m.CreateNodeIdTypeDefinitionBuilder()
+func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdTwoByte() interface {
+	NodeIdTwoByteBuilder
+	Done() NodeIdTypeDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		NodeIdTwoByteBuilder
+		Done() NodeIdTypeDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewNodeIdTwoByteBuilder().(*_NodeIdTwoByteBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdFourByte() interface {
+	NodeIdFourByteBuilder
+	Done() NodeIdTypeDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		NodeIdFourByteBuilder
+		Done() NodeIdTypeDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewNodeIdFourByteBuilder().(*_NodeIdFourByteBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdNumeric() interface {
+	NodeIdNumericBuilder
+	Done() NodeIdTypeDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		NodeIdNumericBuilder
+		Done() NodeIdTypeDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewNodeIdNumericBuilder().(*_NodeIdNumericBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdString() interface {
+	NodeIdStringBuilder
+	Done() NodeIdTypeDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		NodeIdStringBuilder
+		Done() NodeIdTypeDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewNodeIdStringBuilder().(*_NodeIdStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdGuid() interface {
+	NodeIdGuidBuilder
+	Done() NodeIdTypeDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		NodeIdGuidBuilder
+		Done() NodeIdTypeDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewNodeIdGuidBuilder().(*_NodeIdGuidBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdByteString() interface {
+	NodeIdByteStringBuilder
+	Done() NodeIdTypeDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		NodeIdByteStringBuilder
+		Done() NodeIdTypeDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewNodeIdByteStringBuilder().(*_NodeIdByteStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_NodeIdTypeDefinitionBuilder) Build() (NodeIdTypeDefinition, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForNodeIdTypeDefinition()
+}
+
+func (b *_NodeIdTypeDefinitionBuilder) MustBuild() NodeIdTypeDefinition {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_NodeIdTypeDefinitionBuilder) DeepCopy() any {
+	_copy := b.CreateNodeIdTypeDefinitionBuilder().(*_NodeIdTypeDefinitionBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_NodeIdTypeDefinitionChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNodeIdTypeDefinitionBuilder creates a NodeIdTypeDefinitionBuilder
-func (m *_NodeIdTypeDefinition) CreateNodeIdTypeDefinitionBuilder() NodeIdTypeDefinitionBuilder {
-	if m == nil {
+func (b *_NodeIdTypeDefinition) CreateNodeIdTypeDefinitionBuilder() NodeIdTypeDefinitionBuilder {
+	if b == nil {
 		return NewNodeIdTypeDefinitionBuilder()
 	}
-	return &_NodeIdTypeDefinitionBuilder{_NodeIdTypeDefinition: m.deepCopy()}
+	return &_NodeIdTypeDefinitionBuilder{_NodeIdTypeDefinition: b.deepCopy()}
 }
 
 ///////////////////////

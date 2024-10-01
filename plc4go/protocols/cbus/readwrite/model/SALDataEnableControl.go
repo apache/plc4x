@@ -98,64 +98,83 @@ func NewSALDataEnableControlBuilder() SALDataEnableControlBuilder {
 type _SALDataEnableControlBuilder struct {
 	*_SALDataEnableControl
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataEnableControlBuilder) = (*_SALDataEnableControlBuilder)(nil)
 
-func (m *_SALDataEnableControlBuilder) WithMandatoryFields(enableControlData EnableControlData) SALDataEnableControlBuilder {
-	return m.WithEnableControlData(enableControlData)
+func (b *_SALDataEnableControlBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataEnableControlBuilder) WithEnableControlData(enableControlData EnableControlData) SALDataEnableControlBuilder {
-	m.EnableControlData = enableControlData
-	return m
+func (b *_SALDataEnableControlBuilder) WithMandatoryFields(enableControlData EnableControlData) SALDataEnableControlBuilder {
+	return b.WithEnableControlData(enableControlData)
 }
 
-func (m *_SALDataEnableControlBuilder) WithEnableControlDataBuilder(builderSupplier func(EnableControlDataBuilder) EnableControlDataBuilder) SALDataEnableControlBuilder {
-	builder := builderSupplier(m.EnableControlData.CreateEnableControlDataBuilder())
+func (b *_SALDataEnableControlBuilder) WithEnableControlData(enableControlData EnableControlData) SALDataEnableControlBuilder {
+	b.EnableControlData = enableControlData
+	return b
+}
+
+func (b *_SALDataEnableControlBuilder) WithEnableControlDataBuilder(builderSupplier func(EnableControlDataBuilder) EnableControlDataBuilder) SALDataEnableControlBuilder {
+	builder := builderSupplier(b.EnableControlData.CreateEnableControlDataBuilder())
 	var err error
-	m.EnableControlData, err = builder.Build()
+	b.EnableControlData, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "EnableControlDataBuilder failed"))
+		b.err.Append(errors.Wrap(err, "EnableControlDataBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SALDataEnableControlBuilder) Build() (SALDataEnableControl, error) {
-	if m.EnableControlData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SALDataEnableControlBuilder) Build() (SALDataEnableControl, error) {
+	if b.EnableControlData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'enableControlData' not set"))
+		b.err.Append(errors.New("mandatory field 'enableControlData' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SALDataEnableControl.deepCopy(), nil
+	return b._SALDataEnableControl.deepCopy(), nil
 }
 
-func (m *_SALDataEnableControlBuilder) MustBuild() SALDataEnableControl {
-	build, err := m.Build()
+func (b *_SALDataEnableControlBuilder) MustBuild() SALDataEnableControl {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataEnableControlBuilder) DeepCopy() any {
-	return m.CreateSALDataEnableControlBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataEnableControlBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataEnableControlBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataEnableControlBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataEnableControlBuilder().(*_SALDataEnableControlBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataEnableControlBuilder creates a SALDataEnableControlBuilder
-func (m *_SALDataEnableControl) CreateSALDataEnableControlBuilder() SALDataEnableControlBuilder {
-	if m == nil {
+func (b *_SALDataEnableControl) CreateSALDataEnableControlBuilder() SALDataEnableControlBuilder {
+	if b == nil {
 		return NewSALDataEnableControlBuilder()
 	}
-	return &_SALDataEnableControlBuilder{_SALDataEnableControl: m.deepCopy()}
+	return &_SALDataEnableControlBuilder{_SALDataEnableControl: b.deepCopy()}
 }
 
 ///////////////////////
@@ -299,9 +318,13 @@ func (m *_SALDataEnableControl) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

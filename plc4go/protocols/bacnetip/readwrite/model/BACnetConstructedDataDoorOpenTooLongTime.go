@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDoorOpenTooLongTimeBuilder() BACnetConstructedDataD
 type _BACnetConstructedDataDoorOpenTooLongTimeBuilder struct {
 	*_BACnetConstructedDataDoorOpenTooLongTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDoorOpenTooLongTimeBuilder) = (*_BACnetConstructedDataDoorOpenTooLongTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) WithMandatoryFields(doorOpenTooLongTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorOpenTooLongTimeBuilder {
-	return m.WithDoorOpenTooLongTime(doorOpenTooLongTime)
+func (b *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) WithDoorOpenTooLongTime(doorOpenTooLongTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorOpenTooLongTimeBuilder {
-	m.DoorOpenTooLongTime = doorOpenTooLongTime
-	return m
+func (b *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) WithMandatoryFields(doorOpenTooLongTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorOpenTooLongTimeBuilder {
+	return b.WithDoorOpenTooLongTime(doorOpenTooLongTime)
 }
 
-func (m *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) WithDoorOpenTooLongTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDoorOpenTooLongTimeBuilder {
-	builder := builderSupplier(m.DoorOpenTooLongTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) WithDoorOpenTooLongTime(doorOpenTooLongTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorOpenTooLongTimeBuilder {
+	b.DoorOpenTooLongTime = doorOpenTooLongTime
+	return b
+}
+
+func (b *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) WithDoorOpenTooLongTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDoorOpenTooLongTimeBuilder {
+	builder := builderSupplier(b.DoorOpenTooLongTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.DoorOpenTooLongTime, err = builder.Build()
+	b.DoorOpenTooLongTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) Build() (BACnetConstructedDataDoorOpenTooLongTime, error) {
-	if m.DoorOpenTooLongTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) Build() (BACnetConstructedDataDoorOpenTooLongTime, error) {
+	if b.DoorOpenTooLongTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'doorOpenTooLongTime' not set"))
+		b.err.Append(errors.New("mandatory field 'doorOpenTooLongTime' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDoorOpenTooLongTime.deepCopy(), nil
+	return b._BACnetConstructedDataDoorOpenTooLongTime.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) MustBuild() BACnetConstructedDataDoorOpenTooLongTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) MustBuild() BACnetConstructedDataDoorOpenTooLongTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDoorOpenTooLongTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDoorOpenTooLongTimeBuilder().(*_BACnetConstructedDataDoorOpenTooLongTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDoorOpenTooLongTimeBuilder creates a BACnetConstructedDataDoorOpenTooLongTimeBuilder
-func (m *_BACnetConstructedDataDoorOpenTooLongTime) CreateBACnetConstructedDataDoorOpenTooLongTimeBuilder() BACnetConstructedDataDoorOpenTooLongTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDoorOpenTooLongTime) CreateBACnetConstructedDataDoorOpenTooLongTimeBuilder() BACnetConstructedDataDoorOpenTooLongTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDoorOpenTooLongTimeBuilder()
 	}
-	return &_BACnetConstructedDataDoorOpenTooLongTimeBuilder{_BACnetConstructedDataDoorOpenTooLongTime: m.deepCopy()}
+	return &_BACnetConstructedDataDoorOpenTooLongTimeBuilder{_BACnetConstructedDataDoorOpenTooLongTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataDoorOpenTooLongTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

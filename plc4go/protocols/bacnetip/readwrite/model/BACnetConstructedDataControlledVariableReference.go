@@ -100,64 +100,83 @@ func NewBACnetConstructedDataControlledVariableReferenceBuilder() BACnetConstruc
 type _BACnetConstructedDataControlledVariableReferenceBuilder struct {
 	*_BACnetConstructedDataControlledVariableReference
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataControlledVariableReferenceBuilder) = (*_BACnetConstructedDataControlledVariableReferenceBuilder)(nil)
 
-func (m *_BACnetConstructedDataControlledVariableReferenceBuilder) WithMandatoryFields(controlledVariableReference BACnetObjectPropertyReference) BACnetConstructedDataControlledVariableReferenceBuilder {
-	return m.WithControlledVariableReference(controlledVariableReference)
+func (b *_BACnetConstructedDataControlledVariableReferenceBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataControlledVariableReferenceBuilder) WithControlledVariableReference(controlledVariableReference BACnetObjectPropertyReference) BACnetConstructedDataControlledVariableReferenceBuilder {
-	m.ControlledVariableReference = controlledVariableReference
-	return m
+func (b *_BACnetConstructedDataControlledVariableReferenceBuilder) WithMandatoryFields(controlledVariableReference BACnetObjectPropertyReference) BACnetConstructedDataControlledVariableReferenceBuilder {
+	return b.WithControlledVariableReference(controlledVariableReference)
 }
 
-func (m *_BACnetConstructedDataControlledVariableReferenceBuilder) WithControlledVariableReferenceBuilder(builderSupplier func(BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceBuilder) BACnetConstructedDataControlledVariableReferenceBuilder {
-	builder := builderSupplier(m.ControlledVariableReference.CreateBACnetObjectPropertyReferenceBuilder())
+func (b *_BACnetConstructedDataControlledVariableReferenceBuilder) WithControlledVariableReference(controlledVariableReference BACnetObjectPropertyReference) BACnetConstructedDataControlledVariableReferenceBuilder {
+	b.ControlledVariableReference = controlledVariableReference
+	return b
+}
+
+func (b *_BACnetConstructedDataControlledVariableReferenceBuilder) WithControlledVariableReferenceBuilder(builderSupplier func(BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceBuilder) BACnetConstructedDataControlledVariableReferenceBuilder {
+	builder := builderSupplier(b.ControlledVariableReference.CreateBACnetObjectPropertyReferenceBuilder())
 	var err error
-	m.ControlledVariableReference, err = builder.Build()
+	b.ControlledVariableReference, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataControlledVariableReferenceBuilder) Build() (BACnetConstructedDataControlledVariableReference, error) {
-	if m.ControlledVariableReference == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataControlledVariableReferenceBuilder) Build() (BACnetConstructedDataControlledVariableReference, error) {
+	if b.ControlledVariableReference == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'controlledVariableReference' not set"))
+		b.err.Append(errors.New("mandatory field 'controlledVariableReference' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataControlledVariableReference.deepCopy(), nil
+	return b._BACnetConstructedDataControlledVariableReference.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataControlledVariableReferenceBuilder) MustBuild() BACnetConstructedDataControlledVariableReference {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataControlledVariableReferenceBuilder) MustBuild() BACnetConstructedDataControlledVariableReference {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataControlledVariableReferenceBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataControlledVariableReferenceBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataControlledVariableReferenceBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataControlledVariableReferenceBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataControlledVariableReferenceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataControlledVariableReferenceBuilder().(*_BACnetConstructedDataControlledVariableReferenceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataControlledVariableReferenceBuilder creates a BACnetConstructedDataControlledVariableReferenceBuilder
-func (m *_BACnetConstructedDataControlledVariableReference) CreateBACnetConstructedDataControlledVariableReferenceBuilder() BACnetConstructedDataControlledVariableReferenceBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataControlledVariableReference) CreateBACnetConstructedDataControlledVariableReferenceBuilder() BACnetConstructedDataControlledVariableReferenceBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataControlledVariableReferenceBuilder()
 	}
-	return &_BACnetConstructedDataControlledVariableReferenceBuilder{_BACnetConstructedDataControlledVariableReference: m.deepCopy()}
+	return &_BACnetConstructedDataControlledVariableReferenceBuilder{_BACnetConstructedDataControlledVariableReference: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataControlledVariableReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

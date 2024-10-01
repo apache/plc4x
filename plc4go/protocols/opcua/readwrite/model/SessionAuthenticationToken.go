@@ -83,35 +83,39 @@ type _SessionAuthenticationTokenBuilder struct {
 
 var _ (SessionAuthenticationTokenBuilder) = (*_SessionAuthenticationTokenBuilder)(nil)
 
-func (m *_SessionAuthenticationTokenBuilder) WithMandatoryFields() SessionAuthenticationTokenBuilder {
-	return m
+func (b *_SessionAuthenticationTokenBuilder) WithMandatoryFields() SessionAuthenticationTokenBuilder {
+	return b
 }
 
-func (m *_SessionAuthenticationTokenBuilder) Build() (SessionAuthenticationToken, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SessionAuthenticationTokenBuilder) Build() (SessionAuthenticationToken, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SessionAuthenticationToken.deepCopy(), nil
+	return b._SessionAuthenticationToken.deepCopy(), nil
 }
 
-func (m *_SessionAuthenticationTokenBuilder) MustBuild() SessionAuthenticationToken {
-	build, err := m.Build()
+func (b *_SessionAuthenticationTokenBuilder) MustBuild() SessionAuthenticationToken {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SessionAuthenticationTokenBuilder) DeepCopy() any {
-	return m.CreateSessionAuthenticationTokenBuilder()
+func (b *_SessionAuthenticationTokenBuilder) DeepCopy() any {
+	_copy := b.CreateSessionAuthenticationTokenBuilder().(*_SessionAuthenticationTokenBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSessionAuthenticationTokenBuilder creates a SessionAuthenticationTokenBuilder
-func (m *_SessionAuthenticationToken) CreateSessionAuthenticationTokenBuilder() SessionAuthenticationTokenBuilder {
-	if m == nil {
+func (b *_SessionAuthenticationToken) CreateSessionAuthenticationTokenBuilder() SessionAuthenticationTokenBuilder {
+	if b == nil {
 		return NewSessionAuthenticationTokenBuilder()
 	}
-	return &_SessionAuthenticationTokenBuilder{_SessionAuthenticationToken: m.deepCopy()}
+	return &_SessionAuthenticationTokenBuilder{_SessionAuthenticationToken: b.deepCopy()}
 }
 
 ///////////////////////
@@ -219,9 +223,13 @@ func (m *_SessionAuthenticationToken) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

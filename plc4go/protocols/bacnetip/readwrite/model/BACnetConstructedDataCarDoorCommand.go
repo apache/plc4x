@@ -103,63 +103,82 @@ func NewBACnetConstructedDataCarDoorCommandBuilder() BACnetConstructedDataCarDoo
 type _BACnetConstructedDataCarDoorCommandBuilder struct {
 	*_BACnetConstructedDataCarDoorCommand
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCarDoorCommandBuilder) = (*_BACnetConstructedDataCarDoorCommandBuilder)(nil)
 
-func (m *_BACnetConstructedDataCarDoorCommandBuilder) WithMandatoryFields(carDoorCommand []BACnetLiftCarDoorCommandTagged) BACnetConstructedDataCarDoorCommandBuilder {
-	return m.WithCarDoorCommand(carDoorCommand...)
+func (b *_BACnetConstructedDataCarDoorCommandBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCarDoorCommandBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarDoorCommandBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataCarDoorCommandBuilder) WithMandatoryFields(carDoorCommand []BACnetLiftCarDoorCommandTagged) BACnetConstructedDataCarDoorCommandBuilder {
+	return b.WithCarDoorCommand(carDoorCommand...)
 }
 
-func (m *_BACnetConstructedDataCarDoorCommandBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCarDoorCommandBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataCarDoorCommandBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarDoorCommandBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataCarDoorCommandBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCarDoorCommandBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataCarDoorCommandBuilder) WithCarDoorCommand(carDoorCommand ...BACnetLiftCarDoorCommandTagged) BACnetConstructedDataCarDoorCommandBuilder {
-	m.CarDoorCommand = carDoorCommand
-	return m
+func (b *_BACnetConstructedDataCarDoorCommandBuilder) WithCarDoorCommand(carDoorCommand ...BACnetLiftCarDoorCommandTagged) BACnetConstructedDataCarDoorCommandBuilder {
+	b.CarDoorCommand = carDoorCommand
+	return b
 }
 
-func (m *_BACnetConstructedDataCarDoorCommandBuilder) Build() (BACnetConstructedDataCarDoorCommand, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataCarDoorCommandBuilder) Build() (BACnetConstructedDataCarDoorCommand, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCarDoorCommand.deepCopy(), nil
+	return b._BACnetConstructedDataCarDoorCommand.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCarDoorCommandBuilder) MustBuild() BACnetConstructedDataCarDoorCommand {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCarDoorCommandBuilder) MustBuild() BACnetConstructedDataCarDoorCommand {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCarDoorCommandBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCarDoorCommandBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCarDoorCommandBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCarDoorCommandBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCarDoorCommandBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCarDoorCommandBuilder().(*_BACnetConstructedDataCarDoorCommandBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCarDoorCommandBuilder creates a BACnetConstructedDataCarDoorCommandBuilder
-func (m *_BACnetConstructedDataCarDoorCommand) CreateBACnetConstructedDataCarDoorCommandBuilder() BACnetConstructedDataCarDoorCommandBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCarDoorCommand) CreateBACnetConstructedDataCarDoorCommandBuilder() BACnetConstructedDataCarDoorCommandBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCarDoorCommandBuilder()
 	}
-	return &_BACnetConstructedDataCarDoorCommandBuilder{_BACnetConstructedDataCarDoorCommand: m.deepCopy()}
+	return &_BACnetConstructedDataCarDoorCommandBuilder{_BACnetConstructedDataCarDoorCommand: b.deepCopy()}
 }
 
 ///////////////////////
@@ -366,9 +385,13 @@ func (m *_BACnetConstructedDataCarDoorCommand) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

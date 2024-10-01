@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesLiftGroupModeBuilder() BACnetPropertyStatesLiftGroup
 type _BACnetPropertyStatesLiftGroupModeBuilder struct {
 	*_BACnetPropertyStatesLiftGroupMode
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesLiftGroupModeBuilder) = (*_BACnetPropertyStatesLiftGroupModeBuilder)(nil)
 
-func (m *_BACnetPropertyStatesLiftGroupModeBuilder) WithMandatoryFields(liftGroupMode BACnetLiftGroupModeTagged) BACnetPropertyStatesLiftGroupModeBuilder {
-	return m.WithLiftGroupMode(liftGroupMode)
+func (b *_BACnetPropertyStatesLiftGroupModeBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesLiftGroupModeBuilder) WithLiftGroupMode(liftGroupMode BACnetLiftGroupModeTagged) BACnetPropertyStatesLiftGroupModeBuilder {
-	m.LiftGroupMode = liftGroupMode
-	return m
+func (b *_BACnetPropertyStatesLiftGroupModeBuilder) WithMandatoryFields(liftGroupMode BACnetLiftGroupModeTagged) BACnetPropertyStatesLiftGroupModeBuilder {
+	return b.WithLiftGroupMode(liftGroupMode)
 }
 
-func (m *_BACnetPropertyStatesLiftGroupModeBuilder) WithLiftGroupModeBuilder(builderSupplier func(BACnetLiftGroupModeTaggedBuilder) BACnetLiftGroupModeTaggedBuilder) BACnetPropertyStatesLiftGroupModeBuilder {
-	builder := builderSupplier(m.LiftGroupMode.CreateBACnetLiftGroupModeTaggedBuilder())
+func (b *_BACnetPropertyStatesLiftGroupModeBuilder) WithLiftGroupMode(liftGroupMode BACnetLiftGroupModeTagged) BACnetPropertyStatesLiftGroupModeBuilder {
+	b.LiftGroupMode = liftGroupMode
+	return b
+}
+
+func (b *_BACnetPropertyStatesLiftGroupModeBuilder) WithLiftGroupModeBuilder(builderSupplier func(BACnetLiftGroupModeTaggedBuilder) BACnetLiftGroupModeTaggedBuilder) BACnetPropertyStatesLiftGroupModeBuilder {
+	builder := builderSupplier(b.LiftGroupMode.CreateBACnetLiftGroupModeTaggedBuilder())
 	var err error
-	m.LiftGroupMode, err = builder.Build()
+	b.LiftGroupMode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLiftGroupModeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLiftGroupModeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesLiftGroupModeBuilder) Build() (BACnetPropertyStatesLiftGroupMode, error) {
-	if m.LiftGroupMode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesLiftGroupModeBuilder) Build() (BACnetPropertyStatesLiftGroupMode, error) {
+	if b.LiftGroupMode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'liftGroupMode' not set"))
+		b.err.Append(errors.New("mandatory field 'liftGroupMode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesLiftGroupMode.deepCopy(), nil
+	return b._BACnetPropertyStatesLiftGroupMode.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesLiftGroupModeBuilder) MustBuild() BACnetPropertyStatesLiftGroupMode {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesLiftGroupModeBuilder) MustBuild() BACnetPropertyStatesLiftGroupMode {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesLiftGroupModeBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesLiftGroupModeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesLiftGroupModeBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesLiftGroupModeBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesLiftGroupModeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesLiftGroupModeBuilder().(*_BACnetPropertyStatesLiftGroupModeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesLiftGroupModeBuilder creates a BACnetPropertyStatesLiftGroupModeBuilder
-func (m *_BACnetPropertyStatesLiftGroupMode) CreateBACnetPropertyStatesLiftGroupModeBuilder() BACnetPropertyStatesLiftGroupModeBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesLiftGroupMode) CreateBACnetPropertyStatesLiftGroupModeBuilder() BACnetPropertyStatesLiftGroupModeBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesLiftGroupModeBuilder()
 	}
-	return &_BACnetPropertyStatesLiftGroupModeBuilder{_BACnetPropertyStatesLiftGroupMode: m.deepCopy()}
+	return &_BACnetPropertyStatesLiftGroupModeBuilder{_BACnetPropertyStatesLiftGroupMode: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPropertyStatesLiftGroupMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

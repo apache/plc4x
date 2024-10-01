@@ -111,60 +111,79 @@ func NewLinearConversionDataTypeBuilder() LinearConversionDataTypeBuilder {
 type _LinearConversionDataTypeBuilder struct {
 	*_LinearConversionDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LinearConversionDataTypeBuilder) = (*_LinearConversionDataTypeBuilder)(nil)
 
-func (m *_LinearConversionDataTypeBuilder) WithMandatoryFields(initialAddend float32, multiplicand float32, divisor float32, finalAddend float32) LinearConversionDataTypeBuilder {
-	return m.WithInitialAddend(initialAddend).WithMultiplicand(multiplicand).WithDivisor(divisor).WithFinalAddend(finalAddend)
+func (b *_LinearConversionDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_LinearConversionDataTypeBuilder) WithInitialAddend(initialAddend float32) LinearConversionDataTypeBuilder {
-	m.InitialAddend = initialAddend
-	return m
+func (b *_LinearConversionDataTypeBuilder) WithMandatoryFields(initialAddend float32, multiplicand float32, divisor float32, finalAddend float32) LinearConversionDataTypeBuilder {
+	return b.WithInitialAddend(initialAddend).WithMultiplicand(multiplicand).WithDivisor(divisor).WithFinalAddend(finalAddend)
 }
 
-func (m *_LinearConversionDataTypeBuilder) WithMultiplicand(multiplicand float32) LinearConversionDataTypeBuilder {
-	m.Multiplicand = multiplicand
-	return m
+func (b *_LinearConversionDataTypeBuilder) WithInitialAddend(initialAddend float32) LinearConversionDataTypeBuilder {
+	b.InitialAddend = initialAddend
+	return b
 }
 
-func (m *_LinearConversionDataTypeBuilder) WithDivisor(divisor float32) LinearConversionDataTypeBuilder {
-	m.Divisor = divisor
-	return m
+func (b *_LinearConversionDataTypeBuilder) WithMultiplicand(multiplicand float32) LinearConversionDataTypeBuilder {
+	b.Multiplicand = multiplicand
+	return b
 }
 
-func (m *_LinearConversionDataTypeBuilder) WithFinalAddend(finalAddend float32) LinearConversionDataTypeBuilder {
-	m.FinalAddend = finalAddend
-	return m
+func (b *_LinearConversionDataTypeBuilder) WithDivisor(divisor float32) LinearConversionDataTypeBuilder {
+	b.Divisor = divisor
+	return b
 }
 
-func (m *_LinearConversionDataTypeBuilder) Build() (LinearConversionDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_LinearConversionDataTypeBuilder) WithFinalAddend(finalAddend float32) LinearConversionDataTypeBuilder {
+	b.FinalAddend = finalAddend
+	return b
+}
+
+func (b *_LinearConversionDataTypeBuilder) Build() (LinearConversionDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LinearConversionDataType.deepCopy(), nil
+	return b._LinearConversionDataType.deepCopy(), nil
 }
 
-func (m *_LinearConversionDataTypeBuilder) MustBuild() LinearConversionDataType {
-	build, err := m.Build()
+func (b *_LinearConversionDataTypeBuilder) MustBuild() LinearConversionDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LinearConversionDataTypeBuilder) DeepCopy() any {
-	return m.CreateLinearConversionDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LinearConversionDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LinearConversionDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_LinearConversionDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateLinearConversionDataTypeBuilder().(*_LinearConversionDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLinearConversionDataTypeBuilder creates a LinearConversionDataTypeBuilder
-func (m *_LinearConversionDataType) CreateLinearConversionDataTypeBuilder() LinearConversionDataTypeBuilder {
-	if m == nil {
+func (b *_LinearConversionDataType) CreateLinearConversionDataTypeBuilder() LinearConversionDataTypeBuilder {
+	if b == nil {
 		return NewLinearConversionDataTypeBuilder()
 	}
-	return &_LinearConversionDataTypeBuilder{_LinearConversionDataType: m.deepCopy()}
+	return &_LinearConversionDataTypeBuilder{_LinearConversionDataType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -362,9 +381,13 @@ func (m *_LinearConversionDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

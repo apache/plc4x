@@ -90,10 +90,94 @@ type ApduDataBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataBuilder
+	// AsApduDataGroupValueRead converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataGroupValueRead() interface {
+		ApduDataGroupValueReadBuilder
+		Done() ApduDataBuilder
+	}
+	// AsApduDataGroupValueResponse converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataGroupValueResponse() interface {
+		ApduDataGroupValueResponseBuilder
+		Done() ApduDataBuilder
+	}
+	// AsApduDataGroupValueWrite converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataGroupValueWrite() interface {
+		ApduDataGroupValueWriteBuilder
+		Done() ApduDataBuilder
+	}
+	// AsApduDataIndividualAddressWrite converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataIndividualAddressWrite() interface {
+		ApduDataIndividualAddressWriteBuilder
+		Done() ApduDataBuilder
+	}
+	// AsApduDataIndividualAddressRead converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataIndividualAddressRead() interface {
+		ApduDataIndividualAddressReadBuilder
+		Done() ApduDataBuilder
+	}
+	// AsApduDataIndividualAddressResponse converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataIndividualAddressResponse() interface {
+		ApduDataIndividualAddressResponseBuilder
+		Done() ApduDataBuilder
+	}
+	// AsApduDataAdcRead converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataAdcRead() interface {
+		ApduDataAdcReadBuilder
+		Done() ApduDataBuilder
+	}
+	// AsApduDataAdcResponse converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataAdcResponse() interface {
+		ApduDataAdcResponseBuilder
+		Done() ApduDataBuilder
+	}
+	// AsApduDataMemoryRead converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataMemoryRead() interface {
+		ApduDataMemoryReadBuilder
+		Done() ApduDataBuilder
+	}
+	// AsApduDataMemoryResponse converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataMemoryResponse() interface {
+		ApduDataMemoryResponseBuilder
+		Done() ApduDataBuilder
+	}
+	// AsApduDataMemoryWrite converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataMemoryWrite() interface {
+		ApduDataMemoryWriteBuilder
+		Done() ApduDataBuilder
+	}
+	// AsApduDataUserMessage converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataUserMessage() interface {
+		ApduDataUserMessageBuilder
+		Done() ApduDataBuilder
+	}
+	// AsApduDataDeviceDescriptorRead converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataDeviceDescriptorRead() interface {
+		ApduDataDeviceDescriptorReadBuilder
+		Done() ApduDataBuilder
+	}
+	// AsApduDataDeviceDescriptorResponse converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataDeviceDescriptorResponse() interface {
+		ApduDataDeviceDescriptorResponseBuilder
+		Done() ApduDataBuilder
+	}
+	// AsApduDataRestart converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataRestart() interface {
+		ApduDataRestartBuilder
+		Done() ApduDataBuilder
+	}
+	// AsApduDataOther converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
+	AsApduDataOther() interface {
+		ApduDataOtherBuilder
+		Done() ApduDataBuilder
+	}
 	// Build builds the ApduData or returns an error if something is wrong
-	Build() (ApduDataContract, error)
+	PartialBuild() (ApduDataContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() ApduDataContract
+	PartialMustBuild() ApduDataContract
+	// Build builds the ApduData or returns an error if something is wrong
+	Build() (ApduData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduData
 }
 
 // NewApduDataBuilder() creates a ApduDataBuilder
@@ -101,43 +185,333 @@ func NewApduDataBuilder() ApduDataBuilder {
 	return &_ApduDataBuilder{_ApduData: new(_ApduData)}
 }
 
+type _ApduDataChildBuilder interface {
+	utils.Copyable
+	setParent(ApduDataContract)
+	buildForApduData() (ApduData, error)
+}
+
 type _ApduDataBuilder struct {
 	*_ApduData
+
+	childBuilder _ApduDataChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (ApduDataBuilder) = (*_ApduDataBuilder)(nil)
 
-func (m *_ApduDataBuilder) WithMandatoryFields() ApduDataBuilder {
-	return m
+func (b *_ApduDataBuilder) WithMandatoryFields() ApduDataBuilder {
+	return b
 }
 
-func (m *_ApduDataBuilder) Build() (ApduDataContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataBuilder) PartialBuild() (ApduDataContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduData.deepCopy(), nil
+	return b._ApduData.deepCopy(), nil
 }
 
-func (m *_ApduDataBuilder) MustBuild() ApduDataContract {
-	build, err := m.Build()
+func (b *_ApduDataBuilder) PartialMustBuild() ApduDataContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataBuilder) DeepCopy() any {
-	return m.CreateApduDataBuilder()
+func (b *_ApduDataBuilder) AsApduDataGroupValueRead() interface {
+	ApduDataGroupValueReadBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataGroupValueReadBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataGroupValueReadBuilder().(*_ApduDataGroupValueReadBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) AsApduDataGroupValueResponse() interface {
+	ApduDataGroupValueResponseBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataGroupValueResponseBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataGroupValueResponseBuilder().(*_ApduDataGroupValueResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) AsApduDataGroupValueWrite() interface {
+	ApduDataGroupValueWriteBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataGroupValueWriteBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataGroupValueWriteBuilder().(*_ApduDataGroupValueWriteBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) AsApduDataIndividualAddressWrite() interface {
+	ApduDataIndividualAddressWriteBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataIndividualAddressWriteBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataIndividualAddressWriteBuilder().(*_ApduDataIndividualAddressWriteBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) AsApduDataIndividualAddressRead() interface {
+	ApduDataIndividualAddressReadBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataIndividualAddressReadBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataIndividualAddressReadBuilder().(*_ApduDataIndividualAddressReadBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) AsApduDataIndividualAddressResponse() interface {
+	ApduDataIndividualAddressResponseBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataIndividualAddressResponseBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataIndividualAddressResponseBuilder().(*_ApduDataIndividualAddressResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) AsApduDataAdcRead() interface {
+	ApduDataAdcReadBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataAdcReadBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataAdcReadBuilder().(*_ApduDataAdcReadBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) AsApduDataAdcResponse() interface {
+	ApduDataAdcResponseBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataAdcResponseBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataAdcResponseBuilder().(*_ApduDataAdcResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) AsApduDataMemoryRead() interface {
+	ApduDataMemoryReadBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataMemoryReadBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataMemoryReadBuilder().(*_ApduDataMemoryReadBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) AsApduDataMemoryResponse() interface {
+	ApduDataMemoryResponseBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataMemoryResponseBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataMemoryResponseBuilder().(*_ApduDataMemoryResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) AsApduDataMemoryWrite() interface {
+	ApduDataMemoryWriteBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataMemoryWriteBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataMemoryWriteBuilder().(*_ApduDataMemoryWriteBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) AsApduDataUserMessage() interface {
+	ApduDataUserMessageBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataUserMessageBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataUserMessageBuilder().(*_ApduDataUserMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) AsApduDataDeviceDescriptorRead() interface {
+	ApduDataDeviceDescriptorReadBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataDeviceDescriptorReadBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataDeviceDescriptorReadBuilder().(*_ApduDataDeviceDescriptorReadBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) AsApduDataDeviceDescriptorResponse() interface {
+	ApduDataDeviceDescriptorResponseBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataDeviceDescriptorResponseBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataDeviceDescriptorResponseBuilder().(*_ApduDataDeviceDescriptorResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) AsApduDataRestart() interface {
+	ApduDataRestartBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataRestartBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataRestartBuilder().(*_ApduDataRestartBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) AsApduDataOther() interface {
+	ApduDataOtherBuilder
+	Done() ApduDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataOtherBuilder
+		Done() ApduDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataOtherBuilder().(*_ApduDataOtherBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduDataBuilder) Build() (ApduData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForApduData()
+}
+
+func (b *_ApduDataBuilder) MustBuild() ApduData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ApduDataBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataBuilder().(*_ApduDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ApduDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataBuilder creates a ApduDataBuilder
-func (m *_ApduData) CreateApduDataBuilder() ApduDataBuilder {
-	if m == nil {
+func (b *_ApduData) CreateApduDataBuilder() ApduDataBuilder {
+	if b == nil {
 		return NewApduDataBuilder()
 	}
-	return &_ApduDataBuilder{_ApduData: m.deepCopy()}
+	return &_ApduDataBuilder{_ApduData: b.deepCopy()}
 }
 
 ///////////////////////

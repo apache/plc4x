@@ -93,45 +93,64 @@ func NewBACnetConstructedDataCredentialsBuilder() BACnetConstructedDataCredentia
 type _BACnetConstructedDataCredentialsBuilder struct {
 	*_BACnetConstructedDataCredentials
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCredentialsBuilder) = (*_BACnetConstructedDataCredentialsBuilder)(nil)
 
-func (m *_BACnetConstructedDataCredentialsBuilder) WithMandatoryFields(credentials []BACnetDeviceObjectReference) BACnetConstructedDataCredentialsBuilder {
-	return m.WithCredentials(credentials...)
+func (b *_BACnetConstructedDataCredentialsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCredentialsBuilder) WithCredentials(credentials ...BACnetDeviceObjectReference) BACnetConstructedDataCredentialsBuilder {
-	m.Credentials = credentials
-	return m
+func (b *_BACnetConstructedDataCredentialsBuilder) WithMandatoryFields(credentials []BACnetDeviceObjectReference) BACnetConstructedDataCredentialsBuilder {
+	return b.WithCredentials(credentials...)
 }
 
-func (m *_BACnetConstructedDataCredentialsBuilder) Build() (BACnetConstructedDataCredentials, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataCredentialsBuilder) WithCredentials(credentials ...BACnetDeviceObjectReference) BACnetConstructedDataCredentialsBuilder {
+	b.Credentials = credentials
+	return b
+}
+
+func (b *_BACnetConstructedDataCredentialsBuilder) Build() (BACnetConstructedDataCredentials, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCredentials.deepCopy(), nil
+	return b._BACnetConstructedDataCredentials.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCredentialsBuilder) MustBuild() BACnetConstructedDataCredentials {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCredentialsBuilder) MustBuild() BACnetConstructedDataCredentials {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCredentialsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCredentialsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCredentialsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCredentialsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCredentialsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCredentialsBuilder().(*_BACnetConstructedDataCredentialsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCredentialsBuilder creates a BACnetConstructedDataCredentialsBuilder
-func (m *_BACnetConstructedDataCredentials) CreateBACnetConstructedDataCredentialsBuilder() BACnetConstructedDataCredentialsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCredentials) CreateBACnetConstructedDataCredentialsBuilder() BACnetConstructedDataCredentialsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCredentialsBuilder()
 	}
-	return &_BACnetConstructedDataCredentialsBuilder{_BACnetConstructedDataCredentials: m.deepCopy()}
+	return &_BACnetConstructedDataCredentialsBuilder{_BACnetConstructedDataCredentials: b.deepCopy()}
 }
 
 ///////////////////////
@@ -283,9 +302,13 @@ func (m *_BACnetConstructedDataCredentials) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

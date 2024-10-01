@@ -98,64 +98,83 @@ func NewAdsDiscoveryBlockHostNameBuilder() AdsDiscoveryBlockHostNameBuilder {
 type _AdsDiscoveryBlockHostNameBuilder struct {
 	*_AdsDiscoveryBlockHostName
 
+	parentBuilder *_AdsDiscoveryBlockBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsDiscoveryBlockHostNameBuilder) = (*_AdsDiscoveryBlockHostNameBuilder)(nil)
 
-func (m *_AdsDiscoveryBlockHostNameBuilder) WithMandatoryFields(hostName AmsString) AdsDiscoveryBlockHostNameBuilder {
-	return m.WithHostName(hostName)
+func (b *_AdsDiscoveryBlockHostNameBuilder) setParent(contract AdsDiscoveryBlockContract) {
+	b.AdsDiscoveryBlockContract = contract
 }
 
-func (m *_AdsDiscoveryBlockHostNameBuilder) WithHostName(hostName AmsString) AdsDiscoveryBlockHostNameBuilder {
-	m.HostName = hostName
-	return m
+func (b *_AdsDiscoveryBlockHostNameBuilder) WithMandatoryFields(hostName AmsString) AdsDiscoveryBlockHostNameBuilder {
+	return b.WithHostName(hostName)
 }
 
-func (m *_AdsDiscoveryBlockHostNameBuilder) WithHostNameBuilder(builderSupplier func(AmsStringBuilder) AmsStringBuilder) AdsDiscoveryBlockHostNameBuilder {
-	builder := builderSupplier(m.HostName.CreateAmsStringBuilder())
+func (b *_AdsDiscoveryBlockHostNameBuilder) WithHostName(hostName AmsString) AdsDiscoveryBlockHostNameBuilder {
+	b.HostName = hostName
+	return b
+}
+
+func (b *_AdsDiscoveryBlockHostNameBuilder) WithHostNameBuilder(builderSupplier func(AmsStringBuilder) AmsStringBuilder) AdsDiscoveryBlockHostNameBuilder {
+	builder := builderSupplier(b.HostName.CreateAmsStringBuilder())
 	var err error
-	m.HostName, err = builder.Build()
+	b.HostName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AmsStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AmsStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AdsDiscoveryBlockHostNameBuilder) Build() (AdsDiscoveryBlockHostName, error) {
-	if m.HostName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AdsDiscoveryBlockHostNameBuilder) Build() (AdsDiscoveryBlockHostName, error) {
+	if b.HostName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'hostName' not set"))
+		b.err.Append(errors.New("mandatory field 'hostName' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsDiscoveryBlockHostName.deepCopy(), nil
+	return b._AdsDiscoveryBlockHostName.deepCopy(), nil
 }
 
-func (m *_AdsDiscoveryBlockHostNameBuilder) MustBuild() AdsDiscoveryBlockHostName {
-	build, err := m.Build()
+func (b *_AdsDiscoveryBlockHostNameBuilder) MustBuild() AdsDiscoveryBlockHostName {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsDiscoveryBlockHostNameBuilder) DeepCopy() any {
-	return m.CreateAdsDiscoveryBlockHostNameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsDiscoveryBlockHostNameBuilder) Done() AdsDiscoveryBlockBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsDiscoveryBlockHostNameBuilder) buildForAdsDiscoveryBlock() (AdsDiscoveryBlock, error) {
+	return b.Build()
+}
+
+func (b *_AdsDiscoveryBlockHostNameBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryBlockHostNameBuilder().(*_AdsDiscoveryBlockHostNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsDiscoveryBlockHostNameBuilder creates a AdsDiscoveryBlockHostNameBuilder
-func (m *_AdsDiscoveryBlockHostName) CreateAdsDiscoveryBlockHostNameBuilder() AdsDiscoveryBlockHostNameBuilder {
-	if m == nil {
+func (b *_AdsDiscoveryBlockHostName) CreateAdsDiscoveryBlockHostNameBuilder() AdsDiscoveryBlockHostNameBuilder {
+	if b == nil {
 		return NewAdsDiscoveryBlockHostNameBuilder()
 	}
-	return &_AdsDiscoveryBlockHostNameBuilder{_AdsDiscoveryBlockHostName: m.deepCopy()}
+	return &_AdsDiscoveryBlockHostNameBuilder{_AdsDiscoveryBlockHostName: b.deepCopy()}
 }
 
 ///////////////////////
@@ -299,9 +318,13 @@ func (m *_AdsDiscoveryBlockHostName) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

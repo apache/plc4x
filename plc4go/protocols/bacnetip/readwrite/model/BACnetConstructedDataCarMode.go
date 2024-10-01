@@ -100,64 +100,83 @@ func NewBACnetConstructedDataCarModeBuilder() BACnetConstructedDataCarModeBuilde
 type _BACnetConstructedDataCarModeBuilder struct {
 	*_BACnetConstructedDataCarMode
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCarModeBuilder) = (*_BACnetConstructedDataCarModeBuilder)(nil)
 
-func (m *_BACnetConstructedDataCarModeBuilder) WithMandatoryFields(carMode BACnetLiftCarModeTagged) BACnetConstructedDataCarModeBuilder {
-	return m.WithCarMode(carMode)
+func (b *_BACnetConstructedDataCarModeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCarModeBuilder) WithCarMode(carMode BACnetLiftCarModeTagged) BACnetConstructedDataCarModeBuilder {
-	m.CarMode = carMode
-	return m
+func (b *_BACnetConstructedDataCarModeBuilder) WithMandatoryFields(carMode BACnetLiftCarModeTagged) BACnetConstructedDataCarModeBuilder {
+	return b.WithCarMode(carMode)
 }
 
-func (m *_BACnetConstructedDataCarModeBuilder) WithCarModeBuilder(builderSupplier func(BACnetLiftCarModeTaggedBuilder) BACnetLiftCarModeTaggedBuilder) BACnetConstructedDataCarModeBuilder {
-	builder := builderSupplier(m.CarMode.CreateBACnetLiftCarModeTaggedBuilder())
+func (b *_BACnetConstructedDataCarModeBuilder) WithCarMode(carMode BACnetLiftCarModeTagged) BACnetConstructedDataCarModeBuilder {
+	b.CarMode = carMode
+	return b
+}
+
+func (b *_BACnetConstructedDataCarModeBuilder) WithCarModeBuilder(builderSupplier func(BACnetLiftCarModeTaggedBuilder) BACnetLiftCarModeTaggedBuilder) BACnetConstructedDataCarModeBuilder {
+	builder := builderSupplier(b.CarMode.CreateBACnetLiftCarModeTaggedBuilder())
 	var err error
-	m.CarMode, err = builder.Build()
+	b.CarMode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLiftCarModeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLiftCarModeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataCarModeBuilder) Build() (BACnetConstructedDataCarMode, error) {
-	if m.CarMode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataCarModeBuilder) Build() (BACnetConstructedDataCarMode, error) {
+	if b.CarMode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'carMode' not set"))
+		b.err.Append(errors.New("mandatory field 'carMode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCarMode.deepCopy(), nil
+	return b._BACnetConstructedDataCarMode.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCarModeBuilder) MustBuild() BACnetConstructedDataCarMode {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCarModeBuilder) MustBuild() BACnetConstructedDataCarMode {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCarModeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCarModeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCarModeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCarModeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCarModeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCarModeBuilder().(*_BACnetConstructedDataCarModeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCarModeBuilder creates a BACnetConstructedDataCarModeBuilder
-func (m *_BACnetConstructedDataCarMode) CreateBACnetConstructedDataCarModeBuilder() BACnetConstructedDataCarModeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCarMode) CreateBACnetConstructedDataCarModeBuilder() BACnetConstructedDataCarModeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCarModeBuilder()
 	}
-	return &_BACnetConstructedDataCarModeBuilder{_BACnetConstructedDataCarMode: m.deepCopy()}
+	return &_BACnetConstructedDataCarModeBuilder{_BACnetConstructedDataCarMode: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataCarMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

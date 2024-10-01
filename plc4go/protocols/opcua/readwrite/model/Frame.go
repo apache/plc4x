@@ -85,40 +85,59 @@ func NewFrameBuilder() FrameBuilder {
 type _FrameBuilder struct {
 	*_Frame
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (FrameBuilder) = (*_FrameBuilder)(nil)
 
-func (m *_FrameBuilder) WithMandatoryFields() FrameBuilder {
-	return m
+func (b *_FrameBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_FrameBuilder) Build() (Frame, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_FrameBuilder) WithMandatoryFields() FrameBuilder {
+	return b
+}
+
+func (b *_FrameBuilder) Build() (Frame, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Frame.deepCopy(), nil
+	return b._Frame.deepCopy(), nil
 }
 
-func (m *_FrameBuilder) MustBuild() Frame {
-	build, err := m.Build()
+func (b *_FrameBuilder) MustBuild() Frame {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FrameBuilder) DeepCopy() any {
-	return m.CreateFrameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FrameBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FrameBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_FrameBuilder) DeepCopy() any {
+	_copy := b.CreateFrameBuilder().(*_FrameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFrameBuilder creates a FrameBuilder
-func (m *_Frame) CreateFrameBuilder() FrameBuilder {
-	if m == nil {
+func (b *_Frame) CreateFrameBuilder() FrameBuilder {
+	if b == nil {
 		return NewFrameBuilder()
 	}
-	return &_FrameBuilder{_Frame: m.deepCopy()}
+	return &_FrameBuilder{_Frame: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_Frame) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

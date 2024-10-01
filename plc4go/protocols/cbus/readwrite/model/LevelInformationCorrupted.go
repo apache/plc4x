@@ -111,60 +111,79 @@ func NewLevelInformationCorruptedBuilder() LevelInformationCorruptedBuilder {
 type _LevelInformationCorruptedBuilder struct {
 	*_LevelInformationCorrupted
 
+	parentBuilder *_LevelInformationBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LevelInformationCorruptedBuilder) = (*_LevelInformationCorruptedBuilder)(nil)
 
-func (m *_LevelInformationCorruptedBuilder) WithMandatoryFields(corruptedNibble1 uint8, corruptedNibble2 uint8, corruptedNibble3 uint8, corruptedNibble4 uint8) LevelInformationCorruptedBuilder {
-	return m.WithCorruptedNibble1(corruptedNibble1).WithCorruptedNibble2(corruptedNibble2).WithCorruptedNibble3(corruptedNibble3).WithCorruptedNibble4(corruptedNibble4)
+func (b *_LevelInformationCorruptedBuilder) setParent(contract LevelInformationContract) {
+	b.LevelInformationContract = contract
 }
 
-func (m *_LevelInformationCorruptedBuilder) WithCorruptedNibble1(corruptedNibble1 uint8) LevelInformationCorruptedBuilder {
-	m.CorruptedNibble1 = corruptedNibble1
-	return m
+func (b *_LevelInformationCorruptedBuilder) WithMandatoryFields(corruptedNibble1 uint8, corruptedNibble2 uint8, corruptedNibble3 uint8, corruptedNibble4 uint8) LevelInformationCorruptedBuilder {
+	return b.WithCorruptedNibble1(corruptedNibble1).WithCorruptedNibble2(corruptedNibble2).WithCorruptedNibble3(corruptedNibble3).WithCorruptedNibble4(corruptedNibble4)
 }
 
-func (m *_LevelInformationCorruptedBuilder) WithCorruptedNibble2(corruptedNibble2 uint8) LevelInformationCorruptedBuilder {
-	m.CorruptedNibble2 = corruptedNibble2
-	return m
+func (b *_LevelInformationCorruptedBuilder) WithCorruptedNibble1(corruptedNibble1 uint8) LevelInformationCorruptedBuilder {
+	b.CorruptedNibble1 = corruptedNibble1
+	return b
 }
 
-func (m *_LevelInformationCorruptedBuilder) WithCorruptedNibble3(corruptedNibble3 uint8) LevelInformationCorruptedBuilder {
-	m.CorruptedNibble3 = corruptedNibble3
-	return m
+func (b *_LevelInformationCorruptedBuilder) WithCorruptedNibble2(corruptedNibble2 uint8) LevelInformationCorruptedBuilder {
+	b.CorruptedNibble2 = corruptedNibble2
+	return b
 }
 
-func (m *_LevelInformationCorruptedBuilder) WithCorruptedNibble4(corruptedNibble4 uint8) LevelInformationCorruptedBuilder {
-	m.CorruptedNibble4 = corruptedNibble4
-	return m
+func (b *_LevelInformationCorruptedBuilder) WithCorruptedNibble3(corruptedNibble3 uint8) LevelInformationCorruptedBuilder {
+	b.CorruptedNibble3 = corruptedNibble3
+	return b
 }
 
-func (m *_LevelInformationCorruptedBuilder) Build() (LevelInformationCorrupted, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_LevelInformationCorruptedBuilder) WithCorruptedNibble4(corruptedNibble4 uint8) LevelInformationCorruptedBuilder {
+	b.CorruptedNibble4 = corruptedNibble4
+	return b
+}
+
+func (b *_LevelInformationCorruptedBuilder) Build() (LevelInformationCorrupted, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LevelInformationCorrupted.deepCopy(), nil
+	return b._LevelInformationCorrupted.deepCopy(), nil
 }
 
-func (m *_LevelInformationCorruptedBuilder) MustBuild() LevelInformationCorrupted {
-	build, err := m.Build()
+func (b *_LevelInformationCorruptedBuilder) MustBuild() LevelInformationCorrupted {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LevelInformationCorruptedBuilder) DeepCopy() any {
-	return m.CreateLevelInformationCorruptedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LevelInformationCorruptedBuilder) Done() LevelInformationBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LevelInformationCorruptedBuilder) buildForLevelInformation() (LevelInformation, error) {
+	return b.Build()
+}
+
+func (b *_LevelInformationCorruptedBuilder) DeepCopy() any {
+	_copy := b.CreateLevelInformationCorruptedBuilder().(*_LevelInformationCorruptedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLevelInformationCorruptedBuilder creates a LevelInformationCorruptedBuilder
-func (m *_LevelInformationCorrupted) CreateLevelInformationCorruptedBuilder() LevelInformationCorruptedBuilder {
-	if m == nil {
+func (b *_LevelInformationCorrupted) CreateLevelInformationCorruptedBuilder() LevelInformationCorruptedBuilder {
+	if b == nil {
 		return NewLevelInformationCorruptedBuilder()
 	}
-	return &_LevelInformationCorruptedBuilder{_LevelInformationCorrupted: m.deepCopy()}
+	return &_LevelInformationCorruptedBuilder{_LevelInformationCorrupted: b.deepCopy()}
 }
 
 ///////////////////////
@@ -358,9 +377,13 @@ func (m *_LevelInformationCorrupted) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

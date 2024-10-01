@@ -100,64 +100,83 @@ func NewBACnetApplicationTagDoubleBuilder() BACnetApplicationTagDoubleBuilder {
 type _BACnetApplicationTagDoubleBuilder struct {
 	*_BACnetApplicationTagDouble
 
+	parentBuilder *_BACnetApplicationTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetApplicationTagDoubleBuilder) = (*_BACnetApplicationTagDoubleBuilder)(nil)
 
-func (m *_BACnetApplicationTagDoubleBuilder) WithMandatoryFields(payload BACnetTagPayloadDouble) BACnetApplicationTagDoubleBuilder {
-	return m.WithPayload(payload)
+func (b *_BACnetApplicationTagDoubleBuilder) setParent(contract BACnetApplicationTagContract) {
+	b.BACnetApplicationTagContract = contract
 }
 
-func (m *_BACnetApplicationTagDoubleBuilder) WithPayload(payload BACnetTagPayloadDouble) BACnetApplicationTagDoubleBuilder {
-	m.Payload = payload
-	return m
+func (b *_BACnetApplicationTagDoubleBuilder) WithMandatoryFields(payload BACnetTagPayloadDouble) BACnetApplicationTagDoubleBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_BACnetApplicationTagDoubleBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadDoubleBuilder) BACnetTagPayloadDoubleBuilder) BACnetApplicationTagDoubleBuilder {
-	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadDoubleBuilder())
+func (b *_BACnetApplicationTagDoubleBuilder) WithPayload(payload BACnetTagPayloadDouble) BACnetApplicationTagDoubleBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetApplicationTagDoubleBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadDoubleBuilder) BACnetTagPayloadDoubleBuilder) BACnetApplicationTagDoubleBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadDoubleBuilder())
 	var err error
-	m.Payload, err = builder.Build()
+	b.Payload, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagPayloadDoubleBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadDoubleBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetApplicationTagDoubleBuilder) Build() (BACnetApplicationTagDouble, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetApplicationTagDoubleBuilder) Build() (BACnetApplicationTagDouble, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetApplicationTagDouble.deepCopy(), nil
+	return b._BACnetApplicationTagDouble.deepCopy(), nil
 }
 
-func (m *_BACnetApplicationTagDoubleBuilder) MustBuild() BACnetApplicationTagDouble {
-	build, err := m.Build()
+func (b *_BACnetApplicationTagDoubleBuilder) MustBuild() BACnetApplicationTagDouble {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetApplicationTagDoubleBuilder) DeepCopy() any {
-	return m.CreateBACnetApplicationTagDoubleBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetApplicationTagDoubleBuilder) Done() BACnetApplicationTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetApplicationTagDoubleBuilder) buildForBACnetApplicationTag() (BACnetApplicationTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetApplicationTagDoubleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetApplicationTagDoubleBuilder().(*_BACnetApplicationTagDoubleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetApplicationTagDoubleBuilder creates a BACnetApplicationTagDoubleBuilder
-func (m *_BACnetApplicationTagDouble) CreateBACnetApplicationTagDoubleBuilder() BACnetApplicationTagDoubleBuilder {
-	if m == nil {
+func (b *_BACnetApplicationTagDouble) CreateBACnetApplicationTagDoubleBuilder() BACnetApplicationTagDoubleBuilder {
+	if b == nil {
 		return NewBACnetApplicationTagDoubleBuilder()
 	}
-	return &_BACnetApplicationTagDoubleBuilder{_BACnetApplicationTagDouble: m.deepCopy()}
+	return &_BACnetApplicationTagDoubleBuilder{_BACnetApplicationTagDouble: b.deepCopy()}
 }
 
 ///////////////////////
@@ -326,9 +345,13 @@ func (m *_BACnetApplicationTagDouble) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

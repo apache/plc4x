@@ -86,40 +86,59 @@ func NewDF1SymbolMessageFrameACKBuilder() DF1SymbolMessageFrameACKBuilder {
 type _DF1SymbolMessageFrameACKBuilder struct {
 	*_DF1SymbolMessageFrameACK
 
+	parentBuilder *_DF1SymbolBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DF1SymbolMessageFrameACKBuilder) = (*_DF1SymbolMessageFrameACKBuilder)(nil)
 
-func (m *_DF1SymbolMessageFrameACKBuilder) WithMandatoryFields() DF1SymbolMessageFrameACKBuilder {
-	return m
+func (b *_DF1SymbolMessageFrameACKBuilder) setParent(contract DF1SymbolContract) {
+	b.DF1SymbolContract = contract
 }
 
-func (m *_DF1SymbolMessageFrameACKBuilder) Build() (DF1SymbolMessageFrameACK, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DF1SymbolMessageFrameACKBuilder) WithMandatoryFields() DF1SymbolMessageFrameACKBuilder {
+	return b
+}
+
+func (b *_DF1SymbolMessageFrameACKBuilder) Build() (DF1SymbolMessageFrameACK, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DF1SymbolMessageFrameACK.deepCopy(), nil
+	return b._DF1SymbolMessageFrameACK.deepCopy(), nil
 }
 
-func (m *_DF1SymbolMessageFrameACKBuilder) MustBuild() DF1SymbolMessageFrameACK {
-	build, err := m.Build()
+func (b *_DF1SymbolMessageFrameACKBuilder) MustBuild() DF1SymbolMessageFrameACK {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DF1SymbolMessageFrameACKBuilder) DeepCopy() any {
-	return m.CreateDF1SymbolMessageFrameACKBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DF1SymbolMessageFrameACKBuilder) Done() DF1SymbolBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DF1SymbolMessageFrameACKBuilder) buildForDF1Symbol() (DF1Symbol, error) {
+	return b.Build()
+}
+
+func (b *_DF1SymbolMessageFrameACKBuilder) DeepCopy() any {
+	_copy := b.CreateDF1SymbolMessageFrameACKBuilder().(*_DF1SymbolMessageFrameACKBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDF1SymbolMessageFrameACKBuilder creates a DF1SymbolMessageFrameACKBuilder
-func (m *_DF1SymbolMessageFrameACK) CreateDF1SymbolMessageFrameACKBuilder() DF1SymbolMessageFrameACKBuilder {
-	if m == nil {
+func (b *_DF1SymbolMessageFrameACK) CreateDF1SymbolMessageFrameACKBuilder() DF1SymbolMessageFrameACKBuilder {
+	if b == nil {
 		return NewDF1SymbolMessageFrameACKBuilder()
 	}
-	return &_DF1SymbolMessageFrameACKBuilder{_DF1SymbolMessageFrameACK: m.deepCopy()}
+	return &_DF1SymbolMessageFrameACKBuilder{_DF1SymbolMessageFrameACK: b.deepCopy()}
 }
 
 ///////////////////////
@@ -235,9 +254,13 @@ func (m *_DF1SymbolMessageFrameACK) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataBelongsToBuilder() BACnetConstructedDataBelongsToBu
 type _BACnetConstructedDataBelongsToBuilder struct {
 	*_BACnetConstructedDataBelongsTo
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBelongsToBuilder) = (*_BACnetConstructedDataBelongsToBuilder)(nil)
 
-func (m *_BACnetConstructedDataBelongsToBuilder) WithMandatoryFields(belongsTo BACnetDeviceObjectReference) BACnetConstructedDataBelongsToBuilder {
-	return m.WithBelongsTo(belongsTo)
+func (b *_BACnetConstructedDataBelongsToBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBelongsToBuilder) WithBelongsTo(belongsTo BACnetDeviceObjectReference) BACnetConstructedDataBelongsToBuilder {
-	m.BelongsTo = belongsTo
-	return m
+func (b *_BACnetConstructedDataBelongsToBuilder) WithMandatoryFields(belongsTo BACnetDeviceObjectReference) BACnetConstructedDataBelongsToBuilder {
+	return b.WithBelongsTo(belongsTo)
 }
 
-func (m *_BACnetConstructedDataBelongsToBuilder) WithBelongsToBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataBelongsToBuilder {
-	builder := builderSupplier(m.BelongsTo.CreateBACnetDeviceObjectReferenceBuilder())
+func (b *_BACnetConstructedDataBelongsToBuilder) WithBelongsTo(belongsTo BACnetDeviceObjectReference) BACnetConstructedDataBelongsToBuilder {
+	b.BelongsTo = belongsTo
+	return b
+}
+
+func (b *_BACnetConstructedDataBelongsToBuilder) WithBelongsToBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataBelongsToBuilder {
+	builder := builderSupplier(b.BelongsTo.CreateBACnetDeviceObjectReferenceBuilder())
 	var err error
-	m.BelongsTo, err = builder.Build()
+	b.BelongsTo, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBelongsToBuilder) Build() (BACnetConstructedDataBelongsTo, error) {
-	if m.BelongsTo == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBelongsToBuilder) Build() (BACnetConstructedDataBelongsTo, error) {
+	if b.BelongsTo == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'belongsTo' not set"))
+		b.err.Append(errors.New("mandatory field 'belongsTo' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBelongsTo.deepCopy(), nil
+	return b._BACnetConstructedDataBelongsTo.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBelongsToBuilder) MustBuild() BACnetConstructedDataBelongsTo {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBelongsToBuilder) MustBuild() BACnetConstructedDataBelongsTo {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBelongsToBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBelongsToBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBelongsToBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBelongsToBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBelongsToBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBelongsToBuilder().(*_BACnetConstructedDataBelongsToBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBelongsToBuilder creates a BACnetConstructedDataBelongsToBuilder
-func (m *_BACnetConstructedDataBelongsTo) CreateBACnetConstructedDataBelongsToBuilder() BACnetConstructedDataBelongsToBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBelongsTo) CreateBACnetConstructedDataBelongsToBuilder() BACnetConstructedDataBelongsToBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBelongsToBuilder()
 	}
-	return &_BACnetConstructedDataBelongsToBuilder{_BACnetConstructedDataBelongsTo: m.deepCopy()}
+	return &_BACnetConstructedDataBelongsToBuilder{_BACnetConstructedDataBelongsTo: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataBelongsTo) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

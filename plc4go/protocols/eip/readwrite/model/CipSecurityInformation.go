@@ -93,45 +93,64 @@ func NewCipSecurityInformationBuilder() CipSecurityInformationBuilder {
 type _CipSecurityInformationBuilder struct {
 	*_CipSecurityInformation
 
+	parentBuilder *_CommandSpecificDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CipSecurityInformationBuilder) = (*_CipSecurityInformationBuilder)(nil)
 
-func (m *_CipSecurityInformationBuilder) WithMandatoryFields(todoImplement []uint8) CipSecurityInformationBuilder {
-	return m.WithTodoImplement(todoImplement...)
+func (b *_CipSecurityInformationBuilder) setParent(contract CommandSpecificDataItemContract) {
+	b.CommandSpecificDataItemContract = contract
 }
 
-func (m *_CipSecurityInformationBuilder) WithTodoImplement(todoImplement ...uint8) CipSecurityInformationBuilder {
-	m.TodoImplement = todoImplement
-	return m
+func (b *_CipSecurityInformationBuilder) WithMandatoryFields(todoImplement []uint8) CipSecurityInformationBuilder {
+	return b.WithTodoImplement(todoImplement...)
 }
 
-func (m *_CipSecurityInformationBuilder) Build() (CipSecurityInformation, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CipSecurityInformationBuilder) WithTodoImplement(todoImplement ...uint8) CipSecurityInformationBuilder {
+	b.TodoImplement = todoImplement
+	return b
+}
+
+func (b *_CipSecurityInformationBuilder) Build() (CipSecurityInformation, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CipSecurityInformation.deepCopy(), nil
+	return b._CipSecurityInformation.deepCopy(), nil
 }
 
-func (m *_CipSecurityInformationBuilder) MustBuild() CipSecurityInformation {
-	build, err := m.Build()
+func (b *_CipSecurityInformationBuilder) MustBuild() CipSecurityInformation {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CipSecurityInformationBuilder) DeepCopy() any {
-	return m.CreateCipSecurityInformationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipSecurityInformationBuilder) Done() CommandSpecificDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipSecurityInformationBuilder) buildForCommandSpecificDataItem() (CommandSpecificDataItem, error) {
+	return b.Build()
+}
+
+func (b *_CipSecurityInformationBuilder) DeepCopy() any {
+	_copy := b.CreateCipSecurityInformationBuilder().(*_CipSecurityInformationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCipSecurityInformationBuilder creates a CipSecurityInformationBuilder
-func (m *_CipSecurityInformation) CreateCipSecurityInformationBuilder() CipSecurityInformationBuilder {
-	if m == nil {
+func (b *_CipSecurityInformation) CreateCipSecurityInformationBuilder() CipSecurityInformationBuilder {
+	if b == nil {
 		return NewCipSecurityInformationBuilder()
 	}
-	return &_CipSecurityInformationBuilder{_CipSecurityInformation: m.deepCopy()}
+	return &_CipSecurityInformationBuilder{_CipSecurityInformation: b.deepCopy()}
 }
 
 ///////////////////////
@@ -290,9 +309,13 @@ func (m *_CipSecurityInformation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

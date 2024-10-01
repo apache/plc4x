@@ -93,45 +93,64 @@ func NewBACnetConstructedDataAuthorizationExemptionsBuilder() BACnetConstructedD
 type _BACnetConstructedDataAuthorizationExemptionsBuilder struct {
 	*_BACnetConstructedDataAuthorizationExemptions
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAuthorizationExemptionsBuilder) = (*_BACnetConstructedDataAuthorizationExemptionsBuilder)(nil)
 
-func (m *_BACnetConstructedDataAuthorizationExemptionsBuilder) WithMandatoryFields(authorizationExemption []BACnetAuthorizationExemptionTagged) BACnetConstructedDataAuthorizationExemptionsBuilder {
-	return m.WithAuthorizationExemption(authorizationExemption...)
+func (b *_BACnetConstructedDataAuthorizationExemptionsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAuthorizationExemptionsBuilder) WithAuthorizationExemption(authorizationExemption ...BACnetAuthorizationExemptionTagged) BACnetConstructedDataAuthorizationExemptionsBuilder {
-	m.AuthorizationExemption = authorizationExemption
-	return m
+func (b *_BACnetConstructedDataAuthorizationExemptionsBuilder) WithMandatoryFields(authorizationExemption []BACnetAuthorizationExemptionTagged) BACnetConstructedDataAuthorizationExemptionsBuilder {
+	return b.WithAuthorizationExemption(authorizationExemption...)
 }
 
-func (m *_BACnetConstructedDataAuthorizationExemptionsBuilder) Build() (BACnetConstructedDataAuthorizationExemptions, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataAuthorizationExemptionsBuilder) WithAuthorizationExemption(authorizationExemption ...BACnetAuthorizationExemptionTagged) BACnetConstructedDataAuthorizationExemptionsBuilder {
+	b.AuthorizationExemption = authorizationExemption
+	return b
+}
+
+func (b *_BACnetConstructedDataAuthorizationExemptionsBuilder) Build() (BACnetConstructedDataAuthorizationExemptions, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAuthorizationExemptions.deepCopy(), nil
+	return b._BACnetConstructedDataAuthorizationExemptions.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAuthorizationExemptionsBuilder) MustBuild() BACnetConstructedDataAuthorizationExemptions {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAuthorizationExemptionsBuilder) MustBuild() BACnetConstructedDataAuthorizationExemptions {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAuthorizationExemptionsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAuthorizationExemptionsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAuthorizationExemptionsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAuthorizationExemptionsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAuthorizationExemptionsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAuthorizationExemptionsBuilder().(*_BACnetConstructedDataAuthorizationExemptionsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAuthorizationExemptionsBuilder creates a BACnetConstructedDataAuthorizationExemptionsBuilder
-func (m *_BACnetConstructedDataAuthorizationExemptions) CreateBACnetConstructedDataAuthorizationExemptionsBuilder() BACnetConstructedDataAuthorizationExemptionsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAuthorizationExemptions) CreateBACnetConstructedDataAuthorizationExemptionsBuilder() BACnetConstructedDataAuthorizationExemptionsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAuthorizationExemptionsBuilder()
 	}
-	return &_BACnetConstructedDataAuthorizationExemptionsBuilder{_BACnetConstructedDataAuthorizationExemptions: m.deepCopy()}
+	return &_BACnetConstructedDataAuthorizationExemptionsBuilder{_BACnetConstructedDataAuthorizationExemptions: b.deepCopy()}
 }
 
 ///////////////////////
@@ -284,9 +303,13 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

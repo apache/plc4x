@@ -130,80 +130,84 @@ type _CBusOptionsBuilder struct {
 
 var _ (CBusOptionsBuilder) = (*_CBusOptionsBuilder)(nil)
 
-func (m *_CBusOptionsBuilder) WithMandatoryFields(connect bool, smart bool, idmon bool, exstat bool, monitor bool, monall bool, pun bool, pcn bool, srchk bool) CBusOptionsBuilder {
-	return m.WithConnect(connect).WithSmart(smart).WithIdmon(idmon).WithExstat(exstat).WithMonitor(monitor).WithMonall(monall).WithPun(pun).WithPcn(pcn).WithSrchk(srchk)
+func (b *_CBusOptionsBuilder) WithMandatoryFields(connect bool, smart bool, idmon bool, exstat bool, monitor bool, monall bool, pun bool, pcn bool, srchk bool) CBusOptionsBuilder {
+	return b.WithConnect(connect).WithSmart(smart).WithIdmon(idmon).WithExstat(exstat).WithMonitor(monitor).WithMonall(monall).WithPun(pun).WithPcn(pcn).WithSrchk(srchk)
 }
 
-func (m *_CBusOptionsBuilder) WithConnect(connect bool) CBusOptionsBuilder {
-	m.Connect = connect
-	return m
+func (b *_CBusOptionsBuilder) WithConnect(connect bool) CBusOptionsBuilder {
+	b.Connect = connect
+	return b
 }
 
-func (m *_CBusOptionsBuilder) WithSmart(smart bool) CBusOptionsBuilder {
-	m.Smart = smart
-	return m
+func (b *_CBusOptionsBuilder) WithSmart(smart bool) CBusOptionsBuilder {
+	b.Smart = smart
+	return b
 }
 
-func (m *_CBusOptionsBuilder) WithIdmon(idmon bool) CBusOptionsBuilder {
-	m.Idmon = idmon
-	return m
+func (b *_CBusOptionsBuilder) WithIdmon(idmon bool) CBusOptionsBuilder {
+	b.Idmon = idmon
+	return b
 }
 
-func (m *_CBusOptionsBuilder) WithExstat(exstat bool) CBusOptionsBuilder {
-	m.Exstat = exstat
-	return m
+func (b *_CBusOptionsBuilder) WithExstat(exstat bool) CBusOptionsBuilder {
+	b.Exstat = exstat
+	return b
 }
 
-func (m *_CBusOptionsBuilder) WithMonitor(monitor bool) CBusOptionsBuilder {
-	m.Monitor = monitor
-	return m
+func (b *_CBusOptionsBuilder) WithMonitor(monitor bool) CBusOptionsBuilder {
+	b.Monitor = monitor
+	return b
 }
 
-func (m *_CBusOptionsBuilder) WithMonall(monall bool) CBusOptionsBuilder {
-	m.Monall = monall
-	return m
+func (b *_CBusOptionsBuilder) WithMonall(monall bool) CBusOptionsBuilder {
+	b.Monall = monall
+	return b
 }
 
-func (m *_CBusOptionsBuilder) WithPun(pun bool) CBusOptionsBuilder {
-	m.Pun = pun
-	return m
+func (b *_CBusOptionsBuilder) WithPun(pun bool) CBusOptionsBuilder {
+	b.Pun = pun
+	return b
 }
 
-func (m *_CBusOptionsBuilder) WithPcn(pcn bool) CBusOptionsBuilder {
-	m.Pcn = pcn
-	return m
+func (b *_CBusOptionsBuilder) WithPcn(pcn bool) CBusOptionsBuilder {
+	b.Pcn = pcn
+	return b
 }
 
-func (m *_CBusOptionsBuilder) WithSrchk(srchk bool) CBusOptionsBuilder {
-	m.Srchk = srchk
-	return m
+func (b *_CBusOptionsBuilder) WithSrchk(srchk bool) CBusOptionsBuilder {
+	b.Srchk = srchk
+	return b
 }
 
-func (m *_CBusOptionsBuilder) Build() (CBusOptions, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CBusOptionsBuilder) Build() (CBusOptions, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CBusOptions.deepCopy(), nil
+	return b._CBusOptions.deepCopy(), nil
 }
 
-func (m *_CBusOptionsBuilder) MustBuild() CBusOptions {
-	build, err := m.Build()
+func (b *_CBusOptionsBuilder) MustBuild() CBusOptions {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CBusOptionsBuilder) DeepCopy() any {
-	return m.CreateCBusOptionsBuilder()
+func (b *_CBusOptionsBuilder) DeepCopy() any {
+	_copy := b.CreateCBusOptionsBuilder().(*_CBusOptionsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCBusOptionsBuilder creates a CBusOptionsBuilder
-func (m *_CBusOptions) CreateCBusOptionsBuilder() CBusOptionsBuilder {
-	if m == nil {
+func (b *_CBusOptions) CreateCBusOptionsBuilder() CBusOptionsBuilder {
+	if b == nil {
 		return NewCBusOptionsBuilder()
 	}
-	return &_CBusOptionsBuilder{_CBusOptions: m.deepCopy()}
+	return &_CBusOptionsBuilder{_CBusOptions: b.deepCopy()}
 }
 
 ///////////////////////
@@ -484,9 +488,13 @@ func (m *_CBusOptions) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

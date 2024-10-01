@@ -118,107 +118,111 @@ type _BACnetAddressEnclosedBuilder struct {
 
 var _ (BACnetAddressEnclosedBuilder) = (*_BACnetAddressEnclosedBuilder)(nil)
 
-func (m *_BACnetAddressEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, address BACnetAddress, closingTag BACnetClosingTag) BACnetAddressEnclosedBuilder {
-	return m.WithOpeningTag(openingTag).WithAddress(address).WithClosingTag(closingTag)
+func (b *_BACnetAddressEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, address BACnetAddress, closingTag BACnetClosingTag) BACnetAddressEnclosedBuilder {
+	return b.WithOpeningTag(openingTag).WithAddress(address).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetAddressEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetAddressEnclosedBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetAddressEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetAddressEnclosedBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetAddressEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetAddressEnclosedBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetAddressEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetAddressEnclosedBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAddressEnclosedBuilder) WithAddress(address BACnetAddress) BACnetAddressEnclosedBuilder {
-	m.Address = address
-	return m
+func (b *_BACnetAddressEnclosedBuilder) WithAddress(address BACnetAddress) BACnetAddressEnclosedBuilder {
+	b.Address = address
+	return b
 }
 
-func (m *_BACnetAddressEnclosedBuilder) WithAddressBuilder(builderSupplier func(BACnetAddressBuilder) BACnetAddressBuilder) BACnetAddressEnclosedBuilder {
-	builder := builderSupplier(m.Address.CreateBACnetAddressBuilder())
+func (b *_BACnetAddressEnclosedBuilder) WithAddressBuilder(builderSupplier func(BACnetAddressBuilder) BACnetAddressBuilder) BACnetAddressEnclosedBuilder {
+	builder := builderSupplier(b.Address.CreateBACnetAddressBuilder())
 	var err error
-	m.Address, err = builder.Build()
+	b.Address, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAddressBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAddressEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetAddressEnclosedBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetAddressEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetAddressEnclosedBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetAddressEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetAddressEnclosedBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetAddressEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetAddressEnclosedBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAddressEnclosedBuilder) Build() (BACnetAddressEnclosed, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAddressEnclosedBuilder) Build() (BACnetAddressEnclosed, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.Address == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Address == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'address' not set"))
+		b.err.Append(errors.New("mandatory field 'address' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAddressEnclosed.deepCopy(), nil
+	return b._BACnetAddressEnclosed.deepCopy(), nil
 }
 
-func (m *_BACnetAddressEnclosedBuilder) MustBuild() BACnetAddressEnclosed {
-	build, err := m.Build()
+func (b *_BACnetAddressEnclosedBuilder) MustBuild() BACnetAddressEnclosed {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAddressEnclosedBuilder) DeepCopy() any {
-	return m.CreateBACnetAddressEnclosedBuilder()
+func (b *_BACnetAddressEnclosedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAddressEnclosedBuilder().(*_BACnetAddressEnclosedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAddressEnclosedBuilder creates a BACnetAddressEnclosedBuilder
-func (m *_BACnetAddressEnclosed) CreateBACnetAddressEnclosedBuilder() BACnetAddressEnclosedBuilder {
-	if m == nil {
+func (b *_BACnetAddressEnclosed) CreateBACnetAddressEnclosedBuilder() BACnetAddressEnclosedBuilder {
+	if b == nil {
 		return NewBACnetAddressEnclosedBuilder()
 	}
-	return &_BACnetAddressEnclosedBuilder{_BACnetAddressEnclosed: m.deepCopy()}
+	return &_BACnetAddressEnclosedBuilder{_BACnetAddressEnclosed: b.deepCopy()}
 }
 
 ///////////////////////
@@ -402,9 +406,13 @@ func (m *_BACnetAddressEnclosed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

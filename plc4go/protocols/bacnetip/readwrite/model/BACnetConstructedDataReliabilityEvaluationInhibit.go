@@ -100,64 +100,83 @@ func NewBACnetConstructedDataReliabilityEvaluationInhibitBuilder() BACnetConstru
 type _BACnetConstructedDataReliabilityEvaluationInhibitBuilder struct {
 	*_BACnetConstructedDataReliabilityEvaluationInhibit
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataReliabilityEvaluationInhibitBuilder) = (*_BACnetConstructedDataReliabilityEvaluationInhibitBuilder)(nil)
 
-func (m *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) WithMandatoryFields(reliabilityEvaluationInhibit BACnetApplicationTagBoolean) BACnetConstructedDataReliabilityEvaluationInhibitBuilder {
-	return m.WithReliabilityEvaluationInhibit(reliabilityEvaluationInhibit)
+func (b *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) WithReliabilityEvaluationInhibit(reliabilityEvaluationInhibit BACnetApplicationTagBoolean) BACnetConstructedDataReliabilityEvaluationInhibitBuilder {
-	m.ReliabilityEvaluationInhibit = reliabilityEvaluationInhibit
-	return m
+func (b *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) WithMandatoryFields(reliabilityEvaluationInhibit BACnetApplicationTagBoolean) BACnetConstructedDataReliabilityEvaluationInhibitBuilder {
+	return b.WithReliabilityEvaluationInhibit(reliabilityEvaluationInhibit)
 }
 
-func (m *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) WithReliabilityEvaluationInhibitBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataReliabilityEvaluationInhibitBuilder {
-	builder := builderSupplier(m.ReliabilityEvaluationInhibit.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) WithReliabilityEvaluationInhibit(reliabilityEvaluationInhibit BACnetApplicationTagBoolean) BACnetConstructedDataReliabilityEvaluationInhibitBuilder {
+	b.ReliabilityEvaluationInhibit = reliabilityEvaluationInhibit
+	return b
+}
+
+func (b *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) WithReliabilityEvaluationInhibitBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataReliabilityEvaluationInhibitBuilder {
+	builder := builderSupplier(b.ReliabilityEvaluationInhibit.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.ReliabilityEvaluationInhibit, err = builder.Build()
+	b.ReliabilityEvaluationInhibit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) Build() (BACnetConstructedDataReliabilityEvaluationInhibit, error) {
-	if m.ReliabilityEvaluationInhibit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) Build() (BACnetConstructedDataReliabilityEvaluationInhibit, error) {
+	if b.ReliabilityEvaluationInhibit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'reliabilityEvaluationInhibit' not set"))
+		b.err.Append(errors.New("mandatory field 'reliabilityEvaluationInhibit' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataReliabilityEvaluationInhibit.deepCopy(), nil
+	return b._BACnetConstructedDataReliabilityEvaluationInhibit.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) MustBuild() BACnetConstructedDataReliabilityEvaluationInhibit {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) MustBuild() BACnetConstructedDataReliabilityEvaluationInhibit {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataReliabilityEvaluationInhibitBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataReliabilityEvaluationInhibitBuilder().(*_BACnetConstructedDataReliabilityEvaluationInhibitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataReliabilityEvaluationInhibitBuilder creates a BACnetConstructedDataReliabilityEvaluationInhibitBuilder
-func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) CreateBACnetConstructedDataReliabilityEvaluationInhibitBuilder() BACnetConstructedDataReliabilityEvaluationInhibitBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataReliabilityEvaluationInhibit) CreateBACnetConstructedDataReliabilityEvaluationInhibitBuilder() BACnetConstructedDataReliabilityEvaluationInhibitBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataReliabilityEvaluationInhibitBuilder()
 	}
-	return &_BACnetConstructedDataReliabilityEvaluationInhibitBuilder{_BACnetConstructedDataReliabilityEvaluationInhibit: m.deepCopy()}
+	return &_BACnetConstructedDataReliabilityEvaluationInhibitBuilder{_BACnetConstructedDataReliabilityEvaluationInhibit: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

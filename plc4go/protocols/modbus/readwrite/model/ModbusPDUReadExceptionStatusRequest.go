@@ -85,40 +85,59 @@ func NewModbusPDUReadExceptionStatusRequestBuilder() ModbusPDUReadExceptionStatu
 type _ModbusPDUReadExceptionStatusRequestBuilder struct {
 	*_ModbusPDUReadExceptionStatusRequest
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUReadExceptionStatusRequestBuilder) = (*_ModbusPDUReadExceptionStatusRequestBuilder)(nil)
 
-func (m *_ModbusPDUReadExceptionStatusRequestBuilder) WithMandatoryFields() ModbusPDUReadExceptionStatusRequestBuilder {
-	return m
+func (b *_ModbusPDUReadExceptionStatusRequestBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUReadExceptionStatusRequestBuilder) Build() (ModbusPDUReadExceptionStatusRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUReadExceptionStatusRequestBuilder) WithMandatoryFields() ModbusPDUReadExceptionStatusRequestBuilder {
+	return b
+}
+
+func (b *_ModbusPDUReadExceptionStatusRequestBuilder) Build() (ModbusPDUReadExceptionStatusRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUReadExceptionStatusRequest.deepCopy(), nil
+	return b._ModbusPDUReadExceptionStatusRequest.deepCopy(), nil
 }
 
-func (m *_ModbusPDUReadExceptionStatusRequestBuilder) MustBuild() ModbusPDUReadExceptionStatusRequest {
-	build, err := m.Build()
+func (b *_ModbusPDUReadExceptionStatusRequestBuilder) MustBuild() ModbusPDUReadExceptionStatusRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUReadExceptionStatusRequestBuilder) DeepCopy() any {
-	return m.CreateModbusPDUReadExceptionStatusRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUReadExceptionStatusRequestBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUReadExceptionStatusRequestBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUReadExceptionStatusRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUReadExceptionStatusRequestBuilder().(*_ModbusPDUReadExceptionStatusRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUReadExceptionStatusRequestBuilder creates a ModbusPDUReadExceptionStatusRequestBuilder
-func (m *_ModbusPDUReadExceptionStatusRequest) CreateModbusPDUReadExceptionStatusRequestBuilder() ModbusPDUReadExceptionStatusRequestBuilder {
-	if m == nil {
+func (b *_ModbusPDUReadExceptionStatusRequest) CreateModbusPDUReadExceptionStatusRequestBuilder() ModbusPDUReadExceptionStatusRequestBuilder {
+	if b == nil {
 		return NewModbusPDUReadExceptionStatusRequestBuilder()
 	}
-	return &_ModbusPDUReadExceptionStatusRequestBuilder{_ModbusPDUReadExceptionStatusRequest: m.deepCopy()}
+	return &_ModbusPDUReadExceptionStatusRequestBuilder{_ModbusPDUReadExceptionStatusRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -242,9 +261,13 @@ func (m *_ModbusPDUReadExceptionStatusRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

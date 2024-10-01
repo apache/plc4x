@@ -117,65 +117,84 @@ func NewDF1RequestProtectedTypedLogicalReadBuilder() DF1RequestProtectedTypedLog
 type _DF1RequestProtectedTypedLogicalReadBuilder struct {
 	*_DF1RequestProtectedTypedLogicalRead
 
+	parentBuilder *_DF1RequestCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DF1RequestProtectedTypedLogicalReadBuilder) = (*_DF1RequestProtectedTypedLogicalReadBuilder)(nil)
 
-func (m *_DF1RequestProtectedTypedLogicalReadBuilder) WithMandatoryFields(byteSize uint8, fileNumber uint8, fileType uint8, elementNumber uint8, subElementNumber uint8) DF1RequestProtectedTypedLogicalReadBuilder {
-	return m.WithByteSize(byteSize).WithFileNumber(fileNumber).WithFileType(fileType).WithElementNumber(elementNumber).WithSubElementNumber(subElementNumber)
+func (b *_DF1RequestProtectedTypedLogicalReadBuilder) setParent(contract DF1RequestCommandContract) {
+	b.DF1RequestCommandContract = contract
 }
 
-func (m *_DF1RequestProtectedTypedLogicalReadBuilder) WithByteSize(byteSize uint8) DF1RequestProtectedTypedLogicalReadBuilder {
-	m.ByteSize = byteSize
-	return m
+func (b *_DF1RequestProtectedTypedLogicalReadBuilder) WithMandatoryFields(byteSize uint8, fileNumber uint8, fileType uint8, elementNumber uint8, subElementNumber uint8) DF1RequestProtectedTypedLogicalReadBuilder {
+	return b.WithByteSize(byteSize).WithFileNumber(fileNumber).WithFileType(fileType).WithElementNumber(elementNumber).WithSubElementNumber(subElementNumber)
 }
 
-func (m *_DF1RequestProtectedTypedLogicalReadBuilder) WithFileNumber(fileNumber uint8) DF1RequestProtectedTypedLogicalReadBuilder {
-	m.FileNumber = fileNumber
-	return m
+func (b *_DF1RequestProtectedTypedLogicalReadBuilder) WithByteSize(byteSize uint8) DF1RequestProtectedTypedLogicalReadBuilder {
+	b.ByteSize = byteSize
+	return b
 }
 
-func (m *_DF1RequestProtectedTypedLogicalReadBuilder) WithFileType(fileType uint8) DF1RequestProtectedTypedLogicalReadBuilder {
-	m.FileType = fileType
-	return m
+func (b *_DF1RequestProtectedTypedLogicalReadBuilder) WithFileNumber(fileNumber uint8) DF1RequestProtectedTypedLogicalReadBuilder {
+	b.FileNumber = fileNumber
+	return b
 }
 
-func (m *_DF1RequestProtectedTypedLogicalReadBuilder) WithElementNumber(elementNumber uint8) DF1RequestProtectedTypedLogicalReadBuilder {
-	m.ElementNumber = elementNumber
-	return m
+func (b *_DF1RequestProtectedTypedLogicalReadBuilder) WithFileType(fileType uint8) DF1RequestProtectedTypedLogicalReadBuilder {
+	b.FileType = fileType
+	return b
 }
 
-func (m *_DF1RequestProtectedTypedLogicalReadBuilder) WithSubElementNumber(subElementNumber uint8) DF1RequestProtectedTypedLogicalReadBuilder {
-	m.SubElementNumber = subElementNumber
-	return m
+func (b *_DF1RequestProtectedTypedLogicalReadBuilder) WithElementNumber(elementNumber uint8) DF1RequestProtectedTypedLogicalReadBuilder {
+	b.ElementNumber = elementNumber
+	return b
 }
 
-func (m *_DF1RequestProtectedTypedLogicalReadBuilder) Build() (DF1RequestProtectedTypedLogicalRead, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DF1RequestProtectedTypedLogicalReadBuilder) WithSubElementNumber(subElementNumber uint8) DF1RequestProtectedTypedLogicalReadBuilder {
+	b.SubElementNumber = subElementNumber
+	return b
+}
+
+func (b *_DF1RequestProtectedTypedLogicalReadBuilder) Build() (DF1RequestProtectedTypedLogicalRead, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DF1RequestProtectedTypedLogicalRead.deepCopy(), nil
+	return b._DF1RequestProtectedTypedLogicalRead.deepCopy(), nil
 }
 
-func (m *_DF1RequestProtectedTypedLogicalReadBuilder) MustBuild() DF1RequestProtectedTypedLogicalRead {
-	build, err := m.Build()
+func (b *_DF1RequestProtectedTypedLogicalReadBuilder) MustBuild() DF1RequestProtectedTypedLogicalRead {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DF1RequestProtectedTypedLogicalReadBuilder) DeepCopy() any {
-	return m.CreateDF1RequestProtectedTypedLogicalReadBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DF1RequestProtectedTypedLogicalReadBuilder) Done() DF1RequestCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DF1RequestProtectedTypedLogicalReadBuilder) buildForDF1RequestCommand() (DF1RequestCommand, error) {
+	return b.Build()
+}
+
+func (b *_DF1RequestProtectedTypedLogicalReadBuilder) DeepCopy() any {
+	_copy := b.CreateDF1RequestProtectedTypedLogicalReadBuilder().(*_DF1RequestProtectedTypedLogicalReadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDF1RequestProtectedTypedLogicalReadBuilder creates a DF1RequestProtectedTypedLogicalReadBuilder
-func (m *_DF1RequestProtectedTypedLogicalRead) CreateDF1RequestProtectedTypedLogicalReadBuilder() DF1RequestProtectedTypedLogicalReadBuilder {
-	if m == nil {
+func (b *_DF1RequestProtectedTypedLogicalRead) CreateDF1RequestProtectedTypedLogicalReadBuilder() DF1RequestProtectedTypedLogicalReadBuilder {
+	if b == nil {
 		return NewDF1RequestProtectedTypedLogicalReadBuilder()
 	}
-	return &_DF1RequestProtectedTypedLogicalReadBuilder{_DF1RequestProtectedTypedLogicalRead: m.deepCopy()}
+	return &_DF1RequestProtectedTypedLogicalReadBuilder{_DF1RequestProtectedTypedLogicalRead: b.deepCopy()}
 }
 
 ///////////////////////
@@ -391,9 +410,13 @@ func (m *_DF1RequestProtectedTypedLogicalRead) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

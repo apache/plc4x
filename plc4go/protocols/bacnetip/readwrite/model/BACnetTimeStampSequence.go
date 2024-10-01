@@ -98,64 +98,83 @@ func NewBACnetTimeStampSequenceBuilder() BACnetTimeStampSequenceBuilder {
 type _BACnetTimeStampSequenceBuilder struct {
 	*_BACnetTimeStampSequence
 
+	parentBuilder *_BACnetTimeStampBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetTimeStampSequenceBuilder) = (*_BACnetTimeStampSequenceBuilder)(nil)
 
-func (m *_BACnetTimeStampSequenceBuilder) WithMandatoryFields(sequenceNumber BACnetContextTagUnsignedInteger) BACnetTimeStampSequenceBuilder {
-	return m.WithSequenceNumber(sequenceNumber)
+func (b *_BACnetTimeStampSequenceBuilder) setParent(contract BACnetTimeStampContract) {
+	b.BACnetTimeStampContract = contract
 }
 
-func (m *_BACnetTimeStampSequenceBuilder) WithSequenceNumber(sequenceNumber BACnetContextTagUnsignedInteger) BACnetTimeStampSequenceBuilder {
-	m.SequenceNumber = sequenceNumber
-	return m
+func (b *_BACnetTimeStampSequenceBuilder) WithMandatoryFields(sequenceNumber BACnetContextTagUnsignedInteger) BACnetTimeStampSequenceBuilder {
+	return b.WithSequenceNumber(sequenceNumber)
 }
 
-func (m *_BACnetTimeStampSequenceBuilder) WithSequenceNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetTimeStampSequenceBuilder {
-	builder := builderSupplier(m.SequenceNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetTimeStampSequenceBuilder) WithSequenceNumber(sequenceNumber BACnetContextTagUnsignedInteger) BACnetTimeStampSequenceBuilder {
+	b.SequenceNumber = sequenceNumber
+	return b
+}
+
+func (b *_BACnetTimeStampSequenceBuilder) WithSequenceNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetTimeStampSequenceBuilder {
+	builder := builderSupplier(b.SequenceNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.SequenceNumber, err = builder.Build()
+	b.SequenceNumber, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetTimeStampSequenceBuilder) Build() (BACnetTimeStampSequence, error) {
-	if m.SequenceNumber == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetTimeStampSequenceBuilder) Build() (BACnetTimeStampSequence, error) {
+	if b.SequenceNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'sequenceNumber' not set"))
+		b.err.Append(errors.New("mandatory field 'sequenceNumber' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTimeStampSequence.deepCopy(), nil
+	return b._BACnetTimeStampSequence.deepCopy(), nil
 }
 
-func (m *_BACnetTimeStampSequenceBuilder) MustBuild() BACnetTimeStampSequence {
-	build, err := m.Build()
+func (b *_BACnetTimeStampSequenceBuilder) MustBuild() BACnetTimeStampSequence {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTimeStampSequenceBuilder) DeepCopy() any {
-	return m.CreateBACnetTimeStampSequenceBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetTimeStampSequenceBuilder) Done() BACnetTimeStampBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetTimeStampSequenceBuilder) buildForBACnetTimeStamp() (BACnetTimeStamp, error) {
+	return b.Build()
+}
+
+func (b *_BACnetTimeStampSequenceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimeStampSequenceBuilder().(*_BACnetTimeStampSequenceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTimeStampSequenceBuilder creates a BACnetTimeStampSequenceBuilder
-func (m *_BACnetTimeStampSequence) CreateBACnetTimeStampSequenceBuilder() BACnetTimeStampSequenceBuilder {
-	if m == nil {
+func (b *_BACnetTimeStampSequence) CreateBACnetTimeStampSequenceBuilder() BACnetTimeStampSequenceBuilder {
+	if b == nil {
 		return NewBACnetTimeStampSequenceBuilder()
 	}
-	return &_BACnetTimeStampSequenceBuilder{_BACnetTimeStampSequence: m.deepCopy()}
+	return &_BACnetTimeStampSequenceBuilder{_BACnetTimeStampSequence: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetTimeStampSequence) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

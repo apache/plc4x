@@ -98,64 +98,83 @@ func NewBACnetProcessIdSelectionNullBuilder() BACnetProcessIdSelectionNullBuilde
 type _BACnetProcessIdSelectionNullBuilder struct {
 	*_BACnetProcessIdSelectionNull
 
+	parentBuilder *_BACnetProcessIdSelectionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetProcessIdSelectionNullBuilder) = (*_BACnetProcessIdSelectionNullBuilder)(nil)
 
-func (m *_BACnetProcessIdSelectionNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetProcessIdSelectionNullBuilder {
-	return m.WithNullValue(nullValue)
+func (b *_BACnetProcessIdSelectionNullBuilder) setParent(contract BACnetProcessIdSelectionContract) {
+	b.BACnetProcessIdSelectionContract = contract
 }
 
-func (m *_BACnetProcessIdSelectionNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetProcessIdSelectionNullBuilder {
-	m.NullValue = nullValue
-	return m
+func (b *_BACnetProcessIdSelectionNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetProcessIdSelectionNullBuilder {
+	return b.WithNullValue(nullValue)
 }
 
-func (m *_BACnetProcessIdSelectionNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetProcessIdSelectionNullBuilder {
-	builder := builderSupplier(m.NullValue.CreateBACnetApplicationTagNullBuilder())
+func (b *_BACnetProcessIdSelectionNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetProcessIdSelectionNullBuilder {
+	b.NullValue = nullValue
+	return b
+}
+
+func (b *_BACnetProcessIdSelectionNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetProcessIdSelectionNullBuilder {
+	builder := builderSupplier(b.NullValue.CreateBACnetApplicationTagNullBuilder())
 	var err error
-	m.NullValue, err = builder.Build()
+	b.NullValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetProcessIdSelectionNullBuilder) Build() (BACnetProcessIdSelectionNull, error) {
-	if m.NullValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetProcessIdSelectionNullBuilder) Build() (BACnetProcessIdSelectionNull, error) {
+	if b.NullValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nullValue' not set"))
+		b.err.Append(errors.New("mandatory field 'nullValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetProcessIdSelectionNull.deepCopy(), nil
+	return b._BACnetProcessIdSelectionNull.deepCopy(), nil
 }
 
-func (m *_BACnetProcessIdSelectionNullBuilder) MustBuild() BACnetProcessIdSelectionNull {
-	build, err := m.Build()
+func (b *_BACnetProcessIdSelectionNullBuilder) MustBuild() BACnetProcessIdSelectionNull {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetProcessIdSelectionNullBuilder) DeepCopy() any {
-	return m.CreateBACnetProcessIdSelectionNullBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetProcessIdSelectionNullBuilder) Done() BACnetProcessIdSelectionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetProcessIdSelectionNullBuilder) buildForBACnetProcessIdSelection() (BACnetProcessIdSelection, error) {
+	return b.Build()
+}
+
+func (b *_BACnetProcessIdSelectionNullBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetProcessIdSelectionNullBuilder().(*_BACnetProcessIdSelectionNullBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetProcessIdSelectionNullBuilder creates a BACnetProcessIdSelectionNullBuilder
-func (m *_BACnetProcessIdSelectionNull) CreateBACnetProcessIdSelectionNullBuilder() BACnetProcessIdSelectionNullBuilder {
-	if m == nil {
+func (b *_BACnetProcessIdSelectionNull) CreateBACnetProcessIdSelectionNullBuilder() BACnetProcessIdSelectionNullBuilder {
+	if b == nil {
 		return NewBACnetProcessIdSelectionNullBuilder()
 	}
-	return &_BACnetProcessIdSelectionNullBuilder{_BACnetProcessIdSelectionNull: m.deepCopy()}
+	return &_BACnetProcessIdSelectionNullBuilder{_BACnetProcessIdSelectionNull: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetProcessIdSelectionNull) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

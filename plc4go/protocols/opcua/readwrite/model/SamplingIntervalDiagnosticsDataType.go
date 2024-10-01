@@ -111,60 +111,79 @@ func NewSamplingIntervalDiagnosticsDataTypeBuilder() SamplingIntervalDiagnostics
 type _SamplingIntervalDiagnosticsDataTypeBuilder struct {
 	*_SamplingIntervalDiagnosticsDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SamplingIntervalDiagnosticsDataTypeBuilder) = (*_SamplingIntervalDiagnosticsDataTypeBuilder)(nil)
 
-func (m *_SamplingIntervalDiagnosticsDataTypeBuilder) WithMandatoryFields(samplingInterval float64, monitoredItemCount uint32, maxMonitoredItemCount uint32, disabledMonitoredItemCount uint32) SamplingIntervalDiagnosticsDataTypeBuilder {
-	return m.WithSamplingInterval(samplingInterval).WithMonitoredItemCount(monitoredItemCount).WithMaxMonitoredItemCount(maxMonitoredItemCount).WithDisabledMonitoredItemCount(disabledMonitoredItemCount)
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_SamplingIntervalDiagnosticsDataTypeBuilder) WithSamplingInterval(samplingInterval float64) SamplingIntervalDiagnosticsDataTypeBuilder {
-	m.SamplingInterval = samplingInterval
-	return m
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) WithMandatoryFields(samplingInterval float64, monitoredItemCount uint32, maxMonitoredItemCount uint32, disabledMonitoredItemCount uint32) SamplingIntervalDiagnosticsDataTypeBuilder {
+	return b.WithSamplingInterval(samplingInterval).WithMonitoredItemCount(monitoredItemCount).WithMaxMonitoredItemCount(maxMonitoredItemCount).WithDisabledMonitoredItemCount(disabledMonitoredItemCount)
 }
 
-func (m *_SamplingIntervalDiagnosticsDataTypeBuilder) WithMonitoredItemCount(monitoredItemCount uint32) SamplingIntervalDiagnosticsDataTypeBuilder {
-	m.MonitoredItemCount = monitoredItemCount
-	return m
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) WithSamplingInterval(samplingInterval float64) SamplingIntervalDiagnosticsDataTypeBuilder {
+	b.SamplingInterval = samplingInterval
+	return b
 }
 
-func (m *_SamplingIntervalDiagnosticsDataTypeBuilder) WithMaxMonitoredItemCount(maxMonitoredItemCount uint32) SamplingIntervalDiagnosticsDataTypeBuilder {
-	m.MaxMonitoredItemCount = maxMonitoredItemCount
-	return m
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) WithMonitoredItemCount(monitoredItemCount uint32) SamplingIntervalDiagnosticsDataTypeBuilder {
+	b.MonitoredItemCount = monitoredItemCount
+	return b
 }
 
-func (m *_SamplingIntervalDiagnosticsDataTypeBuilder) WithDisabledMonitoredItemCount(disabledMonitoredItemCount uint32) SamplingIntervalDiagnosticsDataTypeBuilder {
-	m.DisabledMonitoredItemCount = disabledMonitoredItemCount
-	return m
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) WithMaxMonitoredItemCount(maxMonitoredItemCount uint32) SamplingIntervalDiagnosticsDataTypeBuilder {
+	b.MaxMonitoredItemCount = maxMonitoredItemCount
+	return b
 }
 
-func (m *_SamplingIntervalDiagnosticsDataTypeBuilder) Build() (SamplingIntervalDiagnosticsDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) WithDisabledMonitoredItemCount(disabledMonitoredItemCount uint32) SamplingIntervalDiagnosticsDataTypeBuilder {
+	b.DisabledMonitoredItemCount = disabledMonitoredItemCount
+	return b
+}
+
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) Build() (SamplingIntervalDiagnosticsDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SamplingIntervalDiagnosticsDataType.deepCopy(), nil
+	return b._SamplingIntervalDiagnosticsDataType.deepCopy(), nil
 }
 
-func (m *_SamplingIntervalDiagnosticsDataTypeBuilder) MustBuild() SamplingIntervalDiagnosticsDataType {
-	build, err := m.Build()
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) MustBuild() SamplingIntervalDiagnosticsDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SamplingIntervalDiagnosticsDataTypeBuilder) DeepCopy() any {
-	return m.CreateSamplingIntervalDiagnosticsDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateSamplingIntervalDiagnosticsDataTypeBuilder().(*_SamplingIntervalDiagnosticsDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSamplingIntervalDiagnosticsDataTypeBuilder creates a SamplingIntervalDiagnosticsDataTypeBuilder
-func (m *_SamplingIntervalDiagnosticsDataType) CreateSamplingIntervalDiagnosticsDataTypeBuilder() SamplingIntervalDiagnosticsDataTypeBuilder {
-	if m == nil {
+func (b *_SamplingIntervalDiagnosticsDataType) CreateSamplingIntervalDiagnosticsDataTypeBuilder() SamplingIntervalDiagnosticsDataTypeBuilder {
+	if b == nil {
 		return NewSamplingIntervalDiagnosticsDataTypeBuilder()
 	}
-	return &_SamplingIntervalDiagnosticsDataTypeBuilder{_SamplingIntervalDiagnosticsDataType: m.deepCopy()}
+	return &_SamplingIntervalDiagnosticsDataTypeBuilder{_SamplingIntervalDiagnosticsDataType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -362,9 +381,13 @@ func (m *_SamplingIntervalDiagnosticsDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

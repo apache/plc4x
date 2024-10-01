@@ -105,83 +105,87 @@ type _BACnetDateRangeBuilder struct {
 
 var _ (BACnetDateRangeBuilder) = (*_BACnetDateRangeBuilder)(nil)
 
-func (m *_BACnetDateRangeBuilder) WithMandatoryFields(startDate BACnetApplicationTagDate, endDate BACnetApplicationTagDate) BACnetDateRangeBuilder {
-	return m.WithStartDate(startDate).WithEndDate(endDate)
+func (b *_BACnetDateRangeBuilder) WithMandatoryFields(startDate BACnetApplicationTagDate, endDate BACnetApplicationTagDate) BACnetDateRangeBuilder {
+	return b.WithStartDate(startDate).WithEndDate(endDate)
 }
 
-func (m *_BACnetDateRangeBuilder) WithStartDate(startDate BACnetApplicationTagDate) BACnetDateRangeBuilder {
-	m.StartDate = startDate
-	return m
+func (b *_BACnetDateRangeBuilder) WithStartDate(startDate BACnetApplicationTagDate) BACnetDateRangeBuilder {
+	b.StartDate = startDate
+	return b
 }
 
-func (m *_BACnetDateRangeBuilder) WithStartDateBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetDateRangeBuilder {
-	builder := builderSupplier(m.StartDate.CreateBACnetApplicationTagDateBuilder())
+func (b *_BACnetDateRangeBuilder) WithStartDateBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetDateRangeBuilder {
+	builder := builderSupplier(b.StartDate.CreateBACnetApplicationTagDateBuilder())
 	var err error
-	m.StartDate, err = builder.Build()
+	b.StartDate, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetDateRangeBuilder) WithEndDate(endDate BACnetApplicationTagDate) BACnetDateRangeBuilder {
-	m.EndDate = endDate
-	return m
+func (b *_BACnetDateRangeBuilder) WithEndDate(endDate BACnetApplicationTagDate) BACnetDateRangeBuilder {
+	b.EndDate = endDate
+	return b
 }
 
-func (m *_BACnetDateRangeBuilder) WithEndDateBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetDateRangeBuilder {
-	builder := builderSupplier(m.EndDate.CreateBACnetApplicationTagDateBuilder())
+func (b *_BACnetDateRangeBuilder) WithEndDateBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetDateRangeBuilder {
+	builder := builderSupplier(b.EndDate.CreateBACnetApplicationTagDateBuilder())
 	var err error
-	m.EndDate, err = builder.Build()
+	b.EndDate, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetDateRangeBuilder) Build() (BACnetDateRange, error) {
-	if m.StartDate == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetDateRangeBuilder) Build() (BACnetDateRange, error) {
+	if b.StartDate == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'startDate' not set"))
+		b.err.Append(errors.New("mandatory field 'startDate' not set"))
 	}
-	if m.EndDate == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.EndDate == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'endDate' not set"))
+		b.err.Append(errors.New("mandatory field 'endDate' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetDateRange.deepCopy(), nil
+	return b._BACnetDateRange.deepCopy(), nil
 }
 
-func (m *_BACnetDateRangeBuilder) MustBuild() BACnetDateRange {
-	build, err := m.Build()
+func (b *_BACnetDateRangeBuilder) MustBuild() BACnetDateRange {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetDateRangeBuilder) DeepCopy() any {
-	return m.CreateBACnetDateRangeBuilder()
+func (b *_BACnetDateRangeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetDateRangeBuilder().(*_BACnetDateRangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetDateRangeBuilder creates a BACnetDateRangeBuilder
-func (m *_BACnetDateRange) CreateBACnetDateRangeBuilder() BACnetDateRangeBuilder {
-	if m == nil {
+func (b *_BACnetDateRange) CreateBACnetDateRangeBuilder() BACnetDateRangeBuilder {
+	if b == nil {
 		return NewBACnetDateRangeBuilder()
 	}
-	return &_BACnetDateRangeBuilder{_BACnetDateRange: m.deepCopy()}
+	return &_BACnetDateRangeBuilder{_BACnetDateRange: b.deepCopy()}
 }
 
 ///////////////////////
@@ -336,9 +340,13 @@ func (m *_BACnetDateRange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

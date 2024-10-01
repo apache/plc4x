@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAuthenticationStatusBuilder() BACnetConstructedData
 type _BACnetConstructedDataAuthenticationStatusBuilder struct {
 	*_BACnetConstructedDataAuthenticationStatus
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAuthenticationStatusBuilder) = (*_BACnetConstructedDataAuthenticationStatusBuilder)(nil)
 
-func (m *_BACnetConstructedDataAuthenticationStatusBuilder) WithMandatoryFields(authenticationStatus BACnetAuthenticationStatusTagged) BACnetConstructedDataAuthenticationStatusBuilder {
-	return m.WithAuthenticationStatus(authenticationStatus)
+func (b *_BACnetConstructedDataAuthenticationStatusBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAuthenticationStatusBuilder) WithAuthenticationStatus(authenticationStatus BACnetAuthenticationStatusTagged) BACnetConstructedDataAuthenticationStatusBuilder {
-	m.AuthenticationStatus = authenticationStatus
-	return m
+func (b *_BACnetConstructedDataAuthenticationStatusBuilder) WithMandatoryFields(authenticationStatus BACnetAuthenticationStatusTagged) BACnetConstructedDataAuthenticationStatusBuilder {
+	return b.WithAuthenticationStatus(authenticationStatus)
 }
 
-func (m *_BACnetConstructedDataAuthenticationStatusBuilder) WithAuthenticationStatusBuilder(builderSupplier func(BACnetAuthenticationStatusTaggedBuilder) BACnetAuthenticationStatusTaggedBuilder) BACnetConstructedDataAuthenticationStatusBuilder {
-	builder := builderSupplier(m.AuthenticationStatus.CreateBACnetAuthenticationStatusTaggedBuilder())
+func (b *_BACnetConstructedDataAuthenticationStatusBuilder) WithAuthenticationStatus(authenticationStatus BACnetAuthenticationStatusTagged) BACnetConstructedDataAuthenticationStatusBuilder {
+	b.AuthenticationStatus = authenticationStatus
+	return b
+}
+
+func (b *_BACnetConstructedDataAuthenticationStatusBuilder) WithAuthenticationStatusBuilder(builderSupplier func(BACnetAuthenticationStatusTaggedBuilder) BACnetAuthenticationStatusTaggedBuilder) BACnetConstructedDataAuthenticationStatusBuilder {
+	builder := builderSupplier(b.AuthenticationStatus.CreateBACnetAuthenticationStatusTaggedBuilder())
 	var err error
-	m.AuthenticationStatus, err = builder.Build()
+	b.AuthenticationStatus, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAuthenticationStatusTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAuthenticationStatusTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAuthenticationStatusBuilder) Build() (BACnetConstructedDataAuthenticationStatus, error) {
-	if m.AuthenticationStatus == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAuthenticationStatusBuilder) Build() (BACnetConstructedDataAuthenticationStatus, error) {
+	if b.AuthenticationStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'authenticationStatus' not set"))
+		b.err.Append(errors.New("mandatory field 'authenticationStatus' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAuthenticationStatus.deepCopy(), nil
+	return b._BACnetConstructedDataAuthenticationStatus.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAuthenticationStatusBuilder) MustBuild() BACnetConstructedDataAuthenticationStatus {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAuthenticationStatusBuilder) MustBuild() BACnetConstructedDataAuthenticationStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAuthenticationStatusBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAuthenticationStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAuthenticationStatusBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAuthenticationStatusBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAuthenticationStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAuthenticationStatusBuilder().(*_BACnetConstructedDataAuthenticationStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAuthenticationStatusBuilder creates a BACnetConstructedDataAuthenticationStatusBuilder
-func (m *_BACnetConstructedDataAuthenticationStatus) CreateBACnetConstructedDataAuthenticationStatusBuilder() BACnetConstructedDataAuthenticationStatusBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAuthenticationStatus) CreateBACnetConstructedDataAuthenticationStatusBuilder() BACnetConstructedDataAuthenticationStatusBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAuthenticationStatusBuilder()
 	}
-	return &_BACnetConstructedDataAuthenticationStatusBuilder{_BACnetConstructedDataAuthenticationStatus: m.deepCopy()}
+	return &_BACnetConstructedDataAuthenticationStatusBuilder{_BACnetConstructedDataAuthenticationStatus: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataAuthenticationStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -103,50 +103,69 @@ func NewTelephonyDataRecallLastNumberBuilder() TelephonyDataRecallLastNumberBuil
 type _TelephonyDataRecallLastNumberBuilder struct {
 	*_TelephonyDataRecallLastNumber
 
+	parentBuilder *_TelephonyDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TelephonyDataRecallLastNumberBuilder) = (*_TelephonyDataRecallLastNumberBuilder)(nil)
 
-func (m *_TelephonyDataRecallLastNumberBuilder) WithMandatoryFields(recallLastNumberType byte, number string) TelephonyDataRecallLastNumberBuilder {
-	return m.WithRecallLastNumberType(recallLastNumberType).WithNumber(number)
+func (b *_TelephonyDataRecallLastNumberBuilder) setParent(contract TelephonyDataContract) {
+	b.TelephonyDataContract = contract
 }
 
-func (m *_TelephonyDataRecallLastNumberBuilder) WithRecallLastNumberType(recallLastNumberType byte) TelephonyDataRecallLastNumberBuilder {
-	m.RecallLastNumberType = recallLastNumberType
-	return m
+func (b *_TelephonyDataRecallLastNumberBuilder) WithMandatoryFields(recallLastNumberType byte, number string) TelephonyDataRecallLastNumberBuilder {
+	return b.WithRecallLastNumberType(recallLastNumberType).WithNumber(number)
 }
 
-func (m *_TelephonyDataRecallLastNumberBuilder) WithNumber(number string) TelephonyDataRecallLastNumberBuilder {
-	m.Number = number
-	return m
+func (b *_TelephonyDataRecallLastNumberBuilder) WithRecallLastNumberType(recallLastNumberType byte) TelephonyDataRecallLastNumberBuilder {
+	b.RecallLastNumberType = recallLastNumberType
+	return b
 }
 
-func (m *_TelephonyDataRecallLastNumberBuilder) Build() (TelephonyDataRecallLastNumber, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TelephonyDataRecallLastNumberBuilder) WithNumber(number string) TelephonyDataRecallLastNumberBuilder {
+	b.Number = number
+	return b
+}
+
+func (b *_TelephonyDataRecallLastNumberBuilder) Build() (TelephonyDataRecallLastNumber, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TelephonyDataRecallLastNumber.deepCopy(), nil
+	return b._TelephonyDataRecallLastNumber.deepCopy(), nil
 }
 
-func (m *_TelephonyDataRecallLastNumberBuilder) MustBuild() TelephonyDataRecallLastNumber {
-	build, err := m.Build()
+func (b *_TelephonyDataRecallLastNumberBuilder) MustBuild() TelephonyDataRecallLastNumber {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TelephonyDataRecallLastNumberBuilder) DeepCopy() any {
-	return m.CreateTelephonyDataRecallLastNumberBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TelephonyDataRecallLastNumberBuilder) Done() TelephonyDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TelephonyDataRecallLastNumberBuilder) buildForTelephonyData() (TelephonyData, error) {
+	return b.Build()
+}
+
+func (b *_TelephonyDataRecallLastNumberBuilder) DeepCopy() any {
+	_copy := b.CreateTelephonyDataRecallLastNumberBuilder().(*_TelephonyDataRecallLastNumberBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTelephonyDataRecallLastNumberBuilder creates a TelephonyDataRecallLastNumberBuilder
-func (m *_TelephonyDataRecallLastNumber) CreateTelephonyDataRecallLastNumberBuilder() TelephonyDataRecallLastNumberBuilder {
-	if m == nil {
+func (b *_TelephonyDataRecallLastNumber) CreateTelephonyDataRecallLastNumberBuilder() TelephonyDataRecallLastNumberBuilder {
+	if b == nil {
 		return NewTelephonyDataRecallLastNumberBuilder()
 	}
-	return &_TelephonyDataRecallLastNumberBuilder{_TelephonyDataRecallLastNumber: m.deepCopy()}
+	return &_TelephonyDataRecallLastNumberBuilder{_TelephonyDataRecallLastNumber: b.deepCopy()}
 }
 
 ///////////////////////
@@ -353,9 +372,13 @@ func (m *_TelephonyDataRecallLastNumber) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

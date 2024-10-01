@@ -110,74 +110,93 @@ func NewModificationInfoBuilder() ModificationInfoBuilder {
 type _ModificationInfoBuilder struct {
 	*_ModificationInfo
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModificationInfoBuilder) = (*_ModificationInfoBuilder)(nil)
 
-func (m *_ModificationInfoBuilder) WithMandatoryFields(modificationTime int64, updateType HistoryUpdateType, userName PascalString) ModificationInfoBuilder {
-	return m.WithModificationTime(modificationTime).WithUpdateType(updateType).WithUserName(userName)
+func (b *_ModificationInfoBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ModificationInfoBuilder) WithModificationTime(modificationTime int64) ModificationInfoBuilder {
-	m.ModificationTime = modificationTime
-	return m
+func (b *_ModificationInfoBuilder) WithMandatoryFields(modificationTime int64, updateType HistoryUpdateType, userName PascalString) ModificationInfoBuilder {
+	return b.WithModificationTime(modificationTime).WithUpdateType(updateType).WithUserName(userName)
 }
 
-func (m *_ModificationInfoBuilder) WithUpdateType(updateType HistoryUpdateType) ModificationInfoBuilder {
-	m.UpdateType = updateType
-	return m
+func (b *_ModificationInfoBuilder) WithModificationTime(modificationTime int64) ModificationInfoBuilder {
+	b.ModificationTime = modificationTime
+	return b
 }
 
-func (m *_ModificationInfoBuilder) WithUserName(userName PascalString) ModificationInfoBuilder {
-	m.UserName = userName
-	return m
+func (b *_ModificationInfoBuilder) WithUpdateType(updateType HistoryUpdateType) ModificationInfoBuilder {
+	b.UpdateType = updateType
+	return b
 }
 
-func (m *_ModificationInfoBuilder) WithUserNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ModificationInfoBuilder {
-	builder := builderSupplier(m.UserName.CreatePascalStringBuilder())
+func (b *_ModificationInfoBuilder) WithUserName(userName PascalString) ModificationInfoBuilder {
+	b.UserName = userName
+	return b
+}
+
+func (b *_ModificationInfoBuilder) WithUserNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ModificationInfoBuilder {
+	builder := builderSupplier(b.UserName.CreatePascalStringBuilder())
 	var err error
-	m.UserName, err = builder.Build()
+	b.UserName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ModificationInfoBuilder) Build() (ModificationInfo, error) {
-	if m.UserName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ModificationInfoBuilder) Build() (ModificationInfo, error) {
+	if b.UserName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'userName' not set"))
+		b.err.Append(errors.New("mandatory field 'userName' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModificationInfo.deepCopy(), nil
+	return b._ModificationInfo.deepCopy(), nil
 }
 
-func (m *_ModificationInfoBuilder) MustBuild() ModificationInfo {
-	build, err := m.Build()
+func (b *_ModificationInfoBuilder) MustBuild() ModificationInfo {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModificationInfoBuilder) DeepCopy() any {
-	return m.CreateModificationInfoBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModificationInfoBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModificationInfoBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ModificationInfoBuilder) DeepCopy() any {
+	_copy := b.CreateModificationInfoBuilder().(*_ModificationInfoBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModificationInfoBuilder creates a ModificationInfoBuilder
-func (m *_ModificationInfo) CreateModificationInfoBuilder() ModificationInfoBuilder {
-	if m == nil {
+func (b *_ModificationInfo) CreateModificationInfoBuilder() ModificationInfoBuilder {
+	if b == nil {
 		return NewModificationInfoBuilder()
 	}
-	return &_ModificationInfoBuilder{_ModificationInfo: m.deepCopy()}
+	return &_ModificationInfoBuilder{_ModificationInfo: b.deepCopy()}
 }
 
 ///////////////////////
@@ -357,9 +376,13 @@ func (m *_ModificationInfo) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

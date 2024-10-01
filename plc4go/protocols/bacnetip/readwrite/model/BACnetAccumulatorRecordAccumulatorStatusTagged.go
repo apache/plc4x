@@ -104,64 +104,68 @@ type _BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder struct {
 
 var _ (BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) = (*_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder)(nil)
 
-func (m *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAccumulatorRecordAccumulatorStatus) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
-	return m.WithHeader(header).WithValue(value)
+func (b *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAccumulatorRecordAccumulatorStatus) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
 }
 
-func (m *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithValue(value BACnetAccumulatorRecordAccumulatorStatus) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithValue(value BACnetAccumulatorRecordAccumulatorStatus) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) Build() (BACnetAccumulatorRecordAccumulatorStatusTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) Build() (BACnetAccumulatorRecordAccumulatorStatusTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAccumulatorRecordAccumulatorStatusTagged.deepCopy(), nil
+	return b._BACnetAccumulatorRecordAccumulatorStatusTagged.deepCopy(), nil
 }
 
-func (m *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) MustBuild() BACnetAccumulatorRecordAccumulatorStatusTagged {
-	build, err := m.Build()
+func (b *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) MustBuild() BACnetAccumulatorRecordAccumulatorStatusTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder()
+func (b *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder().(*_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder creates a BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
-func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) CreateBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder() BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
-	if m == nil {
+func (b *_BACnetAccumulatorRecordAccumulatorStatusTagged) CreateBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder() BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
+	if b == nil {
 		return NewBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder()
 	}
-	return &_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder{_BACnetAccumulatorRecordAccumulatorStatusTagged: m.deepCopy()}
+	return &_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder{_BACnetAccumulatorRecordAccumulatorStatusTagged: b.deepCopy()}
 }
 
 ///////////////////////
@@ -342,9 +346,13 @@ func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

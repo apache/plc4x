@@ -109,88 +109,107 @@ func NewPortableQualifiedNameBuilder() PortableQualifiedNameBuilder {
 type _PortableQualifiedNameBuilder struct {
 	*_PortableQualifiedName
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (PortableQualifiedNameBuilder) = (*_PortableQualifiedNameBuilder)(nil)
 
-func (m *_PortableQualifiedNameBuilder) WithMandatoryFields(namespaceUri PascalString, name PascalString) PortableQualifiedNameBuilder {
-	return m.WithNamespaceUri(namespaceUri).WithName(name)
+func (b *_PortableQualifiedNameBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_PortableQualifiedNameBuilder) WithNamespaceUri(namespaceUri PascalString) PortableQualifiedNameBuilder {
-	m.NamespaceUri = namespaceUri
-	return m
+func (b *_PortableQualifiedNameBuilder) WithMandatoryFields(namespaceUri PascalString, name PascalString) PortableQualifiedNameBuilder {
+	return b.WithNamespaceUri(namespaceUri).WithName(name)
 }
 
-func (m *_PortableQualifiedNameBuilder) WithNamespaceUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PortableQualifiedNameBuilder {
-	builder := builderSupplier(m.NamespaceUri.CreatePascalStringBuilder())
+func (b *_PortableQualifiedNameBuilder) WithNamespaceUri(namespaceUri PascalString) PortableQualifiedNameBuilder {
+	b.NamespaceUri = namespaceUri
+	return b
+}
+
+func (b *_PortableQualifiedNameBuilder) WithNamespaceUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PortableQualifiedNameBuilder {
+	builder := builderSupplier(b.NamespaceUri.CreatePascalStringBuilder())
 	var err error
-	m.NamespaceUri, err = builder.Build()
+	b.NamespaceUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PortableQualifiedNameBuilder) WithName(name PascalString) PortableQualifiedNameBuilder {
-	m.Name = name
-	return m
+func (b *_PortableQualifiedNameBuilder) WithName(name PascalString) PortableQualifiedNameBuilder {
+	b.Name = name
+	return b
 }
 
-func (m *_PortableQualifiedNameBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PortableQualifiedNameBuilder {
-	builder := builderSupplier(m.Name.CreatePascalStringBuilder())
+func (b *_PortableQualifiedNameBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PortableQualifiedNameBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
 	var err error
-	m.Name, err = builder.Build()
+	b.Name, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PortableQualifiedNameBuilder) Build() (PortableQualifiedName, error) {
-	if m.NamespaceUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_PortableQualifiedNameBuilder) Build() (PortableQualifiedName, error) {
+	if b.NamespaceUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'namespaceUri' not set"))
+		b.err.Append(errors.New("mandatory field 'namespaceUri' not set"))
 	}
-	if m.Name == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'name' not set"))
+		b.err.Append(errors.New("mandatory field 'name' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._PortableQualifiedName.deepCopy(), nil
+	return b._PortableQualifiedName.deepCopy(), nil
 }
 
-func (m *_PortableQualifiedNameBuilder) MustBuild() PortableQualifiedName {
-	build, err := m.Build()
+func (b *_PortableQualifiedNameBuilder) MustBuild() PortableQualifiedName {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PortableQualifiedNameBuilder) DeepCopy() any {
-	return m.CreatePortableQualifiedNameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PortableQualifiedNameBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PortableQualifiedNameBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PortableQualifiedNameBuilder) DeepCopy() any {
+	_copy := b.CreatePortableQualifiedNameBuilder().(*_PortableQualifiedNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePortableQualifiedNameBuilder creates a PortableQualifiedNameBuilder
-func (m *_PortableQualifiedName) CreatePortableQualifiedNameBuilder() PortableQualifiedNameBuilder {
-	if m == nil {
+func (b *_PortableQualifiedName) CreatePortableQualifiedNameBuilder() PortableQualifiedNameBuilder {
+	if b == nil {
 		return NewPortableQualifiedNameBuilder()
 	}
-	return &_PortableQualifiedNameBuilder{_PortableQualifiedName: m.deepCopy()}
+	return &_PortableQualifiedNameBuilder{_PortableQualifiedName: b.deepCopy()}
 }
 
 ///////////////////////
@@ -352,9 +371,13 @@ func (m *_PortableQualifiedName) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

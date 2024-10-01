@@ -95,45 +95,64 @@ func NewBVLCResultBuilder() BVLCResultBuilder {
 type _BVLCResultBuilder struct {
 	*_BVLCResult
 
+	parentBuilder *_BVLCBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BVLCResultBuilder) = (*_BVLCResultBuilder)(nil)
 
-func (m *_BVLCResultBuilder) WithMandatoryFields(code BVLCResultCode) BVLCResultBuilder {
-	return m.WithCode(code)
+func (b *_BVLCResultBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
 }
 
-func (m *_BVLCResultBuilder) WithCode(code BVLCResultCode) BVLCResultBuilder {
-	m.Code = code
-	return m
+func (b *_BVLCResultBuilder) WithMandatoryFields(code BVLCResultCode) BVLCResultBuilder {
+	return b.WithCode(code)
 }
 
-func (m *_BVLCResultBuilder) Build() (BVLCResult, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BVLCResultBuilder) WithCode(code BVLCResultCode) BVLCResultBuilder {
+	b.Code = code
+	return b
+}
+
+func (b *_BVLCResultBuilder) Build() (BVLCResult, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BVLCResult.deepCopy(), nil
+	return b._BVLCResult.deepCopy(), nil
 }
 
-func (m *_BVLCResultBuilder) MustBuild() BVLCResult {
-	build, err := m.Build()
+func (b *_BVLCResultBuilder) MustBuild() BVLCResult {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BVLCResultBuilder) DeepCopy() any {
-	return m.CreateBVLCResultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCResultBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCResultBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCResultBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCResultBuilder().(*_BVLCResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBVLCResultBuilder creates a BVLCResultBuilder
-func (m *_BVLCResult) CreateBVLCResultBuilder() BVLCResultBuilder {
-	if m == nil {
+func (b *_BVLCResult) CreateBVLCResultBuilder() BVLCResultBuilder {
+	if b == nil {
 		return NewBVLCResultBuilder()
 	}
-	return &_BVLCResultBuilder{_BVLCResult: m.deepCopy()}
+	return &_BVLCResultBuilder{_BVLCResult: b.deepCopy()}
 }
 
 ///////////////////////
@@ -277,9 +296,13 @@ func (m *_BVLCResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

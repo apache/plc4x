@@ -100,45 +100,49 @@ type _LightingLabelOptionsBuilder struct {
 
 var _ (LightingLabelOptionsBuilder) = (*_LightingLabelOptionsBuilder)(nil)
 
-func (m *_LightingLabelOptionsBuilder) WithMandatoryFields(labelFlavour LightingLabelFlavour, labelType LightingLabelType) LightingLabelOptionsBuilder {
-	return m.WithLabelFlavour(labelFlavour).WithLabelType(labelType)
+func (b *_LightingLabelOptionsBuilder) WithMandatoryFields(labelFlavour LightingLabelFlavour, labelType LightingLabelType) LightingLabelOptionsBuilder {
+	return b.WithLabelFlavour(labelFlavour).WithLabelType(labelType)
 }
 
-func (m *_LightingLabelOptionsBuilder) WithLabelFlavour(labelFlavour LightingLabelFlavour) LightingLabelOptionsBuilder {
-	m.LabelFlavour = labelFlavour
-	return m
+func (b *_LightingLabelOptionsBuilder) WithLabelFlavour(labelFlavour LightingLabelFlavour) LightingLabelOptionsBuilder {
+	b.LabelFlavour = labelFlavour
+	return b
 }
 
-func (m *_LightingLabelOptionsBuilder) WithLabelType(labelType LightingLabelType) LightingLabelOptionsBuilder {
-	m.LabelType = labelType
-	return m
+func (b *_LightingLabelOptionsBuilder) WithLabelType(labelType LightingLabelType) LightingLabelOptionsBuilder {
+	b.LabelType = labelType
+	return b
 }
 
-func (m *_LightingLabelOptionsBuilder) Build() (LightingLabelOptions, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_LightingLabelOptionsBuilder) Build() (LightingLabelOptions, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LightingLabelOptions.deepCopy(), nil
+	return b._LightingLabelOptions.deepCopy(), nil
 }
 
-func (m *_LightingLabelOptionsBuilder) MustBuild() LightingLabelOptions {
-	build, err := m.Build()
+func (b *_LightingLabelOptionsBuilder) MustBuild() LightingLabelOptions {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LightingLabelOptionsBuilder) DeepCopy() any {
-	return m.CreateLightingLabelOptionsBuilder()
+func (b *_LightingLabelOptionsBuilder) DeepCopy() any {
+	_copy := b.CreateLightingLabelOptionsBuilder().(*_LightingLabelOptionsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLightingLabelOptionsBuilder creates a LightingLabelOptionsBuilder
-func (m *_LightingLabelOptions) CreateLightingLabelOptionsBuilder() LightingLabelOptionsBuilder {
-	if m == nil {
+func (b *_LightingLabelOptions) CreateLightingLabelOptionsBuilder() LightingLabelOptionsBuilder {
+	if b == nil {
 		return NewLightingLabelOptionsBuilder()
 	}
-	return &_LightingLabelOptionsBuilder{_LightingLabelOptions: m.deepCopy()}
+	return &_LightingLabelOptionsBuilder{_LightingLabelOptions: b.deepCopy()}
 }
 
 ///////////////////////
@@ -349,9 +353,13 @@ func (m *_LightingLabelOptions) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

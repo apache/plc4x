@@ -96,45 +96,64 @@ func NewBACnetConfirmedServiceRequestReadPropertyConditionalBuilder() BACnetConf
 type _BACnetConfirmedServiceRequestReadPropertyConditionalBuilder struct {
 	*_BACnetConfirmedServiceRequestReadPropertyConditional
 
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) = (*_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) WithMandatoryFields(bytesOfRemovedService []byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
-	return m.WithBytesOfRemovedService(bytesOfRemovedService...)
+func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
-	m.BytesOfRemovedService = bytesOfRemovedService
-	return m
+func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) WithMandatoryFields(bytesOfRemovedService []byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
+	return b.WithBytesOfRemovedService(bytesOfRemovedService...)
 }
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) Build() (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
+	b.BytesOfRemovedService = bytesOfRemovedService
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) Build() (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestReadPropertyConditional.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestReadPropertyConditional.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) MustBuild() BACnetConfirmedServiceRequestReadPropertyConditional {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) MustBuild() BACnetConfirmedServiceRequestReadPropertyConditional {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestReadPropertyConditionalBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestReadPropertyConditionalBuilder().(*_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestReadPropertyConditionalBuilder creates a BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
-func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) CreateBACnetConfirmedServiceRequestReadPropertyConditionalBuilder() BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestReadPropertyConditional) CreateBACnetConfirmedServiceRequestReadPropertyConditionalBuilder() BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestReadPropertyConditionalBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder{_BACnetConfirmedServiceRequestReadPropertyConditional: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder{_BACnetConfirmedServiceRequestReadPropertyConditional: b.deepCopy()}
 }
 
 ///////////////////////
@@ -292,9 +311,13 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) String() string 
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

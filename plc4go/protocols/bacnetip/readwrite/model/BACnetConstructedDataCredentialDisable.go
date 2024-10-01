@@ -100,64 +100,83 @@ func NewBACnetConstructedDataCredentialDisableBuilder() BACnetConstructedDataCre
 type _BACnetConstructedDataCredentialDisableBuilder struct {
 	*_BACnetConstructedDataCredentialDisable
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCredentialDisableBuilder) = (*_BACnetConstructedDataCredentialDisableBuilder)(nil)
 
-func (m *_BACnetConstructedDataCredentialDisableBuilder) WithMandatoryFields(credentialDisable BACnetAccessCredentialDisableTagged) BACnetConstructedDataCredentialDisableBuilder {
-	return m.WithCredentialDisable(credentialDisable)
+func (b *_BACnetConstructedDataCredentialDisableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCredentialDisableBuilder) WithCredentialDisable(credentialDisable BACnetAccessCredentialDisableTagged) BACnetConstructedDataCredentialDisableBuilder {
-	m.CredentialDisable = credentialDisable
-	return m
+func (b *_BACnetConstructedDataCredentialDisableBuilder) WithMandatoryFields(credentialDisable BACnetAccessCredentialDisableTagged) BACnetConstructedDataCredentialDisableBuilder {
+	return b.WithCredentialDisable(credentialDisable)
 }
 
-func (m *_BACnetConstructedDataCredentialDisableBuilder) WithCredentialDisableBuilder(builderSupplier func(BACnetAccessCredentialDisableTaggedBuilder) BACnetAccessCredentialDisableTaggedBuilder) BACnetConstructedDataCredentialDisableBuilder {
-	builder := builderSupplier(m.CredentialDisable.CreateBACnetAccessCredentialDisableTaggedBuilder())
+func (b *_BACnetConstructedDataCredentialDisableBuilder) WithCredentialDisable(credentialDisable BACnetAccessCredentialDisableTagged) BACnetConstructedDataCredentialDisableBuilder {
+	b.CredentialDisable = credentialDisable
+	return b
+}
+
+func (b *_BACnetConstructedDataCredentialDisableBuilder) WithCredentialDisableBuilder(builderSupplier func(BACnetAccessCredentialDisableTaggedBuilder) BACnetAccessCredentialDisableTaggedBuilder) BACnetConstructedDataCredentialDisableBuilder {
+	builder := builderSupplier(b.CredentialDisable.CreateBACnetAccessCredentialDisableTaggedBuilder())
 	var err error
-	m.CredentialDisable, err = builder.Build()
+	b.CredentialDisable, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAccessCredentialDisableTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAccessCredentialDisableTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataCredentialDisableBuilder) Build() (BACnetConstructedDataCredentialDisable, error) {
-	if m.CredentialDisable == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataCredentialDisableBuilder) Build() (BACnetConstructedDataCredentialDisable, error) {
+	if b.CredentialDisable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'credentialDisable' not set"))
+		b.err.Append(errors.New("mandatory field 'credentialDisable' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCredentialDisable.deepCopy(), nil
+	return b._BACnetConstructedDataCredentialDisable.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCredentialDisableBuilder) MustBuild() BACnetConstructedDataCredentialDisable {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCredentialDisableBuilder) MustBuild() BACnetConstructedDataCredentialDisable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCredentialDisableBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCredentialDisableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCredentialDisableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCredentialDisableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCredentialDisableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCredentialDisableBuilder().(*_BACnetConstructedDataCredentialDisableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCredentialDisableBuilder creates a BACnetConstructedDataCredentialDisableBuilder
-func (m *_BACnetConstructedDataCredentialDisable) CreateBACnetConstructedDataCredentialDisableBuilder() BACnetConstructedDataCredentialDisableBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCredentialDisable) CreateBACnetConstructedDataCredentialDisableBuilder() BACnetConstructedDataCredentialDisableBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCredentialDisableBuilder()
 	}
-	return &_BACnetConstructedDataCredentialDisableBuilder{_BACnetConstructedDataCredentialDisable: m.deepCopy()}
+	return &_BACnetConstructedDataCredentialDisableBuilder{_BACnetConstructedDataCredentialDisable: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataCredentialDisable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

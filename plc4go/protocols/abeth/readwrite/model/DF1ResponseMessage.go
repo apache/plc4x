@@ -113,10 +113,19 @@ type DF1ResponseMessageBuilder interface {
 	WithStatus(uint8) DF1ResponseMessageBuilder
 	// WithTransactionCounter adds TransactionCounter (property field)
 	WithTransactionCounter(uint16) DF1ResponseMessageBuilder
+	// AsDF1CommandResponseMessageProtectedTypedLogicalRead converts this build to a subType of DF1ResponseMessage. It is always possible to return to current builder using Done()
+	AsDF1CommandResponseMessageProtectedTypedLogicalRead() interface {
+		DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+		Done() DF1ResponseMessageBuilder
+	}
 	// Build builds the DF1ResponseMessage or returns an error if something is wrong
-	Build() (DF1ResponseMessageContract, error)
+	PartialBuild() (DF1ResponseMessageContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() DF1ResponseMessageContract
+	PartialMustBuild() DF1ResponseMessageContract
+	// Build builds the DF1ResponseMessage or returns an error if something is wrong
+	Build() (DF1ResponseMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1ResponseMessage
 }
 
 // NewDF1ResponseMessageBuilder() creates a DF1ResponseMessageBuilder
@@ -124,63 +133,113 @@ func NewDF1ResponseMessageBuilder() DF1ResponseMessageBuilder {
 	return &_DF1ResponseMessageBuilder{_DF1ResponseMessage: new(_DF1ResponseMessage)}
 }
 
+type _DF1ResponseMessageChildBuilder interface {
+	utils.Copyable
+	setParent(DF1ResponseMessageContract)
+	buildForDF1ResponseMessage() (DF1ResponseMessage, error)
+}
+
 type _DF1ResponseMessageBuilder struct {
 	*_DF1ResponseMessage
+
+	childBuilder _DF1ResponseMessageChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (DF1ResponseMessageBuilder) = (*_DF1ResponseMessageBuilder)(nil)
 
-func (m *_DF1ResponseMessageBuilder) WithMandatoryFields(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) DF1ResponseMessageBuilder {
-	return m.WithDestinationAddress(destinationAddress).WithSourceAddress(sourceAddress).WithStatus(status).WithTransactionCounter(transactionCounter)
+func (b *_DF1ResponseMessageBuilder) WithMandatoryFields(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) DF1ResponseMessageBuilder {
+	return b.WithDestinationAddress(destinationAddress).WithSourceAddress(sourceAddress).WithStatus(status).WithTransactionCounter(transactionCounter)
 }
 
-func (m *_DF1ResponseMessageBuilder) WithDestinationAddress(destinationAddress uint8) DF1ResponseMessageBuilder {
-	m.DestinationAddress = destinationAddress
-	return m
+func (b *_DF1ResponseMessageBuilder) WithDestinationAddress(destinationAddress uint8) DF1ResponseMessageBuilder {
+	b.DestinationAddress = destinationAddress
+	return b
 }
 
-func (m *_DF1ResponseMessageBuilder) WithSourceAddress(sourceAddress uint8) DF1ResponseMessageBuilder {
-	m.SourceAddress = sourceAddress
-	return m
+func (b *_DF1ResponseMessageBuilder) WithSourceAddress(sourceAddress uint8) DF1ResponseMessageBuilder {
+	b.SourceAddress = sourceAddress
+	return b
 }
 
-func (m *_DF1ResponseMessageBuilder) WithStatus(status uint8) DF1ResponseMessageBuilder {
-	m.Status = status
-	return m
+func (b *_DF1ResponseMessageBuilder) WithStatus(status uint8) DF1ResponseMessageBuilder {
+	b.Status = status
+	return b
 }
 
-func (m *_DF1ResponseMessageBuilder) WithTransactionCounter(transactionCounter uint16) DF1ResponseMessageBuilder {
-	m.TransactionCounter = transactionCounter
-	return m
+func (b *_DF1ResponseMessageBuilder) WithTransactionCounter(transactionCounter uint16) DF1ResponseMessageBuilder {
+	b.TransactionCounter = transactionCounter
+	return b
 }
 
-func (m *_DF1ResponseMessageBuilder) Build() (DF1ResponseMessageContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DF1ResponseMessageBuilder) PartialBuild() (DF1ResponseMessageContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DF1ResponseMessage.deepCopy(), nil
+	return b._DF1ResponseMessage.deepCopy(), nil
 }
 
-func (m *_DF1ResponseMessageBuilder) MustBuild() DF1ResponseMessageContract {
-	build, err := m.Build()
+func (b *_DF1ResponseMessageBuilder) PartialMustBuild() DF1ResponseMessageContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DF1ResponseMessageBuilder) DeepCopy() any {
-	return m.CreateDF1ResponseMessageBuilder()
+func (b *_DF1ResponseMessageBuilder) AsDF1CommandResponseMessageProtectedTypedLogicalRead() interface {
+	DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+	Done() DF1ResponseMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+		Done() DF1ResponseMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDF1CommandResponseMessageProtectedTypedLogicalReadBuilder().(*_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_DF1ResponseMessageBuilder) Build() (DF1ResponseMessage, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForDF1ResponseMessage()
+}
+
+func (b *_DF1ResponseMessageBuilder) MustBuild() DF1ResponseMessage {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DF1ResponseMessageBuilder) DeepCopy() any {
+	_copy := b.CreateDF1ResponseMessageBuilder().(*_DF1ResponseMessageBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_DF1ResponseMessageChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDF1ResponseMessageBuilder creates a DF1ResponseMessageBuilder
-func (m *_DF1ResponseMessage) CreateDF1ResponseMessageBuilder() DF1ResponseMessageBuilder {
-	if m == nil {
+func (b *_DF1ResponseMessage) CreateDF1ResponseMessageBuilder() DF1ResponseMessageBuilder {
+	if b == nil {
 		return NewDF1ResponseMessageBuilder()
 	}
-	return &_DF1ResponseMessageBuilder{_DF1ResponseMessage: m.deepCopy()}
+	return &_DF1ResponseMessageBuilder{_DF1ResponseMessage: b.deepCopy()}
 }
 
 ///////////////////////

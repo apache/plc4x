@@ -82,6 +82,8 @@ type SALDataMeteringBuilder interface {
 	WithMandatoryFields(meteringData MeteringData) SALDataMeteringBuilder
 	// WithMeteringData adds MeteringData (property field)
 	WithMeteringData(MeteringData) SALDataMeteringBuilder
+	// WithMeteringDataBuilder adds MeteringData (property field) which is build by the builder
+	WithMeteringDataBuilder(func(MeteringDataBuilder) MeteringDataBuilder) SALDataMeteringBuilder
 	// Build builds the SALDataMetering or returns an error if something is wrong
 	Build() (SALDataMetering, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewSALDataMeteringBuilder() SALDataMeteringBuilder {
 type _SALDataMeteringBuilder struct {
 	*_SALDataMetering
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataMeteringBuilder) = (*_SALDataMeteringBuilder)(nil)
 
-func (m *_SALDataMeteringBuilder) WithMandatoryFields(meteringData MeteringData) SALDataMeteringBuilder {
-	return m.WithMeteringData(meteringData)
+func (b *_SALDataMeteringBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataMeteringBuilder) WithMeteringData(meteringData MeteringData) SALDataMeteringBuilder {
-	m.MeteringData = meteringData
-	return m
+func (b *_SALDataMeteringBuilder) WithMandatoryFields(meteringData MeteringData) SALDataMeteringBuilder {
+	return b.WithMeteringData(meteringData)
 }
 
-func (m *_SALDataMeteringBuilder) Build() (SALDataMetering, error) {
-	if m.MeteringData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SALDataMeteringBuilder) WithMeteringData(meteringData MeteringData) SALDataMeteringBuilder {
+	b.MeteringData = meteringData
+	return b
+}
+
+func (b *_SALDataMeteringBuilder) WithMeteringDataBuilder(builderSupplier func(MeteringDataBuilder) MeteringDataBuilder) SALDataMeteringBuilder {
+	builder := builderSupplier(b.MeteringData.CreateMeteringDataBuilder())
+	var err error
+	b.MeteringData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'meteringData' not set"))
+		b.err.Append(errors.Wrap(err, "MeteringDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._SALDataMetering.deepCopy(), nil
+	return b
 }
 
-func (m *_SALDataMeteringBuilder) MustBuild() SALDataMetering {
-	build, err := m.Build()
+func (b *_SALDataMeteringBuilder) Build() (SALDataMetering, error) {
+	if b.MeteringData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'meteringData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataMetering.deepCopy(), nil
+}
+
+func (b *_SALDataMeteringBuilder) MustBuild() SALDataMetering {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataMeteringBuilder) DeepCopy() any {
-	return m.CreateSALDataMeteringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataMeteringBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataMeteringBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataMeteringBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataMeteringBuilder().(*_SALDataMeteringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataMeteringBuilder creates a SALDataMeteringBuilder
-func (m *_SALDataMetering) CreateSALDataMeteringBuilder() SALDataMeteringBuilder {
-	if m == nil {
+func (b *_SALDataMetering) CreateSALDataMeteringBuilder() SALDataMeteringBuilder {
+	if b == nil {
 		return NewSALDataMeteringBuilder()
 	}
-	return &_SALDataMeteringBuilder{_SALDataMetering: m.deepCopy()}
+	return &_SALDataMeteringBuilder{_SALDataMetering: b.deepCopy()}
 }
 
 ///////////////////////
@@ -284,9 +318,13 @@ func (m *_SALDataMetering) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

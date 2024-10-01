@@ -122,125 +122,129 @@ type _BACnetEventNotificationSubscriptionBuilder struct {
 
 var _ (BACnetEventNotificationSubscriptionBuilder) = (*_BACnetEventNotificationSubscriptionBuilder)(nil)
 
-func (m *_BACnetEventNotificationSubscriptionBuilder) WithMandatoryFields(recipient BACnetRecipientEnclosed, processIdentifier BACnetContextTagUnsignedInteger, timeRemaining BACnetContextTagUnsignedInteger) BACnetEventNotificationSubscriptionBuilder {
-	return m.WithRecipient(recipient).WithProcessIdentifier(processIdentifier).WithTimeRemaining(timeRemaining)
+func (b *_BACnetEventNotificationSubscriptionBuilder) WithMandatoryFields(recipient BACnetRecipientEnclosed, processIdentifier BACnetContextTagUnsignedInteger, timeRemaining BACnetContextTagUnsignedInteger) BACnetEventNotificationSubscriptionBuilder {
+	return b.WithRecipient(recipient).WithProcessIdentifier(processIdentifier).WithTimeRemaining(timeRemaining)
 }
 
-func (m *_BACnetEventNotificationSubscriptionBuilder) WithRecipient(recipient BACnetRecipientEnclosed) BACnetEventNotificationSubscriptionBuilder {
-	m.Recipient = recipient
-	return m
+func (b *_BACnetEventNotificationSubscriptionBuilder) WithRecipient(recipient BACnetRecipientEnclosed) BACnetEventNotificationSubscriptionBuilder {
+	b.Recipient = recipient
+	return b
 }
 
-func (m *_BACnetEventNotificationSubscriptionBuilder) WithRecipientBuilder(builderSupplier func(BACnetRecipientEnclosedBuilder) BACnetRecipientEnclosedBuilder) BACnetEventNotificationSubscriptionBuilder {
-	builder := builderSupplier(m.Recipient.CreateBACnetRecipientEnclosedBuilder())
+func (b *_BACnetEventNotificationSubscriptionBuilder) WithRecipientBuilder(builderSupplier func(BACnetRecipientEnclosedBuilder) BACnetRecipientEnclosedBuilder) BACnetEventNotificationSubscriptionBuilder {
+	builder := builderSupplier(b.Recipient.CreateBACnetRecipientEnclosedBuilder())
 	var err error
-	m.Recipient, err = builder.Build()
+	b.Recipient, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetRecipientEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetRecipientEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventNotificationSubscriptionBuilder) WithProcessIdentifier(processIdentifier BACnetContextTagUnsignedInteger) BACnetEventNotificationSubscriptionBuilder {
-	m.ProcessIdentifier = processIdentifier
-	return m
+func (b *_BACnetEventNotificationSubscriptionBuilder) WithProcessIdentifier(processIdentifier BACnetContextTagUnsignedInteger) BACnetEventNotificationSubscriptionBuilder {
+	b.ProcessIdentifier = processIdentifier
+	return b
 }
 
-func (m *_BACnetEventNotificationSubscriptionBuilder) WithProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventNotificationSubscriptionBuilder {
-	builder := builderSupplier(m.ProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetEventNotificationSubscriptionBuilder) WithProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventNotificationSubscriptionBuilder {
+	builder := builderSupplier(b.ProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.ProcessIdentifier, err = builder.Build()
+	b.ProcessIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventNotificationSubscriptionBuilder) WithOptionalIssueConfirmedNotifications(issueConfirmedNotifications BACnetContextTagBoolean) BACnetEventNotificationSubscriptionBuilder {
-	m.IssueConfirmedNotifications = issueConfirmedNotifications
-	return m
+func (b *_BACnetEventNotificationSubscriptionBuilder) WithOptionalIssueConfirmedNotifications(issueConfirmedNotifications BACnetContextTagBoolean) BACnetEventNotificationSubscriptionBuilder {
+	b.IssueConfirmedNotifications = issueConfirmedNotifications
+	return b
 }
 
-func (m *_BACnetEventNotificationSubscriptionBuilder) WithOptionalIssueConfirmedNotificationsBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetEventNotificationSubscriptionBuilder {
-	builder := builderSupplier(m.IssueConfirmedNotifications.CreateBACnetContextTagBooleanBuilder())
+func (b *_BACnetEventNotificationSubscriptionBuilder) WithOptionalIssueConfirmedNotificationsBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetEventNotificationSubscriptionBuilder {
+	builder := builderSupplier(b.IssueConfirmedNotifications.CreateBACnetContextTagBooleanBuilder())
 	var err error
-	m.IssueConfirmedNotifications, err = builder.Build()
+	b.IssueConfirmedNotifications, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventNotificationSubscriptionBuilder) WithTimeRemaining(timeRemaining BACnetContextTagUnsignedInteger) BACnetEventNotificationSubscriptionBuilder {
-	m.TimeRemaining = timeRemaining
-	return m
+func (b *_BACnetEventNotificationSubscriptionBuilder) WithTimeRemaining(timeRemaining BACnetContextTagUnsignedInteger) BACnetEventNotificationSubscriptionBuilder {
+	b.TimeRemaining = timeRemaining
+	return b
 }
 
-func (m *_BACnetEventNotificationSubscriptionBuilder) WithTimeRemainingBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventNotificationSubscriptionBuilder {
-	builder := builderSupplier(m.TimeRemaining.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetEventNotificationSubscriptionBuilder) WithTimeRemainingBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventNotificationSubscriptionBuilder {
+	builder := builderSupplier(b.TimeRemaining.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.TimeRemaining, err = builder.Build()
+	b.TimeRemaining, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventNotificationSubscriptionBuilder) Build() (BACnetEventNotificationSubscription, error) {
-	if m.Recipient == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetEventNotificationSubscriptionBuilder) Build() (BACnetEventNotificationSubscription, error) {
+	if b.Recipient == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'recipient' not set"))
+		b.err.Append(errors.New("mandatory field 'recipient' not set"))
 	}
-	if m.ProcessIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ProcessIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'processIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'processIdentifier' not set"))
 	}
-	if m.TimeRemaining == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TimeRemaining == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeRemaining' not set"))
+		b.err.Append(errors.New("mandatory field 'timeRemaining' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetEventNotificationSubscription.deepCopy(), nil
+	return b._BACnetEventNotificationSubscription.deepCopy(), nil
 }
 
-func (m *_BACnetEventNotificationSubscriptionBuilder) MustBuild() BACnetEventNotificationSubscription {
-	build, err := m.Build()
+func (b *_BACnetEventNotificationSubscriptionBuilder) MustBuild() BACnetEventNotificationSubscription {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetEventNotificationSubscriptionBuilder) DeepCopy() any {
-	return m.CreateBACnetEventNotificationSubscriptionBuilder()
+func (b *_BACnetEventNotificationSubscriptionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventNotificationSubscriptionBuilder().(*_BACnetEventNotificationSubscriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetEventNotificationSubscriptionBuilder creates a BACnetEventNotificationSubscriptionBuilder
-func (m *_BACnetEventNotificationSubscription) CreateBACnetEventNotificationSubscriptionBuilder() BACnetEventNotificationSubscriptionBuilder {
-	if m == nil {
+func (b *_BACnetEventNotificationSubscription) CreateBACnetEventNotificationSubscriptionBuilder() BACnetEventNotificationSubscriptionBuilder {
+	if b == nil {
 		return NewBACnetEventNotificationSubscriptionBuilder()
 	}
-	return &_BACnetEventNotificationSubscriptionBuilder{_BACnetEventNotificationSubscription: m.deepCopy()}
+	return &_BACnetEventNotificationSubscriptionBuilder{_BACnetEventNotificationSubscription: b.deepCopy()}
 }
 
 ///////////////////////
@@ -437,9 +441,13 @@ func (m *_BACnetEventNotificationSubscription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

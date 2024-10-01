@@ -96,6 +96,8 @@ type OpcuaMessageResponseBuilder interface {
 	WithSecurityHeaderBuilder(func(SecurityHeaderBuilder) SecurityHeaderBuilder) OpcuaMessageResponseBuilder
 	// WithMessage adds Message (property field)
 	WithMessage(Payload) OpcuaMessageResponseBuilder
+	// WithMessageBuilder adds Message (property field) which is build by the builder
+	WithMessageBuilder(func(PayloadBuilder) PayloadBuilder) OpcuaMessageResponseBuilder
 	// Build builds the OpcuaMessageResponse or returns an error if something is wrong
 	Build() (OpcuaMessageResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,75 +112,107 @@ func NewOpcuaMessageResponseBuilder() OpcuaMessageResponseBuilder {
 type _OpcuaMessageResponseBuilder struct {
 	*_OpcuaMessageResponse
 
+	parentBuilder *_MessagePDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (OpcuaMessageResponseBuilder) = (*_OpcuaMessageResponseBuilder)(nil)
 
-func (m *_OpcuaMessageResponseBuilder) WithMandatoryFields(securityHeader SecurityHeader, message Payload) OpcuaMessageResponseBuilder {
-	return m.WithSecurityHeader(securityHeader).WithMessage(message)
+func (b *_OpcuaMessageResponseBuilder) setParent(contract MessagePDUContract) {
+	b.MessagePDUContract = contract
 }
 
-func (m *_OpcuaMessageResponseBuilder) WithSecurityHeader(securityHeader SecurityHeader) OpcuaMessageResponseBuilder {
-	m.SecurityHeader = securityHeader
-	return m
+func (b *_OpcuaMessageResponseBuilder) WithMandatoryFields(securityHeader SecurityHeader, message Payload) OpcuaMessageResponseBuilder {
+	return b.WithSecurityHeader(securityHeader).WithMessage(message)
 }
 
-func (m *_OpcuaMessageResponseBuilder) WithSecurityHeaderBuilder(builderSupplier func(SecurityHeaderBuilder) SecurityHeaderBuilder) OpcuaMessageResponseBuilder {
-	builder := builderSupplier(m.SecurityHeader.CreateSecurityHeaderBuilder())
+func (b *_OpcuaMessageResponseBuilder) WithSecurityHeader(securityHeader SecurityHeader) OpcuaMessageResponseBuilder {
+	b.SecurityHeader = securityHeader
+	return b
+}
+
+func (b *_OpcuaMessageResponseBuilder) WithSecurityHeaderBuilder(builderSupplier func(SecurityHeaderBuilder) SecurityHeaderBuilder) OpcuaMessageResponseBuilder {
+	builder := builderSupplier(b.SecurityHeader.CreateSecurityHeaderBuilder())
 	var err error
-	m.SecurityHeader, err = builder.Build()
+	b.SecurityHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "SecurityHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "SecurityHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_OpcuaMessageResponseBuilder) WithMessage(message Payload) OpcuaMessageResponseBuilder {
-	m.Message = message
-	return m
+func (b *_OpcuaMessageResponseBuilder) WithMessage(message Payload) OpcuaMessageResponseBuilder {
+	b.Message = message
+	return b
 }
 
-func (m *_OpcuaMessageResponseBuilder) Build() (OpcuaMessageResponse, error) {
-	if m.SecurityHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_OpcuaMessageResponseBuilder) WithMessageBuilder(builderSupplier func(PayloadBuilder) PayloadBuilder) OpcuaMessageResponseBuilder {
+	builder := builderSupplier(b.Message.CreatePayloadBuilder())
+	var err error
+	b.Message, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'securityHeader' not set"))
+		b.err.Append(errors.Wrap(err, "PayloadBuilder failed"))
 	}
-	if m.Message == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'message' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._OpcuaMessageResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_OpcuaMessageResponseBuilder) MustBuild() OpcuaMessageResponse {
-	build, err := m.Build()
+func (b *_OpcuaMessageResponseBuilder) Build() (OpcuaMessageResponse, error) {
+	if b.SecurityHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'securityHeader' not set"))
+	}
+	if b.Message == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'message' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._OpcuaMessageResponse.deepCopy(), nil
+}
+
+func (b *_OpcuaMessageResponseBuilder) MustBuild() OpcuaMessageResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_OpcuaMessageResponseBuilder) DeepCopy() any {
-	return m.CreateOpcuaMessageResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OpcuaMessageResponseBuilder) Done() MessagePDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OpcuaMessageResponseBuilder) buildForMessagePDU() (MessagePDU, error) {
+	return b.Build()
+}
+
+func (b *_OpcuaMessageResponseBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaMessageResponseBuilder().(*_OpcuaMessageResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateOpcuaMessageResponseBuilder creates a OpcuaMessageResponseBuilder
-func (m *_OpcuaMessageResponse) CreateOpcuaMessageResponseBuilder() OpcuaMessageResponseBuilder {
-	if m == nil {
+func (b *_OpcuaMessageResponse) CreateOpcuaMessageResponseBuilder() OpcuaMessageResponseBuilder {
+	if b == nil {
 		return NewOpcuaMessageResponseBuilder()
 	}
-	return &_OpcuaMessageResponseBuilder{_OpcuaMessageResponse: m.deepCopy()}
+	return &_OpcuaMessageResponseBuilder{_OpcuaMessageResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -355,9 +389,13 @@ func (m *_OpcuaMessageResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -100,10 +100,24 @@ type EncodedReplyBuilder interface {
 	WithMandatoryFields(peekedByte byte) EncodedReplyBuilder
 	// WithPeekedByte adds PeekedByte (property field)
 	WithPeekedByte(byte) EncodedReplyBuilder
+	// AsMonitoredSALReply converts this build to a subType of EncodedReply. It is always possible to return to current builder using Done()
+	AsMonitoredSALReply() interface {
+		MonitoredSALReplyBuilder
+		Done() EncodedReplyBuilder
+	}
+	// AsEncodedReplyCALReply converts this build to a subType of EncodedReply. It is always possible to return to current builder using Done()
+	AsEncodedReplyCALReply() interface {
+		EncodedReplyCALReplyBuilder
+		Done() EncodedReplyBuilder
+	}
 	// Build builds the EncodedReply or returns an error if something is wrong
-	Build() (EncodedReplyContract, error)
+	PartialBuild() (EncodedReplyContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() EncodedReplyContract
+	PartialMustBuild() EncodedReplyContract
+	// Build builds the EncodedReply or returns an error if something is wrong
+	Build() (EncodedReply, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EncodedReply
 }
 
 // NewEncodedReplyBuilder() creates a EncodedReplyBuilder
@@ -111,48 +125,114 @@ func NewEncodedReplyBuilder() EncodedReplyBuilder {
 	return &_EncodedReplyBuilder{_EncodedReply: new(_EncodedReply)}
 }
 
+type _EncodedReplyChildBuilder interface {
+	utils.Copyable
+	setParent(EncodedReplyContract)
+	buildForEncodedReply() (EncodedReply, error)
+}
+
 type _EncodedReplyBuilder struct {
 	*_EncodedReply
+
+	childBuilder _EncodedReplyChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (EncodedReplyBuilder) = (*_EncodedReplyBuilder)(nil)
 
-func (m *_EncodedReplyBuilder) WithMandatoryFields(peekedByte byte) EncodedReplyBuilder {
-	return m.WithPeekedByte(peekedByte)
+func (b *_EncodedReplyBuilder) WithMandatoryFields(peekedByte byte) EncodedReplyBuilder {
+	return b.WithPeekedByte(peekedByte)
 }
 
-func (m *_EncodedReplyBuilder) WithPeekedByte(peekedByte byte) EncodedReplyBuilder {
-	m.PeekedByte = peekedByte
-	return m
+func (b *_EncodedReplyBuilder) WithPeekedByte(peekedByte byte) EncodedReplyBuilder {
+	b.PeekedByte = peekedByte
+	return b
 }
 
-func (m *_EncodedReplyBuilder) Build() (EncodedReplyContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_EncodedReplyBuilder) PartialBuild() (EncodedReplyContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EncodedReply.deepCopy(), nil
+	return b._EncodedReply.deepCopy(), nil
 }
 
-func (m *_EncodedReplyBuilder) MustBuild() EncodedReplyContract {
-	build, err := m.Build()
+func (b *_EncodedReplyBuilder) PartialMustBuild() EncodedReplyContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EncodedReplyBuilder) DeepCopy() any {
-	return m.CreateEncodedReplyBuilder()
+func (b *_EncodedReplyBuilder) AsMonitoredSALReply() interface {
+	MonitoredSALReplyBuilder
+	Done() EncodedReplyBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		MonitoredSALReplyBuilder
+		Done() EncodedReplyBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewMonitoredSALReplyBuilder().(*_MonitoredSALReplyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_EncodedReplyBuilder) AsEncodedReplyCALReply() interface {
+	EncodedReplyCALReplyBuilder
+	Done() EncodedReplyBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EncodedReplyCALReplyBuilder
+		Done() EncodedReplyBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEncodedReplyCALReplyBuilder().(*_EncodedReplyCALReplyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_EncodedReplyBuilder) Build() (EncodedReply, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForEncodedReply()
+}
+
+func (b *_EncodedReplyBuilder) MustBuild() EncodedReply {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_EncodedReplyBuilder) DeepCopy() any {
+	_copy := b.CreateEncodedReplyBuilder().(*_EncodedReplyBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_EncodedReplyChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEncodedReplyBuilder creates a EncodedReplyBuilder
-func (m *_EncodedReply) CreateEncodedReplyBuilder() EncodedReplyBuilder {
-	if m == nil {
+func (b *_EncodedReply) CreateEncodedReplyBuilder() EncodedReplyBuilder {
+	if b == nil {
 		return NewEncodedReplyBuilder()
 	}
-	return &_EncodedReplyBuilder{_EncodedReply: m.deepCopy()}
+	return &_EncodedReplyBuilder{_EncodedReply: b.deepCopy()}
 }
 
 ///////////////////////

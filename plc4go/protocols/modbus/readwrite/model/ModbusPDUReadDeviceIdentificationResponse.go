@@ -126,70 +126,89 @@ func NewModbusPDUReadDeviceIdentificationResponseBuilder() ModbusPDUReadDeviceId
 type _ModbusPDUReadDeviceIdentificationResponseBuilder struct {
 	*_ModbusPDUReadDeviceIdentificationResponse
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUReadDeviceIdentificationResponseBuilder) = (*_ModbusPDUReadDeviceIdentificationResponseBuilder)(nil)
 
-func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithMandatoryFields(level ModbusDeviceInformationLevel, individualAccess bool, conformityLevel ModbusDeviceInformationConformityLevel, moreFollows ModbusDeviceInformationMoreFollows, nextObjectId uint8, objects []ModbusDeviceInformationObject) ModbusPDUReadDeviceIdentificationResponseBuilder {
-	return m.WithLevel(level).WithIndividualAccess(individualAccess).WithConformityLevel(conformityLevel).WithMoreFollows(moreFollows).WithNextObjectId(nextObjectId).WithObjects(objects...)
+func (b *_ModbusPDUReadDeviceIdentificationResponseBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithLevel(level ModbusDeviceInformationLevel) ModbusPDUReadDeviceIdentificationResponseBuilder {
-	m.Level = level
-	return m
+func (b *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithMandatoryFields(level ModbusDeviceInformationLevel, individualAccess bool, conformityLevel ModbusDeviceInformationConformityLevel, moreFollows ModbusDeviceInformationMoreFollows, nextObjectId uint8, objects []ModbusDeviceInformationObject) ModbusPDUReadDeviceIdentificationResponseBuilder {
+	return b.WithLevel(level).WithIndividualAccess(individualAccess).WithConformityLevel(conformityLevel).WithMoreFollows(moreFollows).WithNextObjectId(nextObjectId).WithObjects(objects...)
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithIndividualAccess(individualAccess bool) ModbusPDUReadDeviceIdentificationResponseBuilder {
-	m.IndividualAccess = individualAccess
-	return m
+func (b *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithLevel(level ModbusDeviceInformationLevel) ModbusPDUReadDeviceIdentificationResponseBuilder {
+	b.Level = level
+	return b
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithConformityLevel(conformityLevel ModbusDeviceInformationConformityLevel) ModbusPDUReadDeviceIdentificationResponseBuilder {
-	m.ConformityLevel = conformityLevel
-	return m
+func (b *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithIndividualAccess(individualAccess bool) ModbusPDUReadDeviceIdentificationResponseBuilder {
+	b.IndividualAccess = individualAccess
+	return b
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithMoreFollows(moreFollows ModbusDeviceInformationMoreFollows) ModbusPDUReadDeviceIdentificationResponseBuilder {
-	m.MoreFollows = moreFollows
-	return m
+func (b *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithConformityLevel(conformityLevel ModbusDeviceInformationConformityLevel) ModbusPDUReadDeviceIdentificationResponseBuilder {
+	b.ConformityLevel = conformityLevel
+	return b
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithNextObjectId(nextObjectId uint8) ModbusPDUReadDeviceIdentificationResponseBuilder {
-	m.NextObjectId = nextObjectId
-	return m
+func (b *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithMoreFollows(moreFollows ModbusDeviceInformationMoreFollows) ModbusPDUReadDeviceIdentificationResponseBuilder {
+	b.MoreFollows = moreFollows
+	return b
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithObjects(objects ...ModbusDeviceInformationObject) ModbusPDUReadDeviceIdentificationResponseBuilder {
-	m.Objects = objects
-	return m
+func (b *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithNextObjectId(nextObjectId uint8) ModbusPDUReadDeviceIdentificationResponseBuilder {
+	b.NextObjectId = nextObjectId
+	return b
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) Build() (ModbusPDUReadDeviceIdentificationResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithObjects(objects ...ModbusDeviceInformationObject) ModbusPDUReadDeviceIdentificationResponseBuilder {
+	b.Objects = objects
+	return b
+}
+
+func (b *_ModbusPDUReadDeviceIdentificationResponseBuilder) Build() (ModbusPDUReadDeviceIdentificationResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUReadDeviceIdentificationResponse.deepCopy(), nil
+	return b._ModbusPDUReadDeviceIdentificationResponse.deepCopy(), nil
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) MustBuild() ModbusPDUReadDeviceIdentificationResponse {
-	build, err := m.Build()
+func (b *_ModbusPDUReadDeviceIdentificationResponseBuilder) MustBuild() ModbusPDUReadDeviceIdentificationResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) DeepCopy() any {
-	return m.CreateModbusPDUReadDeviceIdentificationResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUReadDeviceIdentificationResponseBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUReadDeviceIdentificationResponseBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUReadDeviceIdentificationResponseBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUReadDeviceIdentificationResponseBuilder().(*_ModbusPDUReadDeviceIdentificationResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUReadDeviceIdentificationResponseBuilder creates a ModbusPDUReadDeviceIdentificationResponseBuilder
-func (m *_ModbusPDUReadDeviceIdentificationResponse) CreateModbusPDUReadDeviceIdentificationResponseBuilder() ModbusPDUReadDeviceIdentificationResponseBuilder {
-	if m == nil {
+func (b *_ModbusPDUReadDeviceIdentificationResponse) CreateModbusPDUReadDeviceIdentificationResponseBuilder() ModbusPDUReadDeviceIdentificationResponseBuilder {
+	if b == nil {
 		return NewModbusPDUReadDeviceIdentificationResponseBuilder()
 	}
-	return &_ModbusPDUReadDeviceIdentificationResponseBuilder{_ModbusPDUReadDeviceIdentificationResponse: m.deepCopy()}
+	return &_ModbusPDUReadDeviceIdentificationResponseBuilder{_ModbusPDUReadDeviceIdentificationResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -477,9 +496,13 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

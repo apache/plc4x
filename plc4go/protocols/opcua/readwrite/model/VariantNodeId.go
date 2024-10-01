@@ -99,50 +99,69 @@ func NewVariantNodeIdBuilder() VariantNodeIdBuilder {
 type _VariantNodeIdBuilder struct {
 	*_VariantNodeId
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantNodeIdBuilder) = (*_VariantNodeIdBuilder)(nil)
 
-func (m *_VariantNodeIdBuilder) WithMandatoryFields(value []NodeId) VariantNodeIdBuilder {
-	return m.WithValue(value...)
+func (b *_VariantNodeIdBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantNodeIdBuilder) WithOptionalArrayLength(arrayLength int32) VariantNodeIdBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantNodeIdBuilder) WithMandatoryFields(value []NodeId) VariantNodeIdBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantNodeIdBuilder) WithValue(value ...NodeId) VariantNodeIdBuilder {
-	m.Value = value
-	return m
+func (b *_VariantNodeIdBuilder) WithOptionalArrayLength(arrayLength int32) VariantNodeIdBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantNodeIdBuilder) Build() (VariantNodeId, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantNodeIdBuilder) WithValue(value ...NodeId) VariantNodeIdBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantNodeIdBuilder) Build() (VariantNodeId, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantNodeId.deepCopy(), nil
+	return b._VariantNodeId.deepCopy(), nil
 }
 
-func (m *_VariantNodeIdBuilder) MustBuild() VariantNodeId {
-	build, err := m.Build()
+func (b *_VariantNodeIdBuilder) MustBuild() VariantNodeId {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantNodeIdBuilder) DeepCopy() any {
-	return m.CreateVariantNodeIdBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantNodeIdBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantNodeIdBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantNodeIdBuilder) DeepCopy() any {
+	_copy := b.CreateVariantNodeIdBuilder().(*_VariantNodeIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantNodeIdBuilder creates a VariantNodeIdBuilder
-func (m *_VariantNodeId) CreateVariantNodeIdBuilder() VariantNodeIdBuilder {
-	if m == nil {
+func (b *_VariantNodeId) CreateVariantNodeIdBuilder() VariantNodeIdBuilder {
+	if b == nil {
 		return NewVariantNodeIdBuilder()
 	}
-	return &_VariantNodeIdBuilder{_VariantNodeId: m.deepCopy()}
+	return &_VariantNodeIdBuilder{_VariantNodeId: b.deepCopy()}
 }
 
 ///////////////////////
@@ -314,9 +333,13 @@ func (m *_VariantNodeId) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

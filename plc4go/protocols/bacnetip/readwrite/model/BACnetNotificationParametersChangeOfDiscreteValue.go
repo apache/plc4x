@@ -107,6 +107,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueBuilder interface {
 	WithInnerOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfDiscreteValueBuilder
 	// WithNewValue adds NewValue (property field)
 	WithNewValue(BACnetNotificationParametersChangeOfDiscreteValueNewValue) BACnetNotificationParametersChangeOfDiscreteValueBuilder
+	// WithNewValueBuilder adds NewValue (property field) which is build by the builder
+	WithNewValueBuilder(func(BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) BACnetNotificationParametersChangeOfDiscreteValueBuilder
 	// WithStatusFlags adds StatusFlags (property field)
 	WithStatusFlags(BACnetStatusFlagsTagged) BACnetNotificationParametersChangeOfDiscreteValueBuilder
 	// WithStatusFlagsBuilder adds StatusFlags (property field) which is build by the builder
@@ -129,123 +131,155 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueBuilder() BACnetNotific
 type _BACnetNotificationParametersChangeOfDiscreteValueBuilder struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValue
 
+	parentBuilder *_BACnetNotificationParametersBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersChangeOfDiscreteValueBuilder) = (*_BACnetNotificationParametersChangeOfDiscreteValueBuilder)(nil)
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, newValue BACnetNotificationParametersChangeOfDiscreteValueNewValue, statusFlags BACnetStatusFlagsTagged, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
-	return m.WithInnerOpeningTag(innerOpeningTag).WithNewValue(newValue).WithStatusFlags(statusFlags).WithInnerClosingTag(innerClosingTag)
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) setParent(contract BACnetNotificationParametersContract) {
+	b.BACnetNotificationParametersContract = contract
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
-	m.InnerOpeningTag = innerOpeningTag
-	return m
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, newValue BACnetNotificationParametersChangeOfDiscreteValueNewValue, statusFlags BACnetStatusFlagsTagged, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithNewValue(newValue).WithStatusFlags(statusFlags).WithInnerClosingTag(innerClosingTag)
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
-	builder := builderSupplier(m.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.InnerOpeningTag, err = builder.Build()
+	b.InnerOpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithNewValue(newValue BACnetNotificationParametersChangeOfDiscreteValueNewValue) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
-	m.NewValue = newValue
-	return m
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithNewValue(newValue BACnetNotificationParametersChangeOfDiscreteValueNewValue) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
+	b.NewValue = newValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
-	m.StatusFlags = statusFlags
-	return m
-}
-
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
-	builder := builderSupplier(m.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithNewValueBuilder(builderSupplier func(BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
+	builder := builderSupplier(b.NewValue.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder())
 	var err error
-	m.StatusFlags, err = builder.Build()
+	b.NewValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
-	m.InnerClosingTag = innerClosingTag
-	return m
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
+	b.StatusFlags = statusFlags
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
-	builder := builderSupplier(m.InnerClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
+	builder := builderSupplier(b.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
 	var err error
-	m.InnerClosingTag, err = builder.Build()
+	b.StatusFlags, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValue, error) {
-	if m.InnerOpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
-	}
-	if m.NewValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'newValue' not set"))
-	}
-	if m.StatusFlags == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'statusFlags' not set"))
-	}
-	if m.InnerClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetNotificationParametersChangeOfDiscreteValue.deepCopy(), nil
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValue {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfDiscreteValueBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.InnerClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValue, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+	}
+	if b.NewValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'newValue' not set"))
+	}
+	if b.StatusFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'statusFlags' not set"))
+	}
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetNotificationParametersChangeOfDiscreteValue.deepCopy(), nil
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersChangeOfDiscreteValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) Done() BACnetNotificationParametersBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) buildForBACnetNotificationParameters() (BACnetNotificationParameters, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersChangeOfDiscreteValueBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersChangeOfDiscreteValueBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueBuilder
-func (m *_BACnetNotificationParametersChangeOfDiscreteValue) CreateBACnetNotificationParametersChangeOfDiscreteValueBuilder() BACnetNotificationParametersChangeOfDiscreteValueBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersChangeOfDiscreteValue) CreateBACnetNotificationParametersChangeOfDiscreteValueBuilder() BACnetNotificationParametersChangeOfDiscreteValueBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersChangeOfDiscreteValueBuilder()
 	}
-	return &_BACnetNotificationParametersChangeOfDiscreteValueBuilder{_BACnetNotificationParametersChangeOfDiscreteValue: m.deepCopy()}
+	return &_BACnetNotificationParametersChangeOfDiscreteValueBuilder{_BACnetNotificationParametersChangeOfDiscreteValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -440,9 +474,13 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

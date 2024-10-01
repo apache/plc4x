@@ -97,10 +97,29 @@ type BACnetCalendarEntryBuilder interface {
 	WithPeekedTagHeader(BACnetTagHeader) BACnetCalendarEntryBuilder
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetCalendarEntryBuilder
+	// AsBACnetCalendarEntryDate converts this build to a subType of BACnetCalendarEntry. It is always possible to return to current builder using Done()
+	AsBACnetCalendarEntryDate() interface {
+		BACnetCalendarEntryDateBuilder
+		Done() BACnetCalendarEntryBuilder
+	}
+	// AsBACnetCalendarEntryDateRange converts this build to a subType of BACnetCalendarEntry. It is always possible to return to current builder using Done()
+	AsBACnetCalendarEntryDateRange() interface {
+		BACnetCalendarEntryDateRangeBuilder
+		Done() BACnetCalendarEntryBuilder
+	}
+	// AsBACnetCalendarEntryWeekNDay converts this build to a subType of BACnetCalendarEntry. It is always possible to return to current builder using Done()
+	AsBACnetCalendarEntryWeekNDay() interface {
+		BACnetCalendarEntryWeekNDayBuilder
+		Done() BACnetCalendarEntryBuilder
+	}
 	// Build builds the BACnetCalendarEntry or returns an error if something is wrong
-	Build() (BACnetCalendarEntryContract, error)
+	PartialBuild() (BACnetCalendarEntryContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetCalendarEntryContract
+	PartialMustBuild() BACnetCalendarEntryContract
+	// Build builds the BACnetCalendarEntry or returns an error if something is wrong
+	Build() (BACnetCalendarEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetCalendarEntry
 }
 
 // NewBACnetCalendarEntryBuilder() creates a BACnetCalendarEntryBuilder
@@ -108,67 +127,149 @@ func NewBACnetCalendarEntryBuilder() BACnetCalendarEntryBuilder {
 	return &_BACnetCalendarEntryBuilder{_BACnetCalendarEntry: new(_BACnetCalendarEntry)}
 }
 
+type _BACnetCalendarEntryChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetCalendarEntryContract)
+	buildForBACnetCalendarEntry() (BACnetCalendarEntry, error)
+}
+
 type _BACnetCalendarEntryBuilder struct {
 	*_BACnetCalendarEntry
+
+	childBuilder _BACnetCalendarEntryChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetCalendarEntryBuilder) = (*_BACnetCalendarEntryBuilder)(nil)
 
-func (m *_BACnetCalendarEntryBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetCalendarEntryBuilder {
-	return m.WithPeekedTagHeader(peekedTagHeader)
+func (b *_BACnetCalendarEntryBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetCalendarEntryBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
 }
 
-func (m *_BACnetCalendarEntryBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetCalendarEntryBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetCalendarEntryBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetCalendarEntryBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetCalendarEntryBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetCalendarEntryBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetCalendarEntryBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetCalendarEntryBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetCalendarEntryBuilder) Build() (BACnetCalendarEntryContract, error) {
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetCalendarEntryBuilder) PartialBuild() (BACnetCalendarEntryContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetCalendarEntry.deepCopy(), nil
+	return b._BACnetCalendarEntry.deepCopy(), nil
 }
 
-func (m *_BACnetCalendarEntryBuilder) MustBuild() BACnetCalendarEntryContract {
-	build, err := m.Build()
+func (b *_BACnetCalendarEntryBuilder) PartialMustBuild() BACnetCalendarEntryContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetCalendarEntryBuilder) DeepCopy() any {
-	return m.CreateBACnetCalendarEntryBuilder()
+func (b *_BACnetCalendarEntryBuilder) AsBACnetCalendarEntryDate() interface {
+	BACnetCalendarEntryDateBuilder
+	Done() BACnetCalendarEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetCalendarEntryDateBuilder
+		Done() BACnetCalendarEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetCalendarEntryDateBuilder().(*_BACnetCalendarEntryDateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetCalendarEntryBuilder) AsBACnetCalendarEntryDateRange() interface {
+	BACnetCalendarEntryDateRangeBuilder
+	Done() BACnetCalendarEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetCalendarEntryDateRangeBuilder
+		Done() BACnetCalendarEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetCalendarEntryDateRangeBuilder().(*_BACnetCalendarEntryDateRangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetCalendarEntryBuilder) AsBACnetCalendarEntryWeekNDay() interface {
+	BACnetCalendarEntryWeekNDayBuilder
+	Done() BACnetCalendarEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetCalendarEntryWeekNDayBuilder
+		Done() BACnetCalendarEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetCalendarEntryWeekNDayBuilder().(*_BACnetCalendarEntryWeekNDayBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetCalendarEntryBuilder) Build() (BACnetCalendarEntry, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetCalendarEntry()
+}
+
+func (b *_BACnetCalendarEntryBuilder) MustBuild() BACnetCalendarEntry {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetCalendarEntryBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetCalendarEntryBuilder().(*_BACnetCalendarEntryBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetCalendarEntryChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetCalendarEntryBuilder creates a BACnetCalendarEntryBuilder
-func (m *_BACnetCalendarEntry) CreateBACnetCalendarEntryBuilder() BACnetCalendarEntryBuilder {
-	if m == nil {
+func (b *_BACnetCalendarEntry) CreateBACnetCalendarEntryBuilder() BACnetCalendarEntryBuilder {
+	if b == nil {
 		return NewBACnetCalendarEntryBuilder()
 	}
-	return &_BACnetCalendarEntryBuilder{_BACnetCalendarEntry: m.deepCopy()}
+	return &_BACnetCalendarEntryBuilder{_BACnetCalendarEntry: b.deepCopy()}
 }
 
 ///////////////////////

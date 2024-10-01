@@ -85,10 +85,34 @@ type ApduControlBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduControlBuilder
+	// AsApduControlConnect converts this build to a subType of ApduControl. It is always possible to return to current builder using Done()
+	AsApduControlConnect() interface {
+		ApduControlConnectBuilder
+		Done() ApduControlBuilder
+	}
+	// AsApduControlDisconnect converts this build to a subType of ApduControl. It is always possible to return to current builder using Done()
+	AsApduControlDisconnect() interface {
+		ApduControlDisconnectBuilder
+		Done() ApduControlBuilder
+	}
+	// AsApduControlAck converts this build to a subType of ApduControl. It is always possible to return to current builder using Done()
+	AsApduControlAck() interface {
+		ApduControlAckBuilder
+		Done() ApduControlBuilder
+	}
+	// AsApduControlNack converts this build to a subType of ApduControl. It is always possible to return to current builder using Done()
+	AsApduControlNack() interface {
+		ApduControlNackBuilder
+		Done() ApduControlBuilder
+	}
 	// Build builds the ApduControl or returns an error if something is wrong
-	Build() (ApduControlContract, error)
+	PartialBuild() (ApduControlContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() ApduControlContract
+	PartialMustBuild() ApduControlContract
+	// Build builds the ApduControl or returns an error if something is wrong
+	Build() (ApduControl, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduControl
 }
 
 // NewApduControlBuilder() creates a ApduControlBuilder
@@ -96,43 +120,141 @@ func NewApduControlBuilder() ApduControlBuilder {
 	return &_ApduControlBuilder{_ApduControl: new(_ApduControl)}
 }
 
+type _ApduControlChildBuilder interface {
+	utils.Copyable
+	setParent(ApduControlContract)
+	buildForApduControl() (ApduControl, error)
+}
+
 type _ApduControlBuilder struct {
 	*_ApduControl
+
+	childBuilder _ApduControlChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (ApduControlBuilder) = (*_ApduControlBuilder)(nil)
 
-func (m *_ApduControlBuilder) WithMandatoryFields() ApduControlBuilder {
-	return m
+func (b *_ApduControlBuilder) WithMandatoryFields() ApduControlBuilder {
+	return b
 }
 
-func (m *_ApduControlBuilder) Build() (ApduControlContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduControlBuilder) PartialBuild() (ApduControlContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduControl.deepCopy(), nil
+	return b._ApduControl.deepCopy(), nil
 }
 
-func (m *_ApduControlBuilder) MustBuild() ApduControlContract {
-	build, err := m.Build()
+func (b *_ApduControlBuilder) PartialMustBuild() ApduControlContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduControlBuilder) DeepCopy() any {
-	return m.CreateApduControlBuilder()
+func (b *_ApduControlBuilder) AsApduControlConnect() interface {
+	ApduControlConnectBuilder
+	Done() ApduControlBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduControlConnectBuilder
+		Done() ApduControlBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduControlConnectBuilder().(*_ApduControlConnectBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduControlBuilder) AsApduControlDisconnect() interface {
+	ApduControlDisconnectBuilder
+	Done() ApduControlBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduControlDisconnectBuilder
+		Done() ApduControlBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduControlDisconnectBuilder().(*_ApduControlDisconnectBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduControlBuilder) AsApduControlAck() interface {
+	ApduControlAckBuilder
+	Done() ApduControlBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduControlAckBuilder
+		Done() ApduControlBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduControlAckBuilder().(*_ApduControlAckBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduControlBuilder) AsApduControlNack() interface {
+	ApduControlNackBuilder
+	Done() ApduControlBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduControlNackBuilder
+		Done() ApduControlBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduControlNackBuilder().(*_ApduControlNackBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduControlBuilder) Build() (ApduControl, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForApduControl()
+}
+
+func (b *_ApduControlBuilder) MustBuild() ApduControl {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ApduControlBuilder) DeepCopy() any {
+	_copy := b.CreateApduControlBuilder().(*_ApduControlBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ApduControlChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduControlBuilder creates a ApduControlBuilder
-func (m *_ApduControl) CreateApduControlBuilder() ApduControlBuilder {
-	if m == nil {
+func (b *_ApduControl) CreateApduControlBuilder() ApduControlBuilder {
+	if b == nil {
 		return NewApduControlBuilder()
 	}
-	return &_ApduControlBuilder{_ApduControl: m.deepCopy()}
+	return &_ApduControlBuilder{_ApduControl: b.deepCopy()}
 }
 
 ///////////////////////

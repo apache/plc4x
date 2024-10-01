@@ -113,88 +113,92 @@ type _BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder struct {
 
 var _ (BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) = (*_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder)(nil)
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfAlarmValues []BACnetLifeSafetyStateTagged, closingTag BACnetClosingTag) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
-	return m.WithOpeningTag(openingTag).WithListOfAlarmValues(listOfAlarmValues...).WithClosingTag(closingTag)
+func (b *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfAlarmValues []BACnetLifeSafetyStateTagged, closingTag BACnetClosingTag) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
+	return b.WithOpeningTag(openingTag).WithListOfAlarmValues(listOfAlarmValues...).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithListOfAlarmValues(listOfAlarmValues ...BACnetLifeSafetyStateTagged) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
-	m.ListOfAlarmValues = listOfAlarmValues
-	return m
+func (b *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithListOfAlarmValues(listOfAlarmValues ...BACnetLifeSafetyStateTagged) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
+	b.ListOfAlarmValues = listOfAlarmValues
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) Build() (BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) Build() (BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues.deepCopy(), nil
+	return b._BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues.deepCopy(), nil
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) MustBuild() BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues {
-	build, err := m.Build()
+func (b *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) MustBuild() BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) DeepCopy() any {
-	return m.CreateBACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder()
+func (b *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder().(*_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder creates a BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder
-func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) CreateBACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder() BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
-	if m == nil {
+func (b *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) CreateBACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder() BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
+	if b == nil {
 		return NewBACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder()
 	}
-	return &_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder{_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues: m.deepCopy()}
+	return &_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder{_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues: b.deepCopy()}
 }
 
 ///////////////////////
@@ -383,9 +387,13 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) String() stri
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

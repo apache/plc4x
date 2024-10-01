@@ -20,6 +20,8 @@
 package basetypes
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 )
@@ -33,7 +35,8 @@ type PropertyIdentifier struct {
 func NewPropertyIdentifier(arg Arg) (*PropertyIdentifier, error) {
 	s := &PropertyIdentifier{
 		vendorRange: vendorRange{512, 4194303},
-		enumerations: map[string]uint64{"absenteeLimit": 244,
+		enumerations: map[string]uint64{
+			"absenteeLimit":                    244,
 			"acceptedModes":                    175,
 			"accessAlarmEvents":                245,
 			"accessDoors":                      246,
@@ -512,6 +515,10 @@ func NewPropertyIdentifier(arg Arg) (*PropertyIdentifier, error) {
 			"zoneTo":                           321,
 		},
 	}
-	panic("enumeratedimplementme")
+	var err error
+	s.Enumerated, err = NewEnumerated(NoArgs)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating enumerated")
+	}
 	return s, nil
 }

@@ -113,60 +113,64 @@ type _NPDUControlBuilder struct {
 
 var _ (NPDUControlBuilder) = (*_NPDUControlBuilder)(nil)
 
-func (m *_NPDUControlBuilder) WithMandatoryFields(messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority NPDUNetworkPriority) NPDUControlBuilder {
-	return m.WithMessageTypeFieldPresent(messageTypeFieldPresent).WithDestinationSpecified(destinationSpecified).WithSourceSpecified(sourceSpecified).WithExpectingReply(expectingReply).WithNetworkPriority(networkPriority)
+func (b *_NPDUControlBuilder) WithMandatoryFields(messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority NPDUNetworkPriority) NPDUControlBuilder {
+	return b.WithMessageTypeFieldPresent(messageTypeFieldPresent).WithDestinationSpecified(destinationSpecified).WithSourceSpecified(sourceSpecified).WithExpectingReply(expectingReply).WithNetworkPriority(networkPriority)
 }
 
-func (m *_NPDUControlBuilder) WithMessageTypeFieldPresent(messageTypeFieldPresent bool) NPDUControlBuilder {
-	m.MessageTypeFieldPresent = messageTypeFieldPresent
-	return m
+func (b *_NPDUControlBuilder) WithMessageTypeFieldPresent(messageTypeFieldPresent bool) NPDUControlBuilder {
+	b.MessageTypeFieldPresent = messageTypeFieldPresent
+	return b
 }
 
-func (m *_NPDUControlBuilder) WithDestinationSpecified(destinationSpecified bool) NPDUControlBuilder {
-	m.DestinationSpecified = destinationSpecified
-	return m
+func (b *_NPDUControlBuilder) WithDestinationSpecified(destinationSpecified bool) NPDUControlBuilder {
+	b.DestinationSpecified = destinationSpecified
+	return b
 }
 
-func (m *_NPDUControlBuilder) WithSourceSpecified(sourceSpecified bool) NPDUControlBuilder {
-	m.SourceSpecified = sourceSpecified
-	return m
+func (b *_NPDUControlBuilder) WithSourceSpecified(sourceSpecified bool) NPDUControlBuilder {
+	b.SourceSpecified = sourceSpecified
+	return b
 }
 
-func (m *_NPDUControlBuilder) WithExpectingReply(expectingReply bool) NPDUControlBuilder {
-	m.ExpectingReply = expectingReply
-	return m
+func (b *_NPDUControlBuilder) WithExpectingReply(expectingReply bool) NPDUControlBuilder {
+	b.ExpectingReply = expectingReply
+	return b
 }
 
-func (m *_NPDUControlBuilder) WithNetworkPriority(networkPriority NPDUNetworkPriority) NPDUControlBuilder {
-	m.NetworkPriority = networkPriority
-	return m
+func (b *_NPDUControlBuilder) WithNetworkPriority(networkPriority NPDUNetworkPriority) NPDUControlBuilder {
+	b.NetworkPriority = networkPriority
+	return b
 }
 
-func (m *_NPDUControlBuilder) Build() (NPDUControl, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NPDUControlBuilder) Build() (NPDUControl, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NPDUControl.deepCopy(), nil
+	return b._NPDUControl.deepCopy(), nil
 }
 
-func (m *_NPDUControlBuilder) MustBuild() NPDUControl {
-	build, err := m.Build()
+func (b *_NPDUControlBuilder) MustBuild() NPDUControl {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NPDUControlBuilder) DeepCopy() any {
-	return m.CreateNPDUControlBuilder()
+func (b *_NPDUControlBuilder) DeepCopy() any {
+	_copy := b.CreateNPDUControlBuilder().(*_NPDUControlBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNPDUControlBuilder creates a NPDUControlBuilder
-func (m *_NPDUControl) CreateNPDUControlBuilder() NPDUControlBuilder {
-	if m == nil {
+func (b *_NPDUControl) CreateNPDUControlBuilder() NPDUControlBuilder {
+	if b == nil {
 		return NewNPDUControlBuilder()
 	}
-	return &_NPDUControlBuilder{_NPDUControl: m.deepCopy()}
+	return &_NPDUControlBuilder{_NPDUControl: b.deepCopy()}
 }
 
 ///////////////////////
@@ -403,9 +407,13 @@ func (m *_NPDUControl) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -99,50 +99,69 @@ func NewApduDataGroupValueWriteBuilder() ApduDataGroupValueWriteBuilder {
 type _ApduDataGroupValueWriteBuilder struct {
 	*_ApduDataGroupValueWrite
 
+	parentBuilder *_ApduDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataGroupValueWriteBuilder) = (*_ApduDataGroupValueWriteBuilder)(nil)
 
-func (m *_ApduDataGroupValueWriteBuilder) WithMandatoryFields(dataFirstByte int8, data []byte) ApduDataGroupValueWriteBuilder {
-	return m.WithDataFirstByte(dataFirstByte).WithData(data...)
+func (b *_ApduDataGroupValueWriteBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
 }
 
-func (m *_ApduDataGroupValueWriteBuilder) WithDataFirstByte(dataFirstByte int8) ApduDataGroupValueWriteBuilder {
-	m.DataFirstByte = dataFirstByte
-	return m
+func (b *_ApduDataGroupValueWriteBuilder) WithMandatoryFields(dataFirstByte int8, data []byte) ApduDataGroupValueWriteBuilder {
+	return b.WithDataFirstByte(dataFirstByte).WithData(data...)
 }
 
-func (m *_ApduDataGroupValueWriteBuilder) WithData(data ...byte) ApduDataGroupValueWriteBuilder {
-	m.Data = data
-	return m
+func (b *_ApduDataGroupValueWriteBuilder) WithDataFirstByte(dataFirstByte int8) ApduDataGroupValueWriteBuilder {
+	b.DataFirstByte = dataFirstByte
+	return b
 }
 
-func (m *_ApduDataGroupValueWriteBuilder) Build() (ApduDataGroupValueWrite, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataGroupValueWriteBuilder) WithData(data ...byte) ApduDataGroupValueWriteBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ApduDataGroupValueWriteBuilder) Build() (ApduDataGroupValueWrite, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataGroupValueWrite.deepCopy(), nil
+	return b._ApduDataGroupValueWrite.deepCopy(), nil
 }
 
-func (m *_ApduDataGroupValueWriteBuilder) MustBuild() ApduDataGroupValueWrite {
-	build, err := m.Build()
+func (b *_ApduDataGroupValueWriteBuilder) MustBuild() ApduDataGroupValueWrite {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataGroupValueWriteBuilder) DeepCopy() any {
-	return m.CreateApduDataGroupValueWriteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataGroupValueWriteBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataGroupValueWriteBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataGroupValueWriteBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataGroupValueWriteBuilder().(*_ApduDataGroupValueWriteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataGroupValueWriteBuilder creates a ApduDataGroupValueWriteBuilder
-func (m *_ApduDataGroupValueWrite) CreateApduDataGroupValueWriteBuilder() ApduDataGroupValueWriteBuilder {
-	if m == nil {
+func (b *_ApduDataGroupValueWrite) CreateApduDataGroupValueWriteBuilder() ApduDataGroupValueWriteBuilder {
+	if b == nil {
 		return NewApduDataGroupValueWriteBuilder()
 	}
-	return &_ApduDataGroupValueWriteBuilder{_ApduDataGroupValueWrite: m.deepCopy()}
+	return &_ApduDataGroupValueWriteBuilder{_ApduDataGroupValueWrite: b.deepCopy()}
 }
 
 ///////////////////////
@@ -306,9 +325,13 @@ func (m *_ApduDataGroupValueWrite) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

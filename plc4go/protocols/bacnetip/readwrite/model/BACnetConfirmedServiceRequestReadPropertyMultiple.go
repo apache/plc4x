@@ -96,45 +96,64 @@ func NewBACnetConfirmedServiceRequestReadPropertyMultipleBuilder() BACnetConfirm
 type _BACnetConfirmedServiceRequestReadPropertyMultipleBuilder struct {
 	*_BACnetConfirmedServiceRequestReadPropertyMultiple
 
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) = (*_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) WithMandatoryFields(data []BACnetReadAccessSpecification) BACnetConfirmedServiceRequestReadPropertyMultipleBuilder {
-	return m.WithData(data...)
+func (b *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) WithData(data ...BACnetReadAccessSpecification) BACnetConfirmedServiceRequestReadPropertyMultipleBuilder {
-	m.Data = data
-	return m
+func (b *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) WithMandatoryFields(data []BACnetReadAccessSpecification) BACnetConfirmedServiceRequestReadPropertyMultipleBuilder {
+	return b.WithData(data...)
 }
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) Build() (BACnetConfirmedServiceRequestReadPropertyMultiple, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) WithData(data ...BACnetReadAccessSpecification) BACnetConfirmedServiceRequestReadPropertyMultipleBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) Build() (BACnetConfirmedServiceRequestReadPropertyMultiple, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestReadPropertyMultiple.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestReadPropertyMultiple.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) MustBuild() BACnetConfirmedServiceRequestReadPropertyMultiple {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) MustBuild() BACnetConfirmedServiceRequestReadPropertyMultiple {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestReadPropertyMultipleBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestReadPropertyMultipleBuilder().(*_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestReadPropertyMultipleBuilder creates a BACnetConfirmedServiceRequestReadPropertyMultipleBuilder
-func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) CreateBACnetConfirmedServiceRequestReadPropertyMultipleBuilder() BACnetConfirmedServiceRequestReadPropertyMultipleBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestReadPropertyMultiple) CreateBACnetConfirmedServiceRequestReadPropertyMultipleBuilder() BACnetConfirmedServiceRequestReadPropertyMultipleBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestReadPropertyMultipleBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder{_BACnetConfirmedServiceRequestReadPropertyMultiple: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder{_BACnetConfirmedServiceRequestReadPropertyMultiple: b.deepCopy()}
 }
 
 ///////////////////////
@@ -294,9 +313,13 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

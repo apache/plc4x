@@ -95,45 +95,49 @@ type _SequenceHeaderBuilder struct {
 
 var _ (SequenceHeaderBuilder) = (*_SequenceHeaderBuilder)(nil)
 
-func (m *_SequenceHeaderBuilder) WithMandatoryFields(sequenceNumber int32, requestId int32) SequenceHeaderBuilder {
-	return m.WithSequenceNumber(sequenceNumber).WithRequestId(requestId)
+func (b *_SequenceHeaderBuilder) WithMandatoryFields(sequenceNumber int32, requestId int32) SequenceHeaderBuilder {
+	return b.WithSequenceNumber(sequenceNumber).WithRequestId(requestId)
 }
 
-func (m *_SequenceHeaderBuilder) WithSequenceNumber(sequenceNumber int32) SequenceHeaderBuilder {
-	m.SequenceNumber = sequenceNumber
-	return m
+func (b *_SequenceHeaderBuilder) WithSequenceNumber(sequenceNumber int32) SequenceHeaderBuilder {
+	b.SequenceNumber = sequenceNumber
+	return b
 }
 
-func (m *_SequenceHeaderBuilder) WithRequestId(requestId int32) SequenceHeaderBuilder {
-	m.RequestId = requestId
-	return m
+func (b *_SequenceHeaderBuilder) WithRequestId(requestId int32) SequenceHeaderBuilder {
+	b.RequestId = requestId
+	return b
 }
 
-func (m *_SequenceHeaderBuilder) Build() (SequenceHeader, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SequenceHeaderBuilder) Build() (SequenceHeader, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SequenceHeader.deepCopy(), nil
+	return b._SequenceHeader.deepCopy(), nil
 }
 
-func (m *_SequenceHeaderBuilder) MustBuild() SequenceHeader {
-	build, err := m.Build()
+func (b *_SequenceHeaderBuilder) MustBuild() SequenceHeader {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SequenceHeaderBuilder) DeepCopy() any {
-	return m.CreateSequenceHeaderBuilder()
+func (b *_SequenceHeaderBuilder) DeepCopy() any {
+	_copy := b.CreateSequenceHeaderBuilder().(*_SequenceHeaderBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSequenceHeaderBuilder creates a SequenceHeaderBuilder
-func (m *_SequenceHeader) CreateSequenceHeaderBuilder() SequenceHeaderBuilder {
-	if m == nil {
+func (b *_SequenceHeader) CreateSequenceHeaderBuilder() SequenceHeaderBuilder {
+	if b == nil {
 		return NewSequenceHeaderBuilder()
 	}
-	return &_SequenceHeaderBuilder{_SequenceHeader: m.deepCopy()}
+	return &_SequenceHeaderBuilder{_SequenceHeader: b.deepCopy()}
 }
 
 ///////////////////////
@@ -288,9 +292,13 @@ func (m *_SequenceHeader) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

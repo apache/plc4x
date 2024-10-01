@@ -99,50 +99,69 @@ func NewXVTypeBuilder() XVTypeBuilder {
 type _XVTypeBuilder struct {
 	*_XVType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (XVTypeBuilder) = (*_XVTypeBuilder)(nil)
 
-func (m *_XVTypeBuilder) WithMandatoryFields(x float64, value float32) XVTypeBuilder {
-	return m.WithX(x).WithValue(value)
+func (b *_XVTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_XVTypeBuilder) WithX(x float64) XVTypeBuilder {
-	m.X = x
-	return m
+func (b *_XVTypeBuilder) WithMandatoryFields(x float64, value float32) XVTypeBuilder {
+	return b.WithX(x).WithValue(value)
 }
 
-func (m *_XVTypeBuilder) WithValue(value float32) XVTypeBuilder {
-	m.Value = value
-	return m
+func (b *_XVTypeBuilder) WithX(x float64) XVTypeBuilder {
+	b.X = x
+	return b
 }
 
-func (m *_XVTypeBuilder) Build() (XVType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_XVTypeBuilder) WithValue(value float32) XVTypeBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_XVTypeBuilder) Build() (XVType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._XVType.deepCopy(), nil
+	return b._XVType.deepCopy(), nil
 }
 
-func (m *_XVTypeBuilder) MustBuild() XVType {
-	build, err := m.Build()
+func (b *_XVTypeBuilder) MustBuild() XVType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_XVTypeBuilder) DeepCopy() any {
-	return m.CreateXVTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_XVTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_XVTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_XVTypeBuilder) DeepCopy() any {
+	_copy := b.CreateXVTypeBuilder().(*_XVTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateXVTypeBuilder creates a XVTypeBuilder
-func (m *_XVType) CreateXVTypeBuilder() XVTypeBuilder {
-	if m == nil {
+func (b *_XVType) CreateXVTypeBuilder() XVTypeBuilder {
+	if b == nil {
 		return NewXVTypeBuilder()
 	}
-	return &_XVTypeBuilder{_XVType: m.deepCopy()}
+	return &_XVTypeBuilder{_XVType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -304,9 +323,13 @@ func (m *_XVType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

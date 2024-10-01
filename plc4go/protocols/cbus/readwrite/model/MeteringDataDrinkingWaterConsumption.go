@@ -93,45 +93,64 @@ func NewMeteringDataDrinkingWaterConsumptionBuilder() MeteringDataDrinkingWaterC
 type _MeteringDataDrinkingWaterConsumptionBuilder struct {
 	*_MeteringDataDrinkingWaterConsumption
 
+	parentBuilder *_MeteringDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MeteringDataDrinkingWaterConsumptionBuilder) = (*_MeteringDataDrinkingWaterConsumptionBuilder)(nil)
 
-func (m *_MeteringDataDrinkingWaterConsumptionBuilder) WithMandatoryFields(kL uint32) MeteringDataDrinkingWaterConsumptionBuilder {
-	return m.WithKL(kL)
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) setParent(contract MeteringDataContract) {
+	b.MeteringDataContract = contract
 }
 
-func (m *_MeteringDataDrinkingWaterConsumptionBuilder) WithKL(kL uint32) MeteringDataDrinkingWaterConsumptionBuilder {
-	m.KL = kL
-	return m
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) WithMandatoryFields(kL uint32) MeteringDataDrinkingWaterConsumptionBuilder {
+	return b.WithKL(kL)
 }
 
-func (m *_MeteringDataDrinkingWaterConsumptionBuilder) Build() (MeteringDataDrinkingWaterConsumption, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) WithKL(kL uint32) MeteringDataDrinkingWaterConsumptionBuilder {
+	b.KL = kL
+	return b
+}
+
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) Build() (MeteringDataDrinkingWaterConsumption, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MeteringDataDrinkingWaterConsumption.deepCopy(), nil
+	return b._MeteringDataDrinkingWaterConsumption.deepCopy(), nil
 }
 
-func (m *_MeteringDataDrinkingWaterConsumptionBuilder) MustBuild() MeteringDataDrinkingWaterConsumption {
-	build, err := m.Build()
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) MustBuild() MeteringDataDrinkingWaterConsumption {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MeteringDataDrinkingWaterConsumptionBuilder) DeepCopy() any {
-	return m.CreateMeteringDataDrinkingWaterConsumptionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) Done() MeteringDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) buildForMeteringData() (MeteringData, error) {
+	return b.Build()
+}
+
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) DeepCopy() any {
+	_copy := b.CreateMeteringDataDrinkingWaterConsumptionBuilder().(*_MeteringDataDrinkingWaterConsumptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMeteringDataDrinkingWaterConsumptionBuilder creates a MeteringDataDrinkingWaterConsumptionBuilder
-func (m *_MeteringDataDrinkingWaterConsumption) CreateMeteringDataDrinkingWaterConsumptionBuilder() MeteringDataDrinkingWaterConsumptionBuilder {
-	if m == nil {
+func (b *_MeteringDataDrinkingWaterConsumption) CreateMeteringDataDrinkingWaterConsumptionBuilder() MeteringDataDrinkingWaterConsumptionBuilder {
+	if b == nil {
 		return NewMeteringDataDrinkingWaterConsumptionBuilder()
 	}
-	return &_MeteringDataDrinkingWaterConsumptionBuilder{_MeteringDataDrinkingWaterConsumption: m.deepCopy()}
+	return &_MeteringDataDrinkingWaterConsumptionBuilder{_MeteringDataDrinkingWaterConsumption: b.deepCopy()}
 }
 
 ///////////////////////
@@ -271,9 +290,13 @@ func (m *_MeteringDataDrinkingWaterConsumption) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

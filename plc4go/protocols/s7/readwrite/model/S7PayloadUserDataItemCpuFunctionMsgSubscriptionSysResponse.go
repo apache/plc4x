@@ -99,50 +99,69 @@ func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder() S7Pa
 type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder struct {
 	*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder)(nil)
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) WithMandatoryFields(result uint8, reserved01 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
-	return m.WithResult(result).WithReserved01(reserved01)
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) WithResult(result uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
-	m.Result = result
-	return m
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) WithMandatoryFields(result uint8, reserved01 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
+	return b.WithResult(result).WithReserved01(reserved01)
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) WithReserved01(reserved01 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
-	m.Reserved01 = reserved01
-	return m
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) WithResult(result uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
+	b.Result = result
+	return b
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) WithReserved01(reserved01 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
+	b.Reserved01 = reserved01
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse.deepCopy(), nil
+	return b._S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse.deepCopy(), nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
-	build, err := m.Build()
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) DeepCopy() any {
-	return m.CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder creates a S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
-	if m == nil {
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
+	if b == nil {
 		return NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder()
 	}
-	return &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder{_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse: m.deepCopy()}
+	return &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder{_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -313,9 +332,13 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) String() s
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

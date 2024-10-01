@@ -105,55 +105,74 @@ func NewModbusPDUMaskWriteHoldingRegisterResponseBuilder() ModbusPDUMaskWriteHol
 type _ModbusPDUMaskWriteHoldingRegisterResponseBuilder struct {
 	*_ModbusPDUMaskWriteHoldingRegisterResponse
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUMaskWriteHoldingRegisterResponseBuilder) = (*_ModbusPDUMaskWriteHoldingRegisterResponseBuilder)(nil)
 
-func (m *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) WithMandatoryFields(referenceAddress uint16, andMask uint16, orMask uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
-	return m.WithReferenceAddress(referenceAddress).WithAndMask(andMask).WithOrMask(orMask)
+func (b *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) WithReferenceAddress(referenceAddress uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
-	m.ReferenceAddress = referenceAddress
-	return m
+func (b *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) WithMandatoryFields(referenceAddress uint16, andMask uint16, orMask uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
+	return b.WithReferenceAddress(referenceAddress).WithAndMask(andMask).WithOrMask(orMask)
 }
 
-func (m *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) WithAndMask(andMask uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
-	m.AndMask = andMask
-	return m
+func (b *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) WithReferenceAddress(referenceAddress uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
+	b.ReferenceAddress = referenceAddress
+	return b
 }
 
-func (m *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) WithOrMask(orMask uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
-	m.OrMask = orMask
-	return m
+func (b *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) WithAndMask(andMask uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
+	b.AndMask = andMask
+	return b
 }
 
-func (m *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) Build() (ModbusPDUMaskWriteHoldingRegisterResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) WithOrMask(orMask uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
+	b.OrMask = orMask
+	return b
+}
+
+func (b *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) Build() (ModbusPDUMaskWriteHoldingRegisterResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUMaskWriteHoldingRegisterResponse.deepCopy(), nil
+	return b._ModbusPDUMaskWriteHoldingRegisterResponse.deepCopy(), nil
 }
 
-func (m *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) MustBuild() ModbusPDUMaskWriteHoldingRegisterResponse {
-	build, err := m.Build()
+func (b *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) MustBuild() ModbusPDUMaskWriteHoldingRegisterResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) DeepCopy() any {
-	return m.CreateModbusPDUMaskWriteHoldingRegisterResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUMaskWriteHoldingRegisterResponseBuilder().(*_ModbusPDUMaskWriteHoldingRegisterResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUMaskWriteHoldingRegisterResponseBuilder creates a ModbusPDUMaskWriteHoldingRegisterResponseBuilder
-func (m *_ModbusPDUMaskWriteHoldingRegisterResponse) CreateModbusPDUMaskWriteHoldingRegisterResponseBuilder() ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
-	if m == nil {
+func (b *_ModbusPDUMaskWriteHoldingRegisterResponse) CreateModbusPDUMaskWriteHoldingRegisterResponseBuilder() ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
+	if b == nil {
 		return NewModbusPDUMaskWriteHoldingRegisterResponseBuilder()
 	}
-	return &_ModbusPDUMaskWriteHoldingRegisterResponseBuilder{_ModbusPDUMaskWriteHoldingRegisterResponse: m.deepCopy()}
+	return &_ModbusPDUMaskWriteHoldingRegisterResponseBuilder{_ModbusPDUMaskWriteHoldingRegisterResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -341,9 +360,13 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -90,40 +90,44 @@ type _SerialInterfaceAddressBuilder struct {
 
 var _ (SerialInterfaceAddressBuilder) = (*_SerialInterfaceAddressBuilder)(nil)
 
-func (m *_SerialInterfaceAddressBuilder) WithMandatoryFields(address byte) SerialInterfaceAddressBuilder {
-	return m.WithAddress(address)
+func (b *_SerialInterfaceAddressBuilder) WithMandatoryFields(address byte) SerialInterfaceAddressBuilder {
+	return b.WithAddress(address)
 }
 
-func (m *_SerialInterfaceAddressBuilder) WithAddress(address byte) SerialInterfaceAddressBuilder {
-	m.Address = address
-	return m
+func (b *_SerialInterfaceAddressBuilder) WithAddress(address byte) SerialInterfaceAddressBuilder {
+	b.Address = address
+	return b
 }
 
-func (m *_SerialInterfaceAddressBuilder) Build() (SerialInterfaceAddress, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SerialInterfaceAddressBuilder) Build() (SerialInterfaceAddress, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SerialInterfaceAddress.deepCopy(), nil
+	return b._SerialInterfaceAddress.deepCopy(), nil
 }
 
-func (m *_SerialInterfaceAddressBuilder) MustBuild() SerialInterfaceAddress {
-	build, err := m.Build()
+func (b *_SerialInterfaceAddressBuilder) MustBuild() SerialInterfaceAddress {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SerialInterfaceAddressBuilder) DeepCopy() any {
-	return m.CreateSerialInterfaceAddressBuilder()
+func (b *_SerialInterfaceAddressBuilder) DeepCopy() any {
+	_copy := b.CreateSerialInterfaceAddressBuilder().(*_SerialInterfaceAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSerialInterfaceAddressBuilder creates a SerialInterfaceAddressBuilder
-func (m *_SerialInterfaceAddress) CreateSerialInterfaceAddressBuilder() SerialInterfaceAddressBuilder {
-	if m == nil {
+func (b *_SerialInterfaceAddress) CreateSerialInterfaceAddressBuilder() SerialInterfaceAddressBuilder {
+	if b == nil {
 		return NewSerialInterfaceAddressBuilder()
 	}
-	return &_SerialInterfaceAddressBuilder{_SerialInterfaceAddress: m.deepCopy()}
+	return &_SerialInterfaceAddressBuilder{_SerialInterfaceAddress: b.deepCopy()}
 }
 
 ///////////////////////
@@ -260,9 +264,13 @@ func (m *_SerialInterfaceAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

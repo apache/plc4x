@@ -98,6 +98,8 @@ type ModifyMonitoredItemsResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) ModifyMonitoredItemsResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) ModifyMonitoredItemsResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ModifyMonitoredItemsResponseBuilder
 	// WithNoOfResults adds NoOfResults (property field)
 	WithNoOfResults(int32) ModifyMonitoredItemsResponseBuilder
 	// WithResults adds Results (property field)
@@ -120,71 +122,103 @@ func NewModifyMonitoredItemsResponseBuilder() ModifyMonitoredItemsResponseBuilde
 type _ModifyMonitoredItemsResponseBuilder struct {
 	*_ModifyMonitoredItemsResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModifyMonitoredItemsResponseBuilder) = (*_ModifyMonitoredItemsResponseBuilder)(nil)
 
-func (m *_ModifyMonitoredItemsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) ModifyMonitoredItemsResponseBuilder {
-	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_ModifyMonitoredItemsResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ModifyMonitoredItemsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) ModifyMonitoredItemsResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_ModifyMonitoredItemsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) ModifyMonitoredItemsResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (m *_ModifyMonitoredItemsResponseBuilder) WithNoOfResults(noOfResults int32) ModifyMonitoredItemsResponseBuilder {
-	m.NoOfResults = noOfResults
-	return m
+func (b *_ModifyMonitoredItemsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) ModifyMonitoredItemsResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
 }
 
-func (m *_ModifyMonitoredItemsResponseBuilder) WithResults(results ...ExtensionObjectDefinition) ModifyMonitoredItemsResponseBuilder {
-	m.Results = results
-	return m
-}
-
-func (m *_ModifyMonitoredItemsResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) ModifyMonitoredItemsResponseBuilder {
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
-	return m
-}
-
-func (m *_ModifyMonitoredItemsResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) ModifyMonitoredItemsResponseBuilder {
-	m.DiagnosticInfos = diagnosticInfos
-	return m
-}
-
-func (m *_ModifyMonitoredItemsResponseBuilder) Build() (ModifyMonitoredItemsResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ModifyMonitoredItemsResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ModifyMonitoredItemsResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._ModifyMonitoredItemsResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_ModifyMonitoredItemsResponseBuilder) MustBuild() ModifyMonitoredItemsResponse {
-	build, err := m.Build()
+func (b *_ModifyMonitoredItemsResponseBuilder) WithNoOfResults(noOfResults int32) ModifyMonitoredItemsResponseBuilder {
+	b.NoOfResults = noOfResults
+	return b
+}
+
+func (b *_ModifyMonitoredItemsResponseBuilder) WithResults(results ...ExtensionObjectDefinition) ModifyMonitoredItemsResponseBuilder {
+	b.Results = results
+	return b
+}
+
+func (b *_ModifyMonitoredItemsResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) ModifyMonitoredItemsResponseBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_ModifyMonitoredItemsResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) ModifyMonitoredItemsResponseBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_ModifyMonitoredItemsResponseBuilder) Build() (ModifyMonitoredItemsResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ModifyMonitoredItemsResponse.deepCopy(), nil
+}
+
+func (b *_ModifyMonitoredItemsResponseBuilder) MustBuild() ModifyMonitoredItemsResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModifyMonitoredItemsResponseBuilder) DeepCopy() any {
-	return m.CreateModifyMonitoredItemsResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModifyMonitoredItemsResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModifyMonitoredItemsResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ModifyMonitoredItemsResponseBuilder) DeepCopy() any {
+	_copy := b.CreateModifyMonitoredItemsResponseBuilder().(*_ModifyMonitoredItemsResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModifyMonitoredItemsResponseBuilder creates a ModifyMonitoredItemsResponseBuilder
-func (m *_ModifyMonitoredItemsResponse) CreateModifyMonitoredItemsResponseBuilder() ModifyMonitoredItemsResponseBuilder {
-	if m == nil {
+func (b *_ModifyMonitoredItemsResponse) CreateModifyMonitoredItemsResponseBuilder() ModifyMonitoredItemsResponseBuilder {
+	if b == nil {
 		return NewModifyMonitoredItemsResponseBuilder()
 	}
-	return &_ModifyMonitoredItemsResponseBuilder{_ModifyMonitoredItemsResponse: m.deepCopy()}
+	return &_ModifyMonitoredItemsResponseBuilder{_ModifyMonitoredItemsResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -414,9 +448,13 @@ func (m *_ModifyMonitoredItemsResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

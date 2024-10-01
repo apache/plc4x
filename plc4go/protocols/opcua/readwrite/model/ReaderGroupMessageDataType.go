@@ -85,40 +85,59 @@ func NewReaderGroupMessageDataTypeBuilder() ReaderGroupMessageDataTypeBuilder {
 type _ReaderGroupMessageDataTypeBuilder struct {
 	*_ReaderGroupMessageDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ReaderGroupMessageDataTypeBuilder) = (*_ReaderGroupMessageDataTypeBuilder)(nil)
 
-func (m *_ReaderGroupMessageDataTypeBuilder) WithMandatoryFields() ReaderGroupMessageDataTypeBuilder {
-	return m
+func (b *_ReaderGroupMessageDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ReaderGroupMessageDataTypeBuilder) Build() (ReaderGroupMessageDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ReaderGroupMessageDataTypeBuilder) WithMandatoryFields() ReaderGroupMessageDataTypeBuilder {
+	return b
+}
+
+func (b *_ReaderGroupMessageDataTypeBuilder) Build() (ReaderGroupMessageDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ReaderGroupMessageDataType.deepCopy(), nil
+	return b._ReaderGroupMessageDataType.deepCopy(), nil
 }
 
-func (m *_ReaderGroupMessageDataTypeBuilder) MustBuild() ReaderGroupMessageDataType {
-	build, err := m.Build()
+func (b *_ReaderGroupMessageDataTypeBuilder) MustBuild() ReaderGroupMessageDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ReaderGroupMessageDataTypeBuilder) DeepCopy() any {
-	return m.CreateReaderGroupMessageDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ReaderGroupMessageDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ReaderGroupMessageDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ReaderGroupMessageDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateReaderGroupMessageDataTypeBuilder().(*_ReaderGroupMessageDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateReaderGroupMessageDataTypeBuilder creates a ReaderGroupMessageDataTypeBuilder
-func (m *_ReaderGroupMessageDataType) CreateReaderGroupMessageDataTypeBuilder() ReaderGroupMessageDataTypeBuilder {
-	if m == nil {
+func (b *_ReaderGroupMessageDataType) CreateReaderGroupMessageDataTypeBuilder() ReaderGroupMessageDataTypeBuilder {
+	if b == nil {
 		return NewReaderGroupMessageDataTypeBuilder()
 	}
-	return &_ReaderGroupMessageDataTypeBuilder{_ReaderGroupMessageDataType: m.deepCopy()}
+	return &_ReaderGroupMessageDataTypeBuilder{_ReaderGroupMessageDataType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_ReaderGroupMessageDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -99,50 +99,69 @@ func NewVariantStatusCodeBuilder() VariantStatusCodeBuilder {
 type _VariantStatusCodeBuilder struct {
 	*_VariantStatusCode
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantStatusCodeBuilder) = (*_VariantStatusCodeBuilder)(nil)
 
-func (m *_VariantStatusCodeBuilder) WithMandatoryFields(value []StatusCode) VariantStatusCodeBuilder {
-	return m.WithValue(value...)
+func (b *_VariantStatusCodeBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantStatusCodeBuilder) WithOptionalArrayLength(arrayLength int32) VariantStatusCodeBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantStatusCodeBuilder) WithMandatoryFields(value []StatusCode) VariantStatusCodeBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantStatusCodeBuilder) WithValue(value ...StatusCode) VariantStatusCodeBuilder {
-	m.Value = value
-	return m
+func (b *_VariantStatusCodeBuilder) WithOptionalArrayLength(arrayLength int32) VariantStatusCodeBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantStatusCodeBuilder) Build() (VariantStatusCode, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantStatusCodeBuilder) WithValue(value ...StatusCode) VariantStatusCodeBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantStatusCodeBuilder) Build() (VariantStatusCode, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantStatusCode.deepCopy(), nil
+	return b._VariantStatusCode.deepCopy(), nil
 }
 
-func (m *_VariantStatusCodeBuilder) MustBuild() VariantStatusCode {
-	build, err := m.Build()
+func (b *_VariantStatusCodeBuilder) MustBuild() VariantStatusCode {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantStatusCodeBuilder) DeepCopy() any {
-	return m.CreateVariantStatusCodeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantStatusCodeBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantStatusCodeBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantStatusCodeBuilder) DeepCopy() any {
+	_copy := b.CreateVariantStatusCodeBuilder().(*_VariantStatusCodeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantStatusCodeBuilder creates a VariantStatusCodeBuilder
-func (m *_VariantStatusCode) CreateVariantStatusCodeBuilder() VariantStatusCodeBuilder {
-	if m == nil {
+func (b *_VariantStatusCode) CreateVariantStatusCodeBuilder() VariantStatusCodeBuilder {
+	if b == nil {
 		return NewVariantStatusCodeBuilder()
 	}
-	return &_VariantStatusCodeBuilder{_VariantStatusCode: m.deepCopy()}
+	return &_VariantStatusCodeBuilder{_VariantStatusCode: b.deepCopy()}
 }
 
 ///////////////////////
@@ -314,9 +333,13 @@ func (m *_VariantStatusCode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

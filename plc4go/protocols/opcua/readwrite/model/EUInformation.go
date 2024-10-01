@@ -126,117 +126,136 @@ func NewEUInformationBuilder() EUInformationBuilder {
 type _EUInformationBuilder struct {
 	*_EUInformation
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (EUInformationBuilder) = (*_EUInformationBuilder)(nil)
 
-func (m *_EUInformationBuilder) WithMandatoryFields(namespaceUri PascalString, unitId int32, displayName LocalizedText, description LocalizedText) EUInformationBuilder {
-	return m.WithNamespaceUri(namespaceUri).WithUnitId(unitId).WithDisplayName(displayName).WithDescription(description)
+func (b *_EUInformationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_EUInformationBuilder) WithNamespaceUri(namespaceUri PascalString) EUInformationBuilder {
-	m.NamespaceUri = namespaceUri
-	return m
+func (b *_EUInformationBuilder) WithMandatoryFields(namespaceUri PascalString, unitId int32, displayName LocalizedText, description LocalizedText) EUInformationBuilder {
+	return b.WithNamespaceUri(namespaceUri).WithUnitId(unitId).WithDisplayName(displayName).WithDescription(description)
 }
 
-func (m *_EUInformationBuilder) WithNamespaceUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EUInformationBuilder {
-	builder := builderSupplier(m.NamespaceUri.CreatePascalStringBuilder())
+func (b *_EUInformationBuilder) WithNamespaceUri(namespaceUri PascalString) EUInformationBuilder {
+	b.NamespaceUri = namespaceUri
+	return b
+}
+
+func (b *_EUInformationBuilder) WithNamespaceUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EUInformationBuilder {
+	builder := builderSupplier(b.NamespaceUri.CreatePascalStringBuilder())
 	var err error
-	m.NamespaceUri, err = builder.Build()
+	b.NamespaceUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_EUInformationBuilder) WithUnitId(unitId int32) EUInformationBuilder {
-	m.UnitId = unitId
-	return m
+func (b *_EUInformationBuilder) WithUnitId(unitId int32) EUInformationBuilder {
+	b.UnitId = unitId
+	return b
 }
 
-func (m *_EUInformationBuilder) WithDisplayName(displayName LocalizedText) EUInformationBuilder {
-	m.DisplayName = displayName
-	return m
+func (b *_EUInformationBuilder) WithDisplayName(displayName LocalizedText) EUInformationBuilder {
+	b.DisplayName = displayName
+	return b
 }
 
-func (m *_EUInformationBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) EUInformationBuilder {
-	builder := builderSupplier(m.DisplayName.CreateLocalizedTextBuilder())
+func (b *_EUInformationBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) EUInformationBuilder {
+	builder := builderSupplier(b.DisplayName.CreateLocalizedTextBuilder())
 	var err error
-	m.DisplayName, err = builder.Build()
+	b.DisplayName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_EUInformationBuilder) WithDescription(description LocalizedText) EUInformationBuilder {
-	m.Description = description
-	return m
+func (b *_EUInformationBuilder) WithDescription(description LocalizedText) EUInformationBuilder {
+	b.Description = description
+	return b
 }
 
-func (m *_EUInformationBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) EUInformationBuilder {
-	builder := builderSupplier(m.Description.CreateLocalizedTextBuilder())
+func (b *_EUInformationBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) EUInformationBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
 	var err error
-	m.Description, err = builder.Build()
+	b.Description, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_EUInformationBuilder) Build() (EUInformation, error) {
-	if m.NamespaceUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_EUInformationBuilder) Build() (EUInformation, error) {
+	if b.NamespaceUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'namespaceUri' not set"))
+		b.err.Append(errors.New("mandatory field 'namespaceUri' not set"))
 	}
-	if m.DisplayName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.DisplayName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'displayName' not set"))
+		b.err.Append(errors.New("mandatory field 'displayName' not set"))
 	}
-	if m.Description == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'description' not set"))
+		b.err.Append(errors.New("mandatory field 'description' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EUInformation.deepCopy(), nil
+	return b._EUInformation.deepCopy(), nil
 }
 
-func (m *_EUInformationBuilder) MustBuild() EUInformation {
-	build, err := m.Build()
+func (b *_EUInformationBuilder) MustBuild() EUInformation {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EUInformationBuilder) DeepCopy() any {
-	return m.CreateEUInformationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EUInformationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EUInformationBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_EUInformationBuilder) DeepCopy() any {
+	_copy := b.CreateEUInformationBuilder().(*_EUInformationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEUInformationBuilder creates a EUInformationBuilder
-func (m *_EUInformation) CreateEUInformationBuilder() EUInformationBuilder {
-	if m == nil {
+func (b *_EUInformation) CreateEUInformationBuilder() EUInformationBuilder {
+	if b == nil {
 		return NewEUInformationBuilder()
 	}
-	return &_EUInformationBuilder{_EUInformation: m.deepCopy()}
+	return &_EUInformationBuilder{_EUInformation: b.deepCopy()}
 }
 
 ///////////////////////
@@ -434,9 +453,13 @@ func (m *_EUInformation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

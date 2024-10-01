@@ -105,55 +105,59 @@ type _InstanceSegmentBuilder struct {
 
 var _ (InstanceSegmentBuilder) = (*_InstanceSegmentBuilder)(nil)
 
-func (m *_InstanceSegmentBuilder) WithMandatoryFields(pathSegmentType uint8, logicalSegmentType uint8, logicalSegmentFormat uint8, instance uint8) InstanceSegmentBuilder {
-	return m.WithPathSegmentType(pathSegmentType).WithLogicalSegmentType(logicalSegmentType).WithLogicalSegmentFormat(logicalSegmentFormat).WithInstance(instance)
+func (b *_InstanceSegmentBuilder) WithMandatoryFields(pathSegmentType uint8, logicalSegmentType uint8, logicalSegmentFormat uint8, instance uint8) InstanceSegmentBuilder {
+	return b.WithPathSegmentType(pathSegmentType).WithLogicalSegmentType(logicalSegmentType).WithLogicalSegmentFormat(logicalSegmentFormat).WithInstance(instance)
 }
 
-func (m *_InstanceSegmentBuilder) WithPathSegmentType(pathSegmentType uint8) InstanceSegmentBuilder {
-	m.PathSegmentType = pathSegmentType
-	return m
+func (b *_InstanceSegmentBuilder) WithPathSegmentType(pathSegmentType uint8) InstanceSegmentBuilder {
+	b.PathSegmentType = pathSegmentType
+	return b
 }
 
-func (m *_InstanceSegmentBuilder) WithLogicalSegmentType(logicalSegmentType uint8) InstanceSegmentBuilder {
-	m.LogicalSegmentType = logicalSegmentType
-	return m
+func (b *_InstanceSegmentBuilder) WithLogicalSegmentType(logicalSegmentType uint8) InstanceSegmentBuilder {
+	b.LogicalSegmentType = logicalSegmentType
+	return b
 }
 
-func (m *_InstanceSegmentBuilder) WithLogicalSegmentFormat(logicalSegmentFormat uint8) InstanceSegmentBuilder {
-	m.LogicalSegmentFormat = logicalSegmentFormat
-	return m
+func (b *_InstanceSegmentBuilder) WithLogicalSegmentFormat(logicalSegmentFormat uint8) InstanceSegmentBuilder {
+	b.LogicalSegmentFormat = logicalSegmentFormat
+	return b
 }
 
-func (m *_InstanceSegmentBuilder) WithInstance(instance uint8) InstanceSegmentBuilder {
-	m.Instance = instance
-	return m
+func (b *_InstanceSegmentBuilder) WithInstance(instance uint8) InstanceSegmentBuilder {
+	b.Instance = instance
+	return b
 }
 
-func (m *_InstanceSegmentBuilder) Build() (InstanceSegment, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_InstanceSegmentBuilder) Build() (InstanceSegment, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._InstanceSegment.deepCopy(), nil
+	return b._InstanceSegment.deepCopy(), nil
 }
 
-func (m *_InstanceSegmentBuilder) MustBuild() InstanceSegment {
-	build, err := m.Build()
+func (b *_InstanceSegmentBuilder) MustBuild() InstanceSegment {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_InstanceSegmentBuilder) DeepCopy() any {
-	return m.CreateInstanceSegmentBuilder()
+func (b *_InstanceSegmentBuilder) DeepCopy() any {
+	_copy := b.CreateInstanceSegmentBuilder().(*_InstanceSegmentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateInstanceSegmentBuilder creates a InstanceSegmentBuilder
-func (m *_InstanceSegment) CreateInstanceSegmentBuilder() InstanceSegmentBuilder {
-	if m == nil {
+func (b *_InstanceSegment) CreateInstanceSegmentBuilder() InstanceSegmentBuilder {
+	if b == nil {
 		return NewInstanceSegmentBuilder()
 	}
-	return &_InstanceSegmentBuilder{_InstanceSegment: m.deepCopy()}
+	return &_InstanceSegmentBuilder{_InstanceSegment: b.deepCopy()}
 }
 
 ///////////////////////
@@ -344,9 +348,13 @@ func (m *_InstanceSegment) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

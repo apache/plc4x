@@ -99,50 +99,69 @@ func NewVariantDiagnosticInfoBuilder() VariantDiagnosticInfoBuilder {
 type _VariantDiagnosticInfoBuilder struct {
 	*_VariantDiagnosticInfo
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantDiagnosticInfoBuilder) = (*_VariantDiagnosticInfoBuilder)(nil)
 
-func (m *_VariantDiagnosticInfoBuilder) WithMandatoryFields(value []DiagnosticInfo) VariantDiagnosticInfoBuilder {
-	return m.WithValue(value...)
+func (b *_VariantDiagnosticInfoBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantDiagnosticInfoBuilder) WithOptionalArrayLength(arrayLength int32) VariantDiagnosticInfoBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantDiagnosticInfoBuilder) WithMandatoryFields(value []DiagnosticInfo) VariantDiagnosticInfoBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantDiagnosticInfoBuilder) WithValue(value ...DiagnosticInfo) VariantDiagnosticInfoBuilder {
-	m.Value = value
-	return m
+func (b *_VariantDiagnosticInfoBuilder) WithOptionalArrayLength(arrayLength int32) VariantDiagnosticInfoBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantDiagnosticInfoBuilder) Build() (VariantDiagnosticInfo, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantDiagnosticInfoBuilder) WithValue(value ...DiagnosticInfo) VariantDiagnosticInfoBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantDiagnosticInfoBuilder) Build() (VariantDiagnosticInfo, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantDiagnosticInfo.deepCopy(), nil
+	return b._VariantDiagnosticInfo.deepCopy(), nil
 }
 
-func (m *_VariantDiagnosticInfoBuilder) MustBuild() VariantDiagnosticInfo {
-	build, err := m.Build()
+func (b *_VariantDiagnosticInfoBuilder) MustBuild() VariantDiagnosticInfo {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantDiagnosticInfoBuilder) DeepCopy() any {
-	return m.CreateVariantDiagnosticInfoBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantDiagnosticInfoBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantDiagnosticInfoBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantDiagnosticInfoBuilder) DeepCopy() any {
+	_copy := b.CreateVariantDiagnosticInfoBuilder().(*_VariantDiagnosticInfoBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantDiagnosticInfoBuilder creates a VariantDiagnosticInfoBuilder
-func (m *_VariantDiagnosticInfo) CreateVariantDiagnosticInfoBuilder() VariantDiagnosticInfoBuilder {
-	if m == nil {
+func (b *_VariantDiagnosticInfo) CreateVariantDiagnosticInfoBuilder() VariantDiagnosticInfoBuilder {
+	if b == nil {
 		return NewVariantDiagnosticInfoBuilder()
 	}
-	return &_VariantDiagnosticInfoBuilder{_VariantDiagnosticInfo: m.deepCopy()}
+	return &_VariantDiagnosticInfoBuilder{_VariantDiagnosticInfo: b.deepCopy()}
 }
 
 ///////////////////////
@@ -314,9 +333,13 @@ func (m *_VariantDiagnosticInfo) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

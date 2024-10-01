@@ -100,64 +100,83 @@ func NewBACnetConstructedDataInProcessBuilder() BACnetConstructedDataInProcessBu
 type _BACnetConstructedDataInProcessBuilder struct {
 	*_BACnetConstructedDataInProcess
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataInProcessBuilder) = (*_BACnetConstructedDataInProcessBuilder)(nil)
 
-func (m *_BACnetConstructedDataInProcessBuilder) WithMandatoryFields(inProcess BACnetApplicationTagBoolean) BACnetConstructedDataInProcessBuilder {
-	return m.WithInProcess(inProcess)
+func (b *_BACnetConstructedDataInProcessBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataInProcessBuilder) WithInProcess(inProcess BACnetApplicationTagBoolean) BACnetConstructedDataInProcessBuilder {
-	m.InProcess = inProcess
-	return m
+func (b *_BACnetConstructedDataInProcessBuilder) WithMandatoryFields(inProcess BACnetApplicationTagBoolean) BACnetConstructedDataInProcessBuilder {
+	return b.WithInProcess(inProcess)
 }
 
-func (m *_BACnetConstructedDataInProcessBuilder) WithInProcessBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataInProcessBuilder {
-	builder := builderSupplier(m.InProcess.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataInProcessBuilder) WithInProcess(inProcess BACnetApplicationTagBoolean) BACnetConstructedDataInProcessBuilder {
+	b.InProcess = inProcess
+	return b
+}
+
+func (b *_BACnetConstructedDataInProcessBuilder) WithInProcessBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataInProcessBuilder {
+	builder := builderSupplier(b.InProcess.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.InProcess, err = builder.Build()
+	b.InProcess, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataInProcessBuilder) Build() (BACnetConstructedDataInProcess, error) {
-	if m.InProcess == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataInProcessBuilder) Build() (BACnetConstructedDataInProcess, error) {
+	if b.InProcess == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'inProcess' not set"))
+		b.err.Append(errors.New("mandatory field 'inProcess' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataInProcess.deepCopy(), nil
+	return b._BACnetConstructedDataInProcess.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataInProcessBuilder) MustBuild() BACnetConstructedDataInProcess {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataInProcessBuilder) MustBuild() BACnetConstructedDataInProcess {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataInProcessBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataInProcessBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataInProcessBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataInProcessBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataInProcessBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataInProcessBuilder().(*_BACnetConstructedDataInProcessBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataInProcessBuilder creates a BACnetConstructedDataInProcessBuilder
-func (m *_BACnetConstructedDataInProcess) CreateBACnetConstructedDataInProcessBuilder() BACnetConstructedDataInProcessBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataInProcess) CreateBACnetConstructedDataInProcessBuilder() BACnetConstructedDataInProcessBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataInProcessBuilder()
 	}
-	return &_BACnetConstructedDataInProcessBuilder{_BACnetConstructedDataInProcess: m.deepCopy()}
+	return &_BACnetConstructedDataInProcessBuilder{_BACnetConstructedDataInProcess: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataInProcess) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -104,64 +104,68 @@ type _BACnetPolarityTaggedBuilder struct {
 
 var _ (BACnetPolarityTaggedBuilder) = (*_BACnetPolarityTaggedBuilder)(nil)
 
-func (m *_BACnetPolarityTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetPolarity) BACnetPolarityTaggedBuilder {
-	return m.WithHeader(header).WithValue(value)
+func (b *_BACnetPolarityTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetPolarity) BACnetPolarityTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
 }
 
-func (m *_BACnetPolarityTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetPolarityTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetPolarityTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetPolarityTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetPolarityTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPolarityTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetPolarityTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPolarityTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPolarityTaggedBuilder) WithValue(value BACnetPolarity) BACnetPolarityTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetPolarityTaggedBuilder) WithValue(value BACnetPolarity) BACnetPolarityTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetPolarityTaggedBuilder) Build() (BACnetPolarityTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPolarityTaggedBuilder) Build() (BACnetPolarityTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPolarityTagged.deepCopy(), nil
+	return b._BACnetPolarityTagged.deepCopy(), nil
 }
 
-func (m *_BACnetPolarityTaggedBuilder) MustBuild() BACnetPolarityTagged {
-	build, err := m.Build()
+func (b *_BACnetPolarityTaggedBuilder) MustBuild() BACnetPolarityTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPolarityTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetPolarityTaggedBuilder()
+func (b *_BACnetPolarityTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPolarityTaggedBuilder().(*_BACnetPolarityTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPolarityTaggedBuilder creates a BACnetPolarityTaggedBuilder
-func (m *_BACnetPolarityTagged) CreateBACnetPolarityTaggedBuilder() BACnetPolarityTaggedBuilder {
-	if m == nil {
+func (b *_BACnetPolarityTagged) CreateBACnetPolarityTaggedBuilder() BACnetPolarityTaggedBuilder {
+	if b == nil {
 		return NewBACnetPolarityTaggedBuilder()
 	}
-	return &_BACnetPolarityTaggedBuilder{_BACnetPolarityTagged: m.deepCopy()}
+	return &_BACnetPolarityTaggedBuilder{_BACnetPolarityTagged: b.deepCopy()}
 }
 
 ///////////////////////
@@ -341,9 +345,13 @@ func (m *_BACnetPolarityTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

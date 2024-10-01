@@ -98,64 +98,83 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryDateBuilder() BACnetFaul
 type _BACnetFaultParameterFaultExtendedParametersEntryDateBuilder struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntryDate
 
+	parentBuilder *_BACnetFaultParameterFaultExtendedParametersEntryBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder)(nil)
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetFaultParameterFaultExtendedParametersEntryDateBuilder {
-	return m.WithDateValue(dateValue)
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) setParent(contract BACnetFaultParameterFaultExtendedParametersEntryContract) {
+	b.BACnetFaultParameterFaultExtendedParametersEntryContract = contract
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) WithDateValue(dateValue BACnetApplicationTagDate) BACnetFaultParameterFaultExtendedParametersEntryDateBuilder {
-	m.DateValue = dateValue
-	return m
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetFaultParameterFaultExtendedParametersEntryDateBuilder {
+	return b.WithDateValue(dateValue)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) WithDateValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetFaultParameterFaultExtendedParametersEntryDateBuilder {
-	builder := builderSupplier(m.DateValue.CreateBACnetApplicationTagDateBuilder())
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) WithDateValue(dateValue BACnetApplicationTagDate) BACnetFaultParameterFaultExtendedParametersEntryDateBuilder {
+	b.DateValue = dateValue
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) WithDateValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetFaultParameterFaultExtendedParametersEntryDateBuilder {
+	builder := builderSupplier(b.DateValue.CreateBACnetApplicationTagDateBuilder())
 	var err error
-	m.DateValue, err = builder.Build()
+	b.DateValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryDate, error) {
-	if m.DateValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryDate, error) {
+	if b.DateValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dateValue' not set"))
+		b.err.Append(errors.New("mandatory field 'dateValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetFaultParameterFaultExtendedParametersEntryDate.deepCopy(), nil
+	return b._BACnetFaultParameterFaultExtendedParametersEntryDate.deepCopy(), nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryDate {
-	build, err := m.Build()
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryDate {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) DeepCopy() any {
-	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryDateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) buildForBACnetFaultParameterFaultExtendedParametersEntry() (BACnetFaultParameterFaultExtendedParametersEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultParameterFaultExtendedParametersEntryDateBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetFaultParameterFaultExtendedParametersEntryDateBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) CreateBACnetFaultParameterFaultExtendedParametersEntryDateBuilder() BACnetFaultParameterFaultExtendedParametersEntryDateBuilder {
-	if m == nil {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryDate) CreateBACnetFaultParameterFaultExtendedParametersEntryDateBuilder() BACnetFaultParameterFaultExtendedParametersEntryDateBuilder {
+	if b == nil {
 		return NewBACnetFaultParameterFaultExtendedParametersEntryDateBuilder()
 	}
-	return &_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder{_BACnetFaultParameterFaultExtendedParametersEntryDate: m.deepCopy()}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder{_BACnetFaultParameterFaultExtendedParametersEntryDate: b.deepCopy()}
 }
 
 ///////////////////////
@@ -296,9 +315,13 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) String() string 
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

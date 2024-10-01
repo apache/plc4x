@@ -104,69 +104,88 @@ func NewParameterValueSerialNumberBuilder() ParameterValueSerialNumberBuilder {
 type _ParameterValueSerialNumberBuilder struct {
 	*_ParameterValueSerialNumber
 
+	parentBuilder *_ParameterValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ParameterValueSerialNumberBuilder) = (*_ParameterValueSerialNumberBuilder)(nil)
 
-func (m *_ParameterValueSerialNumberBuilder) WithMandatoryFields(value SerialNumber, data []byte) ParameterValueSerialNumberBuilder {
-	return m.WithValue(value).WithData(data...)
+func (b *_ParameterValueSerialNumberBuilder) setParent(contract ParameterValueContract) {
+	b.ParameterValueContract = contract
 }
 
-func (m *_ParameterValueSerialNumberBuilder) WithValue(value SerialNumber) ParameterValueSerialNumberBuilder {
-	m.Value = value
-	return m
+func (b *_ParameterValueSerialNumberBuilder) WithMandatoryFields(value SerialNumber, data []byte) ParameterValueSerialNumberBuilder {
+	return b.WithValue(value).WithData(data...)
 }
 
-func (m *_ParameterValueSerialNumberBuilder) WithValueBuilder(builderSupplier func(SerialNumberBuilder) SerialNumberBuilder) ParameterValueSerialNumberBuilder {
-	builder := builderSupplier(m.Value.CreateSerialNumberBuilder())
+func (b *_ParameterValueSerialNumberBuilder) WithValue(value SerialNumber) ParameterValueSerialNumberBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ParameterValueSerialNumberBuilder) WithValueBuilder(builderSupplier func(SerialNumberBuilder) SerialNumberBuilder) ParameterValueSerialNumberBuilder {
+	builder := builderSupplier(b.Value.CreateSerialNumberBuilder())
 	var err error
-	m.Value, err = builder.Build()
+	b.Value, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "SerialNumberBuilder failed"))
+		b.err.Append(errors.Wrap(err, "SerialNumberBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ParameterValueSerialNumberBuilder) WithData(data ...byte) ParameterValueSerialNumberBuilder {
-	m.Data = data
-	return m
+func (b *_ParameterValueSerialNumberBuilder) WithData(data ...byte) ParameterValueSerialNumberBuilder {
+	b.Data = data
+	return b
 }
 
-func (m *_ParameterValueSerialNumberBuilder) Build() (ParameterValueSerialNumber, error) {
-	if m.Value == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ParameterValueSerialNumberBuilder) Build() (ParameterValueSerialNumber, error) {
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'value' not set"))
+		b.err.Append(errors.New("mandatory field 'value' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ParameterValueSerialNumber.deepCopy(), nil
+	return b._ParameterValueSerialNumber.deepCopy(), nil
 }
 
-func (m *_ParameterValueSerialNumberBuilder) MustBuild() ParameterValueSerialNumber {
-	build, err := m.Build()
+func (b *_ParameterValueSerialNumberBuilder) MustBuild() ParameterValueSerialNumber {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ParameterValueSerialNumberBuilder) DeepCopy() any {
-	return m.CreateParameterValueSerialNumberBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ParameterValueSerialNumberBuilder) Done() ParameterValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ParameterValueSerialNumberBuilder) buildForParameterValue() (ParameterValue, error) {
+	return b.Build()
+}
+
+func (b *_ParameterValueSerialNumberBuilder) DeepCopy() any {
+	_copy := b.CreateParameterValueSerialNumberBuilder().(*_ParameterValueSerialNumberBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateParameterValueSerialNumberBuilder creates a ParameterValueSerialNumberBuilder
-func (m *_ParameterValueSerialNumber) CreateParameterValueSerialNumberBuilder() ParameterValueSerialNumberBuilder {
-	if m == nil {
+func (b *_ParameterValueSerialNumber) CreateParameterValueSerialNumberBuilder() ParameterValueSerialNumberBuilder {
+	if b == nil {
 		return NewParameterValueSerialNumberBuilder()
 	}
-	return &_ParameterValueSerialNumberBuilder{_ParameterValueSerialNumber: m.deepCopy()}
+	return &_ParameterValueSerialNumberBuilder{_ParameterValueSerialNumber: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_ParameterValueSerialNumber) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

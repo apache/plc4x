@@ -113,88 +113,92 @@ type _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder str
 
 var _ (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) = (*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder)(nil)
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfCovSubscriptionSpecificationEntry []BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, closingTag BACnetClosingTag) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder {
-	return m.WithOpeningTag(openingTag).WithListOfCovSubscriptionSpecificationEntry(listOfCovSubscriptionSpecificationEntry...).WithClosingTag(closingTag)
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfCovSubscriptionSpecificationEntry []BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, closingTag BACnetClosingTag) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder {
+	return b.WithOpeningTag(openingTag).WithListOfCovSubscriptionSpecificationEntry(listOfCovSubscriptionSpecificationEntry...).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) WithListOfCovSubscriptionSpecificationEntry(listOfCovSubscriptionSpecificationEntry ...BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder {
-	m.ListOfCovSubscriptionSpecificationEntry = listOfCovSubscriptionSpecificationEntry
-	return m
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) WithListOfCovSubscriptionSpecificationEntry(listOfCovSubscriptionSpecificationEntry ...BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder {
+	b.ListOfCovSubscriptionSpecificationEntry = listOfCovSubscriptionSpecificationEntry
+	return b
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) Build() (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) Build() (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification.deepCopy(), nil
+	return b._BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification.deepCopy(), nil
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) MustBuild() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification {
-	build, err := m.Build()
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) MustBuild() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) DeepCopy() any {
-	return m.CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder()
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder().(*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder creates a BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder
-func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder {
-	if m == nil {
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder {
+	if b == nil {
 		return NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder()
 	}
-	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder{_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification: m.deepCopy()}
+	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder{_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification: b.deepCopy()}
 }
 
 ///////////////////////
@@ -383,9 +387,13 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) Strin
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

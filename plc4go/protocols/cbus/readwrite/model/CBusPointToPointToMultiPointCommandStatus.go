@@ -84,6 +84,8 @@ type CBusPointToPointToMultiPointCommandStatusBuilder interface {
 	WithMandatoryFields(statusRequest StatusRequest) CBusPointToPointToMultiPointCommandStatusBuilder
 	// WithStatusRequest adds StatusRequest (property field)
 	WithStatusRequest(StatusRequest) CBusPointToPointToMultiPointCommandStatusBuilder
+	// WithStatusRequestBuilder adds StatusRequest (property field) which is build by the builder
+	WithStatusRequestBuilder(func(StatusRequestBuilder) StatusRequestBuilder) CBusPointToPointToMultiPointCommandStatusBuilder
 	// Build builds the CBusPointToPointToMultiPointCommandStatus or returns an error if something is wrong
 	Build() (CBusPointToPointToMultiPointCommandStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewCBusPointToPointToMultiPointCommandStatusBuilder() CBusPointToPointToMul
 type _CBusPointToPointToMultiPointCommandStatusBuilder struct {
 	*_CBusPointToPointToMultiPointCommandStatus
 
+	parentBuilder *_CBusPointToPointToMultiPointCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CBusPointToPointToMultiPointCommandStatusBuilder) = (*_CBusPointToPointToMultiPointCommandStatusBuilder)(nil)
 
-func (m *_CBusPointToPointToMultiPointCommandStatusBuilder) WithMandatoryFields(statusRequest StatusRequest) CBusPointToPointToMultiPointCommandStatusBuilder {
-	return m.WithStatusRequest(statusRequest)
+func (b *_CBusPointToPointToMultiPointCommandStatusBuilder) setParent(contract CBusPointToPointToMultiPointCommandContract) {
+	b.CBusPointToPointToMultiPointCommandContract = contract
 }
 
-func (m *_CBusPointToPointToMultiPointCommandStatusBuilder) WithStatusRequest(statusRequest StatusRequest) CBusPointToPointToMultiPointCommandStatusBuilder {
-	m.StatusRequest = statusRequest
-	return m
+func (b *_CBusPointToPointToMultiPointCommandStatusBuilder) WithMandatoryFields(statusRequest StatusRequest) CBusPointToPointToMultiPointCommandStatusBuilder {
+	return b.WithStatusRequest(statusRequest)
 }
 
-func (m *_CBusPointToPointToMultiPointCommandStatusBuilder) Build() (CBusPointToPointToMultiPointCommandStatus, error) {
-	if m.StatusRequest == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CBusPointToPointToMultiPointCommandStatusBuilder) WithStatusRequest(statusRequest StatusRequest) CBusPointToPointToMultiPointCommandStatusBuilder {
+	b.StatusRequest = statusRequest
+	return b
+}
+
+func (b *_CBusPointToPointToMultiPointCommandStatusBuilder) WithStatusRequestBuilder(builderSupplier func(StatusRequestBuilder) StatusRequestBuilder) CBusPointToPointToMultiPointCommandStatusBuilder {
+	builder := builderSupplier(b.StatusRequest.CreateStatusRequestBuilder())
+	var err error
+	b.StatusRequest, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'statusRequest' not set"))
+		b.err.Append(errors.Wrap(err, "StatusRequestBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._CBusPointToPointToMultiPointCommandStatus.deepCopy(), nil
+	return b
 }
 
-func (m *_CBusPointToPointToMultiPointCommandStatusBuilder) MustBuild() CBusPointToPointToMultiPointCommandStatus {
-	build, err := m.Build()
+func (b *_CBusPointToPointToMultiPointCommandStatusBuilder) Build() (CBusPointToPointToMultiPointCommandStatus, error) {
+	if b.StatusRequest == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'statusRequest' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CBusPointToPointToMultiPointCommandStatus.deepCopy(), nil
+}
+
+func (b *_CBusPointToPointToMultiPointCommandStatusBuilder) MustBuild() CBusPointToPointToMultiPointCommandStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CBusPointToPointToMultiPointCommandStatusBuilder) DeepCopy() any {
-	return m.CreateCBusPointToPointToMultiPointCommandStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CBusPointToPointToMultiPointCommandStatusBuilder) Done() CBusPointToPointToMultiPointCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CBusPointToPointToMultiPointCommandStatusBuilder) buildForCBusPointToPointToMultiPointCommand() (CBusPointToPointToMultiPointCommand, error) {
+	return b.Build()
+}
+
+func (b *_CBusPointToPointToMultiPointCommandStatusBuilder) DeepCopy() any {
+	_copy := b.CreateCBusPointToPointToMultiPointCommandStatusBuilder().(*_CBusPointToPointToMultiPointCommandStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCBusPointToPointToMultiPointCommandStatusBuilder creates a CBusPointToPointToMultiPointCommandStatusBuilder
-func (m *_CBusPointToPointToMultiPointCommandStatus) CreateCBusPointToPointToMultiPointCommandStatusBuilder() CBusPointToPointToMultiPointCommandStatusBuilder {
-	if m == nil {
+func (b *_CBusPointToPointToMultiPointCommandStatus) CreateCBusPointToPointToMultiPointCommandStatusBuilder() CBusPointToPointToMultiPointCommandStatusBuilder {
+	if b == nil {
 		return NewCBusPointToPointToMultiPointCommandStatusBuilder()
 	}
-	return &_CBusPointToPointToMultiPointCommandStatusBuilder{_CBusPointToPointToMultiPointCommandStatus: m.deepCopy()}
+	return &_CBusPointToPointToMultiPointCommandStatusBuilder{_CBusPointToPointToMultiPointCommandStatus: b.deepCopy()}
 }
 
 ///////////////////////
@@ -296,9 +330,13 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

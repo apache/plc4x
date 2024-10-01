@@ -105,55 +105,59 @@ type _ModbusPDUReadFileRecordRequestItemBuilder struct {
 
 var _ (ModbusPDUReadFileRecordRequestItemBuilder) = (*_ModbusPDUReadFileRecordRequestItemBuilder)(nil)
 
-func (m *_ModbusPDUReadFileRecordRequestItemBuilder) WithMandatoryFields(referenceType uint8, fileNumber uint16, recordNumber uint16, recordLength uint16) ModbusPDUReadFileRecordRequestItemBuilder {
-	return m.WithReferenceType(referenceType).WithFileNumber(fileNumber).WithRecordNumber(recordNumber).WithRecordLength(recordLength)
+func (b *_ModbusPDUReadFileRecordRequestItemBuilder) WithMandatoryFields(referenceType uint8, fileNumber uint16, recordNumber uint16, recordLength uint16) ModbusPDUReadFileRecordRequestItemBuilder {
+	return b.WithReferenceType(referenceType).WithFileNumber(fileNumber).WithRecordNumber(recordNumber).WithRecordLength(recordLength)
 }
 
-func (m *_ModbusPDUReadFileRecordRequestItemBuilder) WithReferenceType(referenceType uint8) ModbusPDUReadFileRecordRequestItemBuilder {
-	m.ReferenceType = referenceType
-	return m
+func (b *_ModbusPDUReadFileRecordRequestItemBuilder) WithReferenceType(referenceType uint8) ModbusPDUReadFileRecordRequestItemBuilder {
+	b.ReferenceType = referenceType
+	return b
 }
 
-func (m *_ModbusPDUReadFileRecordRequestItemBuilder) WithFileNumber(fileNumber uint16) ModbusPDUReadFileRecordRequestItemBuilder {
-	m.FileNumber = fileNumber
-	return m
+func (b *_ModbusPDUReadFileRecordRequestItemBuilder) WithFileNumber(fileNumber uint16) ModbusPDUReadFileRecordRequestItemBuilder {
+	b.FileNumber = fileNumber
+	return b
 }
 
-func (m *_ModbusPDUReadFileRecordRequestItemBuilder) WithRecordNumber(recordNumber uint16) ModbusPDUReadFileRecordRequestItemBuilder {
-	m.RecordNumber = recordNumber
-	return m
+func (b *_ModbusPDUReadFileRecordRequestItemBuilder) WithRecordNumber(recordNumber uint16) ModbusPDUReadFileRecordRequestItemBuilder {
+	b.RecordNumber = recordNumber
+	return b
 }
 
-func (m *_ModbusPDUReadFileRecordRequestItemBuilder) WithRecordLength(recordLength uint16) ModbusPDUReadFileRecordRequestItemBuilder {
-	m.RecordLength = recordLength
-	return m
+func (b *_ModbusPDUReadFileRecordRequestItemBuilder) WithRecordLength(recordLength uint16) ModbusPDUReadFileRecordRequestItemBuilder {
+	b.RecordLength = recordLength
+	return b
 }
 
-func (m *_ModbusPDUReadFileRecordRequestItemBuilder) Build() (ModbusPDUReadFileRecordRequestItem, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUReadFileRecordRequestItemBuilder) Build() (ModbusPDUReadFileRecordRequestItem, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUReadFileRecordRequestItem.deepCopy(), nil
+	return b._ModbusPDUReadFileRecordRequestItem.deepCopy(), nil
 }
 
-func (m *_ModbusPDUReadFileRecordRequestItemBuilder) MustBuild() ModbusPDUReadFileRecordRequestItem {
-	build, err := m.Build()
+func (b *_ModbusPDUReadFileRecordRequestItemBuilder) MustBuild() ModbusPDUReadFileRecordRequestItem {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUReadFileRecordRequestItemBuilder) DeepCopy() any {
-	return m.CreateModbusPDUReadFileRecordRequestItemBuilder()
+func (b *_ModbusPDUReadFileRecordRequestItemBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUReadFileRecordRequestItemBuilder().(*_ModbusPDUReadFileRecordRequestItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUReadFileRecordRequestItemBuilder creates a ModbusPDUReadFileRecordRequestItemBuilder
-func (m *_ModbusPDUReadFileRecordRequestItem) CreateModbusPDUReadFileRecordRequestItemBuilder() ModbusPDUReadFileRecordRequestItemBuilder {
-	if m == nil {
+func (b *_ModbusPDUReadFileRecordRequestItem) CreateModbusPDUReadFileRecordRequestItemBuilder() ModbusPDUReadFileRecordRequestItemBuilder {
+	if b == nil {
 		return NewModbusPDUReadFileRecordRequestItemBuilder()
 	}
-	return &_ModbusPDUReadFileRecordRequestItemBuilder{_ModbusPDUReadFileRecordRequestItem: m.deepCopy()}
+	return &_ModbusPDUReadFileRecordRequestItemBuilder{_ModbusPDUReadFileRecordRequestItem: b.deepCopy()}
 }
 
 ///////////////////////
@@ -344,9 +348,13 @@ func (m *_ModbusPDUReadFileRecordRequestItem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

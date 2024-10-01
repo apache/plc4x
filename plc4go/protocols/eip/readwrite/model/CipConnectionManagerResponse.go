@@ -132,75 +132,94 @@ func NewCipConnectionManagerResponseBuilder() CipConnectionManagerResponseBuilde
 type _CipConnectionManagerResponseBuilder struct {
 	*_CipConnectionManagerResponse
 
+	parentBuilder *_CipServiceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CipConnectionManagerResponseBuilder) = (*_CipConnectionManagerResponseBuilder)(nil)
 
-func (m *_CipConnectionManagerResponseBuilder) WithMandatoryFields(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32) CipConnectionManagerResponseBuilder {
-	return m.WithOtConnectionId(otConnectionId).WithToConnectionId(toConnectionId).WithConnectionSerialNumber(connectionSerialNumber).WithOriginatorVendorId(originatorVendorId).WithOriginatorSerialNumber(originatorSerialNumber).WithOtApi(otApi).WithToApi(toApi)
+func (b *_CipConnectionManagerResponseBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
 }
 
-func (m *_CipConnectionManagerResponseBuilder) WithOtConnectionId(otConnectionId uint32) CipConnectionManagerResponseBuilder {
-	m.OtConnectionId = otConnectionId
-	return m
+func (b *_CipConnectionManagerResponseBuilder) WithMandatoryFields(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32) CipConnectionManagerResponseBuilder {
+	return b.WithOtConnectionId(otConnectionId).WithToConnectionId(toConnectionId).WithConnectionSerialNumber(connectionSerialNumber).WithOriginatorVendorId(originatorVendorId).WithOriginatorSerialNumber(originatorSerialNumber).WithOtApi(otApi).WithToApi(toApi)
 }
 
-func (m *_CipConnectionManagerResponseBuilder) WithToConnectionId(toConnectionId uint32) CipConnectionManagerResponseBuilder {
-	m.ToConnectionId = toConnectionId
-	return m
+func (b *_CipConnectionManagerResponseBuilder) WithOtConnectionId(otConnectionId uint32) CipConnectionManagerResponseBuilder {
+	b.OtConnectionId = otConnectionId
+	return b
 }
 
-func (m *_CipConnectionManagerResponseBuilder) WithConnectionSerialNumber(connectionSerialNumber uint16) CipConnectionManagerResponseBuilder {
-	m.ConnectionSerialNumber = connectionSerialNumber
-	return m
+func (b *_CipConnectionManagerResponseBuilder) WithToConnectionId(toConnectionId uint32) CipConnectionManagerResponseBuilder {
+	b.ToConnectionId = toConnectionId
+	return b
 }
 
-func (m *_CipConnectionManagerResponseBuilder) WithOriginatorVendorId(originatorVendorId uint16) CipConnectionManagerResponseBuilder {
-	m.OriginatorVendorId = originatorVendorId
-	return m
+func (b *_CipConnectionManagerResponseBuilder) WithConnectionSerialNumber(connectionSerialNumber uint16) CipConnectionManagerResponseBuilder {
+	b.ConnectionSerialNumber = connectionSerialNumber
+	return b
 }
 
-func (m *_CipConnectionManagerResponseBuilder) WithOriginatorSerialNumber(originatorSerialNumber uint32) CipConnectionManagerResponseBuilder {
-	m.OriginatorSerialNumber = originatorSerialNumber
-	return m
+func (b *_CipConnectionManagerResponseBuilder) WithOriginatorVendorId(originatorVendorId uint16) CipConnectionManagerResponseBuilder {
+	b.OriginatorVendorId = originatorVendorId
+	return b
 }
 
-func (m *_CipConnectionManagerResponseBuilder) WithOtApi(otApi uint32) CipConnectionManagerResponseBuilder {
-	m.OtApi = otApi
-	return m
+func (b *_CipConnectionManagerResponseBuilder) WithOriginatorSerialNumber(originatorSerialNumber uint32) CipConnectionManagerResponseBuilder {
+	b.OriginatorSerialNumber = originatorSerialNumber
+	return b
 }
 
-func (m *_CipConnectionManagerResponseBuilder) WithToApi(toApi uint32) CipConnectionManagerResponseBuilder {
-	m.ToApi = toApi
-	return m
+func (b *_CipConnectionManagerResponseBuilder) WithOtApi(otApi uint32) CipConnectionManagerResponseBuilder {
+	b.OtApi = otApi
+	return b
 }
 
-func (m *_CipConnectionManagerResponseBuilder) Build() (CipConnectionManagerResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CipConnectionManagerResponseBuilder) WithToApi(toApi uint32) CipConnectionManagerResponseBuilder {
+	b.ToApi = toApi
+	return b
+}
+
+func (b *_CipConnectionManagerResponseBuilder) Build() (CipConnectionManagerResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CipConnectionManagerResponse.deepCopy(), nil
+	return b._CipConnectionManagerResponse.deepCopy(), nil
 }
 
-func (m *_CipConnectionManagerResponseBuilder) MustBuild() CipConnectionManagerResponse {
-	build, err := m.Build()
+func (b *_CipConnectionManagerResponseBuilder) MustBuild() CipConnectionManagerResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CipConnectionManagerResponseBuilder) DeepCopy() any {
-	return m.CreateCipConnectionManagerResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipConnectionManagerResponseBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipConnectionManagerResponseBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_CipConnectionManagerResponseBuilder) DeepCopy() any {
+	_copy := b.CreateCipConnectionManagerResponseBuilder().(*_CipConnectionManagerResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCipConnectionManagerResponseBuilder creates a CipConnectionManagerResponseBuilder
-func (m *_CipConnectionManagerResponse) CreateCipConnectionManagerResponseBuilder() CipConnectionManagerResponseBuilder {
-	if m == nil {
+func (b *_CipConnectionManagerResponse) CreateCipConnectionManagerResponseBuilder() CipConnectionManagerResponseBuilder {
+	if b == nil {
 		return NewCipConnectionManagerResponseBuilder()
 	}
-	return &_CipConnectionManagerResponseBuilder{_CipConnectionManagerResponse: m.deepCopy()}
+	return &_CipConnectionManagerResponseBuilder{_CipConnectionManagerResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -501,9 +520,13 @@ func (m *_CipConnectionManagerResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -93,6 +93,8 @@ type OpcuaCloseRequestBuilder interface {
 	WithSecurityHeaderBuilder(func(SecurityHeaderBuilder) SecurityHeaderBuilder) OpcuaCloseRequestBuilder
 	// WithMessage adds Message (property field)
 	WithMessage(Payload) OpcuaCloseRequestBuilder
+	// WithMessageBuilder adds Message (property field) which is build by the builder
+	WithMessageBuilder(func(PayloadBuilder) PayloadBuilder) OpcuaCloseRequestBuilder
 	// Build builds the OpcuaCloseRequest or returns an error if something is wrong
 	Build() (OpcuaCloseRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,75 +109,107 @@ func NewOpcuaCloseRequestBuilder() OpcuaCloseRequestBuilder {
 type _OpcuaCloseRequestBuilder struct {
 	*_OpcuaCloseRequest
 
+	parentBuilder *_MessagePDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (OpcuaCloseRequestBuilder) = (*_OpcuaCloseRequestBuilder)(nil)
 
-func (m *_OpcuaCloseRequestBuilder) WithMandatoryFields(securityHeader SecurityHeader, message Payload) OpcuaCloseRequestBuilder {
-	return m.WithSecurityHeader(securityHeader).WithMessage(message)
+func (b *_OpcuaCloseRequestBuilder) setParent(contract MessagePDUContract) {
+	b.MessagePDUContract = contract
 }
 
-func (m *_OpcuaCloseRequestBuilder) WithSecurityHeader(securityHeader SecurityHeader) OpcuaCloseRequestBuilder {
-	m.SecurityHeader = securityHeader
-	return m
+func (b *_OpcuaCloseRequestBuilder) WithMandatoryFields(securityHeader SecurityHeader, message Payload) OpcuaCloseRequestBuilder {
+	return b.WithSecurityHeader(securityHeader).WithMessage(message)
 }
 
-func (m *_OpcuaCloseRequestBuilder) WithSecurityHeaderBuilder(builderSupplier func(SecurityHeaderBuilder) SecurityHeaderBuilder) OpcuaCloseRequestBuilder {
-	builder := builderSupplier(m.SecurityHeader.CreateSecurityHeaderBuilder())
+func (b *_OpcuaCloseRequestBuilder) WithSecurityHeader(securityHeader SecurityHeader) OpcuaCloseRequestBuilder {
+	b.SecurityHeader = securityHeader
+	return b
+}
+
+func (b *_OpcuaCloseRequestBuilder) WithSecurityHeaderBuilder(builderSupplier func(SecurityHeaderBuilder) SecurityHeaderBuilder) OpcuaCloseRequestBuilder {
+	builder := builderSupplier(b.SecurityHeader.CreateSecurityHeaderBuilder())
 	var err error
-	m.SecurityHeader, err = builder.Build()
+	b.SecurityHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "SecurityHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "SecurityHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_OpcuaCloseRequestBuilder) WithMessage(message Payload) OpcuaCloseRequestBuilder {
-	m.Message = message
-	return m
+func (b *_OpcuaCloseRequestBuilder) WithMessage(message Payload) OpcuaCloseRequestBuilder {
+	b.Message = message
+	return b
 }
 
-func (m *_OpcuaCloseRequestBuilder) Build() (OpcuaCloseRequest, error) {
-	if m.SecurityHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_OpcuaCloseRequestBuilder) WithMessageBuilder(builderSupplier func(PayloadBuilder) PayloadBuilder) OpcuaCloseRequestBuilder {
+	builder := builderSupplier(b.Message.CreatePayloadBuilder())
+	var err error
+	b.Message, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'securityHeader' not set"))
+		b.err.Append(errors.Wrap(err, "PayloadBuilder failed"))
 	}
-	if m.Message == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'message' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._OpcuaCloseRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_OpcuaCloseRequestBuilder) MustBuild() OpcuaCloseRequest {
-	build, err := m.Build()
+func (b *_OpcuaCloseRequestBuilder) Build() (OpcuaCloseRequest, error) {
+	if b.SecurityHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'securityHeader' not set"))
+	}
+	if b.Message == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'message' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._OpcuaCloseRequest.deepCopy(), nil
+}
+
+func (b *_OpcuaCloseRequestBuilder) MustBuild() OpcuaCloseRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_OpcuaCloseRequestBuilder) DeepCopy() any {
-	return m.CreateOpcuaCloseRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OpcuaCloseRequestBuilder) Done() MessagePDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OpcuaCloseRequestBuilder) buildForMessagePDU() (MessagePDU, error) {
+	return b.Build()
+}
+
+func (b *_OpcuaCloseRequestBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaCloseRequestBuilder().(*_OpcuaCloseRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateOpcuaCloseRequestBuilder creates a OpcuaCloseRequestBuilder
-func (m *_OpcuaCloseRequest) CreateOpcuaCloseRequestBuilder() OpcuaCloseRequestBuilder {
-	if m == nil {
+func (b *_OpcuaCloseRequest) CreateOpcuaCloseRequestBuilder() OpcuaCloseRequestBuilder {
+	if b == nil {
 		return NewOpcuaCloseRequestBuilder()
 	}
-	return &_OpcuaCloseRequestBuilder{_OpcuaCloseRequest: m.deepCopy()}
+	return &_OpcuaCloseRequestBuilder{_OpcuaCloseRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -341,9 +375,13 @@ func (m *_OpcuaCloseRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

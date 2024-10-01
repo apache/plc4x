@@ -131,136 +131,155 @@ func NewBACnetEventParameterChangeOfCharacterStringBuilder() BACnetEventParamete
 type _BACnetEventParameterChangeOfCharacterStringBuilder struct {
 	*_BACnetEventParameterChangeOfCharacterString
 
+	parentBuilder *_BACnetEventParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetEventParameterChangeOfCharacterStringBuilder) = (*_BACnetEventParameterChangeOfCharacterStringBuilder)(nil)
 
-func (m *_BACnetEventParameterChangeOfCharacterStringBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, listOfAlarmValues BACnetEventParameterChangeOfCharacterStringListOfAlarmValues, closingTag BACnetClosingTag) BACnetEventParameterChangeOfCharacterStringBuilder {
-	return m.WithOpeningTag(openingTag).WithTimeDelay(timeDelay).WithListOfAlarmValues(listOfAlarmValues).WithClosingTag(closingTag)
+func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) setParent(contract BACnetEventParameterContract) {
+	b.BACnetEventParameterContract = contract
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterStringBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterChangeOfCharacterStringBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, listOfAlarmValues BACnetEventParameterChangeOfCharacterStringListOfAlarmValues, closingTag BACnetClosingTag) BACnetEventParameterChangeOfCharacterStringBuilder {
+	return b.WithOpeningTag(openingTag).WithTimeDelay(timeDelay).WithListOfAlarmValues(listOfAlarmValues).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterStringBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfCharacterStringBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterChangeOfCharacterStringBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfCharacterStringBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterStringBuilder) WithTimeDelay(timeDelay BACnetContextTagUnsignedInteger) BACnetEventParameterChangeOfCharacterStringBuilder {
-	m.TimeDelay = timeDelay
-	return m
+func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) WithTimeDelay(timeDelay BACnetContextTagUnsignedInteger) BACnetEventParameterChangeOfCharacterStringBuilder {
+	b.TimeDelay = timeDelay
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterStringBuilder) WithTimeDelayBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventParameterChangeOfCharacterStringBuilder {
-	builder := builderSupplier(m.TimeDelay.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) WithTimeDelayBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventParameterChangeOfCharacterStringBuilder {
+	builder := builderSupplier(b.TimeDelay.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.TimeDelay, err = builder.Build()
+	b.TimeDelay, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterStringBuilder) WithListOfAlarmValues(listOfAlarmValues BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) BACnetEventParameterChangeOfCharacterStringBuilder {
-	m.ListOfAlarmValues = listOfAlarmValues
-	return m
+func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) WithListOfAlarmValues(listOfAlarmValues BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) BACnetEventParameterChangeOfCharacterStringBuilder {
+	b.ListOfAlarmValues = listOfAlarmValues
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterStringBuilder) WithListOfAlarmValuesBuilder(builderSupplier func(BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesBuilder) BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesBuilder) BACnetEventParameterChangeOfCharacterStringBuilder {
-	builder := builderSupplier(m.ListOfAlarmValues.CreateBACnetEventParameterChangeOfCharacterStringListOfAlarmValuesBuilder())
+func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) WithListOfAlarmValuesBuilder(builderSupplier func(BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesBuilder) BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesBuilder) BACnetEventParameterChangeOfCharacterStringBuilder {
+	builder := builderSupplier(b.ListOfAlarmValues.CreateBACnetEventParameterChangeOfCharacterStringListOfAlarmValuesBuilder())
 	var err error
-	m.ListOfAlarmValues, err = builder.Build()
+	b.ListOfAlarmValues, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterStringBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterChangeOfCharacterStringBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterChangeOfCharacterStringBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterStringBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfCharacterStringBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfCharacterStringBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterStringBuilder) Build() (BACnetEventParameterChangeOfCharacterString, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) Build() (BACnetEventParameterChangeOfCharacterString, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.TimeDelay == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TimeDelay == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeDelay' not set"))
+		b.err.Append(errors.New("mandatory field 'timeDelay' not set"))
 	}
-	if m.ListOfAlarmValues == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ListOfAlarmValues == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'listOfAlarmValues' not set"))
+		b.err.Append(errors.New("mandatory field 'listOfAlarmValues' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetEventParameterChangeOfCharacterString.deepCopy(), nil
+	return b._BACnetEventParameterChangeOfCharacterString.deepCopy(), nil
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterStringBuilder) MustBuild() BACnetEventParameterChangeOfCharacterString {
-	build, err := m.Build()
+func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) MustBuild() BACnetEventParameterChangeOfCharacterString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterStringBuilder) DeepCopy() any {
-	return m.CreateBACnetEventParameterChangeOfCharacterStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) Done() BACnetEventParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) buildForBACnetEventParameter() (BACnetEventParameter, error) {
+	return b.Build()
+}
+
+func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventParameterChangeOfCharacterStringBuilder().(*_BACnetEventParameterChangeOfCharacterStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetEventParameterChangeOfCharacterStringBuilder creates a BACnetEventParameterChangeOfCharacterStringBuilder
-func (m *_BACnetEventParameterChangeOfCharacterString) CreateBACnetEventParameterChangeOfCharacterStringBuilder() BACnetEventParameterChangeOfCharacterStringBuilder {
-	if m == nil {
+func (b *_BACnetEventParameterChangeOfCharacterString) CreateBACnetEventParameterChangeOfCharacterStringBuilder() BACnetEventParameterChangeOfCharacterStringBuilder {
+	if b == nil {
 		return NewBACnetEventParameterChangeOfCharacterStringBuilder()
 	}
-	return &_BACnetEventParameterChangeOfCharacterStringBuilder{_BACnetEventParameterChangeOfCharacterString: m.deepCopy()}
+	return &_BACnetEventParameterChangeOfCharacterStringBuilder{_BACnetEventParameterChangeOfCharacterString: b.deepCopy()}
 }
 
 ///////////////////////
@@ -455,9 +474,13 @@ func (m *_BACnetEventParameterChangeOfCharacterString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

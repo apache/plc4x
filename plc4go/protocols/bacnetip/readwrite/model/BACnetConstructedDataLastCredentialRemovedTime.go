@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLastCredentialRemovedTimeBuilder() BACnetConstructe
 type _BACnetConstructedDataLastCredentialRemovedTimeBuilder struct {
 	*_BACnetConstructedDataLastCredentialRemovedTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLastCredentialRemovedTimeBuilder) = (*_BACnetConstructedDataLastCredentialRemovedTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) WithMandatoryFields(lastCredentialRemovedTime BACnetDateTime) BACnetConstructedDataLastCredentialRemovedTimeBuilder {
-	return m.WithLastCredentialRemovedTime(lastCredentialRemovedTime)
+func (b *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) WithLastCredentialRemovedTime(lastCredentialRemovedTime BACnetDateTime) BACnetConstructedDataLastCredentialRemovedTimeBuilder {
-	m.LastCredentialRemovedTime = lastCredentialRemovedTime
-	return m
+func (b *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) WithMandatoryFields(lastCredentialRemovedTime BACnetDateTime) BACnetConstructedDataLastCredentialRemovedTimeBuilder {
+	return b.WithLastCredentialRemovedTime(lastCredentialRemovedTime)
 }
 
-func (m *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) WithLastCredentialRemovedTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataLastCredentialRemovedTimeBuilder {
-	builder := builderSupplier(m.LastCredentialRemovedTime.CreateBACnetDateTimeBuilder())
+func (b *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) WithLastCredentialRemovedTime(lastCredentialRemovedTime BACnetDateTime) BACnetConstructedDataLastCredentialRemovedTimeBuilder {
+	b.LastCredentialRemovedTime = lastCredentialRemovedTime
+	return b
+}
+
+func (b *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) WithLastCredentialRemovedTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataLastCredentialRemovedTimeBuilder {
+	builder := builderSupplier(b.LastCredentialRemovedTime.CreateBACnetDateTimeBuilder())
 	var err error
-	m.LastCredentialRemovedTime, err = builder.Build()
+	b.LastCredentialRemovedTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) Build() (BACnetConstructedDataLastCredentialRemovedTime, error) {
-	if m.LastCredentialRemovedTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) Build() (BACnetConstructedDataLastCredentialRemovedTime, error) {
+	if b.LastCredentialRemovedTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lastCredentialRemovedTime' not set"))
+		b.err.Append(errors.New("mandatory field 'lastCredentialRemovedTime' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLastCredentialRemovedTime.deepCopy(), nil
+	return b._BACnetConstructedDataLastCredentialRemovedTime.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) MustBuild() BACnetConstructedDataLastCredentialRemovedTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) MustBuild() BACnetConstructedDataLastCredentialRemovedTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLastCredentialRemovedTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLastCredentialRemovedTimeBuilder().(*_BACnetConstructedDataLastCredentialRemovedTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLastCredentialRemovedTimeBuilder creates a BACnetConstructedDataLastCredentialRemovedTimeBuilder
-func (m *_BACnetConstructedDataLastCredentialRemovedTime) CreateBACnetConstructedDataLastCredentialRemovedTimeBuilder() BACnetConstructedDataLastCredentialRemovedTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLastCredentialRemovedTime) CreateBACnetConstructedDataLastCredentialRemovedTimeBuilder() BACnetConstructedDataLastCredentialRemovedTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLastCredentialRemovedTimeBuilder()
 	}
-	return &_BACnetConstructedDataLastCredentialRemovedTimeBuilder{_BACnetConstructedDataLastCredentialRemovedTime: m.deepCopy()}
+	return &_BACnetConstructedDataLastCredentialRemovedTimeBuilder{_BACnetConstructedDataLastCredentialRemovedTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataLastCredentialRemovedTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

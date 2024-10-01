@@ -142,160 +142,179 @@ func NewBACnetEventParameterChangeOfBitstringBuilder() BACnetEventParameterChang
 type _BACnetEventParameterChangeOfBitstringBuilder struct {
 	*_BACnetEventParameterChangeOfBitstring
 
+	parentBuilder *_BACnetEventParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetEventParameterChangeOfBitstringBuilder) = (*_BACnetEventParameterChangeOfBitstringBuilder)(nil)
 
-func (m *_BACnetEventParameterChangeOfBitstringBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, bitmask BACnetContextTagBitString, listOfBitstringValues BACnetEventParameterChangeOfBitstringListOfBitstringValues, closingTag BACnetClosingTag) BACnetEventParameterChangeOfBitstringBuilder {
-	return m.WithOpeningTag(openingTag).WithTimeDelay(timeDelay).WithBitmask(bitmask).WithListOfBitstringValues(listOfBitstringValues).WithClosingTag(closingTag)
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) setParent(contract BACnetEventParameterContract) {
+	b.BACnetEventParameterContract = contract
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterChangeOfBitstringBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, bitmask BACnetContextTagBitString, listOfBitstringValues BACnetEventParameterChangeOfBitstringListOfBitstringValues, closingTag BACnetClosingTag) BACnetEventParameterChangeOfBitstringBuilder {
+	return b.WithOpeningTag(openingTag).WithTimeDelay(timeDelay).WithBitmask(bitmask).WithListOfBitstringValues(listOfBitstringValues).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfBitstringBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterChangeOfBitstringBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfBitstringBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringBuilder) WithTimeDelay(timeDelay BACnetContextTagUnsignedInteger) BACnetEventParameterChangeOfBitstringBuilder {
-	m.TimeDelay = timeDelay
-	return m
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) WithTimeDelay(timeDelay BACnetContextTagUnsignedInteger) BACnetEventParameterChangeOfBitstringBuilder {
+	b.TimeDelay = timeDelay
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringBuilder) WithTimeDelayBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventParameterChangeOfBitstringBuilder {
-	builder := builderSupplier(m.TimeDelay.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) WithTimeDelayBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventParameterChangeOfBitstringBuilder {
+	builder := builderSupplier(b.TimeDelay.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.TimeDelay, err = builder.Build()
+	b.TimeDelay, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringBuilder) WithBitmask(bitmask BACnetContextTagBitString) BACnetEventParameterChangeOfBitstringBuilder {
-	m.Bitmask = bitmask
-	return m
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) WithBitmask(bitmask BACnetContextTagBitString) BACnetEventParameterChangeOfBitstringBuilder {
+	b.Bitmask = bitmask
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringBuilder) WithBitmaskBuilder(builderSupplier func(BACnetContextTagBitStringBuilder) BACnetContextTagBitStringBuilder) BACnetEventParameterChangeOfBitstringBuilder {
-	builder := builderSupplier(m.Bitmask.CreateBACnetContextTagBitStringBuilder())
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) WithBitmaskBuilder(builderSupplier func(BACnetContextTagBitStringBuilder) BACnetContextTagBitStringBuilder) BACnetEventParameterChangeOfBitstringBuilder {
+	builder := builderSupplier(b.Bitmask.CreateBACnetContextTagBitStringBuilder())
 	var err error
-	m.Bitmask, err = builder.Build()
+	b.Bitmask, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagBitStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBitStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringBuilder) WithListOfBitstringValues(listOfBitstringValues BACnetEventParameterChangeOfBitstringListOfBitstringValues) BACnetEventParameterChangeOfBitstringBuilder {
-	m.ListOfBitstringValues = listOfBitstringValues
-	return m
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) WithListOfBitstringValues(listOfBitstringValues BACnetEventParameterChangeOfBitstringListOfBitstringValues) BACnetEventParameterChangeOfBitstringBuilder {
+	b.ListOfBitstringValues = listOfBitstringValues
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringBuilder) WithListOfBitstringValuesBuilder(builderSupplier func(BACnetEventParameterChangeOfBitstringListOfBitstringValuesBuilder) BACnetEventParameterChangeOfBitstringListOfBitstringValuesBuilder) BACnetEventParameterChangeOfBitstringBuilder {
-	builder := builderSupplier(m.ListOfBitstringValues.CreateBACnetEventParameterChangeOfBitstringListOfBitstringValuesBuilder())
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) WithListOfBitstringValuesBuilder(builderSupplier func(BACnetEventParameterChangeOfBitstringListOfBitstringValuesBuilder) BACnetEventParameterChangeOfBitstringListOfBitstringValuesBuilder) BACnetEventParameterChangeOfBitstringBuilder {
+	builder := builderSupplier(b.ListOfBitstringValues.CreateBACnetEventParameterChangeOfBitstringListOfBitstringValuesBuilder())
 	var err error
-	m.ListOfBitstringValues, err = builder.Build()
+	b.ListOfBitstringValues, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventParameterChangeOfBitstringListOfBitstringValuesBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventParameterChangeOfBitstringListOfBitstringValuesBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterChangeOfBitstringBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterChangeOfBitstringBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfBitstringBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfBitstringBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringBuilder) Build() (BACnetEventParameterChangeOfBitstring, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) Build() (BACnetEventParameterChangeOfBitstring, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.TimeDelay == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TimeDelay == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeDelay' not set"))
+		b.err.Append(errors.New("mandatory field 'timeDelay' not set"))
 	}
-	if m.Bitmask == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Bitmask == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'bitmask' not set"))
+		b.err.Append(errors.New("mandatory field 'bitmask' not set"))
 	}
-	if m.ListOfBitstringValues == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ListOfBitstringValues == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'listOfBitstringValues' not set"))
+		b.err.Append(errors.New("mandatory field 'listOfBitstringValues' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetEventParameterChangeOfBitstring.deepCopy(), nil
+	return b._BACnetEventParameterChangeOfBitstring.deepCopy(), nil
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringBuilder) MustBuild() BACnetEventParameterChangeOfBitstring {
-	build, err := m.Build()
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) MustBuild() BACnetEventParameterChangeOfBitstring {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetEventParameterChangeOfBitstringBuilder) DeepCopy() any {
-	return m.CreateBACnetEventParameterChangeOfBitstringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) Done() BACnetEventParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) buildForBACnetEventParameter() (BACnetEventParameter, error) {
+	return b.Build()
+}
+
+func (b *_BACnetEventParameterChangeOfBitstringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventParameterChangeOfBitstringBuilder().(*_BACnetEventParameterChangeOfBitstringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetEventParameterChangeOfBitstringBuilder creates a BACnetEventParameterChangeOfBitstringBuilder
-func (m *_BACnetEventParameterChangeOfBitstring) CreateBACnetEventParameterChangeOfBitstringBuilder() BACnetEventParameterChangeOfBitstringBuilder {
-	if m == nil {
+func (b *_BACnetEventParameterChangeOfBitstring) CreateBACnetEventParameterChangeOfBitstringBuilder() BACnetEventParameterChangeOfBitstringBuilder {
+	if b == nil {
 		return NewBACnetEventParameterChangeOfBitstringBuilder()
 	}
-	return &_BACnetEventParameterChangeOfBitstringBuilder{_BACnetEventParameterChangeOfBitstring: m.deepCopy()}
+	return &_BACnetEventParameterChangeOfBitstringBuilder{_BACnetEventParameterChangeOfBitstring: b.deepCopy()}
 }
 
 ///////////////////////
@@ -507,9 +526,13 @@ func (m *_BACnetEventParameterChangeOfBitstring) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataMaxMasterBuilder() BACnetConstructedDataMaxMasterBu
 type _BACnetConstructedDataMaxMasterBuilder struct {
 	*_BACnetConstructedDataMaxMaster
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMaxMasterBuilder) = (*_BACnetConstructedDataMaxMasterBuilder)(nil)
 
-func (m *_BACnetConstructedDataMaxMasterBuilder) WithMandatoryFields(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxMasterBuilder {
-	return m.WithMaxMaster(maxMaster)
+func (b *_BACnetConstructedDataMaxMasterBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMaxMasterBuilder) WithMaxMaster(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxMasterBuilder {
-	m.MaxMaster = maxMaster
-	return m
+func (b *_BACnetConstructedDataMaxMasterBuilder) WithMandatoryFields(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxMasterBuilder {
+	return b.WithMaxMaster(maxMaster)
 }
 
-func (m *_BACnetConstructedDataMaxMasterBuilder) WithMaxMasterBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxMasterBuilder {
-	builder := builderSupplier(m.MaxMaster.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataMaxMasterBuilder) WithMaxMaster(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxMasterBuilder {
+	b.MaxMaster = maxMaster
+	return b
+}
+
+func (b *_BACnetConstructedDataMaxMasterBuilder) WithMaxMasterBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxMasterBuilder {
+	builder := builderSupplier(b.MaxMaster.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.MaxMaster, err = builder.Build()
+	b.MaxMaster, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataMaxMasterBuilder) Build() (BACnetConstructedDataMaxMaster, error) {
-	if m.MaxMaster == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataMaxMasterBuilder) Build() (BACnetConstructedDataMaxMaster, error) {
+	if b.MaxMaster == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'maxMaster' not set"))
+		b.err.Append(errors.New("mandatory field 'maxMaster' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataMaxMaster.deepCopy(), nil
+	return b._BACnetConstructedDataMaxMaster.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataMaxMasterBuilder) MustBuild() BACnetConstructedDataMaxMaster {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMaxMasterBuilder) MustBuild() BACnetConstructedDataMaxMaster {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMaxMasterBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMaxMasterBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMaxMasterBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMaxMasterBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMaxMasterBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMaxMasterBuilder().(*_BACnetConstructedDataMaxMasterBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMaxMasterBuilder creates a BACnetConstructedDataMaxMasterBuilder
-func (m *_BACnetConstructedDataMaxMaster) CreateBACnetConstructedDataMaxMasterBuilder() BACnetConstructedDataMaxMasterBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMaxMaster) CreateBACnetConstructedDataMaxMasterBuilder() BACnetConstructedDataMaxMasterBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMaxMasterBuilder()
 	}
-	return &_BACnetConstructedDataMaxMasterBuilder{_BACnetConstructedDataMaxMaster: m.deepCopy()}
+	return &_BACnetConstructedDataMaxMasterBuilder{_BACnetConstructedDataMaxMaster: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataMaxMaster) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

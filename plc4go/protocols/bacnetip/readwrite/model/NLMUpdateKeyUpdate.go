@@ -158,114 +158,133 @@ func NewNLMUpdateKeyUpdateBuilder() NLMUpdateKeyUpdateBuilder {
 type _NLMUpdateKeyUpdateBuilder struct {
 	*_NLMUpdateKeyUpdate
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMUpdateKeyUpdateBuilder) = (*_NLMUpdateKeyUpdateBuilder)(nil)
 
-func (m *_NLMUpdateKeyUpdateBuilder) WithMandatoryFields(controlFlags NLMUpdateKeyUpdateControlFlags, set1Keys []NLMUpdateKeyUpdateKeyEntry, set2Keys []NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateBuilder {
-	return m.WithControlFlags(controlFlags).WithSet1Keys(set1Keys...).WithSet2Keys(set2Keys...)
+func (b *_NLMUpdateKeyUpdateBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMUpdateKeyUpdateBuilder) WithControlFlags(controlFlags NLMUpdateKeyUpdateControlFlags) NLMUpdateKeyUpdateBuilder {
-	m.ControlFlags = controlFlags
-	return m
+func (b *_NLMUpdateKeyUpdateBuilder) WithMandatoryFields(controlFlags NLMUpdateKeyUpdateControlFlags, set1Keys []NLMUpdateKeyUpdateKeyEntry, set2Keys []NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateBuilder {
+	return b.WithControlFlags(controlFlags).WithSet1Keys(set1Keys...).WithSet2Keys(set2Keys...)
 }
 
-func (m *_NLMUpdateKeyUpdateBuilder) WithControlFlagsBuilder(builderSupplier func(NLMUpdateKeyUpdateControlFlagsBuilder) NLMUpdateKeyUpdateControlFlagsBuilder) NLMUpdateKeyUpdateBuilder {
-	builder := builderSupplier(m.ControlFlags.CreateNLMUpdateKeyUpdateControlFlagsBuilder())
+func (b *_NLMUpdateKeyUpdateBuilder) WithControlFlags(controlFlags NLMUpdateKeyUpdateControlFlags) NLMUpdateKeyUpdateBuilder {
+	b.ControlFlags = controlFlags
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) WithControlFlagsBuilder(builderSupplier func(NLMUpdateKeyUpdateControlFlagsBuilder) NLMUpdateKeyUpdateControlFlagsBuilder) NLMUpdateKeyUpdateBuilder {
+	builder := builderSupplier(b.ControlFlags.CreateNLMUpdateKeyUpdateControlFlagsBuilder())
 	var err error
-	m.ControlFlags, err = builder.Build()
+	b.ControlFlags, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NLMUpdateKeyUpdateControlFlagsBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NLMUpdateKeyUpdateControlFlagsBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateBuilder) WithOptionalSet1KeyRevision(set1KeyRevision byte) NLMUpdateKeyUpdateBuilder {
-	m.Set1KeyRevision = &set1KeyRevision
-	return m
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet1KeyRevision(set1KeyRevision byte) NLMUpdateKeyUpdateBuilder {
+	b.Set1KeyRevision = &set1KeyRevision
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateBuilder) WithOptionalSet1ActivationTime(set1ActivationTime uint32) NLMUpdateKeyUpdateBuilder {
-	m.Set1ActivationTime = &set1ActivationTime
-	return m
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet1ActivationTime(set1ActivationTime uint32) NLMUpdateKeyUpdateBuilder {
+	b.Set1ActivationTime = &set1ActivationTime
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateBuilder) WithOptionalSet1ExpirationTime(set1ExpirationTime uint32) NLMUpdateKeyUpdateBuilder {
-	m.Set1ExpirationTime = &set1ExpirationTime
-	return m
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet1ExpirationTime(set1ExpirationTime uint32) NLMUpdateKeyUpdateBuilder {
+	b.Set1ExpirationTime = &set1ExpirationTime
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateBuilder) WithOptionalSet1KeyCount(set1KeyCount uint8) NLMUpdateKeyUpdateBuilder {
-	m.Set1KeyCount = &set1KeyCount
-	return m
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet1KeyCount(set1KeyCount uint8) NLMUpdateKeyUpdateBuilder {
+	b.Set1KeyCount = &set1KeyCount
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateBuilder) WithSet1Keys(set1Keys ...NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateBuilder {
-	m.Set1Keys = set1Keys
-	return m
+func (b *_NLMUpdateKeyUpdateBuilder) WithSet1Keys(set1Keys ...NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateBuilder {
+	b.Set1Keys = set1Keys
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateBuilder) WithOptionalSet2KeyRevision(set2KeyRevision byte) NLMUpdateKeyUpdateBuilder {
-	m.Set2KeyRevision = &set2KeyRevision
-	return m
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet2KeyRevision(set2KeyRevision byte) NLMUpdateKeyUpdateBuilder {
+	b.Set2KeyRevision = &set2KeyRevision
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateBuilder) WithOptionalSet2ActivationTime(set2ActivationTime uint32) NLMUpdateKeyUpdateBuilder {
-	m.Set2ActivationTime = &set2ActivationTime
-	return m
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet2ActivationTime(set2ActivationTime uint32) NLMUpdateKeyUpdateBuilder {
+	b.Set2ActivationTime = &set2ActivationTime
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateBuilder) WithOptionalSet2ExpirationTime(set2ExpirationTime uint32) NLMUpdateKeyUpdateBuilder {
-	m.Set2ExpirationTime = &set2ExpirationTime
-	return m
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet2ExpirationTime(set2ExpirationTime uint32) NLMUpdateKeyUpdateBuilder {
+	b.Set2ExpirationTime = &set2ExpirationTime
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateBuilder) WithOptionalSet2KeyCount(set2KeyCount uint8) NLMUpdateKeyUpdateBuilder {
-	m.Set2KeyCount = &set2KeyCount
-	return m
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet2KeyCount(set2KeyCount uint8) NLMUpdateKeyUpdateBuilder {
+	b.Set2KeyCount = &set2KeyCount
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateBuilder) WithSet2Keys(set2Keys ...NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateBuilder {
-	m.Set2Keys = set2Keys
-	return m
+func (b *_NLMUpdateKeyUpdateBuilder) WithSet2Keys(set2Keys ...NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateBuilder {
+	b.Set2Keys = set2Keys
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateBuilder) Build() (NLMUpdateKeyUpdate, error) {
-	if m.ControlFlags == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_NLMUpdateKeyUpdateBuilder) Build() (NLMUpdateKeyUpdate, error) {
+	if b.ControlFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'controlFlags' not set"))
+		b.err.Append(errors.New("mandatory field 'controlFlags' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMUpdateKeyUpdate.deepCopy(), nil
+	return b._NLMUpdateKeyUpdate.deepCopy(), nil
 }
 
-func (m *_NLMUpdateKeyUpdateBuilder) MustBuild() NLMUpdateKeyUpdate {
-	build, err := m.Build()
+func (b *_NLMUpdateKeyUpdateBuilder) MustBuild() NLMUpdateKeyUpdate {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMUpdateKeyUpdateBuilder) DeepCopy() any {
-	return m.CreateNLMUpdateKeyUpdateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMUpdateKeyUpdateBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) DeepCopy() any {
+	_copy := b.CreateNLMUpdateKeyUpdateBuilder().(*_NLMUpdateKeyUpdateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMUpdateKeyUpdateBuilder creates a NLMUpdateKeyUpdateBuilder
-func (m *_NLMUpdateKeyUpdate) CreateNLMUpdateKeyUpdateBuilder() NLMUpdateKeyUpdateBuilder {
-	if m == nil {
+func (b *_NLMUpdateKeyUpdate) CreateNLMUpdateKeyUpdateBuilder() NLMUpdateKeyUpdateBuilder {
+	if b == nil {
 		return NewNLMUpdateKeyUpdateBuilder()
 	}
-	return &_NLMUpdateKeyUpdateBuilder{_NLMUpdateKeyUpdate: m.deepCopy()}
+	return &_NLMUpdateKeyUpdateBuilder{_NLMUpdateKeyUpdate: b.deepCopy()}
 }
 
 ///////////////////////
@@ -627,9 +646,13 @@ func (m *_NLMUpdateKeyUpdate) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

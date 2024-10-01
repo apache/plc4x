@@ -207,135 +207,154 @@ func NewIdentifyReplyCommandExtendedDiagnosticSummaryBuilder() IdentifyReplyComm
 type _IdentifyReplyCommandExtendedDiagnosticSummaryBuilder struct {
 	*_IdentifyReplyCommandExtendedDiagnosticSummary
 
+	parentBuilder *_IdentifyReplyCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) = (*_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder)(nil)
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithMandatoryFields(lowApplication ApplicationIdContainer, highApplication ApplicationIdContainer, area byte, crc uint16, serialNumber uint32, networkVoltage byte, unitInLearnMode bool, networkVoltageLow bool, networkVoltageMarginal bool, enableChecksumAlarm bool, outputUnit bool, installationMMIError bool, EEWriteError bool, EEChecksumError bool, EEDataError bool, microReset bool, commsTxError bool, internalStackOverflow bool, microPowerReset bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	return m.WithLowApplication(lowApplication).WithHighApplication(highApplication).WithArea(area).WithCrc(crc).WithSerialNumber(serialNumber).WithNetworkVoltage(networkVoltage).WithUnitInLearnMode(unitInLearnMode).WithNetworkVoltageLow(networkVoltageLow).WithNetworkVoltageMarginal(networkVoltageMarginal).WithEnableChecksumAlarm(enableChecksumAlarm).WithOutputUnit(outputUnit).WithInstallationMMIError(installationMMIError).WithEEWriteError(EEWriteError).WithEEChecksumError(EEChecksumError).WithEEDataError(EEDataError).WithMicroReset(microReset).WithCommsTxError(commsTxError).WithInternalStackOverflow(internalStackOverflow).WithMicroPowerReset(microPowerReset)
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithLowApplication(lowApplication ApplicationIdContainer) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.LowApplication = lowApplication
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithMandatoryFields(lowApplication ApplicationIdContainer, highApplication ApplicationIdContainer, area byte, crc uint16, serialNumber uint32, networkVoltage byte, unitInLearnMode bool, networkVoltageLow bool, networkVoltageMarginal bool, enableChecksumAlarm bool, outputUnit bool, installationMMIError bool, EEWriteError bool, EEChecksumError bool, EEDataError bool, microReset bool, commsTxError bool, internalStackOverflow bool, microPowerReset bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	return b.WithLowApplication(lowApplication).WithHighApplication(highApplication).WithArea(area).WithCrc(crc).WithSerialNumber(serialNumber).WithNetworkVoltage(networkVoltage).WithUnitInLearnMode(unitInLearnMode).WithNetworkVoltageLow(networkVoltageLow).WithNetworkVoltageMarginal(networkVoltageMarginal).WithEnableChecksumAlarm(enableChecksumAlarm).WithOutputUnit(outputUnit).WithInstallationMMIError(installationMMIError).WithEEWriteError(EEWriteError).WithEEChecksumError(EEChecksumError).WithEEDataError(EEDataError).WithMicroReset(microReset).WithCommsTxError(commsTxError).WithInternalStackOverflow(internalStackOverflow).WithMicroPowerReset(microPowerReset)
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithHighApplication(highApplication ApplicationIdContainer) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.HighApplication = highApplication
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithLowApplication(lowApplication ApplicationIdContainer) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.LowApplication = lowApplication
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithArea(area byte) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.Area = area
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithHighApplication(highApplication ApplicationIdContainer) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.HighApplication = highApplication
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithCrc(crc uint16) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.Crc = crc
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithArea(area byte) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.Area = area
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithSerialNumber(serialNumber uint32) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.SerialNumber = serialNumber
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithCrc(crc uint16) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.Crc = crc
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithNetworkVoltage(networkVoltage byte) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.NetworkVoltage = networkVoltage
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithSerialNumber(serialNumber uint32) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.SerialNumber = serialNumber
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithUnitInLearnMode(unitInLearnMode bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.UnitInLearnMode = unitInLearnMode
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithNetworkVoltage(networkVoltage byte) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.NetworkVoltage = networkVoltage
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithNetworkVoltageLow(networkVoltageLow bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.NetworkVoltageLow = networkVoltageLow
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithUnitInLearnMode(unitInLearnMode bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.UnitInLearnMode = unitInLearnMode
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithNetworkVoltageMarginal(networkVoltageMarginal bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.NetworkVoltageMarginal = networkVoltageMarginal
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithNetworkVoltageLow(networkVoltageLow bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.NetworkVoltageLow = networkVoltageLow
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithEnableChecksumAlarm(enableChecksumAlarm bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.EnableChecksumAlarm = enableChecksumAlarm
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithNetworkVoltageMarginal(networkVoltageMarginal bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.NetworkVoltageMarginal = networkVoltageMarginal
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithOutputUnit(outputUnit bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.OutputUnit = outputUnit
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithEnableChecksumAlarm(enableChecksumAlarm bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.EnableChecksumAlarm = enableChecksumAlarm
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithInstallationMMIError(installationMMIError bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.InstallationMMIError = installationMMIError
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithOutputUnit(outputUnit bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.OutputUnit = outputUnit
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithEEWriteError(EEWriteError bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.EEWriteError = EEWriteError
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithInstallationMMIError(installationMMIError bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.InstallationMMIError = installationMMIError
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithEEChecksumError(EEChecksumError bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.EEChecksumError = EEChecksumError
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithEEWriteError(EEWriteError bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.EEWriteError = EEWriteError
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithEEDataError(EEDataError bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.EEDataError = EEDataError
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithEEChecksumError(EEChecksumError bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.EEChecksumError = EEChecksumError
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithMicroReset(microReset bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.MicroReset = microReset
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithEEDataError(EEDataError bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.EEDataError = EEDataError
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithCommsTxError(commsTxError bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.CommsTxError = commsTxError
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithMicroReset(microReset bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.MicroReset = microReset
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithInternalStackOverflow(internalStackOverflow bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.InternalStackOverflow = internalStackOverflow
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithCommsTxError(commsTxError bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.CommsTxError = commsTxError
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithMicroPowerReset(microPowerReset bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	m.MicroPowerReset = microPowerReset
-	return m
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithInternalStackOverflow(internalStackOverflow bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.InternalStackOverflow = internalStackOverflow
+	return b
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) Build() (IdentifyReplyCommandExtendedDiagnosticSummary, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithMicroPowerReset(microPowerReset bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	b.MicroPowerReset = microPowerReset
+	return b
+}
+
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) Build() (IdentifyReplyCommandExtendedDiagnosticSummary, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommandExtendedDiagnosticSummary.deepCopy(), nil
+	return b._IdentifyReplyCommandExtendedDiagnosticSummary.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) MustBuild() IdentifyReplyCommandExtendedDiagnosticSummary {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) MustBuild() IdentifyReplyCommandExtendedDiagnosticSummary {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandExtendedDiagnosticSummaryBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandExtendedDiagnosticSummaryBuilder().(*_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandExtendedDiagnosticSummaryBuilder creates a IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) CreateIdentifyReplyCommandExtendedDiagnosticSummaryBuilder() IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommandExtendedDiagnosticSummary) CreateIdentifyReplyCommandExtendedDiagnosticSummaryBuilder() IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandExtendedDiagnosticSummaryBuilder()
 	}
-	return &_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder{_IdentifyReplyCommandExtendedDiagnosticSummary: m.deepCopy()}
+	return &_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder{_IdentifyReplyCommandExtendedDiagnosticSummary: b.deepCopy()}
 }
 
 ///////////////////////
@@ -875,9 +894,13 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

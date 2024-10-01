@@ -103,63 +103,82 @@ func NewBACnetConstructedDataShedLevelsBuilder() BACnetConstructedDataShedLevels
 type _BACnetConstructedDataShedLevelsBuilder struct {
 	*_BACnetConstructedDataShedLevels
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataShedLevelsBuilder) = (*_BACnetConstructedDataShedLevelsBuilder)(nil)
 
-func (m *_BACnetConstructedDataShedLevelsBuilder) WithMandatoryFields(shedLevels []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedLevelsBuilder {
-	return m.WithShedLevels(shedLevels...)
+func (b *_BACnetConstructedDataShedLevelsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataShedLevelsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedLevelsBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataShedLevelsBuilder) WithMandatoryFields(shedLevels []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedLevelsBuilder {
+	return b.WithShedLevels(shedLevels...)
 }
 
-func (m *_BACnetConstructedDataShedLevelsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataShedLevelsBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataShedLevelsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedLevelsBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataShedLevelsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataShedLevelsBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataShedLevelsBuilder) WithShedLevels(shedLevels ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedLevelsBuilder {
-	m.ShedLevels = shedLevels
-	return m
+func (b *_BACnetConstructedDataShedLevelsBuilder) WithShedLevels(shedLevels ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedLevelsBuilder {
+	b.ShedLevels = shedLevels
+	return b
 }
 
-func (m *_BACnetConstructedDataShedLevelsBuilder) Build() (BACnetConstructedDataShedLevels, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataShedLevelsBuilder) Build() (BACnetConstructedDataShedLevels, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataShedLevels.deepCopy(), nil
+	return b._BACnetConstructedDataShedLevels.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataShedLevelsBuilder) MustBuild() BACnetConstructedDataShedLevels {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataShedLevelsBuilder) MustBuild() BACnetConstructedDataShedLevels {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataShedLevelsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataShedLevelsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataShedLevelsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataShedLevelsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataShedLevelsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataShedLevelsBuilder().(*_BACnetConstructedDataShedLevelsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataShedLevelsBuilder creates a BACnetConstructedDataShedLevelsBuilder
-func (m *_BACnetConstructedDataShedLevels) CreateBACnetConstructedDataShedLevelsBuilder() BACnetConstructedDataShedLevelsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataShedLevels) CreateBACnetConstructedDataShedLevelsBuilder() BACnetConstructedDataShedLevelsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataShedLevelsBuilder()
 	}
-	return &_BACnetConstructedDataShedLevelsBuilder{_BACnetConstructedDataShedLevels: m.deepCopy()}
+	return &_BACnetConstructedDataShedLevelsBuilder{_BACnetConstructedDataShedLevels: b.deepCopy()}
 }
 
 ///////////////////////
@@ -366,9 +385,13 @@ func (m *_BACnetConstructedDataShedLevels) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

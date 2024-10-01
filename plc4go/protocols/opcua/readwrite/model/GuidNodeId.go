@@ -100,64 +100,68 @@ type _GuidNodeIdBuilder struct {
 
 var _ (GuidNodeIdBuilder) = (*_GuidNodeIdBuilder)(nil)
 
-func (m *_GuidNodeIdBuilder) WithMandatoryFields(namespaceIndex uint16, identifier GuidValue) GuidNodeIdBuilder {
-	return m.WithNamespaceIndex(namespaceIndex).WithIdentifier(identifier)
+func (b *_GuidNodeIdBuilder) WithMandatoryFields(namespaceIndex uint16, identifier GuidValue) GuidNodeIdBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithIdentifier(identifier)
 }
 
-func (m *_GuidNodeIdBuilder) WithNamespaceIndex(namespaceIndex uint16) GuidNodeIdBuilder {
-	m.NamespaceIndex = namespaceIndex
-	return m
+func (b *_GuidNodeIdBuilder) WithNamespaceIndex(namespaceIndex uint16) GuidNodeIdBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
 }
 
-func (m *_GuidNodeIdBuilder) WithIdentifier(identifier GuidValue) GuidNodeIdBuilder {
-	m.Identifier = identifier
-	return m
+func (b *_GuidNodeIdBuilder) WithIdentifier(identifier GuidValue) GuidNodeIdBuilder {
+	b.Identifier = identifier
+	return b
 }
 
-func (m *_GuidNodeIdBuilder) WithIdentifierBuilder(builderSupplier func(GuidValueBuilder) GuidValueBuilder) GuidNodeIdBuilder {
-	builder := builderSupplier(m.Identifier.CreateGuidValueBuilder())
+func (b *_GuidNodeIdBuilder) WithIdentifierBuilder(builderSupplier func(GuidValueBuilder) GuidValueBuilder) GuidNodeIdBuilder {
+	builder := builderSupplier(b.Identifier.CreateGuidValueBuilder())
 	var err error
-	m.Identifier, err = builder.Build()
+	b.Identifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "GuidValueBuilder failed"))
+		b.err.Append(errors.Wrap(err, "GuidValueBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_GuidNodeIdBuilder) Build() (GuidNodeId, error) {
-	if m.Identifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_GuidNodeIdBuilder) Build() (GuidNodeId, error) {
+	if b.Identifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'identifier' not set"))
+		b.err.Append(errors.New("mandatory field 'identifier' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._GuidNodeId.deepCopy(), nil
+	return b._GuidNodeId.deepCopy(), nil
 }
 
-func (m *_GuidNodeIdBuilder) MustBuild() GuidNodeId {
-	build, err := m.Build()
+func (b *_GuidNodeIdBuilder) MustBuild() GuidNodeId {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_GuidNodeIdBuilder) DeepCopy() any {
-	return m.CreateGuidNodeIdBuilder()
+func (b *_GuidNodeIdBuilder) DeepCopy() any {
+	_copy := b.CreateGuidNodeIdBuilder().(*_GuidNodeIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateGuidNodeIdBuilder creates a GuidNodeIdBuilder
-func (m *_GuidNodeId) CreateGuidNodeIdBuilder() GuidNodeIdBuilder {
-	if m == nil {
+func (b *_GuidNodeId) CreateGuidNodeIdBuilder() GuidNodeIdBuilder {
+	if b == nil {
 		return NewGuidNodeIdBuilder()
 	}
-	return &_GuidNodeIdBuilder{_GuidNodeId: m.deepCopy()}
+	return &_GuidNodeIdBuilder{_GuidNodeId: b.deepCopy()}
 }
 
 ///////////////////////
@@ -312,9 +316,13 @@ func (m *_GuidNodeId) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

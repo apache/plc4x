@@ -111,60 +111,79 @@ func NewRequestResetBuilder() RequestResetBuilder {
 type _RequestResetBuilder struct {
 	*_RequestReset
 
+	parentBuilder *_RequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RequestResetBuilder) = (*_RequestResetBuilder)(nil)
 
-func (m *_RequestResetBuilder) WithMandatoryFields(tildePeek RequestType, tildePeek2 RequestType) RequestResetBuilder {
-	return m.WithTildePeek(tildePeek).WithTildePeek2(tildePeek2)
+func (b *_RequestResetBuilder) setParent(contract RequestContract) {
+	b.RequestContract = contract
 }
 
-func (m *_RequestResetBuilder) WithTildePeek(tildePeek RequestType) RequestResetBuilder {
-	m.TildePeek = tildePeek
-	return m
+func (b *_RequestResetBuilder) WithMandatoryFields(tildePeek RequestType, tildePeek2 RequestType) RequestResetBuilder {
+	return b.WithTildePeek(tildePeek).WithTildePeek2(tildePeek2)
 }
 
-func (m *_RequestResetBuilder) WithOptionalSecondTilde(secondTilde RequestType) RequestResetBuilder {
-	m.SecondTilde = &secondTilde
-	return m
+func (b *_RequestResetBuilder) WithTildePeek(tildePeek RequestType) RequestResetBuilder {
+	b.TildePeek = tildePeek
+	return b
 }
 
-func (m *_RequestResetBuilder) WithTildePeek2(tildePeek2 RequestType) RequestResetBuilder {
-	m.TildePeek2 = tildePeek2
-	return m
+func (b *_RequestResetBuilder) WithOptionalSecondTilde(secondTilde RequestType) RequestResetBuilder {
+	b.SecondTilde = &secondTilde
+	return b
 }
 
-func (m *_RequestResetBuilder) WithOptionalThirdTilde(thirdTilde RequestType) RequestResetBuilder {
-	m.ThirdTilde = &thirdTilde
-	return m
+func (b *_RequestResetBuilder) WithTildePeek2(tildePeek2 RequestType) RequestResetBuilder {
+	b.TildePeek2 = tildePeek2
+	return b
 }
 
-func (m *_RequestResetBuilder) Build() (RequestReset, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_RequestResetBuilder) WithOptionalThirdTilde(thirdTilde RequestType) RequestResetBuilder {
+	b.ThirdTilde = &thirdTilde
+	return b
+}
+
+func (b *_RequestResetBuilder) Build() (RequestReset, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._RequestReset.deepCopy(), nil
+	return b._RequestReset.deepCopy(), nil
 }
 
-func (m *_RequestResetBuilder) MustBuild() RequestReset {
-	build, err := m.Build()
+func (b *_RequestResetBuilder) MustBuild() RequestReset {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RequestResetBuilder) DeepCopy() any {
-	return m.CreateRequestResetBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RequestResetBuilder) Done() RequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RequestResetBuilder) buildForRequest() (Request, error) {
+	return b.Build()
+}
+
+func (b *_RequestResetBuilder) DeepCopy() any {
+	_copy := b.CreateRequestResetBuilder().(*_RequestResetBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRequestResetBuilder creates a RequestResetBuilder
-func (m *_RequestReset) CreateRequestResetBuilder() RequestResetBuilder {
-	if m == nil {
+func (b *_RequestReset) CreateRequestResetBuilder() RequestResetBuilder {
+	if b == nil {
 		return NewRequestResetBuilder()
 	}
-	return &_RequestResetBuilder{_RequestReset: m.deepCopy()}
+	return &_RequestResetBuilder{_RequestReset: b.deepCopy()}
 }
 
 ///////////////////////
@@ -350,9 +369,13 @@ func (m *_RequestReset) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

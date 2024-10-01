@@ -99,50 +99,69 @@ func NewNLMRequestMasterKeyBuilder() NLMRequestMasterKeyBuilder {
 type _NLMRequestMasterKeyBuilder struct {
 	*_NLMRequestMasterKey
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMRequestMasterKeyBuilder) = (*_NLMRequestMasterKeyBuilder)(nil)
 
-func (m *_NLMRequestMasterKeyBuilder) WithMandatoryFields(numberOfSupportedKeyAlgorithms uint8, encryptionAndSignatureAlgorithms []byte) NLMRequestMasterKeyBuilder {
-	return m.WithNumberOfSupportedKeyAlgorithms(numberOfSupportedKeyAlgorithms).WithEncryptionAndSignatureAlgorithms(encryptionAndSignatureAlgorithms...)
+func (b *_NLMRequestMasterKeyBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMRequestMasterKeyBuilder) WithNumberOfSupportedKeyAlgorithms(numberOfSupportedKeyAlgorithms uint8) NLMRequestMasterKeyBuilder {
-	m.NumberOfSupportedKeyAlgorithms = numberOfSupportedKeyAlgorithms
-	return m
+func (b *_NLMRequestMasterKeyBuilder) WithMandatoryFields(numberOfSupportedKeyAlgorithms uint8, encryptionAndSignatureAlgorithms []byte) NLMRequestMasterKeyBuilder {
+	return b.WithNumberOfSupportedKeyAlgorithms(numberOfSupportedKeyAlgorithms).WithEncryptionAndSignatureAlgorithms(encryptionAndSignatureAlgorithms...)
 }
 
-func (m *_NLMRequestMasterKeyBuilder) WithEncryptionAndSignatureAlgorithms(encryptionAndSignatureAlgorithms ...byte) NLMRequestMasterKeyBuilder {
-	m.EncryptionAndSignatureAlgorithms = encryptionAndSignatureAlgorithms
-	return m
+func (b *_NLMRequestMasterKeyBuilder) WithNumberOfSupportedKeyAlgorithms(numberOfSupportedKeyAlgorithms uint8) NLMRequestMasterKeyBuilder {
+	b.NumberOfSupportedKeyAlgorithms = numberOfSupportedKeyAlgorithms
+	return b
 }
 
-func (m *_NLMRequestMasterKeyBuilder) Build() (NLMRequestMasterKey, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMRequestMasterKeyBuilder) WithEncryptionAndSignatureAlgorithms(encryptionAndSignatureAlgorithms ...byte) NLMRequestMasterKeyBuilder {
+	b.EncryptionAndSignatureAlgorithms = encryptionAndSignatureAlgorithms
+	return b
+}
+
+func (b *_NLMRequestMasterKeyBuilder) Build() (NLMRequestMasterKey, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMRequestMasterKey.deepCopy(), nil
+	return b._NLMRequestMasterKey.deepCopy(), nil
 }
 
-func (m *_NLMRequestMasterKeyBuilder) MustBuild() NLMRequestMasterKey {
-	build, err := m.Build()
+func (b *_NLMRequestMasterKeyBuilder) MustBuild() NLMRequestMasterKey {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMRequestMasterKeyBuilder) DeepCopy() any {
-	return m.CreateNLMRequestMasterKeyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMRequestMasterKeyBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMRequestMasterKeyBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMRequestMasterKeyBuilder) DeepCopy() any {
+	_copy := b.CreateNLMRequestMasterKeyBuilder().(*_NLMRequestMasterKeyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMRequestMasterKeyBuilder creates a NLMRequestMasterKeyBuilder
-func (m *_NLMRequestMasterKey) CreateNLMRequestMasterKeyBuilder() NLMRequestMasterKeyBuilder {
-	if m == nil {
+func (b *_NLMRequestMasterKey) CreateNLMRequestMasterKeyBuilder() NLMRequestMasterKeyBuilder {
+	if b == nil {
 		return NewNLMRequestMasterKeyBuilder()
 	}
-	return &_NLMRequestMasterKeyBuilder{_NLMRequestMasterKey: m.deepCopy()}
+	return &_NLMRequestMasterKeyBuilder{_NLMRequestMasterKey: b.deepCopy()}
 }
 
 ///////////////////////
@@ -306,9 +325,13 @@ func (m *_NLMRequestMasterKey) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

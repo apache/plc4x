@@ -100,6 +100,8 @@ type DF1SymbolMessageFrameBuilder interface {
 	WithSourceAddress(uint8) DF1SymbolMessageFrameBuilder
 	// WithCommand adds Command (property field)
 	WithCommand(DF1Command) DF1SymbolMessageFrameBuilder
+	// WithCommandBuilder adds Command (property field) which is build by the builder
+	WithCommandBuilder(func(DF1CommandBuilder) DF1CommandBuilder) DF1SymbolMessageFrameBuilder
 	// Build builds the DF1SymbolMessageFrame or returns an error if something is wrong
 	Build() (DF1SymbolMessageFrame, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,61 +116,93 @@ func NewDF1SymbolMessageFrameBuilder() DF1SymbolMessageFrameBuilder {
 type _DF1SymbolMessageFrameBuilder struct {
 	*_DF1SymbolMessageFrame
 
+	parentBuilder *_DF1SymbolBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DF1SymbolMessageFrameBuilder) = (*_DF1SymbolMessageFrameBuilder)(nil)
 
-func (m *_DF1SymbolMessageFrameBuilder) WithMandatoryFields(destinationAddress uint8, sourceAddress uint8, command DF1Command) DF1SymbolMessageFrameBuilder {
-	return m.WithDestinationAddress(destinationAddress).WithSourceAddress(sourceAddress).WithCommand(command)
+func (b *_DF1SymbolMessageFrameBuilder) setParent(contract DF1SymbolContract) {
+	b.DF1SymbolContract = contract
 }
 
-func (m *_DF1SymbolMessageFrameBuilder) WithDestinationAddress(destinationAddress uint8) DF1SymbolMessageFrameBuilder {
-	m.DestinationAddress = destinationAddress
-	return m
+func (b *_DF1SymbolMessageFrameBuilder) WithMandatoryFields(destinationAddress uint8, sourceAddress uint8, command DF1Command) DF1SymbolMessageFrameBuilder {
+	return b.WithDestinationAddress(destinationAddress).WithSourceAddress(sourceAddress).WithCommand(command)
 }
 
-func (m *_DF1SymbolMessageFrameBuilder) WithSourceAddress(sourceAddress uint8) DF1SymbolMessageFrameBuilder {
-	m.SourceAddress = sourceAddress
-	return m
+func (b *_DF1SymbolMessageFrameBuilder) WithDestinationAddress(destinationAddress uint8) DF1SymbolMessageFrameBuilder {
+	b.DestinationAddress = destinationAddress
+	return b
 }
 
-func (m *_DF1SymbolMessageFrameBuilder) WithCommand(command DF1Command) DF1SymbolMessageFrameBuilder {
-	m.Command = command
-	return m
+func (b *_DF1SymbolMessageFrameBuilder) WithSourceAddress(sourceAddress uint8) DF1SymbolMessageFrameBuilder {
+	b.SourceAddress = sourceAddress
+	return b
 }
 
-func (m *_DF1SymbolMessageFrameBuilder) Build() (DF1SymbolMessageFrame, error) {
-	if m.Command == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_DF1SymbolMessageFrameBuilder) WithCommand(command DF1Command) DF1SymbolMessageFrameBuilder {
+	b.Command = command
+	return b
+}
+
+func (b *_DF1SymbolMessageFrameBuilder) WithCommandBuilder(builderSupplier func(DF1CommandBuilder) DF1CommandBuilder) DF1SymbolMessageFrameBuilder {
+	builder := builderSupplier(b.Command.CreateDF1CommandBuilder())
+	var err error
+	b.Command, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'command' not set"))
+		b.err.Append(errors.Wrap(err, "DF1CommandBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._DF1SymbolMessageFrame.deepCopy(), nil
+	return b
 }
 
-func (m *_DF1SymbolMessageFrameBuilder) MustBuild() DF1SymbolMessageFrame {
-	build, err := m.Build()
+func (b *_DF1SymbolMessageFrameBuilder) Build() (DF1SymbolMessageFrame, error) {
+	if b.Command == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'command' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DF1SymbolMessageFrame.deepCopy(), nil
+}
+
+func (b *_DF1SymbolMessageFrameBuilder) MustBuild() DF1SymbolMessageFrame {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DF1SymbolMessageFrameBuilder) DeepCopy() any {
-	return m.CreateDF1SymbolMessageFrameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DF1SymbolMessageFrameBuilder) Done() DF1SymbolBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DF1SymbolMessageFrameBuilder) buildForDF1Symbol() (DF1Symbol, error) {
+	return b.Build()
+}
+
+func (b *_DF1SymbolMessageFrameBuilder) DeepCopy() any {
+	_copy := b.CreateDF1SymbolMessageFrameBuilder().(*_DF1SymbolMessageFrameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDF1SymbolMessageFrameBuilder creates a DF1SymbolMessageFrameBuilder
-func (m *_DF1SymbolMessageFrame) CreateDF1SymbolMessageFrameBuilder() DF1SymbolMessageFrameBuilder {
-	if m == nil {
+func (b *_DF1SymbolMessageFrame) CreateDF1SymbolMessageFrameBuilder() DF1SymbolMessageFrameBuilder {
+	if b == nil {
 		return NewDF1SymbolMessageFrameBuilder()
 	}
-	return &_DF1SymbolMessageFrameBuilder{_DF1SymbolMessageFrame: m.deepCopy()}
+	return &_DF1SymbolMessageFrameBuilder{_DF1SymbolMessageFrame: b.deepCopy()}
 }
 
 ///////////////////////
@@ -404,9 +438,13 @@ func (m *_DF1SymbolMessageFrame) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

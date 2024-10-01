@@ -92,10 +92,109 @@ type AirConditioningDataBuilder interface {
 	WithMandatoryFields(commandTypeContainer AirConditioningCommandTypeContainer) AirConditioningDataBuilder
 	// WithCommandTypeContainer adds CommandTypeContainer (property field)
 	WithCommandTypeContainer(AirConditioningCommandTypeContainer) AirConditioningDataBuilder
+	// AsAirConditioningDataHvacScheduleEntry converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataHvacScheduleEntry() interface {
+		AirConditioningDataHvacScheduleEntryBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataHumidityScheduleEntry converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataHumidityScheduleEntry() interface {
+		AirConditioningDataHumidityScheduleEntryBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataRefresh converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataRefresh() interface {
+		AirConditioningDataRefreshBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataZoneHvacPlantStatus converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataZoneHvacPlantStatus() interface {
+		AirConditioningDataZoneHvacPlantStatusBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataZoneHumidityPlantStatus converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataZoneHumidityPlantStatus() interface {
+		AirConditioningDataZoneHumidityPlantStatusBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataZoneTemperature converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataZoneTemperature() interface {
+		AirConditioningDataZoneTemperatureBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataZoneHumidity converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataZoneHumidity() interface {
+		AirConditioningDataZoneHumidityBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataSetZoneGroupOff converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataSetZoneGroupOff() interface {
+		AirConditioningDataSetZoneGroupOffBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataSetZoneGroupOn converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataSetZoneGroupOn() interface {
+		AirConditioningDataSetZoneGroupOnBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataSetZoneHvacMode converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataSetZoneHvacMode() interface {
+		AirConditioningDataSetZoneHvacModeBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataSetPlantHvacLevel converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataSetPlantHvacLevel() interface {
+		AirConditioningDataSetPlantHvacLevelBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataSetZoneHumidityMode converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataSetZoneHumidityMode() interface {
+		AirConditioningDataSetZoneHumidityModeBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataSetPlantHumidityLevel converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataSetPlantHumidityLevel() interface {
+		AirConditioningDataSetPlantHumidityLevelBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataSetHvacUpperGuardLimit converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataSetHvacUpperGuardLimit() interface {
+		AirConditioningDataSetHvacUpperGuardLimitBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataSetHvacLowerGuardLimit converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataSetHvacLowerGuardLimit() interface {
+		AirConditioningDataSetHvacLowerGuardLimitBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataSetHvacSetbackLimit converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataSetHvacSetbackLimit() interface {
+		AirConditioningDataSetHvacSetbackLimitBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataSetHumidityUpperGuardLimit converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataSetHumidityUpperGuardLimit() interface {
+		AirConditioningDataSetHumidityUpperGuardLimitBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataSetHumidityLowerGuardLimit converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataSetHumidityLowerGuardLimit() interface {
+		AirConditioningDataSetHumidityLowerGuardLimitBuilder
+		Done() AirConditioningDataBuilder
+	}
+	// AsAirConditioningDataSetHumiditySetbackLimit converts this build to a subType of AirConditioningData. It is always possible to return to current builder using Done()
+	AsAirConditioningDataSetHumiditySetbackLimit() interface {
+		AirConditioningDataSetHumiditySetbackLimitBuilder
+		Done() AirConditioningDataBuilder
+	}
 	// Build builds the AirConditioningData or returns an error if something is wrong
-	Build() (AirConditioningDataContract, error)
+	PartialBuild() (AirConditioningDataContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() AirConditioningDataContract
+	PartialMustBuild() AirConditioningDataContract
+	// Build builds the AirConditioningData or returns an error if something is wrong
+	Build() (AirConditioningData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AirConditioningData
 }
 
 // NewAirConditioningDataBuilder() creates a AirConditioningDataBuilder
@@ -103,48 +202,386 @@ func NewAirConditioningDataBuilder() AirConditioningDataBuilder {
 	return &_AirConditioningDataBuilder{_AirConditioningData: new(_AirConditioningData)}
 }
 
+type _AirConditioningDataChildBuilder interface {
+	utils.Copyable
+	setParent(AirConditioningDataContract)
+	buildForAirConditioningData() (AirConditioningData, error)
+}
+
 type _AirConditioningDataBuilder struct {
 	*_AirConditioningData
+
+	childBuilder _AirConditioningDataChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (AirConditioningDataBuilder) = (*_AirConditioningDataBuilder)(nil)
 
-func (m *_AirConditioningDataBuilder) WithMandatoryFields(commandTypeContainer AirConditioningCommandTypeContainer) AirConditioningDataBuilder {
-	return m.WithCommandTypeContainer(commandTypeContainer)
+func (b *_AirConditioningDataBuilder) WithMandatoryFields(commandTypeContainer AirConditioningCommandTypeContainer) AirConditioningDataBuilder {
+	return b.WithCommandTypeContainer(commandTypeContainer)
 }
 
-func (m *_AirConditioningDataBuilder) WithCommandTypeContainer(commandTypeContainer AirConditioningCommandTypeContainer) AirConditioningDataBuilder {
-	m.CommandTypeContainer = commandTypeContainer
-	return m
+func (b *_AirConditioningDataBuilder) WithCommandTypeContainer(commandTypeContainer AirConditioningCommandTypeContainer) AirConditioningDataBuilder {
+	b.CommandTypeContainer = commandTypeContainer
+	return b
 }
 
-func (m *_AirConditioningDataBuilder) Build() (AirConditioningDataContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AirConditioningDataBuilder) PartialBuild() (AirConditioningDataContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AirConditioningData.deepCopy(), nil
+	return b._AirConditioningData.deepCopy(), nil
 }
 
-func (m *_AirConditioningDataBuilder) MustBuild() AirConditioningDataContract {
-	build, err := m.Build()
+func (b *_AirConditioningDataBuilder) PartialMustBuild() AirConditioningDataContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AirConditioningDataBuilder) DeepCopy() any {
-	return m.CreateAirConditioningDataBuilder()
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataHvacScheduleEntry() interface {
+	AirConditioningDataHvacScheduleEntryBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataHvacScheduleEntryBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataHvacScheduleEntryBuilder().(*_AirConditioningDataHvacScheduleEntryBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataHumidityScheduleEntry() interface {
+	AirConditioningDataHumidityScheduleEntryBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataHumidityScheduleEntryBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataHumidityScheduleEntryBuilder().(*_AirConditioningDataHumidityScheduleEntryBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataRefresh() interface {
+	AirConditioningDataRefreshBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataRefreshBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataRefreshBuilder().(*_AirConditioningDataRefreshBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataZoneHvacPlantStatus() interface {
+	AirConditioningDataZoneHvacPlantStatusBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataZoneHvacPlantStatusBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataZoneHvacPlantStatusBuilder().(*_AirConditioningDataZoneHvacPlantStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataZoneHumidityPlantStatus() interface {
+	AirConditioningDataZoneHumidityPlantStatusBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataZoneHumidityPlantStatusBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataZoneHumidityPlantStatusBuilder().(*_AirConditioningDataZoneHumidityPlantStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataZoneTemperature() interface {
+	AirConditioningDataZoneTemperatureBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataZoneTemperatureBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataZoneTemperatureBuilder().(*_AirConditioningDataZoneTemperatureBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataZoneHumidity() interface {
+	AirConditioningDataZoneHumidityBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataZoneHumidityBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataZoneHumidityBuilder().(*_AirConditioningDataZoneHumidityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataSetZoneGroupOff() interface {
+	AirConditioningDataSetZoneGroupOffBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataSetZoneGroupOffBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataSetZoneGroupOffBuilder().(*_AirConditioningDataSetZoneGroupOffBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataSetZoneGroupOn() interface {
+	AirConditioningDataSetZoneGroupOnBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataSetZoneGroupOnBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataSetZoneGroupOnBuilder().(*_AirConditioningDataSetZoneGroupOnBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataSetZoneHvacMode() interface {
+	AirConditioningDataSetZoneHvacModeBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataSetZoneHvacModeBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataSetZoneHvacModeBuilder().(*_AirConditioningDataSetZoneHvacModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataSetPlantHvacLevel() interface {
+	AirConditioningDataSetPlantHvacLevelBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataSetPlantHvacLevelBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataSetPlantHvacLevelBuilder().(*_AirConditioningDataSetPlantHvacLevelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataSetZoneHumidityMode() interface {
+	AirConditioningDataSetZoneHumidityModeBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataSetZoneHumidityModeBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataSetZoneHumidityModeBuilder().(*_AirConditioningDataSetZoneHumidityModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataSetPlantHumidityLevel() interface {
+	AirConditioningDataSetPlantHumidityLevelBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataSetPlantHumidityLevelBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataSetPlantHumidityLevelBuilder().(*_AirConditioningDataSetPlantHumidityLevelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataSetHvacUpperGuardLimit() interface {
+	AirConditioningDataSetHvacUpperGuardLimitBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataSetHvacUpperGuardLimitBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataSetHvacUpperGuardLimitBuilder().(*_AirConditioningDataSetHvacUpperGuardLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataSetHvacLowerGuardLimit() interface {
+	AirConditioningDataSetHvacLowerGuardLimitBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataSetHvacLowerGuardLimitBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataSetHvacLowerGuardLimitBuilder().(*_AirConditioningDataSetHvacLowerGuardLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataSetHvacSetbackLimit() interface {
+	AirConditioningDataSetHvacSetbackLimitBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataSetHvacSetbackLimitBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataSetHvacSetbackLimitBuilder().(*_AirConditioningDataSetHvacSetbackLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataSetHumidityUpperGuardLimit() interface {
+	AirConditioningDataSetHumidityUpperGuardLimitBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataSetHumidityUpperGuardLimitBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataSetHumidityUpperGuardLimitBuilder().(*_AirConditioningDataSetHumidityUpperGuardLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataSetHumidityLowerGuardLimit() interface {
+	AirConditioningDataSetHumidityLowerGuardLimitBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataSetHumidityLowerGuardLimitBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataSetHumidityLowerGuardLimitBuilder().(*_AirConditioningDataSetHumidityLowerGuardLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) AsAirConditioningDataSetHumiditySetbackLimit() interface {
+	AirConditioningDataSetHumiditySetbackLimitBuilder
+	Done() AirConditioningDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AirConditioningDataSetHumiditySetbackLimitBuilder
+		Done() AirConditioningDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAirConditioningDataSetHumiditySetbackLimitBuilder().(*_AirConditioningDataSetHumiditySetbackLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AirConditioningDataBuilder) Build() (AirConditioningData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForAirConditioningData()
+}
+
+func (b *_AirConditioningDataBuilder) MustBuild() AirConditioningData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AirConditioningDataBuilder) DeepCopy() any {
+	_copy := b.CreateAirConditioningDataBuilder().(*_AirConditioningDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_AirConditioningDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAirConditioningDataBuilder creates a AirConditioningDataBuilder
-func (m *_AirConditioningData) CreateAirConditioningDataBuilder() AirConditioningDataBuilder {
-	if m == nil {
+func (b *_AirConditioningData) CreateAirConditioningDataBuilder() AirConditioningDataBuilder {
+	if b == nil {
 		return NewAirConditioningDataBuilder()
 	}
-	return &_AirConditioningDataBuilder{_AirConditioningData: m.deepCopy()}
+	return &_AirConditioningDataBuilder{_AirConditioningData: b.deepCopy()}
 }
 
 ///////////////////////

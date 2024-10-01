@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLastAccessEventBuilder() BACnetConstructedDataLastA
 type _BACnetConstructedDataLastAccessEventBuilder struct {
 	*_BACnetConstructedDataLastAccessEvent
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLastAccessEventBuilder) = (*_BACnetConstructedDataLastAccessEventBuilder)(nil)
 
-func (m *_BACnetConstructedDataLastAccessEventBuilder) WithMandatoryFields(lastAccessEvent BACnetAccessEventTagged) BACnetConstructedDataLastAccessEventBuilder {
-	return m.WithLastAccessEvent(lastAccessEvent)
+func (b *_BACnetConstructedDataLastAccessEventBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLastAccessEventBuilder) WithLastAccessEvent(lastAccessEvent BACnetAccessEventTagged) BACnetConstructedDataLastAccessEventBuilder {
-	m.LastAccessEvent = lastAccessEvent
-	return m
+func (b *_BACnetConstructedDataLastAccessEventBuilder) WithMandatoryFields(lastAccessEvent BACnetAccessEventTagged) BACnetConstructedDataLastAccessEventBuilder {
+	return b.WithLastAccessEvent(lastAccessEvent)
 }
 
-func (m *_BACnetConstructedDataLastAccessEventBuilder) WithLastAccessEventBuilder(builderSupplier func(BACnetAccessEventTaggedBuilder) BACnetAccessEventTaggedBuilder) BACnetConstructedDataLastAccessEventBuilder {
-	builder := builderSupplier(m.LastAccessEvent.CreateBACnetAccessEventTaggedBuilder())
+func (b *_BACnetConstructedDataLastAccessEventBuilder) WithLastAccessEvent(lastAccessEvent BACnetAccessEventTagged) BACnetConstructedDataLastAccessEventBuilder {
+	b.LastAccessEvent = lastAccessEvent
+	return b
+}
+
+func (b *_BACnetConstructedDataLastAccessEventBuilder) WithLastAccessEventBuilder(builderSupplier func(BACnetAccessEventTaggedBuilder) BACnetAccessEventTaggedBuilder) BACnetConstructedDataLastAccessEventBuilder {
+	builder := builderSupplier(b.LastAccessEvent.CreateBACnetAccessEventTaggedBuilder())
 	var err error
-	m.LastAccessEvent, err = builder.Build()
+	b.LastAccessEvent, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAccessEventTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAccessEventTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLastAccessEventBuilder) Build() (BACnetConstructedDataLastAccessEvent, error) {
-	if m.LastAccessEvent == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLastAccessEventBuilder) Build() (BACnetConstructedDataLastAccessEvent, error) {
+	if b.LastAccessEvent == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lastAccessEvent' not set"))
+		b.err.Append(errors.New("mandatory field 'lastAccessEvent' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLastAccessEvent.deepCopy(), nil
+	return b._BACnetConstructedDataLastAccessEvent.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLastAccessEventBuilder) MustBuild() BACnetConstructedDataLastAccessEvent {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLastAccessEventBuilder) MustBuild() BACnetConstructedDataLastAccessEvent {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLastAccessEventBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLastAccessEventBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLastAccessEventBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLastAccessEventBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLastAccessEventBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLastAccessEventBuilder().(*_BACnetConstructedDataLastAccessEventBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLastAccessEventBuilder creates a BACnetConstructedDataLastAccessEventBuilder
-func (m *_BACnetConstructedDataLastAccessEvent) CreateBACnetConstructedDataLastAccessEventBuilder() BACnetConstructedDataLastAccessEventBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLastAccessEvent) CreateBACnetConstructedDataLastAccessEventBuilder() BACnetConstructedDataLastAccessEventBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLastAccessEventBuilder()
 	}
-	return &_BACnetConstructedDataLastAccessEventBuilder{_BACnetConstructedDataLastAccessEvent: m.deepCopy()}
+	return &_BACnetConstructedDataLastAccessEventBuilder{_BACnetConstructedDataLastAccessEvent: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataLastAccessEvent) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

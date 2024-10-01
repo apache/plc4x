@@ -86,6 +86,8 @@ type BACnetSpecialEventBuilder interface {
 	WithMandatoryFields(period BACnetSpecialEventPeriod, listOfTimeValues BACnetSpecialEventListOfTimeValues, eventPriority BACnetContextTagUnsignedInteger) BACnetSpecialEventBuilder
 	// WithPeriod adds Period (property field)
 	WithPeriod(BACnetSpecialEventPeriod) BACnetSpecialEventBuilder
+	// WithPeriodBuilder adds Period (property field) which is build by the builder
+	WithPeriodBuilder(func(BACnetSpecialEventPeriodBuilder) BACnetSpecialEventPeriodBuilder) BACnetSpecialEventBuilder
 	// WithListOfTimeValues adds ListOfTimeValues (property field)
 	WithListOfTimeValues(BACnetSpecialEventListOfTimeValues) BACnetSpecialEventBuilder
 	// WithListOfTimeValuesBuilder adds ListOfTimeValues (property field) which is build by the builder
@@ -113,94 +115,111 @@ type _BACnetSpecialEventBuilder struct {
 
 var _ (BACnetSpecialEventBuilder) = (*_BACnetSpecialEventBuilder)(nil)
 
-func (m *_BACnetSpecialEventBuilder) WithMandatoryFields(period BACnetSpecialEventPeriod, listOfTimeValues BACnetSpecialEventListOfTimeValues, eventPriority BACnetContextTagUnsignedInteger) BACnetSpecialEventBuilder {
-	return m.WithPeriod(period).WithListOfTimeValues(listOfTimeValues).WithEventPriority(eventPriority)
+func (b *_BACnetSpecialEventBuilder) WithMandatoryFields(period BACnetSpecialEventPeriod, listOfTimeValues BACnetSpecialEventListOfTimeValues, eventPriority BACnetContextTagUnsignedInteger) BACnetSpecialEventBuilder {
+	return b.WithPeriod(period).WithListOfTimeValues(listOfTimeValues).WithEventPriority(eventPriority)
 }
 
-func (m *_BACnetSpecialEventBuilder) WithPeriod(period BACnetSpecialEventPeriod) BACnetSpecialEventBuilder {
-	m.Period = period
-	return m
+func (b *_BACnetSpecialEventBuilder) WithPeriod(period BACnetSpecialEventPeriod) BACnetSpecialEventBuilder {
+	b.Period = period
+	return b
 }
 
-func (m *_BACnetSpecialEventBuilder) WithListOfTimeValues(listOfTimeValues BACnetSpecialEventListOfTimeValues) BACnetSpecialEventBuilder {
-	m.ListOfTimeValues = listOfTimeValues
-	return m
-}
-
-func (m *_BACnetSpecialEventBuilder) WithListOfTimeValuesBuilder(builderSupplier func(BACnetSpecialEventListOfTimeValuesBuilder) BACnetSpecialEventListOfTimeValuesBuilder) BACnetSpecialEventBuilder {
-	builder := builderSupplier(m.ListOfTimeValues.CreateBACnetSpecialEventListOfTimeValuesBuilder())
+func (b *_BACnetSpecialEventBuilder) WithPeriodBuilder(builderSupplier func(BACnetSpecialEventPeriodBuilder) BACnetSpecialEventPeriodBuilder) BACnetSpecialEventBuilder {
+	builder := builderSupplier(b.Period.CreateBACnetSpecialEventPeriodBuilder())
 	var err error
-	m.ListOfTimeValues, err = builder.Build()
+	b.Period, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetSpecialEventListOfTimeValuesBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetSpecialEventPeriodBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetSpecialEventBuilder) WithEventPriority(eventPriority BACnetContextTagUnsignedInteger) BACnetSpecialEventBuilder {
-	m.EventPriority = eventPriority
-	return m
+func (b *_BACnetSpecialEventBuilder) WithListOfTimeValues(listOfTimeValues BACnetSpecialEventListOfTimeValues) BACnetSpecialEventBuilder {
+	b.ListOfTimeValues = listOfTimeValues
+	return b
 }
 
-func (m *_BACnetSpecialEventBuilder) WithEventPriorityBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetSpecialEventBuilder {
-	builder := builderSupplier(m.EventPriority.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetSpecialEventBuilder) WithListOfTimeValuesBuilder(builderSupplier func(BACnetSpecialEventListOfTimeValuesBuilder) BACnetSpecialEventListOfTimeValuesBuilder) BACnetSpecialEventBuilder {
+	builder := builderSupplier(b.ListOfTimeValues.CreateBACnetSpecialEventListOfTimeValuesBuilder())
 	var err error
-	m.EventPriority, err = builder.Build()
+	b.ListOfTimeValues, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetSpecialEventListOfTimeValuesBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetSpecialEventBuilder) Build() (BACnetSpecialEvent, error) {
-	if m.Period == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'period' not set"))
-	}
-	if m.ListOfTimeValues == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'listOfTimeValues' not set"))
-	}
-	if m.EventPriority == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'eventPriority' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetSpecialEvent.deepCopy(), nil
+func (b *_BACnetSpecialEventBuilder) WithEventPriority(eventPriority BACnetContextTagUnsignedInteger) BACnetSpecialEventBuilder {
+	b.EventPriority = eventPriority
+	return b
 }
 
-func (m *_BACnetSpecialEventBuilder) MustBuild() BACnetSpecialEvent {
-	build, err := m.Build()
+func (b *_BACnetSpecialEventBuilder) WithEventPriorityBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetSpecialEventBuilder {
+	builder := builderSupplier(b.EventPriority.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.EventPriority, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetSpecialEventBuilder) Build() (BACnetSpecialEvent, error) {
+	if b.Period == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'period' not set"))
+	}
+	if b.ListOfTimeValues == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'listOfTimeValues' not set"))
+	}
+	if b.EventPriority == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'eventPriority' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetSpecialEvent.deepCopy(), nil
+}
+
+func (b *_BACnetSpecialEventBuilder) MustBuild() BACnetSpecialEvent {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetSpecialEventBuilder) DeepCopy() any {
-	return m.CreateBACnetSpecialEventBuilder()
+func (b *_BACnetSpecialEventBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetSpecialEventBuilder().(*_BACnetSpecialEventBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetSpecialEventBuilder creates a BACnetSpecialEventBuilder
-func (m *_BACnetSpecialEvent) CreateBACnetSpecialEventBuilder() BACnetSpecialEventBuilder {
-	if m == nil {
+func (b *_BACnetSpecialEvent) CreateBACnetSpecialEventBuilder() BACnetSpecialEventBuilder {
+	if b == nil {
 		return NewBACnetSpecialEventBuilder()
 	}
-	return &_BACnetSpecialEventBuilder{_BACnetSpecialEvent: m.deepCopy()}
+	return &_BACnetSpecialEventBuilder{_BACnetSpecialEvent: b.deepCopy()}
 }
 
 ///////////////////////
@@ -373,9 +392,13 @@ func (m *_BACnetSpecialEvent) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -85,40 +85,59 @@ func NewApduDataExtDomainAddressSerialNumberWriteBuilder() ApduDataExtDomainAddr
 type _ApduDataExtDomainAddressSerialNumberWriteBuilder struct {
 	*_ApduDataExtDomainAddressSerialNumberWrite
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtDomainAddressSerialNumberWriteBuilder) = (*_ApduDataExtDomainAddressSerialNumberWriteBuilder)(nil)
 
-func (m *_ApduDataExtDomainAddressSerialNumberWriteBuilder) WithMandatoryFields() ApduDataExtDomainAddressSerialNumberWriteBuilder {
-	return m
+func (b *_ApduDataExtDomainAddressSerialNumberWriteBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtDomainAddressSerialNumberWriteBuilder) Build() (ApduDataExtDomainAddressSerialNumberWrite, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtDomainAddressSerialNumberWriteBuilder) WithMandatoryFields() ApduDataExtDomainAddressSerialNumberWriteBuilder {
+	return b
+}
+
+func (b *_ApduDataExtDomainAddressSerialNumberWriteBuilder) Build() (ApduDataExtDomainAddressSerialNumberWrite, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtDomainAddressSerialNumberWrite.deepCopy(), nil
+	return b._ApduDataExtDomainAddressSerialNumberWrite.deepCopy(), nil
 }
 
-func (m *_ApduDataExtDomainAddressSerialNumberWriteBuilder) MustBuild() ApduDataExtDomainAddressSerialNumberWrite {
-	build, err := m.Build()
+func (b *_ApduDataExtDomainAddressSerialNumberWriteBuilder) MustBuild() ApduDataExtDomainAddressSerialNumberWrite {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtDomainAddressSerialNumberWriteBuilder) DeepCopy() any {
-	return m.CreateApduDataExtDomainAddressSerialNumberWriteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtDomainAddressSerialNumberWriteBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtDomainAddressSerialNumberWriteBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtDomainAddressSerialNumberWriteBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtDomainAddressSerialNumberWriteBuilder().(*_ApduDataExtDomainAddressSerialNumberWriteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtDomainAddressSerialNumberWriteBuilder creates a ApduDataExtDomainAddressSerialNumberWriteBuilder
-func (m *_ApduDataExtDomainAddressSerialNumberWrite) CreateApduDataExtDomainAddressSerialNumberWriteBuilder() ApduDataExtDomainAddressSerialNumberWriteBuilder {
-	if m == nil {
+func (b *_ApduDataExtDomainAddressSerialNumberWrite) CreateApduDataExtDomainAddressSerialNumberWriteBuilder() ApduDataExtDomainAddressSerialNumberWriteBuilder {
+	if b == nil {
 		return NewApduDataExtDomainAddressSerialNumberWriteBuilder()
 	}
-	return &_ApduDataExtDomainAddressSerialNumberWriteBuilder{_ApduDataExtDomainAddressSerialNumberWrite: m.deepCopy()}
+	return &_ApduDataExtDomainAddressSerialNumberWriteBuilder{_ApduDataExtDomainAddressSerialNumberWrite: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_ApduDataExtDomainAddressSerialNumberWrite) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

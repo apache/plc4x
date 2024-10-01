@@ -107,55 +107,74 @@ func NewPortSegmentExtendedBuilder() PortSegmentExtendedBuilder {
 type _PortSegmentExtendedBuilder struct {
 	*_PortSegmentExtended
 
+	parentBuilder *_PortSegmentTypeBuilder
+
 	err *utils.MultiError
 }
 
 var _ (PortSegmentExtendedBuilder) = (*_PortSegmentExtendedBuilder)(nil)
 
-func (m *_PortSegmentExtendedBuilder) WithMandatoryFields(port uint8, linkAddressSize uint8, address string) PortSegmentExtendedBuilder {
-	return m.WithPort(port).WithLinkAddressSize(linkAddressSize).WithAddress(address)
+func (b *_PortSegmentExtendedBuilder) setParent(contract PortSegmentTypeContract) {
+	b.PortSegmentTypeContract = contract
 }
 
-func (m *_PortSegmentExtendedBuilder) WithPort(port uint8) PortSegmentExtendedBuilder {
-	m.Port = port
-	return m
+func (b *_PortSegmentExtendedBuilder) WithMandatoryFields(port uint8, linkAddressSize uint8, address string) PortSegmentExtendedBuilder {
+	return b.WithPort(port).WithLinkAddressSize(linkAddressSize).WithAddress(address)
 }
 
-func (m *_PortSegmentExtendedBuilder) WithLinkAddressSize(linkAddressSize uint8) PortSegmentExtendedBuilder {
-	m.LinkAddressSize = linkAddressSize
-	return m
+func (b *_PortSegmentExtendedBuilder) WithPort(port uint8) PortSegmentExtendedBuilder {
+	b.Port = port
+	return b
 }
 
-func (m *_PortSegmentExtendedBuilder) WithAddress(address string) PortSegmentExtendedBuilder {
-	m.Address = address
-	return m
+func (b *_PortSegmentExtendedBuilder) WithLinkAddressSize(linkAddressSize uint8) PortSegmentExtendedBuilder {
+	b.LinkAddressSize = linkAddressSize
+	return b
 }
 
-func (m *_PortSegmentExtendedBuilder) Build() (PortSegmentExtended, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_PortSegmentExtendedBuilder) WithAddress(address string) PortSegmentExtendedBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_PortSegmentExtendedBuilder) Build() (PortSegmentExtended, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._PortSegmentExtended.deepCopy(), nil
+	return b._PortSegmentExtended.deepCopy(), nil
 }
 
-func (m *_PortSegmentExtendedBuilder) MustBuild() PortSegmentExtended {
-	build, err := m.Build()
+func (b *_PortSegmentExtendedBuilder) MustBuild() PortSegmentExtended {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PortSegmentExtendedBuilder) DeepCopy() any {
-	return m.CreatePortSegmentExtendedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PortSegmentExtendedBuilder) Done() PortSegmentTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PortSegmentExtendedBuilder) buildForPortSegmentType() (PortSegmentType, error) {
+	return b.Build()
+}
+
+func (b *_PortSegmentExtendedBuilder) DeepCopy() any {
+	_copy := b.CreatePortSegmentExtendedBuilder().(*_PortSegmentExtendedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePortSegmentExtendedBuilder creates a PortSegmentExtendedBuilder
-func (m *_PortSegmentExtended) CreatePortSegmentExtendedBuilder() PortSegmentExtendedBuilder {
-	if m == nil {
+func (b *_PortSegmentExtended) CreatePortSegmentExtendedBuilder() PortSegmentExtendedBuilder {
+	if b == nil {
 		return NewPortSegmentExtendedBuilder()
 	}
-	return &_PortSegmentExtendedBuilder{_PortSegmentExtended: m.deepCopy()}
+	return &_PortSegmentExtendedBuilder{_PortSegmentExtended: b.deepCopy()}
 }
 
 ///////////////////////
@@ -364,9 +383,13 @@ func (m *_PortSegmentExtended) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

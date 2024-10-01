@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesAccessEventBuilder() BACnetPropertyStatesAccessEvent
 type _BACnetPropertyStatesAccessEventBuilder struct {
 	*_BACnetPropertyStatesAccessEvent
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesAccessEventBuilder) = (*_BACnetPropertyStatesAccessEventBuilder)(nil)
 
-func (m *_BACnetPropertyStatesAccessEventBuilder) WithMandatoryFields(accessEvent BACnetAccessEventTagged) BACnetPropertyStatesAccessEventBuilder {
-	return m.WithAccessEvent(accessEvent)
+func (b *_BACnetPropertyStatesAccessEventBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesAccessEventBuilder) WithAccessEvent(accessEvent BACnetAccessEventTagged) BACnetPropertyStatesAccessEventBuilder {
-	m.AccessEvent = accessEvent
-	return m
+func (b *_BACnetPropertyStatesAccessEventBuilder) WithMandatoryFields(accessEvent BACnetAccessEventTagged) BACnetPropertyStatesAccessEventBuilder {
+	return b.WithAccessEvent(accessEvent)
 }
 
-func (m *_BACnetPropertyStatesAccessEventBuilder) WithAccessEventBuilder(builderSupplier func(BACnetAccessEventTaggedBuilder) BACnetAccessEventTaggedBuilder) BACnetPropertyStatesAccessEventBuilder {
-	builder := builderSupplier(m.AccessEvent.CreateBACnetAccessEventTaggedBuilder())
+func (b *_BACnetPropertyStatesAccessEventBuilder) WithAccessEvent(accessEvent BACnetAccessEventTagged) BACnetPropertyStatesAccessEventBuilder {
+	b.AccessEvent = accessEvent
+	return b
+}
+
+func (b *_BACnetPropertyStatesAccessEventBuilder) WithAccessEventBuilder(builderSupplier func(BACnetAccessEventTaggedBuilder) BACnetAccessEventTaggedBuilder) BACnetPropertyStatesAccessEventBuilder {
+	builder := builderSupplier(b.AccessEvent.CreateBACnetAccessEventTaggedBuilder())
 	var err error
-	m.AccessEvent, err = builder.Build()
+	b.AccessEvent, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAccessEventTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAccessEventTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesAccessEventBuilder) Build() (BACnetPropertyStatesAccessEvent, error) {
-	if m.AccessEvent == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesAccessEventBuilder) Build() (BACnetPropertyStatesAccessEvent, error) {
+	if b.AccessEvent == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'accessEvent' not set"))
+		b.err.Append(errors.New("mandatory field 'accessEvent' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesAccessEvent.deepCopy(), nil
+	return b._BACnetPropertyStatesAccessEvent.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesAccessEventBuilder) MustBuild() BACnetPropertyStatesAccessEvent {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesAccessEventBuilder) MustBuild() BACnetPropertyStatesAccessEvent {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesAccessEventBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesAccessEventBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesAccessEventBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesAccessEventBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesAccessEventBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesAccessEventBuilder().(*_BACnetPropertyStatesAccessEventBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesAccessEventBuilder creates a BACnetPropertyStatesAccessEventBuilder
-func (m *_BACnetPropertyStatesAccessEvent) CreateBACnetPropertyStatesAccessEventBuilder() BACnetPropertyStatesAccessEventBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesAccessEvent) CreateBACnetPropertyStatesAccessEventBuilder() BACnetPropertyStatesAccessEventBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesAccessEventBuilder()
 	}
-	return &_BACnetPropertyStatesAccessEventBuilder{_BACnetPropertyStatesAccessEvent: m.deepCopy()}
+	return &_BACnetPropertyStatesAccessEventBuilder{_BACnetPropertyStatesAccessEvent: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPropertyStatesAccessEvent) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

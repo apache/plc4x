@@ -99,50 +99,69 @@ func NewVariantByteStringBuilder() VariantByteStringBuilder {
 type _VariantByteStringBuilder struct {
 	*_VariantByteString
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantByteStringBuilder) = (*_VariantByteStringBuilder)(nil)
 
-func (m *_VariantByteStringBuilder) WithMandatoryFields(value []ByteStringArray) VariantByteStringBuilder {
-	return m.WithValue(value...)
+func (b *_VariantByteStringBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantByteStringBuilder) WithOptionalArrayLength(arrayLength int32) VariantByteStringBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantByteStringBuilder) WithMandatoryFields(value []ByteStringArray) VariantByteStringBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantByteStringBuilder) WithValue(value ...ByteStringArray) VariantByteStringBuilder {
-	m.Value = value
-	return m
+func (b *_VariantByteStringBuilder) WithOptionalArrayLength(arrayLength int32) VariantByteStringBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantByteStringBuilder) Build() (VariantByteString, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantByteStringBuilder) WithValue(value ...ByteStringArray) VariantByteStringBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantByteStringBuilder) Build() (VariantByteString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantByteString.deepCopy(), nil
+	return b._VariantByteString.deepCopy(), nil
 }
 
-func (m *_VariantByteStringBuilder) MustBuild() VariantByteString {
-	build, err := m.Build()
+func (b *_VariantByteStringBuilder) MustBuild() VariantByteString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantByteStringBuilder) DeepCopy() any {
-	return m.CreateVariantByteStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantByteStringBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantByteStringBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantByteStringBuilder) DeepCopy() any {
+	_copy := b.CreateVariantByteStringBuilder().(*_VariantByteStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantByteStringBuilder creates a VariantByteStringBuilder
-func (m *_VariantByteString) CreateVariantByteStringBuilder() VariantByteStringBuilder {
-	if m == nil {
+func (b *_VariantByteString) CreateVariantByteStringBuilder() VariantByteStringBuilder {
+	if b == nil {
 		return NewVariantByteStringBuilder()
 	}
-	return &_VariantByteStringBuilder{_VariantByteString: m.deepCopy()}
+	return &_VariantByteStringBuilder{_VariantByteString: b.deepCopy()}
 }
 
 ///////////////////////
@@ -314,9 +333,13 @@ func (m *_VariantByteString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

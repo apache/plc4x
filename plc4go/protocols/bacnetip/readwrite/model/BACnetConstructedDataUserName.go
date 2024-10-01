@@ -100,64 +100,83 @@ func NewBACnetConstructedDataUserNameBuilder() BACnetConstructedDataUserNameBuil
 type _BACnetConstructedDataUserNameBuilder struct {
 	*_BACnetConstructedDataUserName
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataUserNameBuilder) = (*_BACnetConstructedDataUserNameBuilder)(nil)
 
-func (m *_BACnetConstructedDataUserNameBuilder) WithMandatoryFields(userName BACnetApplicationTagCharacterString) BACnetConstructedDataUserNameBuilder {
-	return m.WithUserName(userName)
+func (b *_BACnetConstructedDataUserNameBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataUserNameBuilder) WithUserName(userName BACnetApplicationTagCharacterString) BACnetConstructedDataUserNameBuilder {
-	m.UserName = userName
-	return m
+func (b *_BACnetConstructedDataUserNameBuilder) WithMandatoryFields(userName BACnetApplicationTagCharacterString) BACnetConstructedDataUserNameBuilder {
+	return b.WithUserName(userName)
 }
 
-func (m *_BACnetConstructedDataUserNameBuilder) WithUserNameBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataUserNameBuilder {
-	builder := builderSupplier(m.UserName.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetConstructedDataUserNameBuilder) WithUserName(userName BACnetApplicationTagCharacterString) BACnetConstructedDataUserNameBuilder {
+	b.UserName = userName
+	return b
+}
+
+func (b *_BACnetConstructedDataUserNameBuilder) WithUserNameBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataUserNameBuilder {
+	builder := builderSupplier(b.UserName.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.UserName, err = builder.Build()
+	b.UserName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataUserNameBuilder) Build() (BACnetConstructedDataUserName, error) {
-	if m.UserName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataUserNameBuilder) Build() (BACnetConstructedDataUserName, error) {
+	if b.UserName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'userName' not set"))
+		b.err.Append(errors.New("mandatory field 'userName' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataUserName.deepCopy(), nil
+	return b._BACnetConstructedDataUserName.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataUserNameBuilder) MustBuild() BACnetConstructedDataUserName {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataUserNameBuilder) MustBuild() BACnetConstructedDataUserName {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataUserNameBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataUserNameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataUserNameBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataUserNameBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataUserNameBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataUserNameBuilder().(*_BACnetConstructedDataUserNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataUserNameBuilder creates a BACnetConstructedDataUserNameBuilder
-func (m *_BACnetConstructedDataUserName) CreateBACnetConstructedDataUserNameBuilder() BACnetConstructedDataUserNameBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataUserName) CreateBACnetConstructedDataUserNameBuilder() BACnetConstructedDataUserNameBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataUserNameBuilder()
 	}
-	return &_BACnetConstructedDataUserNameBuilder{_BACnetConstructedDataUserName: m.deepCopy()}
+	return &_BACnetConstructedDataUserNameBuilder{_BACnetConstructedDataUserName: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataUserName) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

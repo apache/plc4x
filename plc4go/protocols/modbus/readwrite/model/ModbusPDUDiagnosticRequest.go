@@ -99,50 +99,69 @@ func NewModbusPDUDiagnosticRequestBuilder() ModbusPDUDiagnosticRequestBuilder {
 type _ModbusPDUDiagnosticRequestBuilder struct {
 	*_ModbusPDUDiagnosticRequest
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUDiagnosticRequestBuilder) = (*_ModbusPDUDiagnosticRequestBuilder)(nil)
 
-func (m *_ModbusPDUDiagnosticRequestBuilder) WithMandatoryFields(subFunction uint16, data uint16) ModbusPDUDiagnosticRequestBuilder {
-	return m.WithSubFunction(subFunction).WithData(data)
+func (b *_ModbusPDUDiagnosticRequestBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUDiagnosticRequestBuilder) WithSubFunction(subFunction uint16) ModbusPDUDiagnosticRequestBuilder {
-	m.SubFunction = subFunction
-	return m
+func (b *_ModbusPDUDiagnosticRequestBuilder) WithMandatoryFields(subFunction uint16, data uint16) ModbusPDUDiagnosticRequestBuilder {
+	return b.WithSubFunction(subFunction).WithData(data)
 }
 
-func (m *_ModbusPDUDiagnosticRequestBuilder) WithData(data uint16) ModbusPDUDiagnosticRequestBuilder {
-	m.Data = data
-	return m
+func (b *_ModbusPDUDiagnosticRequestBuilder) WithSubFunction(subFunction uint16) ModbusPDUDiagnosticRequestBuilder {
+	b.SubFunction = subFunction
+	return b
 }
 
-func (m *_ModbusPDUDiagnosticRequestBuilder) Build() (ModbusPDUDiagnosticRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUDiagnosticRequestBuilder) WithData(data uint16) ModbusPDUDiagnosticRequestBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ModbusPDUDiagnosticRequestBuilder) Build() (ModbusPDUDiagnosticRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUDiagnosticRequest.deepCopy(), nil
+	return b._ModbusPDUDiagnosticRequest.deepCopy(), nil
 }
 
-func (m *_ModbusPDUDiagnosticRequestBuilder) MustBuild() ModbusPDUDiagnosticRequest {
-	build, err := m.Build()
+func (b *_ModbusPDUDiagnosticRequestBuilder) MustBuild() ModbusPDUDiagnosticRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUDiagnosticRequestBuilder) DeepCopy() any {
-	return m.CreateModbusPDUDiagnosticRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUDiagnosticRequestBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUDiagnosticRequestBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUDiagnosticRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUDiagnosticRequestBuilder().(*_ModbusPDUDiagnosticRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUDiagnosticRequestBuilder creates a ModbusPDUDiagnosticRequestBuilder
-func (m *_ModbusPDUDiagnosticRequest) CreateModbusPDUDiagnosticRequestBuilder() ModbusPDUDiagnosticRequestBuilder {
-	if m == nil {
+func (b *_ModbusPDUDiagnosticRequest) CreateModbusPDUDiagnosticRequestBuilder() ModbusPDUDiagnosticRequestBuilder {
+	if b == nil {
 		return NewModbusPDUDiagnosticRequestBuilder()
 	}
-	return &_ModbusPDUDiagnosticRequestBuilder{_ModbusPDUDiagnosticRequest: m.deepCopy()}
+	return &_ModbusPDUDiagnosticRequestBuilder{_ModbusPDUDiagnosticRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -312,9 +331,13 @@ func (m *_ModbusPDUDiagnosticRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

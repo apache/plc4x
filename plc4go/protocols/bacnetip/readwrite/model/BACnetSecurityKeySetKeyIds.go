@@ -113,88 +113,92 @@ type _BACnetSecurityKeySetKeyIdsBuilder struct {
 
 var _ (BACnetSecurityKeySetKeyIdsBuilder) = (*_BACnetSecurityKeySetKeyIdsBuilder)(nil)
 
-func (m *_BACnetSecurityKeySetKeyIdsBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, keyIds []BACnetKeyIdentifier, closingTag BACnetClosingTag) BACnetSecurityKeySetKeyIdsBuilder {
-	return m.WithOpeningTag(openingTag).WithKeyIds(keyIds...).WithClosingTag(closingTag)
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, keyIds []BACnetKeyIdentifier, closingTag BACnetClosingTag) BACnetSecurityKeySetKeyIdsBuilder {
+	return b.WithOpeningTag(openingTag).WithKeyIds(keyIds...).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetSecurityKeySetKeyIdsBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetSecurityKeySetKeyIdsBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetSecurityKeySetKeyIdsBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetSecurityKeySetKeyIdsBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetSecurityKeySetKeyIdsBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetSecurityKeySetKeyIdsBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetSecurityKeySetKeyIdsBuilder) WithKeyIds(keyIds ...BACnetKeyIdentifier) BACnetSecurityKeySetKeyIdsBuilder {
-	m.KeyIds = keyIds
-	return m
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithKeyIds(keyIds ...BACnetKeyIdentifier) BACnetSecurityKeySetKeyIdsBuilder {
+	b.KeyIds = keyIds
+	return b
 }
 
-func (m *_BACnetSecurityKeySetKeyIdsBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetSecurityKeySetKeyIdsBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetSecurityKeySetKeyIdsBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetSecurityKeySetKeyIdsBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetSecurityKeySetKeyIdsBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetSecurityKeySetKeyIdsBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetSecurityKeySetKeyIdsBuilder) Build() (BACnetSecurityKeySetKeyIds, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) Build() (BACnetSecurityKeySetKeyIds, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetSecurityKeySetKeyIds.deepCopy(), nil
+	return b._BACnetSecurityKeySetKeyIds.deepCopy(), nil
 }
 
-func (m *_BACnetSecurityKeySetKeyIdsBuilder) MustBuild() BACnetSecurityKeySetKeyIds {
-	build, err := m.Build()
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) MustBuild() BACnetSecurityKeySetKeyIds {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetSecurityKeySetKeyIdsBuilder) DeepCopy() any {
-	return m.CreateBACnetSecurityKeySetKeyIdsBuilder()
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetSecurityKeySetKeyIdsBuilder().(*_BACnetSecurityKeySetKeyIdsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetSecurityKeySetKeyIdsBuilder creates a BACnetSecurityKeySetKeyIdsBuilder
-func (m *_BACnetSecurityKeySetKeyIds) CreateBACnetSecurityKeySetKeyIdsBuilder() BACnetSecurityKeySetKeyIdsBuilder {
-	if m == nil {
+func (b *_BACnetSecurityKeySetKeyIds) CreateBACnetSecurityKeySetKeyIdsBuilder() BACnetSecurityKeySetKeyIdsBuilder {
+	if b == nil {
 		return NewBACnetSecurityKeySetKeyIdsBuilder()
 	}
-	return &_BACnetSecurityKeySetKeyIdsBuilder{_BACnetSecurityKeySetKeyIds: m.deepCopy()}
+	return &_BACnetSecurityKeySetKeyIdsBuilder{_BACnetSecurityKeySetKeyIds: b.deepCopy()}
 }
 
 ///////////////////////
@@ -382,9 +386,13 @@ func (m *_BACnetSecurityKeySetKeyIds) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

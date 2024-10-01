@@ -91,40 +91,59 @@ func NewEipConnectionRequestBuilder() EipConnectionRequestBuilder {
 type _EipConnectionRequestBuilder struct {
 	*_EipConnectionRequest
 
+	parentBuilder *_EipPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (EipConnectionRequestBuilder) = (*_EipConnectionRequestBuilder)(nil)
 
-func (m *_EipConnectionRequestBuilder) WithMandatoryFields() EipConnectionRequestBuilder {
-	return m
+func (b *_EipConnectionRequestBuilder) setParent(contract EipPacketContract) {
+	b.EipPacketContract = contract
 }
 
-func (m *_EipConnectionRequestBuilder) Build() (EipConnectionRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_EipConnectionRequestBuilder) WithMandatoryFields() EipConnectionRequestBuilder {
+	return b
+}
+
+func (b *_EipConnectionRequestBuilder) Build() (EipConnectionRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EipConnectionRequest.deepCopy(), nil
+	return b._EipConnectionRequest.deepCopy(), nil
 }
 
-func (m *_EipConnectionRequestBuilder) MustBuild() EipConnectionRequest {
-	build, err := m.Build()
+func (b *_EipConnectionRequestBuilder) MustBuild() EipConnectionRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EipConnectionRequestBuilder) DeepCopy() any {
-	return m.CreateEipConnectionRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EipConnectionRequestBuilder) Done() EipPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EipConnectionRequestBuilder) buildForEipPacket() (EipPacket, error) {
+	return b.Build()
+}
+
+func (b *_EipConnectionRequestBuilder) DeepCopy() any {
+	_copy := b.CreateEipConnectionRequestBuilder().(*_EipConnectionRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEipConnectionRequestBuilder creates a EipConnectionRequestBuilder
-func (m *_EipConnectionRequest) CreateEipConnectionRequestBuilder() EipConnectionRequestBuilder {
-	if m == nil {
+func (b *_EipConnectionRequest) CreateEipConnectionRequestBuilder() EipConnectionRequestBuilder {
+	if b == nil {
 		return NewEipConnectionRequestBuilder()
 	}
-	return &_EipConnectionRequestBuilder{_EipConnectionRequest: m.deepCopy()}
+	return &_EipConnectionRequestBuilder{_EipConnectionRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -292,9 +311,13 @@ func (m *_EipConnectionRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

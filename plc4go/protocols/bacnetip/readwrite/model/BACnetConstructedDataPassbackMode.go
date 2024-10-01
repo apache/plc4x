@@ -100,64 +100,83 @@ func NewBACnetConstructedDataPassbackModeBuilder() BACnetConstructedDataPassback
 type _BACnetConstructedDataPassbackModeBuilder struct {
 	*_BACnetConstructedDataPassbackMode
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataPassbackModeBuilder) = (*_BACnetConstructedDataPassbackModeBuilder)(nil)
 
-func (m *_BACnetConstructedDataPassbackModeBuilder) WithMandatoryFields(passbackMode BACnetAccessPassbackModeTagged) BACnetConstructedDataPassbackModeBuilder {
-	return m.WithPassbackMode(passbackMode)
+func (b *_BACnetConstructedDataPassbackModeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataPassbackModeBuilder) WithPassbackMode(passbackMode BACnetAccessPassbackModeTagged) BACnetConstructedDataPassbackModeBuilder {
-	m.PassbackMode = passbackMode
-	return m
+func (b *_BACnetConstructedDataPassbackModeBuilder) WithMandatoryFields(passbackMode BACnetAccessPassbackModeTagged) BACnetConstructedDataPassbackModeBuilder {
+	return b.WithPassbackMode(passbackMode)
 }
 
-func (m *_BACnetConstructedDataPassbackModeBuilder) WithPassbackModeBuilder(builderSupplier func(BACnetAccessPassbackModeTaggedBuilder) BACnetAccessPassbackModeTaggedBuilder) BACnetConstructedDataPassbackModeBuilder {
-	builder := builderSupplier(m.PassbackMode.CreateBACnetAccessPassbackModeTaggedBuilder())
+func (b *_BACnetConstructedDataPassbackModeBuilder) WithPassbackMode(passbackMode BACnetAccessPassbackModeTagged) BACnetConstructedDataPassbackModeBuilder {
+	b.PassbackMode = passbackMode
+	return b
+}
+
+func (b *_BACnetConstructedDataPassbackModeBuilder) WithPassbackModeBuilder(builderSupplier func(BACnetAccessPassbackModeTaggedBuilder) BACnetAccessPassbackModeTaggedBuilder) BACnetConstructedDataPassbackModeBuilder {
+	builder := builderSupplier(b.PassbackMode.CreateBACnetAccessPassbackModeTaggedBuilder())
 	var err error
-	m.PassbackMode, err = builder.Build()
+	b.PassbackMode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAccessPassbackModeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAccessPassbackModeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataPassbackModeBuilder) Build() (BACnetConstructedDataPassbackMode, error) {
-	if m.PassbackMode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataPassbackModeBuilder) Build() (BACnetConstructedDataPassbackMode, error) {
+	if b.PassbackMode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'passbackMode' not set"))
+		b.err.Append(errors.New("mandatory field 'passbackMode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataPassbackMode.deepCopy(), nil
+	return b._BACnetConstructedDataPassbackMode.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataPassbackModeBuilder) MustBuild() BACnetConstructedDataPassbackMode {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataPassbackModeBuilder) MustBuild() BACnetConstructedDataPassbackMode {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataPassbackModeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataPassbackModeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPassbackModeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPassbackModeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPassbackModeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPassbackModeBuilder().(*_BACnetConstructedDataPassbackModeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataPassbackModeBuilder creates a BACnetConstructedDataPassbackModeBuilder
-func (m *_BACnetConstructedDataPassbackMode) CreateBACnetConstructedDataPassbackModeBuilder() BACnetConstructedDataPassbackModeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataPassbackMode) CreateBACnetConstructedDataPassbackModeBuilder() BACnetConstructedDataPassbackModeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataPassbackModeBuilder()
 	}
-	return &_BACnetConstructedDataPassbackModeBuilder{_BACnetConstructedDataPassbackMode: m.deepCopy()}
+	return &_BACnetConstructedDataPassbackModeBuilder{_BACnetConstructedDataPassbackMode: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataPassbackMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

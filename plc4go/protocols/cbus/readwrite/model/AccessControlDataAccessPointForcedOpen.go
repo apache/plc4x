@@ -85,40 +85,59 @@ func NewAccessControlDataAccessPointForcedOpenBuilder() AccessControlDataAccessP
 type _AccessControlDataAccessPointForcedOpenBuilder struct {
 	*_AccessControlDataAccessPointForcedOpen
 
+	parentBuilder *_AccessControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AccessControlDataAccessPointForcedOpenBuilder) = (*_AccessControlDataAccessPointForcedOpenBuilder)(nil)
 
-func (m *_AccessControlDataAccessPointForcedOpenBuilder) WithMandatoryFields() AccessControlDataAccessPointForcedOpenBuilder {
-	return m
+func (b *_AccessControlDataAccessPointForcedOpenBuilder) setParent(contract AccessControlDataContract) {
+	b.AccessControlDataContract = contract
 }
 
-func (m *_AccessControlDataAccessPointForcedOpenBuilder) Build() (AccessControlDataAccessPointForcedOpen, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AccessControlDataAccessPointForcedOpenBuilder) WithMandatoryFields() AccessControlDataAccessPointForcedOpenBuilder {
+	return b
+}
+
+func (b *_AccessControlDataAccessPointForcedOpenBuilder) Build() (AccessControlDataAccessPointForcedOpen, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AccessControlDataAccessPointForcedOpen.deepCopy(), nil
+	return b._AccessControlDataAccessPointForcedOpen.deepCopy(), nil
 }
 
-func (m *_AccessControlDataAccessPointForcedOpenBuilder) MustBuild() AccessControlDataAccessPointForcedOpen {
-	build, err := m.Build()
+func (b *_AccessControlDataAccessPointForcedOpenBuilder) MustBuild() AccessControlDataAccessPointForcedOpen {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AccessControlDataAccessPointForcedOpenBuilder) DeepCopy() any {
-	return m.CreateAccessControlDataAccessPointForcedOpenBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AccessControlDataAccessPointForcedOpenBuilder) Done() AccessControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AccessControlDataAccessPointForcedOpenBuilder) buildForAccessControlData() (AccessControlData, error) {
+	return b.Build()
+}
+
+func (b *_AccessControlDataAccessPointForcedOpenBuilder) DeepCopy() any {
+	_copy := b.CreateAccessControlDataAccessPointForcedOpenBuilder().(*_AccessControlDataAccessPointForcedOpenBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAccessControlDataAccessPointForcedOpenBuilder creates a AccessControlDataAccessPointForcedOpenBuilder
-func (m *_AccessControlDataAccessPointForcedOpen) CreateAccessControlDataAccessPointForcedOpenBuilder() AccessControlDataAccessPointForcedOpenBuilder {
-	if m == nil {
+func (b *_AccessControlDataAccessPointForcedOpen) CreateAccessControlDataAccessPointForcedOpenBuilder() AccessControlDataAccessPointForcedOpenBuilder {
+	if b == nil {
 		return NewAccessControlDataAccessPointForcedOpenBuilder()
 	}
-	return &_AccessControlDataAccessPointForcedOpenBuilder{_AccessControlDataAccessPointForcedOpen: m.deepCopy()}
+	return &_AccessControlDataAccessPointForcedOpenBuilder{_AccessControlDataAccessPointForcedOpen: b.deepCopy()}
 }
 
 ///////////////////////
@@ -230,9 +249,13 @@ func (m *_AccessControlDataAccessPointForcedOpen) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

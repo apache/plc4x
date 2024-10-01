@@ -112,74 +112,93 @@ func NewAPDUAbortBuilder() APDUAbortBuilder {
 type _APDUAbortBuilder struct {
 	*_APDUAbort
 
+	parentBuilder *_APDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (APDUAbortBuilder) = (*_APDUAbortBuilder)(nil)
 
-func (m *_APDUAbortBuilder) WithMandatoryFields(server bool, originalInvokeId uint8, abortReason BACnetAbortReasonTagged) APDUAbortBuilder {
-	return m.WithServer(server).WithOriginalInvokeId(originalInvokeId).WithAbortReason(abortReason)
+func (b *_APDUAbortBuilder) setParent(contract APDUContract) {
+	b.APDUContract = contract
 }
 
-func (m *_APDUAbortBuilder) WithServer(server bool) APDUAbortBuilder {
-	m.Server = server
-	return m
+func (b *_APDUAbortBuilder) WithMandatoryFields(server bool, originalInvokeId uint8, abortReason BACnetAbortReasonTagged) APDUAbortBuilder {
+	return b.WithServer(server).WithOriginalInvokeId(originalInvokeId).WithAbortReason(abortReason)
 }
 
-func (m *_APDUAbortBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDUAbortBuilder {
-	m.OriginalInvokeId = originalInvokeId
-	return m
+func (b *_APDUAbortBuilder) WithServer(server bool) APDUAbortBuilder {
+	b.Server = server
+	return b
 }
 
-func (m *_APDUAbortBuilder) WithAbortReason(abortReason BACnetAbortReasonTagged) APDUAbortBuilder {
-	m.AbortReason = abortReason
-	return m
+func (b *_APDUAbortBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDUAbortBuilder {
+	b.OriginalInvokeId = originalInvokeId
+	return b
 }
 
-func (m *_APDUAbortBuilder) WithAbortReasonBuilder(builderSupplier func(BACnetAbortReasonTaggedBuilder) BACnetAbortReasonTaggedBuilder) APDUAbortBuilder {
-	builder := builderSupplier(m.AbortReason.CreateBACnetAbortReasonTaggedBuilder())
+func (b *_APDUAbortBuilder) WithAbortReason(abortReason BACnetAbortReasonTagged) APDUAbortBuilder {
+	b.AbortReason = abortReason
+	return b
+}
+
+func (b *_APDUAbortBuilder) WithAbortReasonBuilder(builderSupplier func(BACnetAbortReasonTaggedBuilder) BACnetAbortReasonTaggedBuilder) APDUAbortBuilder {
+	builder := builderSupplier(b.AbortReason.CreateBACnetAbortReasonTaggedBuilder())
 	var err error
-	m.AbortReason, err = builder.Build()
+	b.AbortReason, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAbortReasonTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAbortReasonTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_APDUAbortBuilder) Build() (APDUAbort, error) {
-	if m.AbortReason == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_APDUAbortBuilder) Build() (APDUAbort, error) {
+	if b.AbortReason == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'abortReason' not set"))
+		b.err.Append(errors.New("mandatory field 'abortReason' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._APDUAbort.deepCopy(), nil
+	return b._APDUAbort.deepCopy(), nil
 }
 
-func (m *_APDUAbortBuilder) MustBuild() APDUAbort {
-	build, err := m.Build()
+func (b *_APDUAbortBuilder) MustBuild() APDUAbort {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_APDUAbortBuilder) DeepCopy() any {
-	return m.CreateAPDUAbortBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_APDUAbortBuilder) Done() APDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_APDUAbortBuilder) buildForAPDU() (APDU, error) {
+	return b.Build()
+}
+
+func (b *_APDUAbortBuilder) DeepCopy() any {
+	_copy := b.CreateAPDUAbortBuilder().(*_APDUAbortBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAPDUAbortBuilder creates a APDUAbortBuilder
-func (m *_APDUAbort) CreateAPDUAbortBuilder() APDUAbortBuilder {
-	if m == nil {
+func (b *_APDUAbort) CreateAPDUAbortBuilder() APDUAbortBuilder {
+	if b == nil {
 		return NewAPDUAbortBuilder()
 	}
-	return &_APDUAbortBuilder{_APDUAbort: m.deepCopy()}
+	return &_APDUAbortBuilder{_APDUAbort: b.deepCopy()}
 }
 
 ///////////////////////
@@ -373,9 +392,13 @@ func (m *_APDUAbort) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

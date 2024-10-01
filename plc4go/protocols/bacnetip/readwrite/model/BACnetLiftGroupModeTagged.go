@@ -104,64 +104,68 @@ type _BACnetLiftGroupModeTaggedBuilder struct {
 
 var _ (BACnetLiftGroupModeTaggedBuilder) = (*_BACnetLiftGroupModeTaggedBuilder)(nil)
 
-func (m *_BACnetLiftGroupModeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLiftGroupMode) BACnetLiftGroupModeTaggedBuilder {
-	return m.WithHeader(header).WithValue(value)
+func (b *_BACnetLiftGroupModeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLiftGroupMode) BACnetLiftGroupModeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
 }
 
-func (m *_BACnetLiftGroupModeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLiftGroupModeTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetLiftGroupModeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLiftGroupModeTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetLiftGroupModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftGroupModeTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetLiftGroupModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftGroupModeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLiftGroupModeTaggedBuilder) WithValue(value BACnetLiftGroupMode) BACnetLiftGroupModeTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetLiftGroupModeTaggedBuilder) WithValue(value BACnetLiftGroupMode) BACnetLiftGroupModeTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetLiftGroupModeTaggedBuilder) Build() (BACnetLiftGroupModeTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLiftGroupModeTaggedBuilder) Build() (BACnetLiftGroupModeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLiftGroupModeTagged.deepCopy(), nil
+	return b._BACnetLiftGroupModeTagged.deepCopy(), nil
 }
 
-func (m *_BACnetLiftGroupModeTaggedBuilder) MustBuild() BACnetLiftGroupModeTagged {
-	build, err := m.Build()
+func (b *_BACnetLiftGroupModeTaggedBuilder) MustBuild() BACnetLiftGroupModeTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLiftGroupModeTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetLiftGroupModeTaggedBuilder()
+func (b *_BACnetLiftGroupModeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLiftGroupModeTaggedBuilder().(*_BACnetLiftGroupModeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLiftGroupModeTaggedBuilder creates a BACnetLiftGroupModeTaggedBuilder
-func (m *_BACnetLiftGroupModeTagged) CreateBACnetLiftGroupModeTaggedBuilder() BACnetLiftGroupModeTaggedBuilder {
-	if m == nil {
+func (b *_BACnetLiftGroupModeTagged) CreateBACnetLiftGroupModeTaggedBuilder() BACnetLiftGroupModeTaggedBuilder {
+	if b == nil {
 		return NewBACnetLiftGroupModeTaggedBuilder()
 	}
-	return &_BACnetLiftGroupModeTaggedBuilder{_BACnetLiftGroupModeTagged: m.deepCopy()}
+	return &_BACnetLiftGroupModeTaggedBuilder{_BACnetLiftGroupModeTagged: b.deepCopy()}
 }
 
 ///////////////////////
@@ -341,9 +345,13 @@ func (m *_BACnetLiftGroupModeTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

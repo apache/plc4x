@@ -99,50 +99,69 @@ func NewApduDataMemoryResponseBuilder() ApduDataMemoryResponseBuilder {
 type _ApduDataMemoryResponseBuilder struct {
 	*_ApduDataMemoryResponse
 
+	parentBuilder *_ApduDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataMemoryResponseBuilder) = (*_ApduDataMemoryResponseBuilder)(nil)
 
-func (m *_ApduDataMemoryResponseBuilder) WithMandatoryFields(address uint16, data []byte) ApduDataMemoryResponseBuilder {
-	return m.WithAddress(address).WithData(data...)
+func (b *_ApduDataMemoryResponseBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
 }
 
-func (m *_ApduDataMemoryResponseBuilder) WithAddress(address uint16) ApduDataMemoryResponseBuilder {
-	m.Address = address
-	return m
+func (b *_ApduDataMemoryResponseBuilder) WithMandatoryFields(address uint16, data []byte) ApduDataMemoryResponseBuilder {
+	return b.WithAddress(address).WithData(data...)
 }
 
-func (m *_ApduDataMemoryResponseBuilder) WithData(data ...byte) ApduDataMemoryResponseBuilder {
-	m.Data = data
-	return m
+func (b *_ApduDataMemoryResponseBuilder) WithAddress(address uint16) ApduDataMemoryResponseBuilder {
+	b.Address = address
+	return b
 }
 
-func (m *_ApduDataMemoryResponseBuilder) Build() (ApduDataMemoryResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataMemoryResponseBuilder) WithData(data ...byte) ApduDataMemoryResponseBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ApduDataMemoryResponseBuilder) Build() (ApduDataMemoryResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataMemoryResponse.deepCopy(), nil
+	return b._ApduDataMemoryResponse.deepCopy(), nil
 }
 
-func (m *_ApduDataMemoryResponseBuilder) MustBuild() ApduDataMemoryResponse {
-	build, err := m.Build()
+func (b *_ApduDataMemoryResponseBuilder) MustBuild() ApduDataMemoryResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataMemoryResponseBuilder) DeepCopy() any {
-	return m.CreateApduDataMemoryResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataMemoryResponseBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataMemoryResponseBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataMemoryResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataMemoryResponseBuilder().(*_ApduDataMemoryResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataMemoryResponseBuilder creates a ApduDataMemoryResponseBuilder
-func (m *_ApduDataMemoryResponse) CreateApduDataMemoryResponseBuilder() ApduDataMemoryResponseBuilder {
-	if m == nil {
+func (b *_ApduDataMemoryResponse) CreateApduDataMemoryResponseBuilder() ApduDataMemoryResponseBuilder {
+	if b == nil {
 		return NewApduDataMemoryResponseBuilder()
 	}
-	return &_ApduDataMemoryResponseBuilder{_ApduDataMemoryResponse: m.deepCopy()}
+	return &_ApduDataMemoryResponseBuilder{_ApduDataMemoryResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -319,9 +338,13 @@ func (m *_ApduDataMemoryResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

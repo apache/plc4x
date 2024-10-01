@@ -117,65 +117,69 @@ type _AdsTableSizesBuilder struct {
 
 var _ (AdsTableSizesBuilder) = (*_AdsTableSizesBuilder)(nil)
 
-func (m *_AdsTableSizesBuilder) WithMandatoryFields(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, extraCount uint32, extraLength uint32) AdsTableSizesBuilder {
-	return m.WithSymbolCount(symbolCount).WithSymbolLength(symbolLength).WithDataTypeCount(dataTypeCount).WithDataTypeLength(dataTypeLength).WithExtraCount(extraCount).WithExtraLength(extraLength)
+func (b *_AdsTableSizesBuilder) WithMandatoryFields(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, extraCount uint32, extraLength uint32) AdsTableSizesBuilder {
+	return b.WithSymbolCount(symbolCount).WithSymbolLength(symbolLength).WithDataTypeCount(dataTypeCount).WithDataTypeLength(dataTypeLength).WithExtraCount(extraCount).WithExtraLength(extraLength)
 }
 
-func (m *_AdsTableSizesBuilder) WithSymbolCount(symbolCount uint32) AdsTableSizesBuilder {
-	m.SymbolCount = symbolCount
-	return m
+func (b *_AdsTableSizesBuilder) WithSymbolCount(symbolCount uint32) AdsTableSizesBuilder {
+	b.SymbolCount = symbolCount
+	return b
 }
 
-func (m *_AdsTableSizesBuilder) WithSymbolLength(symbolLength uint32) AdsTableSizesBuilder {
-	m.SymbolLength = symbolLength
-	return m
+func (b *_AdsTableSizesBuilder) WithSymbolLength(symbolLength uint32) AdsTableSizesBuilder {
+	b.SymbolLength = symbolLength
+	return b
 }
 
-func (m *_AdsTableSizesBuilder) WithDataTypeCount(dataTypeCount uint32) AdsTableSizesBuilder {
-	m.DataTypeCount = dataTypeCount
-	return m
+func (b *_AdsTableSizesBuilder) WithDataTypeCount(dataTypeCount uint32) AdsTableSizesBuilder {
+	b.DataTypeCount = dataTypeCount
+	return b
 }
 
-func (m *_AdsTableSizesBuilder) WithDataTypeLength(dataTypeLength uint32) AdsTableSizesBuilder {
-	m.DataTypeLength = dataTypeLength
-	return m
+func (b *_AdsTableSizesBuilder) WithDataTypeLength(dataTypeLength uint32) AdsTableSizesBuilder {
+	b.DataTypeLength = dataTypeLength
+	return b
 }
 
-func (m *_AdsTableSizesBuilder) WithExtraCount(extraCount uint32) AdsTableSizesBuilder {
-	m.ExtraCount = extraCount
-	return m
+func (b *_AdsTableSizesBuilder) WithExtraCount(extraCount uint32) AdsTableSizesBuilder {
+	b.ExtraCount = extraCount
+	return b
 }
 
-func (m *_AdsTableSizesBuilder) WithExtraLength(extraLength uint32) AdsTableSizesBuilder {
-	m.ExtraLength = extraLength
-	return m
+func (b *_AdsTableSizesBuilder) WithExtraLength(extraLength uint32) AdsTableSizesBuilder {
+	b.ExtraLength = extraLength
+	return b
 }
 
-func (m *_AdsTableSizesBuilder) Build() (AdsTableSizes, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsTableSizesBuilder) Build() (AdsTableSizes, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsTableSizes.deepCopy(), nil
+	return b._AdsTableSizes.deepCopy(), nil
 }
 
-func (m *_AdsTableSizesBuilder) MustBuild() AdsTableSizes {
-	build, err := m.Build()
+func (b *_AdsTableSizesBuilder) MustBuild() AdsTableSizes {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsTableSizesBuilder) DeepCopy() any {
-	return m.CreateAdsTableSizesBuilder()
+func (b *_AdsTableSizesBuilder) DeepCopy() any {
+	_copy := b.CreateAdsTableSizesBuilder().(*_AdsTableSizesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsTableSizesBuilder creates a AdsTableSizesBuilder
-func (m *_AdsTableSizes) CreateAdsTableSizesBuilder() AdsTableSizesBuilder {
-	if m == nil {
+func (b *_AdsTableSizes) CreateAdsTableSizesBuilder() AdsTableSizesBuilder {
+	if b == nil {
 		return NewAdsTableSizesBuilder()
 	}
-	return &_AdsTableSizesBuilder{_AdsTableSizes: m.deepCopy()}
+	return &_AdsTableSizesBuilder{_AdsTableSizes: b.deepCopy()}
 }
 
 ///////////////////////
@@ -402,9 +406,13 @@ func (m *_AdsTableSizes) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

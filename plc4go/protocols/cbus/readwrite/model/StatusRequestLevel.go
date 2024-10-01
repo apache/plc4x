@@ -102,50 +102,69 @@ func NewStatusRequestLevelBuilder() StatusRequestLevelBuilder {
 type _StatusRequestLevelBuilder struct {
 	*_StatusRequestLevel
 
+	parentBuilder *_StatusRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (StatusRequestLevelBuilder) = (*_StatusRequestLevelBuilder)(nil)
 
-func (m *_StatusRequestLevelBuilder) WithMandatoryFields(application ApplicationIdContainer, startingGroupAddressLabel byte) StatusRequestLevelBuilder {
-	return m.WithApplication(application).WithStartingGroupAddressLabel(startingGroupAddressLabel)
+func (b *_StatusRequestLevelBuilder) setParent(contract StatusRequestContract) {
+	b.StatusRequestContract = contract
 }
 
-func (m *_StatusRequestLevelBuilder) WithApplication(application ApplicationIdContainer) StatusRequestLevelBuilder {
-	m.Application = application
-	return m
+func (b *_StatusRequestLevelBuilder) WithMandatoryFields(application ApplicationIdContainer, startingGroupAddressLabel byte) StatusRequestLevelBuilder {
+	return b.WithApplication(application).WithStartingGroupAddressLabel(startingGroupAddressLabel)
 }
 
-func (m *_StatusRequestLevelBuilder) WithStartingGroupAddressLabel(startingGroupAddressLabel byte) StatusRequestLevelBuilder {
-	m.StartingGroupAddressLabel = startingGroupAddressLabel
-	return m
+func (b *_StatusRequestLevelBuilder) WithApplication(application ApplicationIdContainer) StatusRequestLevelBuilder {
+	b.Application = application
+	return b
 }
 
-func (m *_StatusRequestLevelBuilder) Build() (StatusRequestLevel, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_StatusRequestLevelBuilder) WithStartingGroupAddressLabel(startingGroupAddressLabel byte) StatusRequestLevelBuilder {
+	b.StartingGroupAddressLabel = startingGroupAddressLabel
+	return b
+}
+
+func (b *_StatusRequestLevelBuilder) Build() (StatusRequestLevel, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._StatusRequestLevel.deepCopy(), nil
+	return b._StatusRequestLevel.deepCopy(), nil
 }
 
-func (m *_StatusRequestLevelBuilder) MustBuild() StatusRequestLevel {
-	build, err := m.Build()
+func (b *_StatusRequestLevelBuilder) MustBuild() StatusRequestLevel {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_StatusRequestLevelBuilder) DeepCopy() any {
-	return m.CreateStatusRequestLevelBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_StatusRequestLevelBuilder) Done() StatusRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_StatusRequestLevelBuilder) buildForStatusRequest() (StatusRequest, error) {
+	return b.Build()
+}
+
+func (b *_StatusRequestLevelBuilder) DeepCopy() any {
+	_copy := b.CreateStatusRequestLevelBuilder().(*_StatusRequestLevelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateStatusRequestLevelBuilder creates a StatusRequestLevelBuilder
-func (m *_StatusRequestLevel) CreateStatusRequestLevelBuilder() StatusRequestLevelBuilder {
-	if m == nil {
+func (b *_StatusRequestLevel) CreateStatusRequestLevelBuilder() StatusRequestLevelBuilder {
+	if b == nil {
 		return NewStatusRequestLevelBuilder()
 	}
-	return &_StatusRequestLevelBuilder{_StatusRequestLevel: m.deepCopy()}
+	return &_StatusRequestLevelBuilder{_StatusRequestLevel: b.deepCopy()}
 }
 
 ///////////////////////
@@ -336,9 +355,13 @@ func (m *_StatusRequestLevel) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

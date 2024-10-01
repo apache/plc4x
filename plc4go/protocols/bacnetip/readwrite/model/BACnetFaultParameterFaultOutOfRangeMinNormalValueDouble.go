@@ -98,64 +98,83 @@ func NewBACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder() BACnetF
 type _BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder struct {
 	*_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
 
+	parentBuilder *_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) = (*_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder)(nil)
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder {
-	return m.WithDoubleValue(doubleValue)
+func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) setParent(contract BACnetFaultParameterFaultOutOfRangeMinNormalValueContract) {
+	b.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract = contract
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) WithDoubleValue(doubleValue BACnetApplicationTagDouble) BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder {
-	m.DoubleValue = doubleValue
-	return m
+func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder {
+	return b.WithDoubleValue(doubleValue)
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) WithDoubleValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder {
-	builder := builderSupplier(m.DoubleValue.CreateBACnetApplicationTagDoubleBuilder())
+func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) WithDoubleValue(doubleValue BACnetApplicationTagDouble) BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder {
+	b.DoubleValue = doubleValue
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) WithDoubleValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder {
+	builder := builderSupplier(b.DoubleValue.CreateBACnetApplicationTagDoubleBuilder())
 	var err error
-	m.DoubleValue, err = builder.Build()
+	b.DoubleValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) Build() (BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble, error) {
-	if m.DoubleValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) Build() (BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble, error) {
+	if b.DoubleValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'doubleValue' not set"))
+		b.err.Append(errors.New("mandatory field 'doubleValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble.deepCopy(), nil
+	return b._BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble.deepCopy(), nil
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) MustBuild() BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble {
-	build, err := m.Build()
+func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) MustBuild() BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) DeepCopy() any {
-	return m.CreateBACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) Done() BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) buildForBACnetFaultParameterFaultOutOfRangeMinNormalValue() (BACnetFaultParameterFaultOutOfRangeMinNormalValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder().(*_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder creates a BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) CreateBACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder() BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder {
-	if m == nil {
+func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) CreateBACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder() BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder {
+	if b == nil {
 		return NewBACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder()
 	}
-	return &_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder{_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble: m.deepCopy()}
+	return &_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder{_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble: b.deepCopy()}
 }
 
 ///////////////////////
@@ -296,9 +315,13 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) String() stri
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

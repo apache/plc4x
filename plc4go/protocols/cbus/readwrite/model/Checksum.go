@@ -90,40 +90,44 @@ type _ChecksumBuilder struct {
 
 var _ (ChecksumBuilder) = (*_ChecksumBuilder)(nil)
 
-func (m *_ChecksumBuilder) WithMandatoryFields(value byte) ChecksumBuilder {
-	return m.WithValue(value)
+func (b *_ChecksumBuilder) WithMandatoryFields(value byte) ChecksumBuilder {
+	return b.WithValue(value)
 }
 
-func (m *_ChecksumBuilder) WithValue(value byte) ChecksumBuilder {
-	m.Value = value
-	return m
+func (b *_ChecksumBuilder) WithValue(value byte) ChecksumBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_ChecksumBuilder) Build() (Checksum, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ChecksumBuilder) Build() (Checksum, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Checksum.deepCopy(), nil
+	return b._Checksum.deepCopy(), nil
 }
 
-func (m *_ChecksumBuilder) MustBuild() Checksum {
-	build, err := m.Build()
+func (b *_ChecksumBuilder) MustBuild() Checksum {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ChecksumBuilder) DeepCopy() any {
-	return m.CreateChecksumBuilder()
+func (b *_ChecksumBuilder) DeepCopy() any {
+	_copy := b.CreateChecksumBuilder().(*_ChecksumBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateChecksumBuilder creates a ChecksumBuilder
-func (m *_Checksum) CreateChecksumBuilder() ChecksumBuilder {
-	if m == nil {
+func (b *_Checksum) CreateChecksumBuilder() ChecksumBuilder {
+	if b == nil {
 		return NewChecksumBuilder()
 	}
-	return &_ChecksumBuilder{_Checksum: m.deepCopy()}
+	return &_ChecksumBuilder{_Checksum: b.deepCopy()}
 }
 
 ///////////////////////
@@ -260,9 +264,13 @@ func (m *_Checksum) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -106,69 +106,88 @@ func NewNodeIdStringBuilder() NodeIdStringBuilder {
 type _NodeIdStringBuilder struct {
 	*_NodeIdString
 
+	parentBuilder *_NodeIdTypeDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NodeIdStringBuilder) = (*_NodeIdStringBuilder)(nil)
 
-func (m *_NodeIdStringBuilder) WithMandatoryFields(namespaceIndex uint16, id PascalString) NodeIdStringBuilder {
-	return m.WithNamespaceIndex(namespaceIndex).WithId(id)
+func (b *_NodeIdStringBuilder) setParent(contract NodeIdTypeDefinitionContract) {
+	b.NodeIdTypeDefinitionContract = contract
 }
 
-func (m *_NodeIdStringBuilder) WithNamespaceIndex(namespaceIndex uint16) NodeIdStringBuilder {
-	m.NamespaceIndex = namespaceIndex
-	return m
+func (b *_NodeIdStringBuilder) WithMandatoryFields(namespaceIndex uint16, id PascalString) NodeIdStringBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithId(id)
 }
 
-func (m *_NodeIdStringBuilder) WithId(id PascalString) NodeIdStringBuilder {
-	m.Id = id
-	return m
+func (b *_NodeIdStringBuilder) WithNamespaceIndex(namespaceIndex uint16) NodeIdStringBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
 }
 
-func (m *_NodeIdStringBuilder) WithIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) NodeIdStringBuilder {
-	builder := builderSupplier(m.Id.CreatePascalStringBuilder())
+func (b *_NodeIdStringBuilder) WithId(id PascalString) NodeIdStringBuilder {
+	b.Id = id
+	return b
+}
+
+func (b *_NodeIdStringBuilder) WithIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) NodeIdStringBuilder {
+	builder := builderSupplier(b.Id.CreatePascalStringBuilder())
 	var err error
-	m.Id, err = builder.Build()
+	b.Id, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_NodeIdStringBuilder) Build() (NodeIdString, error) {
-	if m.Id == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_NodeIdStringBuilder) Build() (NodeIdString, error) {
+	if b.Id == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'id' not set"))
+		b.err.Append(errors.New("mandatory field 'id' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NodeIdString.deepCopy(), nil
+	return b._NodeIdString.deepCopy(), nil
 }
 
-func (m *_NodeIdStringBuilder) MustBuild() NodeIdString {
-	build, err := m.Build()
+func (b *_NodeIdStringBuilder) MustBuild() NodeIdString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NodeIdStringBuilder) DeepCopy() any {
-	return m.CreateNodeIdStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NodeIdStringBuilder) Done() NodeIdTypeDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NodeIdStringBuilder) buildForNodeIdTypeDefinition() (NodeIdTypeDefinition, error) {
+	return b.Build()
+}
+
+func (b *_NodeIdStringBuilder) DeepCopy() any {
+	_copy := b.CreateNodeIdStringBuilder().(*_NodeIdStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNodeIdStringBuilder creates a NodeIdStringBuilder
-func (m *_NodeIdString) CreateNodeIdStringBuilder() NodeIdStringBuilder {
-	if m == nil {
+func (b *_NodeIdString) CreateNodeIdStringBuilder() NodeIdStringBuilder {
+	if b == nil {
 		return NewNodeIdStringBuilder()
 	}
-	return &_NodeIdStringBuilder{_NodeIdString: m.deepCopy()}
+	return &_NodeIdStringBuilder{_NodeIdString: b.deepCopy()}
 }
 
 ///////////////////////
@@ -359,9 +378,13 @@ func (m *_NodeIdString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -85,40 +85,59 @@ func NewSetAttributeAllResponseBuilder() SetAttributeAllResponseBuilder {
 type _SetAttributeAllResponseBuilder struct {
 	*_SetAttributeAllResponse
 
+	parentBuilder *_CipServiceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SetAttributeAllResponseBuilder) = (*_SetAttributeAllResponseBuilder)(nil)
 
-func (m *_SetAttributeAllResponseBuilder) WithMandatoryFields() SetAttributeAllResponseBuilder {
-	return m
+func (b *_SetAttributeAllResponseBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
 }
 
-func (m *_SetAttributeAllResponseBuilder) Build() (SetAttributeAllResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SetAttributeAllResponseBuilder) WithMandatoryFields() SetAttributeAllResponseBuilder {
+	return b
+}
+
+func (b *_SetAttributeAllResponseBuilder) Build() (SetAttributeAllResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SetAttributeAllResponse.deepCopy(), nil
+	return b._SetAttributeAllResponse.deepCopy(), nil
 }
 
-func (m *_SetAttributeAllResponseBuilder) MustBuild() SetAttributeAllResponse {
-	build, err := m.Build()
+func (b *_SetAttributeAllResponseBuilder) MustBuild() SetAttributeAllResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SetAttributeAllResponseBuilder) DeepCopy() any {
-	return m.CreateSetAttributeAllResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SetAttributeAllResponseBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SetAttributeAllResponseBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_SetAttributeAllResponseBuilder) DeepCopy() any {
+	_copy := b.CreateSetAttributeAllResponseBuilder().(*_SetAttributeAllResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSetAttributeAllResponseBuilder creates a SetAttributeAllResponseBuilder
-func (m *_SetAttributeAllResponse) CreateSetAttributeAllResponseBuilder() SetAttributeAllResponseBuilder {
-	if m == nil {
+func (b *_SetAttributeAllResponse) CreateSetAttributeAllResponseBuilder() SetAttributeAllResponseBuilder {
+	if b == nil {
 		return NewSetAttributeAllResponseBuilder()
 	}
-	return &_SetAttributeAllResponseBuilder{_SetAttributeAllResponse: m.deepCopy()}
+	return &_SetAttributeAllResponseBuilder{_SetAttributeAllResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -242,9 +261,13 @@ func (m *_SetAttributeAllResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

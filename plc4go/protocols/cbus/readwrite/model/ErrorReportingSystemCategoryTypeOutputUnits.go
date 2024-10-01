@@ -93,45 +93,64 @@ func NewErrorReportingSystemCategoryTypeOutputUnitsBuilder() ErrorReportingSyste
 type _ErrorReportingSystemCategoryTypeOutputUnitsBuilder struct {
 	*_ErrorReportingSystemCategoryTypeOutputUnits
 
+	parentBuilder *_ErrorReportingSystemCategoryTypeBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ErrorReportingSystemCategoryTypeOutputUnitsBuilder) = (*_ErrorReportingSystemCategoryTypeOutputUnitsBuilder)(nil)
 
-func (m *_ErrorReportingSystemCategoryTypeOutputUnitsBuilder) WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForOutputUnits) ErrorReportingSystemCategoryTypeOutputUnitsBuilder {
-	return m.WithCategoryForType(categoryForType)
+func (b *_ErrorReportingSystemCategoryTypeOutputUnitsBuilder) setParent(contract ErrorReportingSystemCategoryTypeContract) {
+	b.ErrorReportingSystemCategoryTypeContract = contract
 }
 
-func (m *_ErrorReportingSystemCategoryTypeOutputUnitsBuilder) WithCategoryForType(categoryForType ErrorReportingSystemCategoryTypeForOutputUnits) ErrorReportingSystemCategoryTypeOutputUnitsBuilder {
-	m.CategoryForType = categoryForType
-	return m
+func (b *_ErrorReportingSystemCategoryTypeOutputUnitsBuilder) WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForOutputUnits) ErrorReportingSystemCategoryTypeOutputUnitsBuilder {
+	return b.WithCategoryForType(categoryForType)
 }
 
-func (m *_ErrorReportingSystemCategoryTypeOutputUnitsBuilder) Build() (ErrorReportingSystemCategoryTypeOutputUnits, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ErrorReportingSystemCategoryTypeOutputUnitsBuilder) WithCategoryForType(categoryForType ErrorReportingSystemCategoryTypeForOutputUnits) ErrorReportingSystemCategoryTypeOutputUnitsBuilder {
+	b.CategoryForType = categoryForType
+	return b
+}
+
+func (b *_ErrorReportingSystemCategoryTypeOutputUnitsBuilder) Build() (ErrorReportingSystemCategoryTypeOutputUnits, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ErrorReportingSystemCategoryTypeOutputUnits.deepCopy(), nil
+	return b._ErrorReportingSystemCategoryTypeOutputUnits.deepCopy(), nil
 }
 
-func (m *_ErrorReportingSystemCategoryTypeOutputUnitsBuilder) MustBuild() ErrorReportingSystemCategoryTypeOutputUnits {
-	build, err := m.Build()
+func (b *_ErrorReportingSystemCategoryTypeOutputUnitsBuilder) MustBuild() ErrorReportingSystemCategoryTypeOutputUnits {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ErrorReportingSystemCategoryTypeOutputUnitsBuilder) DeepCopy() any {
-	return m.CreateErrorReportingSystemCategoryTypeOutputUnitsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ErrorReportingSystemCategoryTypeOutputUnitsBuilder) Done() ErrorReportingSystemCategoryTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ErrorReportingSystemCategoryTypeOutputUnitsBuilder) buildForErrorReportingSystemCategoryType() (ErrorReportingSystemCategoryType, error) {
+	return b.Build()
+}
+
+func (b *_ErrorReportingSystemCategoryTypeOutputUnitsBuilder) DeepCopy() any {
+	_copy := b.CreateErrorReportingSystemCategoryTypeOutputUnitsBuilder().(*_ErrorReportingSystemCategoryTypeOutputUnitsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateErrorReportingSystemCategoryTypeOutputUnitsBuilder creates a ErrorReportingSystemCategoryTypeOutputUnitsBuilder
-func (m *_ErrorReportingSystemCategoryTypeOutputUnits) CreateErrorReportingSystemCategoryTypeOutputUnitsBuilder() ErrorReportingSystemCategoryTypeOutputUnitsBuilder {
-	if m == nil {
+func (b *_ErrorReportingSystemCategoryTypeOutputUnits) CreateErrorReportingSystemCategoryTypeOutputUnitsBuilder() ErrorReportingSystemCategoryTypeOutputUnitsBuilder {
+	if b == nil {
 		return NewErrorReportingSystemCategoryTypeOutputUnitsBuilder()
 	}
-	return &_ErrorReportingSystemCategoryTypeOutputUnitsBuilder{_ErrorReportingSystemCategoryTypeOutputUnits: m.deepCopy()}
+	return &_ErrorReportingSystemCategoryTypeOutputUnitsBuilder{_ErrorReportingSystemCategoryTypeOutputUnits: b.deepCopy()}
 }
 
 ///////////////////////
@@ -276,9 +295,13 @@ func (m *_ErrorReportingSystemCategoryTypeOutputUnits) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

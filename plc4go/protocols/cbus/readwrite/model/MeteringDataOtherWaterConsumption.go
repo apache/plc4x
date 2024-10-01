@@ -93,45 +93,64 @@ func NewMeteringDataOtherWaterConsumptionBuilder() MeteringDataOtherWaterConsump
 type _MeteringDataOtherWaterConsumptionBuilder struct {
 	*_MeteringDataOtherWaterConsumption
 
+	parentBuilder *_MeteringDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MeteringDataOtherWaterConsumptionBuilder) = (*_MeteringDataOtherWaterConsumptionBuilder)(nil)
 
-func (m *_MeteringDataOtherWaterConsumptionBuilder) WithMandatoryFields(kL uint32) MeteringDataOtherWaterConsumptionBuilder {
-	return m.WithKL(kL)
+func (b *_MeteringDataOtherWaterConsumptionBuilder) setParent(contract MeteringDataContract) {
+	b.MeteringDataContract = contract
 }
 
-func (m *_MeteringDataOtherWaterConsumptionBuilder) WithKL(kL uint32) MeteringDataOtherWaterConsumptionBuilder {
-	m.KL = kL
-	return m
+func (b *_MeteringDataOtherWaterConsumptionBuilder) WithMandatoryFields(kL uint32) MeteringDataOtherWaterConsumptionBuilder {
+	return b.WithKL(kL)
 }
 
-func (m *_MeteringDataOtherWaterConsumptionBuilder) Build() (MeteringDataOtherWaterConsumption, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MeteringDataOtherWaterConsumptionBuilder) WithKL(kL uint32) MeteringDataOtherWaterConsumptionBuilder {
+	b.KL = kL
+	return b
+}
+
+func (b *_MeteringDataOtherWaterConsumptionBuilder) Build() (MeteringDataOtherWaterConsumption, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MeteringDataOtherWaterConsumption.deepCopy(), nil
+	return b._MeteringDataOtherWaterConsumption.deepCopy(), nil
 }
 
-func (m *_MeteringDataOtherWaterConsumptionBuilder) MustBuild() MeteringDataOtherWaterConsumption {
-	build, err := m.Build()
+func (b *_MeteringDataOtherWaterConsumptionBuilder) MustBuild() MeteringDataOtherWaterConsumption {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MeteringDataOtherWaterConsumptionBuilder) DeepCopy() any {
-	return m.CreateMeteringDataOtherWaterConsumptionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MeteringDataOtherWaterConsumptionBuilder) Done() MeteringDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MeteringDataOtherWaterConsumptionBuilder) buildForMeteringData() (MeteringData, error) {
+	return b.Build()
+}
+
+func (b *_MeteringDataOtherWaterConsumptionBuilder) DeepCopy() any {
+	_copy := b.CreateMeteringDataOtherWaterConsumptionBuilder().(*_MeteringDataOtherWaterConsumptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMeteringDataOtherWaterConsumptionBuilder creates a MeteringDataOtherWaterConsumptionBuilder
-func (m *_MeteringDataOtherWaterConsumption) CreateMeteringDataOtherWaterConsumptionBuilder() MeteringDataOtherWaterConsumptionBuilder {
-	if m == nil {
+func (b *_MeteringDataOtherWaterConsumption) CreateMeteringDataOtherWaterConsumptionBuilder() MeteringDataOtherWaterConsumptionBuilder {
+	if b == nil {
 		return NewMeteringDataOtherWaterConsumptionBuilder()
 	}
-	return &_MeteringDataOtherWaterConsumptionBuilder{_MeteringDataOtherWaterConsumption: m.deepCopy()}
+	return &_MeteringDataOtherWaterConsumptionBuilder{_MeteringDataOtherWaterConsumption: b.deepCopy()}
 }
 
 ///////////////////////
@@ -271,9 +290,13 @@ func (m *_MeteringDataOtherWaterConsumption) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

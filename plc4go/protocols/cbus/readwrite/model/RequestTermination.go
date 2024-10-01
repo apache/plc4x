@@ -88,35 +88,39 @@ type _RequestTerminationBuilder struct {
 
 var _ (RequestTerminationBuilder) = (*_RequestTerminationBuilder)(nil)
 
-func (m *_RequestTerminationBuilder) WithMandatoryFields() RequestTerminationBuilder {
-	return m
+func (b *_RequestTerminationBuilder) WithMandatoryFields() RequestTerminationBuilder {
+	return b
 }
 
-func (m *_RequestTerminationBuilder) Build() (RequestTermination, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_RequestTerminationBuilder) Build() (RequestTermination, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._RequestTermination.deepCopy(), nil
+	return b._RequestTermination.deepCopy(), nil
 }
 
-func (m *_RequestTerminationBuilder) MustBuild() RequestTermination {
-	build, err := m.Build()
+func (b *_RequestTerminationBuilder) MustBuild() RequestTermination {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RequestTerminationBuilder) DeepCopy() any {
-	return m.CreateRequestTerminationBuilder()
+func (b *_RequestTerminationBuilder) DeepCopy() any {
+	_copy := b.CreateRequestTerminationBuilder().(*_RequestTerminationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRequestTerminationBuilder creates a RequestTerminationBuilder
-func (m *_RequestTermination) CreateRequestTerminationBuilder() RequestTerminationBuilder {
-	if m == nil {
+func (b *_RequestTermination) CreateRequestTerminationBuilder() RequestTerminationBuilder {
+	if b == nil {
 		return NewRequestTerminationBuilder()
 	}
-	return &_RequestTerminationBuilder{_RequestTermination: m.deepCopy()}
+	return &_RequestTerminationBuilder{_RequestTermination: b.deepCopy()}
 }
 
 ///////////////////////
@@ -251,9 +255,13 @@ func (m *_RequestTermination) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

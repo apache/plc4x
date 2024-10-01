@@ -98,64 +98,83 @@ func NewBACnetTimerStateChangeValueUnsignedBuilder() BACnetTimerStateChangeValue
 type _BACnetTimerStateChangeValueUnsignedBuilder struct {
 	*_BACnetTimerStateChangeValueUnsigned
 
+	parentBuilder *_BACnetTimerStateChangeValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetTimerStateChangeValueUnsignedBuilder) = (*_BACnetTimerStateChangeValueUnsignedBuilder)(nil)
 
-func (m *_BACnetTimerStateChangeValueUnsignedBuilder) WithMandatoryFields(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetTimerStateChangeValueUnsignedBuilder {
-	return m.WithUnsignedValue(unsignedValue)
+func (b *_BACnetTimerStateChangeValueUnsignedBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
+	b.BACnetTimerStateChangeValueContract = contract
 }
 
-func (m *_BACnetTimerStateChangeValueUnsignedBuilder) WithUnsignedValue(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetTimerStateChangeValueUnsignedBuilder {
-	m.UnsignedValue = unsignedValue
-	return m
+func (b *_BACnetTimerStateChangeValueUnsignedBuilder) WithMandatoryFields(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetTimerStateChangeValueUnsignedBuilder {
+	return b.WithUnsignedValue(unsignedValue)
 }
 
-func (m *_BACnetTimerStateChangeValueUnsignedBuilder) WithUnsignedValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetTimerStateChangeValueUnsignedBuilder {
-	builder := builderSupplier(m.UnsignedValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetTimerStateChangeValueUnsignedBuilder) WithUnsignedValue(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetTimerStateChangeValueUnsignedBuilder {
+	b.UnsignedValue = unsignedValue
+	return b
+}
+
+func (b *_BACnetTimerStateChangeValueUnsignedBuilder) WithUnsignedValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetTimerStateChangeValueUnsignedBuilder {
+	builder := builderSupplier(b.UnsignedValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.UnsignedValue, err = builder.Build()
+	b.UnsignedValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetTimerStateChangeValueUnsignedBuilder) Build() (BACnetTimerStateChangeValueUnsigned, error) {
-	if m.UnsignedValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetTimerStateChangeValueUnsignedBuilder) Build() (BACnetTimerStateChangeValueUnsigned, error) {
+	if b.UnsignedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'unsignedValue' not set"))
+		b.err.Append(errors.New("mandatory field 'unsignedValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTimerStateChangeValueUnsigned.deepCopy(), nil
+	return b._BACnetTimerStateChangeValueUnsigned.deepCopy(), nil
 }
 
-func (m *_BACnetTimerStateChangeValueUnsignedBuilder) MustBuild() BACnetTimerStateChangeValueUnsigned {
-	build, err := m.Build()
+func (b *_BACnetTimerStateChangeValueUnsignedBuilder) MustBuild() BACnetTimerStateChangeValueUnsigned {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTimerStateChangeValueUnsignedBuilder) DeepCopy() any {
-	return m.CreateBACnetTimerStateChangeValueUnsignedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetTimerStateChangeValueUnsignedBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetTimerStateChangeValueUnsignedBuilder) buildForBACnetTimerStateChangeValue() (BACnetTimerStateChangeValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetTimerStateChangeValueUnsignedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimerStateChangeValueUnsignedBuilder().(*_BACnetTimerStateChangeValueUnsignedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTimerStateChangeValueUnsignedBuilder creates a BACnetTimerStateChangeValueUnsignedBuilder
-func (m *_BACnetTimerStateChangeValueUnsigned) CreateBACnetTimerStateChangeValueUnsignedBuilder() BACnetTimerStateChangeValueUnsignedBuilder {
-	if m == nil {
+func (b *_BACnetTimerStateChangeValueUnsigned) CreateBACnetTimerStateChangeValueUnsignedBuilder() BACnetTimerStateChangeValueUnsignedBuilder {
+	if b == nil {
 		return NewBACnetTimerStateChangeValueUnsignedBuilder()
 	}
-	return &_BACnetTimerStateChangeValueUnsignedBuilder{_BACnetTimerStateChangeValueUnsigned: m.deepCopy()}
+	return &_BACnetTimerStateChangeValueUnsignedBuilder{_BACnetTimerStateChangeValueUnsigned: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetTimerStateChangeValueUnsigned) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

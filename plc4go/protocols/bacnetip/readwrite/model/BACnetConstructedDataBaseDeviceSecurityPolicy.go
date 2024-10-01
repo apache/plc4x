@@ -100,64 +100,83 @@ func NewBACnetConstructedDataBaseDeviceSecurityPolicyBuilder() BACnetConstructed
 type _BACnetConstructedDataBaseDeviceSecurityPolicyBuilder struct {
 	*_BACnetConstructedDataBaseDeviceSecurityPolicy
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) = (*_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder)(nil)
 
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) WithMandatoryFields(baseDeviceSecurityPolicy BACnetSecurityLevelTagged) BACnetConstructedDataBaseDeviceSecurityPolicyBuilder {
-	return m.WithBaseDeviceSecurityPolicy(baseDeviceSecurityPolicy)
+func (b *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) WithBaseDeviceSecurityPolicy(baseDeviceSecurityPolicy BACnetSecurityLevelTagged) BACnetConstructedDataBaseDeviceSecurityPolicyBuilder {
-	m.BaseDeviceSecurityPolicy = baseDeviceSecurityPolicy
-	return m
+func (b *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) WithMandatoryFields(baseDeviceSecurityPolicy BACnetSecurityLevelTagged) BACnetConstructedDataBaseDeviceSecurityPolicyBuilder {
+	return b.WithBaseDeviceSecurityPolicy(baseDeviceSecurityPolicy)
 }
 
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) WithBaseDeviceSecurityPolicyBuilder(builderSupplier func(BACnetSecurityLevelTaggedBuilder) BACnetSecurityLevelTaggedBuilder) BACnetConstructedDataBaseDeviceSecurityPolicyBuilder {
-	builder := builderSupplier(m.BaseDeviceSecurityPolicy.CreateBACnetSecurityLevelTaggedBuilder())
+func (b *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) WithBaseDeviceSecurityPolicy(baseDeviceSecurityPolicy BACnetSecurityLevelTagged) BACnetConstructedDataBaseDeviceSecurityPolicyBuilder {
+	b.BaseDeviceSecurityPolicy = baseDeviceSecurityPolicy
+	return b
+}
+
+func (b *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) WithBaseDeviceSecurityPolicyBuilder(builderSupplier func(BACnetSecurityLevelTaggedBuilder) BACnetSecurityLevelTaggedBuilder) BACnetConstructedDataBaseDeviceSecurityPolicyBuilder {
+	builder := builderSupplier(b.BaseDeviceSecurityPolicy.CreateBACnetSecurityLevelTaggedBuilder())
 	var err error
-	m.BaseDeviceSecurityPolicy, err = builder.Build()
+	b.BaseDeviceSecurityPolicy, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetSecurityLevelTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetSecurityLevelTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) Build() (BACnetConstructedDataBaseDeviceSecurityPolicy, error) {
-	if m.BaseDeviceSecurityPolicy == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) Build() (BACnetConstructedDataBaseDeviceSecurityPolicy, error) {
+	if b.BaseDeviceSecurityPolicy == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'baseDeviceSecurityPolicy' not set"))
+		b.err.Append(errors.New("mandatory field 'baseDeviceSecurityPolicy' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBaseDeviceSecurityPolicy.deepCopy(), nil
+	return b._BACnetConstructedDataBaseDeviceSecurityPolicy.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) MustBuild() BACnetConstructedDataBaseDeviceSecurityPolicy {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) MustBuild() BACnetConstructedDataBaseDeviceSecurityPolicy {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBaseDeviceSecurityPolicyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBaseDeviceSecurityPolicyBuilder().(*_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBaseDeviceSecurityPolicyBuilder creates a BACnetConstructedDataBaseDeviceSecurityPolicyBuilder
-func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) CreateBACnetConstructedDataBaseDeviceSecurityPolicyBuilder() BACnetConstructedDataBaseDeviceSecurityPolicyBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBaseDeviceSecurityPolicy) CreateBACnetConstructedDataBaseDeviceSecurityPolicyBuilder() BACnetConstructedDataBaseDeviceSecurityPolicyBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBaseDeviceSecurityPolicyBuilder()
 	}
-	return &_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder{_BACnetConstructedDataBaseDeviceSecurityPolicy: m.deepCopy()}
+	return &_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder{_BACnetConstructedDataBaseDeviceSecurityPolicy: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

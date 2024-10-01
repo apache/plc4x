@@ -98,6 +98,8 @@ type TransferSubscriptionsResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) TransferSubscriptionsResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) TransferSubscriptionsResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) TransferSubscriptionsResponseBuilder
 	// WithNoOfResults adds NoOfResults (property field)
 	WithNoOfResults(int32) TransferSubscriptionsResponseBuilder
 	// WithResults adds Results (property field)
@@ -120,71 +122,103 @@ func NewTransferSubscriptionsResponseBuilder() TransferSubscriptionsResponseBuil
 type _TransferSubscriptionsResponseBuilder struct {
 	*_TransferSubscriptionsResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TransferSubscriptionsResponseBuilder) = (*_TransferSubscriptionsResponseBuilder)(nil)
 
-func (m *_TransferSubscriptionsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) TransferSubscriptionsResponseBuilder {
-	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_TransferSubscriptionsResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_TransferSubscriptionsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) TransferSubscriptionsResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_TransferSubscriptionsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) TransferSubscriptionsResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (m *_TransferSubscriptionsResponseBuilder) WithNoOfResults(noOfResults int32) TransferSubscriptionsResponseBuilder {
-	m.NoOfResults = noOfResults
-	return m
+func (b *_TransferSubscriptionsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) TransferSubscriptionsResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
 }
 
-func (m *_TransferSubscriptionsResponseBuilder) WithResults(results ...ExtensionObjectDefinition) TransferSubscriptionsResponseBuilder {
-	m.Results = results
-	return m
-}
-
-func (m *_TransferSubscriptionsResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) TransferSubscriptionsResponseBuilder {
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
-	return m
-}
-
-func (m *_TransferSubscriptionsResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) TransferSubscriptionsResponseBuilder {
-	m.DiagnosticInfos = diagnosticInfos
-	return m
-}
-
-func (m *_TransferSubscriptionsResponseBuilder) Build() (TransferSubscriptionsResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_TransferSubscriptionsResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) TransferSubscriptionsResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._TransferSubscriptionsResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_TransferSubscriptionsResponseBuilder) MustBuild() TransferSubscriptionsResponse {
-	build, err := m.Build()
+func (b *_TransferSubscriptionsResponseBuilder) WithNoOfResults(noOfResults int32) TransferSubscriptionsResponseBuilder {
+	b.NoOfResults = noOfResults
+	return b
+}
+
+func (b *_TransferSubscriptionsResponseBuilder) WithResults(results ...ExtensionObjectDefinition) TransferSubscriptionsResponseBuilder {
+	b.Results = results
+	return b
+}
+
+func (b *_TransferSubscriptionsResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) TransferSubscriptionsResponseBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_TransferSubscriptionsResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) TransferSubscriptionsResponseBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_TransferSubscriptionsResponseBuilder) Build() (TransferSubscriptionsResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TransferSubscriptionsResponse.deepCopy(), nil
+}
+
+func (b *_TransferSubscriptionsResponseBuilder) MustBuild() TransferSubscriptionsResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TransferSubscriptionsResponseBuilder) DeepCopy() any {
-	return m.CreateTransferSubscriptionsResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TransferSubscriptionsResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TransferSubscriptionsResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_TransferSubscriptionsResponseBuilder) DeepCopy() any {
+	_copy := b.CreateTransferSubscriptionsResponseBuilder().(*_TransferSubscriptionsResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTransferSubscriptionsResponseBuilder creates a TransferSubscriptionsResponseBuilder
-func (m *_TransferSubscriptionsResponse) CreateTransferSubscriptionsResponseBuilder() TransferSubscriptionsResponseBuilder {
-	if m == nil {
+func (b *_TransferSubscriptionsResponse) CreateTransferSubscriptionsResponseBuilder() TransferSubscriptionsResponseBuilder {
+	if b == nil {
 		return NewTransferSubscriptionsResponseBuilder()
 	}
-	return &_TransferSubscriptionsResponseBuilder{_TransferSubscriptionsResponse: m.deepCopy()}
+	return &_TransferSubscriptionsResponseBuilder{_TransferSubscriptionsResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -414,9 +448,13 @@ func (m *_TransferSubscriptionsResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

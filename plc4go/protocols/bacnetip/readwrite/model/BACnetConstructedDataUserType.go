@@ -100,64 +100,83 @@ func NewBACnetConstructedDataUserTypeBuilder() BACnetConstructedDataUserTypeBuil
 type _BACnetConstructedDataUserTypeBuilder struct {
 	*_BACnetConstructedDataUserType
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataUserTypeBuilder) = (*_BACnetConstructedDataUserTypeBuilder)(nil)
 
-func (m *_BACnetConstructedDataUserTypeBuilder) WithMandatoryFields(userType BACnetAccessUserTypeTagged) BACnetConstructedDataUserTypeBuilder {
-	return m.WithUserType(userType)
+func (b *_BACnetConstructedDataUserTypeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataUserTypeBuilder) WithUserType(userType BACnetAccessUserTypeTagged) BACnetConstructedDataUserTypeBuilder {
-	m.UserType = userType
-	return m
+func (b *_BACnetConstructedDataUserTypeBuilder) WithMandatoryFields(userType BACnetAccessUserTypeTagged) BACnetConstructedDataUserTypeBuilder {
+	return b.WithUserType(userType)
 }
 
-func (m *_BACnetConstructedDataUserTypeBuilder) WithUserTypeBuilder(builderSupplier func(BACnetAccessUserTypeTaggedBuilder) BACnetAccessUserTypeTaggedBuilder) BACnetConstructedDataUserTypeBuilder {
-	builder := builderSupplier(m.UserType.CreateBACnetAccessUserTypeTaggedBuilder())
+func (b *_BACnetConstructedDataUserTypeBuilder) WithUserType(userType BACnetAccessUserTypeTagged) BACnetConstructedDataUserTypeBuilder {
+	b.UserType = userType
+	return b
+}
+
+func (b *_BACnetConstructedDataUserTypeBuilder) WithUserTypeBuilder(builderSupplier func(BACnetAccessUserTypeTaggedBuilder) BACnetAccessUserTypeTaggedBuilder) BACnetConstructedDataUserTypeBuilder {
+	builder := builderSupplier(b.UserType.CreateBACnetAccessUserTypeTaggedBuilder())
 	var err error
-	m.UserType, err = builder.Build()
+	b.UserType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAccessUserTypeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAccessUserTypeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataUserTypeBuilder) Build() (BACnetConstructedDataUserType, error) {
-	if m.UserType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataUserTypeBuilder) Build() (BACnetConstructedDataUserType, error) {
+	if b.UserType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'userType' not set"))
+		b.err.Append(errors.New("mandatory field 'userType' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataUserType.deepCopy(), nil
+	return b._BACnetConstructedDataUserType.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataUserTypeBuilder) MustBuild() BACnetConstructedDataUserType {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataUserTypeBuilder) MustBuild() BACnetConstructedDataUserType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataUserTypeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataUserTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataUserTypeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataUserTypeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataUserTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataUserTypeBuilder().(*_BACnetConstructedDataUserTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataUserTypeBuilder creates a BACnetConstructedDataUserTypeBuilder
-func (m *_BACnetConstructedDataUserType) CreateBACnetConstructedDataUserTypeBuilder() BACnetConstructedDataUserTypeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataUserType) CreateBACnetConstructedDataUserTypeBuilder() BACnetConstructedDataUserTypeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataUserTypeBuilder()
 	}
-	return &_BACnetConstructedDataUserTypeBuilder{_BACnetConstructedDataUserType: m.deepCopy()}
+	return &_BACnetConstructedDataUserTypeBuilder{_BACnetConstructedDataUserType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataUserType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

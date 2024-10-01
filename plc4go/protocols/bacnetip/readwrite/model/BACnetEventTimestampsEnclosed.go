@@ -118,107 +118,111 @@ type _BACnetEventTimestampsEnclosedBuilder struct {
 
 var _ (BACnetEventTimestampsEnclosedBuilder) = (*_BACnetEventTimestampsEnclosedBuilder)(nil)
 
-func (m *_BACnetEventTimestampsEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, eventTimestamps BACnetEventTimestamps, closingTag BACnetClosingTag) BACnetEventTimestampsEnclosedBuilder {
-	return m.WithOpeningTag(openingTag).WithEventTimestamps(eventTimestamps).WithClosingTag(closingTag)
+func (b *_BACnetEventTimestampsEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, eventTimestamps BACnetEventTimestamps, closingTag BACnetClosingTag) BACnetEventTimestampsEnclosedBuilder {
+	return b.WithOpeningTag(openingTag).WithEventTimestamps(eventTimestamps).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetEventTimestampsEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventTimestampsEnclosedBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetEventTimestampsEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventTimestampsEnclosedBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetEventTimestampsEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventTimestampsEnclosedBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetEventTimestampsEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventTimestampsEnclosedBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventTimestampsEnclosedBuilder) WithEventTimestamps(eventTimestamps BACnetEventTimestamps) BACnetEventTimestampsEnclosedBuilder {
-	m.EventTimestamps = eventTimestamps
-	return m
+func (b *_BACnetEventTimestampsEnclosedBuilder) WithEventTimestamps(eventTimestamps BACnetEventTimestamps) BACnetEventTimestampsEnclosedBuilder {
+	b.EventTimestamps = eventTimestamps
+	return b
 }
 
-func (m *_BACnetEventTimestampsEnclosedBuilder) WithEventTimestampsBuilder(builderSupplier func(BACnetEventTimestampsBuilder) BACnetEventTimestampsBuilder) BACnetEventTimestampsEnclosedBuilder {
-	builder := builderSupplier(m.EventTimestamps.CreateBACnetEventTimestampsBuilder())
+func (b *_BACnetEventTimestampsEnclosedBuilder) WithEventTimestampsBuilder(builderSupplier func(BACnetEventTimestampsBuilder) BACnetEventTimestampsBuilder) BACnetEventTimestampsEnclosedBuilder {
+	builder := builderSupplier(b.EventTimestamps.CreateBACnetEventTimestampsBuilder())
 	var err error
-	m.EventTimestamps, err = builder.Build()
+	b.EventTimestamps, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventTimestampsBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventTimestampsBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventTimestampsEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventTimestampsEnclosedBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetEventTimestampsEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventTimestampsEnclosedBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetEventTimestampsEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventTimestampsEnclosedBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetEventTimestampsEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventTimestampsEnclosedBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventTimestampsEnclosedBuilder) Build() (BACnetEventTimestampsEnclosed, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetEventTimestampsEnclosedBuilder) Build() (BACnetEventTimestampsEnclosed, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.EventTimestamps == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.EventTimestamps == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'eventTimestamps' not set"))
+		b.err.Append(errors.New("mandatory field 'eventTimestamps' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetEventTimestampsEnclosed.deepCopy(), nil
+	return b._BACnetEventTimestampsEnclosed.deepCopy(), nil
 }
 
-func (m *_BACnetEventTimestampsEnclosedBuilder) MustBuild() BACnetEventTimestampsEnclosed {
-	build, err := m.Build()
+func (b *_BACnetEventTimestampsEnclosedBuilder) MustBuild() BACnetEventTimestampsEnclosed {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetEventTimestampsEnclosedBuilder) DeepCopy() any {
-	return m.CreateBACnetEventTimestampsEnclosedBuilder()
+func (b *_BACnetEventTimestampsEnclosedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventTimestampsEnclosedBuilder().(*_BACnetEventTimestampsEnclosedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetEventTimestampsEnclosedBuilder creates a BACnetEventTimestampsEnclosedBuilder
-func (m *_BACnetEventTimestampsEnclosed) CreateBACnetEventTimestampsEnclosedBuilder() BACnetEventTimestampsEnclosedBuilder {
-	if m == nil {
+func (b *_BACnetEventTimestampsEnclosed) CreateBACnetEventTimestampsEnclosedBuilder() BACnetEventTimestampsEnclosedBuilder {
+	if b == nil {
 		return NewBACnetEventTimestampsEnclosedBuilder()
 	}
-	return &_BACnetEventTimestampsEnclosedBuilder{_BACnetEventTimestampsEnclosed: m.deepCopy()}
+	return &_BACnetEventTimestampsEnclosedBuilder{_BACnetEventTimestampsEnclosed: b.deepCopy()}
 }
 
 ///////////////////////
@@ -402,9 +406,13 @@ func (m *_BACnetEventTimestampsEnclosed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

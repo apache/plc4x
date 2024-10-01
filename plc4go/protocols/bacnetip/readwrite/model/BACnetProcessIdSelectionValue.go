@@ -98,64 +98,83 @@ func NewBACnetProcessIdSelectionValueBuilder() BACnetProcessIdSelectionValueBuil
 type _BACnetProcessIdSelectionValueBuilder struct {
 	*_BACnetProcessIdSelectionValue
 
+	parentBuilder *_BACnetProcessIdSelectionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetProcessIdSelectionValueBuilder) = (*_BACnetProcessIdSelectionValueBuilder)(nil)
 
-func (m *_BACnetProcessIdSelectionValueBuilder) WithMandatoryFields(processIdentifier BACnetApplicationTagUnsignedInteger) BACnetProcessIdSelectionValueBuilder {
-	return m.WithProcessIdentifier(processIdentifier)
+func (b *_BACnetProcessIdSelectionValueBuilder) setParent(contract BACnetProcessIdSelectionContract) {
+	b.BACnetProcessIdSelectionContract = contract
 }
 
-func (m *_BACnetProcessIdSelectionValueBuilder) WithProcessIdentifier(processIdentifier BACnetApplicationTagUnsignedInteger) BACnetProcessIdSelectionValueBuilder {
-	m.ProcessIdentifier = processIdentifier
-	return m
+func (b *_BACnetProcessIdSelectionValueBuilder) WithMandatoryFields(processIdentifier BACnetApplicationTagUnsignedInteger) BACnetProcessIdSelectionValueBuilder {
+	return b.WithProcessIdentifier(processIdentifier)
 }
 
-func (m *_BACnetProcessIdSelectionValueBuilder) WithProcessIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetProcessIdSelectionValueBuilder {
-	builder := builderSupplier(m.ProcessIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetProcessIdSelectionValueBuilder) WithProcessIdentifier(processIdentifier BACnetApplicationTagUnsignedInteger) BACnetProcessIdSelectionValueBuilder {
+	b.ProcessIdentifier = processIdentifier
+	return b
+}
+
+func (b *_BACnetProcessIdSelectionValueBuilder) WithProcessIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetProcessIdSelectionValueBuilder {
+	builder := builderSupplier(b.ProcessIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.ProcessIdentifier, err = builder.Build()
+	b.ProcessIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetProcessIdSelectionValueBuilder) Build() (BACnetProcessIdSelectionValue, error) {
-	if m.ProcessIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetProcessIdSelectionValueBuilder) Build() (BACnetProcessIdSelectionValue, error) {
+	if b.ProcessIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'processIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'processIdentifier' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetProcessIdSelectionValue.deepCopy(), nil
+	return b._BACnetProcessIdSelectionValue.deepCopy(), nil
 }
 
-func (m *_BACnetProcessIdSelectionValueBuilder) MustBuild() BACnetProcessIdSelectionValue {
-	build, err := m.Build()
+func (b *_BACnetProcessIdSelectionValueBuilder) MustBuild() BACnetProcessIdSelectionValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetProcessIdSelectionValueBuilder) DeepCopy() any {
-	return m.CreateBACnetProcessIdSelectionValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetProcessIdSelectionValueBuilder) Done() BACnetProcessIdSelectionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetProcessIdSelectionValueBuilder) buildForBACnetProcessIdSelection() (BACnetProcessIdSelection, error) {
+	return b.Build()
+}
+
+func (b *_BACnetProcessIdSelectionValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetProcessIdSelectionValueBuilder().(*_BACnetProcessIdSelectionValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetProcessIdSelectionValueBuilder creates a BACnetProcessIdSelectionValueBuilder
-func (m *_BACnetProcessIdSelectionValue) CreateBACnetProcessIdSelectionValueBuilder() BACnetProcessIdSelectionValueBuilder {
-	if m == nil {
+func (b *_BACnetProcessIdSelectionValue) CreateBACnetProcessIdSelectionValueBuilder() BACnetProcessIdSelectionValueBuilder {
+	if b == nil {
 		return NewBACnetProcessIdSelectionValueBuilder()
 	}
-	return &_BACnetProcessIdSelectionValueBuilder{_BACnetProcessIdSelectionValue: m.deepCopy()}
+	return &_BACnetProcessIdSelectionValueBuilder{_BACnetProcessIdSelectionValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetProcessIdSelectionValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

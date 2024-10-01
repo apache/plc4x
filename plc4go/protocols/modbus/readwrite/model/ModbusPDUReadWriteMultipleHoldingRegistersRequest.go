@@ -117,65 +117,84 @@ func NewModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder() ModbusPDURead
 type _ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder struct {
 	*_ModbusPDUReadWriteMultipleHoldingRegistersRequest
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) = (*_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder)(nil)
 
-func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithMandatoryFields(readStartingAddress uint16, readQuantity uint16, writeStartingAddress uint16, writeQuantity uint16, value []byte) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
-	return m.WithReadStartingAddress(readStartingAddress).WithReadQuantity(readQuantity).WithWriteStartingAddress(writeStartingAddress).WithWriteQuantity(writeQuantity).WithValue(value...)
+func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithReadStartingAddress(readStartingAddress uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
-	m.ReadStartingAddress = readStartingAddress
-	return m
+func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithMandatoryFields(readStartingAddress uint16, readQuantity uint16, writeStartingAddress uint16, writeQuantity uint16, value []byte) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
+	return b.WithReadStartingAddress(readStartingAddress).WithReadQuantity(readQuantity).WithWriteStartingAddress(writeStartingAddress).WithWriteQuantity(writeQuantity).WithValue(value...)
 }
 
-func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithReadQuantity(readQuantity uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
-	m.ReadQuantity = readQuantity
-	return m
+func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithReadStartingAddress(readStartingAddress uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
+	b.ReadStartingAddress = readStartingAddress
+	return b
 }
 
-func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithWriteStartingAddress(writeStartingAddress uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
-	m.WriteStartingAddress = writeStartingAddress
-	return m
+func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithReadQuantity(readQuantity uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
+	b.ReadQuantity = readQuantity
+	return b
 }
 
-func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithWriteQuantity(writeQuantity uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
-	m.WriteQuantity = writeQuantity
-	return m
+func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithWriteStartingAddress(writeStartingAddress uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
+	b.WriteStartingAddress = writeStartingAddress
+	return b
 }
 
-func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithValue(value ...byte) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
-	m.Value = value
-	return m
+func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithWriteQuantity(writeQuantity uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
+	b.WriteQuantity = writeQuantity
+	return b
 }
 
-func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) Build() (ModbusPDUReadWriteMultipleHoldingRegistersRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithValue(value ...byte) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) Build() (ModbusPDUReadWriteMultipleHoldingRegistersRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUReadWriteMultipleHoldingRegistersRequest.deepCopy(), nil
+	return b._ModbusPDUReadWriteMultipleHoldingRegistersRequest.deepCopy(), nil
 }
 
-func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) MustBuild() ModbusPDUReadWriteMultipleHoldingRegistersRequest {
-	build, err := m.Build()
+func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) MustBuild() ModbusPDUReadWriteMultipleHoldingRegistersRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) DeepCopy() any {
-	return m.CreateModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder().(*_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder creates a ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder
-func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) CreateModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder() ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
-	if m == nil {
+func (b *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) CreateModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder() ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
+	if b == nil {
 		return NewModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder()
 	}
-	return &_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder{_ModbusPDUReadWriteMultipleHoldingRegistersRequest: m.deepCopy()}
+	return &_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder{_ModbusPDUReadWriteMultipleHoldingRegistersRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -415,9 +434,13 @@ func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -106,69 +106,88 @@ func NewNodeIdByteStringBuilder() NodeIdByteStringBuilder {
 type _NodeIdByteStringBuilder struct {
 	*_NodeIdByteString
 
+	parentBuilder *_NodeIdTypeDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NodeIdByteStringBuilder) = (*_NodeIdByteStringBuilder)(nil)
 
-func (m *_NodeIdByteStringBuilder) WithMandatoryFields(namespaceIndex uint16, id PascalByteString) NodeIdByteStringBuilder {
-	return m.WithNamespaceIndex(namespaceIndex).WithId(id)
+func (b *_NodeIdByteStringBuilder) setParent(contract NodeIdTypeDefinitionContract) {
+	b.NodeIdTypeDefinitionContract = contract
 }
 
-func (m *_NodeIdByteStringBuilder) WithNamespaceIndex(namespaceIndex uint16) NodeIdByteStringBuilder {
-	m.NamespaceIndex = namespaceIndex
-	return m
+func (b *_NodeIdByteStringBuilder) WithMandatoryFields(namespaceIndex uint16, id PascalByteString) NodeIdByteStringBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithId(id)
 }
 
-func (m *_NodeIdByteStringBuilder) WithId(id PascalByteString) NodeIdByteStringBuilder {
-	m.Id = id
-	return m
+func (b *_NodeIdByteStringBuilder) WithNamespaceIndex(namespaceIndex uint16) NodeIdByteStringBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
 }
 
-func (m *_NodeIdByteStringBuilder) WithIdBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) NodeIdByteStringBuilder {
-	builder := builderSupplier(m.Id.CreatePascalByteStringBuilder())
+func (b *_NodeIdByteStringBuilder) WithId(id PascalByteString) NodeIdByteStringBuilder {
+	b.Id = id
+	return b
+}
+
+func (b *_NodeIdByteStringBuilder) WithIdBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) NodeIdByteStringBuilder {
+	builder := builderSupplier(b.Id.CreatePascalByteStringBuilder())
 	var err error
-	m.Id, err = builder.Build()
+	b.Id, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_NodeIdByteStringBuilder) Build() (NodeIdByteString, error) {
-	if m.Id == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_NodeIdByteStringBuilder) Build() (NodeIdByteString, error) {
+	if b.Id == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'id' not set"))
+		b.err.Append(errors.New("mandatory field 'id' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NodeIdByteString.deepCopy(), nil
+	return b._NodeIdByteString.deepCopy(), nil
 }
 
-func (m *_NodeIdByteStringBuilder) MustBuild() NodeIdByteString {
-	build, err := m.Build()
+func (b *_NodeIdByteStringBuilder) MustBuild() NodeIdByteString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NodeIdByteStringBuilder) DeepCopy() any {
-	return m.CreateNodeIdByteStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NodeIdByteStringBuilder) Done() NodeIdTypeDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NodeIdByteStringBuilder) buildForNodeIdTypeDefinition() (NodeIdTypeDefinition, error) {
+	return b.Build()
+}
+
+func (b *_NodeIdByteStringBuilder) DeepCopy() any {
+	_copy := b.CreateNodeIdByteStringBuilder().(*_NodeIdByteStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNodeIdByteStringBuilder creates a NodeIdByteStringBuilder
-func (m *_NodeIdByteString) CreateNodeIdByteStringBuilder() NodeIdByteStringBuilder {
-	if m == nil {
+func (b *_NodeIdByteString) CreateNodeIdByteStringBuilder() NodeIdByteStringBuilder {
+	if b == nil {
 		return NewNodeIdByteStringBuilder()
 	}
-	return &_NodeIdByteStringBuilder{_NodeIdByteString: m.deepCopy()}
+	return &_NodeIdByteStringBuilder{_NodeIdByteString: b.deepCopy()}
 }
 
 ///////////////////////
@@ -359,9 +378,13 @@ func (m *_NodeIdByteString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -105,55 +105,74 @@ func NewSysexCommandReportFirmwareResponseBuilder() SysexCommandReportFirmwareRe
 type _SysexCommandReportFirmwareResponseBuilder struct {
 	*_SysexCommandReportFirmwareResponse
 
+	parentBuilder *_SysexCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SysexCommandReportFirmwareResponseBuilder) = (*_SysexCommandReportFirmwareResponseBuilder)(nil)
 
-func (m *_SysexCommandReportFirmwareResponseBuilder) WithMandatoryFields(majorVersion uint8, minorVersion uint8, fileName []byte) SysexCommandReportFirmwareResponseBuilder {
-	return m.WithMajorVersion(majorVersion).WithMinorVersion(minorVersion).WithFileName(fileName...)
+func (b *_SysexCommandReportFirmwareResponseBuilder) setParent(contract SysexCommandContract) {
+	b.SysexCommandContract = contract
 }
 
-func (m *_SysexCommandReportFirmwareResponseBuilder) WithMajorVersion(majorVersion uint8) SysexCommandReportFirmwareResponseBuilder {
-	m.MajorVersion = majorVersion
-	return m
+func (b *_SysexCommandReportFirmwareResponseBuilder) WithMandatoryFields(majorVersion uint8, minorVersion uint8, fileName []byte) SysexCommandReportFirmwareResponseBuilder {
+	return b.WithMajorVersion(majorVersion).WithMinorVersion(minorVersion).WithFileName(fileName...)
 }
 
-func (m *_SysexCommandReportFirmwareResponseBuilder) WithMinorVersion(minorVersion uint8) SysexCommandReportFirmwareResponseBuilder {
-	m.MinorVersion = minorVersion
-	return m
+func (b *_SysexCommandReportFirmwareResponseBuilder) WithMajorVersion(majorVersion uint8) SysexCommandReportFirmwareResponseBuilder {
+	b.MajorVersion = majorVersion
+	return b
 }
 
-func (m *_SysexCommandReportFirmwareResponseBuilder) WithFileName(fileName ...byte) SysexCommandReportFirmwareResponseBuilder {
-	m.FileName = fileName
-	return m
+func (b *_SysexCommandReportFirmwareResponseBuilder) WithMinorVersion(minorVersion uint8) SysexCommandReportFirmwareResponseBuilder {
+	b.MinorVersion = minorVersion
+	return b
 }
 
-func (m *_SysexCommandReportFirmwareResponseBuilder) Build() (SysexCommandReportFirmwareResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SysexCommandReportFirmwareResponseBuilder) WithFileName(fileName ...byte) SysexCommandReportFirmwareResponseBuilder {
+	b.FileName = fileName
+	return b
+}
+
+func (b *_SysexCommandReportFirmwareResponseBuilder) Build() (SysexCommandReportFirmwareResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SysexCommandReportFirmwareResponse.deepCopy(), nil
+	return b._SysexCommandReportFirmwareResponse.deepCopy(), nil
 }
 
-func (m *_SysexCommandReportFirmwareResponseBuilder) MustBuild() SysexCommandReportFirmwareResponse {
-	build, err := m.Build()
+func (b *_SysexCommandReportFirmwareResponseBuilder) MustBuild() SysexCommandReportFirmwareResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SysexCommandReportFirmwareResponseBuilder) DeepCopy() any {
-	return m.CreateSysexCommandReportFirmwareResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SysexCommandReportFirmwareResponseBuilder) Done() SysexCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SysexCommandReportFirmwareResponseBuilder) buildForSysexCommand() (SysexCommand, error) {
+	return b.Build()
+}
+
+func (b *_SysexCommandReportFirmwareResponseBuilder) DeepCopy() any {
+	_copy := b.CreateSysexCommandReportFirmwareResponseBuilder().(*_SysexCommandReportFirmwareResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSysexCommandReportFirmwareResponseBuilder creates a SysexCommandReportFirmwareResponseBuilder
-func (m *_SysexCommandReportFirmwareResponse) CreateSysexCommandReportFirmwareResponseBuilder() SysexCommandReportFirmwareResponseBuilder {
-	if m == nil {
+func (b *_SysexCommandReportFirmwareResponse) CreateSysexCommandReportFirmwareResponseBuilder() SysexCommandReportFirmwareResponseBuilder {
+	if b == nil {
 		return NewSysexCommandReportFirmwareResponseBuilder()
 	}
-	return &_SysexCommandReportFirmwareResponseBuilder{_SysexCommandReportFirmwareResponse: m.deepCopy()}
+	return &_SysexCommandReportFirmwareResponseBuilder{_SysexCommandReportFirmwareResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -339,9 +358,13 @@ func (m *_SysexCommandReportFirmwareResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

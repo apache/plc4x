@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLastKeyServerBuilder() BACnetConstructedDataLastKey
 type _BACnetConstructedDataLastKeyServerBuilder struct {
 	*_BACnetConstructedDataLastKeyServer
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLastKeyServerBuilder) = (*_BACnetConstructedDataLastKeyServerBuilder)(nil)
 
-func (m *_BACnetConstructedDataLastKeyServerBuilder) WithMandatoryFields(lastKeyServer BACnetAddressBinding) BACnetConstructedDataLastKeyServerBuilder {
-	return m.WithLastKeyServer(lastKeyServer)
+func (b *_BACnetConstructedDataLastKeyServerBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLastKeyServerBuilder) WithLastKeyServer(lastKeyServer BACnetAddressBinding) BACnetConstructedDataLastKeyServerBuilder {
-	m.LastKeyServer = lastKeyServer
-	return m
+func (b *_BACnetConstructedDataLastKeyServerBuilder) WithMandatoryFields(lastKeyServer BACnetAddressBinding) BACnetConstructedDataLastKeyServerBuilder {
+	return b.WithLastKeyServer(lastKeyServer)
 }
 
-func (m *_BACnetConstructedDataLastKeyServerBuilder) WithLastKeyServerBuilder(builderSupplier func(BACnetAddressBindingBuilder) BACnetAddressBindingBuilder) BACnetConstructedDataLastKeyServerBuilder {
-	builder := builderSupplier(m.LastKeyServer.CreateBACnetAddressBindingBuilder())
+func (b *_BACnetConstructedDataLastKeyServerBuilder) WithLastKeyServer(lastKeyServer BACnetAddressBinding) BACnetConstructedDataLastKeyServerBuilder {
+	b.LastKeyServer = lastKeyServer
+	return b
+}
+
+func (b *_BACnetConstructedDataLastKeyServerBuilder) WithLastKeyServerBuilder(builderSupplier func(BACnetAddressBindingBuilder) BACnetAddressBindingBuilder) BACnetConstructedDataLastKeyServerBuilder {
+	builder := builderSupplier(b.LastKeyServer.CreateBACnetAddressBindingBuilder())
 	var err error
-	m.LastKeyServer, err = builder.Build()
+	b.LastKeyServer, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAddressBindingBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAddressBindingBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLastKeyServerBuilder) Build() (BACnetConstructedDataLastKeyServer, error) {
-	if m.LastKeyServer == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLastKeyServerBuilder) Build() (BACnetConstructedDataLastKeyServer, error) {
+	if b.LastKeyServer == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lastKeyServer' not set"))
+		b.err.Append(errors.New("mandatory field 'lastKeyServer' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLastKeyServer.deepCopy(), nil
+	return b._BACnetConstructedDataLastKeyServer.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLastKeyServerBuilder) MustBuild() BACnetConstructedDataLastKeyServer {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLastKeyServerBuilder) MustBuild() BACnetConstructedDataLastKeyServer {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLastKeyServerBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLastKeyServerBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLastKeyServerBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLastKeyServerBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLastKeyServerBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLastKeyServerBuilder().(*_BACnetConstructedDataLastKeyServerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLastKeyServerBuilder creates a BACnetConstructedDataLastKeyServerBuilder
-func (m *_BACnetConstructedDataLastKeyServer) CreateBACnetConstructedDataLastKeyServerBuilder() BACnetConstructedDataLastKeyServerBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLastKeyServer) CreateBACnetConstructedDataLastKeyServerBuilder() BACnetConstructedDataLastKeyServerBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLastKeyServerBuilder()
 	}
-	return &_BACnetConstructedDataLastKeyServerBuilder{_BACnetConstructedDataLastKeyServer: m.deepCopy()}
+	return &_BACnetConstructedDataLastKeyServerBuilder{_BACnetConstructedDataLastKeyServer: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataLastKeyServer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

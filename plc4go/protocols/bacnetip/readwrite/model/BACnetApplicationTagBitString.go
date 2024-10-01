@@ -98,64 +98,83 @@ func NewBACnetApplicationTagBitStringBuilder() BACnetApplicationTagBitStringBuil
 type _BACnetApplicationTagBitStringBuilder struct {
 	*_BACnetApplicationTagBitString
 
+	parentBuilder *_BACnetApplicationTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetApplicationTagBitStringBuilder) = (*_BACnetApplicationTagBitStringBuilder)(nil)
 
-func (m *_BACnetApplicationTagBitStringBuilder) WithMandatoryFields(payload BACnetTagPayloadBitString) BACnetApplicationTagBitStringBuilder {
-	return m.WithPayload(payload)
+func (b *_BACnetApplicationTagBitStringBuilder) setParent(contract BACnetApplicationTagContract) {
+	b.BACnetApplicationTagContract = contract
 }
 
-func (m *_BACnetApplicationTagBitStringBuilder) WithPayload(payload BACnetTagPayloadBitString) BACnetApplicationTagBitStringBuilder {
-	m.Payload = payload
-	return m
+func (b *_BACnetApplicationTagBitStringBuilder) WithMandatoryFields(payload BACnetTagPayloadBitString) BACnetApplicationTagBitStringBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_BACnetApplicationTagBitStringBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetApplicationTagBitStringBuilder {
-	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadBitStringBuilder())
+func (b *_BACnetApplicationTagBitStringBuilder) WithPayload(payload BACnetTagPayloadBitString) BACnetApplicationTagBitStringBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetApplicationTagBitStringBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetApplicationTagBitStringBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadBitStringBuilder())
 	var err error
-	m.Payload, err = builder.Build()
+	b.Payload, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagPayloadBitStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadBitStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetApplicationTagBitStringBuilder) Build() (BACnetApplicationTagBitString, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetApplicationTagBitStringBuilder) Build() (BACnetApplicationTagBitString, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetApplicationTagBitString.deepCopy(), nil
+	return b._BACnetApplicationTagBitString.deepCopy(), nil
 }
 
-func (m *_BACnetApplicationTagBitStringBuilder) MustBuild() BACnetApplicationTagBitString {
-	build, err := m.Build()
+func (b *_BACnetApplicationTagBitStringBuilder) MustBuild() BACnetApplicationTagBitString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetApplicationTagBitStringBuilder) DeepCopy() any {
-	return m.CreateBACnetApplicationTagBitStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetApplicationTagBitStringBuilder) Done() BACnetApplicationTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetApplicationTagBitStringBuilder) buildForBACnetApplicationTag() (BACnetApplicationTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetApplicationTagBitStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetApplicationTagBitStringBuilder().(*_BACnetApplicationTagBitStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetApplicationTagBitStringBuilder creates a BACnetApplicationTagBitStringBuilder
-func (m *_BACnetApplicationTagBitString) CreateBACnetApplicationTagBitStringBuilder() BACnetApplicationTagBitStringBuilder {
-	if m == nil {
+func (b *_BACnetApplicationTagBitString) CreateBACnetApplicationTagBitStringBuilder() BACnetApplicationTagBitStringBuilder {
+	if b == nil {
 		return NewBACnetApplicationTagBitStringBuilder()
 	}
-	return &_BACnetApplicationTagBitStringBuilder{_BACnetApplicationTagBitString: m.deepCopy()}
+	return &_BACnetApplicationTagBitStringBuilder{_BACnetApplicationTagBitString: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetApplicationTagBitString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

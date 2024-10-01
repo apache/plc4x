@@ -120,112 +120,131 @@ func NewUserNameIdentityTokenBuilder() UserNameIdentityTokenBuilder {
 type _UserNameIdentityTokenBuilder struct {
 	*_UserNameIdentityToken
 
+	parentBuilder *_UserIdentityTokenDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (UserNameIdentityTokenBuilder) = (*_UserNameIdentityTokenBuilder)(nil)
 
-func (m *_UserNameIdentityTokenBuilder) WithMandatoryFields(userName PascalString, password PascalByteString, encryptionAlgorithm PascalString) UserNameIdentityTokenBuilder {
-	return m.WithUserName(userName).WithPassword(password).WithEncryptionAlgorithm(encryptionAlgorithm)
+func (b *_UserNameIdentityTokenBuilder) setParent(contract UserIdentityTokenDefinitionContract) {
+	b.UserIdentityTokenDefinitionContract = contract
 }
 
-func (m *_UserNameIdentityTokenBuilder) WithUserName(userName PascalString) UserNameIdentityTokenBuilder {
-	m.UserName = userName
-	return m
+func (b *_UserNameIdentityTokenBuilder) WithMandatoryFields(userName PascalString, password PascalByteString, encryptionAlgorithm PascalString) UserNameIdentityTokenBuilder {
+	return b.WithUserName(userName).WithPassword(password).WithEncryptionAlgorithm(encryptionAlgorithm)
 }
 
-func (m *_UserNameIdentityTokenBuilder) WithUserNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserNameIdentityTokenBuilder {
-	builder := builderSupplier(m.UserName.CreatePascalStringBuilder())
+func (b *_UserNameIdentityTokenBuilder) WithUserName(userName PascalString) UserNameIdentityTokenBuilder {
+	b.UserName = userName
+	return b
+}
+
+func (b *_UserNameIdentityTokenBuilder) WithUserNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserNameIdentityTokenBuilder {
+	builder := builderSupplier(b.UserName.CreatePascalStringBuilder())
 	var err error
-	m.UserName, err = builder.Build()
+	b.UserName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_UserNameIdentityTokenBuilder) WithPassword(password PascalByteString) UserNameIdentityTokenBuilder {
-	m.Password = password
-	return m
+func (b *_UserNameIdentityTokenBuilder) WithPassword(password PascalByteString) UserNameIdentityTokenBuilder {
+	b.Password = password
+	return b
 }
 
-func (m *_UserNameIdentityTokenBuilder) WithPasswordBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) UserNameIdentityTokenBuilder {
-	builder := builderSupplier(m.Password.CreatePascalByteStringBuilder())
+func (b *_UserNameIdentityTokenBuilder) WithPasswordBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) UserNameIdentityTokenBuilder {
+	builder := builderSupplier(b.Password.CreatePascalByteStringBuilder())
 	var err error
-	m.Password, err = builder.Build()
+	b.Password, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_UserNameIdentityTokenBuilder) WithEncryptionAlgorithm(encryptionAlgorithm PascalString) UserNameIdentityTokenBuilder {
-	m.EncryptionAlgorithm = encryptionAlgorithm
-	return m
+func (b *_UserNameIdentityTokenBuilder) WithEncryptionAlgorithm(encryptionAlgorithm PascalString) UserNameIdentityTokenBuilder {
+	b.EncryptionAlgorithm = encryptionAlgorithm
+	return b
 }
 
-func (m *_UserNameIdentityTokenBuilder) WithEncryptionAlgorithmBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserNameIdentityTokenBuilder {
-	builder := builderSupplier(m.EncryptionAlgorithm.CreatePascalStringBuilder())
+func (b *_UserNameIdentityTokenBuilder) WithEncryptionAlgorithmBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserNameIdentityTokenBuilder {
+	builder := builderSupplier(b.EncryptionAlgorithm.CreatePascalStringBuilder())
 	var err error
-	m.EncryptionAlgorithm, err = builder.Build()
+	b.EncryptionAlgorithm, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_UserNameIdentityTokenBuilder) Build() (UserNameIdentityToken, error) {
-	if m.UserName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_UserNameIdentityTokenBuilder) Build() (UserNameIdentityToken, error) {
+	if b.UserName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'userName' not set"))
+		b.err.Append(errors.New("mandatory field 'userName' not set"))
 	}
-	if m.Password == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Password == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'password' not set"))
+		b.err.Append(errors.New("mandatory field 'password' not set"))
 	}
-	if m.EncryptionAlgorithm == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.EncryptionAlgorithm == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'encryptionAlgorithm' not set"))
+		b.err.Append(errors.New("mandatory field 'encryptionAlgorithm' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._UserNameIdentityToken.deepCopy(), nil
+	return b._UserNameIdentityToken.deepCopy(), nil
 }
 
-func (m *_UserNameIdentityTokenBuilder) MustBuild() UserNameIdentityToken {
-	build, err := m.Build()
+func (b *_UserNameIdentityTokenBuilder) MustBuild() UserNameIdentityToken {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_UserNameIdentityTokenBuilder) DeepCopy() any {
-	return m.CreateUserNameIdentityTokenBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UserNameIdentityTokenBuilder) Done() UserIdentityTokenDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UserNameIdentityTokenBuilder) buildForUserIdentityTokenDefinition() (UserIdentityTokenDefinition, error) {
+	return b.Build()
+}
+
+func (b *_UserNameIdentityTokenBuilder) DeepCopy() any {
+	_copy := b.CreateUserNameIdentityTokenBuilder().(*_UserNameIdentityTokenBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateUserNameIdentityTokenBuilder creates a UserNameIdentityTokenBuilder
-func (m *_UserNameIdentityToken) CreateUserNameIdentityTokenBuilder() UserNameIdentityTokenBuilder {
-	if m == nil {
+func (b *_UserNameIdentityToken) CreateUserNameIdentityTokenBuilder() UserNameIdentityTokenBuilder {
+	if b == nil {
 		return NewUserNameIdentityTokenBuilder()
 	}
-	return &_UserNameIdentityTokenBuilder{_UserNameIdentityToken: m.deepCopy()}
+	return &_UserNameIdentityTokenBuilder{_UserNameIdentityToken: b.deepCopy()}
 }
 
 ///////////////////////
@@ -405,9 +424,13 @@ func (m *_UserNameIdentityToken) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

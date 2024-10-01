@@ -103,63 +103,82 @@ func NewBACnetConstructedDataShedLevelDescriptionsBuilder() BACnetConstructedDat
 type _BACnetConstructedDataShedLevelDescriptionsBuilder struct {
 	*_BACnetConstructedDataShedLevelDescriptions
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataShedLevelDescriptionsBuilder) = (*_BACnetConstructedDataShedLevelDescriptionsBuilder)(nil)
 
-func (m *_BACnetConstructedDataShedLevelDescriptionsBuilder) WithMandatoryFields(shedLevelDescriptions []BACnetApplicationTagCharacterString) BACnetConstructedDataShedLevelDescriptionsBuilder {
-	return m.WithShedLevelDescriptions(shedLevelDescriptions...)
+func (b *_BACnetConstructedDataShedLevelDescriptionsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataShedLevelDescriptionsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedLevelDescriptionsBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataShedLevelDescriptionsBuilder) WithMandatoryFields(shedLevelDescriptions []BACnetApplicationTagCharacterString) BACnetConstructedDataShedLevelDescriptionsBuilder {
+	return b.WithShedLevelDescriptions(shedLevelDescriptions...)
 }
 
-func (m *_BACnetConstructedDataShedLevelDescriptionsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataShedLevelDescriptionsBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataShedLevelDescriptionsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedLevelDescriptionsBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataShedLevelDescriptionsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataShedLevelDescriptionsBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataShedLevelDescriptionsBuilder) WithShedLevelDescriptions(shedLevelDescriptions ...BACnetApplicationTagCharacterString) BACnetConstructedDataShedLevelDescriptionsBuilder {
-	m.ShedLevelDescriptions = shedLevelDescriptions
-	return m
+func (b *_BACnetConstructedDataShedLevelDescriptionsBuilder) WithShedLevelDescriptions(shedLevelDescriptions ...BACnetApplicationTagCharacterString) BACnetConstructedDataShedLevelDescriptionsBuilder {
+	b.ShedLevelDescriptions = shedLevelDescriptions
+	return b
 }
 
-func (m *_BACnetConstructedDataShedLevelDescriptionsBuilder) Build() (BACnetConstructedDataShedLevelDescriptions, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataShedLevelDescriptionsBuilder) Build() (BACnetConstructedDataShedLevelDescriptions, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataShedLevelDescriptions.deepCopy(), nil
+	return b._BACnetConstructedDataShedLevelDescriptions.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataShedLevelDescriptionsBuilder) MustBuild() BACnetConstructedDataShedLevelDescriptions {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataShedLevelDescriptionsBuilder) MustBuild() BACnetConstructedDataShedLevelDescriptions {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataShedLevelDescriptionsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataShedLevelDescriptionsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataShedLevelDescriptionsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataShedLevelDescriptionsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataShedLevelDescriptionsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataShedLevelDescriptionsBuilder().(*_BACnetConstructedDataShedLevelDescriptionsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataShedLevelDescriptionsBuilder creates a BACnetConstructedDataShedLevelDescriptionsBuilder
-func (m *_BACnetConstructedDataShedLevelDescriptions) CreateBACnetConstructedDataShedLevelDescriptionsBuilder() BACnetConstructedDataShedLevelDescriptionsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataShedLevelDescriptions) CreateBACnetConstructedDataShedLevelDescriptionsBuilder() BACnetConstructedDataShedLevelDescriptionsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataShedLevelDescriptionsBuilder()
 	}
-	return &_BACnetConstructedDataShedLevelDescriptionsBuilder{_BACnetConstructedDataShedLevelDescriptions: m.deepCopy()}
+	return &_BACnetConstructedDataShedLevelDescriptionsBuilder{_BACnetConstructedDataShedLevelDescriptions: b.deepCopy()}
 }
 
 ///////////////////////
@@ -367,9 +386,13 @@ func (m *_BACnetConstructedDataShedLevelDescriptions) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

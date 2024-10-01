@@ -105,55 +105,74 @@ func NewCOTPPacketConnectionRequestBuilder() COTPPacketConnectionRequestBuilder 
 type _COTPPacketConnectionRequestBuilder struct {
 	*_COTPPacketConnectionRequest
 
+	parentBuilder *_COTPPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (COTPPacketConnectionRequestBuilder) = (*_COTPPacketConnectionRequestBuilder)(nil)
 
-func (m *_COTPPacketConnectionRequestBuilder) WithMandatoryFields(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass) COTPPacketConnectionRequestBuilder {
-	return m.WithDestinationReference(destinationReference).WithSourceReference(sourceReference).WithProtocolClass(protocolClass)
+func (b *_COTPPacketConnectionRequestBuilder) setParent(contract COTPPacketContract) {
+	b.COTPPacketContract = contract
 }
 
-func (m *_COTPPacketConnectionRequestBuilder) WithDestinationReference(destinationReference uint16) COTPPacketConnectionRequestBuilder {
-	m.DestinationReference = destinationReference
-	return m
+func (b *_COTPPacketConnectionRequestBuilder) WithMandatoryFields(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass) COTPPacketConnectionRequestBuilder {
+	return b.WithDestinationReference(destinationReference).WithSourceReference(sourceReference).WithProtocolClass(protocolClass)
 }
 
-func (m *_COTPPacketConnectionRequestBuilder) WithSourceReference(sourceReference uint16) COTPPacketConnectionRequestBuilder {
-	m.SourceReference = sourceReference
-	return m
+func (b *_COTPPacketConnectionRequestBuilder) WithDestinationReference(destinationReference uint16) COTPPacketConnectionRequestBuilder {
+	b.DestinationReference = destinationReference
+	return b
 }
 
-func (m *_COTPPacketConnectionRequestBuilder) WithProtocolClass(protocolClass COTPProtocolClass) COTPPacketConnectionRequestBuilder {
-	m.ProtocolClass = protocolClass
-	return m
+func (b *_COTPPacketConnectionRequestBuilder) WithSourceReference(sourceReference uint16) COTPPacketConnectionRequestBuilder {
+	b.SourceReference = sourceReference
+	return b
 }
 
-func (m *_COTPPacketConnectionRequestBuilder) Build() (COTPPacketConnectionRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_COTPPacketConnectionRequestBuilder) WithProtocolClass(protocolClass COTPProtocolClass) COTPPacketConnectionRequestBuilder {
+	b.ProtocolClass = protocolClass
+	return b
+}
+
+func (b *_COTPPacketConnectionRequestBuilder) Build() (COTPPacketConnectionRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._COTPPacketConnectionRequest.deepCopy(), nil
+	return b._COTPPacketConnectionRequest.deepCopy(), nil
 }
 
-func (m *_COTPPacketConnectionRequestBuilder) MustBuild() COTPPacketConnectionRequest {
-	build, err := m.Build()
+func (b *_COTPPacketConnectionRequestBuilder) MustBuild() COTPPacketConnectionRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_COTPPacketConnectionRequestBuilder) DeepCopy() any {
-	return m.CreateCOTPPacketConnectionRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_COTPPacketConnectionRequestBuilder) Done() COTPPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_COTPPacketConnectionRequestBuilder) buildForCOTPPacket() (COTPPacket, error) {
+	return b.Build()
+}
+
+func (b *_COTPPacketConnectionRequestBuilder) DeepCopy() any {
+	_copy := b.CreateCOTPPacketConnectionRequestBuilder().(*_COTPPacketConnectionRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCOTPPacketConnectionRequestBuilder creates a COTPPacketConnectionRequestBuilder
-func (m *_COTPPacketConnectionRequest) CreateCOTPPacketConnectionRequestBuilder() COTPPacketConnectionRequestBuilder {
-	if m == nil {
+func (b *_COTPPacketConnectionRequest) CreateCOTPPacketConnectionRequestBuilder() COTPPacketConnectionRequestBuilder {
+	if b == nil {
 		return NewCOTPPacketConnectionRequestBuilder()
 	}
-	return &_COTPPacketConnectionRequestBuilder{_COTPPacketConnectionRequest: m.deepCopy()}
+	return &_COTPPacketConnectionRequestBuilder{_COTPPacketConnectionRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -333,9 +352,13 @@ func (m *_COTPPacketConnectionRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

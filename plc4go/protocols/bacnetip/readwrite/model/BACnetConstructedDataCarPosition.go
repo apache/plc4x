@@ -100,64 +100,83 @@ func NewBACnetConstructedDataCarPositionBuilder() BACnetConstructedDataCarPositi
 type _BACnetConstructedDataCarPositionBuilder struct {
 	*_BACnetConstructedDataCarPosition
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCarPositionBuilder) = (*_BACnetConstructedDataCarPositionBuilder)(nil)
 
-func (m *_BACnetConstructedDataCarPositionBuilder) WithMandatoryFields(carPosition BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarPositionBuilder {
-	return m.WithCarPosition(carPosition)
+func (b *_BACnetConstructedDataCarPositionBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCarPositionBuilder) WithCarPosition(carPosition BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarPositionBuilder {
-	m.CarPosition = carPosition
-	return m
+func (b *_BACnetConstructedDataCarPositionBuilder) WithMandatoryFields(carPosition BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarPositionBuilder {
+	return b.WithCarPosition(carPosition)
 }
 
-func (m *_BACnetConstructedDataCarPositionBuilder) WithCarPositionBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCarPositionBuilder {
-	builder := builderSupplier(m.CarPosition.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataCarPositionBuilder) WithCarPosition(carPosition BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarPositionBuilder {
+	b.CarPosition = carPosition
+	return b
+}
+
+func (b *_BACnetConstructedDataCarPositionBuilder) WithCarPositionBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCarPositionBuilder {
+	builder := builderSupplier(b.CarPosition.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.CarPosition, err = builder.Build()
+	b.CarPosition, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataCarPositionBuilder) Build() (BACnetConstructedDataCarPosition, error) {
-	if m.CarPosition == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataCarPositionBuilder) Build() (BACnetConstructedDataCarPosition, error) {
+	if b.CarPosition == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'carPosition' not set"))
+		b.err.Append(errors.New("mandatory field 'carPosition' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCarPosition.deepCopy(), nil
+	return b._BACnetConstructedDataCarPosition.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCarPositionBuilder) MustBuild() BACnetConstructedDataCarPosition {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCarPositionBuilder) MustBuild() BACnetConstructedDataCarPosition {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCarPositionBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCarPositionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCarPositionBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCarPositionBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCarPositionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCarPositionBuilder().(*_BACnetConstructedDataCarPositionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCarPositionBuilder creates a BACnetConstructedDataCarPositionBuilder
-func (m *_BACnetConstructedDataCarPosition) CreateBACnetConstructedDataCarPositionBuilder() BACnetConstructedDataCarPositionBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCarPosition) CreateBACnetConstructedDataCarPositionBuilder() BACnetConstructedDataCarPositionBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCarPositionBuilder()
 	}
-	return &_BACnetConstructedDataCarPositionBuilder{_BACnetConstructedDataCarPosition: m.deepCopy()}
+	return &_BACnetConstructedDataCarPositionBuilder{_BACnetConstructedDataCarPosition: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataCarPosition) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

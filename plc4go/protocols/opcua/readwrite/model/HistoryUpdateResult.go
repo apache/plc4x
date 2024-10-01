@@ -122,84 +122,103 @@ func NewHistoryUpdateResultBuilder() HistoryUpdateResultBuilder {
 type _HistoryUpdateResultBuilder struct {
 	*_HistoryUpdateResult
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (HistoryUpdateResultBuilder) = (*_HistoryUpdateResultBuilder)(nil)
 
-func (m *_HistoryUpdateResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfOperationResults int32, operationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) HistoryUpdateResultBuilder {
-	return m.WithStatusCode(statusCode).WithNoOfOperationResults(noOfOperationResults).WithOperationResults(operationResults...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_HistoryUpdateResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_HistoryUpdateResultBuilder) WithStatusCode(statusCode StatusCode) HistoryUpdateResultBuilder {
-	m.StatusCode = statusCode
-	return m
+func (b *_HistoryUpdateResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfOperationResults int32, operationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) HistoryUpdateResultBuilder {
+	return b.WithStatusCode(statusCode).WithNoOfOperationResults(noOfOperationResults).WithOperationResults(operationResults...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (m *_HistoryUpdateResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) HistoryUpdateResultBuilder {
-	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+func (b *_HistoryUpdateResultBuilder) WithStatusCode(statusCode StatusCode) HistoryUpdateResultBuilder {
+	b.StatusCode = statusCode
+	return b
+}
+
+func (b *_HistoryUpdateResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) HistoryUpdateResultBuilder {
+	builder := builderSupplier(b.StatusCode.CreateStatusCodeBuilder())
 	var err error
-	m.StatusCode, err = builder.Build()
+	b.StatusCode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_HistoryUpdateResultBuilder) WithNoOfOperationResults(noOfOperationResults int32) HistoryUpdateResultBuilder {
-	m.NoOfOperationResults = noOfOperationResults
-	return m
+func (b *_HistoryUpdateResultBuilder) WithNoOfOperationResults(noOfOperationResults int32) HistoryUpdateResultBuilder {
+	b.NoOfOperationResults = noOfOperationResults
+	return b
 }
 
-func (m *_HistoryUpdateResultBuilder) WithOperationResults(operationResults ...StatusCode) HistoryUpdateResultBuilder {
-	m.OperationResults = operationResults
-	return m
+func (b *_HistoryUpdateResultBuilder) WithOperationResults(operationResults ...StatusCode) HistoryUpdateResultBuilder {
+	b.OperationResults = operationResults
+	return b
 }
 
-func (m *_HistoryUpdateResultBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) HistoryUpdateResultBuilder {
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
-	return m
+func (b *_HistoryUpdateResultBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) HistoryUpdateResultBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
 }
 
-func (m *_HistoryUpdateResultBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) HistoryUpdateResultBuilder {
-	m.DiagnosticInfos = diagnosticInfos
-	return m
+func (b *_HistoryUpdateResultBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) HistoryUpdateResultBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
 }
 
-func (m *_HistoryUpdateResultBuilder) Build() (HistoryUpdateResult, error) {
-	if m.StatusCode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_HistoryUpdateResultBuilder) Build() (HistoryUpdateResult, error) {
+	if b.StatusCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HistoryUpdateResult.deepCopy(), nil
+	return b._HistoryUpdateResult.deepCopy(), nil
 }
 
-func (m *_HistoryUpdateResultBuilder) MustBuild() HistoryUpdateResult {
-	build, err := m.Build()
+func (b *_HistoryUpdateResultBuilder) MustBuild() HistoryUpdateResult {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HistoryUpdateResultBuilder) DeepCopy() any {
-	return m.CreateHistoryUpdateResultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryUpdateResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryUpdateResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryUpdateResultBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryUpdateResultBuilder().(*_HistoryUpdateResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHistoryUpdateResultBuilder creates a HistoryUpdateResultBuilder
-func (m *_HistoryUpdateResult) CreateHistoryUpdateResultBuilder() HistoryUpdateResultBuilder {
-	if m == nil {
+func (b *_HistoryUpdateResult) CreateHistoryUpdateResultBuilder() HistoryUpdateResultBuilder {
+	if b == nil {
 		return NewHistoryUpdateResultBuilder()
 	}
-	return &_HistoryUpdateResultBuilder{_HistoryUpdateResult: m.deepCopy()}
+	return &_HistoryUpdateResultBuilder{_HistoryUpdateResult: b.deepCopy()}
 }
 
 ///////////////////////
@@ -429,9 +448,13 @@ func (m *_HistoryUpdateResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

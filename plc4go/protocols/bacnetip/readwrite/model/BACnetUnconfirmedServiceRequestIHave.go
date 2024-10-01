@@ -120,112 +120,131 @@ func NewBACnetUnconfirmedServiceRequestIHaveBuilder() BACnetUnconfirmedServiceRe
 type _BACnetUnconfirmedServiceRequestIHaveBuilder struct {
 	*_BACnetUnconfirmedServiceRequestIHave
 
+	parentBuilder *_BACnetUnconfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetUnconfirmedServiceRequestIHaveBuilder) = (*_BACnetUnconfirmedServiceRequestIHaveBuilder)(nil)
 
-func (m *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithMandatoryFields(deviceIdentifier BACnetApplicationTagObjectIdentifier, objectIdentifier BACnetApplicationTagObjectIdentifier, objectName BACnetApplicationTagCharacterString) BACnetUnconfirmedServiceRequestIHaveBuilder {
-	return m.WithDeviceIdentifier(deviceIdentifier).WithObjectIdentifier(objectIdentifier).WithObjectName(objectName)
+func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) setParent(contract BACnetUnconfirmedServiceRequestContract) {
+	b.BACnetUnconfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithDeviceIdentifier(deviceIdentifier BACnetApplicationTagObjectIdentifier) BACnetUnconfirmedServiceRequestIHaveBuilder {
-	m.DeviceIdentifier = deviceIdentifier
-	return m
+func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithMandatoryFields(deviceIdentifier BACnetApplicationTagObjectIdentifier, objectIdentifier BACnetApplicationTagObjectIdentifier, objectName BACnetApplicationTagCharacterString) BACnetUnconfirmedServiceRequestIHaveBuilder {
+	return b.WithDeviceIdentifier(deviceIdentifier).WithObjectIdentifier(objectIdentifier).WithObjectName(objectName)
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithDeviceIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestIHaveBuilder {
-	builder := builderSupplier(m.DeviceIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
+func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithDeviceIdentifier(deviceIdentifier BACnetApplicationTagObjectIdentifier) BACnetUnconfirmedServiceRequestIHaveBuilder {
+	b.DeviceIdentifier = deviceIdentifier
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithDeviceIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestIHaveBuilder {
+	builder := builderSupplier(b.DeviceIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
 	var err error
-	m.DeviceIdentifier, err = builder.Build()
+	b.DeviceIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithObjectIdentifier(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetUnconfirmedServiceRequestIHaveBuilder {
-	m.ObjectIdentifier = objectIdentifier
-	return m
+func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithObjectIdentifier(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetUnconfirmedServiceRequestIHaveBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestIHaveBuilder {
-	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
+func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestIHaveBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
 	var err error
-	m.ObjectIdentifier, err = builder.Build()
+	b.ObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithObjectName(objectName BACnetApplicationTagCharacterString) BACnetUnconfirmedServiceRequestIHaveBuilder {
-	m.ObjectName = objectName
-	return m
+func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithObjectName(objectName BACnetApplicationTagCharacterString) BACnetUnconfirmedServiceRequestIHaveBuilder {
+	b.ObjectName = objectName
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithObjectNameBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetUnconfirmedServiceRequestIHaveBuilder {
-	builder := builderSupplier(m.ObjectName.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithObjectNameBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetUnconfirmedServiceRequestIHaveBuilder {
+	builder := builderSupplier(b.ObjectName.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.ObjectName, err = builder.Build()
+	b.ObjectName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHaveBuilder) Build() (BACnetUnconfirmedServiceRequestIHave, error) {
-	if m.DeviceIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) Build() (BACnetUnconfirmedServiceRequestIHave, error) {
+	if b.DeviceIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'deviceIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'deviceIdentifier' not set"))
 	}
-	if m.ObjectIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
 	}
-	if m.ObjectName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ObjectName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectName' not set"))
+		b.err.Append(errors.New("mandatory field 'objectName' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetUnconfirmedServiceRequestIHave.deepCopy(), nil
+	return b._BACnetUnconfirmedServiceRequestIHave.deepCopy(), nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHaveBuilder) MustBuild() BACnetUnconfirmedServiceRequestIHave {
-	build, err := m.Build()
+func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) MustBuild() BACnetUnconfirmedServiceRequestIHave {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIHaveBuilder) DeepCopy() any {
-	return m.CreateBACnetUnconfirmedServiceRequestIHaveBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) Done() BACnetUnconfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) buildForBACnetUnconfirmedServiceRequest() (BACnetUnconfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetUnconfirmedServiceRequestIHaveBuilder().(*_BACnetUnconfirmedServiceRequestIHaveBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetUnconfirmedServiceRequestIHaveBuilder creates a BACnetUnconfirmedServiceRequestIHaveBuilder
-func (m *_BACnetUnconfirmedServiceRequestIHave) CreateBACnetUnconfirmedServiceRequestIHaveBuilder() BACnetUnconfirmedServiceRequestIHaveBuilder {
-	if m == nil {
+func (b *_BACnetUnconfirmedServiceRequestIHave) CreateBACnetUnconfirmedServiceRequestIHaveBuilder() BACnetUnconfirmedServiceRequestIHaveBuilder {
+	if b == nil {
 		return NewBACnetUnconfirmedServiceRequestIHaveBuilder()
 	}
-	return &_BACnetUnconfirmedServiceRequestIHaveBuilder{_BACnetUnconfirmedServiceRequestIHave: m.deepCopy()}
+	return &_BACnetUnconfirmedServiceRequestIHaveBuilder{_BACnetUnconfirmedServiceRequestIHave: b.deepCopy()}
 }
 
 ///////////////////////
@@ -405,9 +424,13 @@ func (m *_BACnetUnconfirmedServiceRequestIHave) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

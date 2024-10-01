@@ -100,64 +100,83 @@ func NewBACnetConstructedDataBufferSizeBuilder() BACnetConstructedDataBufferSize
 type _BACnetConstructedDataBufferSizeBuilder struct {
 	*_BACnetConstructedDataBufferSize
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBufferSizeBuilder) = (*_BACnetConstructedDataBufferSizeBuilder)(nil)
 
-func (m *_BACnetConstructedDataBufferSizeBuilder) WithMandatoryFields(bufferSize BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBufferSizeBuilder {
-	return m.WithBufferSize(bufferSize)
+func (b *_BACnetConstructedDataBufferSizeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBufferSizeBuilder) WithBufferSize(bufferSize BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBufferSizeBuilder {
-	m.BufferSize = bufferSize
-	return m
+func (b *_BACnetConstructedDataBufferSizeBuilder) WithMandatoryFields(bufferSize BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBufferSizeBuilder {
+	return b.WithBufferSize(bufferSize)
 }
 
-func (m *_BACnetConstructedDataBufferSizeBuilder) WithBufferSizeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBufferSizeBuilder {
-	builder := builderSupplier(m.BufferSize.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataBufferSizeBuilder) WithBufferSize(bufferSize BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBufferSizeBuilder {
+	b.BufferSize = bufferSize
+	return b
+}
+
+func (b *_BACnetConstructedDataBufferSizeBuilder) WithBufferSizeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBufferSizeBuilder {
+	builder := builderSupplier(b.BufferSize.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.BufferSize, err = builder.Build()
+	b.BufferSize, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBufferSizeBuilder) Build() (BACnetConstructedDataBufferSize, error) {
-	if m.BufferSize == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBufferSizeBuilder) Build() (BACnetConstructedDataBufferSize, error) {
+	if b.BufferSize == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'bufferSize' not set"))
+		b.err.Append(errors.New("mandatory field 'bufferSize' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBufferSize.deepCopy(), nil
+	return b._BACnetConstructedDataBufferSize.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBufferSizeBuilder) MustBuild() BACnetConstructedDataBufferSize {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBufferSizeBuilder) MustBuild() BACnetConstructedDataBufferSize {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBufferSizeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBufferSizeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBufferSizeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBufferSizeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBufferSizeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBufferSizeBuilder().(*_BACnetConstructedDataBufferSizeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBufferSizeBuilder creates a BACnetConstructedDataBufferSizeBuilder
-func (m *_BACnetConstructedDataBufferSize) CreateBACnetConstructedDataBufferSizeBuilder() BACnetConstructedDataBufferSizeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBufferSize) CreateBACnetConstructedDataBufferSizeBuilder() BACnetConstructedDataBufferSizeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBufferSizeBuilder()
 	}
-	return &_BACnetConstructedDataBufferSizeBuilder{_BACnetConstructedDataBufferSize: m.deepCopy()}
+	return &_BACnetConstructedDataBufferSizeBuilder{_BACnetConstructedDataBufferSize: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataBufferSize) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

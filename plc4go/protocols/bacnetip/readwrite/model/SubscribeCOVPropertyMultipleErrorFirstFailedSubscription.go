@@ -138,155 +138,159 @@ type _SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder struct {
 
 var _ (SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) = (*_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder)(nil)
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, monitoredPropertyReference BACnetPropertyReferenceEnclosed, errorType ErrorEnclosed, closingTag BACnetClosingTag) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
-	return m.WithOpeningTag(openingTag).WithMonitoredObjectIdentifier(monitoredObjectIdentifier).WithMonitoredPropertyReference(monitoredPropertyReference).WithErrorType(errorType).WithClosingTag(closingTag)
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, monitoredPropertyReference BACnetPropertyReferenceEnclosed, errorType ErrorEnclosed, closingTag BACnetClosingTag) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
+	return b.WithOpeningTag(openingTag).WithMonitoredObjectIdentifier(monitoredObjectIdentifier).WithMonitoredPropertyReference(monitoredPropertyReference).WithErrorType(errorType).WithClosingTag(closingTag)
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithOpeningTag(openingTag BACnetOpeningTag) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithOpeningTag(openingTag BACnetOpeningTag) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithMonitoredObjectIdentifier(monitoredObjectIdentifier BACnetContextTagObjectIdentifier) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
-	m.MonitoredObjectIdentifier = monitoredObjectIdentifier
-	return m
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithMonitoredObjectIdentifier(monitoredObjectIdentifier BACnetContextTagObjectIdentifier) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
+	b.MonitoredObjectIdentifier = monitoredObjectIdentifier
+	return b
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithMonitoredObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
-	builder := builderSupplier(m.MonitoredObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithMonitoredObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
+	builder := builderSupplier(b.MonitoredObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
 	var err error
-	m.MonitoredObjectIdentifier, err = builder.Build()
+	b.MonitoredObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithMonitoredPropertyReference(monitoredPropertyReference BACnetPropertyReferenceEnclosed) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
-	m.MonitoredPropertyReference = monitoredPropertyReference
-	return m
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithMonitoredPropertyReference(monitoredPropertyReference BACnetPropertyReferenceEnclosed) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
+	b.MonitoredPropertyReference = monitoredPropertyReference
+	return b
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithMonitoredPropertyReferenceBuilder(builderSupplier func(BACnetPropertyReferenceEnclosedBuilder) BACnetPropertyReferenceEnclosedBuilder) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
-	builder := builderSupplier(m.MonitoredPropertyReference.CreateBACnetPropertyReferenceEnclosedBuilder())
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithMonitoredPropertyReferenceBuilder(builderSupplier func(BACnetPropertyReferenceEnclosedBuilder) BACnetPropertyReferenceEnclosedBuilder) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
+	builder := builderSupplier(b.MonitoredPropertyReference.CreateBACnetPropertyReferenceEnclosedBuilder())
 	var err error
-	m.MonitoredPropertyReference, err = builder.Build()
+	b.MonitoredPropertyReference, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetPropertyReferenceEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetPropertyReferenceEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithErrorType(errorType ErrorEnclosed) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
-	m.ErrorType = errorType
-	return m
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithErrorType(errorType ErrorEnclosed) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
+	b.ErrorType = errorType
+	return b
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
-	builder := builderSupplier(m.ErrorType.CreateErrorEnclosedBuilder())
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
+	builder := builderSupplier(b.ErrorType.CreateErrorEnclosedBuilder())
 	var err error
-	m.ErrorType, err = builder.Build()
+	b.ErrorType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithClosingTag(closingTag BACnetClosingTag) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithClosingTag(closingTag BACnetClosingTag) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) Build() (SubscribeCOVPropertyMultipleErrorFirstFailedSubscription, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) Build() (SubscribeCOVPropertyMultipleErrorFirstFailedSubscription, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.MonitoredObjectIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.MonitoredObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'monitoredObjectIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'monitoredObjectIdentifier' not set"))
 	}
-	if m.MonitoredPropertyReference == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.MonitoredPropertyReference == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'monitoredPropertyReference' not set"))
+		b.err.Append(errors.New("mandatory field 'monitoredPropertyReference' not set"))
 	}
-	if m.ErrorType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ErrorType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'errorType' not set"))
+		b.err.Append(errors.New("mandatory field 'errorType' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SubscribeCOVPropertyMultipleErrorFirstFailedSubscription.deepCopy(), nil
+	return b._SubscribeCOVPropertyMultipleErrorFirstFailedSubscription.deepCopy(), nil
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) MustBuild() SubscribeCOVPropertyMultipleErrorFirstFailedSubscription {
-	build, err := m.Build()
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) MustBuild() SubscribeCOVPropertyMultipleErrorFirstFailedSubscription {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) DeepCopy() any {
-	return m.CreateSubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder()
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) DeepCopy() any {
+	_copy := b.CreateSubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder().(*_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder creates a SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) CreateSubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder() SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
-	if m == nil {
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) CreateSubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder() SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
+	if b == nil {
 		return NewSubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder()
 	}
-	return &_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder{_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription: m.deepCopy()}
+	return &_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder{_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription: b.deepCopy()}
 }
 
 ///////////////////////
@@ -507,9 +511,13 @@ func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) String() str
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

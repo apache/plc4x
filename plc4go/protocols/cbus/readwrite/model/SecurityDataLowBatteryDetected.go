@@ -85,40 +85,59 @@ func NewSecurityDataLowBatteryDetectedBuilder() SecurityDataLowBatteryDetectedBu
 type _SecurityDataLowBatteryDetectedBuilder struct {
 	*_SecurityDataLowBatteryDetected
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataLowBatteryDetectedBuilder) = (*_SecurityDataLowBatteryDetectedBuilder)(nil)
 
-func (m *_SecurityDataLowBatteryDetectedBuilder) WithMandatoryFields() SecurityDataLowBatteryDetectedBuilder {
-	return m
+func (b *_SecurityDataLowBatteryDetectedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataLowBatteryDetectedBuilder) Build() (SecurityDataLowBatteryDetected, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataLowBatteryDetectedBuilder) WithMandatoryFields() SecurityDataLowBatteryDetectedBuilder {
+	return b
+}
+
+func (b *_SecurityDataLowBatteryDetectedBuilder) Build() (SecurityDataLowBatteryDetected, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataLowBatteryDetected.deepCopy(), nil
+	return b._SecurityDataLowBatteryDetected.deepCopy(), nil
 }
 
-func (m *_SecurityDataLowBatteryDetectedBuilder) MustBuild() SecurityDataLowBatteryDetected {
-	build, err := m.Build()
+func (b *_SecurityDataLowBatteryDetectedBuilder) MustBuild() SecurityDataLowBatteryDetected {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataLowBatteryDetectedBuilder) DeepCopy() any {
-	return m.CreateSecurityDataLowBatteryDetectedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataLowBatteryDetectedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataLowBatteryDetectedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataLowBatteryDetectedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataLowBatteryDetectedBuilder().(*_SecurityDataLowBatteryDetectedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataLowBatteryDetectedBuilder creates a SecurityDataLowBatteryDetectedBuilder
-func (m *_SecurityDataLowBatteryDetected) CreateSecurityDataLowBatteryDetectedBuilder() SecurityDataLowBatteryDetectedBuilder {
-	if m == nil {
+func (b *_SecurityDataLowBatteryDetected) CreateSecurityDataLowBatteryDetectedBuilder() SecurityDataLowBatteryDetectedBuilder {
+	if b == nil {
 		return NewSecurityDataLowBatteryDetectedBuilder()
 	}
-	return &_SecurityDataLowBatteryDetectedBuilder{_SecurityDataLowBatteryDetected: m.deepCopy()}
+	return &_SecurityDataLowBatteryDetectedBuilder{_SecurityDataLowBatteryDetected: b.deepCopy()}
 }
 
 ///////////////////////
@@ -230,9 +249,13 @@ func (m *_SecurityDataLowBatteryDetected) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

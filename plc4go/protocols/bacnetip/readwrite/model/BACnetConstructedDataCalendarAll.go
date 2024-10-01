@@ -85,40 +85,59 @@ func NewBACnetConstructedDataCalendarAllBuilder() BACnetConstructedDataCalendarA
 type _BACnetConstructedDataCalendarAllBuilder struct {
 	*_BACnetConstructedDataCalendarAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCalendarAllBuilder) = (*_BACnetConstructedDataCalendarAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataCalendarAllBuilder) WithMandatoryFields() BACnetConstructedDataCalendarAllBuilder {
-	return m
+func (b *_BACnetConstructedDataCalendarAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCalendarAllBuilder) Build() (BACnetConstructedDataCalendarAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataCalendarAllBuilder) WithMandatoryFields() BACnetConstructedDataCalendarAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataCalendarAllBuilder) Build() (BACnetConstructedDataCalendarAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCalendarAll.deepCopy(), nil
+	return b._BACnetConstructedDataCalendarAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCalendarAllBuilder) MustBuild() BACnetConstructedDataCalendarAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCalendarAllBuilder) MustBuild() BACnetConstructedDataCalendarAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCalendarAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCalendarAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCalendarAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCalendarAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCalendarAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCalendarAllBuilder().(*_BACnetConstructedDataCalendarAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCalendarAllBuilder creates a BACnetConstructedDataCalendarAllBuilder
-func (m *_BACnetConstructedDataCalendarAll) CreateBACnetConstructedDataCalendarAllBuilder() BACnetConstructedDataCalendarAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCalendarAll) CreateBACnetConstructedDataCalendarAllBuilder() BACnetConstructedDataCalendarAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCalendarAllBuilder()
 	}
-	return &_BACnetConstructedDataCalendarAllBuilder{_BACnetConstructedDataCalendarAll: m.deepCopy()}
+	return &_BACnetConstructedDataCalendarAllBuilder{_BACnetConstructedDataCalendarAll: b.deepCopy()}
 }
 
 ///////////////////////
@@ -243,9 +262,13 @@ func (m *_BACnetConstructedDataCalendarAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

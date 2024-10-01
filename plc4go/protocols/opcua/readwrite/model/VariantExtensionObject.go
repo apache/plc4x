@@ -99,50 +99,69 @@ func NewVariantExtensionObjectBuilder() VariantExtensionObjectBuilder {
 type _VariantExtensionObjectBuilder struct {
 	*_VariantExtensionObject
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantExtensionObjectBuilder) = (*_VariantExtensionObjectBuilder)(nil)
 
-func (m *_VariantExtensionObjectBuilder) WithMandatoryFields(value []ExtensionObject) VariantExtensionObjectBuilder {
-	return m.WithValue(value...)
+func (b *_VariantExtensionObjectBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantExtensionObjectBuilder) WithOptionalArrayLength(arrayLength int32) VariantExtensionObjectBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantExtensionObjectBuilder) WithMandatoryFields(value []ExtensionObject) VariantExtensionObjectBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantExtensionObjectBuilder) WithValue(value ...ExtensionObject) VariantExtensionObjectBuilder {
-	m.Value = value
-	return m
+func (b *_VariantExtensionObjectBuilder) WithOptionalArrayLength(arrayLength int32) VariantExtensionObjectBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantExtensionObjectBuilder) Build() (VariantExtensionObject, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantExtensionObjectBuilder) WithValue(value ...ExtensionObject) VariantExtensionObjectBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantExtensionObjectBuilder) Build() (VariantExtensionObject, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantExtensionObject.deepCopy(), nil
+	return b._VariantExtensionObject.deepCopy(), nil
 }
 
-func (m *_VariantExtensionObjectBuilder) MustBuild() VariantExtensionObject {
-	build, err := m.Build()
+func (b *_VariantExtensionObjectBuilder) MustBuild() VariantExtensionObject {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantExtensionObjectBuilder) DeepCopy() any {
-	return m.CreateVariantExtensionObjectBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantExtensionObjectBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantExtensionObjectBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantExtensionObjectBuilder) DeepCopy() any {
+	_copy := b.CreateVariantExtensionObjectBuilder().(*_VariantExtensionObjectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantExtensionObjectBuilder creates a VariantExtensionObjectBuilder
-func (m *_VariantExtensionObject) CreateVariantExtensionObjectBuilder() VariantExtensionObjectBuilder {
-	if m == nil {
+func (b *_VariantExtensionObject) CreateVariantExtensionObjectBuilder() VariantExtensionObjectBuilder {
+	if b == nil {
 		return NewVariantExtensionObjectBuilder()
 	}
-	return &_VariantExtensionObjectBuilder{_VariantExtensionObject: m.deepCopy()}
+	return &_VariantExtensionObjectBuilder{_VariantExtensionObject: b.deepCopy()}
 }
 
 ///////////////////////
@@ -314,9 +333,13 @@ func (m *_VariantExtensionObject) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

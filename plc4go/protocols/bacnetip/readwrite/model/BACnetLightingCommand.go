@@ -130,149 +130,153 @@ type _BACnetLightingCommandBuilder struct {
 
 var _ (BACnetLightingCommandBuilder) = (*_BACnetLightingCommandBuilder)(nil)
 
-func (m *_BACnetLightingCommandBuilder) WithMandatoryFields(lightningOperation BACnetLightingOperationTagged) BACnetLightingCommandBuilder {
-	return m.WithLightningOperation(lightningOperation)
+func (b *_BACnetLightingCommandBuilder) WithMandatoryFields(lightningOperation BACnetLightingOperationTagged) BACnetLightingCommandBuilder {
+	return b.WithLightningOperation(lightningOperation)
 }
 
-func (m *_BACnetLightingCommandBuilder) WithLightningOperation(lightningOperation BACnetLightingOperationTagged) BACnetLightingCommandBuilder {
-	m.LightningOperation = lightningOperation
-	return m
+func (b *_BACnetLightingCommandBuilder) WithLightningOperation(lightningOperation BACnetLightingOperationTagged) BACnetLightingCommandBuilder {
+	b.LightningOperation = lightningOperation
+	return b
 }
 
-func (m *_BACnetLightingCommandBuilder) WithLightningOperationBuilder(builderSupplier func(BACnetLightingOperationTaggedBuilder) BACnetLightingOperationTaggedBuilder) BACnetLightingCommandBuilder {
-	builder := builderSupplier(m.LightningOperation.CreateBACnetLightingOperationTaggedBuilder())
+func (b *_BACnetLightingCommandBuilder) WithLightningOperationBuilder(builderSupplier func(BACnetLightingOperationTaggedBuilder) BACnetLightingOperationTaggedBuilder) BACnetLightingCommandBuilder {
+	builder := builderSupplier(b.LightningOperation.CreateBACnetLightingOperationTaggedBuilder())
 	var err error
-	m.LightningOperation, err = builder.Build()
+	b.LightningOperation, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLightingOperationTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLightingOperationTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLightingCommandBuilder) WithOptionalTargetLevel(targetLevel BACnetContextTagReal) BACnetLightingCommandBuilder {
-	m.TargetLevel = targetLevel
-	return m
+func (b *_BACnetLightingCommandBuilder) WithOptionalTargetLevel(targetLevel BACnetContextTagReal) BACnetLightingCommandBuilder {
+	b.TargetLevel = targetLevel
+	return b
 }
 
-func (m *_BACnetLightingCommandBuilder) WithOptionalTargetLevelBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLightingCommandBuilder {
-	builder := builderSupplier(m.TargetLevel.CreateBACnetContextTagRealBuilder())
+func (b *_BACnetLightingCommandBuilder) WithOptionalTargetLevelBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLightingCommandBuilder {
+	builder := builderSupplier(b.TargetLevel.CreateBACnetContextTagRealBuilder())
 	var err error
-	m.TargetLevel, err = builder.Build()
+	b.TargetLevel, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLightingCommandBuilder) WithOptionalRampRate(rampRate BACnetContextTagReal) BACnetLightingCommandBuilder {
-	m.RampRate = rampRate
-	return m
+func (b *_BACnetLightingCommandBuilder) WithOptionalRampRate(rampRate BACnetContextTagReal) BACnetLightingCommandBuilder {
+	b.RampRate = rampRate
+	return b
 }
 
-func (m *_BACnetLightingCommandBuilder) WithOptionalRampRateBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLightingCommandBuilder {
-	builder := builderSupplier(m.RampRate.CreateBACnetContextTagRealBuilder())
+func (b *_BACnetLightingCommandBuilder) WithOptionalRampRateBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLightingCommandBuilder {
+	builder := builderSupplier(b.RampRate.CreateBACnetContextTagRealBuilder())
 	var err error
-	m.RampRate, err = builder.Build()
+	b.RampRate, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLightingCommandBuilder) WithOptionalStepIncrement(stepIncrement BACnetContextTagReal) BACnetLightingCommandBuilder {
-	m.StepIncrement = stepIncrement
-	return m
+func (b *_BACnetLightingCommandBuilder) WithOptionalStepIncrement(stepIncrement BACnetContextTagReal) BACnetLightingCommandBuilder {
+	b.StepIncrement = stepIncrement
+	return b
 }
 
-func (m *_BACnetLightingCommandBuilder) WithOptionalStepIncrementBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLightingCommandBuilder {
-	builder := builderSupplier(m.StepIncrement.CreateBACnetContextTagRealBuilder())
+func (b *_BACnetLightingCommandBuilder) WithOptionalStepIncrementBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLightingCommandBuilder {
+	builder := builderSupplier(b.StepIncrement.CreateBACnetContextTagRealBuilder())
 	var err error
-	m.StepIncrement, err = builder.Build()
+	b.StepIncrement, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLightingCommandBuilder) WithOptionalFadeTime(fadeTime BACnetContextTagUnsignedInteger) BACnetLightingCommandBuilder {
-	m.FadeTime = fadeTime
-	return m
+func (b *_BACnetLightingCommandBuilder) WithOptionalFadeTime(fadeTime BACnetContextTagUnsignedInteger) BACnetLightingCommandBuilder {
+	b.FadeTime = fadeTime
+	return b
 }
 
-func (m *_BACnetLightingCommandBuilder) WithOptionalFadeTimeBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLightingCommandBuilder {
-	builder := builderSupplier(m.FadeTime.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetLightingCommandBuilder) WithOptionalFadeTimeBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLightingCommandBuilder {
+	builder := builderSupplier(b.FadeTime.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.FadeTime, err = builder.Build()
+	b.FadeTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLightingCommandBuilder) WithOptionalPriority(priority BACnetContextTagUnsignedInteger) BACnetLightingCommandBuilder {
-	m.Priority = priority
-	return m
+func (b *_BACnetLightingCommandBuilder) WithOptionalPriority(priority BACnetContextTagUnsignedInteger) BACnetLightingCommandBuilder {
+	b.Priority = priority
+	return b
 }
 
-func (m *_BACnetLightingCommandBuilder) WithOptionalPriorityBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLightingCommandBuilder {
-	builder := builderSupplier(m.Priority.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetLightingCommandBuilder) WithOptionalPriorityBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLightingCommandBuilder {
+	builder := builderSupplier(b.Priority.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.Priority, err = builder.Build()
+	b.Priority, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLightingCommandBuilder) Build() (BACnetLightingCommand, error) {
-	if m.LightningOperation == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLightingCommandBuilder) Build() (BACnetLightingCommand, error) {
+	if b.LightningOperation == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lightningOperation' not set"))
+		b.err.Append(errors.New("mandatory field 'lightningOperation' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLightingCommand.deepCopy(), nil
+	return b._BACnetLightingCommand.deepCopy(), nil
 }
 
-func (m *_BACnetLightingCommandBuilder) MustBuild() BACnetLightingCommand {
-	build, err := m.Build()
+func (b *_BACnetLightingCommandBuilder) MustBuild() BACnetLightingCommand {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLightingCommandBuilder) DeepCopy() any {
-	return m.CreateBACnetLightingCommandBuilder()
+func (b *_BACnetLightingCommandBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLightingCommandBuilder().(*_BACnetLightingCommandBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLightingCommandBuilder creates a BACnetLightingCommandBuilder
-func (m *_BACnetLightingCommand) CreateBACnetLightingCommandBuilder() BACnetLightingCommandBuilder {
-	if m == nil {
+func (b *_BACnetLightingCommand) CreateBACnetLightingCommandBuilder() BACnetLightingCommandBuilder {
+	if b == nil {
 		return NewBACnetLightingCommandBuilder()
 	}
-	return &_BACnetLightingCommandBuilder{_BACnetLightingCommand: m.deepCopy()}
+	return &_BACnetLightingCommandBuilder{_BACnetLightingCommand: b.deepCopy()}
 }
 
 ///////////////////////
@@ -529,9 +533,13 @@ func (m *_BACnetLightingCommand) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

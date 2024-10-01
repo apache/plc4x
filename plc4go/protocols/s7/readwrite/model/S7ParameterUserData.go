@@ -93,45 +93,64 @@ func NewS7ParameterUserDataBuilder() S7ParameterUserDataBuilder {
 type _S7ParameterUserDataBuilder struct {
 	*_S7ParameterUserData
 
+	parentBuilder *_S7ParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7ParameterUserDataBuilder) = (*_S7ParameterUserDataBuilder)(nil)
 
-func (m *_S7ParameterUserDataBuilder) WithMandatoryFields(items []S7ParameterUserDataItem) S7ParameterUserDataBuilder {
-	return m.WithItems(items...)
+func (b *_S7ParameterUserDataBuilder) setParent(contract S7ParameterContract) {
+	b.S7ParameterContract = contract
 }
 
-func (m *_S7ParameterUserDataBuilder) WithItems(items ...S7ParameterUserDataItem) S7ParameterUserDataBuilder {
-	m.Items = items
-	return m
+func (b *_S7ParameterUserDataBuilder) WithMandatoryFields(items []S7ParameterUserDataItem) S7ParameterUserDataBuilder {
+	return b.WithItems(items...)
 }
 
-func (m *_S7ParameterUserDataBuilder) Build() (S7ParameterUserData, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7ParameterUserDataBuilder) WithItems(items ...S7ParameterUserDataItem) S7ParameterUserDataBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_S7ParameterUserDataBuilder) Build() (S7ParameterUserData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7ParameterUserData.deepCopy(), nil
+	return b._S7ParameterUserData.deepCopy(), nil
 }
 
-func (m *_S7ParameterUserDataBuilder) MustBuild() S7ParameterUserData {
-	build, err := m.Build()
+func (b *_S7ParameterUserDataBuilder) MustBuild() S7ParameterUserData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7ParameterUserDataBuilder) DeepCopy() any {
-	return m.CreateS7ParameterUserDataBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7ParameterUserDataBuilder) Done() S7ParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7ParameterUserDataBuilder) buildForS7Parameter() (S7Parameter, error) {
+	return b.Build()
+}
+
+func (b *_S7ParameterUserDataBuilder) DeepCopy() any {
+	_copy := b.CreateS7ParameterUserDataBuilder().(*_S7ParameterUserDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7ParameterUserDataBuilder creates a S7ParameterUserDataBuilder
-func (m *_S7ParameterUserData) CreateS7ParameterUserDataBuilder() S7ParameterUserDataBuilder {
-	if m == nil {
+func (b *_S7ParameterUserData) CreateS7ParameterUserDataBuilder() S7ParameterUserDataBuilder {
+	if b == nil {
 		return NewS7ParameterUserDataBuilder()
 	}
-	return &_S7ParameterUserDataBuilder{_S7ParameterUserData: m.deepCopy()}
+	return &_S7ParameterUserDataBuilder{_S7ParameterUserData: b.deepCopy()}
 }
 
 ///////////////////////
@@ -299,9 +318,13 @@ func (m *_S7ParameterUserData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

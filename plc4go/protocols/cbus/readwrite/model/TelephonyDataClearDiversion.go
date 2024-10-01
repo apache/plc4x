@@ -85,40 +85,59 @@ func NewTelephonyDataClearDiversionBuilder() TelephonyDataClearDiversionBuilder 
 type _TelephonyDataClearDiversionBuilder struct {
 	*_TelephonyDataClearDiversion
 
+	parentBuilder *_TelephonyDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TelephonyDataClearDiversionBuilder) = (*_TelephonyDataClearDiversionBuilder)(nil)
 
-func (m *_TelephonyDataClearDiversionBuilder) WithMandatoryFields() TelephonyDataClearDiversionBuilder {
-	return m
+func (b *_TelephonyDataClearDiversionBuilder) setParent(contract TelephonyDataContract) {
+	b.TelephonyDataContract = contract
 }
 
-func (m *_TelephonyDataClearDiversionBuilder) Build() (TelephonyDataClearDiversion, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TelephonyDataClearDiversionBuilder) WithMandatoryFields() TelephonyDataClearDiversionBuilder {
+	return b
+}
+
+func (b *_TelephonyDataClearDiversionBuilder) Build() (TelephonyDataClearDiversion, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TelephonyDataClearDiversion.deepCopy(), nil
+	return b._TelephonyDataClearDiversion.deepCopy(), nil
 }
 
-func (m *_TelephonyDataClearDiversionBuilder) MustBuild() TelephonyDataClearDiversion {
-	build, err := m.Build()
+func (b *_TelephonyDataClearDiversionBuilder) MustBuild() TelephonyDataClearDiversion {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TelephonyDataClearDiversionBuilder) DeepCopy() any {
-	return m.CreateTelephonyDataClearDiversionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TelephonyDataClearDiversionBuilder) Done() TelephonyDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TelephonyDataClearDiversionBuilder) buildForTelephonyData() (TelephonyData, error) {
+	return b.Build()
+}
+
+func (b *_TelephonyDataClearDiversionBuilder) DeepCopy() any {
+	_copy := b.CreateTelephonyDataClearDiversionBuilder().(*_TelephonyDataClearDiversionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTelephonyDataClearDiversionBuilder creates a TelephonyDataClearDiversionBuilder
-func (m *_TelephonyDataClearDiversion) CreateTelephonyDataClearDiversionBuilder() TelephonyDataClearDiversionBuilder {
-	if m == nil {
+func (b *_TelephonyDataClearDiversion) CreateTelephonyDataClearDiversionBuilder() TelephonyDataClearDiversionBuilder {
+	if b == nil {
 		return NewTelephonyDataClearDiversionBuilder()
 	}
-	return &_TelephonyDataClearDiversionBuilder{_TelephonyDataClearDiversion: m.deepCopy()}
+	return &_TelephonyDataClearDiversionBuilder{_TelephonyDataClearDiversion: b.deepCopy()}
 }
 
 ///////////////////////
@@ -230,9 +249,13 @@ func (m *_TelephonyDataClearDiversion) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

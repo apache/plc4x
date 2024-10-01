@@ -100,64 +100,83 @@ func NewBACnetContextTagCharacterStringBuilder() BACnetContextTagCharacterString
 type _BACnetContextTagCharacterStringBuilder struct {
 	*_BACnetContextTagCharacterString
 
+	parentBuilder *_BACnetContextTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetContextTagCharacterStringBuilder) = (*_BACnetContextTagCharacterStringBuilder)(nil)
 
-func (m *_BACnetContextTagCharacterStringBuilder) WithMandatoryFields(payload BACnetTagPayloadCharacterString) BACnetContextTagCharacterStringBuilder {
-	return m.WithPayload(payload)
+func (b *_BACnetContextTagCharacterStringBuilder) setParent(contract BACnetContextTagContract) {
+	b.BACnetContextTagContract = contract
 }
 
-func (m *_BACnetContextTagCharacterStringBuilder) WithPayload(payload BACnetTagPayloadCharacterString) BACnetContextTagCharacterStringBuilder {
-	m.Payload = payload
-	return m
+func (b *_BACnetContextTagCharacterStringBuilder) WithMandatoryFields(payload BACnetTagPayloadCharacterString) BACnetContextTagCharacterStringBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_BACnetContextTagCharacterStringBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadCharacterStringBuilder) BACnetTagPayloadCharacterStringBuilder) BACnetContextTagCharacterStringBuilder {
-	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadCharacterStringBuilder())
+func (b *_BACnetContextTagCharacterStringBuilder) WithPayload(payload BACnetTagPayloadCharacterString) BACnetContextTagCharacterStringBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetContextTagCharacterStringBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadCharacterStringBuilder) BACnetTagPayloadCharacterStringBuilder) BACnetContextTagCharacterStringBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadCharacterStringBuilder())
 	var err error
-	m.Payload, err = builder.Build()
+	b.Payload, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagPayloadCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetContextTagCharacterStringBuilder) Build() (BACnetContextTagCharacterString, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetContextTagCharacterStringBuilder) Build() (BACnetContextTagCharacterString, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetContextTagCharacterString.deepCopy(), nil
+	return b._BACnetContextTagCharacterString.deepCopy(), nil
 }
 
-func (m *_BACnetContextTagCharacterStringBuilder) MustBuild() BACnetContextTagCharacterString {
-	build, err := m.Build()
+func (b *_BACnetContextTagCharacterStringBuilder) MustBuild() BACnetContextTagCharacterString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetContextTagCharacterStringBuilder) DeepCopy() any {
-	return m.CreateBACnetContextTagCharacterStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetContextTagCharacterStringBuilder) Done() BACnetContextTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetContextTagCharacterStringBuilder) buildForBACnetContextTag() (BACnetContextTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetContextTagCharacterStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetContextTagCharacterStringBuilder().(*_BACnetContextTagCharacterStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetContextTagCharacterStringBuilder creates a BACnetContextTagCharacterStringBuilder
-func (m *_BACnetContextTagCharacterString) CreateBACnetContextTagCharacterStringBuilder() BACnetContextTagCharacterStringBuilder {
-	if m == nil {
+func (b *_BACnetContextTagCharacterString) CreateBACnetContextTagCharacterStringBuilder() BACnetContextTagCharacterStringBuilder {
+	if b == nil {
 		return NewBACnetContextTagCharacterStringBuilder()
 	}
-	return &_BACnetContextTagCharacterStringBuilder{_BACnetContextTagCharacterString: m.deepCopy()}
+	return &_BACnetContextTagCharacterStringBuilder{_BACnetContextTagCharacterString: b.deepCopy()}
 }
 
 ///////////////////////
@@ -330,9 +349,13 @@ func (m *_BACnetContextTagCharacterString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

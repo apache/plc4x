@@ -92,10 +92,54 @@ type MessagePDUBuilder interface {
 	WithMandatoryFields(chunk ChunkType) MessagePDUBuilder
 	// WithChunk adds Chunk (property field)
 	WithChunk(ChunkType) MessagePDUBuilder
+	// AsOpcuaHelloRequest converts this build to a subType of MessagePDU. It is always possible to return to current builder using Done()
+	AsOpcuaHelloRequest() interface {
+		OpcuaHelloRequestBuilder
+		Done() MessagePDUBuilder
+	}
+	// AsOpcuaAcknowledgeResponse converts this build to a subType of MessagePDU. It is always possible to return to current builder using Done()
+	AsOpcuaAcknowledgeResponse() interface {
+		OpcuaAcknowledgeResponseBuilder
+		Done() MessagePDUBuilder
+	}
+	// AsOpcuaOpenRequest converts this build to a subType of MessagePDU. It is always possible to return to current builder using Done()
+	AsOpcuaOpenRequest() interface {
+		OpcuaOpenRequestBuilder
+		Done() MessagePDUBuilder
+	}
+	// AsOpcuaOpenResponse converts this build to a subType of MessagePDU. It is always possible to return to current builder using Done()
+	AsOpcuaOpenResponse() interface {
+		OpcuaOpenResponseBuilder
+		Done() MessagePDUBuilder
+	}
+	// AsOpcuaCloseRequest converts this build to a subType of MessagePDU. It is always possible to return to current builder using Done()
+	AsOpcuaCloseRequest() interface {
+		OpcuaCloseRequestBuilder
+		Done() MessagePDUBuilder
+	}
+	// AsOpcuaMessageRequest converts this build to a subType of MessagePDU. It is always possible to return to current builder using Done()
+	AsOpcuaMessageRequest() interface {
+		OpcuaMessageRequestBuilder
+		Done() MessagePDUBuilder
+	}
+	// AsOpcuaMessageResponse converts this build to a subType of MessagePDU. It is always possible to return to current builder using Done()
+	AsOpcuaMessageResponse() interface {
+		OpcuaMessageResponseBuilder
+		Done() MessagePDUBuilder
+	}
+	// AsOpcuaMessageError converts this build to a subType of MessagePDU. It is always possible to return to current builder using Done()
+	AsOpcuaMessageError() interface {
+		OpcuaMessageErrorBuilder
+		Done() MessagePDUBuilder
+	}
 	// Build builds the MessagePDU or returns an error if something is wrong
-	Build() (MessagePDUContract, error)
+	PartialBuild() (MessagePDUContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() MessagePDUContract
+	PartialMustBuild() MessagePDUContract
+	// Build builds the MessagePDU or returns an error if something is wrong
+	Build() (MessagePDU, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MessagePDU
 }
 
 // NewMessagePDUBuilder() creates a MessagePDUBuilder
@@ -103,48 +147,210 @@ func NewMessagePDUBuilder() MessagePDUBuilder {
 	return &_MessagePDUBuilder{_MessagePDU: new(_MessagePDU)}
 }
 
+type _MessagePDUChildBuilder interface {
+	utils.Copyable
+	setParent(MessagePDUContract)
+	buildForMessagePDU() (MessagePDU, error)
+}
+
 type _MessagePDUBuilder struct {
 	*_MessagePDU
+
+	childBuilder _MessagePDUChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (MessagePDUBuilder) = (*_MessagePDUBuilder)(nil)
 
-func (m *_MessagePDUBuilder) WithMandatoryFields(chunk ChunkType) MessagePDUBuilder {
-	return m.WithChunk(chunk)
+func (b *_MessagePDUBuilder) WithMandatoryFields(chunk ChunkType) MessagePDUBuilder {
+	return b.WithChunk(chunk)
 }
 
-func (m *_MessagePDUBuilder) WithChunk(chunk ChunkType) MessagePDUBuilder {
-	m.Chunk = chunk
-	return m
+func (b *_MessagePDUBuilder) WithChunk(chunk ChunkType) MessagePDUBuilder {
+	b.Chunk = chunk
+	return b
 }
 
-func (m *_MessagePDUBuilder) Build() (MessagePDUContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MessagePDUBuilder) PartialBuild() (MessagePDUContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MessagePDU.deepCopy(), nil
+	return b._MessagePDU.deepCopy(), nil
 }
 
-func (m *_MessagePDUBuilder) MustBuild() MessagePDUContract {
-	build, err := m.Build()
+func (b *_MessagePDUBuilder) PartialMustBuild() MessagePDUContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MessagePDUBuilder) DeepCopy() any {
-	return m.CreateMessagePDUBuilder()
+func (b *_MessagePDUBuilder) AsOpcuaHelloRequest() interface {
+	OpcuaHelloRequestBuilder
+	Done() MessagePDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		OpcuaHelloRequestBuilder
+		Done() MessagePDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewOpcuaHelloRequestBuilder().(*_OpcuaHelloRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_MessagePDUBuilder) AsOpcuaAcknowledgeResponse() interface {
+	OpcuaAcknowledgeResponseBuilder
+	Done() MessagePDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		OpcuaAcknowledgeResponseBuilder
+		Done() MessagePDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewOpcuaAcknowledgeResponseBuilder().(*_OpcuaAcknowledgeResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_MessagePDUBuilder) AsOpcuaOpenRequest() interface {
+	OpcuaOpenRequestBuilder
+	Done() MessagePDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		OpcuaOpenRequestBuilder
+		Done() MessagePDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewOpcuaOpenRequestBuilder().(*_OpcuaOpenRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_MessagePDUBuilder) AsOpcuaOpenResponse() interface {
+	OpcuaOpenResponseBuilder
+	Done() MessagePDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		OpcuaOpenResponseBuilder
+		Done() MessagePDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewOpcuaOpenResponseBuilder().(*_OpcuaOpenResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_MessagePDUBuilder) AsOpcuaCloseRequest() interface {
+	OpcuaCloseRequestBuilder
+	Done() MessagePDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		OpcuaCloseRequestBuilder
+		Done() MessagePDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewOpcuaCloseRequestBuilder().(*_OpcuaCloseRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_MessagePDUBuilder) AsOpcuaMessageRequest() interface {
+	OpcuaMessageRequestBuilder
+	Done() MessagePDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		OpcuaMessageRequestBuilder
+		Done() MessagePDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewOpcuaMessageRequestBuilder().(*_OpcuaMessageRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_MessagePDUBuilder) AsOpcuaMessageResponse() interface {
+	OpcuaMessageResponseBuilder
+	Done() MessagePDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		OpcuaMessageResponseBuilder
+		Done() MessagePDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewOpcuaMessageResponseBuilder().(*_OpcuaMessageResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_MessagePDUBuilder) AsOpcuaMessageError() interface {
+	OpcuaMessageErrorBuilder
+	Done() MessagePDUBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		OpcuaMessageErrorBuilder
+		Done() MessagePDUBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewOpcuaMessageErrorBuilder().(*_OpcuaMessageErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_MessagePDUBuilder) Build() (MessagePDU, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForMessagePDU()
+}
+
+func (b *_MessagePDUBuilder) MustBuild() MessagePDU {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_MessagePDUBuilder) DeepCopy() any {
+	_copy := b.CreateMessagePDUBuilder().(*_MessagePDUBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_MessagePDUChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMessagePDUBuilder creates a MessagePDUBuilder
-func (m *_MessagePDU) CreateMessagePDUBuilder() MessagePDUBuilder {
-	if m == nil {
+func (b *_MessagePDU) CreateMessagePDUBuilder() MessagePDUBuilder {
+	if b == nil {
 		return NewMessagePDUBuilder()
 	}
-	return &_MessagePDUBuilder{_MessagePDU: m.deepCopy()}
+	return &_MessagePDUBuilder{_MessagePDU: b.deepCopy()}
 }
 
 ///////////////////////

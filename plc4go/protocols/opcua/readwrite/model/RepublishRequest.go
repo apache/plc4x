@@ -90,6 +90,8 @@ type RepublishRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, retransmitSequenceNumber uint32) RepublishRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) RepublishRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RepublishRequestBuilder
 	// WithSubscriptionId adds SubscriptionId (property field)
 	WithSubscriptionId(uint32) RepublishRequestBuilder
 	// WithRetransmitSequenceNumber adds RetransmitSequenceNumber (property field)
@@ -108,61 +110,93 @@ func NewRepublishRequestBuilder() RepublishRequestBuilder {
 type _RepublishRequestBuilder struct {
 	*_RepublishRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RepublishRequestBuilder) = (*_RepublishRequestBuilder)(nil)
 
-func (m *_RepublishRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, retransmitSequenceNumber uint32) RepublishRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithRetransmitSequenceNumber(retransmitSequenceNumber)
+func (b *_RepublishRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_RepublishRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) RepublishRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_RepublishRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, retransmitSequenceNumber uint32) RepublishRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithRetransmitSequenceNumber(retransmitSequenceNumber)
 }
 
-func (m *_RepublishRequestBuilder) WithSubscriptionId(subscriptionId uint32) RepublishRequestBuilder {
-	m.SubscriptionId = subscriptionId
-	return m
+func (b *_RepublishRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) RepublishRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_RepublishRequestBuilder) WithRetransmitSequenceNumber(retransmitSequenceNumber uint32) RepublishRequestBuilder {
-	m.RetransmitSequenceNumber = retransmitSequenceNumber
-	return m
-}
-
-func (m *_RepublishRequestBuilder) Build() (RepublishRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_RepublishRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RepublishRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._RepublishRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_RepublishRequestBuilder) MustBuild() RepublishRequest {
-	build, err := m.Build()
+func (b *_RepublishRequestBuilder) WithSubscriptionId(subscriptionId uint32) RepublishRequestBuilder {
+	b.SubscriptionId = subscriptionId
+	return b
+}
+
+func (b *_RepublishRequestBuilder) WithRetransmitSequenceNumber(retransmitSequenceNumber uint32) RepublishRequestBuilder {
+	b.RetransmitSequenceNumber = retransmitSequenceNumber
+	return b
+}
+
+func (b *_RepublishRequestBuilder) Build() (RepublishRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RepublishRequest.deepCopy(), nil
+}
+
+func (b *_RepublishRequestBuilder) MustBuild() RepublishRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RepublishRequestBuilder) DeepCopy() any {
-	return m.CreateRepublishRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RepublishRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RepublishRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_RepublishRequestBuilder) DeepCopy() any {
+	_copy := b.CreateRepublishRequestBuilder().(*_RepublishRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRepublishRequestBuilder creates a RepublishRequestBuilder
-func (m *_RepublishRequest) CreateRepublishRequestBuilder() RepublishRequestBuilder {
-	if m == nil {
+func (b *_RepublishRequest) CreateRepublishRequestBuilder() RepublishRequestBuilder {
+	if b == nil {
 		return NewRepublishRequestBuilder()
 	}
-	return &_RepublishRequestBuilder{_RepublishRequest: m.deepCopy()}
+	return &_RepublishRequestBuilder{_RepublishRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -342,9 +376,13 @@ func (m *_RepublishRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

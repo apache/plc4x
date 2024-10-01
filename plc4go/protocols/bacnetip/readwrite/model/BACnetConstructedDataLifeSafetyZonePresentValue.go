@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLifeSafetyZonePresentValueBuilder() BACnetConstruct
 type _BACnetConstructedDataLifeSafetyZonePresentValueBuilder struct {
 	*_BACnetConstructedDataLifeSafetyZonePresentValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLifeSafetyZonePresentValueBuilder) = (*_BACnetConstructedDataLifeSafetyZonePresentValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) WithMandatoryFields(presentValue BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyZonePresentValueBuilder {
-	return m.WithPresentValue(presentValue)
+func (b *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) WithPresentValue(presentValue BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyZonePresentValueBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) WithMandatoryFields(presentValue BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyZonePresentValueBuilder {
+	return b.WithPresentValue(presentValue)
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetConstructedDataLifeSafetyZonePresentValueBuilder {
-	builder := builderSupplier(m.PresentValue.CreateBACnetLifeSafetyStateTaggedBuilder())
+func (b *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) WithPresentValue(presentValue BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyZonePresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetConstructedDataLifeSafetyZonePresentValueBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetLifeSafetyStateTaggedBuilder())
 	var err error
-	m.PresentValue, err = builder.Build()
+	b.PresentValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLifeSafetyStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLifeSafetyStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) Build() (BACnetConstructedDataLifeSafetyZonePresentValue, error) {
-	if m.PresentValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) Build() (BACnetConstructedDataLifeSafetyZonePresentValue, error) {
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLifeSafetyZonePresentValue.deepCopy(), nil
+	return b._BACnetConstructedDataLifeSafetyZonePresentValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) MustBuild() BACnetConstructedDataLifeSafetyZonePresentValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) MustBuild() BACnetConstructedDataLifeSafetyZonePresentValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLifeSafetyZonePresentValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLifeSafetyZonePresentValueBuilder().(*_BACnetConstructedDataLifeSafetyZonePresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLifeSafetyZonePresentValueBuilder creates a BACnetConstructedDataLifeSafetyZonePresentValueBuilder
-func (m *_BACnetConstructedDataLifeSafetyZonePresentValue) CreateBACnetConstructedDataLifeSafetyZonePresentValueBuilder() BACnetConstructedDataLifeSafetyZonePresentValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLifeSafetyZonePresentValue) CreateBACnetConstructedDataLifeSafetyZonePresentValueBuilder() BACnetConstructedDataLifeSafetyZonePresentValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLifeSafetyZonePresentValueBuilder()
 	}
-	return &_BACnetConstructedDataLifeSafetyZonePresentValueBuilder{_BACnetConstructedDataLifeSafetyZonePresentValue: m.deepCopy()}
+	return &_BACnetConstructedDataLifeSafetyZonePresentValueBuilder{_BACnetConstructedDataLifeSafetyZonePresentValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataLifeSafetyZonePresentValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

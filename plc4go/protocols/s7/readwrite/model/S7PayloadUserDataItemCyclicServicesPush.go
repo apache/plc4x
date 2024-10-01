@@ -99,50 +99,69 @@ func NewS7PayloadUserDataItemCyclicServicesPushBuilder() S7PayloadUserDataItemCy
 type _S7PayloadUserDataItemCyclicServicesPushBuilder struct {
 	*_S7PayloadUserDataItemCyclicServicesPush
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadUserDataItemCyclicServicesPushBuilder) = (*_S7PayloadUserDataItemCyclicServicesPushBuilder)(nil)
 
-func (m *_S7PayloadUserDataItemCyclicServicesPushBuilder) WithMandatoryFields(itemsCount uint16, items []AssociatedValueType) S7PayloadUserDataItemCyclicServicesPushBuilder {
-	return m.WithItemsCount(itemsCount).WithItems(items...)
+func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesPushBuilder) WithItemsCount(itemsCount uint16) S7PayloadUserDataItemCyclicServicesPushBuilder {
-	m.ItemsCount = itemsCount
-	return m
+func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) WithMandatoryFields(itemsCount uint16, items []AssociatedValueType) S7PayloadUserDataItemCyclicServicesPushBuilder {
+	return b.WithItemsCount(itemsCount).WithItems(items...)
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesPushBuilder) WithItems(items ...AssociatedValueType) S7PayloadUserDataItemCyclicServicesPushBuilder {
-	m.Items = items
-	return m
+func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) WithItemsCount(itemsCount uint16) S7PayloadUserDataItemCyclicServicesPushBuilder {
+	b.ItemsCount = itemsCount
+	return b
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesPushBuilder) Build() (S7PayloadUserDataItemCyclicServicesPush, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) WithItems(items ...AssociatedValueType) S7PayloadUserDataItemCyclicServicesPushBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) Build() (S7PayloadUserDataItemCyclicServicesPush, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadUserDataItemCyclicServicesPush.deepCopy(), nil
+	return b._S7PayloadUserDataItemCyclicServicesPush.deepCopy(), nil
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesPushBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesPush {
-	build, err := m.Build()
+func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesPush {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesPushBuilder) DeepCopy() any {
-	return m.CreateS7PayloadUserDataItemCyclicServicesPushBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCyclicServicesPushBuilder().(*_S7PayloadUserDataItemCyclicServicesPushBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadUserDataItemCyclicServicesPushBuilder creates a S7PayloadUserDataItemCyclicServicesPushBuilder
-func (m *_S7PayloadUserDataItemCyclicServicesPush) CreateS7PayloadUserDataItemCyclicServicesPushBuilder() S7PayloadUserDataItemCyclicServicesPushBuilder {
-	if m == nil {
+func (b *_S7PayloadUserDataItemCyclicServicesPush) CreateS7PayloadUserDataItemCyclicServicesPushBuilder() S7PayloadUserDataItemCyclicServicesPushBuilder {
+	if b == nil {
 		return NewS7PayloadUserDataItemCyclicServicesPushBuilder()
 	}
-	return &_S7PayloadUserDataItemCyclicServicesPushBuilder{_S7PayloadUserDataItemCyclicServicesPush: m.deepCopy()}
+	return &_S7PayloadUserDataItemCyclicServicesPushBuilder{_S7PayloadUserDataItemCyclicServicesPush: b.deepCopy()}
 }
 
 ///////////////////////
@@ -319,9 +338,13 @@ func (m *_S7PayloadUserDataItemCyclicServicesPush) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

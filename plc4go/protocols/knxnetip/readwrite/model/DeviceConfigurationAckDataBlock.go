@@ -100,50 +100,54 @@ type _DeviceConfigurationAckDataBlockBuilder struct {
 
 var _ (DeviceConfigurationAckDataBlockBuilder) = (*_DeviceConfigurationAckDataBlockBuilder)(nil)
 
-func (m *_DeviceConfigurationAckDataBlockBuilder) WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8, status Status) DeviceConfigurationAckDataBlockBuilder {
-	return m.WithCommunicationChannelId(communicationChannelId).WithSequenceCounter(sequenceCounter).WithStatus(status)
+func (b *_DeviceConfigurationAckDataBlockBuilder) WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8, status Status) DeviceConfigurationAckDataBlockBuilder {
+	return b.WithCommunicationChannelId(communicationChannelId).WithSequenceCounter(sequenceCounter).WithStatus(status)
 }
 
-func (m *_DeviceConfigurationAckDataBlockBuilder) WithCommunicationChannelId(communicationChannelId uint8) DeviceConfigurationAckDataBlockBuilder {
-	m.CommunicationChannelId = communicationChannelId
-	return m
+func (b *_DeviceConfigurationAckDataBlockBuilder) WithCommunicationChannelId(communicationChannelId uint8) DeviceConfigurationAckDataBlockBuilder {
+	b.CommunicationChannelId = communicationChannelId
+	return b
 }
 
-func (m *_DeviceConfigurationAckDataBlockBuilder) WithSequenceCounter(sequenceCounter uint8) DeviceConfigurationAckDataBlockBuilder {
-	m.SequenceCounter = sequenceCounter
-	return m
+func (b *_DeviceConfigurationAckDataBlockBuilder) WithSequenceCounter(sequenceCounter uint8) DeviceConfigurationAckDataBlockBuilder {
+	b.SequenceCounter = sequenceCounter
+	return b
 }
 
-func (m *_DeviceConfigurationAckDataBlockBuilder) WithStatus(status Status) DeviceConfigurationAckDataBlockBuilder {
-	m.Status = status
-	return m
+func (b *_DeviceConfigurationAckDataBlockBuilder) WithStatus(status Status) DeviceConfigurationAckDataBlockBuilder {
+	b.Status = status
+	return b
 }
 
-func (m *_DeviceConfigurationAckDataBlockBuilder) Build() (DeviceConfigurationAckDataBlock, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DeviceConfigurationAckDataBlockBuilder) Build() (DeviceConfigurationAckDataBlock, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DeviceConfigurationAckDataBlock.deepCopy(), nil
+	return b._DeviceConfigurationAckDataBlock.deepCopy(), nil
 }
 
-func (m *_DeviceConfigurationAckDataBlockBuilder) MustBuild() DeviceConfigurationAckDataBlock {
-	build, err := m.Build()
+func (b *_DeviceConfigurationAckDataBlockBuilder) MustBuild() DeviceConfigurationAckDataBlock {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DeviceConfigurationAckDataBlockBuilder) DeepCopy() any {
-	return m.CreateDeviceConfigurationAckDataBlockBuilder()
+func (b *_DeviceConfigurationAckDataBlockBuilder) DeepCopy() any {
+	_copy := b.CreateDeviceConfigurationAckDataBlockBuilder().(*_DeviceConfigurationAckDataBlockBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDeviceConfigurationAckDataBlockBuilder creates a DeviceConfigurationAckDataBlockBuilder
-func (m *_DeviceConfigurationAckDataBlock) CreateDeviceConfigurationAckDataBlockBuilder() DeviceConfigurationAckDataBlockBuilder {
-	if m == nil {
+func (b *_DeviceConfigurationAckDataBlock) CreateDeviceConfigurationAckDataBlockBuilder() DeviceConfigurationAckDataBlockBuilder {
+	if b == nil {
 		return NewDeviceConfigurationAckDataBlockBuilder()
 	}
-	return &_DeviceConfigurationAckDataBlockBuilder{_DeviceConfigurationAckDataBlock: m.deepCopy()}
+	return &_DeviceConfigurationAckDataBlockBuilder{_DeviceConfigurationAckDataBlock: b.deepCopy()}
 }
 
 ///////////////////////
@@ -329,9 +333,13 @@ func (m *_DeviceConfigurationAckDataBlock) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

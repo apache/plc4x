@@ -98,45 +98,64 @@ func NewBVLCReadForeignDeviceTableAckBuilder() BVLCReadForeignDeviceTableAckBuil
 type _BVLCReadForeignDeviceTableAckBuilder struct {
 	*_BVLCReadForeignDeviceTableAck
 
+	parentBuilder *_BVLCBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BVLCReadForeignDeviceTableAckBuilder) = (*_BVLCReadForeignDeviceTableAckBuilder)(nil)
 
-func (m *_BVLCReadForeignDeviceTableAckBuilder) WithMandatoryFields(table []BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder {
-	return m.WithTable(table...)
+func (b *_BVLCReadForeignDeviceTableAckBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
 }
 
-func (m *_BVLCReadForeignDeviceTableAckBuilder) WithTable(table ...BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder {
-	m.Table = table
-	return m
+func (b *_BVLCReadForeignDeviceTableAckBuilder) WithMandatoryFields(table []BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder {
+	return b.WithTable(table...)
 }
 
-func (m *_BVLCReadForeignDeviceTableAckBuilder) Build() (BVLCReadForeignDeviceTableAck, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BVLCReadForeignDeviceTableAckBuilder) WithTable(table ...BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder {
+	b.Table = table
+	return b
+}
+
+func (b *_BVLCReadForeignDeviceTableAckBuilder) Build() (BVLCReadForeignDeviceTableAck, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BVLCReadForeignDeviceTableAck.deepCopy(), nil
+	return b._BVLCReadForeignDeviceTableAck.deepCopy(), nil
 }
 
-func (m *_BVLCReadForeignDeviceTableAckBuilder) MustBuild() BVLCReadForeignDeviceTableAck {
-	build, err := m.Build()
+func (b *_BVLCReadForeignDeviceTableAckBuilder) MustBuild() BVLCReadForeignDeviceTableAck {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BVLCReadForeignDeviceTableAckBuilder) DeepCopy() any {
-	return m.CreateBVLCReadForeignDeviceTableAckBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCReadForeignDeviceTableAckBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCReadForeignDeviceTableAckBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCReadForeignDeviceTableAckBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCReadForeignDeviceTableAckBuilder().(*_BVLCReadForeignDeviceTableAckBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBVLCReadForeignDeviceTableAckBuilder creates a BVLCReadForeignDeviceTableAckBuilder
-func (m *_BVLCReadForeignDeviceTableAck) CreateBVLCReadForeignDeviceTableAckBuilder() BVLCReadForeignDeviceTableAckBuilder {
-	if m == nil {
+func (b *_BVLCReadForeignDeviceTableAck) CreateBVLCReadForeignDeviceTableAckBuilder() BVLCReadForeignDeviceTableAckBuilder {
+	if b == nil {
 		return NewBVLCReadForeignDeviceTableAckBuilder()
 	}
-	return &_BVLCReadForeignDeviceTableAckBuilder{_BVLCReadForeignDeviceTableAck: m.deepCopy()}
+	return &_BVLCReadForeignDeviceTableAckBuilder{_BVLCReadForeignDeviceTableAck: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BVLCReadForeignDeviceTableAck) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

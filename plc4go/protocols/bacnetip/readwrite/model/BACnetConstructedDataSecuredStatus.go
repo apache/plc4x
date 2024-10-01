@@ -100,64 +100,83 @@ func NewBACnetConstructedDataSecuredStatusBuilder() BACnetConstructedDataSecured
 type _BACnetConstructedDataSecuredStatusBuilder struct {
 	*_BACnetConstructedDataSecuredStatus
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSecuredStatusBuilder) = (*_BACnetConstructedDataSecuredStatusBuilder)(nil)
 
-func (m *_BACnetConstructedDataSecuredStatusBuilder) WithMandatoryFields(securedStatus BACnetDoorSecuredStatusTagged) BACnetConstructedDataSecuredStatusBuilder {
-	return m.WithSecuredStatus(securedStatus)
+func (b *_BACnetConstructedDataSecuredStatusBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSecuredStatusBuilder) WithSecuredStatus(securedStatus BACnetDoorSecuredStatusTagged) BACnetConstructedDataSecuredStatusBuilder {
-	m.SecuredStatus = securedStatus
-	return m
+func (b *_BACnetConstructedDataSecuredStatusBuilder) WithMandatoryFields(securedStatus BACnetDoorSecuredStatusTagged) BACnetConstructedDataSecuredStatusBuilder {
+	return b.WithSecuredStatus(securedStatus)
 }
 
-func (m *_BACnetConstructedDataSecuredStatusBuilder) WithSecuredStatusBuilder(builderSupplier func(BACnetDoorSecuredStatusTaggedBuilder) BACnetDoorSecuredStatusTaggedBuilder) BACnetConstructedDataSecuredStatusBuilder {
-	builder := builderSupplier(m.SecuredStatus.CreateBACnetDoorSecuredStatusTaggedBuilder())
+func (b *_BACnetConstructedDataSecuredStatusBuilder) WithSecuredStatus(securedStatus BACnetDoorSecuredStatusTagged) BACnetConstructedDataSecuredStatusBuilder {
+	b.SecuredStatus = securedStatus
+	return b
+}
+
+func (b *_BACnetConstructedDataSecuredStatusBuilder) WithSecuredStatusBuilder(builderSupplier func(BACnetDoorSecuredStatusTaggedBuilder) BACnetDoorSecuredStatusTaggedBuilder) BACnetConstructedDataSecuredStatusBuilder {
+	builder := builderSupplier(b.SecuredStatus.CreateBACnetDoorSecuredStatusTaggedBuilder())
 	var err error
-	m.SecuredStatus, err = builder.Build()
+	b.SecuredStatus, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDoorSecuredStatusTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDoorSecuredStatusTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataSecuredStatusBuilder) Build() (BACnetConstructedDataSecuredStatus, error) {
-	if m.SecuredStatus == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataSecuredStatusBuilder) Build() (BACnetConstructedDataSecuredStatus, error) {
+	if b.SecuredStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'securedStatus' not set"))
+		b.err.Append(errors.New("mandatory field 'securedStatus' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSecuredStatus.deepCopy(), nil
+	return b._BACnetConstructedDataSecuredStatus.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSecuredStatusBuilder) MustBuild() BACnetConstructedDataSecuredStatus {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSecuredStatusBuilder) MustBuild() BACnetConstructedDataSecuredStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSecuredStatusBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSecuredStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSecuredStatusBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSecuredStatusBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSecuredStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSecuredStatusBuilder().(*_BACnetConstructedDataSecuredStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSecuredStatusBuilder creates a BACnetConstructedDataSecuredStatusBuilder
-func (m *_BACnetConstructedDataSecuredStatus) CreateBACnetConstructedDataSecuredStatusBuilder() BACnetConstructedDataSecuredStatusBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSecuredStatus) CreateBACnetConstructedDataSecuredStatusBuilder() BACnetConstructedDataSecuredStatusBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSecuredStatusBuilder()
 	}
-	return &_BACnetConstructedDataSecuredStatusBuilder{_BACnetConstructedDataSecuredStatus: m.deepCopy()}
+	return &_BACnetConstructedDataSecuredStatusBuilder{_BACnetConstructedDataSecuredStatus: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataSecuredStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -85,40 +85,59 @@ func NewMediaTransportControlDataStatusRequestBuilder() MediaTransportControlDat
 type _MediaTransportControlDataStatusRequestBuilder struct {
 	*_MediaTransportControlDataStatusRequest
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataStatusRequestBuilder) = (*_MediaTransportControlDataStatusRequestBuilder)(nil)
 
-func (m *_MediaTransportControlDataStatusRequestBuilder) WithMandatoryFields() MediaTransportControlDataStatusRequestBuilder {
-	return m
+func (b *_MediaTransportControlDataStatusRequestBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataStatusRequestBuilder) Build() (MediaTransportControlDataStatusRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataStatusRequestBuilder) WithMandatoryFields() MediaTransportControlDataStatusRequestBuilder {
+	return b
+}
+
+func (b *_MediaTransportControlDataStatusRequestBuilder) Build() (MediaTransportControlDataStatusRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataStatusRequest.deepCopy(), nil
+	return b._MediaTransportControlDataStatusRequest.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataStatusRequestBuilder) MustBuild() MediaTransportControlDataStatusRequest {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataStatusRequestBuilder) MustBuild() MediaTransportControlDataStatusRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataStatusRequestBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataStatusRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataStatusRequestBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataStatusRequestBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataStatusRequestBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataStatusRequestBuilder().(*_MediaTransportControlDataStatusRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataStatusRequestBuilder creates a MediaTransportControlDataStatusRequestBuilder
-func (m *_MediaTransportControlDataStatusRequest) CreateMediaTransportControlDataStatusRequestBuilder() MediaTransportControlDataStatusRequestBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataStatusRequest) CreateMediaTransportControlDataStatusRequestBuilder() MediaTransportControlDataStatusRequestBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataStatusRequestBuilder()
 	}
-	return &_MediaTransportControlDataStatusRequestBuilder{_MediaTransportControlDataStatusRequest: m.deepCopy()}
+	return &_MediaTransportControlDataStatusRequestBuilder{_MediaTransportControlDataStatusRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -230,9 +249,13 @@ func (m *_MediaTransportControlDataStatusRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

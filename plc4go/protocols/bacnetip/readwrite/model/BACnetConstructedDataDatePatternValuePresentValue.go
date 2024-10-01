@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDatePatternValuePresentValueBuilder() BACnetConstru
 type _BACnetConstructedDataDatePatternValuePresentValueBuilder struct {
 	*_BACnetConstructedDataDatePatternValuePresentValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDatePatternValuePresentValueBuilder) = (*_BACnetConstructedDataDatePatternValuePresentValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataDatePatternValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagDate) BACnetConstructedDataDatePatternValuePresentValueBuilder {
-	return m.WithPresentValue(presentValue)
+func (b *_BACnetConstructedDataDatePatternValuePresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDatePatternValuePresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagDate) BACnetConstructedDataDatePatternValuePresentValueBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetConstructedDataDatePatternValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagDate) BACnetConstructedDataDatePatternValuePresentValueBuilder {
+	return b.WithPresentValue(presentValue)
 }
 
-func (m *_BACnetConstructedDataDatePatternValuePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetConstructedDataDatePatternValuePresentValueBuilder {
-	builder := builderSupplier(m.PresentValue.CreateBACnetApplicationTagDateBuilder())
+func (b *_BACnetConstructedDataDatePatternValuePresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagDate) BACnetConstructedDataDatePatternValuePresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataDatePatternValuePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetConstructedDataDatePatternValuePresentValueBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetApplicationTagDateBuilder())
 	var err error
-	m.PresentValue, err = builder.Build()
+	b.PresentValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDatePatternValuePresentValueBuilder) Build() (BACnetConstructedDataDatePatternValuePresentValue, error) {
-	if m.PresentValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDatePatternValuePresentValueBuilder) Build() (BACnetConstructedDataDatePatternValuePresentValue, error) {
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDatePatternValuePresentValue.deepCopy(), nil
+	return b._BACnetConstructedDataDatePatternValuePresentValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDatePatternValuePresentValueBuilder) MustBuild() BACnetConstructedDataDatePatternValuePresentValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDatePatternValuePresentValueBuilder) MustBuild() BACnetConstructedDataDatePatternValuePresentValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDatePatternValuePresentValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDatePatternValuePresentValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDatePatternValuePresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDatePatternValuePresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDatePatternValuePresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDatePatternValuePresentValueBuilder().(*_BACnetConstructedDataDatePatternValuePresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDatePatternValuePresentValueBuilder creates a BACnetConstructedDataDatePatternValuePresentValueBuilder
-func (m *_BACnetConstructedDataDatePatternValuePresentValue) CreateBACnetConstructedDataDatePatternValuePresentValueBuilder() BACnetConstructedDataDatePatternValuePresentValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDatePatternValuePresentValue) CreateBACnetConstructedDataDatePatternValuePresentValueBuilder() BACnetConstructedDataDatePatternValuePresentValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDatePatternValuePresentValueBuilder()
 	}
-	return &_BACnetConstructedDataDatePatternValuePresentValueBuilder{_BACnetConstructedDataDatePatternValuePresentValue: m.deepCopy()}
+	return &_BACnetConstructedDataDatePatternValuePresentValueBuilder{_BACnetConstructedDataDatePatternValuePresentValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataDatePatternValuePresentValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

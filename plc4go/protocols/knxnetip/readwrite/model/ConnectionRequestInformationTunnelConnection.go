@@ -95,45 +95,64 @@ func NewConnectionRequestInformationTunnelConnectionBuilder() ConnectionRequestI
 type _ConnectionRequestInformationTunnelConnectionBuilder struct {
 	*_ConnectionRequestInformationTunnelConnection
 
+	parentBuilder *_ConnectionRequestInformationBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ConnectionRequestInformationTunnelConnectionBuilder) = (*_ConnectionRequestInformationTunnelConnectionBuilder)(nil)
 
-func (m *_ConnectionRequestInformationTunnelConnectionBuilder) WithMandatoryFields(knxLayer KnxLayer) ConnectionRequestInformationTunnelConnectionBuilder {
-	return m.WithKnxLayer(knxLayer)
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) setParent(contract ConnectionRequestInformationContract) {
+	b.ConnectionRequestInformationContract = contract
 }
 
-func (m *_ConnectionRequestInformationTunnelConnectionBuilder) WithKnxLayer(knxLayer KnxLayer) ConnectionRequestInformationTunnelConnectionBuilder {
-	m.KnxLayer = knxLayer
-	return m
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) WithMandatoryFields(knxLayer KnxLayer) ConnectionRequestInformationTunnelConnectionBuilder {
+	return b.WithKnxLayer(knxLayer)
 }
 
-func (m *_ConnectionRequestInformationTunnelConnectionBuilder) Build() (ConnectionRequestInformationTunnelConnection, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) WithKnxLayer(knxLayer KnxLayer) ConnectionRequestInformationTunnelConnectionBuilder {
+	b.KnxLayer = knxLayer
+	return b
+}
+
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) Build() (ConnectionRequestInformationTunnelConnection, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ConnectionRequestInformationTunnelConnection.deepCopy(), nil
+	return b._ConnectionRequestInformationTunnelConnection.deepCopy(), nil
 }
 
-func (m *_ConnectionRequestInformationTunnelConnectionBuilder) MustBuild() ConnectionRequestInformationTunnelConnection {
-	build, err := m.Build()
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) MustBuild() ConnectionRequestInformationTunnelConnection {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ConnectionRequestInformationTunnelConnectionBuilder) DeepCopy() any {
-	return m.CreateConnectionRequestInformationTunnelConnectionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) Done() ConnectionRequestInformationBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) buildForConnectionRequestInformation() (ConnectionRequestInformation, error) {
+	return b.Build()
+}
+
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) DeepCopy() any {
+	_copy := b.CreateConnectionRequestInformationTunnelConnectionBuilder().(*_ConnectionRequestInformationTunnelConnectionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateConnectionRequestInformationTunnelConnectionBuilder creates a ConnectionRequestInformationTunnelConnectionBuilder
-func (m *_ConnectionRequestInformationTunnelConnection) CreateConnectionRequestInformationTunnelConnectionBuilder() ConnectionRequestInformationTunnelConnectionBuilder {
-	if m == nil {
+func (b *_ConnectionRequestInformationTunnelConnection) CreateConnectionRequestInformationTunnelConnectionBuilder() ConnectionRequestInformationTunnelConnectionBuilder {
+	if b == nil {
 		return NewConnectionRequestInformationTunnelConnectionBuilder()
 	}
-	return &_ConnectionRequestInformationTunnelConnectionBuilder{_ConnectionRequestInformationTunnelConnection: m.deepCopy()}
+	return &_ConnectionRequestInformationTunnelConnectionBuilder{_ConnectionRequestInformationTunnelConnection: b.deepCopy()}
 }
 
 ///////////////////////
@@ -292,9 +311,13 @@ func (m *_ConnectionRequestInformationTunnelConnection) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

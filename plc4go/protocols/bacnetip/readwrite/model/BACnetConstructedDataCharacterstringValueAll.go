@@ -85,40 +85,59 @@ func NewBACnetConstructedDataCharacterstringValueAllBuilder() BACnetConstructedD
 type _BACnetConstructedDataCharacterstringValueAllBuilder struct {
 	*_BACnetConstructedDataCharacterstringValueAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCharacterstringValueAllBuilder) = (*_BACnetConstructedDataCharacterstringValueAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataCharacterstringValueAllBuilder) WithMandatoryFields() BACnetConstructedDataCharacterstringValueAllBuilder {
-	return m
+func (b *_BACnetConstructedDataCharacterstringValueAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCharacterstringValueAllBuilder) Build() (BACnetConstructedDataCharacterstringValueAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataCharacterstringValueAllBuilder) WithMandatoryFields() BACnetConstructedDataCharacterstringValueAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataCharacterstringValueAllBuilder) Build() (BACnetConstructedDataCharacterstringValueAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCharacterstringValueAll.deepCopy(), nil
+	return b._BACnetConstructedDataCharacterstringValueAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCharacterstringValueAllBuilder) MustBuild() BACnetConstructedDataCharacterstringValueAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCharacterstringValueAllBuilder) MustBuild() BACnetConstructedDataCharacterstringValueAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCharacterstringValueAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCharacterstringValueAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCharacterstringValueAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCharacterstringValueAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCharacterstringValueAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCharacterstringValueAllBuilder().(*_BACnetConstructedDataCharacterstringValueAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCharacterstringValueAllBuilder creates a BACnetConstructedDataCharacterstringValueAllBuilder
-func (m *_BACnetConstructedDataCharacterstringValueAll) CreateBACnetConstructedDataCharacterstringValueAllBuilder() BACnetConstructedDataCharacterstringValueAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCharacterstringValueAll) CreateBACnetConstructedDataCharacterstringValueAllBuilder() BACnetConstructedDataCharacterstringValueAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCharacterstringValueAllBuilder()
 	}
-	return &_BACnetConstructedDataCharacterstringValueAllBuilder{_BACnetConstructedDataCharacterstringValueAll: m.deepCopy()}
+	return &_BACnetConstructedDataCharacterstringValueAllBuilder{_BACnetConstructedDataCharacterstringValueAll: b.deepCopy()}
 }
 
 ///////////////////////
@@ -244,9 +263,13 @@ func (m *_BACnetConstructedDataCharacterstringValueAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

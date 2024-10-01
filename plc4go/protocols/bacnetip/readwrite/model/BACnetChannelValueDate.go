@@ -98,64 +98,83 @@ func NewBACnetChannelValueDateBuilder() BACnetChannelValueDateBuilder {
 type _BACnetChannelValueDateBuilder struct {
 	*_BACnetChannelValueDate
 
+	parentBuilder *_BACnetChannelValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetChannelValueDateBuilder) = (*_BACnetChannelValueDateBuilder)(nil)
 
-func (m *_BACnetChannelValueDateBuilder) WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetChannelValueDateBuilder {
-	return m.WithDateValue(dateValue)
+func (b *_BACnetChannelValueDateBuilder) setParent(contract BACnetChannelValueContract) {
+	b.BACnetChannelValueContract = contract
 }
 
-func (m *_BACnetChannelValueDateBuilder) WithDateValue(dateValue BACnetApplicationTagDate) BACnetChannelValueDateBuilder {
-	m.DateValue = dateValue
-	return m
+func (b *_BACnetChannelValueDateBuilder) WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetChannelValueDateBuilder {
+	return b.WithDateValue(dateValue)
 }
 
-func (m *_BACnetChannelValueDateBuilder) WithDateValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetChannelValueDateBuilder {
-	builder := builderSupplier(m.DateValue.CreateBACnetApplicationTagDateBuilder())
+func (b *_BACnetChannelValueDateBuilder) WithDateValue(dateValue BACnetApplicationTagDate) BACnetChannelValueDateBuilder {
+	b.DateValue = dateValue
+	return b
+}
+
+func (b *_BACnetChannelValueDateBuilder) WithDateValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetChannelValueDateBuilder {
+	builder := builderSupplier(b.DateValue.CreateBACnetApplicationTagDateBuilder())
 	var err error
-	m.DateValue, err = builder.Build()
+	b.DateValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetChannelValueDateBuilder) Build() (BACnetChannelValueDate, error) {
-	if m.DateValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetChannelValueDateBuilder) Build() (BACnetChannelValueDate, error) {
+	if b.DateValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dateValue' not set"))
+		b.err.Append(errors.New("mandatory field 'dateValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetChannelValueDate.deepCopy(), nil
+	return b._BACnetChannelValueDate.deepCopy(), nil
 }
 
-func (m *_BACnetChannelValueDateBuilder) MustBuild() BACnetChannelValueDate {
-	build, err := m.Build()
+func (b *_BACnetChannelValueDateBuilder) MustBuild() BACnetChannelValueDate {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetChannelValueDateBuilder) DeepCopy() any {
-	return m.CreateBACnetChannelValueDateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetChannelValueDateBuilder) Done() BACnetChannelValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetChannelValueDateBuilder) buildForBACnetChannelValue() (BACnetChannelValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetChannelValueDateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetChannelValueDateBuilder().(*_BACnetChannelValueDateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetChannelValueDateBuilder creates a BACnetChannelValueDateBuilder
-func (m *_BACnetChannelValueDate) CreateBACnetChannelValueDateBuilder() BACnetChannelValueDateBuilder {
-	if m == nil {
+func (b *_BACnetChannelValueDate) CreateBACnetChannelValueDateBuilder() BACnetChannelValueDateBuilder {
+	if b == nil {
 		return NewBACnetChannelValueDateBuilder()
 	}
-	return &_BACnetChannelValueDateBuilder{_BACnetChannelValueDate: m.deepCopy()}
+	return &_BACnetChannelValueDateBuilder{_BACnetChannelValueDate: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetChannelValueDate) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataNextStoppingFloorBuilder() BACnetConstructedDataNex
 type _BACnetConstructedDataNextStoppingFloorBuilder struct {
 	*_BACnetConstructedDataNextStoppingFloor
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataNextStoppingFloorBuilder) = (*_BACnetConstructedDataNextStoppingFloorBuilder)(nil)
 
-func (m *_BACnetConstructedDataNextStoppingFloorBuilder) WithMandatoryFields(nextStoppingFloor BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNextStoppingFloorBuilder {
-	return m.WithNextStoppingFloor(nextStoppingFloor)
+func (b *_BACnetConstructedDataNextStoppingFloorBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataNextStoppingFloorBuilder) WithNextStoppingFloor(nextStoppingFloor BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNextStoppingFloorBuilder {
-	m.NextStoppingFloor = nextStoppingFloor
-	return m
+func (b *_BACnetConstructedDataNextStoppingFloorBuilder) WithMandatoryFields(nextStoppingFloor BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNextStoppingFloorBuilder {
+	return b.WithNextStoppingFloor(nextStoppingFloor)
 }
 
-func (m *_BACnetConstructedDataNextStoppingFloorBuilder) WithNextStoppingFloorBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNextStoppingFloorBuilder {
-	builder := builderSupplier(m.NextStoppingFloor.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataNextStoppingFloorBuilder) WithNextStoppingFloor(nextStoppingFloor BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNextStoppingFloorBuilder {
+	b.NextStoppingFloor = nextStoppingFloor
+	return b
+}
+
+func (b *_BACnetConstructedDataNextStoppingFloorBuilder) WithNextStoppingFloorBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNextStoppingFloorBuilder {
+	builder := builderSupplier(b.NextStoppingFloor.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NextStoppingFloor, err = builder.Build()
+	b.NextStoppingFloor, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataNextStoppingFloorBuilder) Build() (BACnetConstructedDataNextStoppingFloor, error) {
-	if m.NextStoppingFloor == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataNextStoppingFloorBuilder) Build() (BACnetConstructedDataNextStoppingFloor, error) {
+	if b.NextStoppingFloor == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nextStoppingFloor' not set"))
+		b.err.Append(errors.New("mandatory field 'nextStoppingFloor' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataNextStoppingFloor.deepCopy(), nil
+	return b._BACnetConstructedDataNextStoppingFloor.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataNextStoppingFloorBuilder) MustBuild() BACnetConstructedDataNextStoppingFloor {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataNextStoppingFloorBuilder) MustBuild() BACnetConstructedDataNextStoppingFloor {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataNextStoppingFloorBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataNextStoppingFloorBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNextStoppingFloorBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNextStoppingFloorBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNextStoppingFloorBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNextStoppingFloorBuilder().(*_BACnetConstructedDataNextStoppingFloorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataNextStoppingFloorBuilder creates a BACnetConstructedDataNextStoppingFloorBuilder
-func (m *_BACnetConstructedDataNextStoppingFloor) CreateBACnetConstructedDataNextStoppingFloorBuilder() BACnetConstructedDataNextStoppingFloorBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataNextStoppingFloor) CreateBACnetConstructedDataNextStoppingFloorBuilder() BACnetConstructedDataNextStoppingFloorBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataNextStoppingFloorBuilder()
 	}
-	return &_BACnetConstructedDataNextStoppingFloorBuilder{_BACnetConstructedDataNextStoppingFloor: m.deepCopy()}
+	return &_BACnetConstructedDataNextStoppingFloorBuilder{_BACnetConstructedDataNextStoppingFloor: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataNextStoppingFloor) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

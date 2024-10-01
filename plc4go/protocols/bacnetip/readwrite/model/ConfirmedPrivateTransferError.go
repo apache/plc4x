@@ -112,6 +112,8 @@ type ConfirmedPrivateTransferErrorBuilder interface {
 	WithServiceNumberBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) ConfirmedPrivateTransferErrorBuilder
 	// WithErrorParameters adds ErrorParameters (property field)
 	WithOptionalErrorParameters(BACnetConstructedData) ConfirmedPrivateTransferErrorBuilder
+	// WithOptionalErrorParametersBuilder adds ErrorParameters (property field) which is build by the builder
+	WithOptionalErrorParametersBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) ConfirmedPrivateTransferErrorBuilder
 	// Build builds the ConfirmedPrivateTransferError or returns an error if something is wrong
 	Build() (ConfirmedPrivateTransferError, error)
 	// MustBuild does the same as Build but panics on error
@@ -126,117 +128,149 @@ func NewConfirmedPrivateTransferErrorBuilder() ConfirmedPrivateTransferErrorBuil
 type _ConfirmedPrivateTransferErrorBuilder struct {
 	*_ConfirmedPrivateTransferError
 
+	parentBuilder *_BACnetErrorBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ConfirmedPrivateTransferErrorBuilder) = (*_ConfirmedPrivateTransferErrorBuilder)(nil)
 
-func (m *_ConfirmedPrivateTransferErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger) ConfirmedPrivateTransferErrorBuilder {
-	return m.WithErrorType(errorType).WithVendorId(vendorId).WithServiceNumber(serviceNumber)
+func (b *_ConfirmedPrivateTransferErrorBuilder) setParent(contract BACnetErrorContract) {
+	b.BACnetErrorContract = contract
 }
 
-func (m *_ConfirmedPrivateTransferErrorBuilder) WithErrorType(errorType ErrorEnclosed) ConfirmedPrivateTransferErrorBuilder {
-	m.ErrorType = errorType
-	return m
+func (b *_ConfirmedPrivateTransferErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger) ConfirmedPrivateTransferErrorBuilder {
+	return b.WithErrorType(errorType).WithVendorId(vendorId).WithServiceNumber(serviceNumber)
 }
 
-func (m *_ConfirmedPrivateTransferErrorBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) ConfirmedPrivateTransferErrorBuilder {
-	builder := builderSupplier(m.ErrorType.CreateErrorEnclosedBuilder())
+func (b *_ConfirmedPrivateTransferErrorBuilder) WithErrorType(errorType ErrorEnclosed) ConfirmedPrivateTransferErrorBuilder {
+	b.ErrorType = errorType
+	return b
+}
+
+func (b *_ConfirmedPrivateTransferErrorBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) ConfirmedPrivateTransferErrorBuilder {
+	builder := builderSupplier(b.ErrorType.CreateErrorEnclosedBuilder())
 	var err error
-	m.ErrorType, err = builder.Build()
+	b.ErrorType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ConfirmedPrivateTransferErrorBuilder) WithVendorId(vendorId BACnetVendorIdTagged) ConfirmedPrivateTransferErrorBuilder {
-	m.VendorId = vendorId
-	return m
+func (b *_ConfirmedPrivateTransferErrorBuilder) WithVendorId(vendorId BACnetVendorIdTagged) ConfirmedPrivateTransferErrorBuilder {
+	b.VendorId = vendorId
+	return b
 }
 
-func (m *_ConfirmedPrivateTransferErrorBuilder) WithVendorIdBuilder(builderSupplier func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) ConfirmedPrivateTransferErrorBuilder {
-	builder := builderSupplier(m.VendorId.CreateBACnetVendorIdTaggedBuilder())
+func (b *_ConfirmedPrivateTransferErrorBuilder) WithVendorIdBuilder(builderSupplier func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) ConfirmedPrivateTransferErrorBuilder {
+	builder := builderSupplier(b.VendorId.CreateBACnetVendorIdTaggedBuilder())
 	var err error
-	m.VendorId, err = builder.Build()
+	b.VendorId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ConfirmedPrivateTransferErrorBuilder) WithServiceNumber(serviceNumber BACnetContextTagUnsignedInteger) ConfirmedPrivateTransferErrorBuilder {
-	m.ServiceNumber = serviceNumber
-	return m
+func (b *_ConfirmedPrivateTransferErrorBuilder) WithServiceNumber(serviceNumber BACnetContextTagUnsignedInteger) ConfirmedPrivateTransferErrorBuilder {
+	b.ServiceNumber = serviceNumber
+	return b
 }
 
-func (m *_ConfirmedPrivateTransferErrorBuilder) WithServiceNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) ConfirmedPrivateTransferErrorBuilder {
-	builder := builderSupplier(m.ServiceNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_ConfirmedPrivateTransferErrorBuilder) WithServiceNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) ConfirmedPrivateTransferErrorBuilder {
+	builder := builderSupplier(b.ServiceNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.ServiceNumber, err = builder.Build()
+	b.ServiceNumber, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ConfirmedPrivateTransferErrorBuilder) WithOptionalErrorParameters(errorParameters BACnetConstructedData) ConfirmedPrivateTransferErrorBuilder {
-	m.ErrorParameters = errorParameters
-	return m
+func (b *_ConfirmedPrivateTransferErrorBuilder) WithOptionalErrorParameters(errorParameters BACnetConstructedData) ConfirmedPrivateTransferErrorBuilder {
+	b.ErrorParameters = errorParameters
+	return b
 }
 
-func (m *_ConfirmedPrivateTransferErrorBuilder) Build() (ConfirmedPrivateTransferError, error) {
-	if m.ErrorType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ConfirmedPrivateTransferErrorBuilder) WithOptionalErrorParametersBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) ConfirmedPrivateTransferErrorBuilder {
+	builder := builderSupplier(b.ErrorParameters.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.ErrorParameters, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'errorType' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
-	if m.VendorId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'vendorId' not set"))
-	}
-	if m.ServiceNumber == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'serviceNumber' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._ConfirmedPrivateTransferError.deepCopy(), nil
+	return b
 }
 
-func (m *_ConfirmedPrivateTransferErrorBuilder) MustBuild() ConfirmedPrivateTransferError {
-	build, err := m.Build()
+func (b *_ConfirmedPrivateTransferErrorBuilder) Build() (ConfirmedPrivateTransferError, error) {
+	if b.ErrorType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'errorType' not set"))
+	}
+	if b.VendorId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'vendorId' not set"))
+	}
+	if b.ServiceNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'serviceNumber' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ConfirmedPrivateTransferError.deepCopy(), nil
+}
+
+func (b *_ConfirmedPrivateTransferErrorBuilder) MustBuild() ConfirmedPrivateTransferError {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ConfirmedPrivateTransferErrorBuilder) DeepCopy() any {
-	return m.CreateConfirmedPrivateTransferErrorBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ConfirmedPrivateTransferErrorBuilder) Done() BACnetErrorBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ConfirmedPrivateTransferErrorBuilder) buildForBACnetError() (BACnetError, error) {
+	return b.Build()
+}
+
+func (b *_ConfirmedPrivateTransferErrorBuilder) DeepCopy() any {
+	_copy := b.CreateConfirmedPrivateTransferErrorBuilder().(*_ConfirmedPrivateTransferErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateConfirmedPrivateTransferErrorBuilder creates a ConfirmedPrivateTransferErrorBuilder
-func (m *_ConfirmedPrivateTransferError) CreateConfirmedPrivateTransferErrorBuilder() ConfirmedPrivateTransferErrorBuilder {
-	if m == nil {
+func (b *_ConfirmedPrivateTransferError) CreateConfirmedPrivateTransferErrorBuilder() ConfirmedPrivateTransferErrorBuilder {
+	if b == nil {
 		return NewConfirmedPrivateTransferErrorBuilder()
 	}
-	return &_ConfirmedPrivateTransferErrorBuilder{_ConfirmedPrivateTransferError: m.deepCopy()}
+	return &_ConfirmedPrivateTransferErrorBuilder{_ConfirmedPrivateTransferError: b.deepCopy()}
 }
 
 ///////////////////////
@@ -440,9 +474,13 @@ func (m *_ConfirmedPrivateTransferError) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

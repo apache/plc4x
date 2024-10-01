@@ -138,128 +138,147 @@ func NewCALReplyLongBuilder() CALReplyLongBuilder {
 type _CALReplyLongBuilder struct {
 	*_CALReplyLong
 
+	parentBuilder *_CALReplyBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CALReplyLongBuilder) = (*_CALReplyLongBuilder)(nil)
 
-func (m *_CALReplyLongBuilder) WithMandatoryFields(terminatingByte uint32, serialInterfaceAddress SerialInterfaceAddress) CALReplyLongBuilder {
-	return m.WithTerminatingByte(terminatingByte).WithSerialInterfaceAddress(serialInterfaceAddress)
+func (b *_CALReplyLongBuilder) setParent(contract CALReplyContract) {
+	b.CALReplyContract = contract
 }
 
-func (m *_CALReplyLongBuilder) WithTerminatingByte(terminatingByte uint32) CALReplyLongBuilder {
-	m.TerminatingByte = terminatingByte
-	return m
+func (b *_CALReplyLongBuilder) WithMandatoryFields(terminatingByte uint32, serialInterfaceAddress SerialInterfaceAddress) CALReplyLongBuilder {
+	return b.WithTerminatingByte(terminatingByte).WithSerialInterfaceAddress(serialInterfaceAddress)
 }
 
-func (m *_CALReplyLongBuilder) WithOptionalUnitAddress(unitAddress UnitAddress) CALReplyLongBuilder {
-	m.UnitAddress = unitAddress
-	return m
+func (b *_CALReplyLongBuilder) WithTerminatingByte(terminatingByte uint32) CALReplyLongBuilder {
+	b.TerminatingByte = terminatingByte
+	return b
 }
 
-func (m *_CALReplyLongBuilder) WithOptionalUnitAddressBuilder(builderSupplier func(UnitAddressBuilder) UnitAddressBuilder) CALReplyLongBuilder {
-	builder := builderSupplier(m.UnitAddress.CreateUnitAddressBuilder())
+func (b *_CALReplyLongBuilder) WithOptionalUnitAddress(unitAddress UnitAddress) CALReplyLongBuilder {
+	b.UnitAddress = unitAddress
+	return b
+}
+
+func (b *_CALReplyLongBuilder) WithOptionalUnitAddressBuilder(builderSupplier func(UnitAddressBuilder) UnitAddressBuilder) CALReplyLongBuilder {
+	builder := builderSupplier(b.UnitAddress.CreateUnitAddressBuilder())
 	var err error
-	m.UnitAddress, err = builder.Build()
+	b.UnitAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "UnitAddressBuilder failed"))
+		b.err.Append(errors.Wrap(err, "UnitAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CALReplyLongBuilder) WithOptionalBridgeAddress(bridgeAddress BridgeAddress) CALReplyLongBuilder {
-	m.BridgeAddress = bridgeAddress
-	return m
+func (b *_CALReplyLongBuilder) WithOptionalBridgeAddress(bridgeAddress BridgeAddress) CALReplyLongBuilder {
+	b.BridgeAddress = bridgeAddress
+	return b
 }
 
-func (m *_CALReplyLongBuilder) WithOptionalBridgeAddressBuilder(builderSupplier func(BridgeAddressBuilder) BridgeAddressBuilder) CALReplyLongBuilder {
-	builder := builderSupplier(m.BridgeAddress.CreateBridgeAddressBuilder())
+func (b *_CALReplyLongBuilder) WithOptionalBridgeAddressBuilder(builderSupplier func(BridgeAddressBuilder) BridgeAddressBuilder) CALReplyLongBuilder {
+	builder := builderSupplier(b.BridgeAddress.CreateBridgeAddressBuilder())
 	var err error
-	m.BridgeAddress, err = builder.Build()
+	b.BridgeAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BridgeAddressBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BridgeAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CALReplyLongBuilder) WithSerialInterfaceAddress(serialInterfaceAddress SerialInterfaceAddress) CALReplyLongBuilder {
-	m.SerialInterfaceAddress = serialInterfaceAddress
-	return m
+func (b *_CALReplyLongBuilder) WithSerialInterfaceAddress(serialInterfaceAddress SerialInterfaceAddress) CALReplyLongBuilder {
+	b.SerialInterfaceAddress = serialInterfaceAddress
+	return b
 }
 
-func (m *_CALReplyLongBuilder) WithSerialInterfaceAddressBuilder(builderSupplier func(SerialInterfaceAddressBuilder) SerialInterfaceAddressBuilder) CALReplyLongBuilder {
-	builder := builderSupplier(m.SerialInterfaceAddress.CreateSerialInterfaceAddressBuilder())
+func (b *_CALReplyLongBuilder) WithSerialInterfaceAddressBuilder(builderSupplier func(SerialInterfaceAddressBuilder) SerialInterfaceAddressBuilder) CALReplyLongBuilder {
+	builder := builderSupplier(b.SerialInterfaceAddress.CreateSerialInterfaceAddressBuilder())
 	var err error
-	m.SerialInterfaceAddress, err = builder.Build()
+	b.SerialInterfaceAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "SerialInterfaceAddressBuilder failed"))
+		b.err.Append(errors.Wrap(err, "SerialInterfaceAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CALReplyLongBuilder) WithOptionalReservedByte(reservedByte byte) CALReplyLongBuilder {
-	m.ReservedByte = &reservedByte
-	return m
+func (b *_CALReplyLongBuilder) WithOptionalReservedByte(reservedByte byte) CALReplyLongBuilder {
+	b.ReservedByte = &reservedByte
+	return b
 }
 
-func (m *_CALReplyLongBuilder) WithOptionalReplyNetwork(replyNetwork ReplyNetwork) CALReplyLongBuilder {
-	m.ReplyNetwork = replyNetwork
-	return m
+func (b *_CALReplyLongBuilder) WithOptionalReplyNetwork(replyNetwork ReplyNetwork) CALReplyLongBuilder {
+	b.ReplyNetwork = replyNetwork
+	return b
 }
 
-func (m *_CALReplyLongBuilder) WithOptionalReplyNetworkBuilder(builderSupplier func(ReplyNetworkBuilder) ReplyNetworkBuilder) CALReplyLongBuilder {
-	builder := builderSupplier(m.ReplyNetwork.CreateReplyNetworkBuilder())
+func (b *_CALReplyLongBuilder) WithOptionalReplyNetworkBuilder(builderSupplier func(ReplyNetworkBuilder) ReplyNetworkBuilder) CALReplyLongBuilder {
+	builder := builderSupplier(b.ReplyNetwork.CreateReplyNetworkBuilder())
 	var err error
-	m.ReplyNetwork, err = builder.Build()
+	b.ReplyNetwork, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ReplyNetworkBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ReplyNetworkBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CALReplyLongBuilder) Build() (CALReplyLong, error) {
-	if m.SerialInterfaceAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CALReplyLongBuilder) Build() (CALReplyLong, error) {
+	if b.SerialInterfaceAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'serialInterfaceAddress' not set"))
+		b.err.Append(errors.New("mandatory field 'serialInterfaceAddress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CALReplyLong.deepCopy(), nil
+	return b._CALReplyLong.deepCopy(), nil
 }
 
-func (m *_CALReplyLongBuilder) MustBuild() CALReplyLong {
-	build, err := m.Build()
+func (b *_CALReplyLongBuilder) MustBuild() CALReplyLong {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CALReplyLongBuilder) DeepCopy() any {
-	return m.CreateCALReplyLongBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CALReplyLongBuilder) Done() CALReplyBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CALReplyLongBuilder) buildForCALReply() (CALReply, error) {
+	return b.Build()
+}
+
+func (b *_CALReplyLongBuilder) DeepCopy() any {
+	_copy := b.CreateCALReplyLongBuilder().(*_CALReplyLongBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCALReplyLongBuilder creates a CALReplyLongBuilder
-func (m *_CALReplyLong) CreateCALReplyLongBuilder() CALReplyLongBuilder {
-	if m == nil {
+func (b *_CALReplyLong) CreateCALReplyLongBuilder() CALReplyLongBuilder {
+	if b == nil {
 		return NewCALReplyLongBuilder()
 	}
-	return &_CALReplyLongBuilder{_CALReplyLong: m.deepCopy()}
+	return &_CALReplyLongBuilder{_CALReplyLong: b.deepCopy()}
 }
 
 ///////////////////////
@@ -559,9 +578,13 @@ func (m *_CALReplyLong) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

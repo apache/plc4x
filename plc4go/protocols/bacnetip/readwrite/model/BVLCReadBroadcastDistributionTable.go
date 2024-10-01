@@ -86,40 +86,59 @@ func NewBVLCReadBroadcastDistributionTableBuilder() BVLCReadBroadcastDistributio
 type _BVLCReadBroadcastDistributionTableBuilder struct {
 	*_BVLCReadBroadcastDistributionTable
 
+	parentBuilder *_BVLCBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BVLCReadBroadcastDistributionTableBuilder) = (*_BVLCReadBroadcastDistributionTableBuilder)(nil)
 
-func (m *_BVLCReadBroadcastDistributionTableBuilder) WithMandatoryFields() BVLCReadBroadcastDistributionTableBuilder {
-	return m
+func (b *_BVLCReadBroadcastDistributionTableBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
 }
 
-func (m *_BVLCReadBroadcastDistributionTableBuilder) Build() (BVLCReadBroadcastDistributionTable, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BVLCReadBroadcastDistributionTableBuilder) WithMandatoryFields() BVLCReadBroadcastDistributionTableBuilder {
+	return b
+}
+
+func (b *_BVLCReadBroadcastDistributionTableBuilder) Build() (BVLCReadBroadcastDistributionTable, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BVLCReadBroadcastDistributionTable.deepCopy(), nil
+	return b._BVLCReadBroadcastDistributionTable.deepCopy(), nil
 }
 
-func (m *_BVLCReadBroadcastDistributionTableBuilder) MustBuild() BVLCReadBroadcastDistributionTable {
-	build, err := m.Build()
+func (b *_BVLCReadBroadcastDistributionTableBuilder) MustBuild() BVLCReadBroadcastDistributionTable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BVLCReadBroadcastDistributionTableBuilder) DeepCopy() any {
-	return m.CreateBVLCReadBroadcastDistributionTableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCReadBroadcastDistributionTableBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCReadBroadcastDistributionTableBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCReadBroadcastDistributionTableBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCReadBroadcastDistributionTableBuilder().(*_BVLCReadBroadcastDistributionTableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBVLCReadBroadcastDistributionTableBuilder creates a BVLCReadBroadcastDistributionTableBuilder
-func (m *_BVLCReadBroadcastDistributionTable) CreateBVLCReadBroadcastDistributionTableBuilder() BVLCReadBroadcastDistributionTableBuilder {
-	if m == nil {
+func (b *_BVLCReadBroadcastDistributionTable) CreateBVLCReadBroadcastDistributionTableBuilder() BVLCReadBroadcastDistributionTableBuilder {
+	if b == nil {
 		return NewBVLCReadBroadcastDistributionTableBuilder()
 	}
-	return &_BVLCReadBroadcastDistributionTableBuilder{_BVLCReadBroadcastDistributionTable: m.deepCopy()}
+	return &_BVLCReadBroadcastDistributionTableBuilder{_BVLCReadBroadcastDistributionTable: b.deepCopy()}
 }
 
 ///////////////////////
@@ -235,9 +254,13 @@ func (m *_BVLCReadBroadcastDistributionTable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

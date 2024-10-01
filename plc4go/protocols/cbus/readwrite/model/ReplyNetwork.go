@@ -105,83 +105,87 @@ type _ReplyNetworkBuilder struct {
 
 var _ (ReplyNetworkBuilder) = (*_ReplyNetworkBuilder)(nil)
 
-func (m *_ReplyNetworkBuilder) WithMandatoryFields(networkRoute NetworkRoute, unitAddress UnitAddress) ReplyNetworkBuilder {
-	return m.WithNetworkRoute(networkRoute).WithUnitAddress(unitAddress)
+func (b *_ReplyNetworkBuilder) WithMandatoryFields(networkRoute NetworkRoute, unitAddress UnitAddress) ReplyNetworkBuilder {
+	return b.WithNetworkRoute(networkRoute).WithUnitAddress(unitAddress)
 }
 
-func (m *_ReplyNetworkBuilder) WithNetworkRoute(networkRoute NetworkRoute) ReplyNetworkBuilder {
-	m.NetworkRoute = networkRoute
-	return m
+func (b *_ReplyNetworkBuilder) WithNetworkRoute(networkRoute NetworkRoute) ReplyNetworkBuilder {
+	b.NetworkRoute = networkRoute
+	return b
 }
 
-func (m *_ReplyNetworkBuilder) WithNetworkRouteBuilder(builderSupplier func(NetworkRouteBuilder) NetworkRouteBuilder) ReplyNetworkBuilder {
-	builder := builderSupplier(m.NetworkRoute.CreateNetworkRouteBuilder())
+func (b *_ReplyNetworkBuilder) WithNetworkRouteBuilder(builderSupplier func(NetworkRouteBuilder) NetworkRouteBuilder) ReplyNetworkBuilder {
+	builder := builderSupplier(b.NetworkRoute.CreateNetworkRouteBuilder())
 	var err error
-	m.NetworkRoute, err = builder.Build()
+	b.NetworkRoute, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NetworkRouteBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NetworkRouteBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ReplyNetworkBuilder) WithUnitAddress(unitAddress UnitAddress) ReplyNetworkBuilder {
-	m.UnitAddress = unitAddress
-	return m
+func (b *_ReplyNetworkBuilder) WithUnitAddress(unitAddress UnitAddress) ReplyNetworkBuilder {
+	b.UnitAddress = unitAddress
+	return b
 }
 
-func (m *_ReplyNetworkBuilder) WithUnitAddressBuilder(builderSupplier func(UnitAddressBuilder) UnitAddressBuilder) ReplyNetworkBuilder {
-	builder := builderSupplier(m.UnitAddress.CreateUnitAddressBuilder())
+func (b *_ReplyNetworkBuilder) WithUnitAddressBuilder(builderSupplier func(UnitAddressBuilder) UnitAddressBuilder) ReplyNetworkBuilder {
+	builder := builderSupplier(b.UnitAddress.CreateUnitAddressBuilder())
 	var err error
-	m.UnitAddress, err = builder.Build()
+	b.UnitAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "UnitAddressBuilder failed"))
+		b.err.Append(errors.Wrap(err, "UnitAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ReplyNetworkBuilder) Build() (ReplyNetwork, error) {
-	if m.NetworkRoute == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ReplyNetworkBuilder) Build() (ReplyNetwork, error) {
+	if b.NetworkRoute == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'networkRoute' not set"))
+		b.err.Append(errors.New("mandatory field 'networkRoute' not set"))
 	}
-	if m.UnitAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.UnitAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'unitAddress' not set"))
+		b.err.Append(errors.New("mandatory field 'unitAddress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ReplyNetwork.deepCopy(), nil
+	return b._ReplyNetwork.deepCopy(), nil
 }
 
-func (m *_ReplyNetworkBuilder) MustBuild() ReplyNetwork {
-	build, err := m.Build()
+func (b *_ReplyNetworkBuilder) MustBuild() ReplyNetwork {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ReplyNetworkBuilder) DeepCopy() any {
-	return m.CreateReplyNetworkBuilder()
+func (b *_ReplyNetworkBuilder) DeepCopy() any {
+	_copy := b.CreateReplyNetworkBuilder().(*_ReplyNetworkBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateReplyNetworkBuilder creates a ReplyNetworkBuilder
-func (m *_ReplyNetwork) CreateReplyNetworkBuilder() ReplyNetworkBuilder {
-	if m == nil {
+func (b *_ReplyNetwork) CreateReplyNetworkBuilder() ReplyNetworkBuilder {
+	if b == nil {
 		return NewReplyNetworkBuilder()
 	}
-	return &_ReplyNetworkBuilder{_ReplyNetwork: m.deepCopy()}
+	return &_ReplyNetworkBuilder{_ReplyNetwork: b.deepCopy()}
 }
 
 ///////////////////////
@@ -336,9 +340,13 @@ func (m *_ReplyNetwork) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

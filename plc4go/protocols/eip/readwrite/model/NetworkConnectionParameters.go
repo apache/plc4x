@@ -114,60 +114,64 @@ type _NetworkConnectionParametersBuilder struct {
 
 var _ (NetworkConnectionParametersBuilder) = (*_NetworkConnectionParametersBuilder)(nil)
 
-func (m *_NetworkConnectionParametersBuilder) WithMandatoryFields(connectionSize uint16, owner bool, connectionType uint8, priority uint8, connectionSizeType bool) NetworkConnectionParametersBuilder {
-	return m.WithConnectionSize(connectionSize).WithOwner(owner).WithConnectionType(connectionType).WithPriority(priority).WithConnectionSizeType(connectionSizeType)
+func (b *_NetworkConnectionParametersBuilder) WithMandatoryFields(connectionSize uint16, owner bool, connectionType uint8, priority uint8, connectionSizeType bool) NetworkConnectionParametersBuilder {
+	return b.WithConnectionSize(connectionSize).WithOwner(owner).WithConnectionType(connectionType).WithPriority(priority).WithConnectionSizeType(connectionSizeType)
 }
 
-func (m *_NetworkConnectionParametersBuilder) WithConnectionSize(connectionSize uint16) NetworkConnectionParametersBuilder {
-	m.ConnectionSize = connectionSize
-	return m
+func (b *_NetworkConnectionParametersBuilder) WithConnectionSize(connectionSize uint16) NetworkConnectionParametersBuilder {
+	b.ConnectionSize = connectionSize
+	return b
 }
 
-func (m *_NetworkConnectionParametersBuilder) WithOwner(owner bool) NetworkConnectionParametersBuilder {
-	m.Owner = owner
-	return m
+func (b *_NetworkConnectionParametersBuilder) WithOwner(owner bool) NetworkConnectionParametersBuilder {
+	b.Owner = owner
+	return b
 }
 
-func (m *_NetworkConnectionParametersBuilder) WithConnectionType(connectionType uint8) NetworkConnectionParametersBuilder {
-	m.ConnectionType = connectionType
-	return m
+func (b *_NetworkConnectionParametersBuilder) WithConnectionType(connectionType uint8) NetworkConnectionParametersBuilder {
+	b.ConnectionType = connectionType
+	return b
 }
 
-func (m *_NetworkConnectionParametersBuilder) WithPriority(priority uint8) NetworkConnectionParametersBuilder {
-	m.Priority = priority
-	return m
+func (b *_NetworkConnectionParametersBuilder) WithPriority(priority uint8) NetworkConnectionParametersBuilder {
+	b.Priority = priority
+	return b
 }
 
-func (m *_NetworkConnectionParametersBuilder) WithConnectionSizeType(connectionSizeType bool) NetworkConnectionParametersBuilder {
-	m.ConnectionSizeType = connectionSizeType
-	return m
+func (b *_NetworkConnectionParametersBuilder) WithConnectionSizeType(connectionSizeType bool) NetworkConnectionParametersBuilder {
+	b.ConnectionSizeType = connectionSizeType
+	return b
 }
 
-func (m *_NetworkConnectionParametersBuilder) Build() (NetworkConnectionParameters, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NetworkConnectionParametersBuilder) Build() (NetworkConnectionParameters, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NetworkConnectionParameters.deepCopy(), nil
+	return b._NetworkConnectionParameters.deepCopy(), nil
 }
 
-func (m *_NetworkConnectionParametersBuilder) MustBuild() NetworkConnectionParameters {
-	build, err := m.Build()
+func (b *_NetworkConnectionParametersBuilder) MustBuild() NetworkConnectionParameters {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NetworkConnectionParametersBuilder) DeepCopy() any {
-	return m.CreateNetworkConnectionParametersBuilder()
+func (b *_NetworkConnectionParametersBuilder) DeepCopy() any {
+	_copy := b.CreateNetworkConnectionParametersBuilder().(*_NetworkConnectionParametersBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNetworkConnectionParametersBuilder creates a NetworkConnectionParametersBuilder
-func (m *_NetworkConnectionParameters) CreateNetworkConnectionParametersBuilder() NetworkConnectionParametersBuilder {
-	if m == nil {
+func (b *_NetworkConnectionParameters) CreateNetworkConnectionParametersBuilder() NetworkConnectionParametersBuilder {
+	if b == nil {
 		return NewNetworkConnectionParametersBuilder()
 	}
-	return &_NetworkConnectionParametersBuilder{_NetworkConnectionParameters: m.deepCopy()}
+	return &_NetworkConnectionParametersBuilder{_NetworkConnectionParameters: b.deepCopy()}
 }
 
 ///////////////////////
@@ -418,9 +422,13 @@ func (m *_NetworkConnectionParameters) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

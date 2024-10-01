@@ -83,35 +83,39 @@ type _EncodedTicketBuilder struct {
 
 var _ (EncodedTicketBuilder) = (*_EncodedTicketBuilder)(nil)
 
-func (m *_EncodedTicketBuilder) WithMandatoryFields() EncodedTicketBuilder {
-	return m
+func (b *_EncodedTicketBuilder) WithMandatoryFields() EncodedTicketBuilder {
+	return b
 }
 
-func (m *_EncodedTicketBuilder) Build() (EncodedTicket, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_EncodedTicketBuilder) Build() (EncodedTicket, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EncodedTicket.deepCopy(), nil
+	return b._EncodedTicket.deepCopy(), nil
 }
 
-func (m *_EncodedTicketBuilder) MustBuild() EncodedTicket {
-	build, err := m.Build()
+func (b *_EncodedTicketBuilder) MustBuild() EncodedTicket {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EncodedTicketBuilder) DeepCopy() any {
-	return m.CreateEncodedTicketBuilder()
+func (b *_EncodedTicketBuilder) DeepCopy() any {
+	_copy := b.CreateEncodedTicketBuilder().(*_EncodedTicketBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEncodedTicketBuilder creates a EncodedTicketBuilder
-func (m *_EncodedTicket) CreateEncodedTicketBuilder() EncodedTicketBuilder {
-	if m == nil {
+func (b *_EncodedTicket) CreateEncodedTicketBuilder() EncodedTicketBuilder {
+	if b == nil {
 		return NewEncodedTicketBuilder()
 	}
-	return &_EncodedTicketBuilder{_EncodedTicket: m.deepCopy()}
+	return &_EncodedTicketBuilder{_EncodedTicket: b.deepCopy()}
 }
 
 ///////////////////////
@@ -219,9 +223,13 @@ func (m *_EncodedTicket) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

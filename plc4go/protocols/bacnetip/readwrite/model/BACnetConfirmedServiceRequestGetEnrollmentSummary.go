@@ -138,154 +138,173 @@ func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder() BACnetConfirm
 type _BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder struct {
 	*_BACnetConfirmedServiceRequestGetEnrollmentSummary
 
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) = (*_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithMandatoryFields(acknowledgmentFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
-	return m.WithAcknowledgmentFilter(acknowledgmentFilter)
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithAcknowledgmentFilter(acknowledgmentFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
-	m.AcknowledgmentFilter = acknowledgmentFilter
-	return m
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithMandatoryFields(acknowledgmentFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
+	return b.WithAcknowledgmentFilter(acknowledgmentFilter)
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithAcknowledgmentFilterBuilder(builderSupplier func(BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
-	builder := builderSupplier(m.AcknowledgmentFilter.CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder())
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithAcknowledgmentFilter(acknowledgmentFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
+	b.AcknowledgmentFilter = acknowledgmentFilter
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithAcknowledgmentFilterBuilder(builderSupplier func(BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
+	builder := builderSupplier(b.AcknowledgmentFilter.CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder())
 	var err error
-	m.AcknowledgmentFilter, err = builder.Build()
+	b.AcknowledgmentFilter, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalEnrollmentFilter(enrollmentFilter BACnetRecipientProcessEnclosed) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
-	m.EnrollmentFilter = enrollmentFilter
-	return m
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalEnrollmentFilter(enrollmentFilter BACnetRecipientProcessEnclosed) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
+	b.EnrollmentFilter = enrollmentFilter
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalEnrollmentFilterBuilder(builderSupplier func(BACnetRecipientProcessEnclosedBuilder) BACnetRecipientProcessEnclosedBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
-	builder := builderSupplier(m.EnrollmentFilter.CreateBACnetRecipientProcessEnclosedBuilder())
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalEnrollmentFilterBuilder(builderSupplier func(BACnetRecipientProcessEnclosedBuilder) BACnetRecipientProcessEnclosedBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
+	builder := builderSupplier(b.EnrollmentFilter.CreateBACnetRecipientProcessEnclosedBuilder())
 	var err error
-	m.EnrollmentFilter, err = builder.Build()
+	b.EnrollmentFilter, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetRecipientProcessEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetRecipientProcessEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalEventStateFilter(eventStateFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
-	m.EventStateFilter = eventStateFilter
-	return m
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalEventStateFilter(eventStateFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
+	b.EventStateFilter = eventStateFilter
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalEventStateFilterBuilder(builderSupplier func(BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
-	builder := builderSupplier(m.EventStateFilter.CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder())
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalEventStateFilterBuilder(builderSupplier func(BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
+	builder := builderSupplier(b.EventStateFilter.CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder())
 	var err error
-	m.EventStateFilter, err = builder.Build()
+	b.EventStateFilter, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalEventTypeFilter(eventTypeFilter BACnetEventTypeTagged) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
-	m.EventTypeFilter = eventTypeFilter
-	return m
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalEventTypeFilter(eventTypeFilter BACnetEventTypeTagged) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
+	b.EventTypeFilter = eventTypeFilter
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalEventTypeFilterBuilder(builderSupplier func(BACnetEventTypeTaggedBuilder) BACnetEventTypeTaggedBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
-	builder := builderSupplier(m.EventTypeFilter.CreateBACnetEventTypeTaggedBuilder())
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalEventTypeFilterBuilder(builderSupplier func(BACnetEventTypeTaggedBuilder) BACnetEventTypeTaggedBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
+	builder := builderSupplier(b.EventTypeFilter.CreateBACnetEventTypeTaggedBuilder())
 	var err error
-	m.EventTypeFilter, err = builder.Build()
+	b.EventTypeFilter, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventTypeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventTypeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalPriorityFilter(priorityFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
-	m.PriorityFilter = priorityFilter
-	return m
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalPriorityFilter(priorityFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
+	b.PriorityFilter = priorityFilter
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalPriorityFilterBuilder(builderSupplier func(BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
-	builder := builderSupplier(m.PriorityFilter.CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder())
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalPriorityFilterBuilder(builderSupplier func(BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
+	builder := builderSupplier(b.PriorityFilter.CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder())
 	var err error
-	m.PriorityFilter, err = builder.Build()
+	b.PriorityFilter, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalNotificationClassFilter(notificationClassFilter BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
-	m.NotificationClassFilter = notificationClassFilter
-	return m
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalNotificationClassFilter(notificationClassFilter BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
+	b.NotificationClassFilter = notificationClassFilter
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalNotificationClassFilterBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
-	builder := builderSupplier(m.NotificationClassFilter.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithOptionalNotificationClassFilterBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
+	builder := builderSupplier(b.NotificationClassFilter.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.NotificationClassFilter, err = builder.Build()
+	b.NotificationClassFilter, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) Build() (BACnetConfirmedServiceRequestGetEnrollmentSummary, error) {
-	if m.AcknowledgmentFilter == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) Build() (BACnetConfirmedServiceRequestGetEnrollmentSummary, error) {
+	if b.AcknowledgmentFilter == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'acknowledgmentFilter' not set"))
+		b.err.Append(errors.New("mandatory field 'acknowledgmentFilter' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestGetEnrollmentSummary.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestGetEnrollmentSummary.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) MustBuild() BACnetConfirmedServiceRequestGetEnrollmentSummary {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) MustBuild() BACnetConfirmedServiceRequestGetEnrollmentSummary {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder().(*_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder creates a BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder() BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummary) CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder() BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder{_BACnetConfirmedServiceRequestGetEnrollmentSummary: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder{_BACnetConfirmedServiceRequestGetEnrollmentSummary: b.deepCopy()}
 }
 
 ///////////////////////
@@ -550,9 +569,13 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

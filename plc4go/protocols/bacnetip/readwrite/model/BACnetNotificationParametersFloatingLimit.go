@@ -153,184 +153,203 @@ func NewBACnetNotificationParametersFloatingLimitBuilder() BACnetNotificationPar
 type _BACnetNotificationParametersFloatingLimitBuilder struct {
 	*_BACnetNotificationParametersFloatingLimit
 
+	parentBuilder *_BACnetNotificationParametersBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersFloatingLimitBuilder) = (*_BACnetNotificationParametersFloatingLimitBuilder)(nil)
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, referenceValue BACnetContextTagReal, statusFlags BACnetStatusFlagsTagged, setPointValue BACnetContextTagReal, errorLimit BACnetContextTagReal, innerClosingTag BACnetClosingTag) BACnetNotificationParametersFloatingLimitBuilder {
-	return m.WithInnerOpeningTag(innerOpeningTag).WithReferenceValue(referenceValue).WithStatusFlags(statusFlags).WithSetPointValue(setPointValue).WithErrorLimit(errorLimit).WithInnerClosingTag(innerClosingTag)
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) setParent(contract BACnetNotificationParametersContract) {
+	b.BACnetNotificationParametersContract = contract
 }
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersFloatingLimitBuilder {
-	m.InnerOpeningTag = innerOpeningTag
-	return m
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, referenceValue BACnetContextTagReal, statusFlags BACnetStatusFlagsTagged, setPointValue BACnetContextTagReal, errorLimit BACnetContextTagReal, innerClosingTag BACnetClosingTag) BACnetNotificationParametersFloatingLimitBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithReferenceValue(referenceValue).WithStatusFlags(statusFlags).WithSetPointValue(setPointValue).WithErrorLimit(errorLimit).WithInnerClosingTag(innerClosingTag)
 }
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersFloatingLimitBuilder {
-	builder := builderSupplier(m.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersFloatingLimitBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersFloatingLimitBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.InnerOpeningTag, err = builder.Build()
+	b.InnerOpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithReferenceValue(referenceValue BACnetContextTagReal) BACnetNotificationParametersFloatingLimitBuilder {
-	m.ReferenceValue = referenceValue
-	return m
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) WithReferenceValue(referenceValue BACnetContextTagReal) BACnetNotificationParametersFloatingLimitBuilder {
+	b.ReferenceValue = referenceValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithReferenceValueBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetNotificationParametersFloatingLimitBuilder {
-	builder := builderSupplier(m.ReferenceValue.CreateBACnetContextTagRealBuilder())
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) WithReferenceValueBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetNotificationParametersFloatingLimitBuilder {
+	builder := builderSupplier(b.ReferenceValue.CreateBACnetContextTagRealBuilder())
 	var err error
-	m.ReferenceValue, err = builder.Build()
+	b.ReferenceValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersFloatingLimitBuilder {
-	m.StatusFlags = statusFlags
-	return m
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersFloatingLimitBuilder {
+	b.StatusFlags = statusFlags
+	return b
 }
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersFloatingLimitBuilder {
-	builder := builderSupplier(m.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersFloatingLimitBuilder {
+	builder := builderSupplier(b.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
 	var err error
-	m.StatusFlags, err = builder.Build()
+	b.StatusFlags, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithSetPointValue(setPointValue BACnetContextTagReal) BACnetNotificationParametersFloatingLimitBuilder {
-	m.SetPointValue = setPointValue
-	return m
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) WithSetPointValue(setPointValue BACnetContextTagReal) BACnetNotificationParametersFloatingLimitBuilder {
+	b.SetPointValue = setPointValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithSetPointValueBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetNotificationParametersFloatingLimitBuilder {
-	builder := builderSupplier(m.SetPointValue.CreateBACnetContextTagRealBuilder())
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) WithSetPointValueBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetNotificationParametersFloatingLimitBuilder {
+	builder := builderSupplier(b.SetPointValue.CreateBACnetContextTagRealBuilder())
 	var err error
-	m.SetPointValue, err = builder.Build()
+	b.SetPointValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithErrorLimit(errorLimit BACnetContextTagReal) BACnetNotificationParametersFloatingLimitBuilder {
-	m.ErrorLimit = errorLimit
-	return m
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) WithErrorLimit(errorLimit BACnetContextTagReal) BACnetNotificationParametersFloatingLimitBuilder {
+	b.ErrorLimit = errorLimit
+	return b
 }
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithErrorLimitBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetNotificationParametersFloatingLimitBuilder {
-	builder := builderSupplier(m.ErrorLimit.CreateBACnetContextTagRealBuilder())
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) WithErrorLimitBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetNotificationParametersFloatingLimitBuilder {
+	builder := builderSupplier(b.ErrorLimit.CreateBACnetContextTagRealBuilder())
 	var err error
-	m.ErrorLimit, err = builder.Build()
+	b.ErrorLimit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersFloatingLimitBuilder {
-	m.InnerClosingTag = innerClosingTag
-	return m
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersFloatingLimitBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersFloatingLimitBuilder {
-	builder := builderSupplier(m.InnerClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersFloatingLimitBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.InnerClosingTag, err = builder.Build()
+	b.InnerClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) Build() (BACnetNotificationParametersFloatingLimit, error) {
-	if m.InnerOpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) Build() (BACnetNotificationParametersFloatingLimit, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
 	}
-	if m.ReferenceValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ReferenceValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'referenceValue' not set"))
+		b.err.Append(errors.New("mandatory field 'referenceValue' not set"))
 	}
-	if m.StatusFlags == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.StatusFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusFlags' not set"))
+		b.err.Append(errors.New("mandatory field 'statusFlags' not set"))
 	}
-	if m.SetPointValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.SetPointValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'setPointValue' not set"))
+		b.err.Append(errors.New("mandatory field 'setPointValue' not set"))
 	}
-	if m.ErrorLimit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ErrorLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'errorLimit' not set"))
+		b.err.Append(errors.New("mandatory field 'errorLimit' not set"))
 	}
-	if m.InnerClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNotificationParametersFloatingLimit.deepCopy(), nil
+	return b._BACnetNotificationParametersFloatingLimit.deepCopy(), nil
 }
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) MustBuild() BACnetNotificationParametersFloatingLimit {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) MustBuild() BACnetNotificationParametersFloatingLimit {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersFloatingLimitBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersFloatingLimitBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) Done() BACnetNotificationParametersBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) buildForBACnetNotificationParameters() (BACnetNotificationParameters, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersFloatingLimitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersFloatingLimitBuilder().(*_BACnetNotificationParametersFloatingLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersFloatingLimitBuilder creates a BACnetNotificationParametersFloatingLimitBuilder
-func (m *_BACnetNotificationParametersFloatingLimit) CreateBACnetNotificationParametersFloatingLimitBuilder() BACnetNotificationParametersFloatingLimitBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersFloatingLimit) CreateBACnetNotificationParametersFloatingLimitBuilder() BACnetNotificationParametersFloatingLimitBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersFloatingLimitBuilder()
 	}
-	return &_BACnetNotificationParametersFloatingLimitBuilder{_BACnetNotificationParametersFloatingLimit: m.deepCopy()}
+	return &_BACnetNotificationParametersFloatingLimitBuilder{_BACnetNotificationParametersFloatingLimit: b.deepCopy()}
 }
 
 ///////////////////////
@@ -560,9 +579,13 @@ func (m *_BACnetNotificationParametersFloatingLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

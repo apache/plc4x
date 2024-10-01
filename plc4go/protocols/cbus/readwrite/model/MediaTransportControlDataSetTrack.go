@@ -111,60 +111,79 @@ func NewMediaTransportControlDataSetTrackBuilder() MediaTransportControlDataSetT
 type _MediaTransportControlDataSetTrackBuilder struct {
 	*_MediaTransportControlDataSetTrack
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataSetTrackBuilder) = (*_MediaTransportControlDataSetTrackBuilder)(nil)
 
-func (m *_MediaTransportControlDataSetTrackBuilder) WithMandatoryFields(trackMSB byte, trackMMSB byte, trackMLSB byte, trackLSB byte) MediaTransportControlDataSetTrackBuilder {
-	return m.WithTrackMSB(trackMSB).WithTrackMMSB(trackMMSB).WithTrackMLSB(trackMLSB).WithTrackLSB(trackLSB)
+func (b *_MediaTransportControlDataSetTrackBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataSetTrackBuilder) WithTrackMSB(trackMSB byte) MediaTransportControlDataSetTrackBuilder {
-	m.TrackMSB = trackMSB
-	return m
+func (b *_MediaTransportControlDataSetTrackBuilder) WithMandatoryFields(trackMSB byte, trackMMSB byte, trackMLSB byte, trackLSB byte) MediaTransportControlDataSetTrackBuilder {
+	return b.WithTrackMSB(trackMSB).WithTrackMMSB(trackMMSB).WithTrackMLSB(trackMLSB).WithTrackLSB(trackLSB)
 }
 
-func (m *_MediaTransportControlDataSetTrackBuilder) WithTrackMMSB(trackMMSB byte) MediaTransportControlDataSetTrackBuilder {
-	m.TrackMMSB = trackMMSB
-	return m
+func (b *_MediaTransportControlDataSetTrackBuilder) WithTrackMSB(trackMSB byte) MediaTransportControlDataSetTrackBuilder {
+	b.TrackMSB = trackMSB
+	return b
 }
 
-func (m *_MediaTransportControlDataSetTrackBuilder) WithTrackMLSB(trackMLSB byte) MediaTransportControlDataSetTrackBuilder {
-	m.TrackMLSB = trackMLSB
-	return m
+func (b *_MediaTransportControlDataSetTrackBuilder) WithTrackMMSB(trackMMSB byte) MediaTransportControlDataSetTrackBuilder {
+	b.TrackMMSB = trackMMSB
+	return b
 }
 
-func (m *_MediaTransportControlDataSetTrackBuilder) WithTrackLSB(trackLSB byte) MediaTransportControlDataSetTrackBuilder {
-	m.TrackLSB = trackLSB
-	return m
+func (b *_MediaTransportControlDataSetTrackBuilder) WithTrackMLSB(trackMLSB byte) MediaTransportControlDataSetTrackBuilder {
+	b.TrackMLSB = trackMLSB
+	return b
 }
 
-func (m *_MediaTransportControlDataSetTrackBuilder) Build() (MediaTransportControlDataSetTrack, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataSetTrackBuilder) WithTrackLSB(trackLSB byte) MediaTransportControlDataSetTrackBuilder {
+	b.TrackLSB = trackLSB
+	return b
+}
+
+func (b *_MediaTransportControlDataSetTrackBuilder) Build() (MediaTransportControlDataSetTrack, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataSetTrack.deepCopy(), nil
+	return b._MediaTransportControlDataSetTrack.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataSetTrackBuilder) MustBuild() MediaTransportControlDataSetTrack {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataSetTrackBuilder) MustBuild() MediaTransportControlDataSetTrack {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataSetTrackBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataSetTrackBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataSetTrackBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataSetTrackBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataSetTrackBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataSetTrackBuilder().(*_MediaTransportControlDataSetTrackBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataSetTrackBuilder creates a MediaTransportControlDataSetTrackBuilder
-func (m *_MediaTransportControlDataSetTrack) CreateMediaTransportControlDataSetTrackBuilder() MediaTransportControlDataSetTrackBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataSetTrack) CreateMediaTransportControlDataSetTrackBuilder() MediaTransportControlDataSetTrackBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataSetTrackBuilder()
 	}
-	return &_MediaTransportControlDataSetTrackBuilder{_MediaTransportControlDataSetTrack: m.deepCopy()}
+	return &_MediaTransportControlDataSetTrackBuilder{_MediaTransportControlDataSetTrack: b.deepCopy()}
 }
 
 ///////////////////////
@@ -358,9 +377,13 @@ func (m *_MediaTransportControlDataSetTrack) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

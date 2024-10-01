@@ -141,6 +141,8 @@ type APDUConfirmedRequestBuilder interface {
 	WithOptionalProposedWindowSize(uint8) APDUConfirmedRequestBuilder
 	// WithServiceRequest adds ServiceRequest (property field)
 	WithOptionalServiceRequest(BACnetConfirmedServiceRequest) APDUConfirmedRequestBuilder
+	// WithOptionalServiceRequestBuilder adds ServiceRequest (property field) which is build by the builder
+	WithOptionalServiceRequestBuilder(func(BACnetConfirmedServiceRequestBuilder) BACnetConfirmedServiceRequestBuilder) APDUConfirmedRequestBuilder
 	// WithSegmentServiceChoice adds SegmentServiceChoice (property field)
 	WithOptionalSegmentServiceChoice(BACnetConfirmedServiceChoice) APDUConfirmedRequestBuilder
 	// WithSegment adds Segment (property field)
@@ -159,95 +161,127 @@ func NewAPDUConfirmedRequestBuilder() APDUConfirmedRequestBuilder {
 type _APDUConfirmedRequestBuilder struct {
 	*_APDUConfirmedRequest
 
+	parentBuilder *_APDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (APDUConfirmedRequestBuilder) = (*_APDUConfirmedRequestBuilder)(nil)
 
-func (m *_APDUConfirmedRequestBuilder) WithMandatoryFields(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted MaxSegmentsAccepted, maxApduLengthAccepted MaxApduLengthAccepted, invokeId uint8, segment []byte) APDUConfirmedRequestBuilder {
-	return m.WithSegmentedMessage(segmentedMessage).WithMoreFollows(moreFollows).WithSegmentedResponseAccepted(segmentedResponseAccepted).WithMaxSegmentsAccepted(maxSegmentsAccepted).WithMaxApduLengthAccepted(maxApduLengthAccepted).WithInvokeId(invokeId).WithSegment(segment...)
+func (b *_APDUConfirmedRequestBuilder) setParent(contract APDUContract) {
+	b.APDUContract = contract
 }
 
-func (m *_APDUConfirmedRequestBuilder) WithSegmentedMessage(segmentedMessage bool) APDUConfirmedRequestBuilder {
-	m.SegmentedMessage = segmentedMessage
-	return m
+func (b *_APDUConfirmedRequestBuilder) WithMandatoryFields(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted MaxSegmentsAccepted, maxApduLengthAccepted MaxApduLengthAccepted, invokeId uint8, segment []byte) APDUConfirmedRequestBuilder {
+	return b.WithSegmentedMessage(segmentedMessage).WithMoreFollows(moreFollows).WithSegmentedResponseAccepted(segmentedResponseAccepted).WithMaxSegmentsAccepted(maxSegmentsAccepted).WithMaxApduLengthAccepted(maxApduLengthAccepted).WithInvokeId(invokeId).WithSegment(segment...)
 }
 
-func (m *_APDUConfirmedRequestBuilder) WithMoreFollows(moreFollows bool) APDUConfirmedRequestBuilder {
-	m.MoreFollows = moreFollows
-	return m
+func (b *_APDUConfirmedRequestBuilder) WithSegmentedMessage(segmentedMessage bool) APDUConfirmedRequestBuilder {
+	b.SegmentedMessage = segmentedMessage
+	return b
 }
 
-func (m *_APDUConfirmedRequestBuilder) WithSegmentedResponseAccepted(segmentedResponseAccepted bool) APDUConfirmedRequestBuilder {
-	m.SegmentedResponseAccepted = segmentedResponseAccepted
-	return m
+func (b *_APDUConfirmedRequestBuilder) WithMoreFollows(moreFollows bool) APDUConfirmedRequestBuilder {
+	b.MoreFollows = moreFollows
+	return b
 }
 
-func (m *_APDUConfirmedRequestBuilder) WithMaxSegmentsAccepted(maxSegmentsAccepted MaxSegmentsAccepted) APDUConfirmedRequestBuilder {
-	m.MaxSegmentsAccepted = maxSegmentsAccepted
-	return m
+func (b *_APDUConfirmedRequestBuilder) WithSegmentedResponseAccepted(segmentedResponseAccepted bool) APDUConfirmedRequestBuilder {
+	b.SegmentedResponseAccepted = segmentedResponseAccepted
+	return b
 }
 
-func (m *_APDUConfirmedRequestBuilder) WithMaxApduLengthAccepted(maxApduLengthAccepted MaxApduLengthAccepted) APDUConfirmedRequestBuilder {
-	m.MaxApduLengthAccepted = maxApduLengthAccepted
-	return m
+func (b *_APDUConfirmedRequestBuilder) WithMaxSegmentsAccepted(maxSegmentsAccepted MaxSegmentsAccepted) APDUConfirmedRequestBuilder {
+	b.MaxSegmentsAccepted = maxSegmentsAccepted
+	return b
 }
 
-func (m *_APDUConfirmedRequestBuilder) WithInvokeId(invokeId uint8) APDUConfirmedRequestBuilder {
-	m.InvokeId = invokeId
-	return m
+func (b *_APDUConfirmedRequestBuilder) WithMaxApduLengthAccepted(maxApduLengthAccepted MaxApduLengthAccepted) APDUConfirmedRequestBuilder {
+	b.MaxApduLengthAccepted = maxApduLengthAccepted
+	return b
 }
 
-func (m *_APDUConfirmedRequestBuilder) WithOptionalSequenceNumber(sequenceNumber uint8) APDUConfirmedRequestBuilder {
-	m.SequenceNumber = &sequenceNumber
-	return m
+func (b *_APDUConfirmedRequestBuilder) WithInvokeId(invokeId uint8) APDUConfirmedRequestBuilder {
+	b.InvokeId = invokeId
+	return b
 }
 
-func (m *_APDUConfirmedRequestBuilder) WithOptionalProposedWindowSize(proposedWindowSize uint8) APDUConfirmedRequestBuilder {
-	m.ProposedWindowSize = &proposedWindowSize
-	return m
+func (b *_APDUConfirmedRequestBuilder) WithOptionalSequenceNumber(sequenceNumber uint8) APDUConfirmedRequestBuilder {
+	b.SequenceNumber = &sequenceNumber
+	return b
 }
 
-func (m *_APDUConfirmedRequestBuilder) WithOptionalServiceRequest(serviceRequest BACnetConfirmedServiceRequest) APDUConfirmedRequestBuilder {
-	m.ServiceRequest = serviceRequest
-	return m
+func (b *_APDUConfirmedRequestBuilder) WithOptionalProposedWindowSize(proposedWindowSize uint8) APDUConfirmedRequestBuilder {
+	b.ProposedWindowSize = &proposedWindowSize
+	return b
 }
 
-func (m *_APDUConfirmedRequestBuilder) WithOptionalSegmentServiceChoice(segmentServiceChoice BACnetConfirmedServiceChoice) APDUConfirmedRequestBuilder {
-	m.SegmentServiceChoice = &segmentServiceChoice
-	return m
+func (b *_APDUConfirmedRequestBuilder) WithOptionalServiceRequest(serviceRequest BACnetConfirmedServiceRequest) APDUConfirmedRequestBuilder {
+	b.ServiceRequest = serviceRequest
+	return b
 }
 
-func (m *_APDUConfirmedRequestBuilder) WithSegment(segment ...byte) APDUConfirmedRequestBuilder {
-	m.Segment = segment
-	return m
-}
-
-func (m *_APDUConfirmedRequestBuilder) Build() (APDUConfirmedRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_APDUConfirmedRequestBuilder) WithOptionalServiceRequestBuilder(builderSupplier func(BACnetConfirmedServiceRequestBuilder) BACnetConfirmedServiceRequestBuilder) APDUConfirmedRequestBuilder {
+	builder := builderSupplier(b.ServiceRequest.CreateBACnetConfirmedServiceRequestBuilder())
+	var err error
+	b.ServiceRequest, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestBuilder failed"))
 	}
-	return m._APDUConfirmedRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_APDUConfirmedRequestBuilder) MustBuild() APDUConfirmedRequest {
-	build, err := m.Build()
+func (b *_APDUConfirmedRequestBuilder) WithOptionalSegmentServiceChoice(segmentServiceChoice BACnetConfirmedServiceChoice) APDUConfirmedRequestBuilder {
+	b.SegmentServiceChoice = &segmentServiceChoice
+	return b
+}
+
+func (b *_APDUConfirmedRequestBuilder) WithSegment(segment ...byte) APDUConfirmedRequestBuilder {
+	b.Segment = segment
+	return b
+}
+
+func (b *_APDUConfirmedRequestBuilder) Build() (APDUConfirmedRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._APDUConfirmedRequest.deepCopy(), nil
+}
+
+func (b *_APDUConfirmedRequestBuilder) MustBuild() APDUConfirmedRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_APDUConfirmedRequestBuilder) DeepCopy() any {
-	return m.CreateAPDUConfirmedRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_APDUConfirmedRequestBuilder) Done() APDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_APDUConfirmedRequestBuilder) buildForAPDU() (APDU, error) {
+	return b.Build()
+}
+
+func (b *_APDUConfirmedRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAPDUConfirmedRequestBuilder().(*_APDUConfirmedRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAPDUConfirmedRequestBuilder creates a APDUConfirmedRequestBuilder
-func (m *_APDUConfirmedRequest) CreateAPDUConfirmedRequestBuilder() APDUConfirmedRequestBuilder {
-	if m == nil {
+func (b *_APDUConfirmedRequest) CreateAPDUConfirmedRequestBuilder() APDUConfirmedRequestBuilder {
+	if b == nil {
 		return NewAPDUConfirmedRequestBuilder()
 	}
-	return &_APDUConfirmedRequestBuilder{_APDUConfirmedRequest: m.deepCopy()}
+	return &_APDUConfirmedRequestBuilder{_APDUConfirmedRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -674,9 +708,13 @@ func (m *_APDUConfirmedRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

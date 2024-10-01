@@ -134,94 +134,113 @@ func NewCallMethodResultBuilder() CallMethodResultBuilder {
 type _CallMethodResultBuilder struct {
 	*_CallMethodResult
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CallMethodResultBuilder) = (*_CallMethodResultBuilder)(nil)
 
-func (m *_CallMethodResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfInputArgumentResults int32, inputArgumentResults []StatusCode, noOfInputArgumentDiagnosticInfos int32, inputArgumentDiagnosticInfos []DiagnosticInfo, noOfOutputArguments int32, outputArguments []Variant) CallMethodResultBuilder {
-	return m.WithStatusCode(statusCode).WithNoOfInputArgumentResults(noOfInputArgumentResults).WithInputArgumentResults(inputArgumentResults...).WithNoOfInputArgumentDiagnosticInfos(noOfInputArgumentDiagnosticInfos).WithInputArgumentDiagnosticInfos(inputArgumentDiagnosticInfos...).WithNoOfOutputArguments(noOfOutputArguments).WithOutputArguments(outputArguments...)
+func (b *_CallMethodResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_CallMethodResultBuilder) WithStatusCode(statusCode StatusCode) CallMethodResultBuilder {
-	m.StatusCode = statusCode
-	return m
+func (b *_CallMethodResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfInputArgumentResults int32, inputArgumentResults []StatusCode, noOfInputArgumentDiagnosticInfos int32, inputArgumentDiagnosticInfos []DiagnosticInfo, noOfOutputArguments int32, outputArguments []Variant) CallMethodResultBuilder {
+	return b.WithStatusCode(statusCode).WithNoOfInputArgumentResults(noOfInputArgumentResults).WithInputArgumentResults(inputArgumentResults...).WithNoOfInputArgumentDiagnosticInfos(noOfInputArgumentDiagnosticInfos).WithInputArgumentDiagnosticInfos(inputArgumentDiagnosticInfos...).WithNoOfOutputArguments(noOfOutputArguments).WithOutputArguments(outputArguments...)
 }
 
-func (m *_CallMethodResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) CallMethodResultBuilder {
-	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+func (b *_CallMethodResultBuilder) WithStatusCode(statusCode StatusCode) CallMethodResultBuilder {
+	b.StatusCode = statusCode
+	return b
+}
+
+func (b *_CallMethodResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) CallMethodResultBuilder {
+	builder := builderSupplier(b.StatusCode.CreateStatusCodeBuilder())
 	var err error
-	m.StatusCode, err = builder.Build()
+	b.StatusCode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CallMethodResultBuilder) WithNoOfInputArgumentResults(noOfInputArgumentResults int32) CallMethodResultBuilder {
-	m.NoOfInputArgumentResults = noOfInputArgumentResults
-	return m
+func (b *_CallMethodResultBuilder) WithNoOfInputArgumentResults(noOfInputArgumentResults int32) CallMethodResultBuilder {
+	b.NoOfInputArgumentResults = noOfInputArgumentResults
+	return b
 }
 
-func (m *_CallMethodResultBuilder) WithInputArgumentResults(inputArgumentResults ...StatusCode) CallMethodResultBuilder {
-	m.InputArgumentResults = inputArgumentResults
-	return m
+func (b *_CallMethodResultBuilder) WithInputArgumentResults(inputArgumentResults ...StatusCode) CallMethodResultBuilder {
+	b.InputArgumentResults = inputArgumentResults
+	return b
 }
 
-func (m *_CallMethodResultBuilder) WithNoOfInputArgumentDiagnosticInfos(noOfInputArgumentDiagnosticInfos int32) CallMethodResultBuilder {
-	m.NoOfInputArgumentDiagnosticInfos = noOfInputArgumentDiagnosticInfos
-	return m
+func (b *_CallMethodResultBuilder) WithNoOfInputArgumentDiagnosticInfos(noOfInputArgumentDiagnosticInfos int32) CallMethodResultBuilder {
+	b.NoOfInputArgumentDiagnosticInfos = noOfInputArgumentDiagnosticInfos
+	return b
 }
 
-func (m *_CallMethodResultBuilder) WithInputArgumentDiagnosticInfos(inputArgumentDiagnosticInfos ...DiagnosticInfo) CallMethodResultBuilder {
-	m.InputArgumentDiagnosticInfos = inputArgumentDiagnosticInfos
-	return m
+func (b *_CallMethodResultBuilder) WithInputArgumentDiagnosticInfos(inputArgumentDiagnosticInfos ...DiagnosticInfo) CallMethodResultBuilder {
+	b.InputArgumentDiagnosticInfos = inputArgumentDiagnosticInfos
+	return b
 }
 
-func (m *_CallMethodResultBuilder) WithNoOfOutputArguments(noOfOutputArguments int32) CallMethodResultBuilder {
-	m.NoOfOutputArguments = noOfOutputArguments
-	return m
+func (b *_CallMethodResultBuilder) WithNoOfOutputArguments(noOfOutputArguments int32) CallMethodResultBuilder {
+	b.NoOfOutputArguments = noOfOutputArguments
+	return b
 }
 
-func (m *_CallMethodResultBuilder) WithOutputArguments(outputArguments ...Variant) CallMethodResultBuilder {
-	m.OutputArguments = outputArguments
-	return m
+func (b *_CallMethodResultBuilder) WithOutputArguments(outputArguments ...Variant) CallMethodResultBuilder {
+	b.OutputArguments = outputArguments
+	return b
 }
 
-func (m *_CallMethodResultBuilder) Build() (CallMethodResult, error) {
-	if m.StatusCode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CallMethodResultBuilder) Build() (CallMethodResult, error) {
+	if b.StatusCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CallMethodResult.deepCopy(), nil
+	return b._CallMethodResult.deepCopy(), nil
 }
 
-func (m *_CallMethodResultBuilder) MustBuild() CallMethodResult {
-	build, err := m.Build()
+func (b *_CallMethodResultBuilder) MustBuild() CallMethodResult {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CallMethodResultBuilder) DeepCopy() any {
-	return m.CreateCallMethodResultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CallMethodResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CallMethodResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_CallMethodResultBuilder) DeepCopy() any {
+	_copy := b.CreateCallMethodResultBuilder().(*_CallMethodResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCallMethodResultBuilder creates a CallMethodResultBuilder
-func (m *_CallMethodResult) CreateCallMethodResultBuilder() CallMethodResultBuilder {
-	if m == nil {
+func (b *_CallMethodResult) CreateCallMethodResultBuilder() CallMethodResultBuilder {
+	if b == nil {
 		return NewCallMethodResultBuilder()
 	}
-	return &_CallMethodResultBuilder{_CallMethodResult: m.deepCopy()}
+	return &_CallMethodResultBuilder{_CallMethodResult: b.deepCopy()}
 }
 
 ///////////////////////
@@ -494,9 +513,13 @@ func (m *_CallMethodResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

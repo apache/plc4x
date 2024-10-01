@@ -100,64 +100,83 @@ func NewBACnetConstructedDataGlobalIdentifierBuilder() BACnetConstructedDataGlob
 type _BACnetConstructedDataGlobalIdentifierBuilder struct {
 	*_BACnetConstructedDataGlobalIdentifier
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataGlobalIdentifierBuilder) = (*_BACnetConstructedDataGlobalIdentifierBuilder)(nil)
 
-func (m *_BACnetConstructedDataGlobalIdentifierBuilder) WithMandatoryFields(globalIdentifier BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGlobalIdentifierBuilder {
-	return m.WithGlobalIdentifier(globalIdentifier)
+func (b *_BACnetConstructedDataGlobalIdentifierBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataGlobalIdentifierBuilder) WithGlobalIdentifier(globalIdentifier BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGlobalIdentifierBuilder {
-	m.GlobalIdentifier = globalIdentifier
-	return m
+func (b *_BACnetConstructedDataGlobalIdentifierBuilder) WithMandatoryFields(globalIdentifier BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGlobalIdentifierBuilder {
+	return b.WithGlobalIdentifier(globalIdentifier)
 }
 
-func (m *_BACnetConstructedDataGlobalIdentifierBuilder) WithGlobalIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGlobalIdentifierBuilder {
-	builder := builderSupplier(m.GlobalIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataGlobalIdentifierBuilder) WithGlobalIdentifier(globalIdentifier BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGlobalIdentifierBuilder {
+	b.GlobalIdentifier = globalIdentifier
+	return b
+}
+
+func (b *_BACnetConstructedDataGlobalIdentifierBuilder) WithGlobalIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGlobalIdentifierBuilder {
+	builder := builderSupplier(b.GlobalIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.GlobalIdentifier, err = builder.Build()
+	b.GlobalIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataGlobalIdentifierBuilder) Build() (BACnetConstructedDataGlobalIdentifier, error) {
-	if m.GlobalIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataGlobalIdentifierBuilder) Build() (BACnetConstructedDataGlobalIdentifier, error) {
+	if b.GlobalIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'globalIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'globalIdentifier' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataGlobalIdentifier.deepCopy(), nil
+	return b._BACnetConstructedDataGlobalIdentifier.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataGlobalIdentifierBuilder) MustBuild() BACnetConstructedDataGlobalIdentifier {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataGlobalIdentifierBuilder) MustBuild() BACnetConstructedDataGlobalIdentifier {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataGlobalIdentifierBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataGlobalIdentifierBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataGlobalIdentifierBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataGlobalIdentifierBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataGlobalIdentifierBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataGlobalIdentifierBuilder().(*_BACnetConstructedDataGlobalIdentifierBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataGlobalIdentifierBuilder creates a BACnetConstructedDataGlobalIdentifierBuilder
-func (m *_BACnetConstructedDataGlobalIdentifier) CreateBACnetConstructedDataGlobalIdentifierBuilder() BACnetConstructedDataGlobalIdentifierBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataGlobalIdentifier) CreateBACnetConstructedDataGlobalIdentifierBuilder() BACnetConstructedDataGlobalIdentifierBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataGlobalIdentifierBuilder()
 	}
-	return &_BACnetConstructedDataGlobalIdentifierBuilder{_BACnetConstructedDataGlobalIdentifier: m.deepCopy()}
+	return &_BACnetConstructedDataGlobalIdentifierBuilder{_BACnetConstructedDataGlobalIdentifier: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataGlobalIdentifier) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

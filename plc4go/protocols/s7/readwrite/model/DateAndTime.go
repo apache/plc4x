@@ -126,75 +126,79 @@ type _DateAndTimeBuilder struct {
 
 var _ (DateAndTimeBuilder) = (*_DateAndTimeBuilder)(nil)
 
-func (m *_DateAndTimeBuilder) WithMandatoryFields(year uint8, month uint8, day uint8, hour uint8, minutes uint8, seconds uint8, msec uint16, dow uint8) DateAndTimeBuilder {
-	return m.WithYear(year).WithMonth(month).WithDay(day).WithHour(hour).WithMinutes(minutes).WithSeconds(seconds).WithMsec(msec).WithDow(dow)
+func (b *_DateAndTimeBuilder) WithMandatoryFields(year uint8, month uint8, day uint8, hour uint8, minutes uint8, seconds uint8, msec uint16, dow uint8) DateAndTimeBuilder {
+	return b.WithYear(year).WithMonth(month).WithDay(day).WithHour(hour).WithMinutes(minutes).WithSeconds(seconds).WithMsec(msec).WithDow(dow)
 }
 
-func (m *_DateAndTimeBuilder) WithYear(year uint8) DateAndTimeBuilder {
-	m.Year = year
-	return m
+func (b *_DateAndTimeBuilder) WithYear(year uint8) DateAndTimeBuilder {
+	b.Year = year
+	return b
 }
 
-func (m *_DateAndTimeBuilder) WithMonth(month uint8) DateAndTimeBuilder {
-	m.Month = month
-	return m
+func (b *_DateAndTimeBuilder) WithMonth(month uint8) DateAndTimeBuilder {
+	b.Month = month
+	return b
 }
 
-func (m *_DateAndTimeBuilder) WithDay(day uint8) DateAndTimeBuilder {
-	m.Day = day
-	return m
+func (b *_DateAndTimeBuilder) WithDay(day uint8) DateAndTimeBuilder {
+	b.Day = day
+	return b
 }
 
-func (m *_DateAndTimeBuilder) WithHour(hour uint8) DateAndTimeBuilder {
-	m.Hour = hour
-	return m
+func (b *_DateAndTimeBuilder) WithHour(hour uint8) DateAndTimeBuilder {
+	b.Hour = hour
+	return b
 }
 
-func (m *_DateAndTimeBuilder) WithMinutes(minutes uint8) DateAndTimeBuilder {
-	m.Minutes = minutes
-	return m
+func (b *_DateAndTimeBuilder) WithMinutes(minutes uint8) DateAndTimeBuilder {
+	b.Minutes = minutes
+	return b
 }
 
-func (m *_DateAndTimeBuilder) WithSeconds(seconds uint8) DateAndTimeBuilder {
-	m.Seconds = seconds
-	return m
+func (b *_DateAndTimeBuilder) WithSeconds(seconds uint8) DateAndTimeBuilder {
+	b.Seconds = seconds
+	return b
 }
 
-func (m *_DateAndTimeBuilder) WithMsec(msec uint16) DateAndTimeBuilder {
-	m.Msec = msec
-	return m
+func (b *_DateAndTimeBuilder) WithMsec(msec uint16) DateAndTimeBuilder {
+	b.Msec = msec
+	return b
 }
 
-func (m *_DateAndTimeBuilder) WithDow(dow uint8) DateAndTimeBuilder {
-	m.Dow = dow
-	return m
+func (b *_DateAndTimeBuilder) WithDow(dow uint8) DateAndTimeBuilder {
+	b.Dow = dow
+	return b
 }
 
-func (m *_DateAndTimeBuilder) Build() (DateAndTime, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DateAndTimeBuilder) Build() (DateAndTime, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DateAndTime.deepCopy(), nil
+	return b._DateAndTime.deepCopy(), nil
 }
 
-func (m *_DateAndTimeBuilder) MustBuild() DateAndTime {
-	build, err := m.Build()
+func (b *_DateAndTimeBuilder) MustBuild() DateAndTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DateAndTimeBuilder) DeepCopy() any {
-	return m.CreateDateAndTimeBuilder()
+func (b *_DateAndTimeBuilder) DeepCopy() any {
+	_copy := b.CreateDateAndTimeBuilder().(*_DateAndTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDateAndTimeBuilder creates a DateAndTimeBuilder
-func (m *_DateAndTime) CreateDateAndTimeBuilder() DateAndTimeBuilder {
-	if m == nil {
+func (b *_DateAndTime) CreateDateAndTimeBuilder() DateAndTimeBuilder {
+	if b == nil {
 		return NewDateAndTimeBuilder()
 	}
-	return &_DateAndTimeBuilder{_DateAndTime: m.deepCopy()}
+	return &_DateAndTimeBuilder{_DateAndTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -457,9 +461,13 @@ func (m *_DateAndTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

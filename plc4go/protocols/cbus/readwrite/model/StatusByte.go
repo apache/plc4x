@@ -105,55 +105,59 @@ type _StatusByteBuilder struct {
 
 var _ (StatusByteBuilder) = (*_StatusByteBuilder)(nil)
 
-func (m *_StatusByteBuilder) WithMandatoryFields(gav3 GAVState, gav2 GAVState, gav1 GAVState, gav0 GAVState) StatusByteBuilder {
-	return m.WithGav3(gav3).WithGav2(gav2).WithGav1(gav1).WithGav0(gav0)
+func (b *_StatusByteBuilder) WithMandatoryFields(gav3 GAVState, gav2 GAVState, gav1 GAVState, gav0 GAVState) StatusByteBuilder {
+	return b.WithGav3(gav3).WithGav2(gav2).WithGav1(gav1).WithGav0(gav0)
 }
 
-func (m *_StatusByteBuilder) WithGav3(gav3 GAVState) StatusByteBuilder {
-	m.Gav3 = gav3
-	return m
+func (b *_StatusByteBuilder) WithGav3(gav3 GAVState) StatusByteBuilder {
+	b.Gav3 = gav3
+	return b
 }
 
-func (m *_StatusByteBuilder) WithGav2(gav2 GAVState) StatusByteBuilder {
-	m.Gav2 = gav2
-	return m
+func (b *_StatusByteBuilder) WithGav2(gav2 GAVState) StatusByteBuilder {
+	b.Gav2 = gav2
+	return b
 }
 
-func (m *_StatusByteBuilder) WithGav1(gav1 GAVState) StatusByteBuilder {
-	m.Gav1 = gav1
-	return m
+func (b *_StatusByteBuilder) WithGav1(gav1 GAVState) StatusByteBuilder {
+	b.Gav1 = gav1
+	return b
 }
 
-func (m *_StatusByteBuilder) WithGav0(gav0 GAVState) StatusByteBuilder {
-	m.Gav0 = gav0
-	return m
+func (b *_StatusByteBuilder) WithGav0(gav0 GAVState) StatusByteBuilder {
+	b.Gav0 = gav0
+	return b
 }
 
-func (m *_StatusByteBuilder) Build() (StatusByte, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_StatusByteBuilder) Build() (StatusByte, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._StatusByte.deepCopy(), nil
+	return b._StatusByte.deepCopy(), nil
 }
 
-func (m *_StatusByteBuilder) MustBuild() StatusByte {
-	build, err := m.Build()
+func (b *_StatusByteBuilder) MustBuild() StatusByte {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_StatusByteBuilder) DeepCopy() any {
-	return m.CreateStatusByteBuilder()
+func (b *_StatusByteBuilder) DeepCopy() any {
+	_copy := b.CreateStatusByteBuilder().(*_StatusByteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateStatusByteBuilder creates a StatusByteBuilder
-func (m *_StatusByte) CreateStatusByteBuilder() StatusByteBuilder {
-	if m == nil {
+func (b *_StatusByte) CreateStatusByteBuilder() StatusByteBuilder {
+	if b == nil {
 		return NewStatusByteBuilder()
 	}
-	return &_StatusByteBuilder{_StatusByte: m.deepCopy()}
+	return &_StatusByteBuilder{_StatusByte: b.deepCopy()}
 }
 
 ///////////////////////
@@ -344,9 +348,13 @@ func (m *_StatusByte) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

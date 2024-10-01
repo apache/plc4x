@@ -152,137 +152,156 @@ func NewStructureFieldBuilder() StructureFieldBuilder {
 type _StructureFieldBuilder struct {
 	*_StructureField
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (StructureFieldBuilder) = (*_StructureFieldBuilder)(nil)
 
-func (m *_StructureFieldBuilder) WithMandatoryFields(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) StructureFieldBuilder {
-	return m.WithName(name).WithDescription(description).WithDataType(dataType).WithValueRank(valueRank).WithNoOfArrayDimensions(noOfArrayDimensions).WithArrayDimensions(arrayDimensions...).WithMaxStringLength(maxStringLength).WithIsOptional(isOptional)
+func (b *_StructureFieldBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_StructureFieldBuilder) WithName(name PascalString) StructureFieldBuilder {
-	m.Name = name
-	return m
+func (b *_StructureFieldBuilder) WithMandatoryFields(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) StructureFieldBuilder {
+	return b.WithName(name).WithDescription(description).WithDataType(dataType).WithValueRank(valueRank).WithNoOfArrayDimensions(noOfArrayDimensions).WithArrayDimensions(arrayDimensions...).WithMaxStringLength(maxStringLength).WithIsOptional(isOptional)
 }
 
-func (m *_StructureFieldBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) StructureFieldBuilder {
-	builder := builderSupplier(m.Name.CreatePascalStringBuilder())
+func (b *_StructureFieldBuilder) WithName(name PascalString) StructureFieldBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_StructureFieldBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) StructureFieldBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
 	var err error
-	m.Name, err = builder.Build()
+	b.Name, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_StructureFieldBuilder) WithDescription(description LocalizedText) StructureFieldBuilder {
-	m.Description = description
-	return m
+func (b *_StructureFieldBuilder) WithDescription(description LocalizedText) StructureFieldBuilder {
+	b.Description = description
+	return b
 }
 
-func (m *_StructureFieldBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) StructureFieldBuilder {
-	builder := builderSupplier(m.Description.CreateLocalizedTextBuilder())
+func (b *_StructureFieldBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) StructureFieldBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
 	var err error
-	m.Description, err = builder.Build()
+	b.Description, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_StructureFieldBuilder) WithDataType(dataType NodeId) StructureFieldBuilder {
-	m.DataType = dataType
-	return m
+func (b *_StructureFieldBuilder) WithDataType(dataType NodeId) StructureFieldBuilder {
+	b.DataType = dataType
+	return b
 }
 
-func (m *_StructureFieldBuilder) WithDataTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) StructureFieldBuilder {
-	builder := builderSupplier(m.DataType.CreateNodeIdBuilder())
+func (b *_StructureFieldBuilder) WithDataTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) StructureFieldBuilder {
+	builder := builderSupplier(b.DataType.CreateNodeIdBuilder())
 	var err error
-	m.DataType, err = builder.Build()
+	b.DataType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_StructureFieldBuilder) WithValueRank(valueRank int32) StructureFieldBuilder {
-	m.ValueRank = valueRank
-	return m
+func (b *_StructureFieldBuilder) WithValueRank(valueRank int32) StructureFieldBuilder {
+	b.ValueRank = valueRank
+	return b
 }
 
-func (m *_StructureFieldBuilder) WithNoOfArrayDimensions(noOfArrayDimensions int32) StructureFieldBuilder {
-	m.NoOfArrayDimensions = noOfArrayDimensions
-	return m
+func (b *_StructureFieldBuilder) WithNoOfArrayDimensions(noOfArrayDimensions int32) StructureFieldBuilder {
+	b.NoOfArrayDimensions = noOfArrayDimensions
+	return b
 }
 
-func (m *_StructureFieldBuilder) WithArrayDimensions(arrayDimensions ...uint32) StructureFieldBuilder {
-	m.ArrayDimensions = arrayDimensions
-	return m
+func (b *_StructureFieldBuilder) WithArrayDimensions(arrayDimensions ...uint32) StructureFieldBuilder {
+	b.ArrayDimensions = arrayDimensions
+	return b
 }
 
-func (m *_StructureFieldBuilder) WithMaxStringLength(maxStringLength uint32) StructureFieldBuilder {
-	m.MaxStringLength = maxStringLength
-	return m
+func (b *_StructureFieldBuilder) WithMaxStringLength(maxStringLength uint32) StructureFieldBuilder {
+	b.MaxStringLength = maxStringLength
+	return b
 }
 
-func (m *_StructureFieldBuilder) WithIsOptional(isOptional bool) StructureFieldBuilder {
-	m.IsOptional = isOptional
-	return m
+func (b *_StructureFieldBuilder) WithIsOptional(isOptional bool) StructureFieldBuilder {
+	b.IsOptional = isOptional
+	return b
 }
 
-func (m *_StructureFieldBuilder) Build() (StructureField, error) {
-	if m.Name == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_StructureFieldBuilder) Build() (StructureField, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'name' not set"))
+		b.err.Append(errors.New("mandatory field 'name' not set"))
 	}
-	if m.Description == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'description' not set"))
+		b.err.Append(errors.New("mandatory field 'description' not set"))
 	}
-	if m.DataType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.DataType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dataType' not set"))
+		b.err.Append(errors.New("mandatory field 'dataType' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._StructureField.deepCopy(), nil
+	return b._StructureField.deepCopy(), nil
 }
 
-func (m *_StructureFieldBuilder) MustBuild() StructureField {
-	build, err := m.Build()
+func (b *_StructureFieldBuilder) MustBuild() StructureField {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_StructureFieldBuilder) DeepCopy() any {
-	return m.CreateStructureFieldBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_StructureFieldBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_StructureFieldBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_StructureFieldBuilder) DeepCopy() any {
+	_copy := b.CreateStructureFieldBuilder().(*_StructureFieldBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateStructureFieldBuilder creates a StructureFieldBuilder
-func (m *_StructureField) CreateStructureFieldBuilder() StructureFieldBuilder {
-	if m == nil {
+func (b *_StructureField) CreateStructureFieldBuilder() StructureFieldBuilder {
+	if b == nil {
 		return NewStructureFieldBuilder()
 	}
-	return &_StructureFieldBuilder{_StructureField: m.deepCopy()}
+	return &_StructureFieldBuilder{_StructureField: b.deepCopy()}
 }
 
 ///////////////////////
@@ -568,9 +587,13 @@ func (m *_StructureField) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

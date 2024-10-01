@@ -109,10 +109,79 @@ type EipPacketBuilder interface {
 	WithSenderContext(...byte) EipPacketBuilder
 	// WithOptions adds Options (property field)
 	WithOptions(uint32) EipPacketBuilder
+	// AsNullCommandRequest converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
+	AsNullCommandRequest() interface {
+		NullCommandRequestBuilder
+		Done() EipPacketBuilder
+	}
+	// AsNullCommandResponse converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
+	AsNullCommandResponse() interface {
+		NullCommandResponseBuilder
+		Done() EipPacketBuilder
+	}
+	// AsListServicesRequest converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
+	AsListServicesRequest() interface {
+		ListServicesRequestBuilder
+		Done() EipPacketBuilder
+	}
+	// AsNullListServicesResponse converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
+	AsNullListServicesResponse() interface {
+		NullListServicesResponseBuilder
+		Done() EipPacketBuilder
+	}
+	// AsListServicesResponse converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
+	AsListServicesResponse() interface {
+		ListServicesResponseBuilder
+		Done() EipPacketBuilder
+	}
+	// AsEipListIdentityRequest converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
+	AsEipListIdentityRequest() interface {
+		EipListIdentityRequestBuilder
+		Done() EipPacketBuilder
+	}
+	// AsEipListIdentityResponse converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
+	AsEipListIdentityResponse() interface {
+		EipListIdentityResponseBuilder
+		Done() EipPacketBuilder
+	}
+	// AsEipConnectionRequest converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
+	AsEipConnectionRequest() interface {
+		EipConnectionRequestBuilder
+		Done() EipPacketBuilder
+	}
+	// AsNullEipConnectionResponse converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
+	AsNullEipConnectionResponse() interface {
+		NullEipConnectionResponseBuilder
+		Done() EipPacketBuilder
+	}
+	// AsEipConnectionResponse converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
+	AsEipConnectionResponse() interface {
+		EipConnectionResponseBuilder
+		Done() EipPacketBuilder
+	}
+	// AsEipDisconnectRequest converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
+	AsEipDisconnectRequest() interface {
+		EipDisconnectRequestBuilder
+		Done() EipPacketBuilder
+	}
+	// AsCipRRData converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
+	AsCipRRData() interface {
+		CipRRDataBuilder
+		Done() EipPacketBuilder
+	}
+	// AsSendUnitData converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
+	AsSendUnitData() interface {
+		SendUnitDataBuilder
+		Done() EipPacketBuilder
+	}
 	// Build builds the EipPacket or returns an error if something is wrong
-	Build() (EipPacketContract, error)
+	PartialBuild() (EipPacketContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() EipPacketContract
+	PartialMustBuild() EipPacketContract
+	// Build builds the EipPacket or returns an error if something is wrong
+	Build() (EipPacket, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EipPacket
 }
 
 // NewEipPacketBuilder() creates a EipPacketBuilder
@@ -120,63 +189,305 @@ func NewEipPacketBuilder() EipPacketBuilder {
 	return &_EipPacketBuilder{_EipPacket: new(_EipPacket)}
 }
 
+type _EipPacketChildBuilder interface {
+	utils.Copyable
+	setParent(EipPacketContract)
+	buildForEipPacket() (EipPacket, error)
+}
+
 type _EipPacketBuilder struct {
 	*_EipPacket
+
+	childBuilder _EipPacketChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (EipPacketBuilder) = (*_EipPacketBuilder)(nil)
 
-func (m *_EipPacketBuilder) WithMandatoryFields(sessionHandle uint32, status uint32, senderContext []byte, options uint32) EipPacketBuilder {
-	return m.WithSessionHandle(sessionHandle).WithStatus(status).WithSenderContext(senderContext...).WithOptions(options)
+func (b *_EipPacketBuilder) WithMandatoryFields(sessionHandle uint32, status uint32, senderContext []byte, options uint32) EipPacketBuilder {
+	return b.WithSessionHandle(sessionHandle).WithStatus(status).WithSenderContext(senderContext...).WithOptions(options)
 }
 
-func (m *_EipPacketBuilder) WithSessionHandle(sessionHandle uint32) EipPacketBuilder {
-	m.SessionHandle = sessionHandle
-	return m
+func (b *_EipPacketBuilder) WithSessionHandle(sessionHandle uint32) EipPacketBuilder {
+	b.SessionHandle = sessionHandle
+	return b
 }
 
-func (m *_EipPacketBuilder) WithStatus(status uint32) EipPacketBuilder {
-	m.Status = status
-	return m
+func (b *_EipPacketBuilder) WithStatus(status uint32) EipPacketBuilder {
+	b.Status = status
+	return b
 }
 
-func (m *_EipPacketBuilder) WithSenderContext(senderContext ...byte) EipPacketBuilder {
-	m.SenderContext = senderContext
-	return m
+func (b *_EipPacketBuilder) WithSenderContext(senderContext ...byte) EipPacketBuilder {
+	b.SenderContext = senderContext
+	return b
 }
 
-func (m *_EipPacketBuilder) WithOptions(options uint32) EipPacketBuilder {
-	m.Options = options
-	return m
+func (b *_EipPacketBuilder) WithOptions(options uint32) EipPacketBuilder {
+	b.Options = options
+	return b
 }
 
-func (m *_EipPacketBuilder) Build() (EipPacketContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_EipPacketBuilder) PartialBuild() (EipPacketContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EipPacket.deepCopy(), nil
+	return b._EipPacket.deepCopy(), nil
 }
 
-func (m *_EipPacketBuilder) MustBuild() EipPacketContract {
-	build, err := m.Build()
+func (b *_EipPacketBuilder) PartialMustBuild() EipPacketContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EipPacketBuilder) DeepCopy() any {
-	return m.CreateEipPacketBuilder()
+func (b *_EipPacketBuilder) AsNullCommandRequest() interface {
+	NullCommandRequestBuilder
+	Done() EipPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		NullCommandRequestBuilder
+		Done() EipPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewNullCommandRequestBuilder().(*_NullCommandRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_EipPacketBuilder) AsNullCommandResponse() interface {
+	NullCommandResponseBuilder
+	Done() EipPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		NullCommandResponseBuilder
+		Done() EipPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewNullCommandResponseBuilder().(*_NullCommandResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_EipPacketBuilder) AsListServicesRequest() interface {
+	ListServicesRequestBuilder
+	Done() EipPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ListServicesRequestBuilder
+		Done() EipPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewListServicesRequestBuilder().(*_ListServicesRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_EipPacketBuilder) AsNullListServicesResponse() interface {
+	NullListServicesResponseBuilder
+	Done() EipPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		NullListServicesResponseBuilder
+		Done() EipPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewNullListServicesResponseBuilder().(*_NullListServicesResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_EipPacketBuilder) AsListServicesResponse() interface {
+	ListServicesResponseBuilder
+	Done() EipPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ListServicesResponseBuilder
+		Done() EipPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewListServicesResponseBuilder().(*_ListServicesResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_EipPacketBuilder) AsEipListIdentityRequest() interface {
+	EipListIdentityRequestBuilder
+	Done() EipPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EipListIdentityRequestBuilder
+		Done() EipPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEipListIdentityRequestBuilder().(*_EipListIdentityRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_EipPacketBuilder) AsEipListIdentityResponse() interface {
+	EipListIdentityResponseBuilder
+	Done() EipPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EipListIdentityResponseBuilder
+		Done() EipPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEipListIdentityResponseBuilder().(*_EipListIdentityResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_EipPacketBuilder) AsEipConnectionRequest() interface {
+	EipConnectionRequestBuilder
+	Done() EipPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EipConnectionRequestBuilder
+		Done() EipPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEipConnectionRequestBuilder().(*_EipConnectionRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_EipPacketBuilder) AsNullEipConnectionResponse() interface {
+	NullEipConnectionResponseBuilder
+	Done() EipPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		NullEipConnectionResponseBuilder
+		Done() EipPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewNullEipConnectionResponseBuilder().(*_NullEipConnectionResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_EipPacketBuilder) AsEipConnectionResponse() interface {
+	EipConnectionResponseBuilder
+	Done() EipPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EipConnectionResponseBuilder
+		Done() EipPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEipConnectionResponseBuilder().(*_EipConnectionResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_EipPacketBuilder) AsEipDisconnectRequest() interface {
+	EipDisconnectRequestBuilder
+	Done() EipPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		EipDisconnectRequestBuilder
+		Done() EipPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewEipDisconnectRequestBuilder().(*_EipDisconnectRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_EipPacketBuilder) AsCipRRData() interface {
+	CipRRDataBuilder
+	Done() EipPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CipRRDataBuilder
+		Done() EipPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCipRRDataBuilder().(*_CipRRDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_EipPacketBuilder) AsSendUnitData() interface {
+	SendUnitDataBuilder
+	Done() EipPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SendUnitDataBuilder
+		Done() EipPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSendUnitDataBuilder().(*_SendUnitDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_EipPacketBuilder) Build() (EipPacket, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForEipPacket()
+}
+
+func (b *_EipPacketBuilder) MustBuild() EipPacket {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_EipPacketBuilder) DeepCopy() any {
+	_copy := b.CreateEipPacketBuilder().(*_EipPacketBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_EipPacketChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEipPacketBuilder creates a EipPacketBuilder
-func (m *_EipPacket) CreateEipPacketBuilder() EipPacketBuilder {
-	if m == nil {
+func (b *_EipPacket) CreateEipPacketBuilder() EipPacketBuilder {
+	if b == nil {
 		return NewEipPacketBuilder()
 	}
-	return &_EipPacketBuilder{_EipPacket: m.deepCopy()}
+	return &_EipPacketBuilder{_EipPacket: b.deepCopy()}
 }
 
 ///////////////////////

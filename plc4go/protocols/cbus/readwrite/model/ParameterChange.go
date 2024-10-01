@@ -89,35 +89,39 @@ type _ParameterChangeBuilder struct {
 
 var _ (ParameterChangeBuilder) = (*_ParameterChangeBuilder)(nil)
 
-func (m *_ParameterChangeBuilder) WithMandatoryFields() ParameterChangeBuilder {
-	return m
+func (b *_ParameterChangeBuilder) WithMandatoryFields() ParameterChangeBuilder {
+	return b
 }
 
-func (m *_ParameterChangeBuilder) Build() (ParameterChange, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ParameterChangeBuilder) Build() (ParameterChange, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ParameterChange.deepCopy(), nil
+	return b._ParameterChange.deepCopy(), nil
 }
 
-func (m *_ParameterChangeBuilder) MustBuild() ParameterChange {
-	build, err := m.Build()
+func (b *_ParameterChangeBuilder) MustBuild() ParameterChange {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ParameterChangeBuilder) DeepCopy() any {
-	return m.CreateParameterChangeBuilder()
+func (b *_ParameterChangeBuilder) DeepCopy() any {
+	_copy := b.CreateParameterChangeBuilder().(*_ParameterChangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateParameterChangeBuilder creates a ParameterChangeBuilder
-func (m *_ParameterChange) CreateParameterChangeBuilder() ParameterChangeBuilder {
-	if m == nil {
+func (b *_ParameterChange) CreateParameterChangeBuilder() ParameterChangeBuilder {
+	if b == nil {
 		return NewParameterChangeBuilder()
 	}
-	return &_ParameterChangeBuilder{_ParameterChange: m.deepCopy()}
+	return &_ParameterChangeBuilder{_ParameterChange: b.deepCopy()}
 }
 
 ///////////////////////
@@ -269,9 +273,13 @@ func (m *_ParameterChange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

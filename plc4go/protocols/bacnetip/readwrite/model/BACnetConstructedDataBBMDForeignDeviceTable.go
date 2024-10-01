@@ -93,45 +93,64 @@ func NewBACnetConstructedDataBBMDForeignDeviceTableBuilder() BACnetConstructedDa
 type _BACnetConstructedDataBBMDForeignDeviceTableBuilder struct {
 	*_BACnetConstructedDataBBMDForeignDeviceTable
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBBMDForeignDeviceTableBuilder) = (*_BACnetConstructedDataBBMDForeignDeviceTableBuilder)(nil)
 
-func (m *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) WithMandatoryFields(bbmdForeignDeviceTable []BACnetBDTEntry) BACnetConstructedDataBBMDForeignDeviceTableBuilder {
-	return m.WithBbmdForeignDeviceTable(bbmdForeignDeviceTable...)
+func (b *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) WithBbmdForeignDeviceTable(bbmdForeignDeviceTable ...BACnetBDTEntry) BACnetConstructedDataBBMDForeignDeviceTableBuilder {
-	m.BbmdForeignDeviceTable = bbmdForeignDeviceTable
-	return m
+func (b *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) WithMandatoryFields(bbmdForeignDeviceTable []BACnetBDTEntry) BACnetConstructedDataBBMDForeignDeviceTableBuilder {
+	return b.WithBbmdForeignDeviceTable(bbmdForeignDeviceTable...)
 }
 
-func (m *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) Build() (BACnetConstructedDataBBMDForeignDeviceTable, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) WithBbmdForeignDeviceTable(bbmdForeignDeviceTable ...BACnetBDTEntry) BACnetConstructedDataBBMDForeignDeviceTableBuilder {
+	b.BbmdForeignDeviceTable = bbmdForeignDeviceTable
+	return b
+}
+
+func (b *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) Build() (BACnetConstructedDataBBMDForeignDeviceTable, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBBMDForeignDeviceTable.deepCopy(), nil
+	return b._BACnetConstructedDataBBMDForeignDeviceTable.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) MustBuild() BACnetConstructedDataBBMDForeignDeviceTable {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) MustBuild() BACnetConstructedDataBBMDForeignDeviceTable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBBMDForeignDeviceTableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBBMDForeignDeviceTableBuilder().(*_BACnetConstructedDataBBMDForeignDeviceTableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBBMDForeignDeviceTableBuilder creates a BACnetConstructedDataBBMDForeignDeviceTableBuilder
-func (m *_BACnetConstructedDataBBMDForeignDeviceTable) CreateBACnetConstructedDataBBMDForeignDeviceTableBuilder() BACnetConstructedDataBBMDForeignDeviceTableBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBBMDForeignDeviceTable) CreateBACnetConstructedDataBBMDForeignDeviceTableBuilder() BACnetConstructedDataBBMDForeignDeviceTableBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBBMDForeignDeviceTableBuilder()
 	}
-	return &_BACnetConstructedDataBBMDForeignDeviceTableBuilder{_BACnetConstructedDataBBMDForeignDeviceTable: m.deepCopy()}
+	return &_BACnetConstructedDataBBMDForeignDeviceTableBuilder{_BACnetConstructedDataBBMDForeignDeviceTable: b.deepCopy()}
 }
 
 ///////////////////////
@@ -284,9 +303,13 @@ func (m *_BACnetConstructedDataBBMDForeignDeviceTable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

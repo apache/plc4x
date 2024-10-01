@@ -102,77 +102,81 @@ type _BACnetReadAccessResultBuilder struct {
 
 var _ (BACnetReadAccessResultBuilder) = (*_BACnetReadAccessResultBuilder)(nil)
 
-func (m *_BACnetReadAccessResultBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier) BACnetReadAccessResultBuilder {
-	return m.WithObjectIdentifier(objectIdentifier)
+func (b *_BACnetReadAccessResultBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier) BACnetReadAccessResultBuilder {
+	return b.WithObjectIdentifier(objectIdentifier)
 }
 
-func (m *_BACnetReadAccessResultBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetReadAccessResultBuilder {
-	m.ObjectIdentifier = objectIdentifier
-	return m
+func (b *_BACnetReadAccessResultBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetReadAccessResultBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
 }
 
-func (m *_BACnetReadAccessResultBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetReadAccessResultBuilder {
-	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+func (b *_BACnetReadAccessResultBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetReadAccessResultBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
 	var err error
-	m.ObjectIdentifier, err = builder.Build()
+	b.ObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetReadAccessResultBuilder) WithOptionalListOfResults(listOfResults BACnetReadAccessResultListOfResults) BACnetReadAccessResultBuilder {
-	m.ListOfResults = listOfResults
-	return m
+func (b *_BACnetReadAccessResultBuilder) WithOptionalListOfResults(listOfResults BACnetReadAccessResultListOfResults) BACnetReadAccessResultBuilder {
+	b.ListOfResults = listOfResults
+	return b
 }
 
-func (m *_BACnetReadAccessResultBuilder) WithOptionalListOfResultsBuilder(builderSupplier func(BACnetReadAccessResultListOfResultsBuilder) BACnetReadAccessResultListOfResultsBuilder) BACnetReadAccessResultBuilder {
-	builder := builderSupplier(m.ListOfResults.CreateBACnetReadAccessResultListOfResultsBuilder())
+func (b *_BACnetReadAccessResultBuilder) WithOptionalListOfResultsBuilder(builderSupplier func(BACnetReadAccessResultListOfResultsBuilder) BACnetReadAccessResultListOfResultsBuilder) BACnetReadAccessResultBuilder {
+	builder := builderSupplier(b.ListOfResults.CreateBACnetReadAccessResultListOfResultsBuilder())
 	var err error
-	m.ListOfResults, err = builder.Build()
+	b.ListOfResults, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetReadAccessResultListOfResultsBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetReadAccessResultListOfResultsBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetReadAccessResultBuilder) Build() (BACnetReadAccessResult, error) {
-	if m.ObjectIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetReadAccessResultBuilder) Build() (BACnetReadAccessResult, error) {
+	if b.ObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetReadAccessResult.deepCopy(), nil
+	return b._BACnetReadAccessResult.deepCopy(), nil
 }
 
-func (m *_BACnetReadAccessResultBuilder) MustBuild() BACnetReadAccessResult {
-	build, err := m.Build()
+func (b *_BACnetReadAccessResultBuilder) MustBuild() BACnetReadAccessResult {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetReadAccessResultBuilder) DeepCopy() any {
-	return m.CreateBACnetReadAccessResultBuilder()
+func (b *_BACnetReadAccessResultBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetReadAccessResultBuilder().(*_BACnetReadAccessResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetReadAccessResultBuilder creates a BACnetReadAccessResultBuilder
-func (m *_BACnetReadAccessResult) CreateBACnetReadAccessResultBuilder() BACnetReadAccessResultBuilder {
-	if m == nil {
+func (b *_BACnetReadAccessResult) CreateBACnetReadAccessResultBuilder() BACnetReadAccessResultBuilder {
+	if b == nil {
 		return NewBACnetReadAccessResultBuilder()
 	}
-	return &_BACnetReadAccessResultBuilder{_BACnetReadAccessResult: m.deepCopy()}
+	return &_BACnetReadAccessResultBuilder{_BACnetReadAccessResult: b.deepCopy()}
 }
 
 ///////////////////////
@@ -333,9 +337,13 @@ func (m *_BACnetReadAccessResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

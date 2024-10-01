@@ -94,6 +94,8 @@ type RequestCommandBuilder interface {
 	WithMandatoryFields(cbusCommand CBusCommand, chksum Checksum) RequestCommandBuilder
 	// WithCbusCommand adds CbusCommand (property field)
 	WithCbusCommand(CBusCommand) RequestCommandBuilder
+	// WithCbusCommandBuilder adds CbusCommand (property field) which is build by the builder
+	WithCbusCommandBuilder(func(CBusCommandBuilder) CBusCommandBuilder) RequestCommandBuilder
 	// WithChksum adds Chksum (property field)
 	WithChksum(Checksum) RequestCommandBuilder
 	// WithChksumBuilder adds Chksum (property field) which is build by the builder
@@ -116,93 +118,125 @@ func NewRequestCommandBuilder() RequestCommandBuilder {
 type _RequestCommandBuilder struct {
 	*_RequestCommand
 
+	parentBuilder *_RequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RequestCommandBuilder) = (*_RequestCommandBuilder)(nil)
 
-func (m *_RequestCommandBuilder) WithMandatoryFields(cbusCommand CBusCommand, chksum Checksum) RequestCommandBuilder {
-	return m.WithCbusCommand(cbusCommand).WithChksum(chksum)
+func (b *_RequestCommandBuilder) setParent(contract RequestContract) {
+	b.RequestContract = contract
 }
 
-func (m *_RequestCommandBuilder) WithCbusCommand(cbusCommand CBusCommand) RequestCommandBuilder {
-	m.CbusCommand = cbusCommand
-	return m
+func (b *_RequestCommandBuilder) WithMandatoryFields(cbusCommand CBusCommand, chksum Checksum) RequestCommandBuilder {
+	return b.WithCbusCommand(cbusCommand).WithChksum(chksum)
 }
 
-func (m *_RequestCommandBuilder) WithChksum(chksum Checksum) RequestCommandBuilder {
-	m.Chksum = chksum
-	return m
+func (b *_RequestCommandBuilder) WithCbusCommand(cbusCommand CBusCommand) RequestCommandBuilder {
+	b.CbusCommand = cbusCommand
+	return b
 }
 
-func (m *_RequestCommandBuilder) WithChksumBuilder(builderSupplier func(ChecksumBuilder) ChecksumBuilder) RequestCommandBuilder {
-	builder := builderSupplier(m.Chksum.CreateChecksumBuilder())
+func (b *_RequestCommandBuilder) WithCbusCommandBuilder(builderSupplier func(CBusCommandBuilder) CBusCommandBuilder) RequestCommandBuilder {
+	builder := builderSupplier(b.CbusCommand.CreateCBusCommandBuilder())
 	var err error
-	m.Chksum, err = builder.Build()
+	b.CbusCommand, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ChecksumBuilder failed"))
+		b.err.Append(errors.Wrap(err, "CBusCommandBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RequestCommandBuilder) WithOptionalAlpha(alpha Alpha) RequestCommandBuilder {
-	m.Alpha = alpha
-	return m
+func (b *_RequestCommandBuilder) WithChksum(chksum Checksum) RequestCommandBuilder {
+	b.Chksum = chksum
+	return b
 }
 
-func (m *_RequestCommandBuilder) WithOptionalAlphaBuilder(builderSupplier func(AlphaBuilder) AlphaBuilder) RequestCommandBuilder {
-	builder := builderSupplier(m.Alpha.CreateAlphaBuilder())
+func (b *_RequestCommandBuilder) WithChksumBuilder(builderSupplier func(ChecksumBuilder) ChecksumBuilder) RequestCommandBuilder {
+	builder := builderSupplier(b.Chksum.CreateChecksumBuilder())
 	var err error
-	m.Alpha, err = builder.Build()
+	b.Chksum, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ChecksumBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RequestCommandBuilder) Build() (RequestCommand, error) {
-	if m.CbusCommand == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'cbusCommand' not set"))
-	}
-	if m.Chksum == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'chksum' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._RequestCommand.deepCopy(), nil
+func (b *_RequestCommandBuilder) WithOptionalAlpha(alpha Alpha) RequestCommandBuilder {
+	b.Alpha = alpha
+	return b
 }
 
-func (m *_RequestCommandBuilder) MustBuild() RequestCommand {
-	build, err := m.Build()
+func (b *_RequestCommandBuilder) WithOptionalAlphaBuilder(builderSupplier func(AlphaBuilder) AlphaBuilder) RequestCommandBuilder {
+	builder := builderSupplier(b.Alpha.CreateAlphaBuilder())
+	var err error
+	b.Alpha, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
+	}
+	return b
+}
+
+func (b *_RequestCommandBuilder) Build() (RequestCommand, error) {
+	if b.CbusCommand == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'cbusCommand' not set"))
+	}
+	if b.Chksum == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'chksum' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RequestCommand.deepCopy(), nil
+}
+
+func (b *_RequestCommandBuilder) MustBuild() RequestCommand {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RequestCommandBuilder) DeepCopy() any {
-	return m.CreateRequestCommandBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RequestCommandBuilder) Done() RequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RequestCommandBuilder) buildForRequest() (Request, error) {
+	return b.Build()
+}
+
+func (b *_RequestCommandBuilder) DeepCopy() any {
+	_copy := b.CreateRequestCommandBuilder().(*_RequestCommandBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRequestCommandBuilder creates a RequestCommandBuilder
-func (m *_RequestCommand) CreateRequestCommandBuilder() RequestCommandBuilder {
-	if m == nil {
+func (b *_RequestCommand) CreateRequestCommandBuilder() RequestCommandBuilder {
+	if b == nil {
 		return NewRequestCommandBuilder()
 	}
-	return &_RequestCommandBuilder{_RequestCommand: m.deepCopy()}
+	return &_RequestCommandBuilder{_RequestCommand: b.deepCopy()}
 }
 
 ///////////////////////
@@ -465,9 +499,13 @@ func (m *_RequestCommand) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataMACAddressBuilder() BACnetConstructedDataMACAddress
 type _BACnetConstructedDataMACAddressBuilder struct {
 	*_BACnetConstructedDataMACAddress
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMACAddressBuilder) = (*_BACnetConstructedDataMACAddressBuilder)(nil)
 
-func (m *_BACnetConstructedDataMACAddressBuilder) WithMandatoryFields(macAddress BACnetApplicationTagOctetString) BACnetConstructedDataMACAddressBuilder {
-	return m.WithMacAddress(macAddress)
+func (b *_BACnetConstructedDataMACAddressBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMACAddressBuilder) WithMacAddress(macAddress BACnetApplicationTagOctetString) BACnetConstructedDataMACAddressBuilder {
-	m.MacAddress = macAddress
-	return m
+func (b *_BACnetConstructedDataMACAddressBuilder) WithMandatoryFields(macAddress BACnetApplicationTagOctetString) BACnetConstructedDataMACAddressBuilder {
+	return b.WithMacAddress(macAddress)
 }
 
-func (m *_BACnetConstructedDataMACAddressBuilder) WithMacAddressBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataMACAddressBuilder {
-	builder := builderSupplier(m.MacAddress.CreateBACnetApplicationTagOctetStringBuilder())
+func (b *_BACnetConstructedDataMACAddressBuilder) WithMacAddress(macAddress BACnetApplicationTagOctetString) BACnetConstructedDataMACAddressBuilder {
+	b.MacAddress = macAddress
+	return b
+}
+
+func (b *_BACnetConstructedDataMACAddressBuilder) WithMacAddressBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataMACAddressBuilder {
+	builder := builderSupplier(b.MacAddress.CreateBACnetApplicationTagOctetStringBuilder())
 	var err error
-	m.MacAddress, err = builder.Build()
+	b.MacAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataMACAddressBuilder) Build() (BACnetConstructedDataMACAddress, error) {
-	if m.MacAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataMACAddressBuilder) Build() (BACnetConstructedDataMACAddress, error) {
+	if b.MacAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'macAddress' not set"))
+		b.err.Append(errors.New("mandatory field 'macAddress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataMACAddress.deepCopy(), nil
+	return b._BACnetConstructedDataMACAddress.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataMACAddressBuilder) MustBuild() BACnetConstructedDataMACAddress {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMACAddressBuilder) MustBuild() BACnetConstructedDataMACAddress {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMACAddressBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMACAddressBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMACAddressBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMACAddressBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMACAddressBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMACAddressBuilder().(*_BACnetConstructedDataMACAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMACAddressBuilder creates a BACnetConstructedDataMACAddressBuilder
-func (m *_BACnetConstructedDataMACAddress) CreateBACnetConstructedDataMACAddressBuilder() BACnetConstructedDataMACAddressBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMACAddress) CreateBACnetConstructedDataMACAddressBuilder() BACnetConstructedDataMACAddressBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMACAddressBuilder()
 	}
-	return &_BACnetConstructedDataMACAddressBuilder{_BACnetConstructedDataMACAddress: m.deepCopy()}
+	return &_BACnetConstructedDataMACAddressBuilder{_BACnetConstructedDataMACAddress: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataMACAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

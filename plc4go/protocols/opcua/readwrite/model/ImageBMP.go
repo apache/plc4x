@@ -83,35 +83,39 @@ type _ImageBMPBuilder struct {
 
 var _ (ImageBMPBuilder) = (*_ImageBMPBuilder)(nil)
 
-func (m *_ImageBMPBuilder) WithMandatoryFields() ImageBMPBuilder {
-	return m
+func (b *_ImageBMPBuilder) WithMandatoryFields() ImageBMPBuilder {
+	return b
 }
 
-func (m *_ImageBMPBuilder) Build() (ImageBMP, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ImageBMPBuilder) Build() (ImageBMP, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ImageBMP.deepCopy(), nil
+	return b._ImageBMP.deepCopy(), nil
 }
 
-func (m *_ImageBMPBuilder) MustBuild() ImageBMP {
-	build, err := m.Build()
+func (b *_ImageBMPBuilder) MustBuild() ImageBMP {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ImageBMPBuilder) DeepCopy() any {
-	return m.CreateImageBMPBuilder()
+func (b *_ImageBMPBuilder) DeepCopy() any {
+	_copy := b.CreateImageBMPBuilder().(*_ImageBMPBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateImageBMPBuilder creates a ImageBMPBuilder
-func (m *_ImageBMP) CreateImageBMPBuilder() ImageBMPBuilder {
-	if m == nil {
+func (b *_ImageBMP) CreateImageBMPBuilder() ImageBMPBuilder {
+	if b == nil {
 		return NewImageBMPBuilder()
 	}
-	return &_ImageBMPBuilder{_ImageBMP: m.deepCopy()}
+	return &_ImageBMPBuilder{_ImageBMP: b.deepCopy()}
 }
 
 ///////////////////////
@@ -219,9 +223,13 @@ func (m *_ImageBMP) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

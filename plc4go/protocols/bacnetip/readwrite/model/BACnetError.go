@@ -83,10 +83,54 @@ type BACnetErrorBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetErrorBuilder
+	// AsSubscribeCOVPropertyMultipleError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsSubscribeCOVPropertyMultipleError() interface {
+		SubscribeCOVPropertyMultipleErrorBuilder
+		Done() BACnetErrorBuilder
+	}
+	// AsChangeListAddError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsChangeListAddError() interface {
+		ChangeListAddErrorBuilder
+		Done() BACnetErrorBuilder
+	}
+	// AsChangeListRemoveError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsChangeListRemoveError() interface {
+		ChangeListRemoveErrorBuilder
+		Done() BACnetErrorBuilder
+	}
+	// AsCreateObjectError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsCreateObjectError() interface {
+		CreateObjectErrorBuilder
+		Done() BACnetErrorBuilder
+	}
+	// AsWritePropertyMultipleError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsWritePropertyMultipleError() interface {
+		WritePropertyMultipleErrorBuilder
+		Done() BACnetErrorBuilder
+	}
+	// AsConfirmedPrivateTransferError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsConfirmedPrivateTransferError() interface {
+		ConfirmedPrivateTransferErrorBuilder
+		Done() BACnetErrorBuilder
+	}
+	// AsVTCloseError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsVTCloseError() interface {
+		VTCloseErrorBuilder
+		Done() BACnetErrorBuilder
+	}
+	// AsBACnetErrorGeneral converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsBACnetErrorGeneral() interface {
+		BACnetErrorGeneralBuilder
+		Done() BACnetErrorBuilder
+	}
 	// Build builds the BACnetError or returns an error if something is wrong
-	Build() (BACnetErrorContract, error)
+	PartialBuild() (BACnetErrorContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetErrorContract
+	PartialMustBuild() BACnetErrorContract
+	// Build builds the BACnetError or returns an error if something is wrong
+	Build() (BACnetError, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetError
 }
 
 // NewBACnetErrorBuilder() creates a BACnetErrorBuilder
@@ -94,43 +138,205 @@ func NewBACnetErrorBuilder() BACnetErrorBuilder {
 	return &_BACnetErrorBuilder{_BACnetError: new(_BACnetError)}
 }
 
+type _BACnetErrorChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetErrorContract)
+	buildForBACnetError() (BACnetError, error)
+}
+
 type _BACnetErrorBuilder struct {
 	*_BACnetError
+
+	childBuilder _BACnetErrorChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetErrorBuilder) = (*_BACnetErrorBuilder)(nil)
 
-func (m *_BACnetErrorBuilder) WithMandatoryFields() BACnetErrorBuilder {
-	return m
+func (b *_BACnetErrorBuilder) WithMandatoryFields() BACnetErrorBuilder {
+	return b
 }
 
-func (m *_BACnetErrorBuilder) Build() (BACnetErrorContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetErrorBuilder) PartialBuild() (BACnetErrorContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetError.deepCopy(), nil
+	return b._BACnetError.deepCopy(), nil
 }
 
-func (m *_BACnetErrorBuilder) MustBuild() BACnetErrorContract {
-	build, err := m.Build()
+func (b *_BACnetErrorBuilder) PartialMustBuild() BACnetErrorContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetErrorBuilder) DeepCopy() any {
-	return m.CreateBACnetErrorBuilder()
+func (b *_BACnetErrorBuilder) AsSubscribeCOVPropertyMultipleError() interface {
+	SubscribeCOVPropertyMultipleErrorBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SubscribeCOVPropertyMultipleErrorBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSubscribeCOVPropertyMultipleErrorBuilder().(*_SubscribeCOVPropertyMultipleErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) AsChangeListAddError() interface {
+	ChangeListAddErrorBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ChangeListAddErrorBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewChangeListAddErrorBuilder().(*_ChangeListAddErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) AsChangeListRemoveError() interface {
+	ChangeListRemoveErrorBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ChangeListRemoveErrorBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewChangeListRemoveErrorBuilder().(*_ChangeListRemoveErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) AsCreateObjectError() interface {
+	CreateObjectErrorBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CreateObjectErrorBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCreateObjectErrorBuilder().(*_CreateObjectErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) AsWritePropertyMultipleError() interface {
+	WritePropertyMultipleErrorBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		WritePropertyMultipleErrorBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewWritePropertyMultipleErrorBuilder().(*_WritePropertyMultipleErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) AsConfirmedPrivateTransferError() interface {
+	ConfirmedPrivateTransferErrorBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConfirmedPrivateTransferErrorBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConfirmedPrivateTransferErrorBuilder().(*_ConfirmedPrivateTransferErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) AsVTCloseError() interface {
+	VTCloseErrorBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VTCloseErrorBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVTCloseErrorBuilder().(*_VTCloseErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) AsBACnetErrorGeneral() interface {
+	BACnetErrorGeneralBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetErrorGeneralBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetErrorGeneralBuilder().(*_BACnetErrorGeneralBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) Build() (BACnetError, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetError()
+}
+
+func (b *_BACnetErrorBuilder) MustBuild() BACnetError {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetErrorBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetErrorBuilder().(*_BACnetErrorBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetErrorChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetErrorBuilder creates a BACnetErrorBuilder
-func (m *_BACnetError) CreateBACnetErrorBuilder() BACnetErrorBuilder {
-	if m == nil {
+func (b *_BACnetError) CreateBACnetErrorBuilder() BACnetErrorBuilder {
+	if b == nil {
 		return NewBACnetErrorBuilder()
 	}
-	return &_BACnetErrorBuilder{_BACnetError: m.deepCopy()}
+	return &_BACnetErrorBuilder{_BACnetError: b.deepCopy()}
 }
 
 ///////////////////////

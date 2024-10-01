@@ -105,55 +105,74 @@ func NewAdsMultiRequestItemReadBuilder() AdsMultiRequestItemReadBuilder {
 type _AdsMultiRequestItemReadBuilder struct {
 	*_AdsMultiRequestItemRead
 
+	parentBuilder *_AdsMultiRequestItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsMultiRequestItemReadBuilder) = (*_AdsMultiRequestItemReadBuilder)(nil)
 
-func (m *_AdsMultiRequestItemReadBuilder) WithMandatoryFields(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32) AdsMultiRequestItemReadBuilder {
-	return m.WithItemIndexGroup(itemIndexGroup).WithItemIndexOffset(itemIndexOffset).WithItemReadLength(itemReadLength)
+func (b *_AdsMultiRequestItemReadBuilder) setParent(contract AdsMultiRequestItemContract) {
+	b.AdsMultiRequestItemContract = contract
 }
 
-func (m *_AdsMultiRequestItemReadBuilder) WithItemIndexGroup(itemIndexGroup uint32) AdsMultiRequestItemReadBuilder {
-	m.ItemIndexGroup = itemIndexGroup
-	return m
+func (b *_AdsMultiRequestItemReadBuilder) WithMandatoryFields(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32) AdsMultiRequestItemReadBuilder {
+	return b.WithItemIndexGroup(itemIndexGroup).WithItemIndexOffset(itemIndexOffset).WithItemReadLength(itemReadLength)
 }
 
-func (m *_AdsMultiRequestItemReadBuilder) WithItemIndexOffset(itemIndexOffset uint32) AdsMultiRequestItemReadBuilder {
-	m.ItemIndexOffset = itemIndexOffset
-	return m
+func (b *_AdsMultiRequestItemReadBuilder) WithItemIndexGroup(itemIndexGroup uint32) AdsMultiRequestItemReadBuilder {
+	b.ItemIndexGroup = itemIndexGroup
+	return b
 }
 
-func (m *_AdsMultiRequestItemReadBuilder) WithItemReadLength(itemReadLength uint32) AdsMultiRequestItemReadBuilder {
-	m.ItemReadLength = itemReadLength
-	return m
+func (b *_AdsMultiRequestItemReadBuilder) WithItemIndexOffset(itemIndexOffset uint32) AdsMultiRequestItemReadBuilder {
+	b.ItemIndexOffset = itemIndexOffset
+	return b
 }
 
-func (m *_AdsMultiRequestItemReadBuilder) Build() (AdsMultiRequestItemRead, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsMultiRequestItemReadBuilder) WithItemReadLength(itemReadLength uint32) AdsMultiRequestItemReadBuilder {
+	b.ItemReadLength = itemReadLength
+	return b
+}
+
+func (b *_AdsMultiRequestItemReadBuilder) Build() (AdsMultiRequestItemRead, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsMultiRequestItemRead.deepCopy(), nil
+	return b._AdsMultiRequestItemRead.deepCopy(), nil
 }
 
-func (m *_AdsMultiRequestItemReadBuilder) MustBuild() AdsMultiRequestItemRead {
-	build, err := m.Build()
+func (b *_AdsMultiRequestItemReadBuilder) MustBuild() AdsMultiRequestItemRead {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsMultiRequestItemReadBuilder) DeepCopy() any {
-	return m.CreateAdsMultiRequestItemReadBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsMultiRequestItemReadBuilder) Done() AdsMultiRequestItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsMultiRequestItemReadBuilder) buildForAdsMultiRequestItem() (AdsMultiRequestItem, error) {
+	return b.Build()
+}
+
+func (b *_AdsMultiRequestItemReadBuilder) DeepCopy() any {
+	_copy := b.CreateAdsMultiRequestItemReadBuilder().(*_AdsMultiRequestItemReadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsMultiRequestItemReadBuilder creates a AdsMultiRequestItemReadBuilder
-func (m *_AdsMultiRequestItemRead) CreateAdsMultiRequestItemReadBuilder() AdsMultiRequestItemReadBuilder {
-	if m == nil {
+func (b *_AdsMultiRequestItemRead) CreateAdsMultiRequestItemReadBuilder() AdsMultiRequestItemReadBuilder {
+	if b == nil {
 		return NewAdsMultiRequestItemReadBuilder()
 	}
-	return &_AdsMultiRequestItemReadBuilder{_AdsMultiRequestItemRead: m.deepCopy()}
+	return &_AdsMultiRequestItemReadBuilder{_AdsMultiRequestItemRead: b.deepCopy()}
 }
 
 ///////////////////////
@@ -333,9 +352,13 @@ func (m *_AdsMultiRequestItemRead) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

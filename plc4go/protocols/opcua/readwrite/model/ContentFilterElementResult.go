@@ -122,84 +122,103 @@ func NewContentFilterElementResultBuilder() ContentFilterElementResultBuilder {
 type _ContentFilterElementResultBuilder struct {
 	*_ContentFilterElementResult
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ContentFilterElementResultBuilder) = (*_ContentFilterElementResultBuilder)(nil)
 
-func (m *_ContentFilterElementResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfOperandStatusCodes int32, operandStatusCodes []StatusCode, noOfOperandDiagnosticInfos int32, operandDiagnosticInfos []DiagnosticInfo) ContentFilterElementResultBuilder {
-	return m.WithStatusCode(statusCode).WithNoOfOperandStatusCodes(noOfOperandStatusCodes).WithOperandStatusCodes(operandStatusCodes...).WithNoOfOperandDiagnosticInfos(noOfOperandDiagnosticInfos).WithOperandDiagnosticInfos(operandDiagnosticInfos...)
+func (b *_ContentFilterElementResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ContentFilterElementResultBuilder) WithStatusCode(statusCode StatusCode) ContentFilterElementResultBuilder {
-	m.StatusCode = statusCode
-	return m
+func (b *_ContentFilterElementResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfOperandStatusCodes int32, operandStatusCodes []StatusCode, noOfOperandDiagnosticInfos int32, operandDiagnosticInfos []DiagnosticInfo) ContentFilterElementResultBuilder {
+	return b.WithStatusCode(statusCode).WithNoOfOperandStatusCodes(noOfOperandStatusCodes).WithOperandStatusCodes(operandStatusCodes...).WithNoOfOperandDiagnosticInfos(noOfOperandDiagnosticInfos).WithOperandDiagnosticInfos(operandDiagnosticInfos...)
 }
 
-func (m *_ContentFilterElementResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) ContentFilterElementResultBuilder {
-	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+func (b *_ContentFilterElementResultBuilder) WithStatusCode(statusCode StatusCode) ContentFilterElementResultBuilder {
+	b.StatusCode = statusCode
+	return b
+}
+
+func (b *_ContentFilterElementResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) ContentFilterElementResultBuilder {
+	builder := builderSupplier(b.StatusCode.CreateStatusCodeBuilder())
 	var err error
-	m.StatusCode, err = builder.Build()
+	b.StatusCode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ContentFilterElementResultBuilder) WithNoOfOperandStatusCodes(noOfOperandStatusCodes int32) ContentFilterElementResultBuilder {
-	m.NoOfOperandStatusCodes = noOfOperandStatusCodes
-	return m
+func (b *_ContentFilterElementResultBuilder) WithNoOfOperandStatusCodes(noOfOperandStatusCodes int32) ContentFilterElementResultBuilder {
+	b.NoOfOperandStatusCodes = noOfOperandStatusCodes
+	return b
 }
 
-func (m *_ContentFilterElementResultBuilder) WithOperandStatusCodes(operandStatusCodes ...StatusCode) ContentFilterElementResultBuilder {
-	m.OperandStatusCodes = operandStatusCodes
-	return m
+func (b *_ContentFilterElementResultBuilder) WithOperandStatusCodes(operandStatusCodes ...StatusCode) ContentFilterElementResultBuilder {
+	b.OperandStatusCodes = operandStatusCodes
+	return b
 }
 
-func (m *_ContentFilterElementResultBuilder) WithNoOfOperandDiagnosticInfos(noOfOperandDiagnosticInfos int32) ContentFilterElementResultBuilder {
-	m.NoOfOperandDiagnosticInfos = noOfOperandDiagnosticInfos
-	return m
+func (b *_ContentFilterElementResultBuilder) WithNoOfOperandDiagnosticInfos(noOfOperandDiagnosticInfos int32) ContentFilterElementResultBuilder {
+	b.NoOfOperandDiagnosticInfos = noOfOperandDiagnosticInfos
+	return b
 }
 
-func (m *_ContentFilterElementResultBuilder) WithOperandDiagnosticInfos(operandDiagnosticInfos ...DiagnosticInfo) ContentFilterElementResultBuilder {
-	m.OperandDiagnosticInfos = operandDiagnosticInfos
-	return m
+func (b *_ContentFilterElementResultBuilder) WithOperandDiagnosticInfos(operandDiagnosticInfos ...DiagnosticInfo) ContentFilterElementResultBuilder {
+	b.OperandDiagnosticInfos = operandDiagnosticInfos
+	return b
 }
 
-func (m *_ContentFilterElementResultBuilder) Build() (ContentFilterElementResult, error) {
-	if m.StatusCode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ContentFilterElementResultBuilder) Build() (ContentFilterElementResult, error) {
+	if b.StatusCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ContentFilterElementResult.deepCopy(), nil
+	return b._ContentFilterElementResult.deepCopy(), nil
 }
 
-func (m *_ContentFilterElementResultBuilder) MustBuild() ContentFilterElementResult {
-	build, err := m.Build()
+func (b *_ContentFilterElementResultBuilder) MustBuild() ContentFilterElementResult {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ContentFilterElementResultBuilder) DeepCopy() any {
-	return m.CreateContentFilterElementResultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ContentFilterElementResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ContentFilterElementResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ContentFilterElementResultBuilder) DeepCopy() any {
+	_copy := b.CreateContentFilterElementResultBuilder().(*_ContentFilterElementResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateContentFilterElementResultBuilder creates a ContentFilterElementResultBuilder
-func (m *_ContentFilterElementResult) CreateContentFilterElementResultBuilder() ContentFilterElementResultBuilder {
-	if m == nil {
+func (b *_ContentFilterElementResult) CreateContentFilterElementResultBuilder() ContentFilterElementResultBuilder {
+	if b == nil {
 		return NewContentFilterElementResultBuilder()
 	}
-	return &_ContentFilterElementResultBuilder{_ContentFilterElementResult: m.deepCopy()}
+	return &_ContentFilterElementResultBuilder{_ContentFilterElementResult: b.deepCopy()}
 }
 
 ///////////////////////
@@ -429,9 +448,13 @@ func (m *_ContentFilterElementResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

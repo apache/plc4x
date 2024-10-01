@@ -90,6 +90,8 @@ type HistoryUpdateRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfHistoryUpdateDetails int32, historyUpdateDetails []ExtensionObject) HistoryUpdateRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) HistoryUpdateRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) HistoryUpdateRequestBuilder
 	// WithNoOfHistoryUpdateDetails adds NoOfHistoryUpdateDetails (property field)
 	WithNoOfHistoryUpdateDetails(int32) HistoryUpdateRequestBuilder
 	// WithHistoryUpdateDetails adds HistoryUpdateDetails (property field)
@@ -108,61 +110,93 @@ func NewHistoryUpdateRequestBuilder() HistoryUpdateRequestBuilder {
 type _HistoryUpdateRequestBuilder struct {
 	*_HistoryUpdateRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (HistoryUpdateRequestBuilder) = (*_HistoryUpdateRequestBuilder)(nil)
 
-func (m *_HistoryUpdateRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfHistoryUpdateDetails int32, historyUpdateDetails []ExtensionObject) HistoryUpdateRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithNoOfHistoryUpdateDetails(noOfHistoryUpdateDetails).WithHistoryUpdateDetails(historyUpdateDetails...)
+func (b *_HistoryUpdateRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_HistoryUpdateRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) HistoryUpdateRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_HistoryUpdateRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfHistoryUpdateDetails int32, historyUpdateDetails []ExtensionObject) HistoryUpdateRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNoOfHistoryUpdateDetails(noOfHistoryUpdateDetails).WithHistoryUpdateDetails(historyUpdateDetails...)
 }
 
-func (m *_HistoryUpdateRequestBuilder) WithNoOfHistoryUpdateDetails(noOfHistoryUpdateDetails int32) HistoryUpdateRequestBuilder {
-	m.NoOfHistoryUpdateDetails = noOfHistoryUpdateDetails
-	return m
+func (b *_HistoryUpdateRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) HistoryUpdateRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_HistoryUpdateRequestBuilder) WithHistoryUpdateDetails(historyUpdateDetails ...ExtensionObject) HistoryUpdateRequestBuilder {
-	m.HistoryUpdateDetails = historyUpdateDetails
-	return m
-}
-
-func (m *_HistoryUpdateRequestBuilder) Build() (HistoryUpdateRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_HistoryUpdateRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) HistoryUpdateRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._HistoryUpdateRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_HistoryUpdateRequestBuilder) MustBuild() HistoryUpdateRequest {
-	build, err := m.Build()
+func (b *_HistoryUpdateRequestBuilder) WithNoOfHistoryUpdateDetails(noOfHistoryUpdateDetails int32) HistoryUpdateRequestBuilder {
+	b.NoOfHistoryUpdateDetails = noOfHistoryUpdateDetails
+	return b
+}
+
+func (b *_HistoryUpdateRequestBuilder) WithHistoryUpdateDetails(historyUpdateDetails ...ExtensionObject) HistoryUpdateRequestBuilder {
+	b.HistoryUpdateDetails = historyUpdateDetails
+	return b
+}
+
+func (b *_HistoryUpdateRequestBuilder) Build() (HistoryUpdateRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HistoryUpdateRequest.deepCopy(), nil
+}
+
+func (b *_HistoryUpdateRequestBuilder) MustBuild() HistoryUpdateRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HistoryUpdateRequestBuilder) DeepCopy() any {
-	return m.CreateHistoryUpdateRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryUpdateRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryUpdateRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryUpdateRequestBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryUpdateRequestBuilder().(*_HistoryUpdateRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHistoryUpdateRequestBuilder creates a HistoryUpdateRequestBuilder
-func (m *_HistoryUpdateRequest) CreateHistoryUpdateRequestBuilder() HistoryUpdateRequestBuilder {
-	if m == nil {
+func (b *_HistoryUpdateRequest) CreateHistoryUpdateRequestBuilder() HistoryUpdateRequestBuilder {
+	if b == nil {
 		return NewHistoryUpdateRequestBuilder()
 	}
-	return &_HistoryUpdateRequestBuilder{_HistoryUpdateRequest: m.deepCopy()}
+	return &_HistoryUpdateRequestBuilder{_HistoryUpdateRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -349,9 +383,13 @@ func (m *_HistoryUpdateRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

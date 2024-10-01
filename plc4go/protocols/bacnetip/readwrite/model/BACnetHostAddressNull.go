@@ -98,64 +98,83 @@ func NewBACnetHostAddressNullBuilder() BACnetHostAddressNullBuilder {
 type _BACnetHostAddressNullBuilder struct {
 	*_BACnetHostAddressNull
 
+	parentBuilder *_BACnetHostAddressBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetHostAddressNullBuilder) = (*_BACnetHostAddressNullBuilder)(nil)
 
-func (m *_BACnetHostAddressNullBuilder) WithMandatoryFields(none BACnetContextTagNull) BACnetHostAddressNullBuilder {
-	return m.WithNone(none)
+func (b *_BACnetHostAddressNullBuilder) setParent(contract BACnetHostAddressContract) {
+	b.BACnetHostAddressContract = contract
 }
 
-func (m *_BACnetHostAddressNullBuilder) WithNone(none BACnetContextTagNull) BACnetHostAddressNullBuilder {
-	m.None = none
-	return m
+func (b *_BACnetHostAddressNullBuilder) WithMandatoryFields(none BACnetContextTagNull) BACnetHostAddressNullBuilder {
+	return b.WithNone(none)
 }
 
-func (m *_BACnetHostAddressNullBuilder) WithNoneBuilder(builderSupplier func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetHostAddressNullBuilder {
-	builder := builderSupplier(m.None.CreateBACnetContextTagNullBuilder())
+func (b *_BACnetHostAddressNullBuilder) WithNone(none BACnetContextTagNull) BACnetHostAddressNullBuilder {
+	b.None = none
+	return b
+}
+
+func (b *_BACnetHostAddressNullBuilder) WithNoneBuilder(builderSupplier func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetHostAddressNullBuilder {
+	builder := builderSupplier(b.None.CreateBACnetContextTagNullBuilder())
 	var err error
-	m.None, err = builder.Build()
+	b.None, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetHostAddressNullBuilder) Build() (BACnetHostAddressNull, error) {
-	if m.None == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetHostAddressNullBuilder) Build() (BACnetHostAddressNull, error) {
+	if b.None == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'none' not set"))
+		b.err.Append(errors.New("mandatory field 'none' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetHostAddressNull.deepCopy(), nil
+	return b._BACnetHostAddressNull.deepCopy(), nil
 }
 
-func (m *_BACnetHostAddressNullBuilder) MustBuild() BACnetHostAddressNull {
-	build, err := m.Build()
+func (b *_BACnetHostAddressNullBuilder) MustBuild() BACnetHostAddressNull {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetHostAddressNullBuilder) DeepCopy() any {
-	return m.CreateBACnetHostAddressNullBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetHostAddressNullBuilder) Done() BACnetHostAddressBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetHostAddressNullBuilder) buildForBACnetHostAddress() (BACnetHostAddress, error) {
+	return b.Build()
+}
+
+func (b *_BACnetHostAddressNullBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetHostAddressNullBuilder().(*_BACnetHostAddressNullBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetHostAddressNullBuilder creates a BACnetHostAddressNullBuilder
-func (m *_BACnetHostAddressNull) CreateBACnetHostAddressNullBuilder() BACnetHostAddressNullBuilder {
-	if m == nil {
+func (b *_BACnetHostAddressNull) CreateBACnetHostAddressNullBuilder() BACnetHostAddressNullBuilder {
+	if b == nil {
 		return NewBACnetHostAddressNullBuilder()
 	}
-	return &_BACnetHostAddressNullBuilder{_BACnetHostAddressNull: m.deepCopy()}
+	return &_BACnetHostAddressNullBuilder{_BACnetHostAddressNull: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetHostAddressNull) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

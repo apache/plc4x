@@ -103,63 +103,82 @@ func NewBACnetConstructedDataMakingCarCallBuilder() BACnetConstructedDataMakingC
 type _BACnetConstructedDataMakingCarCallBuilder struct {
 	*_BACnetConstructedDataMakingCarCall
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMakingCarCallBuilder) = (*_BACnetConstructedDataMakingCarCallBuilder)(nil)
 
-func (m *_BACnetConstructedDataMakingCarCallBuilder) WithMandatoryFields(makingCarCall []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMakingCarCallBuilder {
-	return m.WithMakingCarCall(makingCarCall...)
+func (b *_BACnetConstructedDataMakingCarCallBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMakingCarCallBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMakingCarCallBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataMakingCarCallBuilder) WithMandatoryFields(makingCarCall []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMakingCarCallBuilder {
+	return b.WithMakingCarCall(makingCarCall...)
 }
 
-func (m *_BACnetConstructedDataMakingCarCallBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMakingCarCallBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataMakingCarCallBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMakingCarCallBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataMakingCarCallBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMakingCarCallBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataMakingCarCallBuilder) WithMakingCarCall(makingCarCall ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMakingCarCallBuilder {
-	m.MakingCarCall = makingCarCall
-	return m
+func (b *_BACnetConstructedDataMakingCarCallBuilder) WithMakingCarCall(makingCarCall ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMakingCarCallBuilder {
+	b.MakingCarCall = makingCarCall
+	return b
 }
 
-func (m *_BACnetConstructedDataMakingCarCallBuilder) Build() (BACnetConstructedDataMakingCarCall, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataMakingCarCallBuilder) Build() (BACnetConstructedDataMakingCarCall, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataMakingCarCall.deepCopy(), nil
+	return b._BACnetConstructedDataMakingCarCall.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataMakingCarCallBuilder) MustBuild() BACnetConstructedDataMakingCarCall {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMakingCarCallBuilder) MustBuild() BACnetConstructedDataMakingCarCall {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMakingCarCallBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMakingCarCallBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMakingCarCallBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMakingCarCallBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMakingCarCallBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMakingCarCallBuilder().(*_BACnetConstructedDataMakingCarCallBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMakingCarCallBuilder creates a BACnetConstructedDataMakingCarCallBuilder
-func (m *_BACnetConstructedDataMakingCarCall) CreateBACnetConstructedDataMakingCarCallBuilder() BACnetConstructedDataMakingCarCallBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMakingCarCall) CreateBACnetConstructedDataMakingCarCallBuilder() BACnetConstructedDataMakingCarCallBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMakingCarCallBuilder()
 	}
-	return &_BACnetConstructedDataMakingCarCallBuilder{_BACnetConstructedDataMakingCarCall: m.deepCopy()}
+	return &_BACnetConstructedDataMakingCarCallBuilder{_BACnetConstructedDataMakingCarCall: b.deepCopy()}
 }
 
 ///////////////////////
@@ -366,9 +385,13 @@ func (m *_BACnetConstructedDataMakingCarCall) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

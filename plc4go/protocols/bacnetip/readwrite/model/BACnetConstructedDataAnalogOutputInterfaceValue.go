@@ -84,6 +84,8 @@ type BACnetConstructedDataAnalogOutputInterfaceValueBuilder interface {
 	WithMandatoryFields(interfaceValue BACnetOptionalREAL) BACnetConstructedDataAnalogOutputInterfaceValueBuilder
 	// WithInterfaceValue adds InterfaceValue (property field)
 	WithInterfaceValue(BACnetOptionalREAL) BACnetConstructedDataAnalogOutputInterfaceValueBuilder
+	// WithInterfaceValueBuilder adds InterfaceValue (property field) which is build by the builder
+	WithInterfaceValueBuilder(func(BACnetOptionalREALBuilder) BACnetOptionalREALBuilder) BACnetConstructedDataAnalogOutputInterfaceValueBuilder
 	// Build builds the BACnetConstructedDataAnalogOutputInterfaceValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataAnalogOutputInterfaceValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewBACnetConstructedDataAnalogOutputInterfaceValueBuilder() BACnetConstruct
 type _BACnetConstructedDataAnalogOutputInterfaceValueBuilder struct {
 	*_BACnetConstructedDataAnalogOutputInterfaceValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAnalogOutputInterfaceValueBuilder) = (*_BACnetConstructedDataAnalogOutputInterfaceValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) WithMandatoryFields(interfaceValue BACnetOptionalREAL) BACnetConstructedDataAnalogOutputInterfaceValueBuilder {
-	return m.WithInterfaceValue(interfaceValue)
+func (b *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) WithInterfaceValue(interfaceValue BACnetOptionalREAL) BACnetConstructedDataAnalogOutputInterfaceValueBuilder {
-	m.InterfaceValue = interfaceValue
-	return m
+func (b *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) WithMandatoryFields(interfaceValue BACnetOptionalREAL) BACnetConstructedDataAnalogOutputInterfaceValueBuilder {
+	return b.WithInterfaceValue(interfaceValue)
 }
 
-func (m *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) Build() (BACnetConstructedDataAnalogOutputInterfaceValue, error) {
-	if m.InterfaceValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) WithInterfaceValue(interfaceValue BACnetOptionalREAL) BACnetConstructedDataAnalogOutputInterfaceValueBuilder {
+	b.InterfaceValue = interfaceValue
+	return b
+}
+
+func (b *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) WithInterfaceValueBuilder(builderSupplier func(BACnetOptionalREALBuilder) BACnetOptionalREALBuilder) BACnetConstructedDataAnalogOutputInterfaceValueBuilder {
+	builder := builderSupplier(b.InterfaceValue.CreateBACnetOptionalREALBuilder())
+	var err error
+	b.InterfaceValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'interfaceValue' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetOptionalREALBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetConstructedDataAnalogOutputInterfaceValue.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) MustBuild() BACnetConstructedDataAnalogOutputInterfaceValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) Build() (BACnetConstructedDataAnalogOutputInterfaceValue, error) {
+	if b.InterfaceValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'interfaceValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataAnalogOutputInterfaceValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) MustBuild() BACnetConstructedDataAnalogOutputInterfaceValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAnalogOutputInterfaceValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAnalogOutputInterfaceValueBuilder().(*_BACnetConstructedDataAnalogOutputInterfaceValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAnalogOutputInterfaceValueBuilder creates a BACnetConstructedDataAnalogOutputInterfaceValueBuilder
-func (m *_BACnetConstructedDataAnalogOutputInterfaceValue) CreateBACnetConstructedDataAnalogOutputInterfaceValueBuilder() BACnetConstructedDataAnalogOutputInterfaceValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAnalogOutputInterfaceValue) CreateBACnetConstructedDataAnalogOutputInterfaceValueBuilder() BACnetConstructedDataAnalogOutputInterfaceValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAnalogOutputInterfaceValueBuilder()
 	}
-	return &_BACnetConstructedDataAnalogOutputInterfaceValueBuilder{_BACnetConstructedDataAnalogOutputInterfaceValue: m.deepCopy()}
+	return &_BACnetConstructedDataAnalogOutputInterfaceValueBuilder{_BACnetConstructedDataAnalogOutputInterfaceValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -320,9 +354,13 @@ func (m *_BACnetConstructedDataAnalogOutputInterfaceValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

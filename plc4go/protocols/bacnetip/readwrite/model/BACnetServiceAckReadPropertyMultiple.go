@@ -96,45 +96,64 @@ func NewBACnetServiceAckReadPropertyMultipleBuilder() BACnetServiceAckReadProper
 type _BACnetServiceAckReadPropertyMultipleBuilder struct {
 	*_BACnetServiceAckReadPropertyMultiple
 
+	parentBuilder *_BACnetServiceAckBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetServiceAckReadPropertyMultipleBuilder) = (*_BACnetServiceAckReadPropertyMultipleBuilder)(nil)
 
-func (m *_BACnetServiceAckReadPropertyMultipleBuilder) WithMandatoryFields(data []BACnetReadAccessResult) BACnetServiceAckReadPropertyMultipleBuilder {
-	return m.WithData(data...)
+func (b *_BACnetServiceAckReadPropertyMultipleBuilder) setParent(contract BACnetServiceAckContract) {
+	b.BACnetServiceAckContract = contract
 }
 
-func (m *_BACnetServiceAckReadPropertyMultipleBuilder) WithData(data ...BACnetReadAccessResult) BACnetServiceAckReadPropertyMultipleBuilder {
-	m.Data = data
-	return m
+func (b *_BACnetServiceAckReadPropertyMultipleBuilder) WithMandatoryFields(data []BACnetReadAccessResult) BACnetServiceAckReadPropertyMultipleBuilder {
+	return b.WithData(data...)
 }
 
-func (m *_BACnetServiceAckReadPropertyMultipleBuilder) Build() (BACnetServiceAckReadPropertyMultiple, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetServiceAckReadPropertyMultipleBuilder) WithData(data ...BACnetReadAccessResult) BACnetServiceAckReadPropertyMultipleBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_BACnetServiceAckReadPropertyMultipleBuilder) Build() (BACnetServiceAckReadPropertyMultiple, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetServiceAckReadPropertyMultiple.deepCopy(), nil
+	return b._BACnetServiceAckReadPropertyMultiple.deepCopy(), nil
 }
 
-func (m *_BACnetServiceAckReadPropertyMultipleBuilder) MustBuild() BACnetServiceAckReadPropertyMultiple {
-	build, err := m.Build()
+func (b *_BACnetServiceAckReadPropertyMultipleBuilder) MustBuild() BACnetServiceAckReadPropertyMultiple {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetServiceAckReadPropertyMultipleBuilder) DeepCopy() any {
-	return m.CreateBACnetServiceAckReadPropertyMultipleBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetServiceAckReadPropertyMultipleBuilder) Done() BACnetServiceAckBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetServiceAckReadPropertyMultipleBuilder) buildForBACnetServiceAck() (BACnetServiceAck, error) {
+	return b.Build()
+}
+
+func (b *_BACnetServiceAckReadPropertyMultipleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetServiceAckReadPropertyMultipleBuilder().(*_BACnetServiceAckReadPropertyMultipleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetServiceAckReadPropertyMultipleBuilder creates a BACnetServiceAckReadPropertyMultipleBuilder
-func (m *_BACnetServiceAckReadPropertyMultiple) CreateBACnetServiceAckReadPropertyMultipleBuilder() BACnetServiceAckReadPropertyMultipleBuilder {
-	if m == nil {
+func (b *_BACnetServiceAckReadPropertyMultiple) CreateBACnetServiceAckReadPropertyMultipleBuilder() BACnetServiceAckReadPropertyMultipleBuilder {
+	if b == nil {
 		return NewBACnetServiceAckReadPropertyMultipleBuilder()
 	}
-	return &_BACnetServiceAckReadPropertyMultipleBuilder{_BACnetServiceAckReadPropertyMultiple: m.deepCopy()}
+	return &_BACnetServiceAckReadPropertyMultipleBuilder{_BACnetServiceAckReadPropertyMultiple: b.deepCopy()}
 }
 
 ///////////////////////
@@ -293,9 +312,13 @@ func (m *_BACnetServiceAckReadPropertyMultiple) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

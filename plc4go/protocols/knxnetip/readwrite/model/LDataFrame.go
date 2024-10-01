@@ -112,10 +112,29 @@ type LDataFrameBuilder interface {
 	WithAcknowledgeRequested(bool) LDataFrameBuilder
 	// WithErrorFlag adds ErrorFlag (property field)
 	WithErrorFlag(bool) LDataFrameBuilder
+	// AsLDataExtended converts this build to a subType of LDataFrame. It is always possible to return to current builder using Done()
+	AsLDataExtended() interface {
+		LDataExtendedBuilder
+		Done() LDataFrameBuilder
+	}
+	// AsLPollData converts this build to a subType of LDataFrame. It is always possible to return to current builder using Done()
+	AsLPollData() interface {
+		LPollDataBuilder
+		Done() LDataFrameBuilder
+	}
+	// AsLDataFrameACK converts this build to a subType of LDataFrame. It is always possible to return to current builder using Done()
+	AsLDataFrameACK() interface {
+		LDataFrameACKBuilder
+		Done() LDataFrameBuilder
+	}
 	// Build builds the LDataFrame or returns an error if something is wrong
-	Build() (LDataFrameContract, error)
+	PartialBuild() (LDataFrameContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() LDataFrameContract
+	PartialMustBuild() LDataFrameContract
+	// Build builds the LDataFrame or returns an error if something is wrong
+	Build() (LDataFrame, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LDataFrame
 }
 
 // NewLDataFrameBuilder() creates a LDataFrameBuilder
@@ -123,68 +142,150 @@ func NewLDataFrameBuilder() LDataFrameBuilder {
 	return &_LDataFrameBuilder{_LDataFrame: new(_LDataFrame)}
 }
 
+type _LDataFrameChildBuilder interface {
+	utils.Copyable
+	setParent(LDataFrameContract)
+	buildForLDataFrame() (LDataFrame, error)
+}
+
 type _LDataFrameBuilder struct {
 	*_LDataFrame
+
+	childBuilder _LDataFrameChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (LDataFrameBuilder) = (*_LDataFrameBuilder)(nil)
 
-func (m *_LDataFrameBuilder) WithMandatoryFields(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) LDataFrameBuilder {
-	return m.WithFrameType(frameType).WithNotRepeated(notRepeated).WithPriority(priority).WithAcknowledgeRequested(acknowledgeRequested).WithErrorFlag(errorFlag)
+func (b *_LDataFrameBuilder) WithMandatoryFields(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) LDataFrameBuilder {
+	return b.WithFrameType(frameType).WithNotRepeated(notRepeated).WithPriority(priority).WithAcknowledgeRequested(acknowledgeRequested).WithErrorFlag(errorFlag)
 }
 
-func (m *_LDataFrameBuilder) WithFrameType(frameType bool) LDataFrameBuilder {
-	m.FrameType = frameType
-	return m
+func (b *_LDataFrameBuilder) WithFrameType(frameType bool) LDataFrameBuilder {
+	b.FrameType = frameType
+	return b
 }
 
-func (m *_LDataFrameBuilder) WithNotRepeated(notRepeated bool) LDataFrameBuilder {
-	m.NotRepeated = notRepeated
-	return m
+func (b *_LDataFrameBuilder) WithNotRepeated(notRepeated bool) LDataFrameBuilder {
+	b.NotRepeated = notRepeated
+	return b
 }
 
-func (m *_LDataFrameBuilder) WithPriority(priority CEMIPriority) LDataFrameBuilder {
-	m.Priority = priority
-	return m
+func (b *_LDataFrameBuilder) WithPriority(priority CEMIPriority) LDataFrameBuilder {
+	b.Priority = priority
+	return b
 }
 
-func (m *_LDataFrameBuilder) WithAcknowledgeRequested(acknowledgeRequested bool) LDataFrameBuilder {
-	m.AcknowledgeRequested = acknowledgeRequested
-	return m
+func (b *_LDataFrameBuilder) WithAcknowledgeRequested(acknowledgeRequested bool) LDataFrameBuilder {
+	b.AcknowledgeRequested = acknowledgeRequested
+	return b
 }
 
-func (m *_LDataFrameBuilder) WithErrorFlag(errorFlag bool) LDataFrameBuilder {
-	m.ErrorFlag = errorFlag
-	return m
+func (b *_LDataFrameBuilder) WithErrorFlag(errorFlag bool) LDataFrameBuilder {
+	b.ErrorFlag = errorFlag
+	return b
 }
 
-func (m *_LDataFrameBuilder) Build() (LDataFrameContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_LDataFrameBuilder) PartialBuild() (LDataFrameContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LDataFrame.deepCopy(), nil
+	return b._LDataFrame.deepCopy(), nil
 }
 
-func (m *_LDataFrameBuilder) MustBuild() LDataFrameContract {
-	build, err := m.Build()
+func (b *_LDataFrameBuilder) PartialMustBuild() LDataFrameContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LDataFrameBuilder) DeepCopy() any {
-	return m.CreateLDataFrameBuilder()
+func (b *_LDataFrameBuilder) AsLDataExtended() interface {
+	LDataExtendedBuilder
+	Done() LDataFrameBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LDataExtendedBuilder
+		Done() LDataFrameBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLDataExtendedBuilder().(*_LDataExtendedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LDataFrameBuilder) AsLPollData() interface {
+	LPollDataBuilder
+	Done() LDataFrameBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LPollDataBuilder
+		Done() LDataFrameBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLPollDataBuilder().(*_LPollDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LDataFrameBuilder) AsLDataFrameACK() interface {
+	LDataFrameACKBuilder
+	Done() LDataFrameBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LDataFrameACKBuilder
+		Done() LDataFrameBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLDataFrameACKBuilder().(*_LDataFrameACKBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LDataFrameBuilder) Build() (LDataFrame, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForLDataFrame()
+}
+
+func (b *_LDataFrameBuilder) MustBuild() LDataFrame {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_LDataFrameBuilder) DeepCopy() any {
+	_copy := b.CreateLDataFrameBuilder().(*_LDataFrameBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_LDataFrameChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLDataFrameBuilder creates a LDataFrameBuilder
-func (m *_LDataFrame) CreateLDataFrameBuilder() LDataFrameBuilder {
-	if m == nil {
+func (b *_LDataFrame) CreateLDataFrameBuilder() LDataFrameBuilder {
+	if b == nil {
 		return NewLDataFrameBuilder()
 	}
-	return &_LDataFrameBuilder{_LDataFrame: m.deepCopy()}
+	return &_LDataFrameBuilder{_LDataFrame: b.deepCopy()}
 }
 
 ///////////////////////

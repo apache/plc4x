@@ -120,112 +120,131 @@ func NewTransactionErrorTypeBuilder() TransactionErrorTypeBuilder {
 type _TransactionErrorTypeBuilder struct {
 	*_TransactionErrorType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TransactionErrorTypeBuilder) = (*_TransactionErrorTypeBuilder)(nil)
 
-func (m *_TransactionErrorTypeBuilder) WithMandatoryFields(targetId NodeId, error StatusCode, message LocalizedText) TransactionErrorTypeBuilder {
-	return m.WithTargetId(targetId).WithError(error).WithMessage(message)
+func (b *_TransactionErrorTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_TransactionErrorTypeBuilder) WithTargetId(targetId NodeId) TransactionErrorTypeBuilder {
-	m.TargetId = targetId
-	return m
+func (b *_TransactionErrorTypeBuilder) WithMandatoryFields(targetId NodeId, error StatusCode, message LocalizedText) TransactionErrorTypeBuilder {
+	return b.WithTargetId(targetId).WithError(error).WithMessage(message)
 }
 
-func (m *_TransactionErrorTypeBuilder) WithTargetIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) TransactionErrorTypeBuilder {
-	builder := builderSupplier(m.TargetId.CreateNodeIdBuilder())
+func (b *_TransactionErrorTypeBuilder) WithTargetId(targetId NodeId) TransactionErrorTypeBuilder {
+	b.TargetId = targetId
+	return b
+}
+
+func (b *_TransactionErrorTypeBuilder) WithTargetIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) TransactionErrorTypeBuilder {
+	builder := builderSupplier(b.TargetId.CreateNodeIdBuilder())
 	var err error
-	m.TargetId, err = builder.Build()
+	b.TargetId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_TransactionErrorTypeBuilder) WithError(error StatusCode) TransactionErrorTypeBuilder {
-	m.Error = error
-	return m
+func (b *_TransactionErrorTypeBuilder) WithError(error StatusCode) TransactionErrorTypeBuilder {
+	b.Error = error
+	return b
 }
 
-func (m *_TransactionErrorTypeBuilder) WithErrorBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) TransactionErrorTypeBuilder {
-	builder := builderSupplier(m.Error.CreateStatusCodeBuilder())
+func (b *_TransactionErrorTypeBuilder) WithErrorBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) TransactionErrorTypeBuilder {
+	builder := builderSupplier(b.Error.CreateStatusCodeBuilder())
 	var err error
-	m.Error, err = builder.Build()
+	b.Error, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_TransactionErrorTypeBuilder) WithMessage(message LocalizedText) TransactionErrorTypeBuilder {
-	m.Message = message
-	return m
+func (b *_TransactionErrorTypeBuilder) WithMessage(message LocalizedText) TransactionErrorTypeBuilder {
+	b.Message = message
+	return b
 }
 
-func (m *_TransactionErrorTypeBuilder) WithMessageBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) TransactionErrorTypeBuilder {
-	builder := builderSupplier(m.Message.CreateLocalizedTextBuilder())
+func (b *_TransactionErrorTypeBuilder) WithMessageBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) TransactionErrorTypeBuilder {
+	builder := builderSupplier(b.Message.CreateLocalizedTextBuilder())
 	var err error
-	m.Message, err = builder.Build()
+	b.Message, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_TransactionErrorTypeBuilder) Build() (TransactionErrorType, error) {
-	if m.TargetId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_TransactionErrorTypeBuilder) Build() (TransactionErrorType, error) {
+	if b.TargetId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'targetId' not set"))
+		b.err.Append(errors.New("mandatory field 'targetId' not set"))
 	}
-	if m.Error == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Error == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'error' not set"))
+		b.err.Append(errors.New("mandatory field 'error' not set"))
 	}
-	if m.Message == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Message == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'message' not set"))
+		b.err.Append(errors.New("mandatory field 'message' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TransactionErrorType.deepCopy(), nil
+	return b._TransactionErrorType.deepCopy(), nil
 }
 
-func (m *_TransactionErrorTypeBuilder) MustBuild() TransactionErrorType {
-	build, err := m.Build()
+func (b *_TransactionErrorTypeBuilder) MustBuild() TransactionErrorType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TransactionErrorTypeBuilder) DeepCopy() any {
-	return m.CreateTransactionErrorTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TransactionErrorTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TransactionErrorTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_TransactionErrorTypeBuilder) DeepCopy() any {
+	_copy := b.CreateTransactionErrorTypeBuilder().(*_TransactionErrorTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTransactionErrorTypeBuilder creates a TransactionErrorTypeBuilder
-func (m *_TransactionErrorType) CreateTransactionErrorTypeBuilder() TransactionErrorTypeBuilder {
-	if m == nil {
+func (b *_TransactionErrorType) CreateTransactionErrorTypeBuilder() TransactionErrorTypeBuilder {
+	if b == nil {
 		return NewTransactionErrorTypeBuilder()
 	}
-	return &_TransactionErrorTypeBuilder{_TransactionErrorType: m.deepCopy()}
+	return &_TransactionErrorTypeBuilder{_TransactionErrorType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -405,9 +424,13 @@ func (m *_TransactionErrorType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

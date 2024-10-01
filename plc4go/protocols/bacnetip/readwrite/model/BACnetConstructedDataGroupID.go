@@ -100,64 +100,83 @@ func NewBACnetConstructedDataGroupIDBuilder() BACnetConstructedDataGroupIDBuilde
 type _BACnetConstructedDataGroupIDBuilder struct {
 	*_BACnetConstructedDataGroupID
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataGroupIDBuilder) = (*_BACnetConstructedDataGroupIDBuilder)(nil)
 
-func (m *_BACnetConstructedDataGroupIDBuilder) WithMandatoryFields(groupId BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGroupIDBuilder {
-	return m.WithGroupId(groupId)
+func (b *_BACnetConstructedDataGroupIDBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataGroupIDBuilder) WithGroupId(groupId BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGroupIDBuilder {
-	m.GroupId = groupId
-	return m
+func (b *_BACnetConstructedDataGroupIDBuilder) WithMandatoryFields(groupId BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGroupIDBuilder {
+	return b.WithGroupId(groupId)
 }
 
-func (m *_BACnetConstructedDataGroupIDBuilder) WithGroupIdBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGroupIDBuilder {
-	builder := builderSupplier(m.GroupId.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataGroupIDBuilder) WithGroupId(groupId BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGroupIDBuilder {
+	b.GroupId = groupId
+	return b
+}
+
+func (b *_BACnetConstructedDataGroupIDBuilder) WithGroupIdBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGroupIDBuilder {
+	builder := builderSupplier(b.GroupId.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.GroupId, err = builder.Build()
+	b.GroupId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataGroupIDBuilder) Build() (BACnetConstructedDataGroupID, error) {
-	if m.GroupId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataGroupIDBuilder) Build() (BACnetConstructedDataGroupID, error) {
+	if b.GroupId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'groupId' not set"))
+		b.err.Append(errors.New("mandatory field 'groupId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataGroupID.deepCopy(), nil
+	return b._BACnetConstructedDataGroupID.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataGroupIDBuilder) MustBuild() BACnetConstructedDataGroupID {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataGroupIDBuilder) MustBuild() BACnetConstructedDataGroupID {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataGroupIDBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataGroupIDBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataGroupIDBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataGroupIDBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataGroupIDBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataGroupIDBuilder().(*_BACnetConstructedDataGroupIDBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataGroupIDBuilder creates a BACnetConstructedDataGroupIDBuilder
-func (m *_BACnetConstructedDataGroupID) CreateBACnetConstructedDataGroupIDBuilder() BACnetConstructedDataGroupIDBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataGroupID) CreateBACnetConstructedDataGroupIDBuilder() BACnetConstructedDataGroupIDBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataGroupIDBuilder()
 	}
-	return &_BACnetConstructedDataGroupIDBuilder{_BACnetConstructedDataGroupID: m.deepCopy()}
+	return &_BACnetConstructedDataGroupIDBuilder{_BACnetConstructedDataGroupID: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataGroupID) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

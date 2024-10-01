@@ -100,64 +100,83 @@ func NewBACnetConstructedDataChannelNumberBuilder() BACnetConstructedDataChannel
 type _BACnetConstructedDataChannelNumberBuilder struct {
 	*_BACnetConstructedDataChannelNumber
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataChannelNumberBuilder) = (*_BACnetConstructedDataChannelNumberBuilder)(nil)
 
-func (m *_BACnetConstructedDataChannelNumberBuilder) WithMandatoryFields(channelNumber BACnetApplicationTagUnsignedInteger) BACnetConstructedDataChannelNumberBuilder {
-	return m.WithChannelNumber(channelNumber)
+func (b *_BACnetConstructedDataChannelNumberBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataChannelNumberBuilder) WithChannelNumber(channelNumber BACnetApplicationTagUnsignedInteger) BACnetConstructedDataChannelNumberBuilder {
-	m.ChannelNumber = channelNumber
-	return m
+func (b *_BACnetConstructedDataChannelNumberBuilder) WithMandatoryFields(channelNumber BACnetApplicationTagUnsignedInteger) BACnetConstructedDataChannelNumberBuilder {
+	return b.WithChannelNumber(channelNumber)
 }
 
-func (m *_BACnetConstructedDataChannelNumberBuilder) WithChannelNumberBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataChannelNumberBuilder {
-	builder := builderSupplier(m.ChannelNumber.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataChannelNumberBuilder) WithChannelNumber(channelNumber BACnetApplicationTagUnsignedInteger) BACnetConstructedDataChannelNumberBuilder {
+	b.ChannelNumber = channelNumber
+	return b
+}
+
+func (b *_BACnetConstructedDataChannelNumberBuilder) WithChannelNumberBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataChannelNumberBuilder {
+	builder := builderSupplier(b.ChannelNumber.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.ChannelNumber, err = builder.Build()
+	b.ChannelNumber, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataChannelNumberBuilder) Build() (BACnetConstructedDataChannelNumber, error) {
-	if m.ChannelNumber == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataChannelNumberBuilder) Build() (BACnetConstructedDataChannelNumber, error) {
+	if b.ChannelNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'channelNumber' not set"))
+		b.err.Append(errors.New("mandatory field 'channelNumber' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataChannelNumber.deepCopy(), nil
+	return b._BACnetConstructedDataChannelNumber.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataChannelNumberBuilder) MustBuild() BACnetConstructedDataChannelNumber {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataChannelNumberBuilder) MustBuild() BACnetConstructedDataChannelNumber {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataChannelNumberBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataChannelNumberBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataChannelNumberBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataChannelNumberBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataChannelNumberBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataChannelNumberBuilder().(*_BACnetConstructedDataChannelNumberBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataChannelNumberBuilder creates a BACnetConstructedDataChannelNumberBuilder
-func (m *_BACnetConstructedDataChannelNumber) CreateBACnetConstructedDataChannelNumberBuilder() BACnetConstructedDataChannelNumberBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataChannelNumber) CreateBACnetConstructedDataChannelNumberBuilder() BACnetConstructedDataChannelNumberBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataChannelNumberBuilder()
 	}
-	return &_BACnetConstructedDataChannelNumberBuilder{_BACnetConstructedDataChannelNumber: m.deepCopy()}
+	return &_BACnetConstructedDataChannelNumberBuilder{_BACnetConstructedDataChannelNumber: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataChannelNumber) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

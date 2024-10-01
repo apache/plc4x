@@ -98,64 +98,83 @@ func NewBACnetPriorityValueOctetStringBuilder() BACnetPriorityValueOctetStringBu
 type _BACnetPriorityValueOctetStringBuilder struct {
 	*_BACnetPriorityValueOctetString
 
+	parentBuilder *_BACnetPriorityValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPriorityValueOctetStringBuilder) = (*_BACnetPriorityValueOctetStringBuilder)(nil)
 
-func (m *_BACnetPriorityValueOctetStringBuilder) WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetPriorityValueOctetStringBuilder {
-	return m.WithOctetStringValue(octetStringValue)
+func (b *_BACnetPriorityValueOctetStringBuilder) setParent(contract BACnetPriorityValueContract) {
+	b.BACnetPriorityValueContract = contract
 }
 
-func (m *_BACnetPriorityValueOctetStringBuilder) WithOctetStringValue(octetStringValue BACnetApplicationTagOctetString) BACnetPriorityValueOctetStringBuilder {
-	m.OctetStringValue = octetStringValue
-	return m
+func (b *_BACnetPriorityValueOctetStringBuilder) WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetPriorityValueOctetStringBuilder {
+	return b.WithOctetStringValue(octetStringValue)
 }
 
-func (m *_BACnetPriorityValueOctetStringBuilder) WithOctetStringValueBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetPriorityValueOctetStringBuilder {
-	builder := builderSupplier(m.OctetStringValue.CreateBACnetApplicationTagOctetStringBuilder())
+func (b *_BACnetPriorityValueOctetStringBuilder) WithOctetStringValue(octetStringValue BACnetApplicationTagOctetString) BACnetPriorityValueOctetStringBuilder {
+	b.OctetStringValue = octetStringValue
+	return b
+}
+
+func (b *_BACnetPriorityValueOctetStringBuilder) WithOctetStringValueBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetPriorityValueOctetStringBuilder {
+	builder := builderSupplier(b.OctetStringValue.CreateBACnetApplicationTagOctetStringBuilder())
 	var err error
-	m.OctetStringValue, err = builder.Build()
+	b.OctetStringValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPriorityValueOctetStringBuilder) Build() (BACnetPriorityValueOctetString, error) {
-	if m.OctetStringValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPriorityValueOctetStringBuilder) Build() (BACnetPriorityValueOctetString, error) {
+	if b.OctetStringValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'octetStringValue' not set"))
+		b.err.Append(errors.New("mandatory field 'octetStringValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPriorityValueOctetString.deepCopy(), nil
+	return b._BACnetPriorityValueOctetString.deepCopy(), nil
 }
 
-func (m *_BACnetPriorityValueOctetStringBuilder) MustBuild() BACnetPriorityValueOctetString {
-	build, err := m.Build()
+func (b *_BACnetPriorityValueOctetStringBuilder) MustBuild() BACnetPriorityValueOctetString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPriorityValueOctetStringBuilder) DeepCopy() any {
-	return m.CreateBACnetPriorityValueOctetStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPriorityValueOctetStringBuilder) Done() BACnetPriorityValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPriorityValueOctetStringBuilder) buildForBACnetPriorityValue() (BACnetPriorityValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPriorityValueOctetStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityValueOctetStringBuilder().(*_BACnetPriorityValueOctetStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPriorityValueOctetStringBuilder creates a BACnetPriorityValueOctetStringBuilder
-func (m *_BACnetPriorityValueOctetString) CreateBACnetPriorityValueOctetStringBuilder() BACnetPriorityValueOctetStringBuilder {
-	if m == nil {
+func (b *_BACnetPriorityValueOctetString) CreateBACnetPriorityValueOctetStringBuilder() BACnetPriorityValueOctetStringBuilder {
+	if b == nil {
 		return NewBACnetPriorityValueOctetStringBuilder()
 	}
-	return &_BACnetPriorityValueOctetStringBuilder{_BACnetPriorityValueOctetString: m.deepCopy()}
+	return &_BACnetPriorityValueOctetStringBuilder{_BACnetPriorityValueOctetString: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPriorityValueOctetString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

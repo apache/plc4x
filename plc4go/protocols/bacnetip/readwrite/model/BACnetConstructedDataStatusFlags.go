@@ -100,64 +100,83 @@ func NewBACnetConstructedDataStatusFlagsBuilder() BACnetConstructedDataStatusFla
 type _BACnetConstructedDataStatusFlagsBuilder struct {
 	*_BACnetConstructedDataStatusFlags
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataStatusFlagsBuilder) = (*_BACnetConstructedDataStatusFlagsBuilder)(nil)
 
-func (m *_BACnetConstructedDataStatusFlagsBuilder) WithMandatoryFields(statusFlags BACnetStatusFlagsTagged) BACnetConstructedDataStatusFlagsBuilder {
-	return m.WithStatusFlags(statusFlags)
+func (b *_BACnetConstructedDataStatusFlagsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataStatusFlagsBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetConstructedDataStatusFlagsBuilder {
-	m.StatusFlags = statusFlags
-	return m
+func (b *_BACnetConstructedDataStatusFlagsBuilder) WithMandatoryFields(statusFlags BACnetStatusFlagsTagged) BACnetConstructedDataStatusFlagsBuilder {
+	return b.WithStatusFlags(statusFlags)
 }
 
-func (m *_BACnetConstructedDataStatusFlagsBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetConstructedDataStatusFlagsBuilder {
-	builder := builderSupplier(m.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
+func (b *_BACnetConstructedDataStatusFlagsBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetConstructedDataStatusFlagsBuilder {
+	b.StatusFlags = statusFlags
+	return b
+}
+
+func (b *_BACnetConstructedDataStatusFlagsBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetConstructedDataStatusFlagsBuilder {
+	builder := builderSupplier(b.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
 	var err error
-	m.StatusFlags, err = builder.Build()
+	b.StatusFlags, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataStatusFlagsBuilder) Build() (BACnetConstructedDataStatusFlags, error) {
-	if m.StatusFlags == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataStatusFlagsBuilder) Build() (BACnetConstructedDataStatusFlags, error) {
+	if b.StatusFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusFlags' not set"))
+		b.err.Append(errors.New("mandatory field 'statusFlags' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataStatusFlags.deepCopy(), nil
+	return b._BACnetConstructedDataStatusFlags.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataStatusFlagsBuilder) MustBuild() BACnetConstructedDataStatusFlags {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataStatusFlagsBuilder) MustBuild() BACnetConstructedDataStatusFlags {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataStatusFlagsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataStatusFlagsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataStatusFlagsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataStatusFlagsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataStatusFlagsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataStatusFlagsBuilder().(*_BACnetConstructedDataStatusFlagsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataStatusFlagsBuilder creates a BACnetConstructedDataStatusFlagsBuilder
-func (m *_BACnetConstructedDataStatusFlags) CreateBACnetConstructedDataStatusFlagsBuilder() BACnetConstructedDataStatusFlagsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataStatusFlags) CreateBACnetConstructedDataStatusFlagsBuilder() BACnetConstructedDataStatusFlagsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataStatusFlagsBuilder()
 	}
-	return &_BACnetConstructedDataStatusFlagsBuilder{_BACnetConstructedDataStatusFlags: m.deepCopy()}
+	return &_BACnetConstructedDataStatusFlagsBuilder{_BACnetConstructedDataStatusFlags: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataStatusFlags) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

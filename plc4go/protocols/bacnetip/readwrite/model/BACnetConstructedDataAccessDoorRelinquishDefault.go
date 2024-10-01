@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAccessDoorRelinquishDefaultBuilder() BACnetConstruc
 type _BACnetConstructedDataAccessDoorRelinquishDefaultBuilder struct {
 	*_BACnetConstructedDataAccessDoorRelinquishDefault
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) = (*_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetDoorValueTagged) BACnetConstructedDataAccessDoorRelinquishDefaultBuilder {
-	return m.WithRelinquishDefault(relinquishDefault)
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetDoorValueTagged) BACnetConstructedDataAccessDoorRelinquishDefaultBuilder {
-	m.RelinquishDefault = relinquishDefault
-	return m
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetDoorValueTagged) BACnetConstructedDataAccessDoorRelinquishDefaultBuilder {
+	return b.WithRelinquishDefault(relinquishDefault)
 }
 
-func (m *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetDoorValueTaggedBuilder) BACnetDoorValueTaggedBuilder) BACnetConstructedDataAccessDoorRelinquishDefaultBuilder {
-	builder := builderSupplier(m.RelinquishDefault.CreateBACnetDoorValueTaggedBuilder())
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetDoorValueTagged) BACnetConstructedDataAccessDoorRelinquishDefaultBuilder {
+	b.RelinquishDefault = relinquishDefault
+	return b
+}
+
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetDoorValueTaggedBuilder) BACnetDoorValueTaggedBuilder) BACnetConstructedDataAccessDoorRelinquishDefaultBuilder {
+	builder := builderSupplier(b.RelinquishDefault.CreateBACnetDoorValueTaggedBuilder())
 	var err error
-	m.RelinquishDefault, err = builder.Build()
+	b.RelinquishDefault, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDoorValueTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDoorValueTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) Build() (BACnetConstructedDataAccessDoorRelinquishDefault, error) {
-	if m.RelinquishDefault == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) Build() (BACnetConstructedDataAccessDoorRelinquishDefault, error) {
+	if b.RelinquishDefault == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
+		b.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAccessDoorRelinquishDefault.deepCopy(), nil
+	return b._BACnetConstructedDataAccessDoorRelinquishDefault.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataAccessDoorRelinquishDefault {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataAccessDoorRelinquishDefault {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccessDoorRelinquishDefaultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccessDoorRelinquishDefaultBuilder().(*_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccessDoorRelinquishDefaultBuilder creates a BACnetConstructedDataAccessDoorRelinquishDefaultBuilder
-func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) CreateBACnetConstructedDataAccessDoorRelinquishDefaultBuilder() BACnetConstructedDataAccessDoorRelinquishDefaultBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefault) CreateBACnetConstructedDataAccessDoorRelinquishDefaultBuilder() BACnetConstructedDataAccessDoorRelinquishDefaultBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccessDoorRelinquishDefaultBuilder()
 	}
-	return &_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder{_BACnetConstructedDataAccessDoorRelinquishDefault: m.deepCopy()}
+	return &_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder{_BACnetConstructedDataAccessDoorRelinquishDefault: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

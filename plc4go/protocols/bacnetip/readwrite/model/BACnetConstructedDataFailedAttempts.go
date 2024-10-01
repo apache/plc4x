@@ -100,64 +100,83 @@ func NewBACnetConstructedDataFailedAttemptsBuilder() BACnetConstructedDataFailed
 type _BACnetConstructedDataFailedAttemptsBuilder struct {
 	*_BACnetConstructedDataFailedAttempts
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataFailedAttemptsBuilder) = (*_BACnetConstructedDataFailedAttemptsBuilder)(nil)
 
-func (m *_BACnetConstructedDataFailedAttemptsBuilder) WithMandatoryFields(failedAttempts BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFailedAttemptsBuilder {
-	return m.WithFailedAttempts(failedAttempts)
+func (b *_BACnetConstructedDataFailedAttemptsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataFailedAttemptsBuilder) WithFailedAttempts(failedAttempts BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFailedAttemptsBuilder {
-	m.FailedAttempts = failedAttempts
-	return m
+func (b *_BACnetConstructedDataFailedAttemptsBuilder) WithMandatoryFields(failedAttempts BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFailedAttemptsBuilder {
+	return b.WithFailedAttempts(failedAttempts)
 }
 
-func (m *_BACnetConstructedDataFailedAttemptsBuilder) WithFailedAttemptsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFailedAttemptsBuilder {
-	builder := builderSupplier(m.FailedAttempts.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataFailedAttemptsBuilder) WithFailedAttempts(failedAttempts BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFailedAttemptsBuilder {
+	b.FailedAttempts = failedAttempts
+	return b
+}
+
+func (b *_BACnetConstructedDataFailedAttemptsBuilder) WithFailedAttemptsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFailedAttemptsBuilder {
+	builder := builderSupplier(b.FailedAttempts.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.FailedAttempts, err = builder.Build()
+	b.FailedAttempts, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataFailedAttemptsBuilder) Build() (BACnetConstructedDataFailedAttempts, error) {
-	if m.FailedAttempts == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataFailedAttemptsBuilder) Build() (BACnetConstructedDataFailedAttempts, error) {
+	if b.FailedAttempts == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'failedAttempts' not set"))
+		b.err.Append(errors.New("mandatory field 'failedAttempts' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataFailedAttempts.deepCopy(), nil
+	return b._BACnetConstructedDataFailedAttempts.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataFailedAttemptsBuilder) MustBuild() BACnetConstructedDataFailedAttempts {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataFailedAttemptsBuilder) MustBuild() BACnetConstructedDataFailedAttempts {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataFailedAttemptsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataFailedAttemptsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFailedAttemptsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFailedAttemptsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFailedAttemptsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFailedAttemptsBuilder().(*_BACnetConstructedDataFailedAttemptsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataFailedAttemptsBuilder creates a BACnetConstructedDataFailedAttemptsBuilder
-func (m *_BACnetConstructedDataFailedAttempts) CreateBACnetConstructedDataFailedAttemptsBuilder() BACnetConstructedDataFailedAttemptsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataFailedAttempts) CreateBACnetConstructedDataFailedAttemptsBuilder() BACnetConstructedDataFailedAttemptsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataFailedAttemptsBuilder()
 	}
-	return &_BACnetConstructedDataFailedAttemptsBuilder{_BACnetConstructedDataFailedAttempts: m.deepCopy()}
+	return &_BACnetConstructedDataFailedAttemptsBuilder{_BACnetConstructedDataFailedAttempts: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataFailedAttempts) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

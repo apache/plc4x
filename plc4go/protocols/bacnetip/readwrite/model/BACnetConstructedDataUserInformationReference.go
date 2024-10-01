@@ -100,64 +100,83 @@ func NewBACnetConstructedDataUserInformationReferenceBuilder() BACnetConstructed
 type _BACnetConstructedDataUserInformationReferenceBuilder struct {
 	*_BACnetConstructedDataUserInformationReference
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataUserInformationReferenceBuilder) = (*_BACnetConstructedDataUserInformationReferenceBuilder)(nil)
 
-func (m *_BACnetConstructedDataUserInformationReferenceBuilder) WithMandatoryFields(userInformationReference BACnetApplicationTagCharacterString) BACnetConstructedDataUserInformationReferenceBuilder {
-	return m.WithUserInformationReference(userInformationReference)
+func (b *_BACnetConstructedDataUserInformationReferenceBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataUserInformationReferenceBuilder) WithUserInformationReference(userInformationReference BACnetApplicationTagCharacterString) BACnetConstructedDataUserInformationReferenceBuilder {
-	m.UserInformationReference = userInformationReference
-	return m
+func (b *_BACnetConstructedDataUserInformationReferenceBuilder) WithMandatoryFields(userInformationReference BACnetApplicationTagCharacterString) BACnetConstructedDataUserInformationReferenceBuilder {
+	return b.WithUserInformationReference(userInformationReference)
 }
 
-func (m *_BACnetConstructedDataUserInformationReferenceBuilder) WithUserInformationReferenceBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataUserInformationReferenceBuilder {
-	builder := builderSupplier(m.UserInformationReference.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetConstructedDataUserInformationReferenceBuilder) WithUserInformationReference(userInformationReference BACnetApplicationTagCharacterString) BACnetConstructedDataUserInformationReferenceBuilder {
+	b.UserInformationReference = userInformationReference
+	return b
+}
+
+func (b *_BACnetConstructedDataUserInformationReferenceBuilder) WithUserInformationReferenceBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataUserInformationReferenceBuilder {
+	builder := builderSupplier(b.UserInformationReference.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.UserInformationReference, err = builder.Build()
+	b.UserInformationReference, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataUserInformationReferenceBuilder) Build() (BACnetConstructedDataUserInformationReference, error) {
-	if m.UserInformationReference == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataUserInformationReferenceBuilder) Build() (BACnetConstructedDataUserInformationReference, error) {
+	if b.UserInformationReference == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'userInformationReference' not set"))
+		b.err.Append(errors.New("mandatory field 'userInformationReference' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataUserInformationReference.deepCopy(), nil
+	return b._BACnetConstructedDataUserInformationReference.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataUserInformationReferenceBuilder) MustBuild() BACnetConstructedDataUserInformationReference {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataUserInformationReferenceBuilder) MustBuild() BACnetConstructedDataUserInformationReference {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataUserInformationReferenceBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataUserInformationReferenceBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataUserInformationReferenceBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataUserInformationReferenceBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataUserInformationReferenceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataUserInformationReferenceBuilder().(*_BACnetConstructedDataUserInformationReferenceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataUserInformationReferenceBuilder creates a BACnetConstructedDataUserInformationReferenceBuilder
-func (m *_BACnetConstructedDataUserInformationReference) CreateBACnetConstructedDataUserInformationReferenceBuilder() BACnetConstructedDataUserInformationReferenceBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataUserInformationReference) CreateBACnetConstructedDataUserInformationReferenceBuilder() BACnetConstructedDataUserInformationReferenceBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataUserInformationReferenceBuilder()
 	}
-	return &_BACnetConstructedDataUserInformationReferenceBuilder{_BACnetConstructedDataUserInformationReference: m.deepCopy()}
+	return &_BACnetConstructedDataUserInformationReferenceBuilder{_BACnetConstructedDataUserInformationReference: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataUserInformationReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

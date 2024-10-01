@@ -119,65 +119,84 @@ func NewPubSubConfigurationDataTypeBuilder() PubSubConfigurationDataTypeBuilder 
 type _PubSubConfigurationDataTypeBuilder struct {
 	*_PubSubConfigurationDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (PubSubConfigurationDataTypeBuilder) = (*_PubSubConfigurationDataTypeBuilder)(nil)
 
-func (m *_PubSubConfigurationDataTypeBuilder) WithMandatoryFields(noOfPublishedDataSets int32, publishedDataSets []ExtensionObjectDefinition, noOfConnections int32, connections []ExtensionObjectDefinition, enabled bool) PubSubConfigurationDataTypeBuilder {
-	return m.WithNoOfPublishedDataSets(noOfPublishedDataSets).WithPublishedDataSets(publishedDataSets...).WithNoOfConnections(noOfConnections).WithConnections(connections...).WithEnabled(enabled)
+func (b *_PubSubConfigurationDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_PubSubConfigurationDataTypeBuilder) WithNoOfPublishedDataSets(noOfPublishedDataSets int32) PubSubConfigurationDataTypeBuilder {
-	m.NoOfPublishedDataSets = noOfPublishedDataSets
-	return m
+func (b *_PubSubConfigurationDataTypeBuilder) WithMandatoryFields(noOfPublishedDataSets int32, publishedDataSets []ExtensionObjectDefinition, noOfConnections int32, connections []ExtensionObjectDefinition, enabled bool) PubSubConfigurationDataTypeBuilder {
+	return b.WithNoOfPublishedDataSets(noOfPublishedDataSets).WithPublishedDataSets(publishedDataSets...).WithNoOfConnections(noOfConnections).WithConnections(connections...).WithEnabled(enabled)
 }
 
-func (m *_PubSubConfigurationDataTypeBuilder) WithPublishedDataSets(publishedDataSets ...ExtensionObjectDefinition) PubSubConfigurationDataTypeBuilder {
-	m.PublishedDataSets = publishedDataSets
-	return m
+func (b *_PubSubConfigurationDataTypeBuilder) WithNoOfPublishedDataSets(noOfPublishedDataSets int32) PubSubConfigurationDataTypeBuilder {
+	b.NoOfPublishedDataSets = noOfPublishedDataSets
+	return b
 }
 
-func (m *_PubSubConfigurationDataTypeBuilder) WithNoOfConnections(noOfConnections int32) PubSubConfigurationDataTypeBuilder {
-	m.NoOfConnections = noOfConnections
-	return m
+func (b *_PubSubConfigurationDataTypeBuilder) WithPublishedDataSets(publishedDataSets ...ExtensionObjectDefinition) PubSubConfigurationDataTypeBuilder {
+	b.PublishedDataSets = publishedDataSets
+	return b
 }
 
-func (m *_PubSubConfigurationDataTypeBuilder) WithConnections(connections ...ExtensionObjectDefinition) PubSubConfigurationDataTypeBuilder {
-	m.Connections = connections
-	return m
+func (b *_PubSubConfigurationDataTypeBuilder) WithNoOfConnections(noOfConnections int32) PubSubConfigurationDataTypeBuilder {
+	b.NoOfConnections = noOfConnections
+	return b
 }
 
-func (m *_PubSubConfigurationDataTypeBuilder) WithEnabled(enabled bool) PubSubConfigurationDataTypeBuilder {
-	m.Enabled = enabled
-	return m
+func (b *_PubSubConfigurationDataTypeBuilder) WithConnections(connections ...ExtensionObjectDefinition) PubSubConfigurationDataTypeBuilder {
+	b.Connections = connections
+	return b
 }
 
-func (m *_PubSubConfigurationDataTypeBuilder) Build() (PubSubConfigurationDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_PubSubConfigurationDataTypeBuilder) WithEnabled(enabled bool) PubSubConfigurationDataTypeBuilder {
+	b.Enabled = enabled
+	return b
+}
+
+func (b *_PubSubConfigurationDataTypeBuilder) Build() (PubSubConfigurationDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._PubSubConfigurationDataType.deepCopy(), nil
+	return b._PubSubConfigurationDataType.deepCopy(), nil
 }
 
-func (m *_PubSubConfigurationDataTypeBuilder) MustBuild() PubSubConfigurationDataType {
-	build, err := m.Build()
+func (b *_PubSubConfigurationDataTypeBuilder) MustBuild() PubSubConfigurationDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PubSubConfigurationDataTypeBuilder) DeepCopy() any {
-	return m.CreatePubSubConfigurationDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PubSubConfigurationDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PubSubConfigurationDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PubSubConfigurationDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreatePubSubConfigurationDataTypeBuilder().(*_PubSubConfigurationDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePubSubConfigurationDataTypeBuilder creates a PubSubConfigurationDataTypeBuilder
-func (m *_PubSubConfigurationDataType) CreatePubSubConfigurationDataTypeBuilder() PubSubConfigurationDataTypeBuilder {
-	if m == nil {
+func (b *_PubSubConfigurationDataType) CreatePubSubConfigurationDataTypeBuilder() PubSubConfigurationDataTypeBuilder {
+	if b == nil {
 		return NewPubSubConfigurationDataTypeBuilder()
 	}
-	return &_PubSubConfigurationDataTypeBuilder{_PubSubConfigurationDataType: m.deepCopy()}
+	return &_PubSubConfigurationDataTypeBuilder{_PubSubConfigurationDataType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -421,9 +440,13 @@ func (m *_PubSubConfigurationDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

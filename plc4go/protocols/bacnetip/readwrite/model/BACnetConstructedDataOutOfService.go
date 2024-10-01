@@ -100,64 +100,83 @@ func NewBACnetConstructedDataOutOfServiceBuilder() BACnetConstructedDataOutOfSer
 type _BACnetConstructedDataOutOfServiceBuilder struct {
 	*_BACnetConstructedDataOutOfService
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataOutOfServiceBuilder) = (*_BACnetConstructedDataOutOfServiceBuilder)(nil)
 
-func (m *_BACnetConstructedDataOutOfServiceBuilder) WithMandatoryFields(outOfService BACnetApplicationTagBoolean) BACnetConstructedDataOutOfServiceBuilder {
-	return m.WithOutOfService(outOfService)
+func (b *_BACnetConstructedDataOutOfServiceBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataOutOfServiceBuilder) WithOutOfService(outOfService BACnetApplicationTagBoolean) BACnetConstructedDataOutOfServiceBuilder {
-	m.OutOfService = outOfService
-	return m
+func (b *_BACnetConstructedDataOutOfServiceBuilder) WithMandatoryFields(outOfService BACnetApplicationTagBoolean) BACnetConstructedDataOutOfServiceBuilder {
+	return b.WithOutOfService(outOfService)
 }
 
-func (m *_BACnetConstructedDataOutOfServiceBuilder) WithOutOfServiceBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOutOfServiceBuilder {
-	builder := builderSupplier(m.OutOfService.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataOutOfServiceBuilder) WithOutOfService(outOfService BACnetApplicationTagBoolean) BACnetConstructedDataOutOfServiceBuilder {
+	b.OutOfService = outOfService
+	return b
+}
+
+func (b *_BACnetConstructedDataOutOfServiceBuilder) WithOutOfServiceBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOutOfServiceBuilder {
+	builder := builderSupplier(b.OutOfService.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.OutOfService, err = builder.Build()
+	b.OutOfService, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataOutOfServiceBuilder) Build() (BACnetConstructedDataOutOfService, error) {
-	if m.OutOfService == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataOutOfServiceBuilder) Build() (BACnetConstructedDataOutOfService, error) {
+	if b.OutOfService == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'outOfService' not set"))
+		b.err.Append(errors.New("mandatory field 'outOfService' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataOutOfService.deepCopy(), nil
+	return b._BACnetConstructedDataOutOfService.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataOutOfServiceBuilder) MustBuild() BACnetConstructedDataOutOfService {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataOutOfServiceBuilder) MustBuild() BACnetConstructedDataOutOfService {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataOutOfServiceBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataOutOfServiceBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataOutOfServiceBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataOutOfServiceBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataOutOfServiceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataOutOfServiceBuilder().(*_BACnetConstructedDataOutOfServiceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataOutOfServiceBuilder creates a BACnetConstructedDataOutOfServiceBuilder
-func (m *_BACnetConstructedDataOutOfService) CreateBACnetConstructedDataOutOfServiceBuilder() BACnetConstructedDataOutOfServiceBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataOutOfService) CreateBACnetConstructedDataOutOfServiceBuilder() BACnetConstructedDataOutOfServiceBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataOutOfServiceBuilder()
 	}
-	return &_BACnetConstructedDataOutOfServiceBuilder{_BACnetConstructedDataOutOfService: m.deepCopy()}
+	return &_BACnetConstructedDataOutOfServiceBuilder{_BACnetConstructedDataOutOfService: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataOutOfService) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

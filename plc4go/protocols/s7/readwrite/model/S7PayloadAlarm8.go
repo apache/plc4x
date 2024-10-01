@@ -98,64 +98,83 @@ func NewS7PayloadAlarm8Builder() S7PayloadAlarm8Builder {
 type _S7PayloadAlarm8Builder struct {
 	*_S7PayloadAlarm8
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadAlarm8Builder) = (*_S7PayloadAlarm8Builder)(nil)
 
-func (m *_S7PayloadAlarm8Builder) WithMandatoryFields(alarmMessage AlarmMessagePushType) S7PayloadAlarm8Builder {
-	return m.WithAlarmMessage(alarmMessage)
+func (b *_S7PayloadAlarm8Builder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadAlarm8Builder) WithAlarmMessage(alarmMessage AlarmMessagePushType) S7PayloadAlarm8Builder {
-	m.AlarmMessage = alarmMessage
-	return m
+func (b *_S7PayloadAlarm8Builder) WithMandatoryFields(alarmMessage AlarmMessagePushType) S7PayloadAlarm8Builder {
+	return b.WithAlarmMessage(alarmMessage)
 }
 
-func (m *_S7PayloadAlarm8Builder) WithAlarmMessageBuilder(builderSupplier func(AlarmMessagePushTypeBuilder) AlarmMessagePushTypeBuilder) S7PayloadAlarm8Builder {
-	builder := builderSupplier(m.AlarmMessage.CreateAlarmMessagePushTypeBuilder())
+func (b *_S7PayloadAlarm8Builder) WithAlarmMessage(alarmMessage AlarmMessagePushType) S7PayloadAlarm8Builder {
+	b.AlarmMessage = alarmMessage
+	return b
+}
+
+func (b *_S7PayloadAlarm8Builder) WithAlarmMessageBuilder(builderSupplier func(AlarmMessagePushTypeBuilder) AlarmMessagePushTypeBuilder) S7PayloadAlarm8Builder {
+	builder := builderSupplier(b.AlarmMessage.CreateAlarmMessagePushTypeBuilder())
 	var err error
-	m.AlarmMessage, err = builder.Build()
+	b.AlarmMessage, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AlarmMessagePushTypeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AlarmMessagePushTypeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_S7PayloadAlarm8Builder) Build() (S7PayloadAlarm8, error) {
-	if m.AlarmMessage == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_S7PayloadAlarm8Builder) Build() (S7PayloadAlarm8, error) {
+	if b.AlarmMessage == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'alarmMessage' not set"))
+		b.err.Append(errors.New("mandatory field 'alarmMessage' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadAlarm8.deepCopy(), nil
+	return b._S7PayloadAlarm8.deepCopy(), nil
 }
 
-func (m *_S7PayloadAlarm8Builder) MustBuild() S7PayloadAlarm8 {
-	build, err := m.Build()
+func (b *_S7PayloadAlarm8Builder) MustBuild() S7PayloadAlarm8 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadAlarm8Builder) DeepCopy() any {
-	return m.CreateS7PayloadAlarm8Builder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadAlarm8Builder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadAlarm8Builder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadAlarm8Builder) DeepCopy() any {
+	_copy := b.CreateS7PayloadAlarm8Builder().(*_S7PayloadAlarm8Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadAlarm8Builder creates a S7PayloadAlarm8Builder
-func (m *_S7PayloadAlarm8) CreateS7PayloadAlarm8Builder() S7PayloadAlarm8Builder {
-	if m == nil {
+func (b *_S7PayloadAlarm8) CreateS7PayloadAlarm8Builder() S7PayloadAlarm8Builder {
+	if b == nil {
 		return NewS7PayloadAlarm8Builder()
 	}
-	return &_S7PayloadAlarm8Builder{_S7PayloadAlarm8: m.deepCopy()}
+	return &_S7PayloadAlarm8Builder{_S7PayloadAlarm8: b.deepCopy()}
 }
 
 ///////////////////////
@@ -307,9 +326,13 @@ func (m *_S7PayloadAlarm8) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

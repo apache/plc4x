@@ -166,214 +166,233 @@ func NewBACnetNotificationParametersChangeOfTimerBuilder() BACnetNotificationPar
 type _BACnetNotificationParametersChangeOfTimerBuilder struct {
 	*_BACnetNotificationParametersChangeOfTimer
 
+	parentBuilder *_BACnetNotificationParametersBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersChangeOfTimerBuilder) = (*_BACnetNotificationParametersChangeOfTimerBuilder)(nil)
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, newValue BACnetTimerStateTagged, statusFlags BACnetStatusFlagsTagged, updateTime BACnetDateTimeEnclosed, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfTimerBuilder {
-	return m.WithInnerOpeningTag(innerOpeningTag).WithNewValue(newValue).WithStatusFlags(statusFlags).WithUpdateTime(updateTime).WithInnerClosingTag(innerClosingTag)
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) setParent(contract BACnetNotificationParametersContract) {
+	b.BACnetNotificationParametersContract = contract
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersChangeOfTimerBuilder {
-	m.InnerOpeningTag = innerOpeningTag
-	return m
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, newValue BACnetTimerStateTagged, statusFlags BACnetStatusFlagsTagged, updateTime BACnetDateTimeEnclosed, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfTimerBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithNewValue(newValue).WithStatusFlags(statusFlags).WithUpdateTime(updateTime).WithInnerClosingTag(innerClosingTag)
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
-	builder := builderSupplier(m.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersChangeOfTimerBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.InnerOpeningTag, err = builder.Build()
+	b.InnerOpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithNewValue(newValue BACnetTimerStateTagged) BACnetNotificationParametersChangeOfTimerBuilder {
-	m.NewValue = newValue
-	return m
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithNewValue(newValue BACnetTimerStateTagged) BACnetNotificationParametersChangeOfTimerBuilder {
+	b.NewValue = newValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithNewValueBuilder(builderSupplier func(BACnetTimerStateTaggedBuilder) BACnetTimerStateTaggedBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
-	builder := builderSupplier(m.NewValue.CreateBACnetTimerStateTaggedBuilder())
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithNewValueBuilder(builderSupplier func(BACnetTimerStateTaggedBuilder) BACnetTimerStateTaggedBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
+	builder := builderSupplier(b.NewValue.CreateBACnetTimerStateTaggedBuilder())
 	var err error
-	m.NewValue, err = builder.Build()
+	b.NewValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTimerStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTimerStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersChangeOfTimerBuilder {
-	m.StatusFlags = statusFlags
-	return m
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersChangeOfTimerBuilder {
+	b.StatusFlags = statusFlags
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
-	builder := builderSupplier(m.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
+	builder := builderSupplier(b.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
 	var err error
-	m.StatusFlags, err = builder.Build()
+	b.StatusFlags, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithUpdateTime(updateTime BACnetDateTimeEnclosed) BACnetNotificationParametersChangeOfTimerBuilder {
-	m.UpdateTime = updateTime
-	return m
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithUpdateTime(updateTime BACnetDateTimeEnclosed) BACnetNotificationParametersChangeOfTimerBuilder {
+	b.UpdateTime = updateTime
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithUpdateTimeBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
-	builder := builderSupplier(m.UpdateTime.CreateBACnetDateTimeEnclosedBuilder())
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithUpdateTimeBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
+	builder := builderSupplier(b.UpdateTime.CreateBACnetDateTimeEnclosedBuilder())
 	var err error
-	m.UpdateTime, err = builder.Build()
+	b.UpdateTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithOptionalLastStateChange(lastStateChange BACnetTimerTransitionTagged) BACnetNotificationParametersChangeOfTimerBuilder {
-	m.LastStateChange = lastStateChange
-	return m
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithOptionalLastStateChange(lastStateChange BACnetTimerTransitionTagged) BACnetNotificationParametersChangeOfTimerBuilder {
+	b.LastStateChange = lastStateChange
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithOptionalLastStateChangeBuilder(builderSupplier func(BACnetTimerTransitionTaggedBuilder) BACnetTimerTransitionTaggedBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
-	builder := builderSupplier(m.LastStateChange.CreateBACnetTimerTransitionTaggedBuilder())
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithOptionalLastStateChangeBuilder(builderSupplier func(BACnetTimerTransitionTaggedBuilder) BACnetTimerTransitionTaggedBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
+	builder := builderSupplier(b.LastStateChange.CreateBACnetTimerTransitionTaggedBuilder())
 	var err error
-	m.LastStateChange, err = builder.Build()
+	b.LastStateChange, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTimerTransitionTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTimerTransitionTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithOptionalInitialTimeout(initialTimeout BACnetContextTagUnsignedInteger) BACnetNotificationParametersChangeOfTimerBuilder {
-	m.InitialTimeout = initialTimeout
-	return m
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithOptionalInitialTimeout(initialTimeout BACnetContextTagUnsignedInteger) BACnetNotificationParametersChangeOfTimerBuilder {
+	b.InitialTimeout = initialTimeout
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithOptionalInitialTimeoutBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
-	builder := builderSupplier(m.InitialTimeout.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithOptionalInitialTimeoutBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
+	builder := builderSupplier(b.InitialTimeout.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.InitialTimeout, err = builder.Build()
+	b.InitialTimeout, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithOptionalExpirationTime(expirationTime BACnetDateTimeEnclosed) BACnetNotificationParametersChangeOfTimerBuilder {
-	m.ExpirationTime = expirationTime
-	return m
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithOptionalExpirationTime(expirationTime BACnetDateTimeEnclosed) BACnetNotificationParametersChangeOfTimerBuilder {
+	b.ExpirationTime = expirationTime
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithOptionalExpirationTimeBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
-	builder := builderSupplier(m.ExpirationTime.CreateBACnetDateTimeEnclosedBuilder())
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithOptionalExpirationTimeBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
+	builder := builderSupplier(b.ExpirationTime.CreateBACnetDateTimeEnclosedBuilder())
 	var err error
-	m.ExpirationTime, err = builder.Build()
+	b.ExpirationTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfTimerBuilder {
-	m.InnerClosingTag = innerClosingTag
-	return m
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfTimerBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
-	builder := builderSupplier(m.InnerClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfTimerBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.InnerClosingTag, err = builder.Build()
+	b.InnerClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) Build() (BACnetNotificationParametersChangeOfTimer, error) {
-	if m.InnerOpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) Build() (BACnetNotificationParametersChangeOfTimer, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
 	}
-	if m.NewValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.NewValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'newValue' not set"))
+		b.err.Append(errors.New("mandatory field 'newValue' not set"))
 	}
-	if m.StatusFlags == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.StatusFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusFlags' not set"))
+		b.err.Append(errors.New("mandatory field 'statusFlags' not set"))
 	}
-	if m.UpdateTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.UpdateTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'updateTime' not set"))
+		b.err.Append(errors.New("mandatory field 'updateTime' not set"))
 	}
-	if m.InnerClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNotificationParametersChangeOfTimer.deepCopy(), nil
+	return b._BACnetNotificationParametersChangeOfTimer.deepCopy(), nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) MustBuild() BACnetNotificationParametersChangeOfTimer {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) MustBuild() BACnetNotificationParametersChangeOfTimer {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersChangeOfTimerBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersChangeOfTimerBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) Done() BACnetNotificationParametersBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) buildForBACnetNotificationParameters() (BACnetNotificationParameters, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersChangeOfTimerBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersChangeOfTimerBuilder().(*_BACnetNotificationParametersChangeOfTimerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersChangeOfTimerBuilder creates a BACnetNotificationParametersChangeOfTimerBuilder
-func (m *_BACnetNotificationParametersChangeOfTimer) CreateBACnetNotificationParametersChangeOfTimerBuilder() BACnetNotificationParametersChangeOfTimerBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersChangeOfTimer) CreateBACnetNotificationParametersChangeOfTimerBuilder() BACnetNotificationParametersChangeOfTimerBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersChangeOfTimerBuilder()
 	}
-	return &_BACnetNotificationParametersChangeOfTimerBuilder{_BACnetNotificationParametersChangeOfTimer: m.deepCopy()}
+	return &_BACnetNotificationParametersChangeOfTimerBuilder{_BACnetNotificationParametersChangeOfTimer: b.deepCopy()}
 }
 
 ///////////////////////
@@ -657,9 +676,13 @@ func (m *_BACnetNotificationParametersChangeOfTimer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataCOVResubscriptionIntervalBuilder() BACnetConstructe
 type _BACnetConstructedDataCOVResubscriptionIntervalBuilder struct {
 	*_BACnetConstructedDataCOVResubscriptionInterval
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCOVResubscriptionIntervalBuilder) = (*_BACnetConstructedDataCOVResubscriptionIntervalBuilder)(nil)
 
-func (m *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) WithMandatoryFields(covResubscriptionInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCOVResubscriptionIntervalBuilder {
-	return m.WithCovResubscriptionInterval(covResubscriptionInterval)
+func (b *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) WithCovResubscriptionInterval(covResubscriptionInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCOVResubscriptionIntervalBuilder {
-	m.CovResubscriptionInterval = covResubscriptionInterval
-	return m
+func (b *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) WithMandatoryFields(covResubscriptionInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCOVResubscriptionIntervalBuilder {
+	return b.WithCovResubscriptionInterval(covResubscriptionInterval)
 }
 
-func (m *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) WithCovResubscriptionIntervalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCOVResubscriptionIntervalBuilder {
-	builder := builderSupplier(m.CovResubscriptionInterval.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) WithCovResubscriptionInterval(covResubscriptionInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCOVResubscriptionIntervalBuilder {
+	b.CovResubscriptionInterval = covResubscriptionInterval
+	return b
+}
+
+func (b *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) WithCovResubscriptionIntervalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCOVResubscriptionIntervalBuilder {
+	builder := builderSupplier(b.CovResubscriptionInterval.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.CovResubscriptionInterval, err = builder.Build()
+	b.CovResubscriptionInterval, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) Build() (BACnetConstructedDataCOVResubscriptionInterval, error) {
-	if m.CovResubscriptionInterval == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) Build() (BACnetConstructedDataCOVResubscriptionInterval, error) {
+	if b.CovResubscriptionInterval == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'covResubscriptionInterval' not set"))
+		b.err.Append(errors.New("mandatory field 'covResubscriptionInterval' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCOVResubscriptionInterval.deepCopy(), nil
+	return b._BACnetConstructedDataCOVResubscriptionInterval.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) MustBuild() BACnetConstructedDataCOVResubscriptionInterval {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) MustBuild() BACnetConstructedDataCOVResubscriptionInterval {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCOVResubscriptionIntervalBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCOVResubscriptionIntervalBuilder().(*_BACnetConstructedDataCOVResubscriptionIntervalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCOVResubscriptionIntervalBuilder creates a BACnetConstructedDataCOVResubscriptionIntervalBuilder
-func (m *_BACnetConstructedDataCOVResubscriptionInterval) CreateBACnetConstructedDataCOVResubscriptionIntervalBuilder() BACnetConstructedDataCOVResubscriptionIntervalBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCOVResubscriptionInterval) CreateBACnetConstructedDataCOVResubscriptionIntervalBuilder() BACnetConstructedDataCOVResubscriptionIntervalBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCOVResubscriptionIntervalBuilder()
 	}
-	return &_BACnetConstructedDataCOVResubscriptionIntervalBuilder{_BACnetConstructedDataCOVResubscriptionInterval: m.deepCopy()}
+	return &_BACnetConstructedDataCOVResubscriptionIntervalBuilder{_BACnetConstructedDataCOVResubscriptionInterval: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataCOVResubscriptionInterval) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

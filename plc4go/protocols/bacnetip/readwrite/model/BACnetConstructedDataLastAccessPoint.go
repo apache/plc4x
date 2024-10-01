@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLastAccessPointBuilder() BACnetConstructedDataLastA
 type _BACnetConstructedDataLastAccessPointBuilder struct {
 	*_BACnetConstructedDataLastAccessPoint
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLastAccessPointBuilder) = (*_BACnetConstructedDataLastAccessPointBuilder)(nil)
 
-func (m *_BACnetConstructedDataLastAccessPointBuilder) WithMandatoryFields(lastAccessPoint BACnetDeviceObjectReference) BACnetConstructedDataLastAccessPointBuilder {
-	return m.WithLastAccessPoint(lastAccessPoint)
+func (b *_BACnetConstructedDataLastAccessPointBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLastAccessPointBuilder) WithLastAccessPoint(lastAccessPoint BACnetDeviceObjectReference) BACnetConstructedDataLastAccessPointBuilder {
-	m.LastAccessPoint = lastAccessPoint
-	return m
+func (b *_BACnetConstructedDataLastAccessPointBuilder) WithMandatoryFields(lastAccessPoint BACnetDeviceObjectReference) BACnetConstructedDataLastAccessPointBuilder {
+	return b.WithLastAccessPoint(lastAccessPoint)
 }
 
-func (m *_BACnetConstructedDataLastAccessPointBuilder) WithLastAccessPointBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataLastAccessPointBuilder {
-	builder := builderSupplier(m.LastAccessPoint.CreateBACnetDeviceObjectReferenceBuilder())
+func (b *_BACnetConstructedDataLastAccessPointBuilder) WithLastAccessPoint(lastAccessPoint BACnetDeviceObjectReference) BACnetConstructedDataLastAccessPointBuilder {
+	b.LastAccessPoint = lastAccessPoint
+	return b
+}
+
+func (b *_BACnetConstructedDataLastAccessPointBuilder) WithLastAccessPointBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataLastAccessPointBuilder {
+	builder := builderSupplier(b.LastAccessPoint.CreateBACnetDeviceObjectReferenceBuilder())
 	var err error
-	m.LastAccessPoint, err = builder.Build()
+	b.LastAccessPoint, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLastAccessPointBuilder) Build() (BACnetConstructedDataLastAccessPoint, error) {
-	if m.LastAccessPoint == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLastAccessPointBuilder) Build() (BACnetConstructedDataLastAccessPoint, error) {
+	if b.LastAccessPoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lastAccessPoint' not set"))
+		b.err.Append(errors.New("mandatory field 'lastAccessPoint' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLastAccessPoint.deepCopy(), nil
+	return b._BACnetConstructedDataLastAccessPoint.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLastAccessPointBuilder) MustBuild() BACnetConstructedDataLastAccessPoint {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLastAccessPointBuilder) MustBuild() BACnetConstructedDataLastAccessPoint {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLastAccessPointBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLastAccessPointBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLastAccessPointBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLastAccessPointBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLastAccessPointBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLastAccessPointBuilder().(*_BACnetConstructedDataLastAccessPointBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLastAccessPointBuilder creates a BACnetConstructedDataLastAccessPointBuilder
-func (m *_BACnetConstructedDataLastAccessPoint) CreateBACnetConstructedDataLastAccessPointBuilder() BACnetConstructedDataLastAccessPointBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLastAccessPoint) CreateBACnetConstructedDataLastAccessPointBuilder() BACnetConstructedDataLastAccessPointBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLastAccessPointBuilder()
 	}
-	return &_BACnetConstructedDataLastAccessPointBuilder{_BACnetConstructedDataLastAccessPoint: m.deepCopy()}
+	return &_BACnetConstructedDataLastAccessPointBuilder{_BACnetConstructedDataLastAccessPoint: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataLastAccessPoint) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

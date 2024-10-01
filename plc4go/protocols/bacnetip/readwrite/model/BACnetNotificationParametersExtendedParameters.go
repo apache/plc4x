@@ -222,359 +222,363 @@ type _BACnetNotificationParametersExtendedParametersBuilder struct {
 
 var _ (BACnetNotificationParametersExtendedParametersBuilder) = (*_BACnetNotificationParametersExtendedParametersBuilder)(nil)
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetNotificationParametersExtendedParametersBuilder {
-	return m.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetNotificationParametersExtendedParametersBuilder {
+	return b.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetNotificationParametersExtendedParametersBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetNotificationParametersExtendedParametersBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetNotificationParametersExtendedParametersBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetNotificationParametersExtendedParametersBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalNullValue(nullValue BACnetApplicationTagNull) BACnetNotificationParametersExtendedParametersBuilder {
-	m.NullValue = nullValue
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalNullValue(nullValue BACnetApplicationTagNull) BACnetNotificationParametersExtendedParametersBuilder {
+	b.NullValue = nullValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.NullValue.CreateBACnetApplicationTagNullBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.NullValue.CreateBACnetApplicationTagNullBuilder())
 	var err error
-	m.NullValue, err = builder.Build()
+	b.NullValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalRealValue(realValue BACnetApplicationTagReal) BACnetNotificationParametersExtendedParametersBuilder {
-	m.RealValue = realValue
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalRealValue(realValue BACnetApplicationTagReal) BACnetNotificationParametersExtendedParametersBuilder {
+	b.RealValue = realValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalRealValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.RealValue.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalRealValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.RealValue.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.RealValue, err = builder.Build()
+	b.RealValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalUnsignedValue(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetNotificationParametersExtendedParametersBuilder {
-	m.UnsignedValue = unsignedValue
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalUnsignedValue(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetNotificationParametersExtendedParametersBuilder {
+	b.UnsignedValue = unsignedValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalUnsignedValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.UnsignedValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalUnsignedValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.UnsignedValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.UnsignedValue, err = builder.Build()
+	b.UnsignedValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalBooleanValue(booleanValue BACnetApplicationTagBoolean) BACnetNotificationParametersExtendedParametersBuilder {
-	m.BooleanValue = booleanValue
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalBooleanValue(booleanValue BACnetApplicationTagBoolean) BACnetNotificationParametersExtendedParametersBuilder {
+	b.BooleanValue = booleanValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalBooleanValueBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.BooleanValue.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalBooleanValueBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.BooleanValue.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.BooleanValue, err = builder.Build()
+	b.BooleanValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalIntegerValue(integerValue BACnetApplicationTagSignedInteger) BACnetNotificationParametersExtendedParametersBuilder {
-	m.IntegerValue = integerValue
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalIntegerValue(integerValue BACnetApplicationTagSignedInteger) BACnetNotificationParametersExtendedParametersBuilder {
+	b.IntegerValue = integerValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalIntegerValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.IntegerValue.CreateBACnetApplicationTagSignedIntegerBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalIntegerValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.IntegerValue.CreateBACnetApplicationTagSignedIntegerBuilder())
 	var err error
-	m.IntegerValue, err = builder.Build()
+	b.IntegerValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalDoubleValue(doubleValue BACnetApplicationTagDouble) BACnetNotificationParametersExtendedParametersBuilder {
-	m.DoubleValue = doubleValue
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalDoubleValue(doubleValue BACnetApplicationTagDouble) BACnetNotificationParametersExtendedParametersBuilder {
+	b.DoubleValue = doubleValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalDoubleValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.DoubleValue.CreateBACnetApplicationTagDoubleBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalDoubleValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.DoubleValue.CreateBACnetApplicationTagDoubleBuilder())
 	var err error
-	m.DoubleValue, err = builder.Build()
+	b.DoubleValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalOctetStringValue(octetStringValue BACnetApplicationTagOctetString) BACnetNotificationParametersExtendedParametersBuilder {
-	m.OctetStringValue = octetStringValue
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalOctetStringValue(octetStringValue BACnetApplicationTagOctetString) BACnetNotificationParametersExtendedParametersBuilder {
+	b.OctetStringValue = octetStringValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalOctetStringValueBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.OctetStringValue.CreateBACnetApplicationTagOctetStringBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalOctetStringValueBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.OctetStringValue.CreateBACnetApplicationTagOctetStringBuilder())
 	var err error
-	m.OctetStringValue, err = builder.Build()
+	b.OctetStringValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalCharacterStringValue(characterStringValue BACnetApplicationTagCharacterString) BACnetNotificationParametersExtendedParametersBuilder {
-	m.CharacterStringValue = characterStringValue
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalCharacterStringValue(characterStringValue BACnetApplicationTagCharacterString) BACnetNotificationParametersExtendedParametersBuilder {
+	b.CharacterStringValue = characterStringValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalCharacterStringValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.CharacterStringValue.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalCharacterStringValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.CharacterStringValue.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.CharacterStringValue, err = builder.Build()
+	b.CharacterStringValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalBitStringValue(bitStringValue BACnetApplicationTagBitString) BACnetNotificationParametersExtendedParametersBuilder {
-	m.BitStringValue = bitStringValue
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalBitStringValue(bitStringValue BACnetApplicationTagBitString) BACnetNotificationParametersExtendedParametersBuilder {
+	b.BitStringValue = bitStringValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalBitStringValueBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.BitStringValue.CreateBACnetApplicationTagBitStringBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalBitStringValueBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.BitStringValue.CreateBACnetApplicationTagBitStringBuilder())
 	var err error
-	m.BitStringValue, err = builder.Build()
+	b.BitStringValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalEnumeratedValue(enumeratedValue BACnetApplicationTagEnumerated) BACnetNotificationParametersExtendedParametersBuilder {
-	m.EnumeratedValue = enumeratedValue
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalEnumeratedValue(enumeratedValue BACnetApplicationTagEnumerated) BACnetNotificationParametersExtendedParametersBuilder {
+	b.EnumeratedValue = enumeratedValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalEnumeratedValueBuilder(builderSupplier func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.EnumeratedValue.CreateBACnetApplicationTagEnumeratedBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalEnumeratedValueBuilder(builderSupplier func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.EnumeratedValue.CreateBACnetApplicationTagEnumeratedBuilder())
 	var err error
-	m.EnumeratedValue, err = builder.Build()
+	b.EnumeratedValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalDateValue(dateValue BACnetApplicationTagDate) BACnetNotificationParametersExtendedParametersBuilder {
-	m.DateValue = dateValue
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalDateValue(dateValue BACnetApplicationTagDate) BACnetNotificationParametersExtendedParametersBuilder {
+	b.DateValue = dateValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalDateValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.DateValue.CreateBACnetApplicationTagDateBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalDateValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.DateValue.CreateBACnetApplicationTagDateBuilder())
 	var err error
-	m.DateValue, err = builder.Build()
+	b.DateValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalTimeValue(timeValue BACnetApplicationTagTime) BACnetNotificationParametersExtendedParametersBuilder {
-	m.TimeValue = timeValue
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalTimeValue(timeValue BACnetApplicationTagTime) BACnetNotificationParametersExtendedParametersBuilder {
+	b.TimeValue = timeValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.TimeValue.CreateBACnetApplicationTagTimeBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.TimeValue.CreateBACnetApplicationTagTimeBuilder())
 	var err error
-	m.TimeValue, err = builder.Build()
+	b.TimeValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalObjectIdentifier(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetNotificationParametersExtendedParametersBuilder {
-	m.ObjectIdentifier = objectIdentifier
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalObjectIdentifier(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetNotificationParametersExtendedParametersBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalObjectIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalObjectIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
 	var err error
-	m.ObjectIdentifier, err = builder.Build()
+	b.ObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalReference(reference BACnetDeviceObjectPropertyReferenceEnclosed) BACnetNotificationParametersExtendedParametersBuilder {
-	m.Reference = reference
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalReference(reference BACnetDeviceObjectPropertyReferenceEnclosed) BACnetNotificationParametersExtendedParametersBuilder {
+	b.Reference = reference
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalReferenceBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.Reference.CreateBACnetDeviceObjectPropertyReferenceEnclosedBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithOptionalReferenceBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.Reference.CreateBACnetDeviceObjectPropertyReferenceEnclosedBuilder())
 	var err error
-	m.Reference, err = builder.Build()
+	b.Reference, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetNotificationParametersExtendedParametersBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetNotificationParametersExtendedParametersBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersExtendedParametersBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersExtendedParametersBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) Build() (BACnetNotificationParametersExtendedParameters, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) Build() (BACnetNotificationParametersExtendedParameters, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNotificationParametersExtendedParameters.deepCopy(), nil
+	return b._BACnetNotificationParametersExtendedParameters.deepCopy(), nil
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) MustBuild() BACnetNotificationParametersExtendedParameters {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) MustBuild() BACnetNotificationParametersExtendedParameters {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersExtendedParametersBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersExtendedParametersBuilder()
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersExtendedParametersBuilder().(*_BACnetNotificationParametersExtendedParametersBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersExtendedParametersBuilder creates a BACnetNotificationParametersExtendedParametersBuilder
-func (m *_BACnetNotificationParametersExtendedParameters) CreateBACnetNotificationParametersExtendedParametersBuilder() BACnetNotificationParametersExtendedParametersBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersExtendedParameters) CreateBACnetNotificationParametersExtendedParametersBuilder() BACnetNotificationParametersExtendedParametersBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersExtendedParametersBuilder()
 	}
-	return &_BACnetNotificationParametersExtendedParametersBuilder{_BACnetNotificationParametersExtendedParameters: m.deepCopy()}
+	return &_BACnetNotificationParametersExtendedParametersBuilder{_BACnetNotificationParametersExtendedParameters: b.deepCopy()}
 }
 
 ///////////////////////
@@ -1241,9 +1245,13 @@ func (m *_BACnetNotificationParametersExtendedParameters) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

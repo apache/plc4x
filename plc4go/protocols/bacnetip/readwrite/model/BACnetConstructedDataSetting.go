@@ -100,64 +100,83 @@ func NewBACnetConstructedDataSettingBuilder() BACnetConstructedDataSettingBuilde
 type _BACnetConstructedDataSettingBuilder struct {
 	*_BACnetConstructedDataSetting
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSettingBuilder) = (*_BACnetConstructedDataSettingBuilder)(nil)
 
-func (m *_BACnetConstructedDataSettingBuilder) WithMandatoryFields(setting BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSettingBuilder {
-	return m.WithSetting(setting)
+func (b *_BACnetConstructedDataSettingBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSettingBuilder) WithSetting(setting BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSettingBuilder {
-	m.Setting = setting
-	return m
+func (b *_BACnetConstructedDataSettingBuilder) WithMandatoryFields(setting BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSettingBuilder {
+	return b.WithSetting(setting)
 }
 
-func (m *_BACnetConstructedDataSettingBuilder) WithSettingBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSettingBuilder {
-	builder := builderSupplier(m.Setting.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataSettingBuilder) WithSetting(setting BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSettingBuilder {
+	b.Setting = setting
+	return b
+}
+
+func (b *_BACnetConstructedDataSettingBuilder) WithSettingBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSettingBuilder {
+	builder := builderSupplier(b.Setting.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.Setting, err = builder.Build()
+	b.Setting, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataSettingBuilder) Build() (BACnetConstructedDataSetting, error) {
-	if m.Setting == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataSettingBuilder) Build() (BACnetConstructedDataSetting, error) {
+	if b.Setting == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'setting' not set"))
+		b.err.Append(errors.New("mandatory field 'setting' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSetting.deepCopy(), nil
+	return b._BACnetConstructedDataSetting.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSettingBuilder) MustBuild() BACnetConstructedDataSetting {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSettingBuilder) MustBuild() BACnetConstructedDataSetting {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSettingBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSettingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSettingBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSettingBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSettingBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSettingBuilder().(*_BACnetConstructedDataSettingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSettingBuilder creates a BACnetConstructedDataSettingBuilder
-func (m *_BACnetConstructedDataSetting) CreateBACnetConstructedDataSettingBuilder() BACnetConstructedDataSettingBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSetting) CreateBACnetConstructedDataSettingBuilder() BACnetConstructedDataSettingBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSettingBuilder()
 	}
-	return &_BACnetConstructedDataSettingBuilder{_BACnetConstructedDataSetting: m.deepCopy()}
+	return &_BACnetConstructedDataSettingBuilder{_BACnetConstructedDataSetting: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataSetting) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -93,45 +93,64 @@ func NewIdentifyReplyCommandTypeBuilder() IdentifyReplyCommandTypeBuilder {
 type _IdentifyReplyCommandTypeBuilder struct {
 	*_IdentifyReplyCommandType
 
+	parentBuilder *_IdentifyReplyCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (IdentifyReplyCommandTypeBuilder) = (*_IdentifyReplyCommandTypeBuilder)(nil)
 
-func (m *_IdentifyReplyCommandTypeBuilder) WithMandatoryFields(unitType string) IdentifyReplyCommandTypeBuilder {
-	return m.WithUnitType(unitType)
+func (b *_IdentifyReplyCommandTypeBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
 }
 
-func (m *_IdentifyReplyCommandTypeBuilder) WithUnitType(unitType string) IdentifyReplyCommandTypeBuilder {
-	m.UnitType = unitType
-	return m
+func (b *_IdentifyReplyCommandTypeBuilder) WithMandatoryFields(unitType string) IdentifyReplyCommandTypeBuilder {
+	return b.WithUnitType(unitType)
 }
 
-func (m *_IdentifyReplyCommandTypeBuilder) Build() (IdentifyReplyCommandType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IdentifyReplyCommandTypeBuilder) WithUnitType(unitType string) IdentifyReplyCommandTypeBuilder {
+	b.UnitType = unitType
+	return b
+}
+
+func (b *_IdentifyReplyCommandTypeBuilder) Build() (IdentifyReplyCommandType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommandType.deepCopy(), nil
+	return b._IdentifyReplyCommandType.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandTypeBuilder) MustBuild() IdentifyReplyCommandType {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandTypeBuilder) MustBuild() IdentifyReplyCommandType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandTypeBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandTypeBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandTypeBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandTypeBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandTypeBuilder().(*_IdentifyReplyCommandTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandTypeBuilder creates a IdentifyReplyCommandTypeBuilder
-func (m *_IdentifyReplyCommandType) CreateIdentifyReplyCommandTypeBuilder() IdentifyReplyCommandTypeBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommandType) CreateIdentifyReplyCommandTypeBuilder() IdentifyReplyCommandTypeBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandTypeBuilder()
 	}
-	return &_IdentifyReplyCommandTypeBuilder{_IdentifyReplyCommandType: m.deepCopy()}
+	return &_IdentifyReplyCommandTypeBuilder{_IdentifyReplyCommandType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -275,9 +294,13 @@ func (m *_IdentifyReplyCommandType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

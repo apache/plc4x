@@ -111,69 +111,73 @@ type _BACnetLightingTransitionTaggedBuilder struct {
 
 var _ (BACnetLightingTransitionTaggedBuilder) = (*_BACnetLightingTransitionTaggedBuilder)(nil)
 
-func (m *_BACnetLightingTransitionTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLightingTransition, proprietaryValue uint32) BACnetLightingTransitionTaggedBuilder {
-	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetLightingTransitionTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLightingTransition, proprietaryValue uint32) BACnetLightingTransitionTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_BACnetLightingTransitionTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLightingTransitionTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetLightingTransitionTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLightingTransitionTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetLightingTransitionTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLightingTransitionTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetLightingTransitionTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLightingTransitionTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLightingTransitionTaggedBuilder) WithValue(value BACnetLightingTransition) BACnetLightingTransitionTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetLightingTransitionTaggedBuilder) WithValue(value BACnetLightingTransition) BACnetLightingTransitionTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetLightingTransitionTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLightingTransitionTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetLightingTransitionTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLightingTransitionTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetLightingTransitionTaggedBuilder) Build() (BACnetLightingTransitionTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLightingTransitionTaggedBuilder) Build() (BACnetLightingTransitionTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLightingTransitionTagged.deepCopy(), nil
+	return b._BACnetLightingTransitionTagged.deepCopy(), nil
 }
 
-func (m *_BACnetLightingTransitionTaggedBuilder) MustBuild() BACnetLightingTransitionTagged {
-	build, err := m.Build()
+func (b *_BACnetLightingTransitionTaggedBuilder) MustBuild() BACnetLightingTransitionTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLightingTransitionTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetLightingTransitionTaggedBuilder()
+func (b *_BACnetLightingTransitionTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLightingTransitionTaggedBuilder().(*_BACnetLightingTransitionTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLightingTransitionTaggedBuilder creates a BACnetLightingTransitionTaggedBuilder
-func (m *_BACnetLightingTransitionTagged) CreateBACnetLightingTransitionTaggedBuilder() BACnetLightingTransitionTaggedBuilder {
-	if m == nil {
+func (b *_BACnetLightingTransitionTagged) CreateBACnetLightingTransitionTaggedBuilder() BACnetLightingTransitionTaggedBuilder {
+	if b == nil {
 		return NewBACnetLightingTransitionTaggedBuilder()
 	}
-	return &_BACnetLightingTransitionTaggedBuilder{_BACnetLightingTransitionTagged: m.deepCopy()}
+	return &_BACnetLightingTransitionTaggedBuilder{_BACnetLightingTransitionTagged: b.deepCopy()}
 }
 
 ///////////////////////
@@ -402,9 +406,13 @@ func (m *_BACnetLightingTransitionTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

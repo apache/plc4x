@@ -136,6 +136,8 @@ type PublishedVariableDataTypeBuilder interface {
 	WithIndexRangeBuilder(func(PascalStringBuilder) PascalStringBuilder) PublishedVariableDataTypeBuilder
 	// WithSubstituteValue adds SubstituteValue (property field)
 	WithSubstituteValue(Variant) PublishedVariableDataTypeBuilder
+	// WithSubstituteValueBuilder adds SubstituteValue (property field) which is build by the builder
+	WithSubstituteValueBuilder(func(VariantBuilder) VariantBuilder) PublishedVariableDataTypeBuilder
 	// WithNoOfMetaDataProperties adds NoOfMetaDataProperties (property field)
 	WithNoOfMetaDataProperties(int32) PublishedVariableDataTypeBuilder
 	// WithMetaDataProperties adds MetaDataProperties (property field)
@@ -154,129 +156,161 @@ func NewPublishedVariableDataTypeBuilder() PublishedVariableDataTypeBuilder {
 type _PublishedVariableDataTypeBuilder struct {
 	*_PublishedVariableDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (PublishedVariableDataTypeBuilder) = (*_PublishedVariableDataTypeBuilder)(nil)
 
-func (m *_PublishedVariableDataTypeBuilder) WithMandatoryFields(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, noOfMetaDataProperties int32, metaDataProperties []QualifiedName) PublishedVariableDataTypeBuilder {
-	return m.WithPublishedVariable(publishedVariable).WithAttributeId(attributeId).WithSamplingIntervalHint(samplingIntervalHint).WithDeadbandType(deadbandType).WithDeadbandValue(deadbandValue).WithIndexRange(indexRange).WithSubstituteValue(substituteValue).WithNoOfMetaDataProperties(noOfMetaDataProperties).WithMetaDataProperties(metaDataProperties...)
+func (b *_PublishedVariableDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_PublishedVariableDataTypeBuilder) WithPublishedVariable(publishedVariable NodeId) PublishedVariableDataTypeBuilder {
-	m.PublishedVariable = publishedVariable
-	return m
+func (b *_PublishedVariableDataTypeBuilder) WithMandatoryFields(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, noOfMetaDataProperties int32, metaDataProperties []QualifiedName) PublishedVariableDataTypeBuilder {
+	return b.WithPublishedVariable(publishedVariable).WithAttributeId(attributeId).WithSamplingIntervalHint(samplingIntervalHint).WithDeadbandType(deadbandType).WithDeadbandValue(deadbandValue).WithIndexRange(indexRange).WithSubstituteValue(substituteValue).WithNoOfMetaDataProperties(noOfMetaDataProperties).WithMetaDataProperties(metaDataProperties...)
 }
 
-func (m *_PublishedVariableDataTypeBuilder) WithPublishedVariableBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) PublishedVariableDataTypeBuilder {
-	builder := builderSupplier(m.PublishedVariable.CreateNodeIdBuilder())
+func (b *_PublishedVariableDataTypeBuilder) WithPublishedVariable(publishedVariable NodeId) PublishedVariableDataTypeBuilder {
+	b.PublishedVariable = publishedVariable
+	return b
+}
+
+func (b *_PublishedVariableDataTypeBuilder) WithPublishedVariableBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) PublishedVariableDataTypeBuilder {
+	builder := builderSupplier(b.PublishedVariable.CreateNodeIdBuilder())
 	var err error
-	m.PublishedVariable, err = builder.Build()
+	b.PublishedVariable, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PublishedVariableDataTypeBuilder) WithAttributeId(attributeId uint32) PublishedVariableDataTypeBuilder {
-	m.AttributeId = attributeId
-	return m
+func (b *_PublishedVariableDataTypeBuilder) WithAttributeId(attributeId uint32) PublishedVariableDataTypeBuilder {
+	b.AttributeId = attributeId
+	return b
 }
 
-func (m *_PublishedVariableDataTypeBuilder) WithSamplingIntervalHint(samplingIntervalHint float64) PublishedVariableDataTypeBuilder {
-	m.SamplingIntervalHint = samplingIntervalHint
-	return m
+func (b *_PublishedVariableDataTypeBuilder) WithSamplingIntervalHint(samplingIntervalHint float64) PublishedVariableDataTypeBuilder {
+	b.SamplingIntervalHint = samplingIntervalHint
+	return b
 }
 
-func (m *_PublishedVariableDataTypeBuilder) WithDeadbandType(deadbandType uint32) PublishedVariableDataTypeBuilder {
-	m.DeadbandType = deadbandType
-	return m
+func (b *_PublishedVariableDataTypeBuilder) WithDeadbandType(deadbandType uint32) PublishedVariableDataTypeBuilder {
+	b.DeadbandType = deadbandType
+	return b
 }
 
-func (m *_PublishedVariableDataTypeBuilder) WithDeadbandValue(deadbandValue float64) PublishedVariableDataTypeBuilder {
-	m.DeadbandValue = deadbandValue
-	return m
+func (b *_PublishedVariableDataTypeBuilder) WithDeadbandValue(deadbandValue float64) PublishedVariableDataTypeBuilder {
+	b.DeadbandValue = deadbandValue
+	return b
 }
 
-func (m *_PublishedVariableDataTypeBuilder) WithIndexRange(indexRange PascalString) PublishedVariableDataTypeBuilder {
-	m.IndexRange = indexRange
-	return m
+func (b *_PublishedVariableDataTypeBuilder) WithIndexRange(indexRange PascalString) PublishedVariableDataTypeBuilder {
+	b.IndexRange = indexRange
+	return b
 }
 
-func (m *_PublishedVariableDataTypeBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PublishedVariableDataTypeBuilder {
-	builder := builderSupplier(m.IndexRange.CreatePascalStringBuilder())
+func (b *_PublishedVariableDataTypeBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PublishedVariableDataTypeBuilder {
+	builder := builderSupplier(b.IndexRange.CreatePascalStringBuilder())
 	var err error
-	m.IndexRange, err = builder.Build()
+	b.IndexRange, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PublishedVariableDataTypeBuilder) WithSubstituteValue(substituteValue Variant) PublishedVariableDataTypeBuilder {
-	m.SubstituteValue = substituteValue
-	return m
+func (b *_PublishedVariableDataTypeBuilder) WithSubstituteValue(substituteValue Variant) PublishedVariableDataTypeBuilder {
+	b.SubstituteValue = substituteValue
+	return b
 }
 
-func (m *_PublishedVariableDataTypeBuilder) WithNoOfMetaDataProperties(noOfMetaDataProperties int32) PublishedVariableDataTypeBuilder {
-	m.NoOfMetaDataProperties = noOfMetaDataProperties
-	return m
-}
-
-func (m *_PublishedVariableDataTypeBuilder) WithMetaDataProperties(metaDataProperties ...QualifiedName) PublishedVariableDataTypeBuilder {
-	m.MetaDataProperties = metaDataProperties
-	return m
-}
-
-func (m *_PublishedVariableDataTypeBuilder) Build() (PublishedVariableDataType, error) {
-	if m.PublishedVariable == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_PublishedVariableDataTypeBuilder) WithSubstituteValueBuilder(builderSupplier func(VariantBuilder) VariantBuilder) PublishedVariableDataTypeBuilder {
+	builder := builderSupplier(b.SubstituteValue.CreateVariantBuilder())
+	var err error
+	b.SubstituteValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'publishedVariable' not set"))
+		b.err.Append(errors.Wrap(err, "VariantBuilder failed"))
 	}
-	if m.IndexRange == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'indexRange' not set"))
-	}
-	if m.SubstituteValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'substituteValue' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._PublishedVariableDataType.deepCopy(), nil
+	return b
 }
 
-func (m *_PublishedVariableDataTypeBuilder) MustBuild() PublishedVariableDataType {
-	build, err := m.Build()
+func (b *_PublishedVariableDataTypeBuilder) WithNoOfMetaDataProperties(noOfMetaDataProperties int32) PublishedVariableDataTypeBuilder {
+	b.NoOfMetaDataProperties = noOfMetaDataProperties
+	return b
+}
+
+func (b *_PublishedVariableDataTypeBuilder) WithMetaDataProperties(metaDataProperties ...QualifiedName) PublishedVariableDataTypeBuilder {
+	b.MetaDataProperties = metaDataProperties
+	return b
+}
+
+func (b *_PublishedVariableDataTypeBuilder) Build() (PublishedVariableDataType, error) {
+	if b.PublishedVariable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'publishedVariable' not set"))
+	}
+	if b.IndexRange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'indexRange' not set"))
+	}
+	if b.SubstituteValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'substituteValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PublishedVariableDataType.deepCopy(), nil
+}
+
+func (b *_PublishedVariableDataTypeBuilder) MustBuild() PublishedVariableDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PublishedVariableDataTypeBuilder) DeepCopy() any {
-	return m.CreatePublishedVariableDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PublishedVariableDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PublishedVariableDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PublishedVariableDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreatePublishedVariableDataTypeBuilder().(*_PublishedVariableDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePublishedVariableDataTypeBuilder creates a PublishedVariableDataTypeBuilder
-func (m *_PublishedVariableDataType) CreatePublishedVariableDataTypeBuilder() PublishedVariableDataTypeBuilder {
-	if m == nil {
+func (b *_PublishedVariableDataType) CreatePublishedVariableDataTypeBuilder() PublishedVariableDataTypeBuilder {
+	if b == nil {
 		return NewPublishedVariableDataTypeBuilder()
 	}
-	return &_PublishedVariableDataTypeBuilder{_PublishedVariableDataType: m.deepCopy()}
+	return &_PublishedVariableDataTypeBuilder{_PublishedVariableDataType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -571,9 +605,13 @@ func (m *_PublishedVariableDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

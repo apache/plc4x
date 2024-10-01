@@ -98,6 +98,8 @@ type WriteResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) WriteResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) WriteResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) WriteResponseBuilder
 	// WithNoOfResults adds NoOfResults (property field)
 	WithNoOfResults(int32) WriteResponseBuilder
 	// WithResults adds Results (property field)
@@ -120,71 +122,103 @@ func NewWriteResponseBuilder() WriteResponseBuilder {
 type _WriteResponseBuilder struct {
 	*_WriteResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (WriteResponseBuilder) = (*_WriteResponseBuilder)(nil)
 
-func (m *_WriteResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) WriteResponseBuilder {
-	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_WriteResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_WriteResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) WriteResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_WriteResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) WriteResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (m *_WriteResponseBuilder) WithNoOfResults(noOfResults int32) WriteResponseBuilder {
-	m.NoOfResults = noOfResults
-	return m
+func (b *_WriteResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) WriteResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
 }
 
-func (m *_WriteResponseBuilder) WithResults(results ...StatusCode) WriteResponseBuilder {
-	m.Results = results
-	return m
-}
-
-func (m *_WriteResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) WriteResponseBuilder {
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
-	return m
-}
-
-func (m *_WriteResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) WriteResponseBuilder {
-	m.DiagnosticInfos = diagnosticInfos
-	return m
-}
-
-func (m *_WriteResponseBuilder) Build() (WriteResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_WriteResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) WriteResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._WriteResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_WriteResponseBuilder) MustBuild() WriteResponse {
-	build, err := m.Build()
+func (b *_WriteResponseBuilder) WithNoOfResults(noOfResults int32) WriteResponseBuilder {
+	b.NoOfResults = noOfResults
+	return b
+}
+
+func (b *_WriteResponseBuilder) WithResults(results ...StatusCode) WriteResponseBuilder {
+	b.Results = results
+	return b
+}
+
+func (b *_WriteResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) WriteResponseBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_WriteResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) WriteResponseBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_WriteResponseBuilder) Build() (WriteResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._WriteResponse.deepCopy(), nil
+}
+
+func (b *_WriteResponseBuilder) MustBuild() WriteResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_WriteResponseBuilder) DeepCopy() any {
-	return m.CreateWriteResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_WriteResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_WriteResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_WriteResponseBuilder) DeepCopy() any {
+	_copy := b.CreateWriteResponseBuilder().(*_WriteResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateWriteResponseBuilder creates a WriteResponseBuilder
-func (m *_WriteResponse) CreateWriteResponseBuilder() WriteResponseBuilder {
-	if m == nil {
+func (b *_WriteResponse) CreateWriteResponseBuilder() WriteResponseBuilder {
+	if b == nil {
 		return NewWriteResponseBuilder()
 	}
-	return &_WriteResponseBuilder{_WriteResponse: m.deepCopy()}
+	return &_WriteResponseBuilder{_WriteResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -414,9 +448,13 @@ func (m *_WriteResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

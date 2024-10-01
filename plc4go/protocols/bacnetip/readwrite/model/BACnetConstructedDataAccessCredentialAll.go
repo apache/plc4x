@@ -85,40 +85,59 @@ func NewBACnetConstructedDataAccessCredentialAllBuilder() BACnetConstructedDataA
 type _BACnetConstructedDataAccessCredentialAllBuilder struct {
 	*_BACnetConstructedDataAccessCredentialAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccessCredentialAllBuilder) = (*_BACnetConstructedDataAccessCredentialAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccessCredentialAllBuilder) WithMandatoryFields() BACnetConstructedDataAccessCredentialAllBuilder {
-	return m
+func (b *_BACnetConstructedDataAccessCredentialAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccessCredentialAllBuilder) Build() (BACnetConstructedDataAccessCredentialAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataAccessCredentialAllBuilder) WithMandatoryFields() BACnetConstructedDataAccessCredentialAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataAccessCredentialAllBuilder) Build() (BACnetConstructedDataAccessCredentialAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAccessCredentialAll.deepCopy(), nil
+	return b._BACnetConstructedDataAccessCredentialAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAccessCredentialAllBuilder) MustBuild() BACnetConstructedDataAccessCredentialAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccessCredentialAllBuilder) MustBuild() BACnetConstructedDataAccessCredentialAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccessCredentialAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccessCredentialAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccessCredentialAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccessCredentialAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccessCredentialAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccessCredentialAllBuilder().(*_BACnetConstructedDataAccessCredentialAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccessCredentialAllBuilder creates a BACnetConstructedDataAccessCredentialAllBuilder
-func (m *_BACnetConstructedDataAccessCredentialAll) CreateBACnetConstructedDataAccessCredentialAllBuilder() BACnetConstructedDataAccessCredentialAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccessCredentialAll) CreateBACnetConstructedDataAccessCredentialAllBuilder() BACnetConstructedDataAccessCredentialAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccessCredentialAllBuilder()
 	}
-	return &_BACnetConstructedDataAccessCredentialAllBuilder{_BACnetConstructedDataAccessCredentialAll: m.deepCopy()}
+	return &_BACnetConstructedDataAccessCredentialAllBuilder{_BACnetConstructedDataAccessCredentialAll: b.deepCopy()}
 }
 
 ///////////////////////
@@ -243,9 +262,13 @@ func (m *_BACnetConstructedDataAccessCredentialAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

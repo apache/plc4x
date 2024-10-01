@@ -85,40 +85,59 @@ func NewSysexCommandSamplingIntervalBuilder() SysexCommandSamplingIntervalBuilde
 type _SysexCommandSamplingIntervalBuilder struct {
 	*_SysexCommandSamplingInterval
 
+	parentBuilder *_SysexCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SysexCommandSamplingIntervalBuilder) = (*_SysexCommandSamplingIntervalBuilder)(nil)
 
-func (m *_SysexCommandSamplingIntervalBuilder) WithMandatoryFields() SysexCommandSamplingIntervalBuilder {
-	return m
+func (b *_SysexCommandSamplingIntervalBuilder) setParent(contract SysexCommandContract) {
+	b.SysexCommandContract = contract
 }
 
-func (m *_SysexCommandSamplingIntervalBuilder) Build() (SysexCommandSamplingInterval, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SysexCommandSamplingIntervalBuilder) WithMandatoryFields() SysexCommandSamplingIntervalBuilder {
+	return b
+}
+
+func (b *_SysexCommandSamplingIntervalBuilder) Build() (SysexCommandSamplingInterval, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SysexCommandSamplingInterval.deepCopy(), nil
+	return b._SysexCommandSamplingInterval.deepCopy(), nil
 }
 
-func (m *_SysexCommandSamplingIntervalBuilder) MustBuild() SysexCommandSamplingInterval {
-	build, err := m.Build()
+func (b *_SysexCommandSamplingIntervalBuilder) MustBuild() SysexCommandSamplingInterval {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SysexCommandSamplingIntervalBuilder) DeepCopy() any {
-	return m.CreateSysexCommandSamplingIntervalBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SysexCommandSamplingIntervalBuilder) Done() SysexCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SysexCommandSamplingIntervalBuilder) buildForSysexCommand() (SysexCommand, error) {
+	return b.Build()
+}
+
+func (b *_SysexCommandSamplingIntervalBuilder) DeepCopy() any {
+	_copy := b.CreateSysexCommandSamplingIntervalBuilder().(*_SysexCommandSamplingIntervalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSysexCommandSamplingIntervalBuilder creates a SysexCommandSamplingIntervalBuilder
-func (m *_SysexCommandSamplingInterval) CreateSysexCommandSamplingIntervalBuilder() SysexCommandSamplingIntervalBuilder {
-	if m == nil {
+func (b *_SysexCommandSamplingInterval) CreateSysexCommandSamplingIntervalBuilder() SysexCommandSamplingIntervalBuilder {
+	if b == nil {
 		return NewSysexCommandSamplingIntervalBuilder()
 	}
-	return &_SysexCommandSamplingIntervalBuilder{_SysexCommandSamplingInterval: m.deepCopy()}
+	return &_SysexCommandSamplingIntervalBuilder{_SysexCommandSamplingInterval: b.deepCopy()}
 }
 
 ///////////////////////
@@ -238,9 +257,13 @@ func (m *_SysexCommandSamplingInterval) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

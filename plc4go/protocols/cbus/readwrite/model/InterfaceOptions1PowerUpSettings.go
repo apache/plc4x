@@ -95,59 +95,63 @@ type _InterfaceOptions1PowerUpSettingsBuilder struct {
 
 var _ (InterfaceOptions1PowerUpSettingsBuilder) = (*_InterfaceOptions1PowerUpSettingsBuilder)(nil)
 
-func (m *_InterfaceOptions1PowerUpSettingsBuilder) WithMandatoryFields(interfaceOptions1 InterfaceOptions1) InterfaceOptions1PowerUpSettingsBuilder {
-	return m.WithInterfaceOptions1(interfaceOptions1)
+func (b *_InterfaceOptions1PowerUpSettingsBuilder) WithMandatoryFields(interfaceOptions1 InterfaceOptions1) InterfaceOptions1PowerUpSettingsBuilder {
+	return b.WithInterfaceOptions1(interfaceOptions1)
 }
 
-func (m *_InterfaceOptions1PowerUpSettingsBuilder) WithInterfaceOptions1(interfaceOptions1 InterfaceOptions1) InterfaceOptions1PowerUpSettingsBuilder {
-	m.InterfaceOptions1 = interfaceOptions1
-	return m
+func (b *_InterfaceOptions1PowerUpSettingsBuilder) WithInterfaceOptions1(interfaceOptions1 InterfaceOptions1) InterfaceOptions1PowerUpSettingsBuilder {
+	b.InterfaceOptions1 = interfaceOptions1
+	return b
 }
 
-func (m *_InterfaceOptions1PowerUpSettingsBuilder) WithInterfaceOptions1Builder(builderSupplier func(InterfaceOptions1Builder) InterfaceOptions1Builder) InterfaceOptions1PowerUpSettingsBuilder {
-	builder := builderSupplier(m.InterfaceOptions1.CreateInterfaceOptions1Builder())
+func (b *_InterfaceOptions1PowerUpSettingsBuilder) WithInterfaceOptions1Builder(builderSupplier func(InterfaceOptions1Builder) InterfaceOptions1Builder) InterfaceOptions1PowerUpSettingsBuilder {
+	builder := builderSupplier(b.InterfaceOptions1.CreateInterfaceOptions1Builder())
 	var err error
-	m.InterfaceOptions1, err = builder.Build()
+	b.InterfaceOptions1, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "InterfaceOptions1Builder failed"))
+		b.err.Append(errors.Wrap(err, "InterfaceOptions1Builder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_InterfaceOptions1PowerUpSettingsBuilder) Build() (InterfaceOptions1PowerUpSettings, error) {
-	if m.InterfaceOptions1 == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_InterfaceOptions1PowerUpSettingsBuilder) Build() (InterfaceOptions1PowerUpSettings, error) {
+	if b.InterfaceOptions1 == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'interfaceOptions1' not set"))
+		b.err.Append(errors.New("mandatory field 'interfaceOptions1' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._InterfaceOptions1PowerUpSettings.deepCopy(), nil
+	return b._InterfaceOptions1PowerUpSettings.deepCopy(), nil
 }
 
-func (m *_InterfaceOptions1PowerUpSettingsBuilder) MustBuild() InterfaceOptions1PowerUpSettings {
-	build, err := m.Build()
+func (b *_InterfaceOptions1PowerUpSettingsBuilder) MustBuild() InterfaceOptions1PowerUpSettings {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_InterfaceOptions1PowerUpSettingsBuilder) DeepCopy() any {
-	return m.CreateInterfaceOptions1PowerUpSettingsBuilder()
+func (b *_InterfaceOptions1PowerUpSettingsBuilder) DeepCopy() any {
+	_copy := b.CreateInterfaceOptions1PowerUpSettingsBuilder().(*_InterfaceOptions1PowerUpSettingsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateInterfaceOptions1PowerUpSettingsBuilder creates a InterfaceOptions1PowerUpSettingsBuilder
-func (m *_InterfaceOptions1PowerUpSettings) CreateInterfaceOptions1PowerUpSettingsBuilder() InterfaceOptions1PowerUpSettingsBuilder {
-	if m == nil {
+func (b *_InterfaceOptions1PowerUpSettings) CreateInterfaceOptions1PowerUpSettingsBuilder() InterfaceOptions1PowerUpSettingsBuilder {
+	if b == nil {
 		return NewInterfaceOptions1PowerUpSettingsBuilder()
 	}
-	return &_InterfaceOptions1PowerUpSettingsBuilder{_InterfaceOptions1PowerUpSettings: m.deepCopy()}
+	return &_InterfaceOptions1PowerUpSettingsBuilder{_InterfaceOptions1PowerUpSettings: b.deepCopy()}
 }
 
 ///////////////////////
@@ -284,9 +288,13 @@ func (m *_InterfaceOptions1PowerUpSettings) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

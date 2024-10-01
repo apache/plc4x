@@ -98,64 +98,83 @@ func NewNetworkAddressDataTypeBuilder() NetworkAddressDataTypeBuilder {
 type _NetworkAddressDataTypeBuilder struct {
 	*_NetworkAddressDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NetworkAddressDataTypeBuilder) = (*_NetworkAddressDataTypeBuilder)(nil)
 
-func (m *_NetworkAddressDataTypeBuilder) WithMandatoryFields(networkInterface PascalString) NetworkAddressDataTypeBuilder {
-	return m.WithNetworkInterface(networkInterface)
+func (b *_NetworkAddressDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_NetworkAddressDataTypeBuilder) WithNetworkInterface(networkInterface PascalString) NetworkAddressDataTypeBuilder {
-	m.NetworkInterface = networkInterface
-	return m
+func (b *_NetworkAddressDataTypeBuilder) WithMandatoryFields(networkInterface PascalString) NetworkAddressDataTypeBuilder {
+	return b.WithNetworkInterface(networkInterface)
 }
 
-func (m *_NetworkAddressDataTypeBuilder) WithNetworkInterfaceBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) NetworkAddressDataTypeBuilder {
-	builder := builderSupplier(m.NetworkInterface.CreatePascalStringBuilder())
+func (b *_NetworkAddressDataTypeBuilder) WithNetworkInterface(networkInterface PascalString) NetworkAddressDataTypeBuilder {
+	b.NetworkInterface = networkInterface
+	return b
+}
+
+func (b *_NetworkAddressDataTypeBuilder) WithNetworkInterfaceBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) NetworkAddressDataTypeBuilder {
+	builder := builderSupplier(b.NetworkInterface.CreatePascalStringBuilder())
 	var err error
-	m.NetworkInterface, err = builder.Build()
+	b.NetworkInterface, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_NetworkAddressDataTypeBuilder) Build() (NetworkAddressDataType, error) {
-	if m.NetworkInterface == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_NetworkAddressDataTypeBuilder) Build() (NetworkAddressDataType, error) {
+	if b.NetworkInterface == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'networkInterface' not set"))
+		b.err.Append(errors.New("mandatory field 'networkInterface' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NetworkAddressDataType.deepCopy(), nil
+	return b._NetworkAddressDataType.deepCopy(), nil
 }
 
-func (m *_NetworkAddressDataTypeBuilder) MustBuild() NetworkAddressDataType {
-	build, err := m.Build()
+func (b *_NetworkAddressDataTypeBuilder) MustBuild() NetworkAddressDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NetworkAddressDataTypeBuilder) DeepCopy() any {
-	return m.CreateNetworkAddressDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NetworkAddressDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NetworkAddressDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_NetworkAddressDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateNetworkAddressDataTypeBuilder().(*_NetworkAddressDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNetworkAddressDataTypeBuilder creates a NetworkAddressDataTypeBuilder
-func (m *_NetworkAddressDataType) CreateNetworkAddressDataTypeBuilder() NetworkAddressDataTypeBuilder {
-	if m == nil {
+func (b *_NetworkAddressDataType) CreateNetworkAddressDataTypeBuilder() NetworkAddressDataTypeBuilder {
+	if b == nil {
 		return NewNetworkAddressDataTypeBuilder()
 	}
-	return &_NetworkAddressDataTypeBuilder{_NetworkAddressDataType: m.deepCopy()}
+	return &_NetworkAddressDataTypeBuilder{_NetworkAddressDataType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -299,9 +318,13 @@ func (m *_NetworkAddressDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

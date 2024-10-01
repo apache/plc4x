@@ -100,64 +100,83 @@ func NewBACnetConstructedDataIPv6DefaultGatewayBuilder() BACnetConstructedDataIP
 type _BACnetConstructedDataIPv6DefaultGatewayBuilder struct {
 	*_BACnetConstructedDataIPv6DefaultGateway
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataIPv6DefaultGatewayBuilder) = (*_BACnetConstructedDataIPv6DefaultGatewayBuilder)(nil)
 
-func (m *_BACnetConstructedDataIPv6DefaultGatewayBuilder) WithMandatoryFields(ipv6DefaultGateway BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DefaultGatewayBuilder {
-	return m.WithIpv6DefaultGateway(ipv6DefaultGateway)
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataIPv6DefaultGatewayBuilder) WithIpv6DefaultGateway(ipv6DefaultGateway BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DefaultGatewayBuilder {
-	m.Ipv6DefaultGateway = ipv6DefaultGateway
-	return m
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) WithMandatoryFields(ipv6DefaultGateway BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DefaultGatewayBuilder {
+	return b.WithIpv6DefaultGateway(ipv6DefaultGateway)
 }
 
-func (m *_BACnetConstructedDataIPv6DefaultGatewayBuilder) WithIpv6DefaultGatewayBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPv6DefaultGatewayBuilder {
-	builder := builderSupplier(m.Ipv6DefaultGateway.CreateBACnetApplicationTagOctetStringBuilder())
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) WithIpv6DefaultGateway(ipv6DefaultGateway BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DefaultGatewayBuilder {
+	b.Ipv6DefaultGateway = ipv6DefaultGateway
+	return b
+}
+
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) WithIpv6DefaultGatewayBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPv6DefaultGatewayBuilder {
+	builder := builderSupplier(b.Ipv6DefaultGateway.CreateBACnetApplicationTagOctetStringBuilder())
 	var err error
-	m.Ipv6DefaultGateway, err = builder.Build()
+	b.Ipv6DefaultGateway, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataIPv6DefaultGatewayBuilder) Build() (BACnetConstructedDataIPv6DefaultGateway, error) {
-	if m.Ipv6DefaultGateway == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) Build() (BACnetConstructedDataIPv6DefaultGateway, error) {
+	if b.Ipv6DefaultGateway == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'ipv6DefaultGateway' not set"))
+		b.err.Append(errors.New("mandatory field 'ipv6DefaultGateway' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataIPv6DefaultGateway.deepCopy(), nil
+	return b._BACnetConstructedDataIPv6DefaultGateway.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataIPv6DefaultGatewayBuilder) MustBuild() BACnetConstructedDataIPv6DefaultGateway {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) MustBuild() BACnetConstructedDataIPv6DefaultGateway {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataIPv6DefaultGatewayBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataIPv6DefaultGatewayBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPv6DefaultGatewayBuilder().(*_BACnetConstructedDataIPv6DefaultGatewayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataIPv6DefaultGatewayBuilder creates a BACnetConstructedDataIPv6DefaultGatewayBuilder
-func (m *_BACnetConstructedDataIPv6DefaultGateway) CreateBACnetConstructedDataIPv6DefaultGatewayBuilder() BACnetConstructedDataIPv6DefaultGatewayBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataIPv6DefaultGateway) CreateBACnetConstructedDataIPv6DefaultGatewayBuilder() BACnetConstructedDataIPv6DefaultGatewayBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataIPv6DefaultGatewayBuilder()
 	}
-	return &_BACnetConstructedDataIPv6DefaultGatewayBuilder{_BACnetConstructedDataIPv6DefaultGateway: m.deepCopy()}
+	return &_BACnetConstructedDataIPv6DefaultGatewayBuilder{_BACnetConstructedDataIPv6DefaultGateway: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataIPv6DefaultGateway) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

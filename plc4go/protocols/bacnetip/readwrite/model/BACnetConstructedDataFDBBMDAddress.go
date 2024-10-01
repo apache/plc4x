@@ -100,64 +100,83 @@ func NewBACnetConstructedDataFDBBMDAddressBuilder() BACnetConstructedDataFDBBMDA
 type _BACnetConstructedDataFDBBMDAddressBuilder struct {
 	*_BACnetConstructedDataFDBBMDAddress
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataFDBBMDAddressBuilder) = (*_BACnetConstructedDataFDBBMDAddressBuilder)(nil)
 
-func (m *_BACnetConstructedDataFDBBMDAddressBuilder) WithMandatoryFields(fDBBMDAddress BACnetHostNPort) BACnetConstructedDataFDBBMDAddressBuilder {
-	return m.WithFDBBMDAddress(fDBBMDAddress)
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataFDBBMDAddressBuilder) WithFDBBMDAddress(fDBBMDAddress BACnetHostNPort) BACnetConstructedDataFDBBMDAddressBuilder {
-	m.FDBBMDAddress = fDBBMDAddress
-	return m
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) WithMandatoryFields(fDBBMDAddress BACnetHostNPort) BACnetConstructedDataFDBBMDAddressBuilder {
+	return b.WithFDBBMDAddress(fDBBMDAddress)
 }
 
-func (m *_BACnetConstructedDataFDBBMDAddressBuilder) WithFDBBMDAddressBuilder(builderSupplier func(BACnetHostNPortBuilder) BACnetHostNPortBuilder) BACnetConstructedDataFDBBMDAddressBuilder {
-	builder := builderSupplier(m.FDBBMDAddress.CreateBACnetHostNPortBuilder())
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) WithFDBBMDAddress(fDBBMDAddress BACnetHostNPort) BACnetConstructedDataFDBBMDAddressBuilder {
+	b.FDBBMDAddress = fDBBMDAddress
+	return b
+}
+
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) WithFDBBMDAddressBuilder(builderSupplier func(BACnetHostNPortBuilder) BACnetHostNPortBuilder) BACnetConstructedDataFDBBMDAddressBuilder {
+	builder := builderSupplier(b.FDBBMDAddress.CreateBACnetHostNPortBuilder())
 	var err error
-	m.FDBBMDAddress, err = builder.Build()
+	b.FDBBMDAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetHostNPortBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetHostNPortBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataFDBBMDAddressBuilder) Build() (BACnetConstructedDataFDBBMDAddress, error) {
-	if m.FDBBMDAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) Build() (BACnetConstructedDataFDBBMDAddress, error) {
+	if b.FDBBMDAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'fDBBMDAddress' not set"))
+		b.err.Append(errors.New("mandatory field 'fDBBMDAddress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataFDBBMDAddress.deepCopy(), nil
+	return b._BACnetConstructedDataFDBBMDAddress.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataFDBBMDAddressBuilder) MustBuild() BACnetConstructedDataFDBBMDAddress {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) MustBuild() BACnetConstructedDataFDBBMDAddress {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataFDBBMDAddressBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataFDBBMDAddressBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFDBBMDAddressBuilder().(*_BACnetConstructedDataFDBBMDAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataFDBBMDAddressBuilder creates a BACnetConstructedDataFDBBMDAddressBuilder
-func (m *_BACnetConstructedDataFDBBMDAddress) CreateBACnetConstructedDataFDBBMDAddressBuilder() BACnetConstructedDataFDBBMDAddressBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataFDBBMDAddress) CreateBACnetConstructedDataFDBBMDAddressBuilder() BACnetConstructedDataFDBBMDAddressBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataFDBBMDAddressBuilder()
 	}
-	return &_BACnetConstructedDataFDBBMDAddressBuilder{_BACnetConstructedDataFDBBMDAddress: m.deepCopy()}
+	return &_BACnetConstructedDataFDBBMDAddressBuilder{_BACnetConstructedDataFDBBMDAddress: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataFDBBMDAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

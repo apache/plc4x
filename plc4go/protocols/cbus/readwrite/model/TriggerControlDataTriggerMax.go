@@ -85,40 +85,59 @@ func NewTriggerControlDataTriggerMaxBuilder() TriggerControlDataTriggerMaxBuilde
 type _TriggerControlDataTriggerMaxBuilder struct {
 	*_TriggerControlDataTriggerMax
 
+	parentBuilder *_TriggerControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TriggerControlDataTriggerMaxBuilder) = (*_TriggerControlDataTriggerMaxBuilder)(nil)
 
-func (m *_TriggerControlDataTriggerMaxBuilder) WithMandatoryFields() TriggerControlDataTriggerMaxBuilder {
-	return m
+func (b *_TriggerControlDataTriggerMaxBuilder) setParent(contract TriggerControlDataContract) {
+	b.TriggerControlDataContract = contract
 }
 
-func (m *_TriggerControlDataTriggerMaxBuilder) Build() (TriggerControlDataTriggerMax, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TriggerControlDataTriggerMaxBuilder) WithMandatoryFields() TriggerControlDataTriggerMaxBuilder {
+	return b
+}
+
+func (b *_TriggerControlDataTriggerMaxBuilder) Build() (TriggerControlDataTriggerMax, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TriggerControlDataTriggerMax.deepCopy(), nil
+	return b._TriggerControlDataTriggerMax.deepCopy(), nil
 }
 
-func (m *_TriggerControlDataTriggerMaxBuilder) MustBuild() TriggerControlDataTriggerMax {
-	build, err := m.Build()
+func (b *_TriggerControlDataTriggerMaxBuilder) MustBuild() TriggerControlDataTriggerMax {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TriggerControlDataTriggerMaxBuilder) DeepCopy() any {
-	return m.CreateTriggerControlDataTriggerMaxBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TriggerControlDataTriggerMaxBuilder) Done() TriggerControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TriggerControlDataTriggerMaxBuilder) buildForTriggerControlData() (TriggerControlData, error) {
+	return b.Build()
+}
+
+func (b *_TriggerControlDataTriggerMaxBuilder) DeepCopy() any {
+	_copy := b.CreateTriggerControlDataTriggerMaxBuilder().(*_TriggerControlDataTriggerMaxBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTriggerControlDataTriggerMaxBuilder creates a TriggerControlDataTriggerMaxBuilder
-func (m *_TriggerControlDataTriggerMax) CreateTriggerControlDataTriggerMaxBuilder() TriggerControlDataTriggerMaxBuilder {
-	if m == nil {
+func (b *_TriggerControlDataTriggerMax) CreateTriggerControlDataTriggerMaxBuilder() TriggerControlDataTriggerMaxBuilder {
+	if b == nil {
 		return NewTriggerControlDataTriggerMaxBuilder()
 	}
-	return &_TriggerControlDataTriggerMaxBuilder{_TriggerControlDataTriggerMax: m.deepCopy()}
+	return &_TriggerControlDataTriggerMaxBuilder{_TriggerControlDataTriggerMax: b.deepCopy()}
 }
 
 ///////////////////////
@@ -230,9 +249,13 @@ func (m *_TriggerControlDataTriggerMax) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

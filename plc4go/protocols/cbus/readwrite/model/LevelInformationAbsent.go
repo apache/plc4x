@@ -89,40 +89,59 @@ func NewLevelInformationAbsentBuilder() LevelInformationAbsentBuilder {
 type _LevelInformationAbsentBuilder struct {
 	*_LevelInformationAbsent
 
+	parentBuilder *_LevelInformationBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LevelInformationAbsentBuilder) = (*_LevelInformationAbsentBuilder)(nil)
 
-func (m *_LevelInformationAbsentBuilder) WithMandatoryFields() LevelInformationAbsentBuilder {
-	return m
+func (b *_LevelInformationAbsentBuilder) setParent(contract LevelInformationContract) {
+	b.LevelInformationContract = contract
 }
 
-func (m *_LevelInformationAbsentBuilder) Build() (LevelInformationAbsent, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_LevelInformationAbsentBuilder) WithMandatoryFields() LevelInformationAbsentBuilder {
+	return b
+}
+
+func (b *_LevelInformationAbsentBuilder) Build() (LevelInformationAbsent, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LevelInformationAbsent.deepCopy(), nil
+	return b._LevelInformationAbsent.deepCopy(), nil
 }
 
-func (m *_LevelInformationAbsentBuilder) MustBuild() LevelInformationAbsent {
-	build, err := m.Build()
+func (b *_LevelInformationAbsentBuilder) MustBuild() LevelInformationAbsent {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LevelInformationAbsentBuilder) DeepCopy() any {
-	return m.CreateLevelInformationAbsentBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LevelInformationAbsentBuilder) Done() LevelInformationBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LevelInformationAbsentBuilder) buildForLevelInformation() (LevelInformation, error) {
+	return b.Build()
+}
+
+func (b *_LevelInformationAbsentBuilder) DeepCopy() any {
+	_copy := b.CreateLevelInformationAbsentBuilder().(*_LevelInformationAbsentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLevelInformationAbsentBuilder creates a LevelInformationAbsentBuilder
-func (m *_LevelInformationAbsent) CreateLevelInformationAbsentBuilder() LevelInformationAbsentBuilder {
-	if m == nil {
+func (b *_LevelInformationAbsent) CreateLevelInformationAbsentBuilder() LevelInformationAbsentBuilder {
+	if b == nil {
 		return NewLevelInformationAbsentBuilder()
 	}
-	return &_LevelInformationAbsentBuilder{_LevelInformationAbsent: m.deepCopy()}
+	return &_LevelInformationAbsentBuilder{_LevelInformationAbsent: b.deepCopy()}
 }
 
 ///////////////////////
@@ -248,9 +267,13 @@ func (m *_LevelInformationAbsent) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

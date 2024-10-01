@@ -85,40 +85,59 @@ func NewApduDataExtKeyWriteBuilder() ApduDataExtKeyWriteBuilder {
 type _ApduDataExtKeyWriteBuilder struct {
 	*_ApduDataExtKeyWrite
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtKeyWriteBuilder) = (*_ApduDataExtKeyWriteBuilder)(nil)
 
-func (m *_ApduDataExtKeyWriteBuilder) WithMandatoryFields() ApduDataExtKeyWriteBuilder {
-	return m
+func (b *_ApduDataExtKeyWriteBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtKeyWriteBuilder) Build() (ApduDataExtKeyWrite, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtKeyWriteBuilder) WithMandatoryFields() ApduDataExtKeyWriteBuilder {
+	return b
+}
+
+func (b *_ApduDataExtKeyWriteBuilder) Build() (ApduDataExtKeyWrite, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtKeyWrite.deepCopy(), nil
+	return b._ApduDataExtKeyWrite.deepCopy(), nil
 }
 
-func (m *_ApduDataExtKeyWriteBuilder) MustBuild() ApduDataExtKeyWrite {
-	build, err := m.Build()
+func (b *_ApduDataExtKeyWriteBuilder) MustBuild() ApduDataExtKeyWrite {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtKeyWriteBuilder) DeepCopy() any {
-	return m.CreateApduDataExtKeyWriteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtKeyWriteBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtKeyWriteBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtKeyWriteBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtKeyWriteBuilder().(*_ApduDataExtKeyWriteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtKeyWriteBuilder creates a ApduDataExtKeyWriteBuilder
-func (m *_ApduDataExtKeyWrite) CreateApduDataExtKeyWriteBuilder() ApduDataExtKeyWriteBuilder {
-	if m == nil {
+func (b *_ApduDataExtKeyWrite) CreateApduDataExtKeyWriteBuilder() ApduDataExtKeyWriteBuilder {
+	if b == nil {
 		return NewApduDataExtKeyWriteBuilder()
 	}
-	return &_ApduDataExtKeyWriteBuilder{_ApduDataExtKeyWrite: m.deepCopy()}
+	return &_ApduDataExtKeyWriteBuilder{_ApduDataExtKeyWrite: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_ApduDataExtKeyWrite) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

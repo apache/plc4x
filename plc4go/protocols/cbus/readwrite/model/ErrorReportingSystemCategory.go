@@ -82,6 +82,8 @@ type ErrorReportingSystemCategoryBuilder interface {
 	WithSystemCategoryClass(ErrorReportingSystemCategoryClass) ErrorReportingSystemCategoryBuilder
 	// WithSystemCategoryType adds SystemCategoryType (property field)
 	WithSystemCategoryType(ErrorReportingSystemCategoryType) ErrorReportingSystemCategoryBuilder
+	// WithSystemCategoryTypeBuilder adds SystemCategoryType (property field) which is build by the builder
+	WithSystemCategoryTypeBuilder(func(ErrorReportingSystemCategoryTypeBuilder) ErrorReportingSystemCategoryTypeBuilder) ErrorReportingSystemCategoryBuilder
 	// WithSystemCategoryVariant adds SystemCategoryVariant (property field)
 	WithSystemCategoryVariant(ErrorReportingSystemCategoryVariant) ErrorReportingSystemCategoryBuilder
 	// Build builds the ErrorReportingSystemCategory or returns an error if something is wrong
@@ -103,56 +105,73 @@ type _ErrorReportingSystemCategoryBuilder struct {
 
 var _ (ErrorReportingSystemCategoryBuilder) = (*_ErrorReportingSystemCategoryBuilder)(nil)
 
-func (m *_ErrorReportingSystemCategoryBuilder) WithMandatoryFields(systemCategoryClass ErrorReportingSystemCategoryClass, systemCategoryType ErrorReportingSystemCategoryType, systemCategoryVariant ErrorReportingSystemCategoryVariant) ErrorReportingSystemCategoryBuilder {
-	return m.WithSystemCategoryClass(systemCategoryClass).WithSystemCategoryType(systemCategoryType).WithSystemCategoryVariant(systemCategoryVariant)
+func (b *_ErrorReportingSystemCategoryBuilder) WithMandatoryFields(systemCategoryClass ErrorReportingSystemCategoryClass, systemCategoryType ErrorReportingSystemCategoryType, systemCategoryVariant ErrorReportingSystemCategoryVariant) ErrorReportingSystemCategoryBuilder {
+	return b.WithSystemCategoryClass(systemCategoryClass).WithSystemCategoryType(systemCategoryType).WithSystemCategoryVariant(systemCategoryVariant)
 }
 
-func (m *_ErrorReportingSystemCategoryBuilder) WithSystemCategoryClass(systemCategoryClass ErrorReportingSystemCategoryClass) ErrorReportingSystemCategoryBuilder {
-	m.SystemCategoryClass = systemCategoryClass
-	return m
+func (b *_ErrorReportingSystemCategoryBuilder) WithSystemCategoryClass(systemCategoryClass ErrorReportingSystemCategoryClass) ErrorReportingSystemCategoryBuilder {
+	b.SystemCategoryClass = systemCategoryClass
+	return b
 }
 
-func (m *_ErrorReportingSystemCategoryBuilder) WithSystemCategoryType(systemCategoryType ErrorReportingSystemCategoryType) ErrorReportingSystemCategoryBuilder {
-	m.SystemCategoryType = systemCategoryType
-	return m
+func (b *_ErrorReportingSystemCategoryBuilder) WithSystemCategoryType(systemCategoryType ErrorReportingSystemCategoryType) ErrorReportingSystemCategoryBuilder {
+	b.SystemCategoryType = systemCategoryType
+	return b
 }
 
-func (m *_ErrorReportingSystemCategoryBuilder) WithSystemCategoryVariant(systemCategoryVariant ErrorReportingSystemCategoryVariant) ErrorReportingSystemCategoryBuilder {
-	m.SystemCategoryVariant = systemCategoryVariant
-	return m
-}
-
-func (m *_ErrorReportingSystemCategoryBuilder) Build() (ErrorReportingSystemCategory, error) {
-	if m.SystemCategoryType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ErrorReportingSystemCategoryBuilder) WithSystemCategoryTypeBuilder(builderSupplier func(ErrorReportingSystemCategoryTypeBuilder) ErrorReportingSystemCategoryTypeBuilder) ErrorReportingSystemCategoryBuilder {
+	builder := builderSupplier(b.SystemCategoryType.CreateErrorReportingSystemCategoryTypeBuilder())
+	var err error
+	b.SystemCategoryType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'systemCategoryType' not set"))
+		b.err.Append(errors.Wrap(err, "ErrorReportingSystemCategoryTypeBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._ErrorReportingSystemCategory.deepCopy(), nil
+	return b
 }
 
-func (m *_ErrorReportingSystemCategoryBuilder) MustBuild() ErrorReportingSystemCategory {
-	build, err := m.Build()
+func (b *_ErrorReportingSystemCategoryBuilder) WithSystemCategoryVariant(systemCategoryVariant ErrorReportingSystemCategoryVariant) ErrorReportingSystemCategoryBuilder {
+	b.SystemCategoryVariant = systemCategoryVariant
+	return b
+}
+
+func (b *_ErrorReportingSystemCategoryBuilder) Build() (ErrorReportingSystemCategory, error) {
+	if b.SystemCategoryType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'systemCategoryType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ErrorReportingSystemCategory.deepCopy(), nil
+}
+
+func (b *_ErrorReportingSystemCategoryBuilder) MustBuild() ErrorReportingSystemCategory {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ErrorReportingSystemCategoryBuilder) DeepCopy() any {
-	return m.CreateErrorReportingSystemCategoryBuilder()
+func (b *_ErrorReportingSystemCategoryBuilder) DeepCopy() any {
+	_copy := b.CreateErrorReportingSystemCategoryBuilder().(*_ErrorReportingSystemCategoryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateErrorReportingSystemCategoryBuilder creates a ErrorReportingSystemCategoryBuilder
-func (m *_ErrorReportingSystemCategory) CreateErrorReportingSystemCategoryBuilder() ErrorReportingSystemCategoryBuilder {
-	if m == nil {
+func (b *_ErrorReportingSystemCategory) CreateErrorReportingSystemCategoryBuilder() ErrorReportingSystemCategoryBuilder {
+	if b == nil {
 		return NewErrorReportingSystemCategoryBuilder()
 	}
-	return &_ErrorReportingSystemCategoryBuilder{_ErrorReportingSystemCategory: m.deepCopy()}
+	return &_ErrorReportingSystemCategoryBuilder{_ErrorReportingSystemCategory: b.deepCopy()}
 }
 
 ///////////////////////
@@ -325,9 +344,13 @@ func (m *_ErrorReportingSystemCategory) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

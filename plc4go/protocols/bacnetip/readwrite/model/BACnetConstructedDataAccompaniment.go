@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAccompanimentBuilder() BACnetConstructedDataAccompa
 type _BACnetConstructedDataAccompanimentBuilder struct {
 	*_BACnetConstructedDataAccompaniment
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccompanimentBuilder) = (*_BACnetConstructedDataAccompanimentBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccompanimentBuilder) WithMandatoryFields(accompaniment BACnetDeviceObjectReference) BACnetConstructedDataAccompanimentBuilder {
-	return m.WithAccompaniment(accompaniment)
+func (b *_BACnetConstructedDataAccompanimentBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccompanimentBuilder) WithAccompaniment(accompaniment BACnetDeviceObjectReference) BACnetConstructedDataAccompanimentBuilder {
-	m.Accompaniment = accompaniment
-	return m
+func (b *_BACnetConstructedDataAccompanimentBuilder) WithMandatoryFields(accompaniment BACnetDeviceObjectReference) BACnetConstructedDataAccompanimentBuilder {
+	return b.WithAccompaniment(accompaniment)
 }
 
-func (m *_BACnetConstructedDataAccompanimentBuilder) WithAccompanimentBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataAccompanimentBuilder {
-	builder := builderSupplier(m.Accompaniment.CreateBACnetDeviceObjectReferenceBuilder())
+func (b *_BACnetConstructedDataAccompanimentBuilder) WithAccompaniment(accompaniment BACnetDeviceObjectReference) BACnetConstructedDataAccompanimentBuilder {
+	b.Accompaniment = accompaniment
+	return b
+}
+
+func (b *_BACnetConstructedDataAccompanimentBuilder) WithAccompanimentBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataAccompanimentBuilder {
+	builder := builderSupplier(b.Accompaniment.CreateBACnetDeviceObjectReferenceBuilder())
 	var err error
-	m.Accompaniment, err = builder.Build()
+	b.Accompaniment, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAccompanimentBuilder) Build() (BACnetConstructedDataAccompaniment, error) {
-	if m.Accompaniment == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAccompanimentBuilder) Build() (BACnetConstructedDataAccompaniment, error) {
+	if b.Accompaniment == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'accompaniment' not set"))
+		b.err.Append(errors.New("mandatory field 'accompaniment' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAccompaniment.deepCopy(), nil
+	return b._BACnetConstructedDataAccompaniment.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAccompanimentBuilder) MustBuild() BACnetConstructedDataAccompaniment {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccompanimentBuilder) MustBuild() BACnetConstructedDataAccompaniment {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccompanimentBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccompanimentBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccompanimentBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccompanimentBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccompanimentBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccompanimentBuilder().(*_BACnetConstructedDataAccompanimentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccompanimentBuilder creates a BACnetConstructedDataAccompanimentBuilder
-func (m *_BACnetConstructedDataAccompaniment) CreateBACnetConstructedDataAccompanimentBuilder() BACnetConstructedDataAccompanimentBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccompaniment) CreateBACnetConstructedDataAccompanimentBuilder() BACnetConstructedDataAccompanimentBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccompanimentBuilder()
 	}
-	return &_BACnetConstructedDataAccompanimentBuilder{_BACnetConstructedDataAccompaniment: m.deepCopy()}
+	return &_BACnetConstructedDataAccompanimentBuilder{_BACnetConstructedDataAccompaniment: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataAccompaniment) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

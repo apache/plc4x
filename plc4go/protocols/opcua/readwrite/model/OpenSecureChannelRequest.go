@@ -105,6 +105,8 @@ type OpenSecureChannelRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, clientProtocolVersion uint32, requestType SecurityTokenRequestType, securityMode MessageSecurityMode, clientNonce PascalByteString, requestedLifetime uint32) OpenSecureChannelRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) OpenSecureChannelRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) OpenSecureChannelRequestBuilder
 	// WithClientProtocolVersion adds ClientProtocolVersion (property field)
 	WithClientProtocolVersion(uint32) OpenSecureChannelRequestBuilder
 	// WithRequestType adds RequestType (property field)
@@ -131,95 +133,127 @@ func NewOpenSecureChannelRequestBuilder() OpenSecureChannelRequestBuilder {
 type _OpenSecureChannelRequestBuilder struct {
 	*_OpenSecureChannelRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (OpenSecureChannelRequestBuilder) = (*_OpenSecureChannelRequestBuilder)(nil)
 
-func (m *_OpenSecureChannelRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, clientProtocolVersion uint32, requestType SecurityTokenRequestType, securityMode MessageSecurityMode, clientNonce PascalByteString, requestedLifetime uint32) OpenSecureChannelRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithClientProtocolVersion(clientProtocolVersion).WithRequestType(requestType).WithSecurityMode(securityMode).WithClientNonce(clientNonce).WithRequestedLifetime(requestedLifetime)
+func (b *_OpenSecureChannelRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_OpenSecureChannelRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) OpenSecureChannelRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_OpenSecureChannelRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, clientProtocolVersion uint32, requestType SecurityTokenRequestType, securityMode MessageSecurityMode, clientNonce PascalByteString, requestedLifetime uint32) OpenSecureChannelRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithClientProtocolVersion(clientProtocolVersion).WithRequestType(requestType).WithSecurityMode(securityMode).WithClientNonce(clientNonce).WithRequestedLifetime(requestedLifetime)
 }
 
-func (m *_OpenSecureChannelRequestBuilder) WithClientProtocolVersion(clientProtocolVersion uint32) OpenSecureChannelRequestBuilder {
-	m.ClientProtocolVersion = clientProtocolVersion
-	return m
+func (b *_OpenSecureChannelRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) OpenSecureChannelRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_OpenSecureChannelRequestBuilder) WithRequestType(requestType SecurityTokenRequestType) OpenSecureChannelRequestBuilder {
-	m.RequestType = requestType
-	return m
-}
-
-func (m *_OpenSecureChannelRequestBuilder) WithSecurityMode(securityMode MessageSecurityMode) OpenSecureChannelRequestBuilder {
-	m.SecurityMode = securityMode
-	return m
-}
-
-func (m *_OpenSecureChannelRequestBuilder) WithClientNonce(clientNonce PascalByteString) OpenSecureChannelRequestBuilder {
-	m.ClientNonce = clientNonce
-	return m
-}
-
-func (m *_OpenSecureChannelRequestBuilder) WithClientNonceBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) OpenSecureChannelRequestBuilder {
-	builder := builderSupplier(m.ClientNonce.CreatePascalByteStringBuilder())
+func (b *_OpenSecureChannelRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) OpenSecureChannelRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
 	var err error
-	m.ClientNonce, err = builder.Build()
+	b.RequestHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_OpenSecureChannelRequestBuilder) WithRequestedLifetime(requestedLifetime uint32) OpenSecureChannelRequestBuilder {
-	m.RequestedLifetime = requestedLifetime
-	return m
+func (b *_OpenSecureChannelRequestBuilder) WithClientProtocolVersion(clientProtocolVersion uint32) OpenSecureChannelRequestBuilder {
+	b.ClientProtocolVersion = clientProtocolVersion
+	return b
 }
 
-func (m *_OpenSecureChannelRequestBuilder) Build() (OpenSecureChannelRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
-	}
-	if m.ClientNonce == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'clientNonce' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._OpenSecureChannelRequest.deepCopy(), nil
+func (b *_OpenSecureChannelRequestBuilder) WithRequestType(requestType SecurityTokenRequestType) OpenSecureChannelRequestBuilder {
+	b.RequestType = requestType
+	return b
 }
 
-func (m *_OpenSecureChannelRequestBuilder) MustBuild() OpenSecureChannelRequest {
-	build, err := m.Build()
+func (b *_OpenSecureChannelRequestBuilder) WithSecurityMode(securityMode MessageSecurityMode) OpenSecureChannelRequestBuilder {
+	b.SecurityMode = securityMode
+	return b
+}
+
+func (b *_OpenSecureChannelRequestBuilder) WithClientNonce(clientNonce PascalByteString) OpenSecureChannelRequestBuilder {
+	b.ClientNonce = clientNonce
+	return b
+}
+
+func (b *_OpenSecureChannelRequestBuilder) WithClientNonceBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) OpenSecureChannelRequestBuilder {
+	builder := builderSupplier(b.ClientNonce.CreatePascalByteStringBuilder())
+	var err error
+	b.ClientNonce, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_OpenSecureChannelRequestBuilder) WithRequestedLifetime(requestedLifetime uint32) OpenSecureChannelRequestBuilder {
+	b.RequestedLifetime = requestedLifetime
+	return b
+}
+
+func (b *_OpenSecureChannelRequestBuilder) Build() (OpenSecureChannelRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.ClientNonce == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'clientNonce' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._OpenSecureChannelRequest.deepCopy(), nil
+}
+
+func (b *_OpenSecureChannelRequestBuilder) MustBuild() OpenSecureChannelRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_OpenSecureChannelRequestBuilder) DeepCopy() any {
-	return m.CreateOpenSecureChannelRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OpenSecureChannelRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OpenSecureChannelRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_OpenSecureChannelRequestBuilder) DeepCopy() any {
+	_copy := b.CreateOpenSecureChannelRequestBuilder().(*_OpenSecureChannelRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateOpenSecureChannelRequestBuilder creates a OpenSecureChannelRequestBuilder
-func (m *_OpenSecureChannelRequest) CreateOpenSecureChannelRequestBuilder() OpenSecureChannelRequestBuilder {
-	if m == nil {
+func (b *_OpenSecureChannelRequest) CreateOpenSecureChannelRequestBuilder() OpenSecureChannelRequestBuilder {
+	if b == nil {
 		return NewOpenSecureChannelRequestBuilder()
 	}
-	return &_OpenSecureChannelRequestBuilder{_OpenSecureChannelRequest: m.deepCopy()}
+	return &_OpenSecureChannelRequestBuilder{_OpenSecureChannelRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -453,9 +487,13 @@ func (m *_OpenSecureChannelRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

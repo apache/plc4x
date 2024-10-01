@@ -89,8 +89,12 @@ type GetAttributeAllRequestBuilder interface {
 	WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment) GetAttributeAllRequestBuilder
 	// WithClassSegment adds ClassSegment (property field)
 	WithClassSegment(PathSegment) GetAttributeAllRequestBuilder
+	// WithClassSegmentBuilder adds ClassSegment (property field) which is build by the builder
+	WithClassSegmentBuilder(func(PathSegmentBuilder) PathSegmentBuilder) GetAttributeAllRequestBuilder
 	// WithInstanceSegment adds InstanceSegment (property field)
 	WithInstanceSegment(PathSegment) GetAttributeAllRequestBuilder
+	// WithInstanceSegmentBuilder adds InstanceSegment (property field) which is build by the builder
+	WithInstanceSegmentBuilder(func(PathSegmentBuilder) PathSegmentBuilder) GetAttributeAllRequestBuilder
 	// Build builds the GetAttributeAllRequest or returns an error if something is wrong
 	Build() (GetAttributeAllRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -105,62 +109,107 @@ func NewGetAttributeAllRequestBuilder() GetAttributeAllRequestBuilder {
 type _GetAttributeAllRequestBuilder struct {
 	*_GetAttributeAllRequest
 
+	parentBuilder *_CipServiceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (GetAttributeAllRequestBuilder) = (*_GetAttributeAllRequestBuilder)(nil)
 
-func (m *_GetAttributeAllRequestBuilder) WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment) GetAttributeAllRequestBuilder {
-	return m.WithClassSegment(classSegment).WithInstanceSegment(instanceSegment)
+func (b *_GetAttributeAllRequestBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
 }
 
-func (m *_GetAttributeAllRequestBuilder) WithClassSegment(classSegment PathSegment) GetAttributeAllRequestBuilder {
-	m.ClassSegment = classSegment
-	return m
+func (b *_GetAttributeAllRequestBuilder) WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment) GetAttributeAllRequestBuilder {
+	return b.WithClassSegment(classSegment).WithInstanceSegment(instanceSegment)
 }
 
-func (m *_GetAttributeAllRequestBuilder) WithInstanceSegment(instanceSegment PathSegment) GetAttributeAllRequestBuilder {
-	m.InstanceSegment = instanceSegment
-	return m
+func (b *_GetAttributeAllRequestBuilder) WithClassSegment(classSegment PathSegment) GetAttributeAllRequestBuilder {
+	b.ClassSegment = classSegment
+	return b
 }
 
-func (m *_GetAttributeAllRequestBuilder) Build() (GetAttributeAllRequest, error) {
-	if m.ClassSegment == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_GetAttributeAllRequestBuilder) WithClassSegmentBuilder(builderSupplier func(PathSegmentBuilder) PathSegmentBuilder) GetAttributeAllRequestBuilder {
+	builder := builderSupplier(b.ClassSegment.CreatePathSegmentBuilder())
+	var err error
+	b.ClassSegment, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'classSegment' not set"))
+		b.err.Append(errors.Wrap(err, "PathSegmentBuilder failed"))
 	}
-	if m.InstanceSegment == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'instanceSegment' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._GetAttributeAllRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_GetAttributeAllRequestBuilder) MustBuild() GetAttributeAllRequest {
-	build, err := m.Build()
+func (b *_GetAttributeAllRequestBuilder) WithInstanceSegment(instanceSegment PathSegment) GetAttributeAllRequestBuilder {
+	b.InstanceSegment = instanceSegment
+	return b
+}
+
+func (b *_GetAttributeAllRequestBuilder) WithInstanceSegmentBuilder(builderSupplier func(PathSegmentBuilder) PathSegmentBuilder) GetAttributeAllRequestBuilder {
+	builder := builderSupplier(b.InstanceSegment.CreatePathSegmentBuilder())
+	var err error
+	b.InstanceSegment, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PathSegmentBuilder failed"))
+	}
+	return b
+}
+
+func (b *_GetAttributeAllRequestBuilder) Build() (GetAttributeAllRequest, error) {
+	if b.ClassSegment == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'classSegment' not set"))
+	}
+	if b.InstanceSegment == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'instanceSegment' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._GetAttributeAllRequest.deepCopy(), nil
+}
+
+func (b *_GetAttributeAllRequestBuilder) MustBuild() GetAttributeAllRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_GetAttributeAllRequestBuilder) DeepCopy() any {
-	return m.CreateGetAttributeAllRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_GetAttributeAllRequestBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_GetAttributeAllRequestBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_GetAttributeAllRequestBuilder) DeepCopy() any {
+	_copy := b.CreateGetAttributeAllRequestBuilder().(*_GetAttributeAllRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateGetAttributeAllRequestBuilder creates a GetAttributeAllRequestBuilder
-func (m *_GetAttributeAllRequest) CreateGetAttributeAllRequestBuilder() GetAttributeAllRequestBuilder {
-	if m == nil {
+func (b *_GetAttributeAllRequest) CreateGetAttributeAllRequestBuilder() GetAttributeAllRequestBuilder {
+	if b == nil {
 		return NewGetAttributeAllRequestBuilder()
 	}
-	return &_GetAttributeAllRequestBuilder{_GetAttributeAllRequest: m.deepCopy()}
+	return &_GetAttributeAllRequestBuilder{_GetAttributeAllRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -343,9 +392,13 @@ func (m *_GetAttributeAllRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

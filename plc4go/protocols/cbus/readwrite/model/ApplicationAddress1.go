@@ -92,40 +92,44 @@ type _ApplicationAddress1Builder struct {
 
 var _ (ApplicationAddress1Builder) = (*_ApplicationAddress1Builder)(nil)
 
-func (m *_ApplicationAddress1Builder) WithMandatoryFields(address byte) ApplicationAddress1Builder {
-	return m.WithAddress(address)
+func (b *_ApplicationAddress1Builder) WithMandatoryFields(address byte) ApplicationAddress1Builder {
+	return b.WithAddress(address)
 }
 
-func (m *_ApplicationAddress1Builder) WithAddress(address byte) ApplicationAddress1Builder {
-	m.Address = address
-	return m
+func (b *_ApplicationAddress1Builder) WithAddress(address byte) ApplicationAddress1Builder {
+	b.Address = address
+	return b
 }
 
-func (m *_ApplicationAddress1Builder) Build() (ApplicationAddress1, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApplicationAddress1Builder) Build() (ApplicationAddress1, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApplicationAddress1.deepCopy(), nil
+	return b._ApplicationAddress1.deepCopy(), nil
 }
 
-func (m *_ApplicationAddress1Builder) MustBuild() ApplicationAddress1 {
-	build, err := m.Build()
+func (b *_ApplicationAddress1Builder) MustBuild() ApplicationAddress1 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApplicationAddress1Builder) DeepCopy() any {
-	return m.CreateApplicationAddress1Builder()
+func (b *_ApplicationAddress1Builder) DeepCopy() any {
+	_copy := b.CreateApplicationAddress1Builder().(*_ApplicationAddress1Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApplicationAddress1Builder creates a ApplicationAddress1Builder
-func (m *_ApplicationAddress1) CreateApplicationAddress1Builder() ApplicationAddress1Builder {
-	if m == nil {
+func (b *_ApplicationAddress1) CreateApplicationAddress1Builder() ApplicationAddress1Builder {
+	if b == nil {
 		return NewApplicationAddress1Builder()
 	}
-	return &_ApplicationAddress1Builder{_ApplicationAddress1: m.deepCopy()}
+	return &_ApplicationAddress1Builder{_ApplicationAddress1: b.deepCopy()}
 }
 
 ///////////////////////
@@ -291,9 +295,13 @@ func (m *_ApplicationAddress1) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -83,35 +83,39 @@ type _HandleBuilder struct {
 
 var _ (HandleBuilder) = (*_HandleBuilder)(nil)
 
-func (m *_HandleBuilder) WithMandatoryFields() HandleBuilder {
-	return m
+func (b *_HandleBuilder) WithMandatoryFields() HandleBuilder {
+	return b
 }
 
-func (m *_HandleBuilder) Build() (Handle, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_HandleBuilder) Build() (Handle, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Handle.deepCopy(), nil
+	return b._Handle.deepCopy(), nil
 }
 
-func (m *_HandleBuilder) MustBuild() Handle {
-	build, err := m.Build()
+func (b *_HandleBuilder) MustBuild() Handle {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HandleBuilder) DeepCopy() any {
-	return m.CreateHandleBuilder()
+func (b *_HandleBuilder) DeepCopy() any {
+	_copy := b.CreateHandleBuilder().(*_HandleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHandleBuilder creates a HandleBuilder
-func (m *_Handle) CreateHandleBuilder() HandleBuilder {
-	if m == nil {
+func (b *_Handle) CreateHandleBuilder() HandleBuilder {
+	if b == nil {
 		return NewHandleBuilder()
 	}
-	return &_HandleBuilder{_Handle: m.deepCopy()}
+	return &_HandleBuilder{_Handle: b.deepCopy()}
 }
 
 ///////////////////////
@@ -219,9 +223,13 @@ func (m *_Handle) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

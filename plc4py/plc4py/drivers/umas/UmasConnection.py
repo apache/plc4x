@@ -121,7 +121,7 @@ class UmasConnection(PlcConnection, DefaultPlcReader, DefaultPlcBrowser):
         """
         return DefaultBrowseRequestBuilder()
 
-    def execute(self, request: PlcRequest) -> Awaitable[PlcResponse]:
+    async def execute(self, request: PlcRequest) -> PlcResponse:
         """
         Executes a PlcRequest as long as it's already connected
         :param request: Plc Request to execute
@@ -131,10 +131,10 @@ class UmasConnection(PlcConnection, DefaultPlcReader, DefaultPlcBrowser):
             return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
         if isinstance(request, PlcReadRequest):
-            return self._read(request)
+            return await self._read(request)
 
         if isinstance(request, PlcBrowseRequest):
-            return self._browse(request)
+            return await self._browse(request)
 
         return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 

@@ -85,40 +85,59 @@ func NewMPropWriteReqBuilder() MPropWriteReqBuilder {
 type _MPropWriteReqBuilder struct {
 	*_MPropWriteReq
 
+	parentBuilder *_CEMIBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MPropWriteReqBuilder) = (*_MPropWriteReqBuilder)(nil)
 
-func (m *_MPropWriteReqBuilder) WithMandatoryFields() MPropWriteReqBuilder {
-	return m
+func (b *_MPropWriteReqBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
 }
 
-func (m *_MPropWriteReqBuilder) Build() (MPropWriteReq, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MPropWriteReqBuilder) WithMandatoryFields() MPropWriteReqBuilder {
+	return b
+}
+
+func (b *_MPropWriteReqBuilder) Build() (MPropWriteReq, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MPropWriteReq.deepCopy(), nil
+	return b._MPropWriteReq.deepCopy(), nil
 }
 
-func (m *_MPropWriteReqBuilder) MustBuild() MPropWriteReq {
-	build, err := m.Build()
+func (b *_MPropWriteReqBuilder) MustBuild() MPropWriteReq {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MPropWriteReqBuilder) DeepCopy() any {
-	return m.CreateMPropWriteReqBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MPropWriteReqBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MPropWriteReqBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_MPropWriteReqBuilder) DeepCopy() any {
+	_copy := b.CreateMPropWriteReqBuilder().(*_MPropWriteReqBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMPropWriteReqBuilder creates a MPropWriteReqBuilder
-func (m *_MPropWriteReq) CreateMPropWriteReqBuilder() MPropWriteReqBuilder {
-	if m == nil {
+func (b *_MPropWriteReq) CreateMPropWriteReqBuilder() MPropWriteReqBuilder {
+	if b == nil {
 		return NewMPropWriteReqBuilder()
 	}
-	return &_MPropWriteReqBuilder{_MPropWriteReq: m.deepCopy()}
+	return &_MPropWriteReqBuilder{_MPropWriteReq: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_MPropWriteReq) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

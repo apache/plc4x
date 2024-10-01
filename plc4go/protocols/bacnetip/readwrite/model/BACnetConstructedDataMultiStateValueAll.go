@@ -85,40 +85,59 @@ func NewBACnetConstructedDataMultiStateValueAllBuilder() BACnetConstructedDataMu
 type _BACnetConstructedDataMultiStateValueAllBuilder struct {
 	*_BACnetConstructedDataMultiStateValueAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMultiStateValueAllBuilder) = (*_BACnetConstructedDataMultiStateValueAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataMultiStateValueAllBuilder) WithMandatoryFields() BACnetConstructedDataMultiStateValueAllBuilder {
-	return m
+func (b *_BACnetConstructedDataMultiStateValueAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMultiStateValueAllBuilder) Build() (BACnetConstructedDataMultiStateValueAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataMultiStateValueAllBuilder) WithMandatoryFields() BACnetConstructedDataMultiStateValueAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataMultiStateValueAllBuilder) Build() (BACnetConstructedDataMultiStateValueAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataMultiStateValueAll.deepCopy(), nil
+	return b._BACnetConstructedDataMultiStateValueAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataMultiStateValueAllBuilder) MustBuild() BACnetConstructedDataMultiStateValueAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMultiStateValueAllBuilder) MustBuild() BACnetConstructedDataMultiStateValueAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMultiStateValueAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMultiStateValueAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMultiStateValueAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMultiStateValueAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMultiStateValueAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMultiStateValueAllBuilder().(*_BACnetConstructedDataMultiStateValueAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMultiStateValueAllBuilder creates a BACnetConstructedDataMultiStateValueAllBuilder
-func (m *_BACnetConstructedDataMultiStateValueAll) CreateBACnetConstructedDataMultiStateValueAllBuilder() BACnetConstructedDataMultiStateValueAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMultiStateValueAll) CreateBACnetConstructedDataMultiStateValueAllBuilder() BACnetConstructedDataMultiStateValueAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMultiStateValueAllBuilder()
 	}
-	return &_BACnetConstructedDataMultiStateValueAllBuilder{_BACnetConstructedDataMultiStateValueAll: m.deepCopy()}
+	return &_BACnetConstructedDataMultiStateValueAllBuilder{_BACnetConstructedDataMultiStateValueAll: b.deepCopy()}
 }
 
 ///////////////////////
@@ -243,9 +262,13 @@ func (m *_BACnetConstructedDataMultiStateValueAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -105,69 +105,73 @@ type _HPAIDiscoveryEndpointBuilder struct {
 
 var _ (HPAIDiscoveryEndpointBuilder) = (*_HPAIDiscoveryEndpointBuilder)(nil)
 
-func (m *_HPAIDiscoveryEndpointBuilder) WithMandatoryFields(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) HPAIDiscoveryEndpointBuilder {
-	return m.WithHostProtocolCode(hostProtocolCode).WithIpAddress(ipAddress).WithIpPort(ipPort)
+func (b *_HPAIDiscoveryEndpointBuilder) WithMandatoryFields(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) HPAIDiscoveryEndpointBuilder {
+	return b.WithHostProtocolCode(hostProtocolCode).WithIpAddress(ipAddress).WithIpPort(ipPort)
 }
 
-func (m *_HPAIDiscoveryEndpointBuilder) WithHostProtocolCode(hostProtocolCode HostProtocolCode) HPAIDiscoveryEndpointBuilder {
-	m.HostProtocolCode = hostProtocolCode
-	return m
+func (b *_HPAIDiscoveryEndpointBuilder) WithHostProtocolCode(hostProtocolCode HostProtocolCode) HPAIDiscoveryEndpointBuilder {
+	b.HostProtocolCode = hostProtocolCode
+	return b
 }
 
-func (m *_HPAIDiscoveryEndpointBuilder) WithIpAddress(ipAddress IPAddress) HPAIDiscoveryEndpointBuilder {
-	m.IpAddress = ipAddress
-	return m
+func (b *_HPAIDiscoveryEndpointBuilder) WithIpAddress(ipAddress IPAddress) HPAIDiscoveryEndpointBuilder {
+	b.IpAddress = ipAddress
+	return b
 }
 
-func (m *_HPAIDiscoveryEndpointBuilder) WithIpAddressBuilder(builderSupplier func(IPAddressBuilder) IPAddressBuilder) HPAIDiscoveryEndpointBuilder {
-	builder := builderSupplier(m.IpAddress.CreateIPAddressBuilder())
+func (b *_HPAIDiscoveryEndpointBuilder) WithIpAddressBuilder(builderSupplier func(IPAddressBuilder) IPAddressBuilder) HPAIDiscoveryEndpointBuilder {
+	builder := builderSupplier(b.IpAddress.CreateIPAddressBuilder())
 	var err error
-	m.IpAddress, err = builder.Build()
+	b.IpAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "IPAddressBuilder failed"))
+		b.err.Append(errors.Wrap(err, "IPAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_HPAIDiscoveryEndpointBuilder) WithIpPort(ipPort uint16) HPAIDiscoveryEndpointBuilder {
-	m.IpPort = ipPort
-	return m
+func (b *_HPAIDiscoveryEndpointBuilder) WithIpPort(ipPort uint16) HPAIDiscoveryEndpointBuilder {
+	b.IpPort = ipPort
+	return b
 }
 
-func (m *_HPAIDiscoveryEndpointBuilder) Build() (HPAIDiscoveryEndpoint, error) {
-	if m.IpAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_HPAIDiscoveryEndpointBuilder) Build() (HPAIDiscoveryEndpoint, error) {
+	if b.IpAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'ipAddress' not set"))
+		b.err.Append(errors.New("mandatory field 'ipAddress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HPAIDiscoveryEndpoint.deepCopy(), nil
+	return b._HPAIDiscoveryEndpoint.deepCopy(), nil
 }
 
-func (m *_HPAIDiscoveryEndpointBuilder) MustBuild() HPAIDiscoveryEndpoint {
-	build, err := m.Build()
+func (b *_HPAIDiscoveryEndpointBuilder) MustBuild() HPAIDiscoveryEndpoint {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HPAIDiscoveryEndpointBuilder) DeepCopy() any {
-	return m.CreateHPAIDiscoveryEndpointBuilder()
+func (b *_HPAIDiscoveryEndpointBuilder) DeepCopy() any {
+	_copy := b.CreateHPAIDiscoveryEndpointBuilder().(*_HPAIDiscoveryEndpointBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHPAIDiscoveryEndpointBuilder creates a HPAIDiscoveryEndpointBuilder
-func (m *_HPAIDiscoveryEndpoint) CreateHPAIDiscoveryEndpointBuilder() HPAIDiscoveryEndpointBuilder {
-	if m == nil {
+func (b *_HPAIDiscoveryEndpoint) CreateHPAIDiscoveryEndpointBuilder() HPAIDiscoveryEndpointBuilder {
+	if b == nil {
 		return NewHPAIDiscoveryEndpointBuilder()
 	}
-	return &_HPAIDiscoveryEndpointBuilder{_HPAIDiscoveryEndpoint: m.deepCopy()}
+	return &_HPAIDiscoveryEndpointBuilder{_HPAIDiscoveryEndpoint: b.deepCopy()}
 }
 
 ///////////////////////
@@ -353,9 +357,13 @@ func (m *_HPAIDiscoveryEndpoint) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

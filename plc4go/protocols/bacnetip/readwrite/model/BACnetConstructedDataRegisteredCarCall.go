@@ -103,63 +103,82 @@ func NewBACnetConstructedDataRegisteredCarCallBuilder() BACnetConstructedDataReg
 type _BACnetConstructedDataRegisteredCarCallBuilder struct {
 	*_BACnetConstructedDataRegisteredCarCall
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataRegisteredCarCallBuilder) = (*_BACnetConstructedDataRegisteredCarCallBuilder)(nil)
 
-func (m *_BACnetConstructedDataRegisteredCarCallBuilder) WithMandatoryFields(registeredCarCall []BACnetLiftCarCallList) BACnetConstructedDataRegisteredCarCallBuilder {
-	return m.WithRegisteredCarCall(registeredCarCall...)
+func (b *_BACnetConstructedDataRegisteredCarCallBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataRegisteredCarCallBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRegisteredCarCallBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataRegisteredCarCallBuilder) WithMandatoryFields(registeredCarCall []BACnetLiftCarCallList) BACnetConstructedDataRegisteredCarCallBuilder {
+	return b.WithRegisteredCarCall(registeredCarCall...)
 }
 
-func (m *_BACnetConstructedDataRegisteredCarCallBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataRegisteredCarCallBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataRegisteredCarCallBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRegisteredCarCallBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataRegisteredCarCallBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataRegisteredCarCallBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataRegisteredCarCallBuilder) WithRegisteredCarCall(registeredCarCall ...BACnetLiftCarCallList) BACnetConstructedDataRegisteredCarCallBuilder {
-	m.RegisteredCarCall = registeredCarCall
-	return m
+func (b *_BACnetConstructedDataRegisteredCarCallBuilder) WithRegisteredCarCall(registeredCarCall ...BACnetLiftCarCallList) BACnetConstructedDataRegisteredCarCallBuilder {
+	b.RegisteredCarCall = registeredCarCall
+	return b
 }
 
-func (m *_BACnetConstructedDataRegisteredCarCallBuilder) Build() (BACnetConstructedDataRegisteredCarCall, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataRegisteredCarCallBuilder) Build() (BACnetConstructedDataRegisteredCarCall, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataRegisteredCarCall.deepCopy(), nil
+	return b._BACnetConstructedDataRegisteredCarCall.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataRegisteredCarCallBuilder) MustBuild() BACnetConstructedDataRegisteredCarCall {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataRegisteredCarCallBuilder) MustBuild() BACnetConstructedDataRegisteredCarCall {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataRegisteredCarCallBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataRegisteredCarCallBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataRegisteredCarCallBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataRegisteredCarCallBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataRegisteredCarCallBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataRegisteredCarCallBuilder().(*_BACnetConstructedDataRegisteredCarCallBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataRegisteredCarCallBuilder creates a BACnetConstructedDataRegisteredCarCallBuilder
-func (m *_BACnetConstructedDataRegisteredCarCall) CreateBACnetConstructedDataRegisteredCarCallBuilder() BACnetConstructedDataRegisteredCarCallBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataRegisteredCarCall) CreateBACnetConstructedDataRegisteredCarCallBuilder() BACnetConstructedDataRegisteredCarCallBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataRegisteredCarCallBuilder()
 	}
-	return &_BACnetConstructedDataRegisteredCarCallBuilder{_BACnetConstructedDataRegisteredCarCall: m.deepCopy()}
+	return &_BACnetConstructedDataRegisteredCarCallBuilder{_BACnetConstructedDataRegisteredCarCall: b.deepCopy()}
 }
 
 ///////////////////////
@@ -366,9 +385,13 @@ func (m *_BACnetConstructedDataRegisteredCarCall) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

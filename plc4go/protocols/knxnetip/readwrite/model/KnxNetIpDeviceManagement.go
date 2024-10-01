@@ -93,45 +93,64 @@ func NewKnxNetIpDeviceManagementBuilder() KnxNetIpDeviceManagementBuilder {
 type _KnxNetIpDeviceManagementBuilder struct {
 	*_KnxNetIpDeviceManagement
 
+	parentBuilder *_ServiceIdBuilder
+
 	err *utils.MultiError
 }
 
 var _ (KnxNetIpDeviceManagementBuilder) = (*_KnxNetIpDeviceManagementBuilder)(nil)
 
-func (m *_KnxNetIpDeviceManagementBuilder) WithMandatoryFields(version uint8) KnxNetIpDeviceManagementBuilder {
-	return m.WithVersion(version)
+func (b *_KnxNetIpDeviceManagementBuilder) setParent(contract ServiceIdContract) {
+	b.ServiceIdContract = contract
 }
 
-func (m *_KnxNetIpDeviceManagementBuilder) WithVersion(version uint8) KnxNetIpDeviceManagementBuilder {
-	m.Version = version
-	return m
+func (b *_KnxNetIpDeviceManagementBuilder) WithMandatoryFields(version uint8) KnxNetIpDeviceManagementBuilder {
+	return b.WithVersion(version)
 }
 
-func (m *_KnxNetIpDeviceManagementBuilder) Build() (KnxNetIpDeviceManagement, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_KnxNetIpDeviceManagementBuilder) WithVersion(version uint8) KnxNetIpDeviceManagementBuilder {
+	b.Version = version
+	return b
+}
+
+func (b *_KnxNetIpDeviceManagementBuilder) Build() (KnxNetIpDeviceManagement, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._KnxNetIpDeviceManagement.deepCopy(), nil
+	return b._KnxNetIpDeviceManagement.deepCopy(), nil
 }
 
-func (m *_KnxNetIpDeviceManagementBuilder) MustBuild() KnxNetIpDeviceManagement {
-	build, err := m.Build()
+func (b *_KnxNetIpDeviceManagementBuilder) MustBuild() KnxNetIpDeviceManagement {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_KnxNetIpDeviceManagementBuilder) DeepCopy() any {
-	return m.CreateKnxNetIpDeviceManagementBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_KnxNetIpDeviceManagementBuilder) Done() ServiceIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_KnxNetIpDeviceManagementBuilder) buildForServiceId() (ServiceId, error) {
+	return b.Build()
+}
+
+func (b *_KnxNetIpDeviceManagementBuilder) DeepCopy() any {
+	_copy := b.CreateKnxNetIpDeviceManagementBuilder().(*_KnxNetIpDeviceManagementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateKnxNetIpDeviceManagementBuilder creates a KnxNetIpDeviceManagementBuilder
-func (m *_KnxNetIpDeviceManagement) CreateKnxNetIpDeviceManagementBuilder() KnxNetIpDeviceManagementBuilder {
-	if m == nil {
+func (b *_KnxNetIpDeviceManagement) CreateKnxNetIpDeviceManagementBuilder() KnxNetIpDeviceManagementBuilder {
+	if b == nil {
 		return NewKnxNetIpDeviceManagementBuilder()
 	}
-	return &_KnxNetIpDeviceManagementBuilder{_KnxNetIpDeviceManagement: m.deepCopy()}
+	return &_KnxNetIpDeviceManagementBuilder{_KnxNetIpDeviceManagement: b.deepCopy()}
 }
 
 ///////////////////////
@@ -275,9 +294,13 @@ func (m *_KnxNetIpDeviceManagement) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

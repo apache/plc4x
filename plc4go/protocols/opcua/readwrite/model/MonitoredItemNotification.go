@@ -104,69 +104,88 @@ func NewMonitoredItemNotificationBuilder() MonitoredItemNotificationBuilder {
 type _MonitoredItemNotificationBuilder struct {
 	*_MonitoredItemNotification
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MonitoredItemNotificationBuilder) = (*_MonitoredItemNotificationBuilder)(nil)
 
-func (m *_MonitoredItemNotificationBuilder) WithMandatoryFields(clientHandle uint32, value DataValue) MonitoredItemNotificationBuilder {
-	return m.WithClientHandle(clientHandle).WithValue(value)
+func (b *_MonitoredItemNotificationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_MonitoredItemNotificationBuilder) WithClientHandle(clientHandle uint32) MonitoredItemNotificationBuilder {
-	m.ClientHandle = clientHandle
-	return m
+func (b *_MonitoredItemNotificationBuilder) WithMandatoryFields(clientHandle uint32, value DataValue) MonitoredItemNotificationBuilder {
+	return b.WithClientHandle(clientHandle).WithValue(value)
 }
 
-func (m *_MonitoredItemNotificationBuilder) WithValue(value DataValue) MonitoredItemNotificationBuilder {
-	m.Value = value
-	return m
+func (b *_MonitoredItemNotificationBuilder) WithClientHandle(clientHandle uint32) MonitoredItemNotificationBuilder {
+	b.ClientHandle = clientHandle
+	return b
 }
 
-func (m *_MonitoredItemNotificationBuilder) WithValueBuilder(builderSupplier func(DataValueBuilder) DataValueBuilder) MonitoredItemNotificationBuilder {
-	builder := builderSupplier(m.Value.CreateDataValueBuilder())
+func (b *_MonitoredItemNotificationBuilder) WithValue(value DataValue) MonitoredItemNotificationBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_MonitoredItemNotificationBuilder) WithValueBuilder(builderSupplier func(DataValueBuilder) DataValueBuilder) MonitoredItemNotificationBuilder {
+	builder := builderSupplier(b.Value.CreateDataValueBuilder())
 	var err error
-	m.Value, err = builder.Build()
+	b.Value, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "DataValueBuilder failed"))
+		b.err.Append(errors.Wrap(err, "DataValueBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_MonitoredItemNotificationBuilder) Build() (MonitoredItemNotification, error) {
-	if m.Value == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_MonitoredItemNotificationBuilder) Build() (MonitoredItemNotification, error) {
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'value' not set"))
+		b.err.Append(errors.New("mandatory field 'value' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MonitoredItemNotification.deepCopy(), nil
+	return b._MonitoredItemNotification.deepCopy(), nil
 }
 
-func (m *_MonitoredItemNotificationBuilder) MustBuild() MonitoredItemNotification {
-	build, err := m.Build()
+func (b *_MonitoredItemNotificationBuilder) MustBuild() MonitoredItemNotification {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MonitoredItemNotificationBuilder) DeepCopy() any {
-	return m.CreateMonitoredItemNotificationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MonitoredItemNotificationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MonitoredItemNotificationBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_MonitoredItemNotificationBuilder) DeepCopy() any {
+	_copy := b.CreateMonitoredItemNotificationBuilder().(*_MonitoredItemNotificationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMonitoredItemNotificationBuilder creates a MonitoredItemNotificationBuilder
-func (m *_MonitoredItemNotification) CreateMonitoredItemNotificationBuilder() MonitoredItemNotificationBuilder {
-	if m == nil {
+func (b *_MonitoredItemNotification) CreateMonitoredItemNotificationBuilder() MonitoredItemNotificationBuilder {
+	if b == nil {
 		return NewMonitoredItemNotificationBuilder()
 	}
-	return &_MonitoredItemNotificationBuilder{_MonitoredItemNotification: m.deepCopy()}
+	return &_MonitoredItemNotificationBuilder{_MonitoredItemNotification: b.deepCopy()}
 }
 
 ///////////////////////
@@ -328,9 +347,13 @@ func (m *_MonitoredItemNotification) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

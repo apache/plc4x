@@ -125,131 +125,135 @@ type _BACnetAccumulatorRecordBuilder struct {
 
 var _ (BACnetAccumulatorRecordBuilder) = (*_BACnetAccumulatorRecordBuilder)(nil)
 
-func (m *_BACnetAccumulatorRecordBuilder) WithMandatoryFields(timestamp BACnetDateTimeEnclosed, presentValue BACnetContextTagSignedInteger, accumulatedValue BACnetContextTagSignedInteger, accumulatorStatus BACnetAccumulatorRecordAccumulatorStatusTagged) BACnetAccumulatorRecordBuilder {
-	return m.WithTimestamp(timestamp).WithPresentValue(presentValue).WithAccumulatedValue(accumulatedValue).WithAccumulatorStatus(accumulatorStatus)
+func (b *_BACnetAccumulatorRecordBuilder) WithMandatoryFields(timestamp BACnetDateTimeEnclosed, presentValue BACnetContextTagSignedInteger, accumulatedValue BACnetContextTagSignedInteger, accumulatorStatus BACnetAccumulatorRecordAccumulatorStatusTagged) BACnetAccumulatorRecordBuilder {
+	return b.WithTimestamp(timestamp).WithPresentValue(presentValue).WithAccumulatedValue(accumulatedValue).WithAccumulatorStatus(accumulatorStatus)
 }
 
-func (m *_BACnetAccumulatorRecordBuilder) WithTimestamp(timestamp BACnetDateTimeEnclosed) BACnetAccumulatorRecordBuilder {
-	m.Timestamp = timestamp
-	return m
+func (b *_BACnetAccumulatorRecordBuilder) WithTimestamp(timestamp BACnetDateTimeEnclosed) BACnetAccumulatorRecordBuilder {
+	b.Timestamp = timestamp
+	return b
 }
 
-func (m *_BACnetAccumulatorRecordBuilder) WithTimestampBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetAccumulatorRecordBuilder {
-	builder := builderSupplier(m.Timestamp.CreateBACnetDateTimeEnclosedBuilder())
+func (b *_BACnetAccumulatorRecordBuilder) WithTimestampBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetAccumulatorRecordBuilder {
+	builder := builderSupplier(b.Timestamp.CreateBACnetDateTimeEnclosedBuilder())
 	var err error
-	m.Timestamp, err = builder.Build()
+	b.Timestamp, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAccumulatorRecordBuilder) WithPresentValue(presentValue BACnetContextTagSignedInteger) BACnetAccumulatorRecordBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetAccumulatorRecordBuilder) WithPresentValue(presentValue BACnetContextTagSignedInteger) BACnetAccumulatorRecordBuilder {
+	b.PresentValue = presentValue
+	return b
 }
 
-func (m *_BACnetAccumulatorRecordBuilder) WithPresentValueBuilder(builderSupplier func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetAccumulatorRecordBuilder {
-	builder := builderSupplier(m.PresentValue.CreateBACnetContextTagSignedIntegerBuilder())
+func (b *_BACnetAccumulatorRecordBuilder) WithPresentValueBuilder(builderSupplier func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetAccumulatorRecordBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetContextTagSignedIntegerBuilder())
 	var err error
-	m.PresentValue, err = builder.Build()
+	b.PresentValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagSignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagSignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAccumulatorRecordBuilder) WithAccumulatedValue(accumulatedValue BACnetContextTagSignedInteger) BACnetAccumulatorRecordBuilder {
-	m.AccumulatedValue = accumulatedValue
-	return m
+func (b *_BACnetAccumulatorRecordBuilder) WithAccumulatedValue(accumulatedValue BACnetContextTagSignedInteger) BACnetAccumulatorRecordBuilder {
+	b.AccumulatedValue = accumulatedValue
+	return b
 }
 
-func (m *_BACnetAccumulatorRecordBuilder) WithAccumulatedValueBuilder(builderSupplier func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetAccumulatorRecordBuilder {
-	builder := builderSupplier(m.AccumulatedValue.CreateBACnetContextTagSignedIntegerBuilder())
+func (b *_BACnetAccumulatorRecordBuilder) WithAccumulatedValueBuilder(builderSupplier func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetAccumulatorRecordBuilder {
+	builder := builderSupplier(b.AccumulatedValue.CreateBACnetContextTagSignedIntegerBuilder())
 	var err error
-	m.AccumulatedValue, err = builder.Build()
+	b.AccumulatedValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagSignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagSignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAccumulatorRecordBuilder) WithAccumulatorStatus(accumulatorStatus BACnetAccumulatorRecordAccumulatorStatusTagged) BACnetAccumulatorRecordBuilder {
-	m.AccumulatorStatus = accumulatorStatus
-	return m
+func (b *_BACnetAccumulatorRecordBuilder) WithAccumulatorStatus(accumulatorStatus BACnetAccumulatorRecordAccumulatorStatusTagged) BACnetAccumulatorRecordBuilder {
+	b.AccumulatorStatus = accumulatorStatus
+	return b
 }
 
-func (m *_BACnetAccumulatorRecordBuilder) WithAccumulatorStatusBuilder(builderSupplier func(BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) BACnetAccumulatorRecordBuilder {
-	builder := builderSupplier(m.AccumulatorStatus.CreateBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder())
+func (b *_BACnetAccumulatorRecordBuilder) WithAccumulatorStatusBuilder(builderSupplier func(BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) BACnetAccumulatorRecordBuilder {
+	builder := builderSupplier(b.AccumulatorStatus.CreateBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder())
 	var err error
-	m.AccumulatorStatus, err = builder.Build()
+	b.AccumulatorStatus, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAccumulatorRecordBuilder) Build() (BACnetAccumulatorRecord, error) {
-	if m.Timestamp == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAccumulatorRecordBuilder) Build() (BACnetAccumulatorRecord, error) {
+	if b.Timestamp == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timestamp' not set"))
+		b.err.Append(errors.New("mandatory field 'timestamp' not set"))
 	}
-	if m.PresentValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
 	}
-	if m.AccumulatedValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.AccumulatedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'accumulatedValue' not set"))
+		b.err.Append(errors.New("mandatory field 'accumulatedValue' not set"))
 	}
-	if m.AccumulatorStatus == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.AccumulatorStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'accumulatorStatus' not set"))
+		b.err.Append(errors.New("mandatory field 'accumulatorStatus' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAccumulatorRecord.deepCopy(), nil
+	return b._BACnetAccumulatorRecord.deepCopy(), nil
 }
 
-func (m *_BACnetAccumulatorRecordBuilder) MustBuild() BACnetAccumulatorRecord {
-	build, err := m.Build()
+func (b *_BACnetAccumulatorRecordBuilder) MustBuild() BACnetAccumulatorRecord {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAccumulatorRecordBuilder) DeepCopy() any {
-	return m.CreateBACnetAccumulatorRecordBuilder()
+func (b *_BACnetAccumulatorRecordBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAccumulatorRecordBuilder().(*_BACnetAccumulatorRecordBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAccumulatorRecordBuilder creates a BACnetAccumulatorRecordBuilder
-func (m *_BACnetAccumulatorRecord) CreateBACnetAccumulatorRecordBuilder() BACnetAccumulatorRecordBuilder {
-	if m == nil {
+func (b *_BACnetAccumulatorRecord) CreateBACnetAccumulatorRecordBuilder() BACnetAccumulatorRecordBuilder {
+	if b == nil {
 		return NewBACnetAccumulatorRecordBuilder()
 	}
-	return &_BACnetAccumulatorRecordBuilder{_BACnetAccumulatorRecord: m.deepCopy()}
+	return &_BACnetAccumulatorRecordBuilder{_BACnetAccumulatorRecord: b.deepCopy()}
 }
 
 ///////////////////////
@@ -440,9 +444,13 @@ func (m *_BACnetAccumulatorRecord) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

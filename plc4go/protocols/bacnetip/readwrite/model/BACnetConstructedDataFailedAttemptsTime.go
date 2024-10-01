@@ -100,64 +100,83 @@ func NewBACnetConstructedDataFailedAttemptsTimeBuilder() BACnetConstructedDataFa
 type _BACnetConstructedDataFailedAttemptsTimeBuilder struct {
 	*_BACnetConstructedDataFailedAttemptsTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataFailedAttemptsTimeBuilder) = (*_BACnetConstructedDataFailedAttemptsTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataFailedAttemptsTimeBuilder) WithMandatoryFields(failedAttemptsTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFailedAttemptsTimeBuilder {
-	return m.WithFailedAttemptsTime(failedAttemptsTime)
+func (b *_BACnetConstructedDataFailedAttemptsTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataFailedAttemptsTimeBuilder) WithFailedAttemptsTime(failedAttemptsTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFailedAttemptsTimeBuilder {
-	m.FailedAttemptsTime = failedAttemptsTime
-	return m
+func (b *_BACnetConstructedDataFailedAttemptsTimeBuilder) WithMandatoryFields(failedAttemptsTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFailedAttemptsTimeBuilder {
+	return b.WithFailedAttemptsTime(failedAttemptsTime)
 }
 
-func (m *_BACnetConstructedDataFailedAttemptsTimeBuilder) WithFailedAttemptsTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFailedAttemptsTimeBuilder {
-	builder := builderSupplier(m.FailedAttemptsTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataFailedAttemptsTimeBuilder) WithFailedAttemptsTime(failedAttemptsTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFailedAttemptsTimeBuilder {
+	b.FailedAttemptsTime = failedAttemptsTime
+	return b
+}
+
+func (b *_BACnetConstructedDataFailedAttemptsTimeBuilder) WithFailedAttemptsTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFailedAttemptsTimeBuilder {
+	builder := builderSupplier(b.FailedAttemptsTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.FailedAttemptsTime, err = builder.Build()
+	b.FailedAttemptsTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataFailedAttemptsTimeBuilder) Build() (BACnetConstructedDataFailedAttemptsTime, error) {
-	if m.FailedAttemptsTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataFailedAttemptsTimeBuilder) Build() (BACnetConstructedDataFailedAttemptsTime, error) {
+	if b.FailedAttemptsTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'failedAttemptsTime' not set"))
+		b.err.Append(errors.New("mandatory field 'failedAttemptsTime' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataFailedAttemptsTime.deepCopy(), nil
+	return b._BACnetConstructedDataFailedAttemptsTime.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataFailedAttemptsTimeBuilder) MustBuild() BACnetConstructedDataFailedAttemptsTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataFailedAttemptsTimeBuilder) MustBuild() BACnetConstructedDataFailedAttemptsTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataFailedAttemptsTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataFailedAttemptsTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFailedAttemptsTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFailedAttemptsTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFailedAttemptsTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFailedAttemptsTimeBuilder().(*_BACnetConstructedDataFailedAttemptsTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataFailedAttemptsTimeBuilder creates a BACnetConstructedDataFailedAttemptsTimeBuilder
-func (m *_BACnetConstructedDataFailedAttemptsTime) CreateBACnetConstructedDataFailedAttemptsTimeBuilder() BACnetConstructedDataFailedAttemptsTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataFailedAttemptsTime) CreateBACnetConstructedDataFailedAttemptsTimeBuilder() BACnetConstructedDataFailedAttemptsTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataFailedAttemptsTimeBuilder()
 	}
-	return &_BACnetConstructedDataFailedAttemptsTimeBuilder{_BACnetConstructedDataFailedAttemptsTime: m.deepCopy()}
+	return &_BACnetConstructedDataFailedAttemptsTimeBuilder{_BACnetConstructedDataFailedAttemptsTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataFailedAttemptsTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

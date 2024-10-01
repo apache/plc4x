@@ -93,45 +93,64 @@ func NewDF1CommandResponseMessageProtectedTypedLogicalReadBuilder() DF1CommandRe
 type _DF1CommandResponseMessageProtectedTypedLogicalReadBuilder struct {
 	*_DF1CommandResponseMessageProtectedTypedLogicalRead
 
+	parentBuilder *_DF1ResponseMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) = (*_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder)(nil)
 
-func (m *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) WithMandatoryFields(data []uint8) DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
-	return m.WithData(data...)
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) setParent(contract DF1ResponseMessageContract) {
+	b.DF1ResponseMessageContract = contract
 }
 
-func (m *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) WithData(data ...uint8) DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
-	m.Data = data
-	return m
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) WithMandatoryFields(data []uint8) DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
+	return b.WithData(data...)
 }
 
-func (m *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) Build() (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) WithData(data ...uint8) DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) Build() (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DF1CommandResponseMessageProtectedTypedLogicalRead.deepCopy(), nil
+	return b._DF1CommandResponseMessageProtectedTypedLogicalRead.deepCopy(), nil
 }
 
-func (m *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) MustBuild() DF1CommandResponseMessageProtectedTypedLogicalRead {
-	build, err := m.Build()
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) MustBuild() DF1CommandResponseMessageProtectedTypedLogicalRead {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) DeepCopy() any {
-	return m.CreateDF1CommandResponseMessageProtectedTypedLogicalReadBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) Done() DF1ResponseMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) buildForDF1ResponseMessage() (DF1ResponseMessage, error) {
+	return b.Build()
+}
+
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) DeepCopy() any {
+	_copy := b.CreateDF1CommandResponseMessageProtectedTypedLogicalReadBuilder().(*_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDF1CommandResponseMessageProtectedTypedLogicalReadBuilder creates a DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
-func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) CreateDF1CommandResponseMessageProtectedTypedLogicalReadBuilder() DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
-	if m == nil {
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalRead) CreateDF1CommandResponseMessageProtectedTypedLogicalReadBuilder() DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
+	if b == nil {
 		return NewDF1CommandResponseMessageProtectedTypedLogicalReadBuilder()
 	}
-	return &_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder{_DF1CommandResponseMessageProtectedTypedLogicalRead: m.deepCopy()}
+	return &_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder{_DF1CommandResponseMessageProtectedTypedLogicalRead: b.deepCopy()}
 }
 
 ///////////////////////
@@ -278,9 +297,13 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

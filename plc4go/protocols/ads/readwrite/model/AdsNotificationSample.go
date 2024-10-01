@@ -100,50 +100,54 @@ type _AdsNotificationSampleBuilder struct {
 
 var _ (AdsNotificationSampleBuilder) = (*_AdsNotificationSampleBuilder)(nil)
 
-func (m *_AdsNotificationSampleBuilder) WithMandatoryFields(notificationHandle uint32, sampleSize uint32, data []byte) AdsNotificationSampleBuilder {
-	return m.WithNotificationHandle(notificationHandle).WithSampleSize(sampleSize).WithData(data...)
+func (b *_AdsNotificationSampleBuilder) WithMandatoryFields(notificationHandle uint32, sampleSize uint32, data []byte) AdsNotificationSampleBuilder {
+	return b.WithNotificationHandle(notificationHandle).WithSampleSize(sampleSize).WithData(data...)
 }
 
-func (m *_AdsNotificationSampleBuilder) WithNotificationHandle(notificationHandle uint32) AdsNotificationSampleBuilder {
-	m.NotificationHandle = notificationHandle
-	return m
+func (b *_AdsNotificationSampleBuilder) WithNotificationHandle(notificationHandle uint32) AdsNotificationSampleBuilder {
+	b.NotificationHandle = notificationHandle
+	return b
 }
 
-func (m *_AdsNotificationSampleBuilder) WithSampleSize(sampleSize uint32) AdsNotificationSampleBuilder {
-	m.SampleSize = sampleSize
-	return m
+func (b *_AdsNotificationSampleBuilder) WithSampleSize(sampleSize uint32) AdsNotificationSampleBuilder {
+	b.SampleSize = sampleSize
+	return b
 }
 
-func (m *_AdsNotificationSampleBuilder) WithData(data ...byte) AdsNotificationSampleBuilder {
-	m.Data = data
-	return m
+func (b *_AdsNotificationSampleBuilder) WithData(data ...byte) AdsNotificationSampleBuilder {
+	b.Data = data
+	return b
 }
 
-func (m *_AdsNotificationSampleBuilder) Build() (AdsNotificationSample, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsNotificationSampleBuilder) Build() (AdsNotificationSample, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsNotificationSample.deepCopy(), nil
+	return b._AdsNotificationSample.deepCopy(), nil
 }
 
-func (m *_AdsNotificationSampleBuilder) MustBuild() AdsNotificationSample {
-	build, err := m.Build()
+func (b *_AdsNotificationSampleBuilder) MustBuild() AdsNotificationSample {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsNotificationSampleBuilder) DeepCopy() any {
-	return m.CreateAdsNotificationSampleBuilder()
+func (b *_AdsNotificationSampleBuilder) DeepCopy() any {
+	_copy := b.CreateAdsNotificationSampleBuilder().(*_AdsNotificationSampleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsNotificationSampleBuilder creates a AdsNotificationSampleBuilder
-func (m *_AdsNotificationSample) CreateAdsNotificationSampleBuilder() AdsNotificationSampleBuilder {
-	if m == nil {
+func (b *_AdsNotificationSample) CreateAdsNotificationSampleBuilder() AdsNotificationSampleBuilder {
+	if b == nil {
 		return NewAdsNotificationSampleBuilder()
 	}
-	return &_AdsNotificationSampleBuilder{_AdsNotificationSample: m.deepCopy()}
+	return &_AdsNotificationSampleBuilder{_AdsNotificationSample: b.deepCopy()}
 }
 
 ///////////////////////
@@ -318,9 +322,13 @@ func (m *_AdsNotificationSample) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

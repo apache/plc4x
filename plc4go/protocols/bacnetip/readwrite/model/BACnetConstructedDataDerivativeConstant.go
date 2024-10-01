@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDerivativeConstantBuilder() BACnetConstructedDataDe
 type _BACnetConstructedDataDerivativeConstantBuilder struct {
 	*_BACnetConstructedDataDerivativeConstant
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDerivativeConstantBuilder) = (*_BACnetConstructedDataDerivativeConstantBuilder)(nil)
 
-func (m *_BACnetConstructedDataDerivativeConstantBuilder) WithMandatoryFields(derivativeConstant BACnetApplicationTagReal) BACnetConstructedDataDerivativeConstantBuilder {
-	return m.WithDerivativeConstant(derivativeConstant)
+func (b *_BACnetConstructedDataDerivativeConstantBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDerivativeConstantBuilder) WithDerivativeConstant(derivativeConstant BACnetApplicationTagReal) BACnetConstructedDataDerivativeConstantBuilder {
-	m.DerivativeConstant = derivativeConstant
-	return m
+func (b *_BACnetConstructedDataDerivativeConstantBuilder) WithMandatoryFields(derivativeConstant BACnetApplicationTagReal) BACnetConstructedDataDerivativeConstantBuilder {
+	return b.WithDerivativeConstant(derivativeConstant)
 }
 
-func (m *_BACnetConstructedDataDerivativeConstantBuilder) WithDerivativeConstantBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDerivativeConstantBuilder {
-	builder := builderSupplier(m.DerivativeConstant.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataDerivativeConstantBuilder) WithDerivativeConstant(derivativeConstant BACnetApplicationTagReal) BACnetConstructedDataDerivativeConstantBuilder {
+	b.DerivativeConstant = derivativeConstant
+	return b
+}
+
+func (b *_BACnetConstructedDataDerivativeConstantBuilder) WithDerivativeConstantBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDerivativeConstantBuilder {
+	builder := builderSupplier(b.DerivativeConstant.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.DerivativeConstant, err = builder.Build()
+	b.DerivativeConstant, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDerivativeConstantBuilder) Build() (BACnetConstructedDataDerivativeConstant, error) {
-	if m.DerivativeConstant == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDerivativeConstantBuilder) Build() (BACnetConstructedDataDerivativeConstant, error) {
+	if b.DerivativeConstant == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'derivativeConstant' not set"))
+		b.err.Append(errors.New("mandatory field 'derivativeConstant' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDerivativeConstant.deepCopy(), nil
+	return b._BACnetConstructedDataDerivativeConstant.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDerivativeConstantBuilder) MustBuild() BACnetConstructedDataDerivativeConstant {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDerivativeConstantBuilder) MustBuild() BACnetConstructedDataDerivativeConstant {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDerivativeConstantBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDerivativeConstantBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDerivativeConstantBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDerivativeConstantBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDerivativeConstantBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDerivativeConstantBuilder().(*_BACnetConstructedDataDerivativeConstantBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDerivativeConstantBuilder creates a BACnetConstructedDataDerivativeConstantBuilder
-func (m *_BACnetConstructedDataDerivativeConstant) CreateBACnetConstructedDataDerivativeConstantBuilder() BACnetConstructedDataDerivativeConstantBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDerivativeConstant) CreateBACnetConstructedDataDerivativeConstantBuilder() BACnetConstructedDataDerivativeConstantBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDerivativeConstantBuilder()
 	}
-	return &_BACnetConstructedDataDerivativeConstantBuilder{_BACnetConstructedDataDerivativeConstant: m.deepCopy()}
+	return &_BACnetConstructedDataDerivativeConstantBuilder{_BACnetConstructedDataDerivativeConstant: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataDerivativeConstant) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

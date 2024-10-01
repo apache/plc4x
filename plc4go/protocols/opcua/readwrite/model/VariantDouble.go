@@ -99,50 +99,69 @@ func NewVariantDoubleBuilder() VariantDoubleBuilder {
 type _VariantDoubleBuilder struct {
 	*_VariantDouble
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantDoubleBuilder) = (*_VariantDoubleBuilder)(nil)
 
-func (m *_VariantDoubleBuilder) WithMandatoryFields(value []float64) VariantDoubleBuilder {
-	return m.WithValue(value...)
+func (b *_VariantDoubleBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantDoubleBuilder) WithOptionalArrayLength(arrayLength int32) VariantDoubleBuilder {
-	m.ArrayLength = &arrayLength
-	return m
+func (b *_VariantDoubleBuilder) WithMandatoryFields(value []float64) VariantDoubleBuilder {
+	return b.WithValue(value...)
 }
 
-func (m *_VariantDoubleBuilder) WithValue(value ...float64) VariantDoubleBuilder {
-	m.Value = value
-	return m
+func (b *_VariantDoubleBuilder) WithOptionalArrayLength(arrayLength int32) VariantDoubleBuilder {
+	b.ArrayLength = &arrayLength
+	return b
 }
 
-func (m *_VariantDoubleBuilder) Build() (VariantDouble, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantDoubleBuilder) WithValue(value ...float64) VariantDoubleBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantDoubleBuilder) Build() (VariantDouble, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantDouble.deepCopy(), nil
+	return b._VariantDouble.deepCopy(), nil
 }
 
-func (m *_VariantDoubleBuilder) MustBuild() VariantDouble {
-	build, err := m.Build()
+func (b *_VariantDoubleBuilder) MustBuild() VariantDouble {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantDoubleBuilder) DeepCopy() any {
-	return m.CreateVariantDoubleBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantDoubleBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantDoubleBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantDoubleBuilder) DeepCopy() any {
+	_copy := b.CreateVariantDoubleBuilder().(*_VariantDoubleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantDoubleBuilder creates a VariantDoubleBuilder
-func (m *_VariantDouble) CreateVariantDoubleBuilder() VariantDoubleBuilder {
-	if m == nil {
+func (b *_VariantDouble) CreateVariantDoubleBuilder() VariantDoubleBuilder {
+	if b == nil {
 		return NewVariantDoubleBuilder()
 	}
-	return &_VariantDoubleBuilder{_VariantDouble: m.deepCopy()}
+	return &_VariantDoubleBuilder{_VariantDouble: b.deepCopy()}
 }
 
 ///////////////////////
@@ -309,9 +328,13 @@ func (m *_VariantDouble) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

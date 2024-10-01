@@ -85,40 +85,59 @@ func NewTriggerControlDataIndicatorKillBuilder() TriggerControlDataIndicatorKill
 type _TriggerControlDataIndicatorKillBuilder struct {
 	*_TriggerControlDataIndicatorKill
 
+	parentBuilder *_TriggerControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TriggerControlDataIndicatorKillBuilder) = (*_TriggerControlDataIndicatorKillBuilder)(nil)
 
-func (m *_TriggerControlDataIndicatorKillBuilder) WithMandatoryFields() TriggerControlDataIndicatorKillBuilder {
-	return m
+func (b *_TriggerControlDataIndicatorKillBuilder) setParent(contract TriggerControlDataContract) {
+	b.TriggerControlDataContract = contract
 }
 
-func (m *_TriggerControlDataIndicatorKillBuilder) Build() (TriggerControlDataIndicatorKill, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TriggerControlDataIndicatorKillBuilder) WithMandatoryFields() TriggerControlDataIndicatorKillBuilder {
+	return b
+}
+
+func (b *_TriggerControlDataIndicatorKillBuilder) Build() (TriggerControlDataIndicatorKill, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TriggerControlDataIndicatorKill.deepCopy(), nil
+	return b._TriggerControlDataIndicatorKill.deepCopy(), nil
 }
 
-func (m *_TriggerControlDataIndicatorKillBuilder) MustBuild() TriggerControlDataIndicatorKill {
-	build, err := m.Build()
+func (b *_TriggerControlDataIndicatorKillBuilder) MustBuild() TriggerControlDataIndicatorKill {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TriggerControlDataIndicatorKillBuilder) DeepCopy() any {
-	return m.CreateTriggerControlDataIndicatorKillBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TriggerControlDataIndicatorKillBuilder) Done() TriggerControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TriggerControlDataIndicatorKillBuilder) buildForTriggerControlData() (TriggerControlData, error) {
+	return b.Build()
+}
+
+func (b *_TriggerControlDataIndicatorKillBuilder) DeepCopy() any {
+	_copy := b.CreateTriggerControlDataIndicatorKillBuilder().(*_TriggerControlDataIndicatorKillBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTriggerControlDataIndicatorKillBuilder creates a TriggerControlDataIndicatorKillBuilder
-func (m *_TriggerControlDataIndicatorKill) CreateTriggerControlDataIndicatorKillBuilder() TriggerControlDataIndicatorKillBuilder {
-	if m == nil {
+func (b *_TriggerControlDataIndicatorKill) CreateTriggerControlDataIndicatorKillBuilder() TriggerControlDataIndicatorKillBuilder {
+	if b == nil {
 		return NewTriggerControlDataIndicatorKillBuilder()
 	}
-	return &_TriggerControlDataIndicatorKillBuilder{_TriggerControlDataIndicatorKill: m.deepCopy()}
+	return &_TriggerControlDataIndicatorKillBuilder{_TriggerControlDataIndicatorKill: b.deepCopy()}
 }
 
 ///////////////////////
@@ -230,9 +249,13 @@ func (m *_TriggerControlDataIndicatorKill) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

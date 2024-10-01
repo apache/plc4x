@@ -36,7 +36,7 @@ func NewObjectIdentifierProperty(name string, klass func(Args, KWArgs) (Property
 	return o
 }
 
-func (o *_ObjectIdentifierProperty) WriteProperty() error {
+func (o *_ObjectIdentifierProperty) WriteProperty(Args, KWArgs) error {
 	//TODO implement me
 	panic("implement me")
 }

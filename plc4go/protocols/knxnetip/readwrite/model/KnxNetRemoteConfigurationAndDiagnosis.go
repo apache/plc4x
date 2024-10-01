@@ -93,45 +93,64 @@ func NewKnxNetRemoteConfigurationAndDiagnosisBuilder() KnxNetRemoteConfiguration
 type _KnxNetRemoteConfigurationAndDiagnosisBuilder struct {
 	*_KnxNetRemoteConfigurationAndDiagnosis
 
+	parentBuilder *_ServiceIdBuilder
+
 	err *utils.MultiError
 }
 
 var _ (KnxNetRemoteConfigurationAndDiagnosisBuilder) = (*_KnxNetRemoteConfigurationAndDiagnosisBuilder)(nil)
 
-func (m *_KnxNetRemoteConfigurationAndDiagnosisBuilder) WithMandatoryFields(version uint8) KnxNetRemoteConfigurationAndDiagnosisBuilder {
-	return m.WithVersion(version)
+func (b *_KnxNetRemoteConfigurationAndDiagnosisBuilder) setParent(contract ServiceIdContract) {
+	b.ServiceIdContract = contract
 }
 
-func (m *_KnxNetRemoteConfigurationAndDiagnosisBuilder) WithVersion(version uint8) KnxNetRemoteConfigurationAndDiagnosisBuilder {
-	m.Version = version
-	return m
+func (b *_KnxNetRemoteConfigurationAndDiagnosisBuilder) WithMandatoryFields(version uint8) KnxNetRemoteConfigurationAndDiagnosisBuilder {
+	return b.WithVersion(version)
 }
 
-func (m *_KnxNetRemoteConfigurationAndDiagnosisBuilder) Build() (KnxNetRemoteConfigurationAndDiagnosis, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_KnxNetRemoteConfigurationAndDiagnosisBuilder) WithVersion(version uint8) KnxNetRemoteConfigurationAndDiagnosisBuilder {
+	b.Version = version
+	return b
+}
+
+func (b *_KnxNetRemoteConfigurationAndDiagnosisBuilder) Build() (KnxNetRemoteConfigurationAndDiagnosis, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._KnxNetRemoteConfigurationAndDiagnosis.deepCopy(), nil
+	return b._KnxNetRemoteConfigurationAndDiagnosis.deepCopy(), nil
 }
 
-func (m *_KnxNetRemoteConfigurationAndDiagnosisBuilder) MustBuild() KnxNetRemoteConfigurationAndDiagnosis {
-	build, err := m.Build()
+func (b *_KnxNetRemoteConfigurationAndDiagnosisBuilder) MustBuild() KnxNetRemoteConfigurationAndDiagnosis {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_KnxNetRemoteConfigurationAndDiagnosisBuilder) DeepCopy() any {
-	return m.CreateKnxNetRemoteConfigurationAndDiagnosisBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_KnxNetRemoteConfigurationAndDiagnosisBuilder) Done() ServiceIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_KnxNetRemoteConfigurationAndDiagnosisBuilder) buildForServiceId() (ServiceId, error) {
+	return b.Build()
+}
+
+func (b *_KnxNetRemoteConfigurationAndDiagnosisBuilder) DeepCopy() any {
+	_copy := b.CreateKnxNetRemoteConfigurationAndDiagnosisBuilder().(*_KnxNetRemoteConfigurationAndDiagnosisBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateKnxNetRemoteConfigurationAndDiagnosisBuilder creates a KnxNetRemoteConfigurationAndDiagnosisBuilder
-func (m *_KnxNetRemoteConfigurationAndDiagnosis) CreateKnxNetRemoteConfigurationAndDiagnosisBuilder() KnxNetRemoteConfigurationAndDiagnosisBuilder {
-	if m == nil {
+func (b *_KnxNetRemoteConfigurationAndDiagnosis) CreateKnxNetRemoteConfigurationAndDiagnosisBuilder() KnxNetRemoteConfigurationAndDiagnosisBuilder {
+	if b == nil {
 		return NewKnxNetRemoteConfigurationAndDiagnosisBuilder()
 	}
-	return &_KnxNetRemoteConfigurationAndDiagnosisBuilder{_KnxNetRemoteConfigurationAndDiagnosis: m.deepCopy()}
+	return &_KnxNetRemoteConfigurationAndDiagnosisBuilder{_KnxNetRemoteConfigurationAndDiagnosis: b.deepCopy()}
 }
 
 ///////////////////////
@@ -275,9 +294,13 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

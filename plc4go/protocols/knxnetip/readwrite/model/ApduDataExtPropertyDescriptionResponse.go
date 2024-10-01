@@ -138,80 +138,99 @@ func NewApduDataExtPropertyDescriptionResponseBuilder() ApduDataExtPropertyDescr
 type _ApduDataExtPropertyDescriptionResponseBuilder struct {
 	*_ApduDataExtPropertyDescriptionResponse
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtPropertyDescriptionResponseBuilder) = (*_ApduDataExtPropertyDescriptionResponseBuilder)(nil)
 
-func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithMandatoryFields(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel) ApduDataExtPropertyDescriptionResponseBuilder {
-	return m.WithObjectIndex(objectIndex).WithPropertyId(propertyId).WithIndex(index).WithWriteEnabled(writeEnabled).WithPropertyDataType(propertyDataType).WithMaxNrOfElements(maxNrOfElements).WithReadLevel(readLevel).WithWriteLevel(writeLevel)
+func (b *_ApduDataExtPropertyDescriptionResponseBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithObjectIndex(objectIndex uint8) ApduDataExtPropertyDescriptionResponseBuilder {
-	m.ObjectIndex = objectIndex
-	return m
+func (b *_ApduDataExtPropertyDescriptionResponseBuilder) WithMandatoryFields(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel) ApduDataExtPropertyDescriptionResponseBuilder {
+	return b.WithObjectIndex(objectIndex).WithPropertyId(propertyId).WithIndex(index).WithWriteEnabled(writeEnabled).WithPropertyDataType(propertyDataType).WithMaxNrOfElements(maxNrOfElements).WithReadLevel(readLevel).WithWriteLevel(writeLevel)
 }
 
-func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithPropertyId(propertyId uint8) ApduDataExtPropertyDescriptionResponseBuilder {
-	m.PropertyId = propertyId
-	return m
+func (b *_ApduDataExtPropertyDescriptionResponseBuilder) WithObjectIndex(objectIndex uint8) ApduDataExtPropertyDescriptionResponseBuilder {
+	b.ObjectIndex = objectIndex
+	return b
 }
 
-func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithIndex(index uint8) ApduDataExtPropertyDescriptionResponseBuilder {
-	m.Index = index
-	return m
+func (b *_ApduDataExtPropertyDescriptionResponseBuilder) WithPropertyId(propertyId uint8) ApduDataExtPropertyDescriptionResponseBuilder {
+	b.PropertyId = propertyId
+	return b
 }
 
-func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithWriteEnabled(writeEnabled bool) ApduDataExtPropertyDescriptionResponseBuilder {
-	m.WriteEnabled = writeEnabled
-	return m
+func (b *_ApduDataExtPropertyDescriptionResponseBuilder) WithIndex(index uint8) ApduDataExtPropertyDescriptionResponseBuilder {
+	b.Index = index
+	return b
 }
 
-func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithPropertyDataType(propertyDataType KnxPropertyDataType) ApduDataExtPropertyDescriptionResponseBuilder {
-	m.PropertyDataType = propertyDataType
-	return m
+func (b *_ApduDataExtPropertyDescriptionResponseBuilder) WithWriteEnabled(writeEnabled bool) ApduDataExtPropertyDescriptionResponseBuilder {
+	b.WriteEnabled = writeEnabled
+	return b
 }
 
-func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithMaxNrOfElements(maxNrOfElements uint16) ApduDataExtPropertyDescriptionResponseBuilder {
-	m.MaxNrOfElements = maxNrOfElements
-	return m
+func (b *_ApduDataExtPropertyDescriptionResponseBuilder) WithPropertyDataType(propertyDataType KnxPropertyDataType) ApduDataExtPropertyDescriptionResponseBuilder {
+	b.PropertyDataType = propertyDataType
+	return b
 }
 
-func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithReadLevel(readLevel AccessLevel) ApduDataExtPropertyDescriptionResponseBuilder {
-	m.ReadLevel = readLevel
-	return m
+func (b *_ApduDataExtPropertyDescriptionResponseBuilder) WithMaxNrOfElements(maxNrOfElements uint16) ApduDataExtPropertyDescriptionResponseBuilder {
+	b.MaxNrOfElements = maxNrOfElements
+	return b
 }
 
-func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithWriteLevel(writeLevel AccessLevel) ApduDataExtPropertyDescriptionResponseBuilder {
-	m.WriteLevel = writeLevel
-	return m
+func (b *_ApduDataExtPropertyDescriptionResponseBuilder) WithReadLevel(readLevel AccessLevel) ApduDataExtPropertyDescriptionResponseBuilder {
+	b.ReadLevel = readLevel
+	return b
 }
 
-func (m *_ApduDataExtPropertyDescriptionResponseBuilder) Build() (ApduDataExtPropertyDescriptionResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtPropertyDescriptionResponseBuilder) WithWriteLevel(writeLevel AccessLevel) ApduDataExtPropertyDescriptionResponseBuilder {
+	b.WriteLevel = writeLevel
+	return b
+}
+
+func (b *_ApduDataExtPropertyDescriptionResponseBuilder) Build() (ApduDataExtPropertyDescriptionResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtPropertyDescriptionResponse.deepCopy(), nil
+	return b._ApduDataExtPropertyDescriptionResponse.deepCopy(), nil
 }
 
-func (m *_ApduDataExtPropertyDescriptionResponseBuilder) MustBuild() ApduDataExtPropertyDescriptionResponse {
-	build, err := m.Build()
+func (b *_ApduDataExtPropertyDescriptionResponseBuilder) MustBuild() ApduDataExtPropertyDescriptionResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtPropertyDescriptionResponseBuilder) DeepCopy() any {
-	return m.CreateApduDataExtPropertyDescriptionResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtPropertyDescriptionResponseBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtPropertyDescriptionResponseBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtPropertyDescriptionResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtPropertyDescriptionResponseBuilder().(*_ApduDataExtPropertyDescriptionResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtPropertyDescriptionResponseBuilder creates a ApduDataExtPropertyDescriptionResponseBuilder
-func (m *_ApduDataExtPropertyDescriptionResponse) CreateApduDataExtPropertyDescriptionResponseBuilder() ApduDataExtPropertyDescriptionResponseBuilder {
-	if m == nil {
+func (b *_ApduDataExtPropertyDescriptionResponse) CreateApduDataExtPropertyDescriptionResponseBuilder() ApduDataExtPropertyDescriptionResponseBuilder {
+	if b == nil {
 		return NewApduDataExtPropertyDescriptionResponseBuilder()
 	}
-	return &_ApduDataExtPropertyDescriptionResponseBuilder{_ApduDataExtPropertyDescriptionResponse: m.deepCopy()}
+	return &_ApduDataExtPropertyDescriptionResponseBuilder{_ApduDataExtPropertyDescriptionResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -509,9 +528,13 @@ func (m *_ApduDataExtPropertyDescriptionResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

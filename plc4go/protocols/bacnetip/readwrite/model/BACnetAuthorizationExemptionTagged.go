@@ -111,69 +111,73 @@ type _BACnetAuthorizationExemptionTaggedBuilder struct {
 
 var _ (BACnetAuthorizationExemptionTaggedBuilder) = (*_BACnetAuthorizationExemptionTaggedBuilder)(nil)
 
-func (m *_BACnetAuthorizationExemptionTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAuthorizationExemption, proprietaryValue uint32) BACnetAuthorizationExemptionTaggedBuilder {
-	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAuthorizationExemption, proprietaryValue uint32) BACnetAuthorizationExemptionTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_BACnetAuthorizationExemptionTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAuthorizationExemptionTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAuthorizationExemptionTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetAuthorizationExemptionTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthorizationExemptionTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthorizationExemptionTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAuthorizationExemptionTaggedBuilder) WithValue(value BACnetAuthorizationExemption) BACnetAuthorizationExemptionTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) WithValue(value BACnetAuthorizationExemption) BACnetAuthorizationExemptionTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetAuthorizationExemptionTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAuthorizationExemptionTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAuthorizationExemptionTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetAuthorizationExemptionTaggedBuilder) Build() (BACnetAuthorizationExemptionTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) Build() (BACnetAuthorizationExemptionTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAuthorizationExemptionTagged.deepCopy(), nil
+	return b._BACnetAuthorizationExemptionTagged.deepCopy(), nil
 }
 
-func (m *_BACnetAuthorizationExemptionTaggedBuilder) MustBuild() BACnetAuthorizationExemptionTagged {
-	build, err := m.Build()
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) MustBuild() BACnetAuthorizationExemptionTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAuthorizationExemptionTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetAuthorizationExemptionTaggedBuilder()
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAuthorizationExemptionTaggedBuilder().(*_BACnetAuthorizationExemptionTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAuthorizationExemptionTaggedBuilder creates a BACnetAuthorizationExemptionTaggedBuilder
-func (m *_BACnetAuthorizationExemptionTagged) CreateBACnetAuthorizationExemptionTaggedBuilder() BACnetAuthorizationExemptionTaggedBuilder {
-	if m == nil {
+func (b *_BACnetAuthorizationExemptionTagged) CreateBACnetAuthorizationExemptionTaggedBuilder() BACnetAuthorizationExemptionTaggedBuilder {
+	if b == nil {
 		return NewBACnetAuthorizationExemptionTaggedBuilder()
 	}
-	return &_BACnetAuthorizationExemptionTaggedBuilder{_BACnetAuthorizationExemptionTagged: m.deepCopy()}
+	return &_BACnetAuthorizationExemptionTaggedBuilder{_BACnetAuthorizationExemptionTagged: b.deepCopy()}
 }
 
 ///////////////////////
@@ -402,9 +406,13 @@ func (m *_BACnetAuthorizationExemptionTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -93,45 +93,64 @@ func NewEipListIdentityResponseBuilder() EipListIdentityResponseBuilder {
 type _EipListIdentityResponseBuilder struct {
 	*_EipListIdentityResponse
 
+	parentBuilder *_EipPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (EipListIdentityResponseBuilder) = (*_EipListIdentityResponseBuilder)(nil)
 
-func (m *_EipListIdentityResponseBuilder) WithMandatoryFields(items []CommandSpecificDataItem) EipListIdentityResponseBuilder {
-	return m.WithItems(items...)
+func (b *_EipListIdentityResponseBuilder) setParent(contract EipPacketContract) {
+	b.EipPacketContract = contract
 }
 
-func (m *_EipListIdentityResponseBuilder) WithItems(items ...CommandSpecificDataItem) EipListIdentityResponseBuilder {
-	m.Items = items
-	return m
+func (b *_EipListIdentityResponseBuilder) WithMandatoryFields(items []CommandSpecificDataItem) EipListIdentityResponseBuilder {
+	return b.WithItems(items...)
 }
 
-func (m *_EipListIdentityResponseBuilder) Build() (EipListIdentityResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_EipListIdentityResponseBuilder) WithItems(items ...CommandSpecificDataItem) EipListIdentityResponseBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_EipListIdentityResponseBuilder) Build() (EipListIdentityResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EipListIdentityResponse.deepCopy(), nil
+	return b._EipListIdentityResponse.deepCopy(), nil
 }
 
-func (m *_EipListIdentityResponseBuilder) MustBuild() EipListIdentityResponse {
-	build, err := m.Build()
+func (b *_EipListIdentityResponseBuilder) MustBuild() EipListIdentityResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EipListIdentityResponseBuilder) DeepCopy() any {
-	return m.CreateEipListIdentityResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EipListIdentityResponseBuilder) Done() EipPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EipListIdentityResponseBuilder) buildForEipPacket() (EipPacket, error) {
+	return b.Build()
+}
+
+func (b *_EipListIdentityResponseBuilder) DeepCopy() any {
+	_copy := b.CreateEipListIdentityResponseBuilder().(*_EipListIdentityResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEipListIdentityResponseBuilder creates a EipListIdentityResponseBuilder
-func (m *_EipListIdentityResponse) CreateEipListIdentityResponseBuilder() EipListIdentityResponseBuilder {
-	if m == nil {
+func (b *_EipListIdentityResponse) CreateEipListIdentityResponseBuilder() EipListIdentityResponseBuilder {
+	if b == nil {
 		return NewEipListIdentityResponseBuilder()
 	}
-	return &_EipListIdentityResponseBuilder{_EipListIdentityResponse: m.deepCopy()}
+	return &_EipListIdentityResponseBuilder{_EipListIdentityResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -303,9 +322,13 @@ func (m *_EipListIdentityResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

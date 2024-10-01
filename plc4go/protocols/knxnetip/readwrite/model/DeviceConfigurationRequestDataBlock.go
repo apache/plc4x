@@ -97,45 +97,49 @@ type _DeviceConfigurationRequestDataBlockBuilder struct {
 
 var _ (DeviceConfigurationRequestDataBlockBuilder) = (*_DeviceConfigurationRequestDataBlockBuilder)(nil)
 
-func (m *_DeviceConfigurationRequestDataBlockBuilder) WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8) DeviceConfigurationRequestDataBlockBuilder {
-	return m.WithCommunicationChannelId(communicationChannelId).WithSequenceCounter(sequenceCounter)
+func (b *_DeviceConfigurationRequestDataBlockBuilder) WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8) DeviceConfigurationRequestDataBlockBuilder {
+	return b.WithCommunicationChannelId(communicationChannelId).WithSequenceCounter(sequenceCounter)
 }
 
-func (m *_DeviceConfigurationRequestDataBlockBuilder) WithCommunicationChannelId(communicationChannelId uint8) DeviceConfigurationRequestDataBlockBuilder {
-	m.CommunicationChannelId = communicationChannelId
-	return m
+func (b *_DeviceConfigurationRequestDataBlockBuilder) WithCommunicationChannelId(communicationChannelId uint8) DeviceConfigurationRequestDataBlockBuilder {
+	b.CommunicationChannelId = communicationChannelId
+	return b
 }
 
-func (m *_DeviceConfigurationRequestDataBlockBuilder) WithSequenceCounter(sequenceCounter uint8) DeviceConfigurationRequestDataBlockBuilder {
-	m.SequenceCounter = sequenceCounter
-	return m
+func (b *_DeviceConfigurationRequestDataBlockBuilder) WithSequenceCounter(sequenceCounter uint8) DeviceConfigurationRequestDataBlockBuilder {
+	b.SequenceCounter = sequenceCounter
+	return b
 }
 
-func (m *_DeviceConfigurationRequestDataBlockBuilder) Build() (DeviceConfigurationRequestDataBlock, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DeviceConfigurationRequestDataBlockBuilder) Build() (DeviceConfigurationRequestDataBlock, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DeviceConfigurationRequestDataBlock.deepCopy(), nil
+	return b._DeviceConfigurationRequestDataBlock.deepCopy(), nil
 }
 
-func (m *_DeviceConfigurationRequestDataBlockBuilder) MustBuild() DeviceConfigurationRequestDataBlock {
-	build, err := m.Build()
+func (b *_DeviceConfigurationRequestDataBlockBuilder) MustBuild() DeviceConfigurationRequestDataBlock {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DeviceConfigurationRequestDataBlockBuilder) DeepCopy() any {
-	return m.CreateDeviceConfigurationRequestDataBlockBuilder()
+func (b *_DeviceConfigurationRequestDataBlockBuilder) DeepCopy() any {
+	_copy := b.CreateDeviceConfigurationRequestDataBlockBuilder().(*_DeviceConfigurationRequestDataBlockBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDeviceConfigurationRequestDataBlockBuilder creates a DeviceConfigurationRequestDataBlockBuilder
-func (m *_DeviceConfigurationRequestDataBlock) CreateDeviceConfigurationRequestDataBlockBuilder() DeviceConfigurationRequestDataBlockBuilder {
-	if m == nil {
+func (b *_DeviceConfigurationRequestDataBlock) CreateDeviceConfigurationRequestDataBlockBuilder() DeviceConfigurationRequestDataBlockBuilder {
+	if b == nil {
 		return NewDeviceConfigurationRequestDataBlockBuilder()
 	}
-	return &_DeviceConfigurationRequestDataBlockBuilder{_DeviceConfigurationRequestDataBlock: m.deepCopy()}
+	return &_DeviceConfigurationRequestDataBlockBuilder{_DeviceConfigurationRequestDataBlock: b.deepCopy()}
 }
 
 ///////////////////////
@@ -317,9 +321,13 @@ func (m *_DeviceConfigurationRequestDataBlock) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

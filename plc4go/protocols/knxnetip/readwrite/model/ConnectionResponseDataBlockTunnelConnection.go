@@ -98,64 +98,83 @@ func NewConnectionResponseDataBlockTunnelConnectionBuilder() ConnectionResponseD
 type _ConnectionResponseDataBlockTunnelConnectionBuilder struct {
 	*_ConnectionResponseDataBlockTunnelConnection
 
+	parentBuilder *_ConnectionResponseDataBlockBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ConnectionResponseDataBlockTunnelConnectionBuilder) = (*_ConnectionResponseDataBlockTunnelConnectionBuilder)(nil)
 
-func (m *_ConnectionResponseDataBlockTunnelConnectionBuilder) WithMandatoryFields(knxAddress KnxAddress) ConnectionResponseDataBlockTunnelConnectionBuilder {
-	return m.WithKnxAddress(knxAddress)
+func (b *_ConnectionResponseDataBlockTunnelConnectionBuilder) setParent(contract ConnectionResponseDataBlockContract) {
+	b.ConnectionResponseDataBlockContract = contract
 }
 
-func (m *_ConnectionResponseDataBlockTunnelConnectionBuilder) WithKnxAddress(knxAddress KnxAddress) ConnectionResponseDataBlockTunnelConnectionBuilder {
-	m.KnxAddress = knxAddress
-	return m
+func (b *_ConnectionResponseDataBlockTunnelConnectionBuilder) WithMandatoryFields(knxAddress KnxAddress) ConnectionResponseDataBlockTunnelConnectionBuilder {
+	return b.WithKnxAddress(knxAddress)
 }
 
-func (m *_ConnectionResponseDataBlockTunnelConnectionBuilder) WithKnxAddressBuilder(builderSupplier func(KnxAddressBuilder) KnxAddressBuilder) ConnectionResponseDataBlockTunnelConnectionBuilder {
-	builder := builderSupplier(m.KnxAddress.CreateKnxAddressBuilder())
+func (b *_ConnectionResponseDataBlockTunnelConnectionBuilder) WithKnxAddress(knxAddress KnxAddress) ConnectionResponseDataBlockTunnelConnectionBuilder {
+	b.KnxAddress = knxAddress
+	return b
+}
+
+func (b *_ConnectionResponseDataBlockTunnelConnectionBuilder) WithKnxAddressBuilder(builderSupplier func(KnxAddressBuilder) KnxAddressBuilder) ConnectionResponseDataBlockTunnelConnectionBuilder {
+	builder := builderSupplier(b.KnxAddress.CreateKnxAddressBuilder())
 	var err error
-	m.KnxAddress, err = builder.Build()
+	b.KnxAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "KnxAddressBuilder failed"))
+		b.err.Append(errors.Wrap(err, "KnxAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ConnectionResponseDataBlockTunnelConnectionBuilder) Build() (ConnectionResponseDataBlockTunnelConnection, error) {
-	if m.KnxAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ConnectionResponseDataBlockTunnelConnectionBuilder) Build() (ConnectionResponseDataBlockTunnelConnection, error) {
+	if b.KnxAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'knxAddress' not set"))
+		b.err.Append(errors.New("mandatory field 'knxAddress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ConnectionResponseDataBlockTunnelConnection.deepCopy(), nil
+	return b._ConnectionResponseDataBlockTunnelConnection.deepCopy(), nil
 }
 
-func (m *_ConnectionResponseDataBlockTunnelConnectionBuilder) MustBuild() ConnectionResponseDataBlockTunnelConnection {
-	build, err := m.Build()
+func (b *_ConnectionResponseDataBlockTunnelConnectionBuilder) MustBuild() ConnectionResponseDataBlockTunnelConnection {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ConnectionResponseDataBlockTunnelConnectionBuilder) DeepCopy() any {
-	return m.CreateConnectionResponseDataBlockTunnelConnectionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ConnectionResponseDataBlockTunnelConnectionBuilder) Done() ConnectionResponseDataBlockBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ConnectionResponseDataBlockTunnelConnectionBuilder) buildForConnectionResponseDataBlock() (ConnectionResponseDataBlock, error) {
+	return b.Build()
+}
+
+func (b *_ConnectionResponseDataBlockTunnelConnectionBuilder) DeepCopy() any {
+	_copy := b.CreateConnectionResponseDataBlockTunnelConnectionBuilder().(*_ConnectionResponseDataBlockTunnelConnectionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateConnectionResponseDataBlockTunnelConnectionBuilder creates a ConnectionResponseDataBlockTunnelConnectionBuilder
-func (m *_ConnectionResponseDataBlockTunnelConnection) CreateConnectionResponseDataBlockTunnelConnectionBuilder() ConnectionResponseDataBlockTunnelConnectionBuilder {
-	if m == nil {
+func (b *_ConnectionResponseDataBlockTunnelConnection) CreateConnectionResponseDataBlockTunnelConnectionBuilder() ConnectionResponseDataBlockTunnelConnectionBuilder {
+	if b == nil {
 		return NewConnectionResponseDataBlockTunnelConnectionBuilder()
 	}
-	return &_ConnectionResponseDataBlockTunnelConnectionBuilder{_ConnectionResponseDataBlockTunnelConnection: m.deepCopy()}
+	return &_ConnectionResponseDataBlockTunnelConnectionBuilder{_ConnectionResponseDataBlockTunnelConnection: b.deepCopy()}
 }
 
 ///////////////////////
@@ -300,9 +319,13 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

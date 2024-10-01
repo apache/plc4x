@@ -100,64 +100,83 @@ func NewBACnetConstructedDataSecurityPDUTimeoutBuilder() BACnetConstructedDataSe
 type _BACnetConstructedDataSecurityPDUTimeoutBuilder struct {
 	*_BACnetConstructedDataSecurityPDUTimeout
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSecurityPDUTimeoutBuilder) = (*_BACnetConstructedDataSecurityPDUTimeoutBuilder)(nil)
 
-func (m *_BACnetConstructedDataSecurityPDUTimeoutBuilder) WithMandatoryFields(securityPduTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityPDUTimeoutBuilder {
-	return m.WithSecurityPduTimeout(securityPduTimeout)
+func (b *_BACnetConstructedDataSecurityPDUTimeoutBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSecurityPDUTimeoutBuilder) WithSecurityPduTimeout(securityPduTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityPDUTimeoutBuilder {
-	m.SecurityPduTimeout = securityPduTimeout
-	return m
+func (b *_BACnetConstructedDataSecurityPDUTimeoutBuilder) WithMandatoryFields(securityPduTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityPDUTimeoutBuilder {
+	return b.WithSecurityPduTimeout(securityPduTimeout)
 }
 
-func (m *_BACnetConstructedDataSecurityPDUTimeoutBuilder) WithSecurityPduTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSecurityPDUTimeoutBuilder {
-	builder := builderSupplier(m.SecurityPduTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataSecurityPDUTimeoutBuilder) WithSecurityPduTimeout(securityPduTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityPDUTimeoutBuilder {
+	b.SecurityPduTimeout = securityPduTimeout
+	return b
+}
+
+func (b *_BACnetConstructedDataSecurityPDUTimeoutBuilder) WithSecurityPduTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSecurityPDUTimeoutBuilder {
+	builder := builderSupplier(b.SecurityPduTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.SecurityPduTimeout, err = builder.Build()
+	b.SecurityPduTimeout, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataSecurityPDUTimeoutBuilder) Build() (BACnetConstructedDataSecurityPDUTimeout, error) {
-	if m.SecurityPduTimeout == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataSecurityPDUTimeoutBuilder) Build() (BACnetConstructedDataSecurityPDUTimeout, error) {
+	if b.SecurityPduTimeout == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'securityPduTimeout' not set"))
+		b.err.Append(errors.New("mandatory field 'securityPduTimeout' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSecurityPDUTimeout.deepCopy(), nil
+	return b._BACnetConstructedDataSecurityPDUTimeout.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSecurityPDUTimeoutBuilder) MustBuild() BACnetConstructedDataSecurityPDUTimeout {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSecurityPDUTimeoutBuilder) MustBuild() BACnetConstructedDataSecurityPDUTimeout {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSecurityPDUTimeoutBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSecurityPDUTimeoutBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSecurityPDUTimeoutBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSecurityPDUTimeoutBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSecurityPDUTimeoutBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSecurityPDUTimeoutBuilder().(*_BACnetConstructedDataSecurityPDUTimeoutBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSecurityPDUTimeoutBuilder creates a BACnetConstructedDataSecurityPDUTimeoutBuilder
-func (m *_BACnetConstructedDataSecurityPDUTimeout) CreateBACnetConstructedDataSecurityPDUTimeoutBuilder() BACnetConstructedDataSecurityPDUTimeoutBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSecurityPDUTimeout) CreateBACnetConstructedDataSecurityPDUTimeoutBuilder() BACnetConstructedDataSecurityPDUTimeoutBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSecurityPDUTimeoutBuilder()
 	}
-	return &_BACnetConstructedDataSecurityPDUTimeoutBuilder{_BACnetConstructedDataSecurityPDUTimeout: m.deepCopy()}
+	return &_BACnetConstructedDataSecurityPDUTimeoutBuilder{_BACnetConstructedDataSecurityPDUTimeout: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataSecurityPDUTimeout) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

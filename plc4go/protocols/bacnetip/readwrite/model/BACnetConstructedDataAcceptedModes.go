@@ -93,45 +93,64 @@ func NewBACnetConstructedDataAcceptedModesBuilder() BACnetConstructedDataAccepte
 type _BACnetConstructedDataAcceptedModesBuilder struct {
 	*_BACnetConstructedDataAcceptedModes
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAcceptedModesBuilder) = (*_BACnetConstructedDataAcceptedModesBuilder)(nil)
 
-func (m *_BACnetConstructedDataAcceptedModesBuilder) WithMandatoryFields(acceptedModes []BACnetLifeSafetyModeTagged) BACnetConstructedDataAcceptedModesBuilder {
-	return m.WithAcceptedModes(acceptedModes...)
+func (b *_BACnetConstructedDataAcceptedModesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAcceptedModesBuilder) WithAcceptedModes(acceptedModes ...BACnetLifeSafetyModeTagged) BACnetConstructedDataAcceptedModesBuilder {
-	m.AcceptedModes = acceptedModes
-	return m
+func (b *_BACnetConstructedDataAcceptedModesBuilder) WithMandatoryFields(acceptedModes []BACnetLifeSafetyModeTagged) BACnetConstructedDataAcceptedModesBuilder {
+	return b.WithAcceptedModes(acceptedModes...)
 }
 
-func (m *_BACnetConstructedDataAcceptedModesBuilder) Build() (BACnetConstructedDataAcceptedModes, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataAcceptedModesBuilder) WithAcceptedModes(acceptedModes ...BACnetLifeSafetyModeTagged) BACnetConstructedDataAcceptedModesBuilder {
+	b.AcceptedModes = acceptedModes
+	return b
+}
+
+func (b *_BACnetConstructedDataAcceptedModesBuilder) Build() (BACnetConstructedDataAcceptedModes, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAcceptedModes.deepCopy(), nil
+	return b._BACnetConstructedDataAcceptedModes.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAcceptedModesBuilder) MustBuild() BACnetConstructedDataAcceptedModes {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAcceptedModesBuilder) MustBuild() BACnetConstructedDataAcceptedModes {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAcceptedModesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAcceptedModesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAcceptedModesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAcceptedModesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAcceptedModesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAcceptedModesBuilder().(*_BACnetConstructedDataAcceptedModesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAcceptedModesBuilder creates a BACnetConstructedDataAcceptedModesBuilder
-func (m *_BACnetConstructedDataAcceptedModes) CreateBACnetConstructedDataAcceptedModesBuilder() BACnetConstructedDataAcceptedModesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAcceptedModes) CreateBACnetConstructedDataAcceptedModesBuilder() BACnetConstructedDataAcceptedModesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAcceptedModesBuilder()
 	}
-	return &_BACnetConstructedDataAcceptedModesBuilder{_BACnetConstructedDataAcceptedModes: m.deepCopy()}
+	return &_BACnetConstructedDataAcceptedModesBuilder{_BACnetConstructedDataAcceptedModes: b.deepCopy()}
 }
 
 ///////////////////////
@@ -283,9 +302,13 @@ func (m *_BACnetConstructedDataAcceptedModes) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

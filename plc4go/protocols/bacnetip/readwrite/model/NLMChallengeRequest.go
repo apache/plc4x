@@ -105,55 +105,74 @@ func NewNLMChallengeRequestBuilder() NLMChallengeRequestBuilder {
 type _NLMChallengeRequestBuilder struct {
 	*_NLMChallengeRequest
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMChallengeRequestBuilder) = (*_NLMChallengeRequestBuilder)(nil)
 
-func (m *_NLMChallengeRequestBuilder) WithMandatoryFields(messageChallenge byte, originalMessageId uint32, originalTimestamp uint32) NLMChallengeRequestBuilder {
-	return m.WithMessageChallenge(messageChallenge).WithOriginalMessageId(originalMessageId).WithOriginalTimestamp(originalTimestamp)
+func (b *_NLMChallengeRequestBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMChallengeRequestBuilder) WithMessageChallenge(messageChallenge byte) NLMChallengeRequestBuilder {
-	m.MessageChallenge = messageChallenge
-	return m
+func (b *_NLMChallengeRequestBuilder) WithMandatoryFields(messageChallenge byte, originalMessageId uint32, originalTimestamp uint32) NLMChallengeRequestBuilder {
+	return b.WithMessageChallenge(messageChallenge).WithOriginalMessageId(originalMessageId).WithOriginalTimestamp(originalTimestamp)
 }
 
-func (m *_NLMChallengeRequestBuilder) WithOriginalMessageId(originalMessageId uint32) NLMChallengeRequestBuilder {
-	m.OriginalMessageId = originalMessageId
-	return m
+func (b *_NLMChallengeRequestBuilder) WithMessageChallenge(messageChallenge byte) NLMChallengeRequestBuilder {
+	b.MessageChallenge = messageChallenge
+	return b
 }
 
-func (m *_NLMChallengeRequestBuilder) WithOriginalTimestamp(originalTimestamp uint32) NLMChallengeRequestBuilder {
-	m.OriginalTimestamp = originalTimestamp
-	return m
+func (b *_NLMChallengeRequestBuilder) WithOriginalMessageId(originalMessageId uint32) NLMChallengeRequestBuilder {
+	b.OriginalMessageId = originalMessageId
+	return b
 }
 
-func (m *_NLMChallengeRequestBuilder) Build() (NLMChallengeRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMChallengeRequestBuilder) WithOriginalTimestamp(originalTimestamp uint32) NLMChallengeRequestBuilder {
+	b.OriginalTimestamp = originalTimestamp
+	return b
+}
+
+func (b *_NLMChallengeRequestBuilder) Build() (NLMChallengeRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMChallengeRequest.deepCopy(), nil
+	return b._NLMChallengeRequest.deepCopy(), nil
 }
 
-func (m *_NLMChallengeRequestBuilder) MustBuild() NLMChallengeRequest {
-	build, err := m.Build()
+func (b *_NLMChallengeRequestBuilder) MustBuild() NLMChallengeRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMChallengeRequestBuilder) DeepCopy() any {
-	return m.CreateNLMChallengeRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMChallengeRequestBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMChallengeRequestBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMChallengeRequestBuilder) DeepCopy() any {
+	_copy := b.CreateNLMChallengeRequestBuilder().(*_NLMChallengeRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMChallengeRequestBuilder creates a NLMChallengeRequestBuilder
-func (m *_NLMChallengeRequest) CreateNLMChallengeRequestBuilder() NLMChallengeRequestBuilder {
-	if m == nil {
+func (b *_NLMChallengeRequest) CreateNLMChallengeRequestBuilder() NLMChallengeRequestBuilder {
+	if b == nil {
 		return NewNLMChallengeRequestBuilder()
 	}
-	return &_NLMChallengeRequestBuilder{_NLMChallengeRequest: m.deepCopy()}
+	return &_NLMChallengeRequestBuilder{_NLMChallengeRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -333,9 +352,13 @@ func (m *_NLMChallengeRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

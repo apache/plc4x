@@ -115,107 +115,111 @@ type _BACnetAuthenticationFactorBuilder struct {
 
 var _ (BACnetAuthenticationFactorBuilder) = (*_BACnetAuthenticationFactorBuilder)(nil)
 
-func (m *_BACnetAuthenticationFactorBuilder) WithMandatoryFields(formatType BACnetAuthenticationFactorTypeTagged, formatClass BACnetContextTagUnsignedInteger, value BACnetContextTagOctetString) BACnetAuthenticationFactorBuilder {
-	return m.WithFormatType(formatType).WithFormatClass(formatClass).WithValue(value)
+func (b *_BACnetAuthenticationFactorBuilder) WithMandatoryFields(formatType BACnetAuthenticationFactorTypeTagged, formatClass BACnetContextTagUnsignedInteger, value BACnetContextTagOctetString) BACnetAuthenticationFactorBuilder {
+	return b.WithFormatType(formatType).WithFormatClass(formatClass).WithValue(value)
 }
 
-func (m *_BACnetAuthenticationFactorBuilder) WithFormatType(formatType BACnetAuthenticationFactorTypeTagged) BACnetAuthenticationFactorBuilder {
-	m.FormatType = formatType
-	return m
+func (b *_BACnetAuthenticationFactorBuilder) WithFormatType(formatType BACnetAuthenticationFactorTypeTagged) BACnetAuthenticationFactorBuilder {
+	b.FormatType = formatType
+	return b
 }
 
-func (m *_BACnetAuthenticationFactorBuilder) WithFormatTypeBuilder(builderSupplier func(BACnetAuthenticationFactorTypeTaggedBuilder) BACnetAuthenticationFactorTypeTaggedBuilder) BACnetAuthenticationFactorBuilder {
-	builder := builderSupplier(m.FormatType.CreateBACnetAuthenticationFactorTypeTaggedBuilder())
+func (b *_BACnetAuthenticationFactorBuilder) WithFormatTypeBuilder(builderSupplier func(BACnetAuthenticationFactorTypeTaggedBuilder) BACnetAuthenticationFactorTypeTaggedBuilder) BACnetAuthenticationFactorBuilder {
+	builder := builderSupplier(b.FormatType.CreateBACnetAuthenticationFactorTypeTaggedBuilder())
 	var err error
-	m.FormatType, err = builder.Build()
+	b.FormatType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAuthenticationFactorTypeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAuthenticationFactorTypeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAuthenticationFactorBuilder) WithFormatClass(formatClass BACnetContextTagUnsignedInteger) BACnetAuthenticationFactorBuilder {
-	m.FormatClass = formatClass
-	return m
+func (b *_BACnetAuthenticationFactorBuilder) WithFormatClass(formatClass BACnetContextTagUnsignedInteger) BACnetAuthenticationFactorBuilder {
+	b.FormatClass = formatClass
+	return b
 }
 
-func (m *_BACnetAuthenticationFactorBuilder) WithFormatClassBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetAuthenticationFactorBuilder {
-	builder := builderSupplier(m.FormatClass.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetAuthenticationFactorBuilder) WithFormatClassBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetAuthenticationFactorBuilder {
+	builder := builderSupplier(b.FormatClass.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.FormatClass, err = builder.Build()
+	b.FormatClass, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAuthenticationFactorBuilder) WithValue(value BACnetContextTagOctetString) BACnetAuthenticationFactorBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetAuthenticationFactorBuilder) WithValue(value BACnetContextTagOctetString) BACnetAuthenticationFactorBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetAuthenticationFactorBuilder) WithValueBuilder(builderSupplier func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetAuthenticationFactorBuilder {
-	builder := builderSupplier(m.Value.CreateBACnetContextTagOctetStringBuilder())
+func (b *_BACnetAuthenticationFactorBuilder) WithValueBuilder(builderSupplier func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetAuthenticationFactorBuilder {
+	builder := builderSupplier(b.Value.CreateBACnetContextTagOctetStringBuilder())
 	var err error
-	m.Value, err = builder.Build()
+	b.Value, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAuthenticationFactorBuilder) Build() (BACnetAuthenticationFactor, error) {
-	if m.FormatType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAuthenticationFactorBuilder) Build() (BACnetAuthenticationFactor, error) {
+	if b.FormatType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'formatType' not set"))
+		b.err.Append(errors.New("mandatory field 'formatType' not set"))
 	}
-	if m.FormatClass == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.FormatClass == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'formatClass' not set"))
+		b.err.Append(errors.New("mandatory field 'formatClass' not set"))
 	}
-	if m.Value == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'value' not set"))
+		b.err.Append(errors.New("mandatory field 'value' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAuthenticationFactor.deepCopy(), nil
+	return b._BACnetAuthenticationFactor.deepCopy(), nil
 }
 
-func (m *_BACnetAuthenticationFactorBuilder) MustBuild() BACnetAuthenticationFactor {
-	build, err := m.Build()
+func (b *_BACnetAuthenticationFactorBuilder) MustBuild() BACnetAuthenticationFactor {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAuthenticationFactorBuilder) DeepCopy() any {
-	return m.CreateBACnetAuthenticationFactorBuilder()
+func (b *_BACnetAuthenticationFactorBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAuthenticationFactorBuilder().(*_BACnetAuthenticationFactorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAuthenticationFactorBuilder creates a BACnetAuthenticationFactorBuilder
-func (m *_BACnetAuthenticationFactor) CreateBACnetAuthenticationFactorBuilder() BACnetAuthenticationFactorBuilder {
-	if m == nil {
+func (b *_BACnetAuthenticationFactor) CreateBACnetAuthenticationFactorBuilder() BACnetAuthenticationFactorBuilder {
+	if b == nil {
 		return NewBACnetAuthenticationFactorBuilder()
 	}
-	return &_BACnetAuthenticationFactorBuilder{_BACnetAuthenticationFactor: m.deepCopy()}
+	return &_BACnetAuthenticationFactorBuilder{_BACnetAuthenticationFactor: b.deepCopy()}
 }
 
 ///////////////////////
@@ -388,9 +392,13 @@ func (m *_BACnetAuthenticationFactor) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -98,6 +98,8 @@ type TranslateBrowsePathsToNodeIdsResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) TranslateBrowsePathsToNodeIdsResponseBuilder
 	// WithNoOfResults adds NoOfResults (property field)
 	WithNoOfResults(int32) TranslateBrowsePathsToNodeIdsResponseBuilder
 	// WithResults adds Results (property field)
@@ -120,71 +122,103 @@ func NewTranslateBrowsePathsToNodeIdsResponseBuilder() TranslateBrowsePathsToNod
 type _TranslateBrowsePathsToNodeIdsResponseBuilder struct {
 	*_TranslateBrowsePathsToNodeIdsResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TranslateBrowsePathsToNodeIdsResponseBuilder) = (*_TranslateBrowsePathsToNodeIdsResponseBuilder)(nil)
 
-func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder {
-	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithNoOfResults(noOfResults int32) TranslateBrowsePathsToNodeIdsResponseBuilder {
-	m.NoOfResults = noOfResults
-	return m
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
 }
 
-func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithResults(results ...ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsResponseBuilder {
-	m.Results = results
-	return m
-}
-
-func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) TranslateBrowsePathsToNodeIdsResponseBuilder {
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
-	return m
-}
-
-func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder {
-	m.DiagnosticInfos = diagnosticInfos
-	return m
-}
-
-func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) Build() (TranslateBrowsePathsToNodeIdsResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) TranslateBrowsePathsToNodeIdsResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._TranslateBrowsePathsToNodeIdsResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) MustBuild() TranslateBrowsePathsToNodeIdsResponse {
-	build, err := m.Build()
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithNoOfResults(noOfResults int32) TranslateBrowsePathsToNodeIdsResponseBuilder {
+	b.NoOfResults = noOfResults
+	return b
+}
+
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithResults(results ...ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsResponseBuilder {
+	b.Results = results
+	return b
+}
+
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) TranslateBrowsePathsToNodeIdsResponseBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) Build() (TranslateBrowsePathsToNodeIdsResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TranslateBrowsePathsToNodeIdsResponse.deepCopy(), nil
+}
+
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) MustBuild() TranslateBrowsePathsToNodeIdsResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) DeepCopy() any {
-	return m.CreateTranslateBrowsePathsToNodeIdsResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) DeepCopy() any {
+	_copy := b.CreateTranslateBrowsePathsToNodeIdsResponseBuilder().(*_TranslateBrowsePathsToNodeIdsResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTranslateBrowsePathsToNodeIdsResponseBuilder creates a TranslateBrowsePathsToNodeIdsResponseBuilder
-func (m *_TranslateBrowsePathsToNodeIdsResponse) CreateTranslateBrowsePathsToNodeIdsResponseBuilder() TranslateBrowsePathsToNodeIdsResponseBuilder {
-	if m == nil {
+func (b *_TranslateBrowsePathsToNodeIdsResponse) CreateTranslateBrowsePathsToNodeIdsResponseBuilder() TranslateBrowsePathsToNodeIdsResponseBuilder {
+	if b == nil {
 		return NewTranslateBrowsePathsToNodeIdsResponseBuilder()
 	}
-	return &_TranslateBrowsePathsToNodeIdsResponseBuilder{_TranslateBrowsePathsToNodeIdsResponse: m.deepCopy()}
+	return &_TranslateBrowsePathsToNodeIdsResponseBuilder{_TranslateBrowsePathsToNodeIdsResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -414,9 +448,13 @@ func (m *_TranslateBrowsePathsToNodeIdsResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

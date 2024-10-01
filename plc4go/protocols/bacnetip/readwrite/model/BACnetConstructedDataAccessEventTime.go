@@ -84,6 +84,8 @@ type BACnetConstructedDataAccessEventTimeBuilder interface {
 	WithMandatoryFields(accessEventTime BACnetTimeStamp) BACnetConstructedDataAccessEventTimeBuilder
 	// WithAccessEventTime adds AccessEventTime (property field)
 	WithAccessEventTime(BACnetTimeStamp) BACnetConstructedDataAccessEventTimeBuilder
+	// WithAccessEventTimeBuilder adds AccessEventTime (property field) which is build by the builder
+	WithAccessEventTimeBuilder(func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetConstructedDataAccessEventTimeBuilder
 	// Build builds the BACnetConstructedDataAccessEventTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataAccessEventTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewBACnetConstructedDataAccessEventTimeBuilder() BACnetConstructedDataAcces
 type _BACnetConstructedDataAccessEventTimeBuilder struct {
 	*_BACnetConstructedDataAccessEventTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccessEventTimeBuilder) = (*_BACnetConstructedDataAccessEventTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccessEventTimeBuilder) WithMandatoryFields(accessEventTime BACnetTimeStamp) BACnetConstructedDataAccessEventTimeBuilder {
-	return m.WithAccessEventTime(accessEventTime)
+func (b *_BACnetConstructedDataAccessEventTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccessEventTimeBuilder) WithAccessEventTime(accessEventTime BACnetTimeStamp) BACnetConstructedDataAccessEventTimeBuilder {
-	m.AccessEventTime = accessEventTime
-	return m
+func (b *_BACnetConstructedDataAccessEventTimeBuilder) WithMandatoryFields(accessEventTime BACnetTimeStamp) BACnetConstructedDataAccessEventTimeBuilder {
+	return b.WithAccessEventTime(accessEventTime)
 }
 
-func (m *_BACnetConstructedDataAccessEventTimeBuilder) Build() (BACnetConstructedDataAccessEventTime, error) {
-	if m.AccessEventTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAccessEventTimeBuilder) WithAccessEventTime(accessEventTime BACnetTimeStamp) BACnetConstructedDataAccessEventTimeBuilder {
+	b.AccessEventTime = accessEventTime
+	return b
+}
+
+func (b *_BACnetConstructedDataAccessEventTimeBuilder) WithAccessEventTimeBuilder(builderSupplier func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetConstructedDataAccessEventTimeBuilder {
+	builder := builderSupplier(b.AccessEventTime.CreateBACnetTimeStampBuilder())
+	var err error
+	b.AccessEventTime, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'accessEventTime' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetTimeStampBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetConstructedDataAccessEventTime.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetConstructedDataAccessEventTimeBuilder) MustBuild() BACnetConstructedDataAccessEventTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccessEventTimeBuilder) Build() (BACnetConstructedDataAccessEventTime, error) {
+	if b.AccessEventTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'accessEventTime' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataAccessEventTime.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataAccessEventTimeBuilder) MustBuild() BACnetConstructedDataAccessEventTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccessEventTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccessEventTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccessEventTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccessEventTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccessEventTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccessEventTimeBuilder().(*_BACnetConstructedDataAccessEventTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccessEventTimeBuilder creates a BACnetConstructedDataAccessEventTimeBuilder
-func (m *_BACnetConstructedDataAccessEventTime) CreateBACnetConstructedDataAccessEventTimeBuilder() BACnetConstructedDataAccessEventTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccessEventTime) CreateBACnetConstructedDataAccessEventTimeBuilder() BACnetConstructedDataAccessEventTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccessEventTimeBuilder()
 	}
-	return &_BACnetConstructedDataAccessEventTimeBuilder{_BACnetConstructedDataAccessEventTime: m.deepCopy()}
+	return &_BACnetConstructedDataAccessEventTimeBuilder{_BACnetConstructedDataAccessEventTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -319,9 +353,13 @@ func (m *_BACnetConstructedDataAccessEventTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

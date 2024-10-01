@@ -85,40 +85,59 @@ func NewBACnetConstructedDataStructuredViewAllBuilder() BACnetConstructedDataStr
 type _BACnetConstructedDataStructuredViewAllBuilder struct {
 	*_BACnetConstructedDataStructuredViewAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataStructuredViewAllBuilder) = (*_BACnetConstructedDataStructuredViewAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataStructuredViewAllBuilder) WithMandatoryFields() BACnetConstructedDataStructuredViewAllBuilder {
-	return m
+func (b *_BACnetConstructedDataStructuredViewAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataStructuredViewAllBuilder) Build() (BACnetConstructedDataStructuredViewAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataStructuredViewAllBuilder) WithMandatoryFields() BACnetConstructedDataStructuredViewAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataStructuredViewAllBuilder) Build() (BACnetConstructedDataStructuredViewAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataStructuredViewAll.deepCopy(), nil
+	return b._BACnetConstructedDataStructuredViewAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataStructuredViewAllBuilder) MustBuild() BACnetConstructedDataStructuredViewAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataStructuredViewAllBuilder) MustBuild() BACnetConstructedDataStructuredViewAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataStructuredViewAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataStructuredViewAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataStructuredViewAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataStructuredViewAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataStructuredViewAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataStructuredViewAllBuilder().(*_BACnetConstructedDataStructuredViewAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataStructuredViewAllBuilder creates a BACnetConstructedDataStructuredViewAllBuilder
-func (m *_BACnetConstructedDataStructuredViewAll) CreateBACnetConstructedDataStructuredViewAllBuilder() BACnetConstructedDataStructuredViewAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataStructuredViewAll) CreateBACnetConstructedDataStructuredViewAllBuilder() BACnetConstructedDataStructuredViewAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataStructuredViewAllBuilder()
 	}
-	return &_BACnetConstructedDataStructuredViewAllBuilder{_BACnetConstructedDataStructuredViewAll: m.deepCopy()}
+	return &_BACnetConstructedDataStructuredViewAllBuilder{_BACnetConstructedDataStructuredViewAll: b.deepCopy()}
 }
 
 ///////////////////////
@@ -243,9 +262,13 @@ func (m *_BACnetConstructedDataStructuredViewAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

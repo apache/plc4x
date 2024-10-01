@@ -109,68 +109,87 @@ func NewCipReadResponseBuilder() CipReadResponseBuilder {
 type _CipReadResponseBuilder struct {
 	*_CipReadResponse
 
+	parentBuilder *_CipServiceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CipReadResponseBuilder) = (*_CipReadResponseBuilder)(nil)
 
-func (m *_CipReadResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8) CipReadResponseBuilder {
-	return m.WithStatus(status).WithExtStatus(extStatus)
+func (b *_CipReadResponseBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
 }
 
-func (m *_CipReadResponseBuilder) WithStatus(status uint8) CipReadResponseBuilder {
-	m.Status = status
-	return m
+func (b *_CipReadResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8) CipReadResponseBuilder {
+	return b.WithStatus(status).WithExtStatus(extStatus)
 }
 
-func (m *_CipReadResponseBuilder) WithExtStatus(extStatus uint8) CipReadResponseBuilder {
-	m.ExtStatus = extStatus
-	return m
+func (b *_CipReadResponseBuilder) WithStatus(status uint8) CipReadResponseBuilder {
+	b.Status = status
+	return b
 }
 
-func (m *_CipReadResponseBuilder) WithOptionalData(data CIPData) CipReadResponseBuilder {
-	m.Data = data
-	return m
+func (b *_CipReadResponseBuilder) WithExtStatus(extStatus uint8) CipReadResponseBuilder {
+	b.ExtStatus = extStatus
+	return b
 }
 
-func (m *_CipReadResponseBuilder) WithOptionalDataBuilder(builderSupplier func(CIPDataBuilder) CIPDataBuilder) CipReadResponseBuilder {
-	builder := builderSupplier(m.Data.CreateCIPDataBuilder())
+func (b *_CipReadResponseBuilder) WithOptionalData(data CIPData) CipReadResponseBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_CipReadResponseBuilder) WithOptionalDataBuilder(builderSupplier func(CIPDataBuilder) CIPDataBuilder) CipReadResponseBuilder {
+	builder := builderSupplier(b.Data.CreateCIPDataBuilder())
 	var err error
-	m.Data, err = builder.Build()
+	b.Data, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "CIPDataBuilder failed"))
+		b.err.Append(errors.Wrap(err, "CIPDataBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CipReadResponseBuilder) Build() (CipReadResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CipReadResponseBuilder) Build() (CipReadResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CipReadResponse.deepCopy(), nil
+	return b._CipReadResponse.deepCopy(), nil
 }
 
-func (m *_CipReadResponseBuilder) MustBuild() CipReadResponse {
-	build, err := m.Build()
+func (b *_CipReadResponseBuilder) MustBuild() CipReadResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CipReadResponseBuilder) DeepCopy() any {
-	return m.CreateCipReadResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipReadResponseBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipReadResponseBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_CipReadResponseBuilder) DeepCopy() any {
+	_copy := b.CreateCipReadResponseBuilder().(*_CipReadResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCipReadResponseBuilder creates a CipReadResponseBuilder
-func (m *_CipReadResponse) CreateCipReadResponseBuilder() CipReadResponseBuilder {
-	if m == nil {
+func (b *_CipReadResponse) CreateCipReadResponseBuilder() CipReadResponseBuilder {
+	if b == nil {
 		return NewCipReadResponseBuilder()
 	}
-	return &_CipReadResponseBuilder{_CipReadResponse: m.deepCopy()}
+	return &_CipReadResponseBuilder{_CipReadResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -378,9 +397,13 @@ func (m *_CipReadResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

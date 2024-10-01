@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesLiftCarDoorCommandBuilder() BACnetPropertyStatesLift
 type _BACnetPropertyStatesLiftCarDoorCommandBuilder struct {
 	*_BACnetPropertyStatesLiftCarDoorCommand
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesLiftCarDoorCommandBuilder) = (*_BACnetPropertyStatesLiftCarDoorCommandBuilder)(nil)
 
-func (m *_BACnetPropertyStatesLiftCarDoorCommandBuilder) WithMandatoryFields(liftCarDoorCommand BACnetLiftCarDoorCommandTagged) BACnetPropertyStatesLiftCarDoorCommandBuilder {
-	return m.WithLiftCarDoorCommand(liftCarDoorCommand)
+func (b *_BACnetPropertyStatesLiftCarDoorCommandBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesLiftCarDoorCommandBuilder) WithLiftCarDoorCommand(liftCarDoorCommand BACnetLiftCarDoorCommandTagged) BACnetPropertyStatesLiftCarDoorCommandBuilder {
-	m.LiftCarDoorCommand = liftCarDoorCommand
-	return m
+func (b *_BACnetPropertyStatesLiftCarDoorCommandBuilder) WithMandatoryFields(liftCarDoorCommand BACnetLiftCarDoorCommandTagged) BACnetPropertyStatesLiftCarDoorCommandBuilder {
+	return b.WithLiftCarDoorCommand(liftCarDoorCommand)
 }
 
-func (m *_BACnetPropertyStatesLiftCarDoorCommandBuilder) WithLiftCarDoorCommandBuilder(builderSupplier func(BACnetLiftCarDoorCommandTaggedBuilder) BACnetLiftCarDoorCommandTaggedBuilder) BACnetPropertyStatesLiftCarDoorCommandBuilder {
-	builder := builderSupplier(m.LiftCarDoorCommand.CreateBACnetLiftCarDoorCommandTaggedBuilder())
+func (b *_BACnetPropertyStatesLiftCarDoorCommandBuilder) WithLiftCarDoorCommand(liftCarDoorCommand BACnetLiftCarDoorCommandTagged) BACnetPropertyStatesLiftCarDoorCommandBuilder {
+	b.LiftCarDoorCommand = liftCarDoorCommand
+	return b
+}
+
+func (b *_BACnetPropertyStatesLiftCarDoorCommandBuilder) WithLiftCarDoorCommandBuilder(builderSupplier func(BACnetLiftCarDoorCommandTaggedBuilder) BACnetLiftCarDoorCommandTaggedBuilder) BACnetPropertyStatesLiftCarDoorCommandBuilder {
+	builder := builderSupplier(b.LiftCarDoorCommand.CreateBACnetLiftCarDoorCommandTaggedBuilder())
 	var err error
-	m.LiftCarDoorCommand, err = builder.Build()
+	b.LiftCarDoorCommand, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLiftCarDoorCommandTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLiftCarDoorCommandTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesLiftCarDoorCommandBuilder) Build() (BACnetPropertyStatesLiftCarDoorCommand, error) {
-	if m.LiftCarDoorCommand == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesLiftCarDoorCommandBuilder) Build() (BACnetPropertyStatesLiftCarDoorCommand, error) {
+	if b.LiftCarDoorCommand == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'liftCarDoorCommand' not set"))
+		b.err.Append(errors.New("mandatory field 'liftCarDoorCommand' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesLiftCarDoorCommand.deepCopy(), nil
+	return b._BACnetPropertyStatesLiftCarDoorCommand.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesLiftCarDoorCommandBuilder) MustBuild() BACnetPropertyStatesLiftCarDoorCommand {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesLiftCarDoorCommandBuilder) MustBuild() BACnetPropertyStatesLiftCarDoorCommand {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesLiftCarDoorCommandBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesLiftCarDoorCommandBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesLiftCarDoorCommandBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesLiftCarDoorCommandBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesLiftCarDoorCommandBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesLiftCarDoorCommandBuilder().(*_BACnetPropertyStatesLiftCarDoorCommandBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesLiftCarDoorCommandBuilder creates a BACnetPropertyStatesLiftCarDoorCommandBuilder
-func (m *_BACnetPropertyStatesLiftCarDoorCommand) CreateBACnetPropertyStatesLiftCarDoorCommandBuilder() BACnetPropertyStatesLiftCarDoorCommandBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesLiftCarDoorCommand) CreateBACnetPropertyStatesLiftCarDoorCommandBuilder() BACnetPropertyStatesLiftCarDoorCommandBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesLiftCarDoorCommandBuilder()
 	}
-	return &_BACnetPropertyStatesLiftCarDoorCommandBuilder{_BACnetPropertyStatesLiftCarDoorCommand: m.deepCopy()}
+	return &_BACnetPropertyStatesLiftCarDoorCommandBuilder{_BACnetPropertyStatesLiftCarDoorCommand: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPropertyStatesLiftCarDoorCommand) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

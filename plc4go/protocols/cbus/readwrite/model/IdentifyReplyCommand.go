@@ -88,10 +88,104 @@ type IdentifyReplyCommandBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() IdentifyReplyCommandBuilder
+	// AsIdentifyReplyCommandManufacturer converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandManufacturer() interface {
+		IdentifyReplyCommandManufacturerBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandType converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandType() interface {
+		IdentifyReplyCommandTypeBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandFirmwareVersion converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandFirmwareVersion() interface {
+		IdentifyReplyCommandFirmwareVersionBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandSummary converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandSummary() interface {
+		IdentifyReplyCommandSummaryBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandExtendedDiagnosticSummary converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandExtendedDiagnosticSummary() interface {
+		IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandNetworkTerminalLevels converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandNetworkTerminalLevels() interface {
+		IdentifyReplyCommandNetworkTerminalLevelsBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandTerminalLevels converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandTerminalLevels() interface {
+		IdentifyReplyCommandTerminalLevelsBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandNetworkVoltage converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandNetworkVoltage() interface {
+		IdentifyReplyCommandNetworkVoltageBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandGAVValuesCurrent converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandGAVValuesCurrent() interface {
+		IdentifyReplyCommandGAVValuesCurrentBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandGAVValuesStored converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandGAVValuesStored() interface {
+		IdentifyReplyCommandGAVValuesStoredBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandGAVPhysicalAddresses converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandGAVPhysicalAddresses() interface {
+		IdentifyReplyCommandGAVPhysicalAddressesBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandLogicalAssignment converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandLogicalAssignment() interface {
+		IdentifyReplyCommandLogicalAssignmentBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandDelays converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandDelays() interface {
+		IdentifyReplyCommandDelaysBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandMinimumLevels converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandMinimumLevels() interface {
+		IdentifyReplyCommandMinimumLevelsBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandMaximumLevels converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandMaximumLevels() interface {
+		IdentifyReplyCommandMaximumLevelsBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandCurrentSenseLevels converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandCurrentSenseLevels() interface {
+		IdentifyReplyCommandCurrentSenseLevelsBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandOutputUnitSummary converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandOutputUnitSummary() interface {
+		IdentifyReplyCommandOutputUnitSummaryBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
+	// AsIdentifyReplyCommandDSIStatus converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
+	AsIdentifyReplyCommandDSIStatus() interface {
+		IdentifyReplyCommandDSIStatusBuilder
+		Done() IdentifyReplyCommandBuilder
+	}
 	// Build builds the IdentifyReplyCommand or returns an error if something is wrong
-	Build() (IdentifyReplyCommandContract, error)
+	PartialBuild() (IdentifyReplyCommandContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() IdentifyReplyCommandContract
+	PartialMustBuild() IdentifyReplyCommandContract
+	// Build builds the IdentifyReplyCommand or returns an error if something is wrong
+	Build() (IdentifyReplyCommand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommand
 }
 
 // NewIdentifyReplyCommandBuilder() creates a IdentifyReplyCommandBuilder
@@ -99,43 +193,365 @@ func NewIdentifyReplyCommandBuilder() IdentifyReplyCommandBuilder {
 	return &_IdentifyReplyCommandBuilder{_IdentifyReplyCommand: new(_IdentifyReplyCommand)}
 }
 
+type _IdentifyReplyCommandChildBuilder interface {
+	utils.Copyable
+	setParent(IdentifyReplyCommandContract)
+	buildForIdentifyReplyCommand() (IdentifyReplyCommand, error)
+}
+
 type _IdentifyReplyCommandBuilder struct {
 	*_IdentifyReplyCommand
+
+	childBuilder _IdentifyReplyCommandChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (IdentifyReplyCommandBuilder) = (*_IdentifyReplyCommandBuilder)(nil)
 
-func (m *_IdentifyReplyCommandBuilder) WithMandatoryFields() IdentifyReplyCommandBuilder {
-	return m
+func (b *_IdentifyReplyCommandBuilder) WithMandatoryFields() IdentifyReplyCommandBuilder {
+	return b
 }
 
-func (m *_IdentifyReplyCommandBuilder) Build() (IdentifyReplyCommandContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IdentifyReplyCommandBuilder) PartialBuild() (IdentifyReplyCommandContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommand.deepCopy(), nil
+	return b._IdentifyReplyCommand.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandBuilder) MustBuild() IdentifyReplyCommandContract {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandBuilder) PartialMustBuild() IdentifyReplyCommandContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandBuilder()
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandManufacturer() interface {
+	IdentifyReplyCommandManufacturerBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandManufacturerBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandManufacturerBuilder().(*_IdentifyReplyCommandManufacturerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandType() interface {
+	IdentifyReplyCommandTypeBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandTypeBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandTypeBuilder().(*_IdentifyReplyCommandTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandFirmwareVersion() interface {
+	IdentifyReplyCommandFirmwareVersionBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandFirmwareVersionBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandFirmwareVersionBuilder().(*_IdentifyReplyCommandFirmwareVersionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandSummary() interface {
+	IdentifyReplyCommandSummaryBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandSummaryBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandSummaryBuilder().(*_IdentifyReplyCommandSummaryBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandExtendedDiagnosticSummary() interface {
+	IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandExtendedDiagnosticSummaryBuilder().(*_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandNetworkTerminalLevels() interface {
+	IdentifyReplyCommandNetworkTerminalLevelsBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandNetworkTerminalLevelsBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandNetworkTerminalLevelsBuilder().(*_IdentifyReplyCommandNetworkTerminalLevelsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandTerminalLevels() interface {
+	IdentifyReplyCommandTerminalLevelsBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandTerminalLevelsBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandTerminalLevelsBuilder().(*_IdentifyReplyCommandTerminalLevelsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandNetworkVoltage() interface {
+	IdentifyReplyCommandNetworkVoltageBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandNetworkVoltageBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandNetworkVoltageBuilder().(*_IdentifyReplyCommandNetworkVoltageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandGAVValuesCurrent() interface {
+	IdentifyReplyCommandGAVValuesCurrentBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandGAVValuesCurrentBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandGAVValuesCurrentBuilder().(*_IdentifyReplyCommandGAVValuesCurrentBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandGAVValuesStored() interface {
+	IdentifyReplyCommandGAVValuesStoredBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandGAVValuesStoredBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandGAVValuesStoredBuilder().(*_IdentifyReplyCommandGAVValuesStoredBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandGAVPhysicalAddresses() interface {
+	IdentifyReplyCommandGAVPhysicalAddressesBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandGAVPhysicalAddressesBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandGAVPhysicalAddressesBuilder().(*_IdentifyReplyCommandGAVPhysicalAddressesBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandLogicalAssignment() interface {
+	IdentifyReplyCommandLogicalAssignmentBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandLogicalAssignmentBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandLogicalAssignmentBuilder().(*_IdentifyReplyCommandLogicalAssignmentBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandDelays() interface {
+	IdentifyReplyCommandDelaysBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandDelaysBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandDelaysBuilder().(*_IdentifyReplyCommandDelaysBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandMinimumLevels() interface {
+	IdentifyReplyCommandMinimumLevelsBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandMinimumLevelsBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandMinimumLevelsBuilder().(*_IdentifyReplyCommandMinimumLevelsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandMaximumLevels() interface {
+	IdentifyReplyCommandMaximumLevelsBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandMaximumLevelsBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandMaximumLevelsBuilder().(*_IdentifyReplyCommandMaximumLevelsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandCurrentSenseLevels() interface {
+	IdentifyReplyCommandCurrentSenseLevelsBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandCurrentSenseLevelsBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandCurrentSenseLevelsBuilder().(*_IdentifyReplyCommandCurrentSenseLevelsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandOutputUnitSummary() interface {
+	IdentifyReplyCommandOutputUnitSummaryBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandOutputUnitSummaryBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandOutputUnitSummaryBuilder().(*_IdentifyReplyCommandOutputUnitSummaryBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) AsIdentifyReplyCommandDSIStatus() interface {
+	IdentifyReplyCommandDSIStatusBuilder
+	Done() IdentifyReplyCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IdentifyReplyCommandDSIStatusBuilder
+		Done() IdentifyReplyCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIdentifyReplyCommandDSIStatusBuilder().(*_IdentifyReplyCommandDSIStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_IdentifyReplyCommandBuilder) Build() (IdentifyReplyCommand, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForIdentifyReplyCommand()
+}
+
+func (b *_IdentifyReplyCommandBuilder) MustBuild() IdentifyReplyCommand {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_IdentifyReplyCommandBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandBuilder().(*_IdentifyReplyCommandBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_IdentifyReplyCommandChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandBuilder creates a IdentifyReplyCommandBuilder
-func (m *_IdentifyReplyCommand) CreateIdentifyReplyCommandBuilder() IdentifyReplyCommandBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommand) CreateIdentifyReplyCommandBuilder() IdentifyReplyCommandBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandBuilder()
 	}
-	return &_IdentifyReplyCommandBuilder{_IdentifyReplyCommand: m.deepCopy()}
+	return &_IdentifyReplyCommandBuilder{_IdentifyReplyCommand: b.deepCopy()}
 }
 
 ///////////////////////

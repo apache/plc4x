@@ -93,45 +93,64 @@ func NewErrorReportingSystemCategoryTypeClimateControllersBuilder() ErrorReporti
 type _ErrorReportingSystemCategoryTypeClimateControllersBuilder struct {
 	*_ErrorReportingSystemCategoryTypeClimateControllers
 
+	parentBuilder *_ErrorReportingSystemCategoryTypeBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ErrorReportingSystemCategoryTypeClimateControllersBuilder) = (*_ErrorReportingSystemCategoryTypeClimateControllersBuilder)(nil)
 
-func (m *_ErrorReportingSystemCategoryTypeClimateControllersBuilder) WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForClimateControllers) ErrorReportingSystemCategoryTypeClimateControllersBuilder {
-	return m.WithCategoryForType(categoryForType)
+func (b *_ErrorReportingSystemCategoryTypeClimateControllersBuilder) setParent(contract ErrorReportingSystemCategoryTypeContract) {
+	b.ErrorReportingSystemCategoryTypeContract = contract
 }
 
-func (m *_ErrorReportingSystemCategoryTypeClimateControllersBuilder) WithCategoryForType(categoryForType ErrorReportingSystemCategoryTypeForClimateControllers) ErrorReportingSystemCategoryTypeClimateControllersBuilder {
-	m.CategoryForType = categoryForType
-	return m
+func (b *_ErrorReportingSystemCategoryTypeClimateControllersBuilder) WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForClimateControllers) ErrorReportingSystemCategoryTypeClimateControllersBuilder {
+	return b.WithCategoryForType(categoryForType)
 }
 
-func (m *_ErrorReportingSystemCategoryTypeClimateControllersBuilder) Build() (ErrorReportingSystemCategoryTypeClimateControllers, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ErrorReportingSystemCategoryTypeClimateControllersBuilder) WithCategoryForType(categoryForType ErrorReportingSystemCategoryTypeForClimateControllers) ErrorReportingSystemCategoryTypeClimateControllersBuilder {
+	b.CategoryForType = categoryForType
+	return b
+}
+
+func (b *_ErrorReportingSystemCategoryTypeClimateControllersBuilder) Build() (ErrorReportingSystemCategoryTypeClimateControllers, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ErrorReportingSystemCategoryTypeClimateControllers.deepCopy(), nil
+	return b._ErrorReportingSystemCategoryTypeClimateControllers.deepCopy(), nil
 }
 
-func (m *_ErrorReportingSystemCategoryTypeClimateControllersBuilder) MustBuild() ErrorReportingSystemCategoryTypeClimateControllers {
-	build, err := m.Build()
+func (b *_ErrorReportingSystemCategoryTypeClimateControllersBuilder) MustBuild() ErrorReportingSystemCategoryTypeClimateControllers {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ErrorReportingSystemCategoryTypeClimateControllersBuilder) DeepCopy() any {
-	return m.CreateErrorReportingSystemCategoryTypeClimateControllersBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ErrorReportingSystemCategoryTypeClimateControllersBuilder) Done() ErrorReportingSystemCategoryTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ErrorReportingSystemCategoryTypeClimateControllersBuilder) buildForErrorReportingSystemCategoryType() (ErrorReportingSystemCategoryType, error) {
+	return b.Build()
+}
+
+func (b *_ErrorReportingSystemCategoryTypeClimateControllersBuilder) DeepCopy() any {
+	_copy := b.CreateErrorReportingSystemCategoryTypeClimateControllersBuilder().(*_ErrorReportingSystemCategoryTypeClimateControllersBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateErrorReportingSystemCategoryTypeClimateControllersBuilder creates a ErrorReportingSystemCategoryTypeClimateControllersBuilder
-func (m *_ErrorReportingSystemCategoryTypeClimateControllers) CreateErrorReportingSystemCategoryTypeClimateControllersBuilder() ErrorReportingSystemCategoryTypeClimateControllersBuilder {
-	if m == nil {
+func (b *_ErrorReportingSystemCategoryTypeClimateControllers) CreateErrorReportingSystemCategoryTypeClimateControllersBuilder() ErrorReportingSystemCategoryTypeClimateControllersBuilder {
+	if b == nil {
 		return NewErrorReportingSystemCategoryTypeClimateControllersBuilder()
 	}
-	return &_ErrorReportingSystemCategoryTypeClimateControllersBuilder{_ErrorReportingSystemCategoryTypeClimateControllers: m.deepCopy()}
+	return &_ErrorReportingSystemCategoryTypeClimateControllersBuilder{_ErrorReportingSystemCategoryTypeClimateControllers: b.deepCopy()}
 }
 
 ///////////////////////
@@ -276,9 +295,13 @@ func (m *_ErrorReportingSystemCategoryTypeClimateControllers) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

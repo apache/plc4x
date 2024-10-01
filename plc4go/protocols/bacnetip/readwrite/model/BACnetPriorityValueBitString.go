@@ -98,64 +98,83 @@ func NewBACnetPriorityValueBitStringBuilder() BACnetPriorityValueBitStringBuilde
 type _BACnetPriorityValueBitStringBuilder struct {
 	*_BACnetPriorityValueBitString
 
+	parentBuilder *_BACnetPriorityValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPriorityValueBitStringBuilder) = (*_BACnetPriorityValueBitStringBuilder)(nil)
 
-func (m *_BACnetPriorityValueBitStringBuilder) WithMandatoryFields(bitStringValue BACnetApplicationTagBitString) BACnetPriorityValueBitStringBuilder {
-	return m.WithBitStringValue(bitStringValue)
+func (b *_BACnetPriorityValueBitStringBuilder) setParent(contract BACnetPriorityValueContract) {
+	b.BACnetPriorityValueContract = contract
 }
 
-func (m *_BACnetPriorityValueBitStringBuilder) WithBitStringValue(bitStringValue BACnetApplicationTagBitString) BACnetPriorityValueBitStringBuilder {
-	m.BitStringValue = bitStringValue
-	return m
+func (b *_BACnetPriorityValueBitStringBuilder) WithMandatoryFields(bitStringValue BACnetApplicationTagBitString) BACnetPriorityValueBitStringBuilder {
+	return b.WithBitStringValue(bitStringValue)
 }
 
-func (m *_BACnetPriorityValueBitStringBuilder) WithBitStringValueBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetPriorityValueBitStringBuilder {
-	builder := builderSupplier(m.BitStringValue.CreateBACnetApplicationTagBitStringBuilder())
+func (b *_BACnetPriorityValueBitStringBuilder) WithBitStringValue(bitStringValue BACnetApplicationTagBitString) BACnetPriorityValueBitStringBuilder {
+	b.BitStringValue = bitStringValue
+	return b
+}
+
+func (b *_BACnetPriorityValueBitStringBuilder) WithBitStringValueBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetPriorityValueBitStringBuilder {
+	builder := builderSupplier(b.BitStringValue.CreateBACnetApplicationTagBitStringBuilder())
 	var err error
-	m.BitStringValue, err = builder.Build()
+	b.BitStringValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPriorityValueBitStringBuilder) Build() (BACnetPriorityValueBitString, error) {
-	if m.BitStringValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPriorityValueBitStringBuilder) Build() (BACnetPriorityValueBitString, error) {
+	if b.BitStringValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'bitStringValue' not set"))
+		b.err.Append(errors.New("mandatory field 'bitStringValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPriorityValueBitString.deepCopy(), nil
+	return b._BACnetPriorityValueBitString.deepCopy(), nil
 }
 
-func (m *_BACnetPriorityValueBitStringBuilder) MustBuild() BACnetPriorityValueBitString {
-	build, err := m.Build()
+func (b *_BACnetPriorityValueBitStringBuilder) MustBuild() BACnetPriorityValueBitString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPriorityValueBitStringBuilder) DeepCopy() any {
-	return m.CreateBACnetPriorityValueBitStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPriorityValueBitStringBuilder) Done() BACnetPriorityValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPriorityValueBitStringBuilder) buildForBACnetPriorityValue() (BACnetPriorityValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPriorityValueBitStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityValueBitStringBuilder().(*_BACnetPriorityValueBitStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPriorityValueBitStringBuilder creates a BACnetPriorityValueBitStringBuilder
-func (m *_BACnetPriorityValueBitString) CreateBACnetPriorityValueBitStringBuilder() BACnetPriorityValueBitStringBuilder {
-	if m == nil {
+func (b *_BACnetPriorityValueBitString) CreateBACnetPriorityValueBitStringBuilder() BACnetPriorityValueBitStringBuilder {
+	if b == nil {
 		return NewBACnetPriorityValueBitStringBuilder()
 	}
-	return &_BACnetPriorityValueBitStringBuilder{_BACnetPriorityValueBitString: m.deepCopy()}
+	return &_BACnetPriorityValueBitStringBuilder{_BACnetPriorityValueBitString: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPriorityValueBitString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

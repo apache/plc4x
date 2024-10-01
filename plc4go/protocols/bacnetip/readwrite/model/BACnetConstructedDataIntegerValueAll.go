@@ -85,40 +85,59 @@ func NewBACnetConstructedDataIntegerValueAllBuilder() BACnetConstructedDataInteg
 type _BACnetConstructedDataIntegerValueAllBuilder struct {
 	*_BACnetConstructedDataIntegerValueAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataIntegerValueAllBuilder) = (*_BACnetConstructedDataIntegerValueAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataIntegerValueAllBuilder) WithMandatoryFields() BACnetConstructedDataIntegerValueAllBuilder {
-	return m
+func (b *_BACnetConstructedDataIntegerValueAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataIntegerValueAllBuilder) Build() (BACnetConstructedDataIntegerValueAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataIntegerValueAllBuilder) WithMandatoryFields() BACnetConstructedDataIntegerValueAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataIntegerValueAllBuilder) Build() (BACnetConstructedDataIntegerValueAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataIntegerValueAll.deepCopy(), nil
+	return b._BACnetConstructedDataIntegerValueAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataIntegerValueAllBuilder) MustBuild() BACnetConstructedDataIntegerValueAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataIntegerValueAllBuilder) MustBuild() BACnetConstructedDataIntegerValueAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataIntegerValueAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataIntegerValueAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIntegerValueAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIntegerValueAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIntegerValueAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIntegerValueAllBuilder().(*_BACnetConstructedDataIntegerValueAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataIntegerValueAllBuilder creates a BACnetConstructedDataIntegerValueAllBuilder
-func (m *_BACnetConstructedDataIntegerValueAll) CreateBACnetConstructedDataIntegerValueAllBuilder() BACnetConstructedDataIntegerValueAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataIntegerValueAll) CreateBACnetConstructedDataIntegerValueAllBuilder() BACnetConstructedDataIntegerValueAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataIntegerValueAllBuilder()
 	}
-	return &_BACnetConstructedDataIntegerValueAllBuilder{_BACnetConstructedDataIntegerValueAll: m.deepCopy()}
+	return &_BACnetConstructedDataIntegerValueAllBuilder{_BACnetConstructedDataIntegerValueAll: b.deepCopy()}
 }
 
 ///////////////////////
@@ -243,9 +262,13 @@ func (m *_BACnetConstructedDataIntegerValueAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

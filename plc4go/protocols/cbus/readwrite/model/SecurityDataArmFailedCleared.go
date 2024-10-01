@@ -85,40 +85,59 @@ func NewSecurityDataArmFailedClearedBuilder() SecurityDataArmFailedClearedBuilde
 type _SecurityDataArmFailedClearedBuilder struct {
 	*_SecurityDataArmFailedCleared
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataArmFailedClearedBuilder) = (*_SecurityDataArmFailedClearedBuilder)(nil)
 
-func (m *_SecurityDataArmFailedClearedBuilder) WithMandatoryFields() SecurityDataArmFailedClearedBuilder {
-	return m
+func (b *_SecurityDataArmFailedClearedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataArmFailedClearedBuilder) Build() (SecurityDataArmFailedCleared, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataArmFailedClearedBuilder) WithMandatoryFields() SecurityDataArmFailedClearedBuilder {
+	return b
+}
+
+func (b *_SecurityDataArmFailedClearedBuilder) Build() (SecurityDataArmFailedCleared, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataArmFailedCleared.deepCopy(), nil
+	return b._SecurityDataArmFailedCleared.deepCopy(), nil
 }
 
-func (m *_SecurityDataArmFailedClearedBuilder) MustBuild() SecurityDataArmFailedCleared {
-	build, err := m.Build()
+func (b *_SecurityDataArmFailedClearedBuilder) MustBuild() SecurityDataArmFailedCleared {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataArmFailedClearedBuilder) DeepCopy() any {
-	return m.CreateSecurityDataArmFailedClearedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataArmFailedClearedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataArmFailedClearedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataArmFailedClearedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataArmFailedClearedBuilder().(*_SecurityDataArmFailedClearedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataArmFailedClearedBuilder creates a SecurityDataArmFailedClearedBuilder
-func (m *_SecurityDataArmFailedCleared) CreateSecurityDataArmFailedClearedBuilder() SecurityDataArmFailedClearedBuilder {
-	if m == nil {
+func (b *_SecurityDataArmFailedCleared) CreateSecurityDataArmFailedClearedBuilder() SecurityDataArmFailedClearedBuilder {
+	if b == nil {
 		return NewSecurityDataArmFailedClearedBuilder()
 	}
-	return &_SecurityDataArmFailedClearedBuilder{_SecurityDataArmFailedCleared: m.deepCopy()}
+	return &_SecurityDataArmFailedClearedBuilder{_SecurityDataArmFailedCleared: b.deepCopy()}
 }
 
 ///////////////////////
@@ -230,9 +249,13 @@ func (m *_SecurityDataArmFailedCleared) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -93,40 +93,44 @@ type _CustomManufacturerBuilder struct {
 
 var _ (CustomManufacturerBuilder) = (*_CustomManufacturerBuilder)(nil)
 
-func (m *_CustomManufacturerBuilder) WithMandatoryFields(customString string) CustomManufacturerBuilder {
-	return m.WithCustomString(customString)
+func (b *_CustomManufacturerBuilder) WithMandatoryFields(customString string) CustomManufacturerBuilder {
+	return b.WithCustomString(customString)
 }
 
-func (m *_CustomManufacturerBuilder) WithCustomString(customString string) CustomManufacturerBuilder {
-	m.CustomString = customString
-	return m
+func (b *_CustomManufacturerBuilder) WithCustomString(customString string) CustomManufacturerBuilder {
+	b.CustomString = customString
+	return b
 }
 
-func (m *_CustomManufacturerBuilder) Build() (CustomManufacturer, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CustomManufacturerBuilder) Build() (CustomManufacturer, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CustomManufacturer.deepCopy(), nil
+	return b._CustomManufacturer.deepCopy(), nil
 }
 
-func (m *_CustomManufacturerBuilder) MustBuild() CustomManufacturer {
-	build, err := m.Build()
+func (b *_CustomManufacturerBuilder) MustBuild() CustomManufacturer {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CustomManufacturerBuilder) DeepCopy() any {
-	return m.CreateCustomManufacturerBuilder()
+func (b *_CustomManufacturerBuilder) DeepCopy() any {
+	_copy := b.CreateCustomManufacturerBuilder().(*_CustomManufacturerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCustomManufacturerBuilder creates a CustomManufacturerBuilder
-func (m *_CustomManufacturer) CreateCustomManufacturerBuilder() CustomManufacturerBuilder {
-	if m == nil {
+func (b *_CustomManufacturer) CreateCustomManufacturerBuilder() CustomManufacturerBuilder {
+	if b == nil {
 		return NewCustomManufacturerBuilder()
 	}
-	return &_CustomManufacturerBuilder{_CustomManufacturer: m.deepCopy()}
+	return &_CustomManufacturerBuilder{_CustomManufacturer: b.deepCopy()}
 }
 
 ///////////////////////
@@ -274,9 +278,13 @@ func (m *_CustomManufacturer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -95,10 +95,24 @@ type CBusPointToMultiPointCommandBuilder interface {
 	WithMandatoryFields(peekedApplication byte) CBusPointToMultiPointCommandBuilder
 	// WithPeekedApplication adds PeekedApplication (property field)
 	WithPeekedApplication(byte) CBusPointToMultiPointCommandBuilder
+	// AsCBusPointToMultiPointCommandStatus converts this build to a subType of CBusPointToMultiPointCommand. It is always possible to return to current builder using Done()
+	AsCBusPointToMultiPointCommandStatus() interface {
+		CBusPointToMultiPointCommandStatusBuilder
+		Done() CBusPointToMultiPointCommandBuilder
+	}
+	// AsCBusPointToMultiPointCommandNormal converts this build to a subType of CBusPointToMultiPointCommand. It is always possible to return to current builder using Done()
+	AsCBusPointToMultiPointCommandNormal() interface {
+		CBusPointToMultiPointCommandNormalBuilder
+		Done() CBusPointToMultiPointCommandBuilder
+	}
 	// Build builds the CBusPointToMultiPointCommand or returns an error if something is wrong
-	Build() (CBusPointToMultiPointCommandContract, error)
+	PartialBuild() (CBusPointToMultiPointCommandContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() CBusPointToMultiPointCommandContract
+	PartialMustBuild() CBusPointToMultiPointCommandContract
+	// Build builds the CBusPointToMultiPointCommand or returns an error if something is wrong
+	Build() (CBusPointToMultiPointCommand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusPointToMultiPointCommand
 }
 
 // NewCBusPointToMultiPointCommandBuilder() creates a CBusPointToMultiPointCommandBuilder
@@ -106,48 +120,114 @@ func NewCBusPointToMultiPointCommandBuilder() CBusPointToMultiPointCommandBuilde
 	return &_CBusPointToMultiPointCommandBuilder{_CBusPointToMultiPointCommand: new(_CBusPointToMultiPointCommand)}
 }
 
+type _CBusPointToMultiPointCommandChildBuilder interface {
+	utils.Copyable
+	setParent(CBusPointToMultiPointCommandContract)
+	buildForCBusPointToMultiPointCommand() (CBusPointToMultiPointCommand, error)
+}
+
 type _CBusPointToMultiPointCommandBuilder struct {
 	*_CBusPointToMultiPointCommand
+
+	childBuilder _CBusPointToMultiPointCommandChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (CBusPointToMultiPointCommandBuilder) = (*_CBusPointToMultiPointCommandBuilder)(nil)
 
-func (m *_CBusPointToMultiPointCommandBuilder) WithMandatoryFields(peekedApplication byte) CBusPointToMultiPointCommandBuilder {
-	return m.WithPeekedApplication(peekedApplication)
+func (b *_CBusPointToMultiPointCommandBuilder) WithMandatoryFields(peekedApplication byte) CBusPointToMultiPointCommandBuilder {
+	return b.WithPeekedApplication(peekedApplication)
 }
 
-func (m *_CBusPointToMultiPointCommandBuilder) WithPeekedApplication(peekedApplication byte) CBusPointToMultiPointCommandBuilder {
-	m.PeekedApplication = peekedApplication
-	return m
+func (b *_CBusPointToMultiPointCommandBuilder) WithPeekedApplication(peekedApplication byte) CBusPointToMultiPointCommandBuilder {
+	b.PeekedApplication = peekedApplication
+	return b
 }
 
-func (m *_CBusPointToMultiPointCommandBuilder) Build() (CBusPointToMultiPointCommandContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CBusPointToMultiPointCommandBuilder) PartialBuild() (CBusPointToMultiPointCommandContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CBusPointToMultiPointCommand.deepCopy(), nil
+	return b._CBusPointToMultiPointCommand.deepCopy(), nil
 }
 
-func (m *_CBusPointToMultiPointCommandBuilder) MustBuild() CBusPointToMultiPointCommandContract {
-	build, err := m.Build()
+func (b *_CBusPointToMultiPointCommandBuilder) PartialMustBuild() CBusPointToMultiPointCommandContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CBusPointToMultiPointCommandBuilder) DeepCopy() any {
-	return m.CreateCBusPointToMultiPointCommandBuilder()
+func (b *_CBusPointToMultiPointCommandBuilder) AsCBusPointToMultiPointCommandStatus() interface {
+	CBusPointToMultiPointCommandStatusBuilder
+	Done() CBusPointToMultiPointCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CBusPointToMultiPointCommandStatusBuilder
+		Done() CBusPointToMultiPointCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCBusPointToMultiPointCommandStatusBuilder().(*_CBusPointToMultiPointCommandStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CBusPointToMultiPointCommandBuilder) AsCBusPointToMultiPointCommandNormal() interface {
+	CBusPointToMultiPointCommandNormalBuilder
+	Done() CBusPointToMultiPointCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CBusPointToMultiPointCommandNormalBuilder
+		Done() CBusPointToMultiPointCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCBusPointToMultiPointCommandNormalBuilder().(*_CBusPointToMultiPointCommandNormalBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CBusPointToMultiPointCommandBuilder) Build() (CBusPointToMultiPointCommand, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForCBusPointToMultiPointCommand()
+}
+
+func (b *_CBusPointToMultiPointCommandBuilder) MustBuild() CBusPointToMultiPointCommand {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CBusPointToMultiPointCommandBuilder) DeepCopy() any {
+	_copy := b.CreateCBusPointToMultiPointCommandBuilder().(*_CBusPointToMultiPointCommandBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_CBusPointToMultiPointCommandChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCBusPointToMultiPointCommandBuilder creates a CBusPointToMultiPointCommandBuilder
-func (m *_CBusPointToMultiPointCommand) CreateCBusPointToMultiPointCommandBuilder() CBusPointToMultiPointCommandBuilder {
-	if m == nil {
+func (b *_CBusPointToMultiPointCommand) CreateCBusPointToMultiPointCommandBuilder() CBusPointToMultiPointCommandBuilder {
+	if b == nil {
 		return NewCBusPointToMultiPointCommandBuilder()
 	}
-	return &_CBusPointToMultiPointCommandBuilder{_CBusPointToMultiPointCommand: m.deepCopy()}
+	return &_CBusPointToMultiPointCommandBuilder{_CBusPointToMultiPointCommand: b.deepCopy()}
 }
 
 ///////////////////////

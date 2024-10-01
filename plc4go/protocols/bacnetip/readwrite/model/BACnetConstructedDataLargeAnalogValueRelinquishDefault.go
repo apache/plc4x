@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder() BACnetCo
 type _BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder struct {
 	*_BACnetConstructedDataLargeAnalogValueRelinquishDefault
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) = (*_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder)(nil)
 
-func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder {
-	return m.WithRelinquishDefault(relinquishDefault)
+func (b *_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder {
-	m.RelinquishDefault = relinquishDefault
-	return m
+func (b *_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder {
+	return b.WithRelinquishDefault(relinquishDefault)
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder {
-	builder := builderSupplier(m.RelinquishDefault.CreateBACnetApplicationTagDoubleBuilder())
+func (b *_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder {
+	b.RelinquishDefault = relinquishDefault
+	return b
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder {
+	builder := builderSupplier(b.RelinquishDefault.CreateBACnetApplicationTagDoubleBuilder())
 	var err error
-	m.RelinquishDefault, err = builder.Build()
+	b.RelinquishDefault, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) Build() (BACnetConstructedDataLargeAnalogValueRelinquishDefault, error) {
-	if m.RelinquishDefault == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) Build() (BACnetConstructedDataLargeAnalogValueRelinquishDefault, error) {
+	if b.RelinquishDefault == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
+		b.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLargeAnalogValueRelinquishDefault.deepCopy(), nil
+	return b._BACnetConstructedDataLargeAnalogValueRelinquishDefault.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueRelinquishDefault {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueRelinquishDefault {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder().(*_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder creates a BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder
-func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefault) CreateBACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder() BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLargeAnalogValueRelinquishDefault) CreateBACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder() BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder()
 	}
-	return &_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder{_BACnetConstructedDataLargeAnalogValueRelinquishDefault: m.deepCopy()}
+	return &_BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder{_BACnetConstructedDataLargeAnalogValueRelinquishDefault: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataLargeAnalogValueRelinquishDefault) String() strin
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

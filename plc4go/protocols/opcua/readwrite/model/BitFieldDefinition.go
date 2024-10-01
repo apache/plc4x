@@ -124,98 +124,117 @@ func NewBitFieldDefinitionBuilder() BitFieldDefinitionBuilder {
 type _BitFieldDefinitionBuilder struct {
 	*_BitFieldDefinition
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BitFieldDefinitionBuilder) = (*_BitFieldDefinitionBuilder)(nil)
 
-func (m *_BitFieldDefinitionBuilder) WithMandatoryFields(name PascalString, description LocalizedText, startingBitPosition uint32, endingBitPosition uint32) BitFieldDefinitionBuilder {
-	return m.WithName(name).WithDescription(description).WithStartingBitPosition(startingBitPosition).WithEndingBitPosition(endingBitPosition)
+func (b *_BitFieldDefinitionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_BitFieldDefinitionBuilder) WithName(name PascalString) BitFieldDefinitionBuilder {
-	m.Name = name
-	return m
+func (b *_BitFieldDefinitionBuilder) WithMandatoryFields(name PascalString, description LocalizedText, startingBitPosition uint32, endingBitPosition uint32) BitFieldDefinitionBuilder {
+	return b.WithName(name).WithDescription(description).WithStartingBitPosition(startingBitPosition).WithEndingBitPosition(endingBitPosition)
 }
 
-func (m *_BitFieldDefinitionBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BitFieldDefinitionBuilder {
-	builder := builderSupplier(m.Name.CreatePascalStringBuilder())
+func (b *_BitFieldDefinitionBuilder) WithName(name PascalString) BitFieldDefinitionBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_BitFieldDefinitionBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BitFieldDefinitionBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
 	var err error
-	m.Name, err = builder.Build()
+	b.Name, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BitFieldDefinitionBuilder) WithDescription(description LocalizedText) BitFieldDefinitionBuilder {
-	m.Description = description
-	return m
+func (b *_BitFieldDefinitionBuilder) WithDescription(description LocalizedText) BitFieldDefinitionBuilder {
+	b.Description = description
+	return b
 }
 
-func (m *_BitFieldDefinitionBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) BitFieldDefinitionBuilder {
-	builder := builderSupplier(m.Description.CreateLocalizedTextBuilder())
+func (b *_BitFieldDefinitionBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) BitFieldDefinitionBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
 	var err error
-	m.Description, err = builder.Build()
+	b.Description, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BitFieldDefinitionBuilder) WithStartingBitPosition(startingBitPosition uint32) BitFieldDefinitionBuilder {
-	m.StartingBitPosition = startingBitPosition
-	return m
+func (b *_BitFieldDefinitionBuilder) WithStartingBitPosition(startingBitPosition uint32) BitFieldDefinitionBuilder {
+	b.StartingBitPosition = startingBitPosition
+	return b
 }
 
-func (m *_BitFieldDefinitionBuilder) WithEndingBitPosition(endingBitPosition uint32) BitFieldDefinitionBuilder {
-	m.EndingBitPosition = endingBitPosition
-	return m
+func (b *_BitFieldDefinitionBuilder) WithEndingBitPosition(endingBitPosition uint32) BitFieldDefinitionBuilder {
+	b.EndingBitPosition = endingBitPosition
+	return b
 }
 
-func (m *_BitFieldDefinitionBuilder) Build() (BitFieldDefinition, error) {
-	if m.Name == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BitFieldDefinitionBuilder) Build() (BitFieldDefinition, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'name' not set"))
+		b.err.Append(errors.New("mandatory field 'name' not set"))
 	}
-	if m.Description == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'description' not set"))
+		b.err.Append(errors.New("mandatory field 'description' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BitFieldDefinition.deepCopy(), nil
+	return b._BitFieldDefinition.deepCopy(), nil
 }
 
-func (m *_BitFieldDefinitionBuilder) MustBuild() BitFieldDefinition {
-	build, err := m.Build()
+func (b *_BitFieldDefinitionBuilder) MustBuild() BitFieldDefinition {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BitFieldDefinitionBuilder) DeepCopy() any {
-	return m.CreateBitFieldDefinitionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BitFieldDefinitionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BitFieldDefinitionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_BitFieldDefinitionBuilder) DeepCopy() any {
+	_copy := b.CreateBitFieldDefinitionBuilder().(*_BitFieldDefinitionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBitFieldDefinitionBuilder creates a BitFieldDefinitionBuilder
-func (m *_BitFieldDefinition) CreateBitFieldDefinitionBuilder() BitFieldDefinitionBuilder {
-	if m == nil {
+func (b *_BitFieldDefinition) CreateBitFieldDefinitionBuilder() BitFieldDefinitionBuilder {
+	if b == nil {
 		return NewBitFieldDefinitionBuilder()
 	}
-	return &_BitFieldDefinitionBuilder{_BitFieldDefinition: m.deepCopy()}
+	return &_BitFieldDefinitionBuilder{_BitFieldDefinition: b.deepCopy()}
 }
 
 ///////////////////////
@@ -441,9 +460,13 @@ func (m *_BitFieldDefinition) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

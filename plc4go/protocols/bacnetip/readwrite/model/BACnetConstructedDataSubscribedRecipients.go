@@ -93,45 +93,64 @@ func NewBACnetConstructedDataSubscribedRecipientsBuilder() BACnetConstructedData
 type _BACnetConstructedDataSubscribedRecipientsBuilder struct {
 	*_BACnetConstructedDataSubscribedRecipients
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSubscribedRecipientsBuilder) = (*_BACnetConstructedDataSubscribedRecipientsBuilder)(nil)
 
-func (m *_BACnetConstructedDataSubscribedRecipientsBuilder) WithMandatoryFields(subscribedRecipients []BACnetEventNotificationSubscription) BACnetConstructedDataSubscribedRecipientsBuilder {
-	return m.WithSubscribedRecipients(subscribedRecipients...)
+func (b *_BACnetConstructedDataSubscribedRecipientsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSubscribedRecipientsBuilder) WithSubscribedRecipients(subscribedRecipients ...BACnetEventNotificationSubscription) BACnetConstructedDataSubscribedRecipientsBuilder {
-	m.SubscribedRecipients = subscribedRecipients
-	return m
+func (b *_BACnetConstructedDataSubscribedRecipientsBuilder) WithMandatoryFields(subscribedRecipients []BACnetEventNotificationSubscription) BACnetConstructedDataSubscribedRecipientsBuilder {
+	return b.WithSubscribedRecipients(subscribedRecipients...)
 }
 
-func (m *_BACnetConstructedDataSubscribedRecipientsBuilder) Build() (BACnetConstructedDataSubscribedRecipients, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataSubscribedRecipientsBuilder) WithSubscribedRecipients(subscribedRecipients ...BACnetEventNotificationSubscription) BACnetConstructedDataSubscribedRecipientsBuilder {
+	b.SubscribedRecipients = subscribedRecipients
+	return b
+}
+
+func (b *_BACnetConstructedDataSubscribedRecipientsBuilder) Build() (BACnetConstructedDataSubscribedRecipients, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSubscribedRecipients.deepCopy(), nil
+	return b._BACnetConstructedDataSubscribedRecipients.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSubscribedRecipientsBuilder) MustBuild() BACnetConstructedDataSubscribedRecipients {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSubscribedRecipientsBuilder) MustBuild() BACnetConstructedDataSubscribedRecipients {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSubscribedRecipientsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSubscribedRecipientsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSubscribedRecipientsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSubscribedRecipientsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSubscribedRecipientsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSubscribedRecipientsBuilder().(*_BACnetConstructedDataSubscribedRecipientsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSubscribedRecipientsBuilder creates a BACnetConstructedDataSubscribedRecipientsBuilder
-func (m *_BACnetConstructedDataSubscribedRecipients) CreateBACnetConstructedDataSubscribedRecipientsBuilder() BACnetConstructedDataSubscribedRecipientsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSubscribedRecipients) CreateBACnetConstructedDataSubscribedRecipientsBuilder() BACnetConstructedDataSubscribedRecipientsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSubscribedRecipientsBuilder()
 	}
-	return &_BACnetConstructedDataSubscribedRecipientsBuilder{_BACnetConstructedDataSubscribedRecipients: m.deepCopy()}
+	return &_BACnetConstructedDataSubscribedRecipientsBuilder{_BACnetConstructedDataSubscribedRecipients: b.deepCopy()}
 }
 
 ///////////////////////
@@ -283,9 +302,13 @@ func (m *_BACnetConstructedDataSubscribedRecipients) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

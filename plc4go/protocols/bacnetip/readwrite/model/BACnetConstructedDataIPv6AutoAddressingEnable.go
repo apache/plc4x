@@ -100,64 +100,83 @@ func NewBACnetConstructedDataIPv6AutoAddressingEnableBuilder() BACnetConstructed
 type _BACnetConstructedDataIPv6AutoAddressingEnableBuilder struct {
 	*_BACnetConstructedDataIPv6AutoAddressingEnable
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataIPv6AutoAddressingEnableBuilder) = (*_BACnetConstructedDataIPv6AutoAddressingEnableBuilder)(nil)
 
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) WithMandatoryFields(autoAddressingEnable BACnetApplicationTagBoolean) BACnetConstructedDataIPv6AutoAddressingEnableBuilder {
-	return m.WithAutoAddressingEnable(autoAddressingEnable)
+func (b *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) WithAutoAddressingEnable(autoAddressingEnable BACnetApplicationTagBoolean) BACnetConstructedDataIPv6AutoAddressingEnableBuilder {
-	m.AutoAddressingEnable = autoAddressingEnable
-	return m
+func (b *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) WithMandatoryFields(autoAddressingEnable BACnetApplicationTagBoolean) BACnetConstructedDataIPv6AutoAddressingEnableBuilder {
+	return b.WithAutoAddressingEnable(autoAddressingEnable)
 }
 
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) WithAutoAddressingEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataIPv6AutoAddressingEnableBuilder {
-	builder := builderSupplier(m.AutoAddressingEnable.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) WithAutoAddressingEnable(autoAddressingEnable BACnetApplicationTagBoolean) BACnetConstructedDataIPv6AutoAddressingEnableBuilder {
+	b.AutoAddressingEnable = autoAddressingEnable
+	return b
+}
+
+func (b *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) WithAutoAddressingEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataIPv6AutoAddressingEnableBuilder {
+	builder := builderSupplier(b.AutoAddressingEnable.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.AutoAddressingEnable, err = builder.Build()
+	b.AutoAddressingEnable, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) Build() (BACnetConstructedDataIPv6AutoAddressingEnable, error) {
-	if m.AutoAddressingEnable == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) Build() (BACnetConstructedDataIPv6AutoAddressingEnable, error) {
+	if b.AutoAddressingEnable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'autoAddressingEnable' not set"))
+		b.err.Append(errors.New("mandatory field 'autoAddressingEnable' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataIPv6AutoAddressingEnable.deepCopy(), nil
+	return b._BACnetConstructedDataIPv6AutoAddressingEnable.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) MustBuild() BACnetConstructedDataIPv6AutoAddressingEnable {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) MustBuild() BACnetConstructedDataIPv6AutoAddressingEnable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataIPv6AutoAddressingEnableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPv6AutoAddressingEnableBuilder().(*_BACnetConstructedDataIPv6AutoAddressingEnableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataIPv6AutoAddressingEnableBuilder creates a BACnetConstructedDataIPv6AutoAddressingEnableBuilder
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) CreateBACnetConstructedDataIPv6AutoAddressingEnableBuilder() BACnetConstructedDataIPv6AutoAddressingEnableBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataIPv6AutoAddressingEnable) CreateBACnetConstructedDataIPv6AutoAddressingEnableBuilder() BACnetConstructedDataIPv6AutoAddressingEnableBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataIPv6AutoAddressingEnableBuilder()
 	}
-	return &_BACnetConstructedDataIPv6AutoAddressingEnableBuilder{_BACnetConstructedDataIPv6AutoAddressingEnable: m.deepCopy()}
+	return &_BACnetConstructedDataIPv6AutoAddressingEnableBuilder{_BACnetConstructedDataIPv6AutoAddressingEnable: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

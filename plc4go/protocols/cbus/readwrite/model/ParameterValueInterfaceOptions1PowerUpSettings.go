@@ -98,64 +98,83 @@ func NewParameterValueInterfaceOptions1PowerUpSettingsBuilder() ParameterValueIn
 type _ParameterValueInterfaceOptions1PowerUpSettingsBuilder struct {
 	*_ParameterValueInterfaceOptions1PowerUpSettings
 
+	parentBuilder *_ParameterValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ParameterValueInterfaceOptions1PowerUpSettingsBuilder) = (*_ParameterValueInterfaceOptions1PowerUpSettingsBuilder)(nil)
 
-func (m *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) WithMandatoryFields(value InterfaceOptions1PowerUpSettings) ParameterValueInterfaceOptions1PowerUpSettingsBuilder {
-	return m.WithValue(value)
+func (b *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) setParent(contract ParameterValueContract) {
+	b.ParameterValueContract = contract
 }
 
-func (m *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) WithValue(value InterfaceOptions1PowerUpSettings) ParameterValueInterfaceOptions1PowerUpSettingsBuilder {
-	m.Value = value
-	return m
+func (b *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) WithMandatoryFields(value InterfaceOptions1PowerUpSettings) ParameterValueInterfaceOptions1PowerUpSettingsBuilder {
+	return b.WithValue(value)
 }
 
-func (m *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) WithValueBuilder(builderSupplier func(InterfaceOptions1PowerUpSettingsBuilder) InterfaceOptions1PowerUpSettingsBuilder) ParameterValueInterfaceOptions1PowerUpSettingsBuilder {
-	builder := builderSupplier(m.Value.CreateInterfaceOptions1PowerUpSettingsBuilder())
+func (b *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) WithValue(value InterfaceOptions1PowerUpSettings) ParameterValueInterfaceOptions1PowerUpSettingsBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) WithValueBuilder(builderSupplier func(InterfaceOptions1PowerUpSettingsBuilder) InterfaceOptions1PowerUpSettingsBuilder) ParameterValueInterfaceOptions1PowerUpSettingsBuilder {
+	builder := builderSupplier(b.Value.CreateInterfaceOptions1PowerUpSettingsBuilder())
 	var err error
-	m.Value, err = builder.Build()
+	b.Value, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "InterfaceOptions1PowerUpSettingsBuilder failed"))
+		b.err.Append(errors.Wrap(err, "InterfaceOptions1PowerUpSettingsBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) Build() (ParameterValueInterfaceOptions1PowerUpSettings, error) {
-	if m.Value == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) Build() (ParameterValueInterfaceOptions1PowerUpSettings, error) {
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'value' not set"))
+		b.err.Append(errors.New("mandatory field 'value' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ParameterValueInterfaceOptions1PowerUpSettings.deepCopy(), nil
+	return b._ParameterValueInterfaceOptions1PowerUpSettings.deepCopy(), nil
 }
 
-func (m *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) MustBuild() ParameterValueInterfaceOptions1PowerUpSettings {
-	build, err := m.Build()
+func (b *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) MustBuild() ParameterValueInterfaceOptions1PowerUpSettings {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) DeepCopy() any {
-	return m.CreateParameterValueInterfaceOptions1PowerUpSettingsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) Done() ParameterValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) buildForParameterValue() (ParameterValue, error) {
+	return b.Build()
+}
+
+func (b *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) DeepCopy() any {
+	_copy := b.CreateParameterValueInterfaceOptions1PowerUpSettingsBuilder().(*_ParameterValueInterfaceOptions1PowerUpSettingsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateParameterValueInterfaceOptions1PowerUpSettingsBuilder creates a ParameterValueInterfaceOptions1PowerUpSettingsBuilder
-func (m *_ParameterValueInterfaceOptions1PowerUpSettings) CreateParameterValueInterfaceOptions1PowerUpSettingsBuilder() ParameterValueInterfaceOptions1PowerUpSettingsBuilder {
-	if m == nil {
+func (b *_ParameterValueInterfaceOptions1PowerUpSettings) CreateParameterValueInterfaceOptions1PowerUpSettingsBuilder() ParameterValueInterfaceOptions1PowerUpSettingsBuilder {
+	if b == nil {
 		return NewParameterValueInterfaceOptions1PowerUpSettingsBuilder()
 	}
-	return &_ParameterValueInterfaceOptions1PowerUpSettingsBuilder{_ParameterValueInterfaceOptions1PowerUpSettings: m.deepCopy()}
+	return &_ParameterValueInterfaceOptions1PowerUpSettingsBuilder{_ParameterValueInterfaceOptions1PowerUpSettings: b.deepCopy()}
 }
 
 ///////////////////////
@@ -305,9 +324,13 @@ func (m *_ParameterValueInterfaceOptions1PowerUpSettings) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

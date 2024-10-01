@@ -117,65 +117,84 @@ func NewAdsReadDeviceInfoResponseBuilder() AdsReadDeviceInfoResponseBuilder {
 type _AdsReadDeviceInfoResponseBuilder struct {
 	*_AdsReadDeviceInfoResponse
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsReadDeviceInfoResponseBuilder) = (*_AdsReadDeviceInfoResponseBuilder)(nil)
 
-func (m *_AdsReadDeviceInfoResponseBuilder) WithMandatoryFields(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) AdsReadDeviceInfoResponseBuilder {
-	return m.WithResult(result).WithMajorVersion(majorVersion).WithMinorVersion(minorVersion).WithVersion(version).WithDevice(device...)
+func (b *_AdsReadDeviceInfoResponseBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_AdsReadDeviceInfoResponseBuilder) WithResult(result ReturnCode) AdsReadDeviceInfoResponseBuilder {
-	m.Result = result
-	return m
+func (b *_AdsReadDeviceInfoResponseBuilder) WithMandatoryFields(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) AdsReadDeviceInfoResponseBuilder {
+	return b.WithResult(result).WithMajorVersion(majorVersion).WithMinorVersion(minorVersion).WithVersion(version).WithDevice(device...)
 }
 
-func (m *_AdsReadDeviceInfoResponseBuilder) WithMajorVersion(majorVersion uint8) AdsReadDeviceInfoResponseBuilder {
-	m.MajorVersion = majorVersion
-	return m
+func (b *_AdsReadDeviceInfoResponseBuilder) WithResult(result ReturnCode) AdsReadDeviceInfoResponseBuilder {
+	b.Result = result
+	return b
 }
 
-func (m *_AdsReadDeviceInfoResponseBuilder) WithMinorVersion(minorVersion uint8) AdsReadDeviceInfoResponseBuilder {
-	m.MinorVersion = minorVersion
-	return m
+func (b *_AdsReadDeviceInfoResponseBuilder) WithMajorVersion(majorVersion uint8) AdsReadDeviceInfoResponseBuilder {
+	b.MajorVersion = majorVersion
+	return b
 }
 
-func (m *_AdsReadDeviceInfoResponseBuilder) WithVersion(version uint16) AdsReadDeviceInfoResponseBuilder {
-	m.Version = version
-	return m
+func (b *_AdsReadDeviceInfoResponseBuilder) WithMinorVersion(minorVersion uint8) AdsReadDeviceInfoResponseBuilder {
+	b.MinorVersion = minorVersion
+	return b
 }
 
-func (m *_AdsReadDeviceInfoResponseBuilder) WithDevice(device ...byte) AdsReadDeviceInfoResponseBuilder {
-	m.Device = device
-	return m
+func (b *_AdsReadDeviceInfoResponseBuilder) WithVersion(version uint16) AdsReadDeviceInfoResponseBuilder {
+	b.Version = version
+	return b
 }
 
-func (m *_AdsReadDeviceInfoResponseBuilder) Build() (AdsReadDeviceInfoResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsReadDeviceInfoResponseBuilder) WithDevice(device ...byte) AdsReadDeviceInfoResponseBuilder {
+	b.Device = device
+	return b
+}
+
+func (b *_AdsReadDeviceInfoResponseBuilder) Build() (AdsReadDeviceInfoResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsReadDeviceInfoResponse.deepCopy(), nil
+	return b._AdsReadDeviceInfoResponse.deepCopy(), nil
 }
 
-func (m *_AdsReadDeviceInfoResponseBuilder) MustBuild() AdsReadDeviceInfoResponse {
-	build, err := m.Build()
+func (b *_AdsReadDeviceInfoResponseBuilder) MustBuild() AdsReadDeviceInfoResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsReadDeviceInfoResponseBuilder) DeepCopy() any {
-	return m.CreateAdsReadDeviceInfoResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsReadDeviceInfoResponseBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsReadDeviceInfoResponseBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsReadDeviceInfoResponseBuilder) DeepCopy() any {
+	_copy := b.CreateAdsReadDeviceInfoResponseBuilder().(*_AdsReadDeviceInfoResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsReadDeviceInfoResponseBuilder creates a AdsReadDeviceInfoResponseBuilder
-func (m *_AdsReadDeviceInfoResponse) CreateAdsReadDeviceInfoResponseBuilder() AdsReadDeviceInfoResponseBuilder {
-	if m == nil {
+func (b *_AdsReadDeviceInfoResponse) CreateAdsReadDeviceInfoResponseBuilder() AdsReadDeviceInfoResponseBuilder {
+	if b == nil {
 		return NewAdsReadDeviceInfoResponseBuilder()
 	}
-	return &_AdsReadDeviceInfoResponseBuilder{_AdsReadDeviceInfoResponse: m.deepCopy()}
+	return &_AdsReadDeviceInfoResponseBuilder{_AdsReadDeviceInfoResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -397,9 +416,13 @@ func (m *_AdsReadDeviceInfoResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

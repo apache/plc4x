@@ -112,14 +112,20 @@ type QueryFirstRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, noOfNodeTypes int32, nodeTypes []ExtensionObjectDefinition, filter ExtensionObjectDefinition, maxDataSetsToReturn uint32, maxReferencesToReturn uint32) QueryFirstRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) QueryFirstRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstRequestBuilder
 	// WithView adds View (property field)
 	WithView(ExtensionObjectDefinition) QueryFirstRequestBuilder
+	// WithViewBuilder adds View (property field) which is build by the builder
+	WithViewBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstRequestBuilder
 	// WithNoOfNodeTypes adds NoOfNodeTypes (property field)
 	WithNoOfNodeTypes(int32) QueryFirstRequestBuilder
 	// WithNodeTypes adds NodeTypes (property field)
 	WithNodeTypes(...ExtensionObjectDefinition) QueryFirstRequestBuilder
 	// WithFilter adds Filter (property field)
 	WithFilter(ExtensionObjectDefinition) QueryFirstRequestBuilder
+	// WithFilterBuilder adds Filter (property field) which is build by the builder
+	WithFilterBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstRequestBuilder
 	// WithMaxDataSetsToReturn adds MaxDataSetsToReturn (property field)
 	WithMaxDataSetsToReturn(uint32) QueryFirstRequestBuilder
 	// WithMaxReferencesToReturn adds MaxReferencesToReturn (property field)
@@ -138,93 +144,151 @@ func NewQueryFirstRequestBuilder() QueryFirstRequestBuilder {
 type _QueryFirstRequestBuilder struct {
 	*_QueryFirstRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (QueryFirstRequestBuilder) = (*_QueryFirstRequestBuilder)(nil)
 
-func (m *_QueryFirstRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, noOfNodeTypes int32, nodeTypes []ExtensionObjectDefinition, filter ExtensionObjectDefinition, maxDataSetsToReturn uint32, maxReferencesToReturn uint32) QueryFirstRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithView(view).WithNoOfNodeTypes(noOfNodeTypes).WithNodeTypes(nodeTypes...).WithFilter(filter).WithMaxDataSetsToReturn(maxDataSetsToReturn).WithMaxReferencesToReturn(maxReferencesToReturn)
+func (b *_QueryFirstRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_QueryFirstRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) QueryFirstRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_QueryFirstRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, noOfNodeTypes int32, nodeTypes []ExtensionObjectDefinition, filter ExtensionObjectDefinition, maxDataSetsToReturn uint32, maxReferencesToReturn uint32) QueryFirstRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithView(view).WithNoOfNodeTypes(noOfNodeTypes).WithNodeTypes(nodeTypes...).WithFilter(filter).WithMaxDataSetsToReturn(maxDataSetsToReturn).WithMaxReferencesToReturn(maxReferencesToReturn)
 }
 
-func (m *_QueryFirstRequestBuilder) WithView(view ExtensionObjectDefinition) QueryFirstRequestBuilder {
-	m.View = view
-	return m
+func (b *_QueryFirstRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) QueryFirstRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_QueryFirstRequestBuilder) WithNoOfNodeTypes(noOfNodeTypes int32) QueryFirstRequestBuilder {
-	m.NoOfNodeTypes = noOfNodeTypes
-	return m
-}
-
-func (m *_QueryFirstRequestBuilder) WithNodeTypes(nodeTypes ...ExtensionObjectDefinition) QueryFirstRequestBuilder {
-	m.NodeTypes = nodeTypes
-	return m
-}
-
-func (m *_QueryFirstRequestBuilder) WithFilter(filter ExtensionObjectDefinition) QueryFirstRequestBuilder {
-	m.Filter = filter
-	return m
-}
-
-func (m *_QueryFirstRequestBuilder) WithMaxDataSetsToReturn(maxDataSetsToReturn uint32) QueryFirstRequestBuilder {
-	m.MaxDataSetsToReturn = maxDataSetsToReturn
-	return m
-}
-
-func (m *_QueryFirstRequestBuilder) WithMaxReferencesToReturn(maxReferencesToReturn uint32) QueryFirstRequestBuilder {
-	m.MaxReferencesToReturn = maxReferencesToReturn
-	return m
-}
-
-func (m *_QueryFirstRequestBuilder) Build() (QueryFirstRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_QueryFirstRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.View == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'view' not set"))
-	}
-	if m.Filter == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'filter' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._QueryFirstRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_QueryFirstRequestBuilder) MustBuild() QueryFirstRequest {
-	build, err := m.Build()
+func (b *_QueryFirstRequestBuilder) WithView(view ExtensionObjectDefinition) QueryFirstRequestBuilder {
+	b.View = view
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithViewBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstRequestBuilder {
+	builder := builderSupplier(b.View.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.View, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithNoOfNodeTypes(noOfNodeTypes int32) QueryFirstRequestBuilder {
+	b.NoOfNodeTypes = noOfNodeTypes
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithNodeTypes(nodeTypes ...ExtensionObjectDefinition) QueryFirstRequestBuilder {
+	b.NodeTypes = nodeTypes
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithFilter(filter ExtensionObjectDefinition) QueryFirstRequestBuilder {
+	b.Filter = filter
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithFilterBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstRequestBuilder {
+	builder := builderSupplier(b.Filter.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.Filter, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithMaxDataSetsToReturn(maxDataSetsToReturn uint32) QueryFirstRequestBuilder {
+	b.MaxDataSetsToReturn = maxDataSetsToReturn
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithMaxReferencesToReturn(maxReferencesToReturn uint32) QueryFirstRequestBuilder {
+	b.MaxReferencesToReturn = maxReferencesToReturn
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) Build() (QueryFirstRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.View == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'view' not set"))
+	}
+	if b.Filter == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'filter' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._QueryFirstRequest.deepCopy(), nil
+}
+
+func (b *_QueryFirstRequestBuilder) MustBuild() QueryFirstRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_QueryFirstRequestBuilder) DeepCopy() any {
-	return m.CreateQueryFirstRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_QueryFirstRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_QueryFirstRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_QueryFirstRequestBuilder) DeepCopy() any {
+	_copy := b.CreateQueryFirstRequestBuilder().(*_QueryFirstRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateQueryFirstRequestBuilder creates a QueryFirstRequestBuilder
-func (m *_QueryFirstRequest) CreateQueryFirstRequestBuilder() QueryFirstRequestBuilder {
-	if m == nil {
+func (b *_QueryFirstRequest) CreateQueryFirstRequestBuilder() QueryFirstRequestBuilder {
+	if b == nil {
 		return NewQueryFirstRequestBuilder()
 	}
-	return &_QueryFirstRequestBuilder{_QueryFirstRequest: m.deepCopy()}
+	return &_QueryFirstRequestBuilder{_QueryFirstRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -483,9 +547,13 @@ func (m *_QueryFirstRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

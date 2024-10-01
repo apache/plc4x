@@ -106,69 +106,88 @@ func NewAPDURejectBuilder() APDURejectBuilder {
 type _APDURejectBuilder struct {
 	*_APDUReject
 
+	parentBuilder *_APDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (APDURejectBuilder) = (*_APDURejectBuilder)(nil)
 
-func (m *_APDURejectBuilder) WithMandatoryFields(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged) APDURejectBuilder {
-	return m.WithOriginalInvokeId(originalInvokeId).WithRejectReason(rejectReason)
+func (b *_APDURejectBuilder) setParent(contract APDUContract) {
+	b.APDUContract = contract
 }
 
-func (m *_APDURejectBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDURejectBuilder {
-	m.OriginalInvokeId = originalInvokeId
-	return m
+func (b *_APDURejectBuilder) WithMandatoryFields(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged) APDURejectBuilder {
+	return b.WithOriginalInvokeId(originalInvokeId).WithRejectReason(rejectReason)
 }
 
-func (m *_APDURejectBuilder) WithRejectReason(rejectReason BACnetRejectReasonTagged) APDURejectBuilder {
-	m.RejectReason = rejectReason
-	return m
+func (b *_APDURejectBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDURejectBuilder {
+	b.OriginalInvokeId = originalInvokeId
+	return b
 }
 
-func (m *_APDURejectBuilder) WithRejectReasonBuilder(builderSupplier func(BACnetRejectReasonTaggedBuilder) BACnetRejectReasonTaggedBuilder) APDURejectBuilder {
-	builder := builderSupplier(m.RejectReason.CreateBACnetRejectReasonTaggedBuilder())
+func (b *_APDURejectBuilder) WithRejectReason(rejectReason BACnetRejectReasonTagged) APDURejectBuilder {
+	b.RejectReason = rejectReason
+	return b
+}
+
+func (b *_APDURejectBuilder) WithRejectReasonBuilder(builderSupplier func(BACnetRejectReasonTaggedBuilder) BACnetRejectReasonTaggedBuilder) APDURejectBuilder {
+	builder := builderSupplier(b.RejectReason.CreateBACnetRejectReasonTaggedBuilder())
 	var err error
-	m.RejectReason, err = builder.Build()
+	b.RejectReason, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetRejectReasonTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetRejectReasonTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_APDURejectBuilder) Build() (APDUReject, error) {
-	if m.RejectReason == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_APDURejectBuilder) Build() (APDUReject, error) {
+	if b.RejectReason == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'rejectReason' not set"))
+		b.err.Append(errors.New("mandatory field 'rejectReason' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._APDUReject.deepCopy(), nil
+	return b._APDUReject.deepCopy(), nil
 }
 
-func (m *_APDURejectBuilder) MustBuild() APDUReject {
-	build, err := m.Build()
+func (b *_APDURejectBuilder) MustBuild() APDUReject {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_APDURejectBuilder) DeepCopy() any {
-	return m.CreateAPDURejectBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_APDURejectBuilder) Done() APDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_APDURejectBuilder) buildForAPDU() (APDU, error) {
+	return b.Build()
+}
+
+func (b *_APDURejectBuilder) DeepCopy() any {
+	_copy := b.CreateAPDURejectBuilder().(*_APDURejectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAPDURejectBuilder creates a APDURejectBuilder
-func (m *_APDUReject) CreateAPDURejectBuilder() APDURejectBuilder {
-	if m == nil {
+func (b *_APDUReject) CreateAPDURejectBuilder() APDURejectBuilder {
+	if b == nil {
 		return NewAPDURejectBuilder()
 	}
-	return &_APDURejectBuilder{_APDUReject: m.deepCopy()}
+	return &_APDURejectBuilder{_APDUReject: b.deepCopy()}
 }
 
 ///////////////////////
@@ -344,9 +363,13 @@ func (m *_APDUReject) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

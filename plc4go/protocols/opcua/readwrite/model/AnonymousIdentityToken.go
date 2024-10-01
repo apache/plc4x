@@ -85,40 +85,59 @@ func NewAnonymousIdentityTokenBuilder() AnonymousIdentityTokenBuilder {
 type _AnonymousIdentityTokenBuilder struct {
 	*_AnonymousIdentityToken
 
+	parentBuilder *_UserIdentityTokenDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AnonymousIdentityTokenBuilder) = (*_AnonymousIdentityTokenBuilder)(nil)
 
-func (m *_AnonymousIdentityTokenBuilder) WithMandatoryFields() AnonymousIdentityTokenBuilder {
-	return m
+func (b *_AnonymousIdentityTokenBuilder) setParent(contract UserIdentityTokenDefinitionContract) {
+	b.UserIdentityTokenDefinitionContract = contract
 }
 
-func (m *_AnonymousIdentityTokenBuilder) Build() (AnonymousIdentityToken, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AnonymousIdentityTokenBuilder) WithMandatoryFields() AnonymousIdentityTokenBuilder {
+	return b
+}
+
+func (b *_AnonymousIdentityTokenBuilder) Build() (AnonymousIdentityToken, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AnonymousIdentityToken.deepCopy(), nil
+	return b._AnonymousIdentityToken.deepCopy(), nil
 }
 
-func (m *_AnonymousIdentityTokenBuilder) MustBuild() AnonymousIdentityToken {
-	build, err := m.Build()
+func (b *_AnonymousIdentityTokenBuilder) MustBuild() AnonymousIdentityToken {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AnonymousIdentityTokenBuilder) DeepCopy() any {
-	return m.CreateAnonymousIdentityTokenBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AnonymousIdentityTokenBuilder) Done() UserIdentityTokenDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AnonymousIdentityTokenBuilder) buildForUserIdentityTokenDefinition() (UserIdentityTokenDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AnonymousIdentityTokenBuilder) DeepCopy() any {
+	_copy := b.CreateAnonymousIdentityTokenBuilder().(*_AnonymousIdentityTokenBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAnonymousIdentityTokenBuilder creates a AnonymousIdentityTokenBuilder
-func (m *_AnonymousIdentityToken) CreateAnonymousIdentityTokenBuilder() AnonymousIdentityTokenBuilder {
-	if m == nil {
+func (b *_AnonymousIdentityToken) CreateAnonymousIdentityTokenBuilder() AnonymousIdentityTokenBuilder {
+	if b == nil {
 		return NewAnonymousIdentityTokenBuilder()
 	}
-	return &_AnonymousIdentityTokenBuilder{_AnonymousIdentityToken: m.deepCopy()}
+	return &_AnonymousIdentityTokenBuilder{_AnonymousIdentityToken: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_AnonymousIdentityToken) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

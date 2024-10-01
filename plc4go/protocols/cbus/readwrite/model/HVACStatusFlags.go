@@ -126,70 +126,74 @@ type _HVACStatusFlagsBuilder struct {
 
 var _ (HVACStatusFlagsBuilder) = (*_HVACStatusFlagsBuilder)(nil)
 
-func (m *_HVACStatusFlagsBuilder) WithMandatoryFields(expansion bool, error bool, busy bool, damperState bool, fanActive bool, heatingPlant bool, coolingPlant bool) HVACStatusFlagsBuilder {
-	return m.WithExpansion(expansion).WithError(error).WithBusy(busy).WithDamperState(damperState).WithFanActive(fanActive).WithHeatingPlant(heatingPlant).WithCoolingPlant(coolingPlant)
+func (b *_HVACStatusFlagsBuilder) WithMandatoryFields(expansion bool, error bool, busy bool, damperState bool, fanActive bool, heatingPlant bool, coolingPlant bool) HVACStatusFlagsBuilder {
+	return b.WithExpansion(expansion).WithError(error).WithBusy(busy).WithDamperState(damperState).WithFanActive(fanActive).WithHeatingPlant(heatingPlant).WithCoolingPlant(coolingPlant)
 }
 
-func (m *_HVACStatusFlagsBuilder) WithExpansion(expansion bool) HVACStatusFlagsBuilder {
-	m.Expansion = expansion
-	return m
+func (b *_HVACStatusFlagsBuilder) WithExpansion(expansion bool) HVACStatusFlagsBuilder {
+	b.Expansion = expansion
+	return b
 }
 
-func (m *_HVACStatusFlagsBuilder) WithError(error bool) HVACStatusFlagsBuilder {
-	m.Error = error
-	return m
+func (b *_HVACStatusFlagsBuilder) WithError(error bool) HVACStatusFlagsBuilder {
+	b.Error = error
+	return b
 }
 
-func (m *_HVACStatusFlagsBuilder) WithBusy(busy bool) HVACStatusFlagsBuilder {
-	m.Busy = busy
-	return m
+func (b *_HVACStatusFlagsBuilder) WithBusy(busy bool) HVACStatusFlagsBuilder {
+	b.Busy = busy
+	return b
 }
 
-func (m *_HVACStatusFlagsBuilder) WithDamperState(damperState bool) HVACStatusFlagsBuilder {
-	m.DamperState = damperState
-	return m
+func (b *_HVACStatusFlagsBuilder) WithDamperState(damperState bool) HVACStatusFlagsBuilder {
+	b.DamperState = damperState
+	return b
 }
 
-func (m *_HVACStatusFlagsBuilder) WithFanActive(fanActive bool) HVACStatusFlagsBuilder {
-	m.FanActive = fanActive
-	return m
+func (b *_HVACStatusFlagsBuilder) WithFanActive(fanActive bool) HVACStatusFlagsBuilder {
+	b.FanActive = fanActive
+	return b
 }
 
-func (m *_HVACStatusFlagsBuilder) WithHeatingPlant(heatingPlant bool) HVACStatusFlagsBuilder {
-	m.HeatingPlant = heatingPlant
-	return m
+func (b *_HVACStatusFlagsBuilder) WithHeatingPlant(heatingPlant bool) HVACStatusFlagsBuilder {
+	b.HeatingPlant = heatingPlant
+	return b
 }
 
-func (m *_HVACStatusFlagsBuilder) WithCoolingPlant(coolingPlant bool) HVACStatusFlagsBuilder {
-	m.CoolingPlant = coolingPlant
-	return m
+func (b *_HVACStatusFlagsBuilder) WithCoolingPlant(coolingPlant bool) HVACStatusFlagsBuilder {
+	b.CoolingPlant = coolingPlant
+	return b
 }
 
-func (m *_HVACStatusFlagsBuilder) Build() (HVACStatusFlags, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_HVACStatusFlagsBuilder) Build() (HVACStatusFlags, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HVACStatusFlags.deepCopy(), nil
+	return b._HVACStatusFlags.deepCopy(), nil
 }
 
-func (m *_HVACStatusFlagsBuilder) MustBuild() HVACStatusFlags {
-	build, err := m.Build()
+func (b *_HVACStatusFlagsBuilder) MustBuild() HVACStatusFlags {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HVACStatusFlagsBuilder) DeepCopy() any {
-	return m.CreateHVACStatusFlagsBuilder()
+func (b *_HVACStatusFlagsBuilder) DeepCopy() any {
+	_copy := b.CreateHVACStatusFlagsBuilder().(*_HVACStatusFlagsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHVACStatusFlagsBuilder creates a HVACStatusFlagsBuilder
-func (m *_HVACStatusFlags) CreateHVACStatusFlagsBuilder() HVACStatusFlagsBuilder {
-	if m == nil {
+func (b *_HVACStatusFlags) CreateHVACStatusFlagsBuilder() HVACStatusFlagsBuilder {
+	if b == nil {
 		return NewHVACStatusFlagsBuilder()
 	}
-	return &_HVACStatusFlagsBuilder{_HVACStatusFlags: m.deepCopy()}
+	return &_HVACStatusFlagsBuilder{_HVACStatusFlags: b.deepCopy()}
 }
 
 ///////////////////////
@@ -497,9 +501,13 @@ func (m *_HVACStatusFlags) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

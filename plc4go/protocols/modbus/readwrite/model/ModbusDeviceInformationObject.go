@@ -95,45 +95,49 @@ type _ModbusDeviceInformationObjectBuilder struct {
 
 var _ (ModbusDeviceInformationObjectBuilder) = (*_ModbusDeviceInformationObjectBuilder)(nil)
 
-func (m *_ModbusDeviceInformationObjectBuilder) WithMandatoryFields(objectId uint8, data []byte) ModbusDeviceInformationObjectBuilder {
-	return m.WithObjectId(objectId).WithData(data...)
+func (b *_ModbusDeviceInformationObjectBuilder) WithMandatoryFields(objectId uint8, data []byte) ModbusDeviceInformationObjectBuilder {
+	return b.WithObjectId(objectId).WithData(data...)
 }
 
-func (m *_ModbusDeviceInformationObjectBuilder) WithObjectId(objectId uint8) ModbusDeviceInformationObjectBuilder {
-	m.ObjectId = objectId
-	return m
+func (b *_ModbusDeviceInformationObjectBuilder) WithObjectId(objectId uint8) ModbusDeviceInformationObjectBuilder {
+	b.ObjectId = objectId
+	return b
 }
 
-func (m *_ModbusDeviceInformationObjectBuilder) WithData(data ...byte) ModbusDeviceInformationObjectBuilder {
-	m.Data = data
-	return m
+func (b *_ModbusDeviceInformationObjectBuilder) WithData(data ...byte) ModbusDeviceInformationObjectBuilder {
+	b.Data = data
+	return b
 }
 
-func (m *_ModbusDeviceInformationObjectBuilder) Build() (ModbusDeviceInformationObject, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusDeviceInformationObjectBuilder) Build() (ModbusDeviceInformationObject, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusDeviceInformationObject.deepCopy(), nil
+	return b._ModbusDeviceInformationObject.deepCopy(), nil
 }
 
-func (m *_ModbusDeviceInformationObjectBuilder) MustBuild() ModbusDeviceInformationObject {
-	build, err := m.Build()
+func (b *_ModbusDeviceInformationObjectBuilder) MustBuild() ModbusDeviceInformationObject {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusDeviceInformationObjectBuilder) DeepCopy() any {
-	return m.CreateModbusDeviceInformationObjectBuilder()
+func (b *_ModbusDeviceInformationObjectBuilder) DeepCopy() any {
+	_copy := b.CreateModbusDeviceInformationObjectBuilder().(*_ModbusDeviceInformationObjectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusDeviceInformationObjectBuilder creates a ModbusDeviceInformationObjectBuilder
-func (m *_ModbusDeviceInformationObject) CreateModbusDeviceInformationObjectBuilder() ModbusDeviceInformationObjectBuilder {
-	if m == nil {
+func (b *_ModbusDeviceInformationObject) CreateModbusDeviceInformationObjectBuilder() ModbusDeviceInformationObjectBuilder {
+	if b == nil {
 		return NewModbusDeviceInformationObjectBuilder()
 	}
-	return &_ModbusDeviceInformationObjectBuilder{_ModbusDeviceInformationObject: m.deepCopy()}
+	return &_ModbusDeviceInformationObjectBuilder{_ModbusDeviceInformationObject: b.deepCopy()}
 }
 
 ///////////////////////
@@ -303,9 +307,13 @@ func (m *_ModbusDeviceInformationObject) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

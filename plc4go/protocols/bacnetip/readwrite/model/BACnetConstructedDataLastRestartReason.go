@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLastRestartReasonBuilder() BACnetConstructedDataLas
 type _BACnetConstructedDataLastRestartReasonBuilder struct {
 	*_BACnetConstructedDataLastRestartReason
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLastRestartReasonBuilder) = (*_BACnetConstructedDataLastRestartReasonBuilder)(nil)
 
-func (m *_BACnetConstructedDataLastRestartReasonBuilder) WithMandatoryFields(lastRestartReason BACnetRestartReasonTagged) BACnetConstructedDataLastRestartReasonBuilder {
-	return m.WithLastRestartReason(lastRestartReason)
+func (b *_BACnetConstructedDataLastRestartReasonBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLastRestartReasonBuilder) WithLastRestartReason(lastRestartReason BACnetRestartReasonTagged) BACnetConstructedDataLastRestartReasonBuilder {
-	m.LastRestartReason = lastRestartReason
-	return m
+func (b *_BACnetConstructedDataLastRestartReasonBuilder) WithMandatoryFields(lastRestartReason BACnetRestartReasonTagged) BACnetConstructedDataLastRestartReasonBuilder {
+	return b.WithLastRestartReason(lastRestartReason)
 }
 
-func (m *_BACnetConstructedDataLastRestartReasonBuilder) WithLastRestartReasonBuilder(builderSupplier func(BACnetRestartReasonTaggedBuilder) BACnetRestartReasonTaggedBuilder) BACnetConstructedDataLastRestartReasonBuilder {
-	builder := builderSupplier(m.LastRestartReason.CreateBACnetRestartReasonTaggedBuilder())
+func (b *_BACnetConstructedDataLastRestartReasonBuilder) WithLastRestartReason(lastRestartReason BACnetRestartReasonTagged) BACnetConstructedDataLastRestartReasonBuilder {
+	b.LastRestartReason = lastRestartReason
+	return b
+}
+
+func (b *_BACnetConstructedDataLastRestartReasonBuilder) WithLastRestartReasonBuilder(builderSupplier func(BACnetRestartReasonTaggedBuilder) BACnetRestartReasonTaggedBuilder) BACnetConstructedDataLastRestartReasonBuilder {
+	builder := builderSupplier(b.LastRestartReason.CreateBACnetRestartReasonTaggedBuilder())
 	var err error
-	m.LastRestartReason, err = builder.Build()
+	b.LastRestartReason, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetRestartReasonTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetRestartReasonTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLastRestartReasonBuilder) Build() (BACnetConstructedDataLastRestartReason, error) {
-	if m.LastRestartReason == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLastRestartReasonBuilder) Build() (BACnetConstructedDataLastRestartReason, error) {
+	if b.LastRestartReason == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lastRestartReason' not set"))
+		b.err.Append(errors.New("mandatory field 'lastRestartReason' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLastRestartReason.deepCopy(), nil
+	return b._BACnetConstructedDataLastRestartReason.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLastRestartReasonBuilder) MustBuild() BACnetConstructedDataLastRestartReason {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLastRestartReasonBuilder) MustBuild() BACnetConstructedDataLastRestartReason {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLastRestartReasonBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLastRestartReasonBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLastRestartReasonBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLastRestartReasonBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLastRestartReasonBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLastRestartReasonBuilder().(*_BACnetConstructedDataLastRestartReasonBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLastRestartReasonBuilder creates a BACnetConstructedDataLastRestartReasonBuilder
-func (m *_BACnetConstructedDataLastRestartReason) CreateBACnetConstructedDataLastRestartReasonBuilder() BACnetConstructedDataLastRestartReasonBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLastRestartReason) CreateBACnetConstructedDataLastRestartReasonBuilder() BACnetConstructedDataLastRestartReasonBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLastRestartReasonBuilder()
 	}
-	return &_BACnetConstructedDataLastRestartReasonBuilder{_BACnetConstructedDataLastRestartReason: m.deepCopy()}
+	return &_BACnetConstructedDataLastRestartReasonBuilder{_BACnetConstructedDataLastRestartReason: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataLastRestartReason) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -112,74 +112,93 @@ func NewLPollDataBuilder() LPollDataBuilder {
 type _LPollDataBuilder struct {
 	*_LPollData
 
+	parentBuilder *_LDataFrameBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LPollDataBuilder) = (*_LPollDataBuilder)(nil)
 
-func (m *_LPollDataBuilder) WithMandatoryFields(sourceAddress KnxAddress, targetAddress []byte, numberExpectedPollData uint8) LPollDataBuilder {
-	return m.WithSourceAddress(sourceAddress).WithTargetAddress(targetAddress...).WithNumberExpectedPollData(numberExpectedPollData)
+func (b *_LPollDataBuilder) setParent(contract LDataFrameContract) {
+	b.LDataFrameContract = contract
 }
 
-func (m *_LPollDataBuilder) WithSourceAddress(sourceAddress KnxAddress) LPollDataBuilder {
-	m.SourceAddress = sourceAddress
-	return m
+func (b *_LPollDataBuilder) WithMandatoryFields(sourceAddress KnxAddress, targetAddress []byte, numberExpectedPollData uint8) LPollDataBuilder {
+	return b.WithSourceAddress(sourceAddress).WithTargetAddress(targetAddress...).WithNumberExpectedPollData(numberExpectedPollData)
 }
 
-func (m *_LPollDataBuilder) WithSourceAddressBuilder(builderSupplier func(KnxAddressBuilder) KnxAddressBuilder) LPollDataBuilder {
-	builder := builderSupplier(m.SourceAddress.CreateKnxAddressBuilder())
+func (b *_LPollDataBuilder) WithSourceAddress(sourceAddress KnxAddress) LPollDataBuilder {
+	b.SourceAddress = sourceAddress
+	return b
+}
+
+func (b *_LPollDataBuilder) WithSourceAddressBuilder(builderSupplier func(KnxAddressBuilder) KnxAddressBuilder) LPollDataBuilder {
+	builder := builderSupplier(b.SourceAddress.CreateKnxAddressBuilder())
 	var err error
-	m.SourceAddress, err = builder.Build()
+	b.SourceAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "KnxAddressBuilder failed"))
+		b.err.Append(errors.Wrap(err, "KnxAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_LPollDataBuilder) WithTargetAddress(targetAddress ...byte) LPollDataBuilder {
-	m.TargetAddress = targetAddress
-	return m
+func (b *_LPollDataBuilder) WithTargetAddress(targetAddress ...byte) LPollDataBuilder {
+	b.TargetAddress = targetAddress
+	return b
 }
 
-func (m *_LPollDataBuilder) WithNumberExpectedPollData(numberExpectedPollData uint8) LPollDataBuilder {
-	m.NumberExpectedPollData = numberExpectedPollData
-	return m
+func (b *_LPollDataBuilder) WithNumberExpectedPollData(numberExpectedPollData uint8) LPollDataBuilder {
+	b.NumberExpectedPollData = numberExpectedPollData
+	return b
 }
 
-func (m *_LPollDataBuilder) Build() (LPollData, error) {
-	if m.SourceAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_LPollDataBuilder) Build() (LPollData, error) {
+	if b.SourceAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'sourceAddress' not set"))
+		b.err.Append(errors.New("mandatory field 'sourceAddress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LPollData.deepCopy(), nil
+	return b._LPollData.deepCopy(), nil
 }
 
-func (m *_LPollDataBuilder) MustBuild() LPollData {
-	build, err := m.Build()
+func (b *_LPollDataBuilder) MustBuild() LPollData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LPollDataBuilder) DeepCopy() any {
-	return m.CreateLPollDataBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LPollDataBuilder) Done() LDataFrameBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LPollDataBuilder) buildForLDataFrame() (LDataFrame, error) {
+	return b.Build()
+}
+
+func (b *_LPollDataBuilder) DeepCopy() any {
+	_copy := b.CreateLPollDataBuilder().(*_LPollDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLPollDataBuilder creates a LPollDataBuilder
-func (m *_LPollData) CreateLPollDataBuilder() LPollDataBuilder {
-	if m == nil {
+func (b *_LPollData) CreateLPollDataBuilder() LPollDataBuilder {
+	if b == nil {
 		return NewLPollDataBuilder()
 	}
-	return &_LPollDataBuilder{_LPollData: m.deepCopy()}
+	return &_LPollDataBuilder{_LPollData: b.deepCopy()}
 }
 
 ///////////////////////
@@ -379,9 +398,13 @@ func (m *_LPollData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

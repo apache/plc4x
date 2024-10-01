@@ -99,50 +99,69 @@ func NewAdsAddDeviceNotificationResponseBuilder() AdsAddDeviceNotificationRespon
 type _AdsAddDeviceNotificationResponseBuilder struct {
 	*_AdsAddDeviceNotificationResponse
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsAddDeviceNotificationResponseBuilder) = (*_AdsAddDeviceNotificationResponseBuilder)(nil)
 
-func (m *_AdsAddDeviceNotificationResponseBuilder) WithMandatoryFields(result ReturnCode, notificationHandle uint32) AdsAddDeviceNotificationResponseBuilder {
-	return m.WithResult(result).WithNotificationHandle(notificationHandle)
+func (b *_AdsAddDeviceNotificationResponseBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_AdsAddDeviceNotificationResponseBuilder) WithResult(result ReturnCode) AdsAddDeviceNotificationResponseBuilder {
-	m.Result = result
-	return m
+func (b *_AdsAddDeviceNotificationResponseBuilder) WithMandatoryFields(result ReturnCode, notificationHandle uint32) AdsAddDeviceNotificationResponseBuilder {
+	return b.WithResult(result).WithNotificationHandle(notificationHandle)
 }
 
-func (m *_AdsAddDeviceNotificationResponseBuilder) WithNotificationHandle(notificationHandle uint32) AdsAddDeviceNotificationResponseBuilder {
-	m.NotificationHandle = notificationHandle
-	return m
+func (b *_AdsAddDeviceNotificationResponseBuilder) WithResult(result ReturnCode) AdsAddDeviceNotificationResponseBuilder {
+	b.Result = result
+	return b
 }
 
-func (m *_AdsAddDeviceNotificationResponseBuilder) Build() (AdsAddDeviceNotificationResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsAddDeviceNotificationResponseBuilder) WithNotificationHandle(notificationHandle uint32) AdsAddDeviceNotificationResponseBuilder {
+	b.NotificationHandle = notificationHandle
+	return b
+}
+
+func (b *_AdsAddDeviceNotificationResponseBuilder) Build() (AdsAddDeviceNotificationResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsAddDeviceNotificationResponse.deepCopy(), nil
+	return b._AdsAddDeviceNotificationResponse.deepCopy(), nil
 }
 
-func (m *_AdsAddDeviceNotificationResponseBuilder) MustBuild() AdsAddDeviceNotificationResponse {
-	build, err := m.Build()
+func (b *_AdsAddDeviceNotificationResponseBuilder) MustBuild() AdsAddDeviceNotificationResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsAddDeviceNotificationResponseBuilder) DeepCopy() any {
-	return m.CreateAdsAddDeviceNotificationResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsAddDeviceNotificationResponseBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsAddDeviceNotificationResponseBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsAddDeviceNotificationResponseBuilder) DeepCopy() any {
+	_copy := b.CreateAdsAddDeviceNotificationResponseBuilder().(*_AdsAddDeviceNotificationResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsAddDeviceNotificationResponseBuilder creates a AdsAddDeviceNotificationResponseBuilder
-func (m *_AdsAddDeviceNotificationResponse) CreateAdsAddDeviceNotificationResponseBuilder() AdsAddDeviceNotificationResponseBuilder {
-	if m == nil {
+func (b *_AdsAddDeviceNotificationResponse) CreateAdsAddDeviceNotificationResponseBuilder() AdsAddDeviceNotificationResponseBuilder {
+	if b == nil {
 		return NewAdsAddDeviceNotificationResponseBuilder()
 	}
-	return &_AdsAddDeviceNotificationResponseBuilder{_AdsAddDeviceNotificationResponse: m.deepCopy()}
+	return &_AdsAddDeviceNotificationResponseBuilder{_AdsAddDeviceNotificationResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -308,9 +327,13 @@ func (m *_AdsAddDeviceNotificationResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

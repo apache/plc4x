@@ -96,45 +96,64 @@ func NewStatusRequestBinaryStateBuilder() StatusRequestBinaryStateBuilder {
 type _StatusRequestBinaryStateBuilder struct {
 	*_StatusRequestBinaryState
 
+	parentBuilder *_StatusRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (StatusRequestBinaryStateBuilder) = (*_StatusRequestBinaryStateBuilder)(nil)
 
-func (m *_StatusRequestBinaryStateBuilder) WithMandatoryFields(application ApplicationIdContainer) StatusRequestBinaryStateBuilder {
-	return m.WithApplication(application)
+func (b *_StatusRequestBinaryStateBuilder) setParent(contract StatusRequestContract) {
+	b.StatusRequestContract = contract
 }
 
-func (m *_StatusRequestBinaryStateBuilder) WithApplication(application ApplicationIdContainer) StatusRequestBinaryStateBuilder {
-	m.Application = application
-	return m
+func (b *_StatusRequestBinaryStateBuilder) WithMandatoryFields(application ApplicationIdContainer) StatusRequestBinaryStateBuilder {
+	return b.WithApplication(application)
 }
 
-func (m *_StatusRequestBinaryStateBuilder) Build() (StatusRequestBinaryState, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_StatusRequestBinaryStateBuilder) WithApplication(application ApplicationIdContainer) StatusRequestBinaryStateBuilder {
+	b.Application = application
+	return b
+}
+
+func (b *_StatusRequestBinaryStateBuilder) Build() (StatusRequestBinaryState, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._StatusRequestBinaryState.deepCopy(), nil
+	return b._StatusRequestBinaryState.deepCopy(), nil
 }
 
-func (m *_StatusRequestBinaryStateBuilder) MustBuild() StatusRequestBinaryState {
-	build, err := m.Build()
+func (b *_StatusRequestBinaryStateBuilder) MustBuild() StatusRequestBinaryState {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_StatusRequestBinaryStateBuilder) DeepCopy() any {
-	return m.CreateStatusRequestBinaryStateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_StatusRequestBinaryStateBuilder) Done() StatusRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_StatusRequestBinaryStateBuilder) buildForStatusRequest() (StatusRequest, error) {
+	return b.Build()
+}
+
+func (b *_StatusRequestBinaryStateBuilder) DeepCopy() any {
+	_copy := b.CreateStatusRequestBinaryStateBuilder().(*_StatusRequestBinaryStateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateStatusRequestBinaryStateBuilder creates a StatusRequestBinaryStateBuilder
-func (m *_StatusRequestBinaryState) CreateStatusRequestBinaryStateBuilder() StatusRequestBinaryStateBuilder {
-	if m == nil {
+func (b *_StatusRequestBinaryState) CreateStatusRequestBinaryStateBuilder() StatusRequestBinaryStateBuilder {
+	if b == nil {
 		return NewStatusRequestBinaryStateBuilder()
 	}
-	return &_StatusRequestBinaryStateBuilder{_StatusRequestBinaryState: m.deepCopy()}
+	return &_StatusRequestBinaryStateBuilder{_StatusRequestBinaryState: b.deepCopy()}
 }
 
 ///////////////////////
@@ -302,9 +321,13 @@ func (m *_StatusRequestBinaryState) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

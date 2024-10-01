@@ -103,63 +103,82 @@ func NewBACnetConstructedDataValueSourceArrayBuilder() BACnetConstructedDataValu
 type _BACnetConstructedDataValueSourceArrayBuilder struct {
 	*_BACnetConstructedDataValueSourceArray
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataValueSourceArrayBuilder) = (*_BACnetConstructedDataValueSourceArrayBuilder)(nil)
 
-func (m *_BACnetConstructedDataValueSourceArrayBuilder) WithMandatoryFields(vtClassesSupported []BACnetValueSource) BACnetConstructedDataValueSourceArrayBuilder {
-	return m.WithVtClassesSupported(vtClassesSupported...)
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataValueSourceArrayBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueSourceArrayBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) WithMandatoryFields(vtClassesSupported []BACnetValueSource) BACnetConstructedDataValueSourceArrayBuilder {
+	return b.WithVtClassesSupported(vtClassesSupported...)
 }
 
-func (m *_BACnetConstructedDataValueSourceArrayBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValueSourceArrayBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueSourceArrayBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValueSourceArrayBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataValueSourceArrayBuilder) WithVtClassesSupported(vtClassesSupported ...BACnetValueSource) BACnetConstructedDataValueSourceArrayBuilder {
-	m.VtClassesSupported = vtClassesSupported
-	return m
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) WithVtClassesSupported(vtClassesSupported ...BACnetValueSource) BACnetConstructedDataValueSourceArrayBuilder {
+	b.VtClassesSupported = vtClassesSupported
+	return b
 }
 
-func (m *_BACnetConstructedDataValueSourceArrayBuilder) Build() (BACnetConstructedDataValueSourceArray, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) Build() (BACnetConstructedDataValueSourceArray, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataValueSourceArray.deepCopy(), nil
+	return b._BACnetConstructedDataValueSourceArray.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataValueSourceArrayBuilder) MustBuild() BACnetConstructedDataValueSourceArray {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) MustBuild() BACnetConstructedDataValueSourceArray {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataValueSourceArrayBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataValueSourceArrayBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataValueSourceArrayBuilder().(*_BACnetConstructedDataValueSourceArrayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataValueSourceArrayBuilder creates a BACnetConstructedDataValueSourceArrayBuilder
-func (m *_BACnetConstructedDataValueSourceArray) CreateBACnetConstructedDataValueSourceArrayBuilder() BACnetConstructedDataValueSourceArrayBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataValueSourceArray) CreateBACnetConstructedDataValueSourceArrayBuilder() BACnetConstructedDataValueSourceArrayBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataValueSourceArrayBuilder()
 	}
-	return &_BACnetConstructedDataValueSourceArrayBuilder{_BACnetConstructedDataValueSourceArray: m.deepCopy()}
+	return &_BACnetConstructedDataValueSourceArrayBuilder{_BACnetConstructedDataValueSourceArray: b.deepCopy()}
 }
 
 ///////////////////////
@@ -371,9 +390,13 @@ func (m *_BACnetConstructedDataValueSourceArray) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

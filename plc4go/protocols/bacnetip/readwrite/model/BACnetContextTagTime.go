@@ -98,64 +98,83 @@ func NewBACnetContextTagTimeBuilder() BACnetContextTagTimeBuilder {
 type _BACnetContextTagTimeBuilder struct {
 	*_BACnetContextTagTime
 
+	parentBuilder *_BACnetContextTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetContextTagTimeBuilder) = (*_BACnetContextTagTimeBuilder)(nil)
 
-func (m *_BACnetContextTagTimeBuilder) WithMandatoryFields(payload BACnetTagPayloadTime) BACnetContextTagTimeBuilder {
-	return m.WithPayload(payload)
+func (b *_BACnetContextTagTimeBuilder) setParent(contract BACnetContextTagContract) {
+	b.BACnetContextTagContract = contract
 }
 
-func (m *_BACnetContextTagTimeBuilder) WithPayload(payload BACnetTagPayloadTime) BACnetContextTagTimeBuilder {
-	m.Payload = payload
-	return m
+func (b *_BACnetContextTagTimeBuilder) WithMandatoryFields(payload BACnetTagPayloadTime) BACnetContextTagTimeBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_BACnetContextTagTimeBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadTimeBuilder) BACnetTagPayloadTimeBuilder) BACnetContextTagTimeBuilder {
-	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadTimeBuilder())
+func (b *_BACnetContextTagTimeBuilder) WithPayload(payload BACnetTagPayloadTime) BACnetContextTagTimeBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetContextTagTimeBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadTimeBuilder) BACnetTagPayloadTimeBuilder) BACnetContextTagTimeBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadTimeBuilder())
 	var err error
-	m.Payload, err = builder.Build()
+	b.Payload, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagPayloadTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetContextTagTimeBuilder) Build() (BACnetContextTagTime, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetContextTagTimeBuilder) Build() (BACnetContextTagTime, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetContextTagTime.deepCopy(), nil
+	return b._BACnetContextTagTime.deepCopy(), nil
 }
 
-func (m *_BACnetContextTagTimeBuilder) MustBuild() BACnetContextTagTime {
-	build, err := m.Build()
+func (b *_BACnetContextTagTimeBuilder) MustBuild() BACnetContextTagTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetContextTagTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetContextTagTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetContextTagTimeBuilder) Done() BACnetContextTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetContextTagTimeBuilder) buildForBACnetContextTag() (BACnetContextTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetContextTagTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetContextTagTimeBuilder().(*_BACnetContextTagTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetContextTagTimeBuilder creates a BACnetContextTagTimeBuilder
-func (m *_BACnetContextTagTime) CreateBACnetContextTagTimeBuilder() BACnetContextTagTimeBuilder {
-	if m == nil {
+func (b *_BACnetContextTagTime) CreateBACnetContextTagTimeBuilder() BACnetContextTagTimeBuilder {
+	if b == nil {
 		return NewBACnetContextTagTimeBuilder()
 	}
-	return &_BACnetContextTagTimeBuilder{_BACnetContextTagTime: m.deepCopy()}
+	return &_BACnetContextTagTimeBuilder{_BACnetContextTagTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -299,9 +318,13 @@ func (m *_BACnetContextTagTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

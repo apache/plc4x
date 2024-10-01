@@ -82,6 +82,8 @@ type SALDataSecurityBuilder interface {
 	WithMandatoryFields(securityData SecurityData) SALDataSecurityBuilder
 	// WithSecurityData adds SecurityData (property field)
 	WithSecurityData(SecurityData) SALDataSecurityBuilder
+	// WithSecurityDataBuilder adds SecurityData (property field) which is build by the builder
+	WithSecurityDataBuilder(func(SecurityDataBuilder) SecurityDataBuilder) SALDataSecurityBuilder
 	// Build builds the SALDataSecurity or returns an error if something is wrong
 	Build() (SALDataSecurity, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewSALDataSecurityBuilder() SALDataSecurityBuilder {
 type _SALDataSecurityBuilder struct {
 	*_SALDataSecurity
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataSecurityBuilder) = (*_SALDataSecurityBuilder)(nil)
 
-func (m *_SALDataSecurityBuilder) WithMandatoryFields(securityData SecurityData) SALDataSecurityBuilder {
-	return m.WithSecurityData(securityData)
+func (b *_SALDataSecurityBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataSecurityBuilder) WithSecurityData(securityData SecurityData) SALDataSecurityBuilder {
-	m.SecurityData = securityData
-	return m
+func (b *_SALDataSecurityBuilder) WithMandatoryFields(securityData SecurityData) SALDataSecurityBuilder {
+	return b.WithSecurityData(securityData)
 }
 
-func (m *_SALDataSecurityBuilder) Build() (SALDataSecurity, error) {
-	if m.SecurityData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SALDataSecurityBuilder) WithSecurityData(securityData SecurityData) SALDataSecurityBuilder {
+	b.SecurityData = securityData
+	return b
+}
+
+func (b *_SALDataSecurityBuilder) WithSecurityDataBuilder(builderSupplier func(SecurityDataBuilder) SecurityDataBuilder) SALDataSecurityBuilder {
+	builder := builderSupplier(b.SecurityData.CreateSecurityDataBuilder())
+	var err error
+	b.SecurityData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'securityData' not set"))
+		b.err.Append(errors.Wrap(err, "SecurityDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._SALDataSecurity.deepCopy(), nil
+	return b
 }
 
-func (m *_SALDataSecurityBuilder) MustBuild() SALDataSecurity {
-	build, err := m.Build()
+func (b *_SALDataSecurityBuilder) Build() (SALDataSecurity, error) {
+	if b.SecurityData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'securityData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataSecurity.deepCopy(), nil
+}
+
+func (b *_SALDataSecurityBuilder) MustBuild() SALDataSecurity {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataSecurityBuilder) DeepCopy() any {
-	return m.CreateSALDataSecurityBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataSecurityBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataSecurityBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataSecurityBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataSecurityBuilder().(*_SALDataSecurityBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataSecurityBuilder creates a SALDataSecurityBuilder
-func (m *_SALDataSecurity) CreateSALDataSecurityBuilder() SALDataSecurityBuilder {
-	if m == nil {
+func (b *_SALDataSecurity) CreateSALDataSecurityBuilder() SALDataSecurityBuilder {
+	if b == nil {
 		return NewSALDataSecurityBuilder()
 	}
-	return &_SALDataSecurityBuilder{_SALDataSecurity: m.deepCopy()}
+	return &_SALDataSecurityBuilder{_SALDataSecurity: b.deepCopy()}
 }
 
 ///////////////////////
@@ -284,9 +318,13 @@ func (m *_SALDataSecurity) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

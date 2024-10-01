@@ -85,40 +85,59 @@ func NewApduDataExtFileStreamInfoReportBuilder() ApduDataExtFileStreamInfoReport
 type _ApduDataExtFileStreamInfoReportBuilder struct {
 	*_ApduDataExtFileStreamInfoReport
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtFileStreamInfoReportBuilder) = (*_ApduDataExtFileStreamInfoReportBuilder)(nil)
 
-func (m *_ApduDataExtFileStreamInfoReportBuilder) WithMandatoryFields() ApduDataExtFileStreamInfoReportBuilder {
-	return m
+func (b *_ApduDataExtFileStreamInfoReportBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtFileStreamInfoReportBuilder) Build() (ApduDataExtFileStreamInfoReport, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtFileStreamInfoReportBuilder) WithMandatoryFields() ApduDataExtFileStreamInfoReportBuilder {
+	return b
+}
+
+func (b *_ApduDataExtFileStreamInfoReportBuilder) Build() (ApduDataExtFileStreamInfoReport, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtFileStreamInfoReport.deepCopy(), nil
+	return b._ApduDataExtFileStreamInfoReport.deepCopy(), nil
 }
 
-func (m *_ApduDataExtFileStreamInfoReportBuilder) MustBuild() ApduDataExtFileStreamInfoReport {
-	build, err := m.Build()
+func (b *_ApduDataExtFileStreamInfoReportBuilder) MustBuild() ApduDataExtFileStreamInfoReport {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtFileStreamInfoReportBuilder) DeepCopy() any {
-	return m.CreateApduDataExtFileStreamInfoReportBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtFileStreamInfoReportBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtFileStreamInfoReportBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtFileStreamInfoReportBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtFileStreamInfoReportBuilder().(*_ApduDataExtFileStreamInfoReportBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtFileStreamInfoReportBuilder creates a ApduDataExtFileStreamInfoReportBuilder
-func (m *_ApduDataExtFileStreamInfoReport) CreateApduDataExtFileStreamInfoReportBuilder() ApduDataExtFileStreamInfoReportBuilder {
-	if m == nil {
+func (b *_ApduDataExtFileStreamInfoReport) CreateApduDataExtFileStreamInfoReportBuilder() ApduDataExtFileStreamInfoReportBuilder {
+	if b == nil {
 		return NewApduDataExtFileStreamInfoReportBuilder()
 	}
-	return &_ApduDataExtFileStreamInfoReportBuilder{_ApduDataExtFileStreamInfoReport: m.deepCopy()}
+	return &_ApduDataExtFileStreamInfoReportBuilder{_ApduDataExtFileStreamInfoReport: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_ApduDataExtFileStreamInfoReport) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

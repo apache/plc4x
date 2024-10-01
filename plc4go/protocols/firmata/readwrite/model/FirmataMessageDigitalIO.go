@@ -101,50 +101,69 @@ func NewFirmataMessageDigitalIOBuilder() FirmataMessageDigitalIOBuilder {
 type _FirmataMessageDigitalIOBuilder struct {
 	*_FirmataMessageDigitalIO
 
+	parentBuilder *_FirmataMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (FirmataMessageDigitalIOBuilder) = (*_FirmataMessageDigitalIOBuilder)(nil)
 
-func (m *_FirmataMessageDigitalIOBuilder) WithMandatoryFields(pinBlock uint8, data []int8) FirmataMessageDigitalIOBuilder {
-	return m.WithPinBlock(pinBlock).WithData(data...)
+func (b *_FirmataMessageDigitalIOBuilder) setParent(contract FirmataMessageContract) {
+	b.FirmataMessageContract = contract
 }
 
-func (m *_FirmataMessageDigitalIOBuilder) WithPinBlock(pinBlock uint8) FirmataMessageDigitalIOBuilder {
-	m.PinBlock = pinBlock
-	return m
+func (b *_FirmataMessageDigitalIOBuilder) WithMandatoryFields(pinBlock uint8, data []int8) FirmataMessageDigitalIOBuilder {
+	return b.WithPinBlock(pinBlock).WithData(data...)
 }
 
-func (m *_FirmataMessageDigitalIOBuilder) WithData(data ...int8) FirmataMessageDigitalIOBuilder {
-	m.Data = data
-	return m
+func (b *_FirmataMessageDigitalIOBuilder) WithPinBlock(pinBlock uint8) FirmataMessageDigitalIOBuilder {
+	b.PinBlock = pinBlock
+	return b
 }
 
-func (m *_FirmataMessageDigitalIOBuilder) Build() (FirmataMessageDigitalIO, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_FirmataMessageDigitalIOBuilder) WithData(data ...int8) FirmataMessageDigitalIOBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_FirmataMessageDigitalIOBuilder) Build() (FirmataMessageDigitalIO, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._FirmataMessageDigitalIO.deepCopy(), nil
+	return b._FirmataMessageDigitalIO.deepCopy(), nil
 }
 
-func (m *_FirmataMessageDigitalIOBuilder) MustBuild() FirmataMessageDigitalIO {
-	build, err := m.Build()
+func (b *_FirmataMessageDigitalIOBuilder) MustBuild() FirmataMessageDigitalIO {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FirmataMessageDigitalIOBuilder) DeepCopy() any {
-	return m.CreateFirmataMessageDigitalIOBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FirmataMessageDigitalIOBuilder) Done() FirmataMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FirmataMessageDigitalIOBuilder) buildForFirmataMessage() (FirmataMessage, error) {
+	return b.Build()
+}
+
+func (b *_FirmataMessageDigitalIOBuilder) DeepCopy() any {
+	_copy := b.CreateFirmataMessageDigitalIOBuilder().(*_FirmataMessageDigitalIOBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFirmataMessageDigitalIOBuilder creates a FirmataMessageDigitalIOBuilder
-func (m *_FirmataMessageDigitalIO) CreateFirmataMessageDigitalIOBuilder() FirmataMessageDigitalIOBuilder {
-	if m == nil {
+func (b *_FirmataMessageDigitalIO) CreateFirmataMessageDigitalIOBuilder() FirmataMessageDigitalIOBuilder {
+	if b == nil {
 		return NewFirmataMessageDigitalIOBuilder()
 	}
-	return &_FirmataMessageDigitalIOBuilder{_FirmataMessageDigitalIO: m.deepCopy()}
+	return &_FirmataMessageDigitalIOBuilder{_FirmataMessageDigitalIO: b.deepCopy()}
 }
 
 ///////////////////////
@@ -308,9 +327,13 @@ func (m *_FirmataMessageDigitalIO) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

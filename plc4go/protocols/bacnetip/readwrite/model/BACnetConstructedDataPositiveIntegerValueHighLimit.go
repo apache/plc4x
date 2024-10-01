@@ -100,64 +100,83 @@ func NewBACnetConstructedDataPositiveIntegerValueHighLimitBuilder() BACnetConstr
 type _BACnetConstructedDataPositiveIntegerValueHighLimitBuilder struct {
 	*_BACnetConstructedDataPositiveIntegerValueHighLimit
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) = (*_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder)(nil)
 
-func (m *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) WithMandatoryFields(highLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueHighLimitBuilder {
-	return m.WithHighLimit(highLimit)
+func (b *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) WithHighLimit(highLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueHighLimitBuilder {
-	m.HighLimit = highLimit
-	return m
+func (b *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) WithMandatoryFields(highLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueHighLimitBuilder {
+	return b.WithHighLimit(highLimit)
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) WithHighLimitBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueHighLimitBuilder {
-	builder := builderSupplier(m.HighLimit.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) WithHighLimit(highLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueHighLimitBuilder {
+	b.HighLimit = highLimit
+	return b
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) WithHighLimitBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueHighLimitBuilder {
+	builder := builderSupplier(b.HighLimit.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.HighLimit, err = builder.Build()
+	b.HighLimit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) Build() (BACnetConstructedDataPositiveIntegerValueHighLimit, error) {
-	if m.HighLimit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) Build() (BACnetConstructedDataPositiveIntegerValueHighLimit, error) {
+	if b.HighLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'highLimit' not set"))
+		b.err.Append(errors.New("mandatory field 'highLimit' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataPositiveIntegerValueHighLimit.deepCopy(), nil
+	return b._BACnetConstructedDataPositiveIntegerValueHighLimit.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueHighLimit {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueHighLimit {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataPositiveIntegerValueHighLimitBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPositiveIntegerValueHighLimitBuilder().(*_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataPositiveIntegerValueHighLimitBuilder creates a BACnetConstructedDataPositiveIntegerValueHighLimitBuilder
-func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) CreateBACnetConstructedDataPositiveIntegerValueHighLimitBuilder() BACnetConstructedDataPositiveIntegerValueHighLimitBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataPositiveIntegerValueHighLimit) CreateBACnetConstructedDataPositiveIntegerValueHighLimitBuilder() BACnetConstructedDataPositiveIntegerValueHighLimitBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataPositiveIntegerValueHighLimitBuilder()
 	}
-	return &_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder{_BACnetConstructedDataPositiveIntegerValueHighLimit: m.deepCopy()}
+	return &_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder{_BACnetConstructedDataPositiveIntegerValueHighLimit: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

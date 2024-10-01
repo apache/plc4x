@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesRestartReasonBuilder() BACnetPropertyStatesRestartRe
 type _BACnetPropertyStatesRestartReasonBuilder struct {
 	*_BACnetPropertyStatesRestartReason
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesRestartReasonBuilder) = (*_BACnetPropertyStatesRestartReasonBuilder)(nil)
 
-func (m *_BACnetPropertyStatesRestartReasonBuilder) WithMandatoryFields(restartReason BACnetRestartReasonTagged) BACnetPropertyStatesRestartReasonBuilder {
-	return m.WithRestartReason(restartReason)
+func (b *_BACnetPropertyStatesRestartReasonBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesRestartReasonBuilder) WithRestartReason(restartReason BACnetRestartReasonTagged) BACnetPropertyStatesRestartReasonBuilder {
-	m.RestartReason = restartReason
-	return m
+func (b *_BACnetPropertyStatesRestartReasonBuilder) WithMandatoryFields(restartReason BACnetRestartReasonTagged) BACnetPropertyStatesRestartReasonBuilder {
+	return b.WithRestartReason(restartReason)
 }
 
-func (m *_BACnetPropertyStatesRestartReasonBuilder) WithRestartReasonBuilder(builderSupplier func(BACnetRestartReasonTaggedBuilder) BACnetRestartReasonTaggedBuilder) BACnetPropertyStatesRestartReasonBuilder {
-	builder := builderSupplier(m.RestartReason.CreateBACnetRestartReasonTaggedBuilder())
+func (b *_BACnetPropertyStatesRestartReasonBuilder) WithRestartReason(restartReason BACnetRestartReasonTagged) BACnetPropertyStatesRestartReasonBuilder {
+	b.RestartReason = restartReason
+	return b
+}
+
+func (b *_BACnetPropertyStatesRestartReasonBuilder) WithRestartReasonBuilder(builderSupplier func(BACnetRestartReasonTaggedBuilder) BACnetRestartReasonTaggedBuilder) BACnetPropertyStatesRestartReasonBuilder {
+	builder := builderSupplier(b.RestartReason.CreateBACnetRestartReasonTaggedBuilder())
 	var err error
-	m.RestartReason, err = builder.Build()
+	b.RestartReason, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetRestartReasonTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetRestartReasonTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesRestartReasonBuilder) Build() (BACnetPropertyStatesRestartReason, error) {
-	if m.RestartReason == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesRestartReasonBuilder) Build() (BACnetPropertyStatesRestartReason, error) {
+	if b.RestartReason == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'restartReason' not set"))
+		b.err.Append(errors.New("mandatory field 'restartReason' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesRestartReason.deepCopy(), nil
+	return b._BACnetPropertyStatesRestartReason.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesRestartReasonBuilder) MustBuild() BACnetPropertyStatesRestartReason {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesRestartReasonBuilder) MustBuild() BACnetPropertyStatesRestartReason {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesRestartReasonBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesRestartReasonBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesRestartReasonBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesRestartReasonBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesRestartReasonBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesRestartReasonBuilder().(*_BACnetPropertyStatesRestartReasonBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesRestartReasonBuilder creates a BACnetPropertyStatesRestartReasonBuilder
-func (m *_BACnetPropertyStatesRestartReason) CreateBACnetPropertyStatesRestartReasonBuilder() BACnetPropertyStatesRestartReasonBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesRestartReason) CreateBACnetPropertyStatesRestartReasonBuilder() BACnetPropertyStatesRestartReasonBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesRestartReasonBuilder()
 	}
-	return &_BACnetPropertyStatesRestartReasonBuilder{_BACnetPropertyStatesRestartReason: m.deepCopy()}
+	return &_BACnetPropertyStatesRestartReasonBuilder{_BACnetPropertyStatesRestartReason: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPropertyStatesRestartReason) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -99,50 +99,69 @@ func NewAdsReadWriteResponseBuilder() AdsReadWriteResponseBuilder {
 type _AdsReadWriteResponseBuilder struct {
 	*_AdsReadWriteResponse
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsReadWriteResponseBuilder) = (*_AdsReadWriteResponseBuilder)(nil)
 
-func (m *_AdsReadWriteResponseBuilder) WithMandatoryFields(result ReturnCode, data []byte) AdsReadWriteResponseBuilder {
-	return m.WithResult(result).WithData(data...)
+func (b *_AdsReadWriteResponseBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_AdsReadWriteResponseBuilder) WithResult(result ReturnCode) AdsReadWriteResponseBuilder {
-	m.Result = result
-	return m
+func (b *_AdsReadWriteResponseBuilder) WithMandatoryFields(result ReturnCode, data []byte) AdsReadWriteResponseBuilder {
+	return b.WithResult(result).WithData(data...)
 }
 
-func (m *_AdsReadWriteResponseBuilder) WithData(data ...byte) AdsReadWriteResponseBuilder {
-	m.Data = data
-	return m
+func (b *_AdsReadWriteResponseBuilder) WithResult(result ReturnCode) AdsReadWriteResponseBuilder {
+	b.Result = result
+	return b
 }
 
-func (m *_AdsReadWriteResponseBuilder) Build() (AdsReadWriteResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsReadWriteResponseBuilder) WithData(data ...byte) AdsReadWriteResponseBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_AdsReadWriteResponseBuilder) Build() (AdsReadWriteResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsReadWriteResponse.deepCopy(), nil
+	return b._AdsReadWriteResponse.deepCopy(), nil
 }
 
-func (m *_AdsReadWriteResponseBuilder) MustBuild() AdsReadWriteResponse {
-	build, err := m.Build()
+func (b *_AdsReadWriteResponseBuilder) MustBuild() AdsReadWriteResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsReadWriteResponseBuilder) DeepCopy() any {
-	return m.CreateAdsReadWriteResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsReadWriteResponseBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsReadWriteResponseBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsReadWriteResponseBuilder) DeepCopy() any {
+	_copy := b.CreateAdsReadWriteResponseBuilder().(*_AdsReadWriteResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsReadWriteResponseBuilder creates a AdsReadWriteResponseBuilder
-func (m *_AdsReadWriteResponse) CreateAdsReadWriteResponseBuilder() AdsReadWriteResponseBuilder {
-	if m == nil {
+func (b *_AdsReadWriteResponse) CreateAdsReadWriteResponseBuilder() AdsReadWriteResponseBuilder {
+	if b == nil {
 		return NewAdsReadWriteResponseBuilder()
 	}
-	return &_AdsReadWriteResponseBuilder{_AdsReadWriteResponse: m.deepCopy()}
+	return &_AdsReadWriteResponseBuilder{_AdsReadWriteResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -323,9 +342,13 @@ func (m *_AdsReadWriteResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

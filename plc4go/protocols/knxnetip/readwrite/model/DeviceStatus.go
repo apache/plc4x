@@ -92,40 +92,44 @@ type _DeviceStatusBuilder struct {
 
 var _ (DeviceStatusBuilder) = (*_DeviceStatusBuilder)(nil)
 
-func (m *_DeviceStatusBuilder) WithMandatoryFields(programMode bool) DeviceStatusBuilder {
-	return m.WithProgramMode(programMode)
+func (b *_DeviceStatusBuilder) WithMandatoryFields(programMode bool) DeviceStatusBuilder {
+	return b.WithProgramMode(programMode)
 }
 
-func (m *_DeviceStatusBuilder) WithProgramMode(programMode bool) DeviceStatusBuilder {
-	m.ProgramMode = programMode
-	return m
+func (b *_DeviceStatusBuilder) WithProgramMode(programMode bool) DeviceStatusBuilder {
+	b.ProgramMode = programMode
+	return b
 }
 
-func (m *_DeviceStatusBuilder) Build() (DeviceStatus, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DeviceStatusBuilder) Build() (DeviceStatus, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DeviceStatus.deepCopy(), nil
+	return b._DeviceStatus.deepCopy(), nil
 }
 
-func (m *_DeviceStatusBuilder) MustBuild() DeviceStatus {
-	build, err := m.Build()
+func (b *_DeviceStatusBuilder) MustBuild() DeviceStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DeviceStatusBuilder) DeepCopy() any {
-	return m.CreateDeviceStatusBuilder()
+func (b *_DeviceStatusBuilder) DeepCopy() any {
+	_copy := b.CreateDeviceStatusBuilder().(*_DeviceStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDeviceStatusBuilder creates a DeviceStatusBuilder
-func (m *_DeviceStatus) CreateDeviceStatusBuilder() DeviceStatusBuilder {
-	if m == nil {
+func (b *_DeviceStatus) CreateDeviceStatusBuilder() DeviceStatusBuilder {
+	if b == nil {
 		return NewDeviceStatusBuilder()
 	}
-	return &_DeviceStatusBuilder{_DeviceStatus: m.deepCopy()}
+	return &_DeviceStatusBuilder{_DeviceStatus: b.deepCopy()}
 }
 
 ///////////////////////
@@ -276,9 +280,13 @@ func (m *_DeviceStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

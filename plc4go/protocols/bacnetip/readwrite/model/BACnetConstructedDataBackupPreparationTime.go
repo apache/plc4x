@@ -100,64 +100,83 @@ func NewBACnetConstructedDataBackupPreparationTimeBuilder() BACnetConstructedDat
 type _BACnetConstructedDataBackupPreparationTimeBuilder struct {
 	*_BACnetConstructedDataBackupPreparationTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBackupPreparationTimeBuilder) = (*_BACnetConstructedDataBackupPreparationTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataBackupPreparationTimeBuilder) WithMandatoryFields(backupPreparationTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBackupPreparationTimeBuilder {
-	return m.WithBackupPreparationTime(backupPreparationTime)
+func (b *_BACnetConstructedDataBackupPreparationTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBackupPreparationTimeBuilder) WithBackupPreparationTime(backupPreparationTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBackupPreparationTimeBuilder {
-	m.BackupPreparationTime = backupPreparationTime
-	return m
+func (b *_BACnetConstructedDataBackupPreparationTimeBuilder) WithMandatoryFields(backupPreparationTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBackupPreparationTimeBuilder {
+	return b.WithBackupPreparationTime(backupPreparationTime)
 }
 
-func (m *_BACnetConstructedDataBackupPreparationTimeBuilder) WithBackupPreparationTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBackupPreparationTimeBuilder {
-	builder := builderSupplier(m.BackupPreparationTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataBackupPreparationTimeBuilder) WithBackupPreparationTime(backupPreparationTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBackupPreparationTimeBuilder {
+	b.BackupPreparationTime = backupPreparationTime
+	return b
+}
+
+func (b *_BACnetConstructedDataBackupPreparationTimeBuilder) WithBackupPreparationTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBackupPreparationTimeBuilder {
+	builder := builderSupplier(b.BackupPreparationTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.BackupPreparationTime, err = builder.Build()
+	b.BackupPreparationTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBackupPreparationTimeBuilder) Build() (BACnetConstructedDataBackupPreparationTime, error) {
-	if m.BackupPreparationTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBackupPreparationTimeBuilder) Build() (BACnetConstructedDataBackupPreparationTime, error) {
+	if b.BackupPreparationTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'backupPreparationTime' not set"))
+		b.err.Append(errors.New("mandatory field 'backupPreparationTime' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBackupPreparationTime.deepCopy(), nil
+	return b._BACnetConstructedDataBackupPreparationTime.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBackupPreparationTimeBuilder) MustBuild() BACnetConstructedDataBackupPreparationTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBackupPreparationTimeBuilder) MustBuild() BACnetConstructedDataBackupPreparationTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBackupPreparationTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBackupPreparationTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBackupPreparationTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBackupPreparationTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBackupPreparationTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBackupPreparationTimeBuilder().(*_BACnetConstructedDataBackupPreparationTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBackupPreparationTimeBuilder creates a BACnetConstructedDataBackupPreparationTimeBuilder
-func (m *_BACnetConstructedDataBackupPreparationTime) CreateBACnetConstructedDataBackupPreparationTimeBuilder() BACnetConstructedDataBackupPreparationTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBackupPreparationTime) CreateBACnetConstructedDataBackupPreparationTimeBuilder() BACnetConstructedDataBackupPreparationTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBackupPreparationTimeBuilder()
 	}
-	return &_BACnetConstructedDataBackupPreparationTimeBuilder{_BACnetConstructedDataBackupPreparationTime: m.deepCopy()}
+	return &_BACnetConstructedDataBackupPreparationTimeBuilder{_BACnetConstructedDataBackupPreparationTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataBackupPreparationTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

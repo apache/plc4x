@@ -141,10 +141,119 @@ type AmsPacketBuilder interface {
 	WithErrorCode(uint32) AmsPacketBuilder
 	// WithInvokeId adds InvokeId (property field)
 	WithInvokeId(uint32) AmsPacketBuilder
+	// AsAdsInvalidRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsInvalidRequest() interface {
+		AdsInvalidRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsInvalidResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsInvalidResponse() interface {
+		AdsInvalidResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadDeviceInfoRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadDeviceInfoRequest() interface {
+		AdsReadDeviceInfoRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadDeviceInfoResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadDeviceInfoResponse() interface {
+		AdsReadDeviceInfoResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadRequest() interface {
+		AdsReadRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadResponse() interface {
+		AdsReadResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsWriteRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsWriteRequest() interface {
+		AdsWriteRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsWriteResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsWriteResponse() interface {
+		AdsWriteResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadStateRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadStateRequest() interface {
+		AdsReadStateRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadStateResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadStateResponse() interface {
+		AdsReadStateResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsWriteControlRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsWriteControlRequest() interface {
+		AdsWriteControlRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsWriteControlResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsWriteControlResponse() interface {
+		AdsWriteControlResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsAddDeviceNotificationRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsAddDeviceNotificationRequest() interface {
+		AdsAddDeviceNotificationRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsAddDeviceNotificationResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsAddDeviceNotificationResponse() interface {
+		AdsAddDeviceNotificationResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsDeleteDeviceNotificationRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsDeleteDeviceNotificationRequest() interface {
+		AdsDeleteDeviceNotificationRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsDeleteDeviceNotificationResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsDeleteDeviceNotificationResponse() interface {
+		AdsDeleteDeviceNotificationResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsDeviceNotificationRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsDeviceNotificationRequest() interface {
+		AdsDeviceNotificationRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsDeviceNotificationResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsDeviceNotificationResponse() interface {
+		AdsDeviceNotificationResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadWriteRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadWriteRequest() interface {
+		AdsReadWriteRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadWriteResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadWriteResponse() interface {
+		AdsReadWriteResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsErrorResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsErrorResponse() interface {
+		ErrorResponseBuilder
+		Done() AmsPacketBuilder
+	}
 	// Build builds the AmsPacket or returns an error if something is wrong
-	Build() (AmsPacketContract, error)
+	PartialBuild() (AmsPacketContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() AmsPacketContract
+	PartialMustBuild() AmsPacketContract
+	// Build builds the AmsPacket or returns an error if something is wrong
+	Build() (AmsPacket, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AmsPacket
 }
 
 // NewAmsPacketBuilder() creates a AmsPacketBuilder
@@ -152,111 +261,481 @@ func NewAmsPacketBuilder() AmsPacketBuilder {
 	return &_AmsPacketBuilder{_AmsPacket: new(_AmsPacket)}
 }
 
+type _AmsPacketChildBuilder interface {
+	utils.Copyable
+	setParent(AmsPacketContract)
+	buildForAmsPacket() (AmsPacket, error)
+}
+
 type _AmsPacketBuilder struct {
 	*_AmsPacket
+
+	childBuilder _AmsPacketChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (AmsPacketBuilder) = (*_AmsPacketBuilder)(nil)
 
-func (m *_AmsPacketBuilder) WithMandatoryFields(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) AmsPacketBuilder {
-	return m.WithTargetAmsNetId(targetAmsNetId).WithTargetAmsPort(targetAmsPort).WithSourceAmsNetId(sourceAmsNetId).WithSourceAmsPort(sourceAmsPort).WithErrorCode(errorCode).WithInvokeId(invokeId)
+func (b *_AmsPacketBuilder) WithMandatoryFields(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) AmsPacketBuilder {
+	return b.WithTargetAmsNetId(targetAmsNetId).WithTargetAmsPort(targetAmsPort).WithSourceAmsNetId(sourceAmsNetId).WithSourceAmsPort(sourceAmsPort).WithErrorCode(errorCode).WithInvokeId(invokeId)
 }
 
-func (m *_AmsPacketBuilder) WithTargetAmsNetId(targetAmsNetId AmsNetId) AmsPacketBuilder {
-	m.TargetAmsNetId = targetAmsNetId
-	return m
+func (b *_AmsPacketBuilder) WithTargetAmsNetId(targetAmsNetId AmsNetId) AmsPacketBuilder {
+	b.TargetAmsNetId = targetAmsNetId
+	return b
 }
 
-func (m *_AmsPacketBuilder) WithTargetAmsNetIdBuilder(builderSupplier func(AmsNetIdBuilder) AmsNetIdBuilder) AmsPacketBuilder {
-	builder := builderSupplier(m.TargetAmsNetId.CreateAmsNetIdBuilder())
+func (b *_AmsPacketBuilder) WithTargetAmsNetIdBuilder(builderSupplier func(AmsNetIdBuilder) AmsNetIdBuilder) AmsPacketBuilder {
+	builder := builderSupplier(b.TargetAmsNetId.CreateAmsNetIdBuilder())
 	var err error
-	m.TargetAmsNetId, err = builder.Build()
+	b.TargetAmsNetId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AmsNetIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AmsNetIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AmsPacketBuilder) WithTargetAmsPort(targetAmsPort uint16) AmsPacketBuilder {
-	m.TargetAmsPort = targetAmsPort
-	return m
+func (b *_AmsPacketBuilder) WithTargetAmsPort(targetAmsPort uint16) AmsPacketBuilder {
+	b.TargetAmsPort = targetAmsPort
+	return b
 }
 
-func (m *_AmsPacketBuilder) WithSourceAmsNetId(sourceAmsNetId AmsNetId) AmsPacketBuilder {
-	m.SourceAmsNetId = sourceAmsNetId
-	return m
+func (b *_AmsPacketBuilder) WithSourceAmsNetId(sourceAmsNetId AmsNetId) AmsPacketBuilder {
+	b.SourceAmsNetId = sourceAmsNetId
+	return b
 }
 
-func (m *_AmsPacketBuilder) WithSourceAmsNetIdBuilder(builderSupplier func(AmsNetIdBuilder) AmsNetIdBuilder) AmsPacketBuilder {
-	builder := builderSupplier(m.SourceAmsNetId.CreateAmsNetIdBuilder())
+func (b *_AmsPacketBuilder) WithSourceAmsNetIdBuilder(builderSupplier func(AmsNetIdBuilder) AmsNetIdBuilder) AmsPacketBuilder {
+	builder := builderSupplier(b.SourceAmsNetId.CreateAmsNetIdBuilder())
 	var err error
-	m.SourceAmsNetId, err = builder.Build()
+	b.SourceAmsNetId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AmsNetIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AmsNetIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AmsPacketBuilder) WithSourceAmsPort(sourceAmsPort uint16) AmsPacketBuilder {
-	m.SourceAmsPort = sourceAmsPort
-	return m
+func (b *_AmsPacketBuilder) WithSourceAmsPort(sourceAmsPort uint16) AmsPacketBuilder {
+	b.SourceAmsPort = sourceAmsPort
+	return b
 }
 
-func (m *_AmsPacketBuilder) WithErrorCode(errorCode uint32) AmsPacketBuilder {
-	m.ErrorCode = errorCode
-	return m
+func (b *_AmsPacketBuilder) WithErrorCode(errorCode uint32) AmsPacketBuilder {
+	b.ErrorCode = errorCode
+	return b
 }
 
-func (m *_AmsPacketBuilder) WithInvokeId(invokeId uint32) AmsPacketBuilder {
-	m.InvokeId = invokeId
-	return m
+func (b *_AmsPacketBuilder) WithInvokeId(invokeId uint32) AmsPacketBuilder {
+	b.InvokeId = invokeId
+	return b
 }
 
-func (m *_AmsPacketBuilder) Build() (AmsPacketContract, error) {
-	if m.TargetAmsNetId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AmsPacketBuilder) PartialBuild() (AmsPacketContract, error) {
+	if b.TargetAmsNetId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'targetAmsNetId' not set"))
+		b.err.Append(errors.New("mandatory field 'targetAmsNetId' not set"))
 	}
-	if m.SourceAmsNetId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.SourceAmsNetId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'sourceAmsNetId' not set"))
+		b.err.Append(errors.New("mandatory field 'sourceAmsNetId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AmsPacket.deepCopy(), nil
+	return b._AmsPacket.deepCopy(), nil
 }
 
-func (m *_AmsPacketBuilder) MustBuild() AmsPacketContract {
-	build, err := m.Build()
+func (b *_AmsPacketBuilder) PartialMustBuild() AmsPacketContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AmsPacketBuilder) DeepCopy() any {
-	return m.CreateAmsPacketBuilder()
+func (b *_AmsPacketBuilder) AsAdsInvalidRequest() interface {
+	AdsInvalidRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsInvalidRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsInvalidRequestBuilder().(*_AdsInvalidRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsInvalidResponse() interface {
+	AdsInvalidResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsInvalidResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsInvalidResponseBuilder().(*_AdsInvalidResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadDeviceInfoRequest() interface {
+	AdsReadDeviceInfoRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadDeviceInfoRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadDeviceInfoRequestBuilder().(*_AdsReadDeviceInfoRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadDeviceInfoResponse() interface {
+	AdsReadDeviceInfoResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadDeviceInfoResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadDeviceInfoResponseBuilder().(*_AdsReadDeviceInfoResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadRequest() interface {
+	AdsReadRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadRequestBuilder().(*_AdsReadRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadResponse() interface {
+	AdsReadResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadResponseBuilder().(*_AdsReadResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsWriteRequest() interface {
+	AdsWriteRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsWriteRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsWriteRequestBuilder().(*_AdsWriteRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsWriteResponse() interface {
+	AdsWriteResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsWriteResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsWriteResponseBuilder().(*_AdsWriteResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadStateRequest() interface {
+	AdsReadStateRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadStateRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadStateRequestBuilder().(*_AdsReadStateRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadStateResponse() interface {
+	AdsReadStateResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadStateResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadStateResponseBuilder().(*_AdsReadStateResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsWriteControlRequest() interface {
+	AdsWriteControlRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsWriteControlRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsWriteControlRequestBuilder().(*_AdsWriteControlRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsWriteControlResponse() interface {
+	AdsWriteControlResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsWriteControlResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsWriteControlResponseBuilder().(*_AdsWriteControlResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsAddDeviceNotificationRequest() interface {
+	AdsAddDeviceNotificationRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsAddDeviceNotificationRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsAddDeviceNotificationRequestBuilder().(*_AdsAddDeviceNotificationRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsAddDeviceNotificationResponse() interface {
+	AdsAddDeviceNotificationResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsAddDeviceNotificationResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsAddDeviceNotificationResponseBuilder().(*_AdsAddDeviceNotificationResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsDeleteDeviceNotificationRequest() interface {
+	AdsDeleteDeviceNotificationRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDeleteDeviceNotificationRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDeleteDeviceNotificationRequestBuilder().(*_AdsDeleteDeviceNotificationRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsDeleteDeviceNotificationResponse() interface {
+	AdsDeleteDeviceNotificationResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDeleteDeviceNotificationResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDeleteDeviceNotificationResponseBuilder().(*_AdsDeleteDeviceNotificationResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsDeviceNotificationRequest() interface {
+	AdsDeviceNotificationRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDeviceNotificationRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDeviceNotificationRequestBuilder().(*_AdsDeviceNotificationRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsDeviceNotificationResponse() interface {
+	AdsDeviceNotificationResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDeviceNotificationResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDeviceNotificationResponseBuilder().(*_AdsDeviceNotificationResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadWriteRequest() interface {
+	AdsReadWriteRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadWriteRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadWriteRequestBuilder().(*_AdsReadWriteRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadWriteResponse() interface {
+	AdsReadWriteResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadWriteResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadWriteResponseBuilder().(*_AdsReadWriteResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsErrorResponse() interface {
+	ErrorResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ErrorResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewErrorResponseBuilder().(*_ErrorResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) Build() (AmsPacket, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForAmsPacket()
+}
+
+func (b *_AmsPacketBuilder) MustBuild() AmsPacket {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AmsPacketBuilder) DeepCopy() any {
+	_copy := b.CreateAmsPacketBuilder().(*_AmsPacketBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_AmsPacketChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAmsPacketBuilder creates a AmsPacketBuilder
-func (m *_AmsPacket) CreateAmsPacketBuilder() AmsPacketBuilder {
-	if m == nil {
+func (b *_AmsPacket) CreateAmsPacketBuilder() AmsPacketBuilder {
+	if b == nil {
 		return NewAmsPacketBuilder()
 	}
-	return &_AmsPacketBuilder{_AmsPacket: m.deepCopy()}
+	return &_AmsPacketBuilder{_AmsPacket: b.deepCopy()}
 }
 
 ///////////////////////

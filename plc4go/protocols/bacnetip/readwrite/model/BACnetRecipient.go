@@ -97,10 +97,24 @@ type BACnetRecipientBuilder interface {
 	WithPeekedTagHeader(BACnetTagHeader) BACnetRecipientBuilder
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRecipientBuilder
+	// AsBACnetRecipientDevice converts this build to a subType of BACnetRecipient. It is always possible to return to current builder using Done()
+	AsBACnetRecipientDevice() interface {
+		BACnetRecipientDeviceBuilder
+		Done() BACnetRecipientBuilder
+	}
+	// AsBACnetRecipientAddress converts this build to a subType of BACnetRecipient. It is always possible to return to current builder using Done()
+	AsBACnetRecipientAddress() interface {
+		BACnetRecipientAddressBuilder
+		Done() BACnetRecipientBuilder
+	}
 	// Build builds the BACnetRecipient or returns an error if something is wrong
-	Build() (BACnetRecipientContract, error)
+	PartialBuild() (BACnetRecipientContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetRecipientContract
+	PartialMustBuild() BACnetRecipientContract
+	// Build builds the BACnetRecipient or returns an error if something is wrong
+	Build() (BACnetRecipient, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetRecipient
 }
 
 // NewBACnetRecipientBuilder() creates a BACnetRecipientBuilder
@@ -108,67 +122,133 @@ func NewBACnetRecipientBuilder() BACnetRecipientBuilder {
 	return &_BACnetRecipientBuilder{_BACnetRecipient: new(_BACnetRecipient)}
 }
 
+type _BACnetRecipientChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetRecipientContract)
+	buildForBACnetRecipient() (BACnetRecipient, error)
+}
+
 type _BACnetRecipientBuilder struct {
 	*_BACnetRecipient
+
+	childBuilder _BACnetRecipientChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetRecipientBuilder) = (*_BACnetRecipientBuilder)(nil)
 
-func (m *_BACnetRecipientBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetRecipientBuilder {
-	return m.WithPeekedTagHeader(peekedTagHeader)
+func (b *_BACnetRecipientBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetRecipientBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
 }
 
-func (m *_BACnetRecipientBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetRecipientBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetRecipientBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetRecipientBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetRecipientBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRecipientBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetRecipientBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRecipientBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetRecipientBuilder) Build() (BACnetRecipientContract, error) {
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetRecipientBuilder) PartialBuild() (BACnetRecipientContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetRecipient.deepCopy(), nil
+	return b._BACnetRecipient.deepCopy(), nil
 }
 
-func (m *_BACnetRecipientBuilder) MustBuild() BACnetRecipientContract {
-	build, err := m.Build()
+func (b *_BACnetRecipientBuilder) PartialMustBuild() BACnetRecipientContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetRecipientBuilder) DeepCopy() any {
-	return m.CreateBACnetRecipientBuilder()
+func (b *_BACnetRecipientBuilder) AsBACnetRecipientDevice() interface {
+	BACnetRecipientDeviceBuilder
+	Done() BACnetRecipientBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetRecipientDeviceBuilder
+		Done() BACnetRecipientBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetRecipientDeviceBuilder().(*_BACnetRecipientDeviceBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetRecipientBuilder) AsBACnetRecipientAddress() interface {
+	BACnetRecipientAddressBuilder
+	Done() BACnetRecipientBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetRecipientAddressBuilder
+		Done() BACnetRecipientBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetRecipientAddressBuilder().(*_BACnetRecipientAddressBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetRecipientBuilder) Build() (BACnetRecipient, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetRecipient()
+}
+
+func (b *_BACnetRecipientBuilder) MustBuild() BACnetRecipient {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetRecipientBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetRecipientBuilder().(*_BACnetRecipientBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetRecipientChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetRecipientBuilder creates a BACnetRecipientBuilder
-func (m *_BACnetRecipient) CreateBACnetRecipientBuilder() BACnetRecipientBuilder {
-	if m == nil {
+func (b *_BACnetRecipient) CreateBACnetRecipientBuilder() BACnetRecipientBuilder {
+	if b == nil {
 		return NewBACnetRecipientBuilder()
 	}
-	return &_BACnetRecipientBuilder{_BACnetRecipient: m.deepCopy()}
+	return &_BACnetRecipientBuilder{_BACnetRecipient: b.deepCopy()}
 }
 
 ///////////////////////

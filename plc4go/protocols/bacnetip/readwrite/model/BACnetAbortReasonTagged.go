@@ -99,45 +99,49 @@ type _BACnetAbortReasonTaggedBuilder struct {
 
 var _ (BACnetAbortReasonTaggedBuilder) = (*_BACnetAbortReasonTaggedBuilder)(nil)
 
-func (m *_BACnetAbortReasonTaggedBuilder) WithMandatoryFields(value BACnetAbortReason, proprietaryValue uint32) BACnetAbortReasonTaggedBuilder {
-	return m.WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetAbortReasonTaggedBuilder) WithMandatoryFields(value BACnetAbortReason, proprietaryValue uint32) BACnetAbortReasonTaggedBuilder {
+	return b.WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_BACnetAbortReasonTaggedBuilder) WithValue(value BACnetAbortReason) BACnetAbortReasonTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetAbortReasonTaggedBuilder) WithValue(value BACnetAbortReason) BACnetAbortReasonTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetAbortReasonTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAbortReasonTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetAbortReasonTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAbortReasonTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetAbortReasonTaggedBuilder) Build() (BACnetAbortReasonTagged, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetAbortReasonTaggedBuilder) Build() (BACnetAbortReasonTagged, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAbortReasonTagged.deepCopy(), nil
+	return b._BACnetAbortReasonTagged.deepCopy(), nil
 }
 
-func (m *_BACnetAbortReasonTaggedBuilder) MustBuild() BACnetAbortReasonTagged {
-	build, err := m.Build()
+func (b *_BACnetAbortReasonTaggedBuilder) MustBuild() BACnetAbortReasonTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAbortReasonTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetAbortReasonTaggedBuilder()
+func (b *_BACnetAbortReasonTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAbortReasonTaggedBuilder().(*_BACnetAbortReasonTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAbortReasonTaggedBuilder creates a BACnetAbortReasonTaggedBuilder
-func (m *_BACnetAbortReasonTagged) CreateBACnetAbortReasonTaggedBuilder() BACnetAbortReasonTaggedBuilder {
-	if m == nil {
+func (b *_BACnetAbortReasonTagged) CreateBACnetAbortReasonTaggedBuilder() BACnetAbortReasonTaggedBuilder {
+	if b == nil {
 		return NewBACnetAbortReasonTaggedBuilder()
 	}
-	return &_BACnetAbortReasonTaggedBuilder{_BACnetAbortReasonTagged: m.deepCopy()}
+	return &_BACnetAbortReasonTaggedBuilder{_BACnetAbortReasonTagged: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +338,13 @@ func (m *_BACnetAbortReasonTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

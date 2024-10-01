@@ -93,45 +93,64 @@ func NewKnxNetObjectServerBuilder() KnxNetObjectServerBuilder {
 type _KnxNetObjectServerBuilder struct {
 	*_KnxNetObjectServer
 
+	parentBuilder *_ServiceIdBuilder
+
 	err *utils.MultiError
 }
 
 var _ (KnxNetObjectServerBuilder) = (*_KnxNetObjectServerBuilder)(nil)
 
-func (m *_KnxNetObjectServerBuilder) WithMandatoryFields(version uint8) KnxNetObjectServerBuilder {
-	return m.WithVersion(version)
+func (b *_KnxNetObjectServerBuilder) setParent(contract ServiceIdContract) {
+	b.ServiceIdContract = contract
 }
 
-func (m *_KnxNetObjectServerBuilder) WithVersion(version uint8) KnxNetObjectServerBuilder {
-	m.Version = version
-	return m
+func (b *_KnxNetObjectServerBuilder) WithMandatoryFields(version uint8) KnxNetObjectServerBuilder {
+	return b.WithVersion(version)
 }
 
-func (m *_KnxNetObjectServerBuilder) Build() (KnxNetObjectServer, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_KnxNetObjectServerBuilder) WithVersion(version uint8) KnxNetObjectServerBuilder {
+	b.Version = version
+	return b
+}
+
+func (b *_KnxNetObjectServerBuilder) Build() (KnxNetObjectServer, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._KnxNetObjectServer.deepCopy(), nil
+	return b._KnxNetObjectServer.deepCopy(), nil
 }
 
-func (m *_KnxNetObjectServerBuilder) MustBuild() KnxNetObjectServer {
-	build, err := m.Build()
+func (b *_KnxNetObjectServerBuilder) MustBuild() KnxNetObjectServer {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_KnxNetObjectServerBuilder) DeepCopy() any {
-	return m.CreateKnxNetObjectServerBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_KnxNetObjectServerBuilder) Done() ServiceIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_KnxNetObjectServerBuilder) buildForServiceId() (ServiceId, error) {
+	return b.Build()
+}
+
+func (b *_KnxNetObjectServerBuilder) DeepCopy() any {
+	_copy := b.CreateKnxNetObjectServerBuilder().(*_KnxNetObjectServerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateKnxNetObjectServerBuilder creates a KnxNetObjectServerBuilder
-func (m *_KnxNetObjectServer) CreateKnxNetObjectServerBuilder() KnxNetObjectServerBuilder {
-	if m == nil {
+func (b *_KnxNetObjectServer) CreateKnxNetObjectServerBuilder() KnxNetObjectServerBuilder {
+	if b == nil {
 		return NewKnxNetObjectServerBuilder()
 	}
-	return &_KnxNetObjectServerBuilder{_KnxNetObjectServer: m.deepCopy()}
+	return &_KnxNetObjectServerBuilder{_KnxNetObjectServer: b.deepCopy()}
 }
 
 ///////////////////////
@@ -275,9 +294,13 @@ func (m *_KnxNetObjectServer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

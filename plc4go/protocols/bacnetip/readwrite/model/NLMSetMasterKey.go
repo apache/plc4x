@@ -98,64 +98,83 @@ func NewNLMSetMasterKeyBuilder() NLMSetMasterKeyBuilder {
 type _NLMSetMasterKeyBuilder struct {
 	*_NLMSetMasterKey
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMSetMasterKeyBuilder) = (*_NLMSetMasterKeyBuilder)(nil)
 
-func (m *_NLMSetMasterKeyBuilder) WithMandatoryFields(key NLMUpdateKeyUpdateKeyEntry) NLMSetMasterKeyBuilder {
-	return m.WithKey(key)
+func (b *_NLMSetMasterKeyBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMSetMasterKeyBuilder) WithKey(key NLMUpdateKeyUpdateKeyEntry) NLMSetMasterKeyBuilder {
-	m.Key = key
-	return m
+func (b *_NLMSetMasterKeyBuilder) WithMandatoryFields(key NLMUpdateKeyUpdateKeyEntry) NLMSetMasterKeyBuilder {
+	return b.WithKey(key)
 }
 
-func (m *_NLMSetMasterKeyBuilder) WithKeyBuilder(builderSupplier func(NLMUpdateKeyUpdateKeyEntryBuilder) NLMUpdateKeyUpdateKeyEntryBuilder) NLMSetMasterKeyBuilder {
-	builder := builderSupplier(m.Key.CreateNLMUpdateKeyUpdateKeyEntryBuilder())
+func (b *_NLMSetMasterKeyBuilder) WithKey(key NLMUpdateKeyUpdateKeyEntry) NLMSetMasterKeyBuilder {
+	b.Key = key
+	return b
+}
+
+func (b *_NLMSetMasterKeyBuilder) WithKeyBuilder(builderSupplier func(NLMUpdateKeyUpdateKeyEntryBuilder) NLMUpdateKeyUpdateKeyEntryBuilder) NLMSetMasterKeyBuilder {
+	builder := builderSupplier(b.Key.CreateNLMUpdateKeyUpdateKeyEntryBuilder())
 	var err error
-	m.Key, err = builder.Build()
+	b.Key, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NLMUpdateKeyUpdateKeyEntryBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NLMUpdateKeyUpdateKeyEntryBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_NLMSetMasterKeyBuilder) Build() (NLMSetMasterKey, error) {
-	if m.Key == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_NLMSetMasterKeyBuilder) Build() (NLMSetMasterKey, error) {
+	if b.Key == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'key' not set"))
+		b.err.Append(errors.New("mandatory field 'key' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMSetMasterKey.deepCopy(), nil
+	return b._NLMSetMasterKey.deepCopy(), nil
 }
 
-func (m *_NLMSetMasterKeyBuilder) MustBuild() NLMSetMasterKey {
-	build, err := m.Build()
+func (b *_NLMSetMasterKeyBuilder) MustBuild() NLMSetMasterKey {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMSetMasterKeyBuilder) DeepCopy() any {
-	return m.CreateNLMSetMasterKeyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMSetMasterKeyBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMSetMasterKeyBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMSetMasterKeyBuilder) DeepCopy() any {
+	_copy := b.CreateNLMSetMasterKeyBuilder().(*_NLMSetMasterKeyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMSetMasterKeyBuilder creates a NLMSetMasterKeyBuilder
-func (m *_NLMSetMasterKey) CreateNLMSetMasterKeyBuilder() NLMSetMasterKeyBuilder {
-	if m == nil {
+func (b *_NLMSetMasterKey) CreateNLMSetMasterKeyBuilder() NLMSetMasterKeyBuilder {
+	if b == nil {
 		return NewNLMSetMasterKeyBuilder()
 	}
-	return &_NLMSetMasterKeyBuilder{_NLMSetMasterKey: m.deepCopy()}
+	return &_NLMSetMasterKeyBuilder{_NLMSetMasterKey: b.deepCopy()}
 }
 
 ///////////////////////
@@ -299,9 +318,13 @@ func (m *_NLMSetMasterKey) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

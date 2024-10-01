@@ -101,50 +101,69 @@ func NewCipWriteResponseBuilder() CipWriteResponseBuilder {
 type _CipWriteResponseBuilder struct {
 	*_CipWriteResponse
 
+	parentBuilder *_CipServiceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CipWriteResponseBuilder) = (*_CipWriteResponseBuilder)(nil)
 
-func (m *_CipWriteResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8) CipWriteResponseBuilder {
-	return m.WithStatus(status).WithExtStatus(extStatus)
+func (b *_CipWriteResponseBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
 }
 
-func (m *_CipWriteResponseBuilder) WithStatus(status uint8) CipWriteResponseBuilder {
-	m.Status = status
-	return m
+func (b *_CipWriteResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8) CipWriteResponseBuilder {
+	return b.WithStatus(status).WithExtStatus(extStatus)
 }
 
-func (m *_CipWriteResponseBuilder) WithExtStatus(extStatus uint8) CipWriteResponseBuilder {
-	m.ExtStatus = extStatus
-	return m
+func (b *_CipWriteResponseBuilder) WithStatus(status uint8) CipWriteResponseBuilder {
+	b.Status = status
+	return b
 }
 
-func (m *_CipWriteResponseBuilder) Build() (CipWriteResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CipWriteResponseBuilder) WithExtStatus(extStatus uint8) CipWriteResponseBuilder {
+	b.ExtStatus = extStatus
+	return b
+}
+
+func (b *_CipWriteResponseBuilder) Build() (CipWriteResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CipWriteResponse.deepCopy(), nil
+	return b._CipWriteResponse.deepCopy(), nil
 }
 
-func (m *_CipWriteResponseBuilder) MustBuild() CipWriteResponse {
-	build, err := m.Build()
+func (b *_CipWriteResponseBuilder) MustBuild() CipWriteResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CipWriteResponseBuilder) DeepCopy() any {
-	return m.CreateCipWriteResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipWriteResponseBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipWriteResponseBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_CipWriteResponseBuilder) DeepCopy() any {
+	_copy := b.CreateCipWriteResponseBuilder().(*_CipWriteResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCipWriteResponseBuilder creates a CipWriteResponseBuilder
-func (m *_CipWriteResponse) CreateCipWriteResponseBuilder() CipWriteResponseBuilder {
-	if m == nil {
+func (b *_CipWriteResponse) CreateCipWriteResponseBuilder() CipWriteResponseBuilder {
+	if b == nil {
 		return NewCipWriteResponseBuilder()
 	}
-	return &_CipWriteResponseBuilder{_CipWriteResponse: m.deepCopy()}
+	return &_CipWriteResponseBuilder{_CipWriteResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -328,9 +347,13 @@ func (m *_CipWriteResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

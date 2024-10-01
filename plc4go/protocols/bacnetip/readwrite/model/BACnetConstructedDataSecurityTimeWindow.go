@@ -100,64 +100,83 @@ func NewBACnetConstructedDataSecurityTimeWindowBuilder() BACnetConstructedDataSe
 type _BACnetConstructedDataSecurityTimeWindowBuilder struct {
 	*_BACnetConstructedDataSecurityTimeWindow
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSecurityTimeWindowBuilder) = (*_BACnetConstructedDataSecurityTimeWindowBuilder)(nil)
 
-func (m *_BACnetConstructedDataSecurityTimeWindowBuilder) WithMandatoryFields(securityTimeWindow BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityTimeWindowBuilder {
-	return m.WithSecurityTimeWindow(securityTimeWindow)
+func (b *_BACnetConstructedDataSecurityTimeWindowBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindowBuilder) WithSecurityTimeWindow(securityTimeWindow BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityTimeWindowBuilder {
-	m.SecurityTimeWindow = securityTimeWindow
-	return m
+func (b *_BACnetConstructedDataSecurityTimeWindowBuilder) WithMandatoryFields(securityTimeWindow BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityTimeWindowBuilder {
+	return b.WithSecurityTimeWindow(securityTimeWindow)
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindowBuilder) WithSecurityTimeWindowBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSecurityTimeWindowBuilder {
-	builder := builderSupplier(m.SecurityTimeWindow.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataSecurityTimeWindowBuilder) WithSecurityTimeWindow(securityTimeWindow BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityTimeWindowBuilder {
+	b.SecurityTimeWindow = securityTimeWindow
+	return b
+}
+
+func (b *_BACnetConstructedDataSecurityTimeWindowBuilder) WithSecurityTimeWindowBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSecurityTimeWindowBuilder {
+	builder := builderSupplier(b.SecurityTimeWindow.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.SecurityTimeWindow, err = builder.Build()
+	b.SecurityTimeWindow, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindowBuilder) Build() (BACnetConstructedDataSecurityTimeWindow, error) {
-	if m.SecurityTimeWindow == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataSecurityTimeWindowBuilder) Build() (BACnetConstructedDataSecurityTimeWindow, error) {
+	if b.SecurityTimeWindow == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'securityTimeWindow' not set"))
+		b.err.Append(errors.New("mandatory field 'securityTimeWindow' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSecurityTimeWindow.deepCopy(), nil
+	return b._BACnetConstructedDataSecurityTimeWindow.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindowBuilder) MustBuild() BACnetConstructedDataSecurityTimeWindow {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSecurityTimeWindowBuilder) MustBuild() BACnetConstructedDataSecurityTimeWindow {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindowBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSecurityTimeWindowBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSecurityTimeWindowBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSecurityTimeWindowBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSecurityTimeWindowBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSecurityTimeWindowBuilder().(*_BACnetConstructedDataSecurityTimeWindowBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSecurityTimeWindowBuilder creates a BACnetConstructedDataSecurityTimeWindowBuilder
-func (m *_BACnetConstructedDataSecurityTimeWindow) CreateBACnetConstructedDataSecurityTimeWindowBuilder() BACnetConstructedDataSecurityTimeWindowBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSecurityTimeWindow) CreateBACnetConstructedDataSecurityTimeWindowBuilder() BACnetConstructedDataSecurityTimeWindowBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSecurityTimeWindowBuilder()
 	}
-	return &_BACnetConstructedDataSecurityTimeWindowBuilder{_BACnetConstructedDataSecurityTimeWindow: m.deepCopy()}
+	return &_BACnetConstructedDataSecurityTimeWindowBuilder{_BACnetConstructedDataSecurityTimeWindow: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

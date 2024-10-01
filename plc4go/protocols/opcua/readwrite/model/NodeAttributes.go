@@ -127,103 +127,122 @@ func NewNodeAttributesBuilder() NodeAttributesBuilder {
 type _NodeAttributesBuilder struct {
 	*_NodeAttributes
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NodeAttributesBuilder) = (*_NodeAttributesBuilder)(nil)
 
-func (m *_NodeAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32) NodeAttributesBuilder {
-	return m.WithSpecifiedAttributes(specifiedAttributes).WithDisplayName(displayName).WithDescription(description).WithWriteMask(writeMask).WithUserWriteMask(userWriteMask)
+func (b *_NodeAttributesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_NodeAttributesBuilder) WithSpecifiedAttributes(specifiedAttributes uint32) NodeAttributesBuilder {
-	m.SpecifiedAttributes = specifiedAttributes
-	return m
+func (b *_NodeAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32) NodeAttributesBuilder {
+	return b.WithSpecifiedAttributes(specifiedAttributes).WithDisplayName(displayName).WithDescription(description).WithWriteMask(writeMask).WithUserWriteMask(userWriteMask)
 }
 
-func (m *_NodeAttributesBuilder) WithDisplayName(displayName LocalizedText) NodeAttributesBuilder {
-	m.DisplayName = displayName
-	return m
+func (b *_NodeAttributesBuilder) WithSpecifiedAttributes(specifiedAttributes uint32) NodeAttributesBuilder {
+	b.SpecifiedAttributes = specifiedAttributes
+	return b
 }
 
-func (m *_NodeAttributesBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) NodeAttributesBuilder {
-	builder := builderSupplier(m.DisplayName.CreateLocalizedTextBuilder())
+func (b *_NodeAttributesBuilder) WithDisplayName(displayName LocalizedText) NodeAttributesBuilder {
+	b.DisplayName = displayName
+	return b
+}
+
+func (b *_NodeAttributesBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) NodeAttributesBuilder {
+	builder := builderSupplier(b.DisplayName.CreateLocalizedTextBuilder())
 	var err error
-	m.DisplayName, err = builder.Build()
+	b.DisplayName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_NodeAttributesBuilder) WithDescription(description LocalizedText) NodeAttributesBuilder {
-	m.Description = description
-	return m
+func (b *_NodeAttributesBuilder) WithDescription(description LocalizedText) NodeAttributesBuilder {
+	b.Description = description
+	return b
 }
 
-func (m *_NodeAttributesBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) NodeAttributesBuilder {
-	builder := builderSupplier(m.Description.CreateLocalizedTextBuilder())
+func (b *_NodeAttributesBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) NodeAttributesBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
 	var err error
-	m.Description, err = builder.Build()
+	b.Description, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_NodeAttributesBuilder) WithWriteMask(writeMask uint32) NodeAttributesBuilder {
-	m.WriteMask = writeMask
-	return m
+func (b *_NodeAttributesBuilder) WithWriteMask(writeMask uint32) NodeAttributesBuilder {
+	b.WriteMask = writeMask
+	return b
 }
 
-func (m *_NodeAttributesBuilder) WithUserWriteMask(userWriteMask uint32) NodeAttributesBuilder {
-	m.UserWriteMask = userWriteMask
-	return m
+func (b *_NodeAttributesBuilder) WithUserWriteMask(userWriteMask uint32) NodeAttributesBuilder {
+	b.UserWriteMask = userWriteMask
+	return b
 }
 
-func (m *_NodeAttributesBuilder) Build() (NodeAttributes, error) {
-	if m.DisplayName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_NodeAttributesBuilder) Build() (NodeAttributes, error) {
+	if b.DisplayName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'displayName' not set"))
+		b.err.Append(errors.New("mandatory field 'displayName' not set"))
 	}
-	if m.Description == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'description' not set"))
+		b.err.Append(errors.New("mandatory field 'description' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NodeAttributes.deepCopy(), nil
+	return b._NodeAttributes.deepCopy(), nil
 }
 
-func (m *_NodeAttributesBuilder) MustBuild() NodeAttributes {
-	build, err := m.Build()
+func (b *_NodeAttributesBuilder) MustBuild() NodeAttributes {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NodeAttributesBuilder) DeepCopy() any {
-	return m.CreateNodeAttributesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NodeAttributesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NodeAttributesBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_NodeAttributesBuilder) DeepCopy() any {
+	_copy := b.CreateNodeAttributesBuilder().(*_NodeAttributesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNodeAttributesBuilder creates a NodeAttributesBuilder
-func (m *_NodeAttributes) CreateNodeAttributesBuilder() NodeAttributesBuilder {
-	if m == nil {
+func (b *_NodeAttributes) CreateNodeAttributesBuilder() NodeAttributesBuilder {
+	if b == nil {
 		return NewNodeAttributesBuilder()
 	}
-	return &_NodeAttributesBuilder{_NodeAttributes: m.deepCopy()}
+	return &_NodeAttributesBuilder{_NodeAttributes: b.deepCopy()}
 }
 
 ///////////////////////
@@ -439,9 +458,13 @@ func (m *_NodeAttributes) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLargeAnalogValuePresentValueBuilder() BACnetConstru
 type _BACnetConstructedDataLargeAnalogValuePresentValueBuilder struct {
 	*_BACnetConstructedDataLargeAnalogValuePresentValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLargeAnalogValuePresentValueBuilder) = (*_BACnetConstructedDataLargeAnalogValuePresentValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValuePresentValueBuilder {
-	return m.WithPresentValue(presentValue)
+func (b *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValuePresentValueBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValuePresentValueBuilder {
+	return b.WithPresentValue(presentValue)
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValuePresentValueBuilder {
-	builder := builderSupplier(m.PresentValue.CreateBACnetApplicationTagDoubleBuilder())
+func (b *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValuePresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValuePresentValueBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetApplicationTagDoubleBuilder())
 	var err error
-	m.PresentValue, err = builder.Build()
+	b.PresentValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) Build() (BACnetConstructedDataLargeAnalogValuePresentValue, error) {
-	if m.PresentValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) Build() (BACnetConstructedDataLargeAnalogValuePresentValue, error) {
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLargeAnalogValuePresentValue.deepCopy(), nil
+	return b._BACnetConstructedDataLargeAnalogValuePresentValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) MustBuild() BACnetConstructedDataLargeAnalogValuePresentValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) MustBuild() BACnetConstructedDataLargeAnalogValuePresentValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLargeAnalogValuePresentValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLargeAnalogValuePresentValueBuilder().(*_BACnetConstructedDataLargeAnalogValuePresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLargeAnalogValuePresentValueBuilder creates a BACnetConstructedDataLargeAnalogValuePresentValueBuilder
-func (m *_BACnetConstructedDataLargeAnalogValuePresentValue) CreateBACnetConstructedDataLargeAnalogValuePresentValueBuilder() BACnetConstructedDataLargeAnalogValuePresentValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLargeAnalogValuePresentValue) CreateBACnetConstructedDataLargeAnalogValuePresentValueBuilder() BACnetConstructedDataLargeAnalogValuePresentValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLargeAnalogValuePresentValueBuilder()
 	}
-	return &_BACnetConstructedDataLargeAnalogValuePresentValueBuilder{_BACnetConstructedDataLargeAnalogValuePresentValue: m.deepCopy()}
+	return &_BACnetConstructedDataLargeAnalogValuePresentValueBuilder{_BACnetConstructedDataLargeAnalogValuePresentValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataLargeAnalogValuePresentValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

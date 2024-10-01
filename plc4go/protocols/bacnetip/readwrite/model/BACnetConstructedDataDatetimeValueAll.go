@@ -85,40 +85,59 @@ func NewBACnetConstructedDataDatetimeValueAllBuilder() BACnetConstructedDataDate
 type _BACnetConstructedDataDatetimeValueAllBuilder struct {
 	*_BACnetConstructedDataDatetimeValueAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDatetimeValueAllBuilder) = (*_BACnetConstructedDataDatetimeValueAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataDatetimeValueAllBuilder) WithMandatoryFields() BACnetConstructedDataDatetimeValueAllBuilder {
-	return m
+func (b *_BACnetConstructedDataDatetimeValueAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDatetimeValueAllBuilder) Build() (BACnetConstructedDataDatetimeValueAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataDatetimeValueAllBuilder) WithMandatoryFields() BACnetConstructedDataDatetimeValueAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataDatetimeValueAllBuilder) Build() (BACnetConstructedDataDatetimeValueAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDatetimeValueAll.deepCopy(), nil
+	return b._BACnetConstructedDataDatetimeValueAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDatetimeValueAllBuilder) MustBuild() BACnetConstructedDataDatetimeValueAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDatetimeValueAllBuilder) MustBuild() BACnetConstructedDataDatetimeValueAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDatetimeValueAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDatetimeValueAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDatetimeValueAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDatetimeValueAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDatetimeValueAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDatetimeValueAllBuilder().(*_BACnetConstructedDataDatetimeValueAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDatetimeValueAllBuilder creates a BACnetConstructedDataDatetimeValueAllBuilder
-func (m *_BACnetConstructedDataDatetimeValueAll) CreateBACnetConstructedDataDatetimeValueAllBuilder() BACnetConstructedDataDatetimeValueAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDatetimeValueAll) CreateBACnetConstructedDataDatetimeValueAllBuilder() BACnetConstructedDataDatetimeValueAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDatetimeValueAllBuilder()
 	}
-	return &_BACnetConstructedDataDatetimeValueAllBuilder{_BACnetConstructedDataDatetimeValueAll: m.deepCopy()}
+	return &_BACnetConstructedDataDatetimeValueAllBuilder{_BACnetConstructedDataDatetimeValueAll: b.deepCopy()}
 }
 
 ///////////////////////
@@ -243,9 +262,13 @@ func (m *_BACnetConstructedDataDatetimeValueAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

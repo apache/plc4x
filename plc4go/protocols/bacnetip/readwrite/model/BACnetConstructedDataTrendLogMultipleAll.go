@@ -85,40 +85,59 @@ func NewBACnetConstructedDataTrendLogMultipleAllBuilder() BACnetConstructedDataT
 type _BACnetConstructedDataTrendLogMultipleAllBuilder struct {
 	*_BACnetConstructedDataTrendLogMultipleAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataTrendLogMultipleAllBuilder) = (*_BACnetConstructedDataTrendLogMultipleAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataTrendLogMultipleAllBuilder) WithMandatoryFields() BACnetConstructedDataTrendLogMultipleAllBuilder {
-	return m
+func (b *_BACnetConstructedDataTrendLogMultipleAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleAllBuilder) Build() (BACnetConstructedDataTrendLogMultipleAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataTrendLogMultipleAllBuilder) WithMandatoryFields() BACnetConstructedDataTrendLogMultipleAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataTrendLogMultipleAllBuilder) Build() (BACnetConstructedDataTrendLogMultipleAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataTrendLogMultipleAll.deepCopy(), nil
+	return b._BACnetConstructedDataTrendLogMultipleAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleAllBuilder) MustBuild() BACnetConstructedDataTrendLogMultipleAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataTrendLogMultipleAllBuilder) MustBuild() BACnetConstructedDataTrendLogMultipleAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataTrendLogMultipleAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTrendLogMultipleAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTrendLogMultipleAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTrendLogMultipleAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTrendLogMultipleAllBuilder().(*_BACnetConstructedDataTrendLogMultipleAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataTrendLogMultipleAllBuilder creates a BACnetConstructedDataTrendLogMultipleAllBuilder
-func (m *_BACnetConstructedDataTrendLogMultipleAll) CreateBACnetConstructedDataTrendLogMultipleAllBuilder() BACnetConstructedDataTrendLogMultipleAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataTrendLogMultipleAll) CreateBACnetConstructedDataTrendLogMultipleAllBuilder() BACnetConstructedDataTrendLogMultipleAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataTrendLogMultipleAllBuilder()
 	}
-	return &_BACnetConstructedDataTrendLogMultipleAllBuilder{_BACnetConstructedDataTrendLogMultipleAll: m.deepCopy()}
+	return &_BACnetConstructedDataTrendLogMultipleAllBuilder{_BACnetConstructedDataTrendLogMultipleAll: b.deepCopy()}
 }
 
 ///////////////////////
@@ -243,9 +262,13 @@ func (m *_BACnetConstructedDataTrendLogMultipleAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

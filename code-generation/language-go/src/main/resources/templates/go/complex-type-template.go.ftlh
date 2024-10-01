@@ -345,32 +345,65 @@ type ${type.name}Builder interface {
 	<#assign typeRef=field.asTypedField().orElseThrow().type>
 	// With${field.name?cap_first} adds ${field.name?cap_first} (property field)
 	With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}(${helper.getLanguageTypeNameForTypeReference(typeRef, true)}) ${type.name}Builder
-	<#if typeRef.isComplexTypeReference() && !typeRef.asComplexTypeReference().orElseThrow().typeDefinition.isAbstract()>
+	<#if typeRef.isComplexTypeReference()>
 	// With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}Builder adds ${field.name?cap_first} (property field) which is build by the builder
 	With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}Builder(func(${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder)${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder) ${type.name}Builder
 	</#if>
 </#list>
+<#if type.isAbstract()>
+	<#list type.switchField.orElseThrow().cases as case>
+	// As${case.name} converts this build to a subType of ${type.name}. It is always possible to return to current builder using Done()
+	As${case.name}() interface{${case.name}Builder;Done()${type.name}Builder}
+	</#list>
 	// Build builds the ${type.name} or returns an error if something is wrong
-	Build() (${type.name}<#if type.isDiscriminatedParentTypeDefinition()>Contract</#if>,error)
+	PartialBuild() (${type.name}Contract,error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() ${type.name}<#if type.isDiscriminatedParentTypeDefinition()>Contract</#if>
+	PartialMustBuild() ${type.name}Contract
+</#if>
+	// Build builds the ${type.name} or returns an error if something is wrong
+	Build() (${type.name},error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ${type.name}
 }
 
 // New${type.name}Builder() creates a ${type.name}Builder
 func New${type.name}Builder() ${type.name}Builder {
 	return &_${type.name}Builder{_${type.name}: new(_${type.name})}
 }
+<#if type.isAbstract()>
+
+type _${type.name}ChildBuilder interface{
+	utils.Copyable
+	setParent(${type.name}Contract)
+	buildFor${type.name}()(${type.name},error)
+}
+</#if>
 
 type _${type.name}Builder struct {
 	*_${type.name}
+<#if type.isDiscriminatedChildTypeDefinition()>
+
+	parentBuilder *_${type.getParentType().orElseThrow().name}Builder
+</#if>
+<#if type.isAbstract()>
+
+	childBuilder _${type.name}ChildBuilder
+</#if>
 
 	err *utils.MultiError
 }
 
 var _ (${type.name}Builder) = (*_${type.name}Builder)(nil)
 
+<#if type.isDiscriminatedChildTypeDefinition()>
+	<#assign parentType=type.getParentType().orElseThrow()>
+func (b *_${type.name}Builder) setParent(contract ${parentType.name}Contract) {
+	b.${parentType.name}Contract = contract
+}
+</#if>
+
 <@compress single_line=true>
-func (m *_${type.name}Builder) WithMandatoryFields(
+func (b *_${type.name}Builder) WithMandatoryFields(
 	<#list type.propertyFields?filter(field->!field.isOptionalField()) as field>
 		<#assign typeRef=field.asTypedField().orElseThrow().type>
 		${field.name} ${helper.getLanguageTypeNameForTypeReference(typeRef)}
@@ -380,7 +413,7 @@ func (m *_${type.name}Builder) WithMandatoryFields(
 </@compress>
 
 <@compress single_line=true>
-return m
+return b
 <#list type.propertyFields?filter(field->!field.isOptionalField()) as field>
 	.With${field.name?cap_first}(${field.name}<#if field.type.isArrayTypeReference()>...</#if>)
 </#list>
@@ -390,63 +423,121 @@ return m
 
 <#list type.propertyFields as field>
 	<#assign typeRef=field.asTypedField().orElseThrow().type>
-func (m *_${type.name}Builder) With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}(${field.name} ${helper.getLanguageTypeNameForTypeReference(typeRef, true)}) ${type.name}Builder {
-	m.${field.name?cap_first}=<#if helper.needsPointerAccess(field)>&</#if>${field.name}
-	return m
+func (b *_${type.name}Builder) With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}(${field.name} ${helper.getLanguageTypeNameForTypeReference(typeRef, true)}) ${type.name}Builder {
+	b.${field.name?cap_first}=<#if helper.needsPointerAccess(field)>&</#if>${field.name}
+	return b
 }
 
-	<#if typeRef.isComplexTypeReference() && !typeRef.asComplexTypeReference().orElseThrow().typeDefinition.isAbstract()>
-func (m *_${type.name}Builder) With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}Builder(builderSupplier func(${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder)${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder) ${type.name}Builder {
-	builder:=builderSupplier(m.${field.name?cap_first}.Create${helper.getLanguageTypeNameForField(field)}Builder())
+	<#if typeRef.isComplexTypeReference()>
+func (b *_${type.name}Builder) With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}Builder(builderSupplier func(${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder)${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder) ${type.name}Builder {
+	builder:=builderSupplier(b.${field.name?cap_first}.Create${helper.getLanguageTypeNameForField(field)}Builder())
 	var err error
-	m.${field.name?cap_first}, err = builder.Build()
+	b.${field.name?cap_first}, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}<@emitImport import="github.com/pkg/errors" />
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}<@emitImport import="github.com/pkg/errors" />
 		}
-		m.err.Append(errors.Wrap(err, "${helper.getLanguageTypeNameForField(field)}Builder failed"))
+		b.err.Append(errors.Wrap(err, "${helper.getLanguageTypeNameForField(field)}Builder failed"))
 	}
-	return m
+	return b
 }
 
 	</#if>
 </#list>
 
-func (m *_${type.name}Builder) Build() (${type.name}<#if type.isDiscriminatedParentTypeDefinition()>Contract</#if>,error) {
+func (b *_${type.name}Builder) <#if type.isAbstract()>Partial</#if>Build() (${type.name}<#if type.isAbstract()>Contract</#if>,error) {
 <#list type.propertyFields?filter(field->!field.isOptionalField()) as field>
 	<#if field.type.isComplexTypeReference() || helper.needsPointerAccess(field)>
-	if m.${field.name?cap_first} == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.${field.name?cap_first} == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field '${field.name}' not set"))
+		b.err.Append(errors.New("mandatory field '${field.name}' not set"))
 	}
 	</#if>
 </#list>
-	if m.err != nil{
-		return nil, errors.Wrap(m.err, "error occurred during build")<@emitImport import="github.com/pkg/errors" />
+	if b.err != nil{
+		return nil, errors.Wrap(b.err, "error occurred during build")<@emitImport import="github.com/pkg/errors" />
 	}
-	return m._${type.name}.deepCopy(), nil
+	return b._${type.name}.deepCopy(), nil
 }
 
-func (m *_${type.name}Builder) MustBuild() ${type.name}<#if type.isDiscriminatedParentTypeDefinition()>Contract</#if> {
-	build, err := m.Build()
+func (b *_${type.name}Builder) <#if type.isAbstract()>Partial</#if>MustBuild() ${type.name}<#if type.isAbstract()>Contract</#if> {
+	build, err := b.<#if type.isAbstract()>Partial</#if>Build()
 	if err != nil{
 		panic(err)
 	}
 	return build
 }
 
-func (m *_${type.name}Builder) DeepCopy() any {
-	return m.Create${type.name}Builder()
+<#if type.isAbstract()>
+	<#list type.switchField.orElseThrow().cases as case>
+func (b *_${type.name}Builder) As${case.name}() interface{${case.name}Builder;Done()${type.name}Builder} {
+	if cb, ok := b.childBuilder.(interface{${case.name}Builder;Done()${type.name}Builder}); ok {
+		return cb
+	}
+	cb := New${case.name}Builder().(*_${case.name}Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+	</#list>
+</#if>
+
+<#if type.isDiscriminatedChildTypeDefinition()>
+	<#assign parentType=type.getParentType().orElseThrow()>
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_${type.name}Builder) Done() ${parentType.name}Builder {
+	return b.parentBuilder
+}
+
+func (b *_${type.name}Builder) buildFor${parentType.name}() (${parentType.name},error) {
+	return b.Build()
+}
+</#if>
+
+<#if type.isAbstract()>
+func (b *_${type.name}Builder) Build() (${type.name},error) {
+	v, err := b.PartialBuild()
+	if err != nil{
+		return nil, errors.Wrap(err, "error occurred during partial build")<@emitImport import="github.com/pkg/errors" />
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")<@emitImport import="github.com/pkg/errors" />
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildFor${type.name}()
+}
+
+func (b *_${type.name}Builder) MustBuild() ${type.name} {
+	build, err := b.Build()
+	if err != nil{
+		panic(err)
+	}
+	return build
+}
+</#if>
+
+func (b *_${type.name}Builder) DeepCopy() any {
+	_copy:=b.Create${type.name}Builder().(*_${type.name}Builder)
+<#if type.isAbstract()>
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_${type.name}ChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+</#if>
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // Create${type.name}Builder creates a ${type.name}Builder
-func (m *_${type.name}) Create${type.name}Builder() ${type.name}Builder  {
-	if m == nil {
+func (b *_${type.name}) Create${type.name}Builder() ${type.name}Builder  {
+	if b == nil {
 		return New${type.name}Builder()
 	}
-	return &_${type.name}Builder{_${type.name}: m.deepCopy()}
+	return &_${type.name}Builder{_${type.name}: b.deepCopy()}
 }
 
 ///////////////////////
@@ -1808,11 +1899,15 @@ func (m *_${type.name}) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }
 </#if>
 

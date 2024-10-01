@@ -83,10 +83,29 @@ type AdsMultiRequestItemBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() AdsMultiRequestItemBuilder
+	// AsAdsMultiRequestItemRead converts this build to a subType of AdsMultiRequestItem. It is always possible to return to current builder using Done()
+	AsAdsMultiRequestItemRead() interface {
+		AdsMultiRequestItemReadBuilder
+		Done() AdsMultiRequestItemBuilder
+	}
+	// AsAdsMultiRequestItemWrite converts this build to a subType of AdsMultiRequestItem. It is always possible to return to current builder using Done()
+	AsAdsMultiRequestItemWrite() interface {
+		AdsMultiRequestItemWriteBuilder
+		Done() AdsMultiRequestItemBuilder
+	}
+	// AsAdsMultiRequestItemReadWrite converts this build to a subType of AdsMultiRequestItem. It is always possible to return to current builder using Done()
+	AsAdsMultiRequestItemReadWrite() interface {
+		AdsMultiRequestItemReadWriteBuilder
+		Done() AdsMultiRequestItemBuilder
+	}
 	// Build builds the AdsMultiRequestItem or returns an error if something is wrong
-	Build() (AdsMultiRequestItemContract, error)
+	PartialBuild() (AdsMultiRequestItemContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() AdsMultiRequestItemContract
+	PartialMustBuild() AdsMultiRequestItemContract
+	// Build builds the AdsMultiRequestItem or returns an error if something is wrong
+	Build() (AdsMultiRequestItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsMultiRequestItem
 }
 
 // NewAdsMultiRequestItemBuilder() creates a AdsMultiRequestItemBuilder
@@ -94,43 +113,125 @@ func NewAdsMultiRequestItemBuilder() AdsMultiRequestItemBuilder {
 	return &_AdsMultiRequestItemBuilder{_AdsMultiRequestItem: new(_AdsMultiRequestItem)}
 }
 
+type _AdsMultiRequestItemChildBuilder interface {
+	utils.Copyable
+	setParent(AdsMultiRequestItemContract)
+	buildForAdsMultiRequestItem() (AdsMultiRequestItem, error)
+}
+
 type _AdsMultiRequestItemBuilder struct {
 	*_AdsMultiRequestItem
+
+	childBuilder _AdsMultiRequestItemChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (AdsMultiRequestItemBuilder) = (*_AdsMultiRequestItemBuilder)(nil)
 
-func (m *_AdsMultiRequestItemBuilder) WithMandatoryFields() AdsMultiRequestItemBuilder {
-	return m
+func (b *_AdsMultiRequestItemBuilder) WithMandatoryFields() AdsMultiRequestItemBuilder {
+	return b
 }
 
-func (m *_AdsMultiRequestItemBuilder) Build() (AdsMultiRequestItemContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsMultiRequestItemBuilder) PartialBuild() (AdsMultiRequestItemContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsMultiRequestItem.deepCopy(), nil
+	return b._AdsMultiRequestItem.deepCopy(), nil
 }
 
-func (m *_AdsMultiRequestItemBuilder) MustBuild() AdsMultiRequestItemContract {
-	build, err := m.Build()
+func (b *_AdsMultiRequestItemBuilder) PartialMustBuild() AdsMultiRequestItemContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsMultiRequestItemBuilder) DeepCopy() any {
-	return m.CreateAdsMultiRequestItemBuilder()
+func (b *_AdsMultiRequestItemBuilder) AsAdsMultiRequestItemRead() interface {
+	AdsMultiRequestItemReadBuilder
+	Done() AdsMultiRequestItemBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsMultiRequestItemReadBuilder
+		Done() AdsMultiRequestItemBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsMultiRequestItemReadBuilder().(*_AdsMultiRequestItemReadBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AdsMultiRequestItemBuilder) AsAdsMultiRequestItemWrite() interface {
+	AdsMultiRequestItemWriteBuilder
+	Done() AdsMultiRequestItemBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsMultiRequestItemWriteBuilder
+		Done() AdsMultiRequestItemBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsMultiRequestItemWriteBuilder().(*_AdsMultiRequestItemWriteBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AdsMultiRequestItemBuilder) AsAdsMultiRequestItemReadWrite() interface {
+	AdsMultiRequestItemReadWriteBuilder
+	Done() AdsMultiRequestItemBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsMultiRequestItemReadWriteBuilder
+		Done() AdsMultiRequestItemBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsMultiRequestItemReadWriteBuilder().(*_AdsMultiRequestItemReadWriteBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AdsMultiRequestItemBuilder) Build() (AdsMultiRequestItem, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForAdsMultiRequestItem()
+}
+
+func (b *_AdsMultiRequestItemBuilder) MustBuild() AdsMultiRequestItem {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AdsMultiRequestItemBuilder) DeepCopy() any {
+	_copy := b.CreateAdsMultiRequestItemBuilder().(*_AdsMultiRequestItemBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_AdsMultiRequestItemChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsMultiRequestItemBuilder creates a AdsMultiRequestItemBuilder
-func (m *_AdsMultiRequestItem) CreateAdsMultiRequestItemBuilder() AdsMultiRequestItemBuilder {
-	if m == nil {
+func (b *_AdsMultiRequestItem) CreateAdsMultiRequestItemBuilder() AdsMultiRequestItemBuilder {
+	if b == nil {
 		return NewAdsMultiRequestItemBuilder()
 	}
-	return &_AdsMultiRequestItemBuilder{_AdsMultiRequestItem: m.deepCopy()}
+	return &_AdsMultiRequestItemBuilder{_AdsMultiRequestItem: b.deepCopy()}
 }
 
 ///////////////////////

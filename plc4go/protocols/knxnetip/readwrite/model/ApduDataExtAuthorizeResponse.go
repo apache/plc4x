@@ -93,45 +93,64 @@ func NewApduDataExtAuthorizeResponseBuilder() ApduDataExtAuthorizeResponseBuilde
 type _ApduDataExtAuthorizeResponseBuilder struct {
 	*_ApduDataExtAuthorizeResponse
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtAuthorizeResponseBuilder) = (*_ApduDataExtAuthorizeResponseBuilder)(nil)
 
-func (m *_ApduDataExtAuthorizeResponseBuilder) WithMandatoryFields(level uint8) ApduDataExtAuthorizeResponseBuilder {
-	return m.WithLevel(level)
+func (b *_ApduDataExtAuthorizeResponseBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtAuthorizeResponseBuilder) WithLevel(level uint8) ApduDataExtAuthorizeResponseBuilder {
-	m.Level = level
-	return m
+func (b *_ApduDataExtAuthorizeResponseBuilder) WithMandatoryFields(level uint8) ApduDataExtAuthorizeResponseBuilder {
+	return b.WithLevel(level)
 }
 
-func (m *_ApduDataExtAuthorizeResponseBuilder) Build() (ApduDataExtAuthorizeResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtAuthorizeResponseBuilder) WithLevel(level uint8) ApduDataExtAuthorizeResponseBuilder {
+	b.Level = level
+	return b
+}
+
+func (b *_ApduDataExtAuthorizeResponseBuilder) Build() (ApduDataExtAuthorizeResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtAuthorizeResponse.deepCopy(), nil
+	return b._ApduDataExtAuthorizeResponse.deepCopy(), nil
 }
 
-func (m *_ApduDataExtAuthorizeResponseBuilder) MustBuild() ApduDataExtAuthorizeResponse {
-	build, err := m.Build()
+func (b *_ApduDataExtAuthorizeResponseBuilder) MustBuild() ApduDataExtAuthorizeResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtAuthorizeResponseBuilder) DeepCopy() any {
-	return m.CreateApduDataExtAuthorizeResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtAuthorizeResponseBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtAuthorizeResponseBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtAuthorizeResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtAuthorizeResponseBuilder().(*_ApduDataExtAuthorizeResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtAuthorizeResponseBuilder creates a ApduDataExtAuthorizeResponseBuilder
-func (m *_ApduDataExtAuthorizeResponse) CreateApduDataExtAuthorizeResponseBuilder() ApduDataExtAuthorizeResponseBuilder {
-	if m == nil {
+func (b *_ApduDataExtAuthorizeResponse) CreateApduDataExtAuthorizeResponseBuilder() ApduDataExtAuthorizeResponseBuilder {
+	if b == nil {
 		return NewApduDataExtAuthorizeResponseBuilder()
 	}
-	return &_ApduDataExtAuthorizeResponseBuilder{_ApduDataExtAuthorizeResponse: m.deepCopy()}
+	return &_ApduDataExtAuthorizeResponseBuilder{_ApduDataExtAuthorizeResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -275,9 +294,13 @@ func (m *_ApduDataExtAuthorizeResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

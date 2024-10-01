@@ -98,64 +98,83 @@ func NewBACnetPriorityValueBooleanBuilder() BACnetPriorityValueBooleanBuilder {
 type _BACnetPriorityValueBooleanBuilder struct {
 	*_BACnetPriorityValueBoolean
 
+	parentBuilder *_BACnetPriorityValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPriorityValueBooleanBuilder) = (*_BACnetPriorityValueBooleanBuilder)(nil)
 
-func (m *_BACnetPriorityValueBooleanBuilder) WithMandatoryFields(booleanValue BACnetApplicationTagBoolean) BACnetPriorityValueBooleanBuilder {
-	return m.WithBooleanValue(booleanValue)
+func (b *_BACnetPriorityValueBooleanBuilder) setParent(contract BACnetPriorityValueContract) {
+	b.BACnetPriorityValueContract = contract
 }
 
-func (m *_BACnetPriorityValueBooleanBuilder) WithBooleanValue(booleanValue BACnetApplicationTagBoolean) BACnetPriorityValueBooleanBuilder {
-	m.BooleanValue = booleanValue
-	return m
+func (b *_BACnetPriorityValueBooleanBuilder) WithMandatoryFields(booleanValue BACnetApplicationTagBoolean) BACnetPriorityValueBooleanBuilder {
+	return b.WithBooleanValue(booleanValue)
 }
 
-func (m *_BACnetPriorityValueBooleanBuilder) WithBooleanValueBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetPriorityValueBooleanBuilder {
-	builder := builderSupplier(m.BooleanValue.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetPriorityValueBooleanBuilder) WithBooleanValue(booleanValue BACnetApplicationTagBoolean) BACnetPriorityValueBooleanBuilder {
+	b.BooleanValue = booleanValue
+	return b
+}
+
+func (b *_BACnetPriorityValueBooleanBuilder) WithBooleanValueBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetPriorityValueBooleanBuilder {
+	builder := builderSupplier(b.BooleanValue.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.BooleanValue, err = builder.Build()
+	b.BooleanValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPriorityValueBooleanBuilder) Build() (BACnetPriorityValueBoolean, error) {
-	if m.BooleanValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPriorityValueBooleanBuilder) Build() (BACnetPriorityValueBoolean, error) {
+	if b.BooleanValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'booleanValue' not set"))
+		b.err.Append(errors.New("mandatory field 'booleanValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPriorityValueBoolean.deepCopy(), nil
+	return b._BACnetPriorityValueBoolean.deepCopy(), nil
 }
 
-func (m *_BACnetPriorityValueBooleanBuilder) MustBuild() BACnetPriorityValueBoolean {
-	build, err := m.Build()
+func (b *_BACnetPriorityValueBooleanBuilder) MustBuild() BACnetPriorityValueBoolean {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPriorityValueBooleanBuilder) DeepCopy() any {
-	return m.CreateBACnetPriorityValueBooleanBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPriorityValueBooleanBuilder) Done() BACnetPriorityValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPriorityValueBooleanBuilder) buildForBACnetPriorityValue() (BACnetPriorityValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPriorityValueBooleanBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityValueBooleanBuilder().(*_BACnetPriorityValueBooleanBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPriorityValueBooleanBuilder creates a BACnetPriorityValueBooleanBuilder
-func (m *_BACnetPriorityValueBoolean) CreateBACnetPriorityValueBooleanBuilder() BACnetPriorityValueBooleanBuilder {
-	if m == nil {
+func (b *_BACnetPriorityValueBoolean) CreateBACnetPriorityValueBooleanBuilder() BACnetPriorityValueBooleanBuilder {
+	if b == nil {
 		return NewBACnetPriorityValueBooleanBuilder()
 	}
-	return &_BACnetPriorityValueBooleanBuilder{_BACnetPriorityValueBoolean: m.deepCopy()}
+	return &_BACnetPriorityValueBooleanBuilder{_BACnetPriorityValueBoolean: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPriorityValueBoolean) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

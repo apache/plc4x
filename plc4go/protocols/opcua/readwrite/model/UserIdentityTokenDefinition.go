@@ -83,10 +83,34 @@ type UserIdentityTokenDefinitionBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() UserIdentityTokenDefinitionBuilder
+	// AsAnonymousIdentityToken converts this build to a subType of UserIdentityTokenDefinition. It is always possible to return to current builder using Done()
+	AsAnonymousIdentityToken() interface {
+		AnonymousIdentityTokenBuilder
+		Done() UserIdentityTokenDefinitionBuilder
+	}
+	// AsUserNameIdentityToken converts this build to a subType of UserIdentityTokenDefinition. It is always possible to return to current builder using Done()
+	AsUserNameIdentityToken() interface {
+		UserNameIdentityTokenBuilder
+		Done() UserIdentityTokenDefinitionBuilder
+	}
+	// AsX509IdentityToken converts this build to a subType of UserIdentityTokenDefinition. It is always possible to return to current builder using Done()
+	AsX509IdentityToken() interface {
+		X509IdentityTokenBuilder
+		Done() UserIdentityTokenDefinitionBuilder
+	}
+	// AsIssuedIdentityToken converts this build to a subType of UserIdentityTokenDefinition. It is always possible to return to current builder using Done()
+	AsIssuedIdentityToken() interface {
+		IssuedIdentityTokenBuilder
+		Done() UserIdentityTokenDefinitionBuilder
+	}
 	// Build builds the UserIdentityTokenDefinition or returns an error if something is wrong
-	Build() (UserIdentityTokenDefinitionContract, error)
+	PartialBuild() (UserIdentityTokenDefinitionContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() UserIdentityTokenDefinitionContract
+	PartialMustBuild() UserIdentityTokenDefinitionContract
+	// Build builds the UserIdentityTokenDefinition or returns an error if something is wrong
+	Build() (UserIdentityTokenDefinition, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UserIdentityTokenDefinition
 }
 
 // NewUserIdentityTokenDefinitionBuilder() creates a UserIdentityTokenDefinitionBuilder
@@ -94,43 +118,141 @@ func NewUserIdentityTokenDefinitionBuilder() UserIdentityTokenDefinitionBuilder 
 	return &_UserIdentityTokenDefinitionBuilder{_UserIdentityTokenDefinition: new(_UserIdentityTokenDefinition)}
 }
 
+type _UserIdentityTokenDefinitionChildBuilder interface {
+	utils.Copyable
+	setParent(UserIdentityTokenDefinitionContract)
+	buildForUserIdentityTokenDefinition() (UserIdentityTokenDefinition, error)
+}
+
 type _UserIdentityTokenDefinitionBuilder struct {
 	*_UserIdentityTokenDefinition
+
+	childBuilder _UserIdentityTokenDefinitionChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (UserIdentityTokenDefinitionBuilder) = (*_UserIdentityTokenDefinitionBuilder)(nil)
 
-func (m *_UserIdentityTokenDefinitionBuilder) WithMandatoryFields() UserIdentityTokenDefinitionBuilder {
-	return m
+func (b *_UserIdentityTokenDefinitionBuilder) WithMandatoryFields() UserIdentityTokenDefinitionBuilder {
+	return b
 }
 
-func (m *_UserIdentityTokenDefinitionBuilder) Build() (UserIdentityTokenDefinitionContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_UserIdentityTokenDefinitionBuilder) PartialBuild() (UserIdentityTokenDefinitionContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._UserIdentityTokenDefinition.deepCopy(), nil
+	return b._UserIdentityTokenDefinition.deepCopy(), nil
 }
 
-func (m *_UserIdentityTokenDefinitionBuilder) MustBuild() UserIdentityTokenDefinitionContract {
-	build, err := m.Build()
+func (b *_UserIdentityTokenDefinitionBuilder) PartialMustBuild() UserIdentityTokenDefinitionContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_UserIdentityTokenDefinitionBuilder) DeepCopy() any {
-	return m.CreateUserIdentityTokenDefinitionBuilder()
+func (b *_UserIdentityTokenDefinitionBuilder) AsAnonymousIdentityToken() interface {
+	AnonymousIdentityTokenBuilder
+	Done() UserIdentityTokenDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AnonymousIdentityTokenBuilder
+		Done() UserIdentityTokenDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAnonymousIdentityTokenBuilder().(*_AnonymousIdentityTokenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_UserIdentityTokenDefinitionBuilder) AsUserNameIdentityToken() interface {
+	UserNameIdentityTokenBuilder
+	Done() UserIdentityTokenDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UserNameIdentityTokenBuilder
+		Done() UserIdentityTokenDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUserNameIdentityTokenBuilder().(*_UserNameIdentityTokenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_UserIdentityTokenDefinitionBuilder) AsX509IdentityToken() interface {
+	X509IdentityTokenBuilder
+	Done() UserIdentityTokenDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		X509IdentityTokenBuilder
+		Done() UserIdentityTokenDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewX509IdentityTokenBuilder().(*_X509IdentityTokenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_UserIdentityTokenDefinitionBuilder) AsIssuedIdentityToken() interface {
+	IssuedIdentityTokenBuilder
+	Done() UserIdentityTokenDefinitionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		IssuedIdentityTokenBuilder
+		Done() UserIdentityTokenDefinitionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewIssuedIdentityTokenBuilder().(*_IssuedIdentityTokenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_UserIdentityTokenDefinitionBuilder) Build() (UserIdentityTokenDefinition, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForUserIdentityTokenDefinition()
+}
+
+func (b *_UserIdentityTokenDefinitionBuilder) MustBuild() UserIdentityTokenDefinition {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_UserIdentityTokenDefinitionBuilder) DeepCopy() any {
+	_copy := b.CreateUserIdentityTokenDefinitionBuilder().(*_UserIdentityTokenDefinitionBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_UserIdentityTokenDefinitionChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateUserIdentityTokenDefinitionBuilder creates a UserIdentityTokenDefinitionBuilder
-func (m *_UserIdentityTokenDefinition) CreateUserIdentityTokenDefinitionBuilder() UserIdentityTokenDefinitionBuilder {
-	if m == nil {
+func (b *_UserIdentityTokenDefinition) CreateUserIdentityTokenDefinitionBuilder() UserIdentityTokenDefinitionBuilder {
+	if b == nil {
 		return NewUserIdentityTokenDefinitionBuilder()
 	}
-	return &_UserIdentityTokenDefinitionBuilder{_UserIdentityTokenDefinition: m.deepCopy()}
+	return &_UserIdentityTokenDefinitionBuilder{_UserIdentityTokenDefinition: b.deepCopy()}
 }
 
 ///////////////////////

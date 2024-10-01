@@ -105,55 +105,59 @@ type _AssociatedQueryValueTypeBuilder struct {
 
 var _ (AssociatedQueryValueTypeBuilder) = (*_AssociatedQueryValueTypeBuilder)(nil)
 
-func (m *_AssociatedQueryValueTypeBuilder) WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) AssociatedQueryValueTypeBuilder {
-	return m.WithReturnCode(returnCode).WithTransportSize(transportSize).WithValueLength(valueLength).WithData(data...)
+func (b *_AssociatedQueryValueTypeBuilder) WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) AssociatedQueryValueTypeBuilder {
+	return b.WithReturnCode(returnCode).WithTransportSize(transportSize).WithValueLength(valueLength).WithData(data...)
 }
 
-func (m *_AssociatedQueryValueTypeBuilder) WithReturnCode(returnCode DataTransportErrorCode) AssociatedQueryValueTypeBuilder {
-	m.ReturnCode = returnCode
-	return m
+func (b *_AssociatedQueryValueTypeBuilder) WithReturnCode(returnCode DataTransportErrorCode) AssociatedQueryValueTypeBuilder {
+	b.ReturnCode = returnCode
+	return b
 }
 
-func (m *_AssociatedQueryValueTypeBuilder) WithTransportSize(transportSize DataTransportSize) AssociatedQueryValueTypeBuilder {
-	m.TransportSize = transportSize
-	return m
+func (b *_AssociatedQueryValueTypeBuilder) WithTransportSize(transportSize DataTransportSize) AssociatedQueryValueTypeBuilder {
+	b.TransportSize = transportSize
+	return b
 }
 
-func (m *_AssociatedQueryValueTypeBuilder) WithValueLength(valueLength uint16) AssociatedQueryValueTypeBuilder {
-	m.ValueLength = valueLength
-	return m
+func (b *_AssociatedQueryValueTypeBuilder) WithValueLength(valueLength uint16) AssociatedQueryValueTypeBuilder {
+	b.ValueLength = valueLength
+	return b
 }
 
-func (m *_AssociatedQueryValueTypeBuilder) WithData(data ...uint8) AssociatedQueryValueTypeBuilder {
-	m.Data = data
-	return m
+func (b *_AssociatedQueryValueTypeBuilder) WithData(data ...uint8) AssociatedQueryValueTypeBuilder {
+	b.Data = data
+	return b
 }
 
-func (m *_AssociatedQueryValueTypeBuilder) Build() (AssociatedQueryValueType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AssociatedQueryValueTypeBuilder) Build() (AssociatedQueryValueType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AssociatedQueryValueType.deepCopy(), nil
+	return b._AssociatedQueryValueType.deepCopy(), nil
 }
 
-func (m *_AssociatedQueryValueTypeBuilder) MustBuild() AssociatedQueryValueType {
-	build, err := m.Build()
+func (b *_AssociatedQueryValueTypeBuilder) MustBuild() AssociatedQueryValueType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AssociatedQueryValueTypeBuilder) DeepCopy() any {
-	return m.CreateAssociatedQueryValueTypeBuilder()
+func (b *_AssociatedQueryValueTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAssociatedQueryValueTypeBuilder().(*_AssociatedQueryValueTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAssociatedQueryValueTypeBuilder creates a AssociatedQueryValueTypeBuilder
-func (m *_AssociatedQueryValueType) CreateAssociatedQueryValueTypeBuilder() AssociatedQueryValueTypeBuilder {
-	if m == nil {
+func (b *_AssociatedQueryValueType) CreateAssociatedQueryValueTypeBuilder() AssociatedQueryValueTypeBuilder {
+	if b == nil {
 		return NewAssociatedQueryValueTypeBuilder()
 	}
-	return &_AssociatedQueryValueTypeBuilder{_AssociatedQueryValueType: m.deepCopy()}
+	return &_AssociatedQueryValueTypeBuilder{_AssociatedQueryValueType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -346,9 +350,13 @@ func (m *_AssociatedQueryValueType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

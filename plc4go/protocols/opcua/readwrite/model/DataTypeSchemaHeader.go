@@ -135,80 +135,99 @@ func NewDataTypeSchemaHeaderBuilder() DataTypeSchemaHeaderBuilder {
 type _DataTypeSchemaHeaderBuilder struct {
 	*_DataTypeSchemaHeader
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DataTypeSchemaHeaderBuilder) = (*_DataTypeSchemaHeaderBuilder)(nil)
 
-func (m *_DataTypeSchemaHeaderBuilder) WithMandatoryFields(noOfNamespaces int32, namespaces []PascalString, noOfStructureDataTypes int32, structureDataTypes []DataTypeDescription, noOfEnumDataTypes int32, enumDataTypes []DataTypeDescription, noOfSimpleDataTypes int32, simpleDataTypes []DataTypeDescription) DataTypeSchemaHeaderBuilder {
-	return m.WithNoOfNamespaces(noOfNamespaces).WithNamespaces(namespaces...).WithNoOfStructureDataTypes(noOfStructureDataTypes).WithStructureDataTypes(structureDataTypes...).WithNoOfEnumDataTypes(noOfEnumDataTypes).WithEnumDataTypes(enumDataTypes...).WithNoOfSimpleDataTypes(noOfSimpleDataTypes).WithSimpleDataTypes(simpleDataTypes...)
+func (b *_DataTypeSchemaHeaderBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_DataTypeSchemaHeaderBuilder) WithNoOfNamespaces(noOfNamespaces int32) DataTypeSchemaHeaderBuilder {
-	m.NoOfNamespaces = noOfNamespaces
-	return m
+func (b *_DataTypeSchemaHeaderBuilder) WithMandatoryFields(noOfNamespaces int32, namespaces []PascalString, noOfStructureDataTypes int32, structureDataTypes []DataTypeDescription, noOfEnumDataTypes int32, enumDataTypes []DataTypeDescription, noOfSimpleDataTypes int32, simpleDataTypes []DataTypeDescription) DataTypeSchemaHeaderBuilder {
+	return b.WithNoOfNamespaces(noOfNamespaces).WithNamespaces(namespaces...).WithNoOfStructureDataTypes(noOfStructureDataTypes).WithStructureDataTypes(structureDataTypes...).WithNoOfEnumDataTypes(noOfEnumDataTypes).WithEnumDataTypes(enumDataTypes...).WithNoOfSimpleDataTypes(noOfSimpleDataTypes).WithSimpleDataTypes(simpleDataTypes...)
 }
 
-func (m *_DataTypeSchemaHeaderBuilder) WithNamespaces(namespaces ...PascalString) DataTypeSchemaHeaderBuilder {
-	m.Namespaces = namespaces
-	return m
+func (b *_DataTypeSchemaHeaderBuilder) WithNoOfNamespaces(noOfNamespaces int32) DataTypeSchemaHeaderBuilder {
+	b.NoOfNamespaces = noOfNamespaces
+	return b
 }
 
-func (m *_DataTypeSchemaHeaderBuilder) WithNoOfStructureDataTypes(noOfStructureDataTypes int32) DataTypeSchemaHeaderBuilder {
-	m.NoOfStructureDataTypes = noOfStructureDataTypes
-	return m
+func (b *_DataTypeSchemaHeaderBuilder) WithNamespaces(namespaces ...PascalString) DataTypeSchemaHeaderBuilder {
+	b.Namespaces = namespaces
+	return b
 }
 
-func (m *_DataTypeSchemaHeaderBuilder) WithStructureDataTypes(structureDataTypes ...DataTypeDescription) DataTypeSchemaHeaderBuilder {
-	m.StructureDataTypes = structureDataTypes
-	return m
+func (b *_DataTypeSchemaHeaderBuilder) WithNoOfStructureDataTypes(noOfStructureDataTypes int32) DataTypeSchemaHeaderBuilder {
+	b.NoOfStructureDataTypes = noOfStructureDataTypes
+	return b
 }
 
-func (m *_DataTypeSchemaHeaderBuilder) WithNoOfEnumDataTypes(noOfEnumDataTypes int32) DataTypeSchemaHeaderBuilder {
-	m.NoOfEnumDataTypes = noOfEnumDataTypes
-	return m
+func (b *_DataTypeSchemaHeaderBuilder) WithStructureDataTypes(structureDataTypes ...DataTypeDescription) DataTypeSchemaHeaderBuilder {
+	b.StructureDataTypes = structureDataTypes
+	return b
 }
 
-func (m *_DataTypeSchemaHeaderBuilder) WithEnumDataTypes(enumDataTypes ...DataTypeDescription) DataTypeSchemaHeaderBuilder {
-	m.EnumDataTypes = enumDataTypes
-	return m
+func (b *_DataTypeSchemaHeaderBuilder) WithNoOfEnumDataTypes(noOfEnumDataTypes int32) DataTypeSchemaHeaderBuilder {
+	b.NoOfEnumDataTypes = noOfEnumDataTypes
+	return b
 }
 
-func (m *_DataTypeSchemaHeaderBuilder) WithNoOfSimpleDataTypes(noOfSimpleDataTypes int32) DataTypeSchemaHeaderBuilder {
-	m.NoOfSimpleDataTypes = noOfSimpleDataTypes
-	return m
+func (b *_DataTypeSchemaHeaderBuilder) WithEnumDataTypes(enumDataTypes ...DataTypeDescription) DataTypeSchemaHeaderBuilder {
+	b.EnumDataTypes = enumDataTypes
+	return b
 }
 
-func (m *_DataTypeSchemaHeaderBuilder) WithSimpleDataTypes(simpleDataTypes ...DataTypeDescription) DataTypeSchemaHeaderBuilder {
-	m.SimpleDataTypes = simpleDataTypes
-	return m
+func (b *_DataTypeSchemaHeaderBuilder) WithNoOfSimpleDataTypes(noOfSimpleDataTypes int32) DataTypeSchemaHeaderBuilder {
+	b.NoOfSimpleDataTypes = noOfSimpleDataTypes
+	return b
 }
 
-func (m *_DataTypeSchemaHeaderBuilder) Build() (DataTypeSchemaHeader, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DataTypeSchemaHeaderBuilder) WithSimpleDataTypes(simpleDataTypes ...DataTypeDescription) DataTypeSchemaHeaderBuilder {
+	b.SimpleDataTypes = simpleDataTypes
+	return b
+}
+
+func (b *_DataTypeSchemaHeaderBuilder) Build() (DataTypeSchemaHeader, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DataTypeSchemaHeader.deepCopy(), nil
+	return b._DataTypeSchemaHeader.deepCopy(), nil
 }
 
-func (m *_DataTypeSchemaHeaderBuilder) MustBuild() DataTypeSchemaHeader {
-	build, err := m.Build()
+func (b *_DataTypeSchemaHeaderBuilder) MustBuild() DataTypeSchemaHeader {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DataTypeSchemaHeaderBuilder) DeepCopy() any {
-	return m.CreateDataTypeSchemaHeaderBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DataTypeSchemaHeaderBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DataTypeSchemaHeaderBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DataTypeSchemaHeaderBuilder) DeepCopy() any {
+	_copy := b.CreateDataTypeSchemaHeaderBuilder().(*_DataTypeSchemaHeaderBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDataTypeSchemaHeaderBuilder creates a DataTypeSchemaHeaderBuilder
-func (m *_DataTypeSchemaHeader) CreateDataTypeSchemaHeaderBuilder() DataTypeSchemaHeaderBuilder {
-	if m == nil {
+func (b *_DataTypeSchemaHeader) CreateDataTypeSchemaHeaderBuilder() DataTypeSchemaHeaderBuilder {
+	if b == nil {
 		return NewDataTypeSchemaHeaderBuilder()
 	}
-	return &_DataTypeSchemaHeaderBuilder{_DataTypeSchemaHeader: m.deepCopy()}
+	return &_DataTypeSchemaHeaderBuilder{_DataTypeSchemaHeader: b.deepCopy()}
 }
 
 ///////////////////////
@@ -506,9 +525,13 @@ func (m *_DataTypeSchemaHeader) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

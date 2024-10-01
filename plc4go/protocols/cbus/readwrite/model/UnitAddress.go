@@ -90,40 +90,44 @@ type _UnitAddressBuilder struct {
 
 var _ (UnitAddressBuilder) = (*_UnitAddressBuilder)(nil)
 
-func (m *_UnitAddressBuilder) WithMandatoryFields(address byte) UnitAddressBuilder {
-	return m.WithAddress(address)
+func (b *_UnitAddressBuilder) WithMandatoryFields(address byte) UnitAddressBuilder {
+	return b.WithAddress(address)
 }
 
-func (m *_UnitAddressBuilder) WithAddress(address byte) UnitAddressBuilder {
-	m.Address = address
-	return m
+func (b *_UnitAddressBuilder) WithAddress(address byte) UnitAddressBuilder {
+	b.Address = address
+	return b
 }
 
-func (m *_UnitAddressBuilder) Build() (UnitAddress, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_UnitAddressBuilder) Build() (UnitAddress, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._UnitAddress.deepCopy(), nil
+	return b._UnitAddress.deepCopy(), nil
 }
 
-func (m *_UnitAddressBuilder) MustBuild() UnitAddress {
-	build, err := m.Build()
+func (b *_UnitAddressBuilder) MustBuild() UnitAddress {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_UnitAddressBuilder) DeepCopy() any {
-	return m.CreateUnitAddressBuilder()
+func (b *_UnitAddressBuilder) DeepCopy() any {
+	_copy := b.CreateUnitAddressBuilder().(*_UnitAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateUnitAddressBuilder creates a UnitAddressBuilder
-func (m *_UnitAddress) CreateUnitAddressBuilder() UnitAddressBuilder {
-	if m == nil {
+func (b *_UnitAddress) CreateUnitAddressBuilder() UnitAddressBuilder {
+	if b == nil {
 		return NewUnitAddressBuilder()
 	}
-	return &_UnitAddressBuilder{_UnitAddress: m.deepCopy()}
+	return &_UnitAddressBuilder{_UnitAddress: b.deepCopy()}
 }
 
 ///////////////////////
@@ -260,9 +264,13 @@ func (m *_UnitAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

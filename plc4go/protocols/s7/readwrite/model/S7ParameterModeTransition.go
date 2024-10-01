@@ -119,65 +119,84 @@ func NewS7ParameterModeTransitionBuilder() S7ParameterModeTransitionBuilder {
 type _S7ParameterModeTransitionBuilder struct {
 	*_S7ParameterModeTransition
 
+	parentBuilder *_S7ParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7ParameterModeTransitionBuilder) = (*_S7ParameterModeTransitionBuilder)(nil)
 
-func (m *_S7ParameterModeTransitionBuilder) WithMandatoryFields(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, currentMode uint8, sequenceNumber uint8) S7ParameterModeTransitionBuilder {
-	return m.WithMethod(method).WithCpuFunctionType(cpuFunctionType).WithCpuFunctionGroup(cpuFunctionGroup).WithCurrentMode(currentMode).WithSequenceNumber(sequenceNumber)
+func (b *_S7ParameterModeTransitionBuilder) setParent(contract S7ParameterContract) {
+	b.S7ParameterContract = contract
 }
 
-func (m *_S7ParameterModeTransitionBuilder) WithMethod(method uint8) S7ParameterModeTransitionBuilder {
-	m.Method = method
-	return m
+func (b *_S7ParameterModeTransitionBuilder) WithMandatoryFields(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, currentMode uint8, sequenceNumber uint8) S7ParameterModeTransitionBuilder {
+	return b.WithMethod(method).WithCpuFunctionType(cpuFunctionType).WithCpuFunctionGroup(cpuFunctionGroup).WithCurrentMode(currentMode).WithSequenceNumber(sequenceNumber)
 }
 
-func (m *_S7ParameterModeTransitionBuilder) WithCpuFunctionType(cpuFunctionType uint8) S7ParameterModeTransitionBuilder {
-	m.CpuFunctionType = cpuFunctionType
-	return m
+func (b *_S7ParameterModeTransitionBuilder) WithMethod(method uint8) S7ParameterModeTransitionBuilder {
+	b.Method = method
+	return b
 }
 
-func (m *_S7ParameterModeTransitionBuilder) WithCpuFunctionGroup(cpuFunctionGroup uint8) S7ParameterModeTransitionBuilder {
-	m.CpuFunctionGroup = cpuFunctionGroup
-	return m
+func (b *_S7ParameterModeTransitionBuilder) WithCpuFunctionType(cpuFunctionType uint8) S7ParameterModeTransitionBuilder {
+	b.CpuFunctionType = cpuFunctionType
+	return b
 }
 
-func (m *_S7ParameterModeTransitionBuilder) WithCurrentMode(currentMode uint8) S7ParameterModeTransitionBuilder {
-	m.CurrentMode = currentMode
-	return m
+func (b *_S7ParameterModeTransitionBuilder) WithCpuFunctionGroup(cpuFunctionGroup uint8) S7ParameterModeTransitionBuilder {
+	b.CpuFunctionGroup = cpuFunctionGroup
+	return b
 }
 
-func (m *_S7ParameterModeTransitionBuilder) WithSequenceNumber(sequenceNumber uint8) S7ParameterModeTransitionBuilder {
-	m.SequenceNumber = sequenceNumber
-	return m
+func (b *_S7ParameterModeTransitionBuilder) WithCurrentMode(currentMode uint8) S7ParameterModeTransitionBuilder {
+	b.CurrentMode = currentMode
+	return b
 }
 
-func (m *_S7ParameterModeTransitionBuilder) Build() (S7ParameterModeTransition, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7ParameterModeTransitionBuilder) WithSequenceNumber(sequenceNumber uint8) S7ParameterModeTransitionBuilder {
+	b.SequenceNumber = sequenceNumber
+	return b
+}
+
+func (b *_S7ParameterModeTransitionBuilder) Build() (S7ParameterModeTransition, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7ParameterModeTransition.deepCopy(), nil
+	return b._S7ParameterModeTransition.deepCopy(), nil
 }
 
-func (m *_S7ParameterModeTransitionBuilder) MustBuild() S7ParameterModeTransition {
-	build, err := m.Build()
+func (b *_S7ParameterModeTransitionBuilder) MustBuild() S7ParameterModeTransition {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7ParameterModeTransitionBuilder) DeepCopy() any {
-	return m.CreateS7ParameterModeTransitionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7ParameterModeTransitionBuilder) Done() S7ParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7ParameterModeTransitionBuilder) buildForS7Parameter() (S7Parameter, error) {
+	return b.Build()
+}
+
+func (b *_S7ParameterModeTransitionBuilder) DeepCopy() any {
+	_copy := b.CreateS7ParameterModeTransitionBuilder().(*_S7ParameterModeTransitionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7ParameterModeTransitionBuilder creates a S7ParameterModeTransitionBuilder
-func (m *_S7ParameterModeTransition) CreateS7ParameterModeTransitionBuilder() S7ParameterModeTransitionBuilder {
-	if m == nil {
+func (b *_S7ParameterModeTransition) CreateS7ParameterModeTransitionBuilder() S7ParameterModeTransitionBuilder {
+	if b == nil {
 		return NewS7ParameterModeTransitionBuilder()
 	}
-	return &_S7ParameterModeTransitionBuilder{_S7ParameterModeTransition: m.deepCopy()}
+	return &_S7ParameterModeTransitionBuilder{_S7ParameterModeTransition: b.deepCopy()}
 }
 
 ///////////////////////
@@ -424,9 +443,13 @@ func (m *_S7ParameterModeTransition) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

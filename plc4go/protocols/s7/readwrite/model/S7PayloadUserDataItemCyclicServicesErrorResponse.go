@@ -85,40 +85,59 @@ func NewS7PayloadUserDataItemCyclicServicesErrorResponseBuilder() S7PayloadUserD
 type _S7PayloadUserDataItemCyclicServicesErrorResponseBuilder struct {
 	*_S7PayloadUserDataItemCyclicServicesErrorResponse
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) = (*_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder)(nil)
 
-func (m *_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) WithMandatoryFields() S7PayloadUserDataItemCyclicServicesErrorResponseBuilder {
-	return m
+func (b *_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) Build() (S7PayloadUserDataItemCyclicServicesErrorResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) WithMandatoryFields() S7PayloadUserDataItemCyclicServicesErrorResponseBuilder {
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) Build() (S7PayloadUserDataItemCyclicServicesErrorResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadUserDataItemCyclicServicesErrorResponse.deepCopy(), nil
+	return b._S7PayloadUserDataItemCyclicServicesErrorResponse.deepCopy(), nil
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesErrorResponse {
-	build, err := m.Build()
+func (b *_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesErrorResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) DeepCopy() any {
-	return m.CreateS7PayloadUserDataItemCyclicServicesErrorResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCyclicServicesErrorResponseBuilder().(*_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadUserDataItemCyclicServicesErrorResponseBuilder creates a S7PayloadUserDataItemCyclicServicesErrorResponseBuilder
-func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) CreateS7PayloadUserDataItemCyclicServicesErrorResponseBuilder() S7PayloadUserDataItemCyclicServicesErrorResponseBuilder {
-	if m == nil {
+func (b *_S7PayloadUserDataItemCyclicServicesErrorResponse) CreateS7PayloadUserDataItemCyclicServicesErrorResponseBuilder() S7PayloadUserDataItemCyclicServicesErrorResponseBuilder {
+	if b == nil {
 		return NewS7PayloadUserDataItemCyclicServicesErrorResponseBuilder()
 	}
-	return &_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder{_S7PayloadUserDataItemCyclicServicesErrorResponse: m.deepCopy()}
+	return &_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder{_S7PayloadUserDataItemCyclicServicesErrorResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -243,9 +262,13 @@ func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

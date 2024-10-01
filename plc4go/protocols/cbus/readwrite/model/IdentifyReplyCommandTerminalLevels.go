@@ -93,45 +93,64 @@ func NewIdentifyReplyCommandTerminalLevelsBuilder() IdentifyReplyCommandTerminal
 type _IdentifyReplyCommandTerminalLevelsBuilder struct {
 	*_IdentifyReplyCommandTerminalLevels
 
+	parentBuilder *_IdentifyReplyCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (IdentifyReplyCommandTerminalLevelsBuilder) = (*_IdentifyReplyCommandTerminalLevelsBuilder)(nil)
 
-func (m *_IdentifyReplyCommandTerminalLevelsBuilder) WithMandatoryFields(terminalLevels []byte) IdentifyReplyCommandTerminalLevelsBuilder {
-	return m.WithTerminalLevels(terminalLevels...)
+func (b *_IdentifyReplyCommandTerminalLevelsBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
 }
 
-func (m *_IdentifyReplyCommandTerminalLevelsBuilder) WithTerminalLevels(terminalLevels ...byte) IdentifyReplyCommandTerminalLevelsBuilder {
-	m.TerminalLevels = terminalLevels
-	return m
+func (b *_IdentifyReplyCommandTerminalLevelsBuilder) WithMandatoryFields(terminalLevels []byte) IdentifyReplyCommandTerminalLevelsBuilder {
+	return b.WithTerminalLevels(terminalLevels...)
 }
 
-func (m *_IdentifyReplyCommandTerminalLevelsBuilder) Build() (IdentifyReplyCommandTerminalLevels, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IdentifyReplyCommandTerminalLevelsBuilder) WithTerminalLevels(terminalLevels ...byte) IdentifyReplyCommandTerminalLevelsBuilder {
+	b.TerminalLevels = terminalLevels
+	return b
+}
+
+func (b *_IdentifyReplyCommandTerminalLevelsBuilder) Build() (IdentifyReplyCommandTerminalLevels, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommandTerminalLevels.deepCopy(), nil
+	return b._IdentifyReplyCommandTerminalLevels.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandTerminalLevelsBuilder) MustBuild() IdentifyReplyCommandTerminalLevels {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandTerminalLevelsBuilder) MustBuild() IdentifyReplyCommandTerminalLevels {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandTerminalLevelsBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandTerminalLevelsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandTerminalLevelsBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandTerminalLevelsBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandTerminalLevelsBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandTerminalLevelsBuilder().(*_IdentifyReplyCommandTerminalLevelsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandTerminalLevelsBuilder creates a IdentifyReplyCommandTerminalLevelsBuilder
-func (m *_IdentifyReplyCommandTerminalLevels) CreateIdentifyReplyCommandTerminalLevelsBuilder() IdentifyReplyCommandTerminalLevelsBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommandTerminalLevels) CreateIdentifyReplyCommandTerminalLevelsBuilder() IdentifyReplyCommandTerminalLevelsBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandTerminalLevelsBuilder()
 	}
-	return &_IdentifyReplyCommandTerminalLevelsBuilder{_IdentifyReplyCommandTerminalLevels: m.deepCopy()}
+	return &_IdentifyReplyCommandTerminalLevelsBuilder{_IdentifyReplyCommandTerminalLevels: b.deepCopy()}
 }
 
 ///////////////////////
@@ -277,9 +296,13 @@ func (m *_IdentifyReplyCommandTerminalLevels) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

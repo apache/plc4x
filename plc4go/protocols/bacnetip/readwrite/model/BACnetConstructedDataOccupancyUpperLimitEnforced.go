@@ -100,64 +100,83 @@ func NewBACnetConstructedDataOccupancyUpperLimitEnforcedBuilder() BACnetConstruc
 type _BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder struct {
 	*_BACnetConstructedDataOccupancyUpperLimitEnforced
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) = (*_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder)(nil)
 
-func (m *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) WithMandatoryFields(occupancyUpperLimitEnforced BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder {
-	return m.WithOccupancyUpperLimitEnforced(occupancyUpperLimitEnforced)
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) WithOccupancyUpperLimitEnforced(occupancyUpperLimitEnforced BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder {
-	m.OccupancyUpperLimitEnforced = occupancyUpperLimitEnforced
-	return m
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) WithMandatoryFields(occupancyUpperLimitEnforced BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder {
+	return b.WithOccupancyUpperLimitEnforced(occupancyUpperLimitEnforced)
 }
 
-func (m *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) WithOccupancyUpperLimitEnforcedBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder {
-	builder := builderSupplier(m.OccupancyUpperLimitEnforced.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) WithOccupancyUpperLimitEnforced(occupancyUpperLimitEnforced BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder {
+	b.OccupancyUpperLimitEnforced = occupancyUpperLimitEnforced
+	return b
+}
+
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) WithOccupancyUpperLimitEnforcedBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder {
+	builder := builderSupplier(b.OccupancyUpperLimitEnforced.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.OccupancyUpperLimitEnforced, err = builder.Build()
+	b.OccupancyUpperLimitEnforced, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) Build() (BACnetConstructedDataOccupancyUpperLimitEnforced, error) {
-	if m.OccupancyUpperLimitEnforced == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) Build() (BACnetConstructedDataOccupancyUpperLimitEnforced, error) {
+	if b.OccupancyUpperLimitEnforced == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'occupancyUpperLimitEnforced' not set"))
+		b.err.Append(errors.New("mandatory field 'occupancyUpperLimitEnforced' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataOccupancyUpperLimitEnforced.deepCopy(), nil
+	return b._BACnetConstructedDataOccupancyUpperLimitEnforced.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) MustBuild() BACnetConstructedDataOccupancyUpperLimitEnforced {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) MustBuild() BACnetConstructedDataOccupancyUpperLimitEnforced {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataOccupancyUpperLimitEnforcedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataOccupancyUpperLimitEnforcedBuilder().(*_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataOccupancyUpperLimitEnforcedBuilder creates a BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder
-func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) CreateBACnetConstructedDataOccupancyUpperLimitEnforcedBuilder() BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforced) CreateBACnetConstructedDataOccupancyUpperLimitEnforcedBuilder() BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataOccupancyUpperLimitEnforcedBuilder()
 	}
-	return &_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder{_BACnetConstructedDataOccupancyUpperLimitEnforced: m.deepCopy()}
+	return &_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder{_BACnetConstructedDataOccupancyUpperLimitEnforced: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

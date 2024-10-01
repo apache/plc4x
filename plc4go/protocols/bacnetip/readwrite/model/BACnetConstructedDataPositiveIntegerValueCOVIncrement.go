@@ -100,64 +100,83 @@ func NewBACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder() BACnetCon
 type _BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder struct {
 	*_BACnetConstructedDataPositiveIntegerValueCOVIncrement
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) = (*_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder)(nil)
 
-func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) WithMandatoryFields(covIncrement BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder {
-	return m.WithCovIncrement(covIncrement)
+func (b *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) WithCovIncrement(covIncrement BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder {
-	m.CovIncrement = covIncrement
-	return m
+func (b *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) WithMandatoryFields(covIncrement BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder {
+	return b.WithCovIncrement(covIncrement)
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) WithCovIncrementBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder {
-	builder := builderSupplier(m.CovIncrement.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) WithCovIncrement(covIncrement BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder {
+	b.CovIncrement = covIncrement
+	return b
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) WithCovIncrementBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder {
+	builder := builderSupplier(b.CovIncrement.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.CovIncrement, err = builder.Build()
+	b.CovIncrement, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) Build() (BACnetConstructedDataPositiveIntegerValueCOVIncrement, error) {
-	if m.CovIncrement == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) Build() (BACnetConstructedDataPositiveIntegerValueCOVIncrement, error) {
+	if b.CovIncrement == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'covIncrement' not set"))
+		b.err.Append(errors.New("mandatory field 'covIncrement' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataPositiveIntegerValueCOVIncrement.deepCopy(), nil
+	return b._BACnetConstructedDataPositiveIntegerValueCOVIncrement.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueCOVIncrement {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueCOVIncrement {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder().(*_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder creates a BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder
-func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) CreateBACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder() BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) CreateBACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder() BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder()
 	}
-	return &_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder{_BACnetConstructedDataPositiveIntegerValueCOVIncrement: m.deepCopy()}
+	return &_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder{_BACnetConstructedDataPositiveIntegerValueCOVIncrement: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) String() string
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

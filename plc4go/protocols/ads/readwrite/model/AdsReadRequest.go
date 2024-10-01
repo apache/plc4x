@@ -105,55 +105,74 @@ func NewAdsReadRequestBuilder() AdsReadRequestBuilder {
 type _AdsReadRequestBuilder struct {
 	*_AdsReadRequest
 
+	parentBuilder *_AmsPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsReadRequestBuilder) = (*_AdsReadRequestBuilder)(nil)
 
-func (m *_AdsReadRequestBuilder) WithMandatoryFields(indexGroup uint32, indexOffset uint32, length uint32) AdsReadRequestBuilder {
-	return m.WithIndexGroup(indexGroup).WithIndexOffset(indexOffset).WithLength(length)
+func (b *_AdsReadRequestBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
 }
 
-func (m *_AdsReadRequestBuilder) WithIndexGroup(indexGroup uint32) AdsReadRequestBuilder {
-	m.IndexGroup = indexGroup
-	return m
+func (b *_AdsReadRequestBuilder) WithMandatoryFields(indexGroup uint32, indexOffset uint32, length uint32) AdsReadRequestBuilder {
+	return b.WithIndexGroup(indexGroup).WithIndexOffset(indexOffset).WithLength(length)
 }
 
-func (m *_AdsReadRequestBuilder) WithIndexOffset(indexOffset uint32) AdsReadRequestBuilder {
-	m.IndexOffset = indexOffset
-	return m
+func (b *_AdsReadRequestBuilder) WithIndexGroup(indexGroup uint32) AdsReadRequestBuilder {
+	b.IndexGroup = indexGroup
+	return b
 }
 
-func (m *_AdsReadRequestBuilder) WithLength(length uint32) AdsReadRequestBuilder {
-	m.Length = length
-	return m
+func (b *_AdsReadRequestBuilder) WithIndexOffset(indexOffset uint32) AdsReadRequestBuilder {
+	b.IndexOffset = indexOffset
+	return b
 }
 
-func (m *_AdsReadRequestBuilder) Build() (AdsReadRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsReadRequestBuilder) WithLength(length uint32) AdsReadRequestBuilder {
+	b.Length = length
+	return b
+}
+
+func (b *_AdsReadRequestBuilder) Build() (AdsReadRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsReadRequest.deepCopy(), nil
+	return b._AdsReadRequest.deepCopy(), nil
 }
 
-func (m *_AdsReadRequestBuilder) MustBuild() AdsReadRequest {
-	build, err := m.Build()
+func (b *_AdsReadRequestBuilder) MustBuild() AdsReadRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsReadRequestBuilder) DeepCopy() any {
-	return m.CreateAdsReadRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsReadRequestBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsReadRequestBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsReadRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAdsReadRequestBuilder().(*_AdsReadRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsReadRequestBuilder creates a AdsReadRequestBuilder
-func (m *_AdsReadRequest) CreateAdsReadRequestBuilder() AdsReadRequestBuilder {
-	if m == nil {
+func (b *_AdsReadRequest) CreateAdsReadRequestBuilder() AdsReadRequestBuilder {
+	if b == nil {
 		return NewAdsReadRequestBuilder()
 	}
-	return &_AdsReadRequestBuilder{_AdsReadRequest: m.deepCopy()}
+	return &_AdsReadRequestBuilder{_AdsReadRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -337,9 +356,13 @@ func (m *_AdsReadRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDoorExtendedPulseTimeBuilder() BACnetConstructedDat
 type _BACnetConstructedDataDoorExtendedPulseTimeBuilder struct {
 	*_BACnetConstructedDataDoorExtendedPulseTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDoorExtendedPulseTimeBuilder) = (*_BACnetConstructedDataDoorExtendedPulseTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataDoorExtendedPulseTimeBuilder) WithMandatoryFields(doorExtendedPulseTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorExtendedPulseTimeBuilder {
-	return m.WithDoorExtendedPulseTime(doorExtendedPulseTime)
+func (b *_BACnetConstructedDataDoorExtendedPulseTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDoorExtendedPulseTimeBuilder) WithDoorExtendedPulseTime(doorExtendedPulseTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorExtendedPulseTimeBuilder {
-	m.DoorExtendedPulseTime = doorExtendedPulseTime
-	return m
+func (b *_BACnetConstructedDataDoorExtendedPulseTimeBuilder) WithMandatoryFields(doorExtendedPulseTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorExtendedPulseTimeBuilder {
+	return b.WithDoorExtendedPulseTime(doorExtendedPulseTime)
 }
 
-func (m *_BACnetConstructedDataDoorExtendedPulseTimeBuilder) WithDoorExtendedPulseTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDoorExtendedPulseTimeBuilder {
-	builder := builderSupplier(m.DoorExtendedPulseTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataDoorExtendedPulseTimeBuilder) WithDoorExtendedPulseTime(doorExtendedPulseTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorExtendedPulseTimeBuilder {
+	b.DoorExtendedPulseTime = doorExtendedPulseTime
+	return b
+}
+
+func (b *_BACnetConstructedDataDoorExtendedPulseTimeBuilder) WithDoorExtendedPulseTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDoorExtendedPulseTimeBuilder {
+	builder := builderSupplier(b.DoorExtendedPulseTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.DoorExtendedPulseTime, err = builder.Build()
+	b.DoorExtendedPulseTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDoorExtendedPulseTimeBuilder) Build() (BACnetConstructedDataDoorExtendedPulseTime, error) {
-	if m.DoorExtendedPulseTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDoorExtendedPulseTimeBuilder) Build() (BACnetConstructedDataDoorExtendedPulseTime, error) {
+	if b.DoorExtendedPulseTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'doorExtendedPulseTime' not set"))
+		b.err.Append(errors.New("mandatory field 'doorExtendedPulseTime' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDoorExtendedPulseTime.deepCopy(), nil
+	return b._BACnetConstructedDataDoorExtendedPulseTime.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDoorExtendedPulseTimeBuilder) MustBuild() BACnetConstructedDataDoorExtendedPulseTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDoorExtendedPulseTimeBuilder) MustBuild() BACnetConstructedDataDoorExtendedPulseTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDoorExtendedPulseTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDoorExtendedPulseTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDoorExtendedPulseTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDoorExtendedPulseTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDoorExtendedPulseTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDoorExtendedPulseTimeBuilder().(*_BACnetConstructedDataDoorExtendedPulseTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDoorExtendedPulseTimeBuilder creates a BACnetConstructedDataDoorExtendedPulseTimeBuilder
-func (m *_BACnetConstructedDataDoorExtendedPulseTime) CreateBACnetConstructedDataDoorExtendedPulseTimeBuilder() BACnetConstructedDataDoorExtendedPulseTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDoorExtendedPulseTime) CreateBACnetConstructedDataDoorExtendedPulseTimeBuilder() BACnetConstructedDataDoorExtendedPulseTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDoorExtendedPulseTimeBuilder()
 	}
-	return &_BACnetConstructedDataDoorExtendedPulseTimeBuilder{_BACnetConstructedDataDoorExtendedPulseTime: m.deepCopy()}
+	return &_BACnetConstructedDataDoorExtendedPulseTimeBuilder{_BACnetConstructedDataDoorExtendedPulseTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

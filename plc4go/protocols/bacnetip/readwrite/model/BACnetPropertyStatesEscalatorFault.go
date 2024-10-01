@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesEscalatorFaultBuilder() BACnetPropertyStatesEscalato
 type _BACnetPropertyStatesEscalatorFaultBuilder struct {
 	*_BACnetPropertyStatesEscalatorFault
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesEscalatorFaultBuilder) = (*_BACnetPropertyStatesEscalatorFaultBuilder)(nil)
 
-func (m *_BACnetPropertyStatesEscalatorFaultBuilder) WithMandatoryFields(escalatorFault BACnetEscalatorFaultTagged) BACnetPropertyStatesEscalatorFaultBuilder {
-	return m.WithEscalatorFault(escalatorFault)
+func (b *_BACnetPropertyStatesEscalatorFaultBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesEscalatorFaultBuilder) WithEscalatorFault(escalatorFault BACnetEscalatorFaultTagged) BACnetPropertyStatesEscalatorFaultBuilder {
-	m.EscalatorFault = escalatorFault
-	return m
+func (b *_BACnetPropertyStatesEscalatorFaultBuilder) WithMandatoryFields(escalatorFault BACnetEscalatorFaultTagged) BACnetPropertyStatesEscalatorFaultBuilder {
+	return b.WithEscalatorFault(escalatorFault)
 }
 
-func (m *_BACnetPropertyStatesEscalatorFaultBuilder) WithEscalatorFaultBuilder(builderSupplier func(BACnetEscalatorFaultTaggedBuilder) BACnetEscalatorFaultTaggedBuilder) BACnetPropertyStatesEscalatorFaultBuilder {
-	builder := builderSupplier(m.EscalatorFault.CreateBACnetEscalatorFaultTaggedBuilder())
+func (b *_BACnetPropertyStatesEscalatorFaultBuilder) WithEscalatorFault(escalatorFault BACnetEscalatorFaultTagged) BACnetPropertyStatesEscalatorFaultBuilder {
+	b.EscalatorFault = escalatorFault
+	return b
+}
+
+func (b *_BACnetPropertyStatesEscalatorFaultBuilder) WithEscalatorFaultBuilder(builderSupplier func(BACnetEscalatorFaultTaggedBuilder) BACnetEscalatorFaultTaggedBuilder) BACnetPropertyStatesEscalatorFaultBuilder {
+	builder := builderSupplier(b.EscalatorFault.CreateBACnetEscalatorFaultTaggedBuilder())
 	var err error
-	m.EscalatorFault, err = builder.Build()
+	b.EscalatorFault, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEscalatorFaultTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEscalatorFaultTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesEscalatorFaultBuilder) Build() (BACnetPropertyStatesEscalatorFault, error) {
-	if m.EscalatorFault == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesEscalatorFaultBuilder) Build() (BACnetPropertyStatesEscalatorFault, error) {
+	if b.EscalatorFault == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'escalatorFault' not set"))
+		b.err.Append(errors.New("mandatory field 'escalatorFault' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesEscalatorFault.deepCopy(), nil
+	return b._BACnetPropertyStatesEscalatorFault.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesEscalatorFaultBuilder) MustBuild() BACnetPropertyStatesEscalatorFault {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesEscalatorFaultBuilder) MustBuild() BACnetPropertyStatesEscalatorFault {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesEscalatorFaultBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesEscalatorFaultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesEscalatorFaultBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesEscalatorFaultBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesEscalatorFaultBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesEscalatorFaultBuilder().(*_BACnetPropertyStatesEscalatorFaultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesEscalatorFaultBuilder creates a BACnetPropertyStatesEscalatorFaultBuilder
-func (m *_BACnetPropertyStatesEscalatorFault) CreateBACnetPropertyStatesEscalatorFaultBuilder() BACnetPropertyStatesEscalatorFaultBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesEscalatorFault) CreateBACnetPropertyStatesEscalatorFaultBuilder() BACnetPropertyStatesEscalatorFaultBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesEscalatorFaultBuilder()
 	}
-	return &_BACnetPropertyStatesEscalatorFaultBuilder{_BACnetPropertyStatesEscalatorFault: m.deepCopy()}
+	return &_BACnetPropertyStatesEscalatorFaultBuilder{_BACnetPropertyStatesEscalatorFault: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPropertyStatesEscalatorFault) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

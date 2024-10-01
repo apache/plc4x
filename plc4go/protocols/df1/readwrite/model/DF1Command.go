@@ -95,10 +95,24 @@ type DF1CommandBuilder interface {
 	WithStatus(uint8) DF1CommandBuilder
 	// WithTransactionCounter adds TransactionCounter (property field)
 	WithTransactionCounter(uint16) DF1CommandBuilder
+	// AsDF1UnprotectedReadRequest converts this build to a subType of DF1Command. It is always possible to return to current builder using Done()
+	AsDF1UnprotectedReadRequest() interface {
+		DF1UnprotectedReadRequestBuilder
+		Done() DF1CommandBuilder
+	}
+	// AsDF1UnprotectedReadResponse converts this build to a subType of DF1Command. It is always possible to return to current builder using Done()
+	AsDF1UnprotectedReadResponse() interface {
+		DF1UnprotectedReadResponseBuilder
+		Done() DF1CommandBuilder
+	}
 	// Build builds the DF1Command or returns an error if something is wrong
-	Build() (DF1CommandContract, error)
+	PartialBuild() (DF1CommandContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() DF1CommandContract
+	PartialMustBuild() DF1CommandContract
+	// Build builds the DF1Command or returns an error if something is wrong
+	Build() (DF1Command, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1Command
 }
 
 // NewDF1CommandBuilder() creates a DF1CommandBuilder
@@ -106,53 +120,119 @@ func NewDF1CommandBuilder() DF1CommandBuilder {
 	return &_DF1CommandBuilder{_DF1Command: new(_DF1Command)}
 }
 
+type _DF1CommandChildBuilder interface {
+	utils.Copyable
+	setParent(DF1CommandContract)
+	buildForDF1Command() (DF1Command, error)
+}
+
 type _DF1CommandBuilder struct {
 	*_DF1Command
+
+	childBuilder _DF1CommandChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (DF1CommandBuilder) = (*_DF1CommandBuilder)(nil)
 
-func (m *_DF1CommandBuilder) WithMandatoryFields(status uint8, transactionCounter uint16) DF1CommandBuilder {
-	return m.WithStatus(status).WithTransactionCounter(transactionCounter)
+func (b *_DF1CommandBuilder) WithMandatoryFields(status uint8, transactionCounter uint16) DF1CommandBuilder {
+	return b.WithStatus(status).WithTransactionCounter(transactionCounter)
 }
 
-func (m *_DF1CommandBuilder) WithStatus(status uint8) DF1CommandBuilder {
-	m.Status = status
-	return m
+func (b *_DF1CommandBuilder) WithStatus(status uint8) DF1CommandBuilder {
+	b.Status = status
+	return b
 }
 
-func (m *_DF1CommandBuilder) WithTransactionCounter(transactionCounter uint16) DF1CommandBuilder {
-	m.TransactionCounter = transactionCounter
-	return m
+func (b *_DF1CommandBuilder) WithTransactionCounter(transactionCounter uint16) DF1CommandBuilder {
+	b.TransactionCounter = transactionCounter
+	return b
 }
 
-func (m *_DF1CommandBuilder) Build() (DF1CommandContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DF1CommandBuilder) PartialBuild() (DF1CommandContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DF1Command.deepCopy(), nil
+	return b._DF1Command.deepCopy(), nil
 }
 
-func (m *_DF1CommandBuilder) MustBuild() DF1CommandContract {
-	build, err := m.Build()
+func (b *_DF1CommandBuilder) PartialMustBuild() DF1CommandContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DF1CommandBuilder) DeepCopy() any {
-	return m.CreateDF1CommandBuilder()
+func (b *_DF1CommandBuilder) AsDF1UnprotectedReadRequest() interface {
+	DF1UnprotectedReadRequestBuilder
+	Done() DF1CommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DF1UnprotectedReadRequestBuilder
+		Done() DF1CommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDF1UnprotectedReadRequestBuilder().(*_DF1UnprotectedReadRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_DF1CommandBuilder) AsDF1UnprotectedReadResponse() interface {
+	DF1UnprotectedReadResponseBuilder
+	Done() DF1CommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DF1UnprotectedReadResponseBuilder
+		Done() DF1CommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDF1UnprotectedReadResponseBuilder().(*_DF1UnprotectedReadResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_DF1CommandBuilder) Build() (DF1Command, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForDF1Command()
+}
+
+func (b *_DF1CommandBuilder) MustBuild() DF1Command {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DF1CommandBuilder) DeepCopy() any {
+	_copy := b.CreateDF1CommandBuilder().(*_DF1CommandBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_DF1CommandChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDF1CommandBuilder creates a DF1CommandBuilder
-func (m *_DF1Command) CreateDF1CommandBuilder() DF1CommandBuilder {
-	if m == nil {
+func (b *_DF1Command) CreateDF1CommandBuilder() DF1CommandBuilder {
+	if b == nil {
 		return NewDF1CommandBuilder()
 	}
-	return &_DF1CommandBuilder{_DF1Command: m.deepCopy()}
+	return &_DF1CommandBuilder{_DF1Command: b.deepCopy()}
 }
 
 ///////////////////////

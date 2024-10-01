@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAccumulatorMinPresValueBuilder() BACnetConstructedD
 type _BACnetConstructedDataAccumulatorMinPresValueBuilder struct {
 	*_BACnetConstructedDataAccumulatorMinPresValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAccumulatorMinPresValueBuilder) = (*_BACnetConstructedDataAccumulatorMinPresValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataAccumulatorMinPresValueBuilder) WithMandatoryFields(minPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorMinPresValueBuilder {
-	return m.WithMinPresValue(minPresValue)
+func (b *_BACnetConstructedDataAccumulatorMinPresValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAccumulatorMinPresValueBuilder) WithMinPresValue(minPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorMinPresValueBuilder {
-	m.MinPresValue = minPresValue
-	return m
+func (b *_BACnetConstructedDataAccumulatorMinPresValueBuilder) WithMandatoryFields(minPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorMinPresValueBuilder {
+	return b.WithMinPresValue(minPresValue)
 }
 
-func (m *_BACnetConstructedDataAccumulatorMinPresValueBuilder) WithMinPresValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccumulatorMinPresValueBuilder {
-	builder := builderSupplier(m.MinPresValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataAccumulatorMinPresValueBuilder) WithMinPresValue(minPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorMinPresValueBuilder {
+	b.MinPresValue = minPresValue
+	return b
+}
+
+func (b *_BACnetConstructedDataAccumulatorMinPresValueBuilder) WithMinPresValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccumulatorMinPresValueBuilder {
+	builder := builderSupplier(b.MinPresValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.MinPresValue, err = builder.Build()
+	b.MinPresValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAccumulatorMinPresValueBuilder) Build() (BACnetConstructedDataAccumulatorMinPresValue, error) {
-	if m.MinPresValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAccumulatorMinPresValueBuilder) Build() (BACnetConstructedDataAccumulatorMinPresValue, error) {
+	if b.MinPresValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'minPresValue' not set"))
+		b.err.Append(errors.New("mandatory field 'minPresValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAccumulatorMinPresValue.deepCopy(), nil
+	return b._BACnetConstructedDataAccumulatorMinPresValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAccumulatorMinPresValueBuilder) MustBuild() BACnetConstructedDataAccumulatorMinPresValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAccumulatorMinPresValueBuilder) MustBuild() BACnetConstructedDataAccumulatorMinPresValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAccumulatorMinPresValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAccumulatorMinPresValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccumulatorMinPresValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccumulatorMinPresValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccumulatorMinPresValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccumulatorMinPresValueBuilder().(*_BACnetConstructedDataAccumulatorMinPresValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAccumulatorMinPresValueBuilder creates a BACnetConstructedDataAccumulatorMinPresValueBuilder
-func (m *_BACnetConstructedDataAccumulatorMinPresValue) CreateBACnetConstructedDataAccumulatorMinPresValueBuilder() BACnetConstructedDataAccumulatorMinPresValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAccumulatorMinPresValue) CreateBACnetConstructedDataAccumulatorMinPresValueBuilder() BACnetConstructedDataAccumulatorMinPresValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAccumulatorMinPresValueBuilder()
 	}
-	return &_BACnetConstructedDataAccumulatorMinPresValueBuilder{_BACnetConstructedDataAccumulatorMinPresValue: m.deepCopy()}
+	return &_BACnetConstructedDataAccumulatorMinPresValueBuilder{_BACnetConstructedDataAccumulatorMinPresValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataAccumulatorMinPresValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

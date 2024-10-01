@@ -122,10 +122,49 @@ type RequestBuilder interface {
 	WithTermination(RequestTermination) RequestBuilder
 	// WithTerminationBuilder adds Termination (property field) which is build by the builder
 	WithTerminationBuilder(func(RequestTerminationBuilder) RequestTerminationBuilder) RequestBuilder
+	// AsRequestSmartConnectShortcut converts this build to a subType of Request. It is always possible to return to current builder using Done()
+	AsRequestSmartConnectShortcut() interface {
+		RequestSmartConnectShortcutBuilder
+		Done() RequestBuilder
+	}
+	// AsRequestReset converts this build to a subType of Request. It is always possible to return to current builder using Done()
+	AsRequestReset() interface {
+		RequestResetBuilder
+		Done() RequestBuilder
+	}
+	// AsRequestDirectCommandAccess converts this build to a subType of Request. It is always possible to return to current builder using Done()
+	AsRequestDirectCommandAccess() interface {
+		RequestDirectCommandAccessBuilder
+		Done() RequestBuilder
+	}
+	// AsRequestCommand converts this build to a subType of Request. It is always possible to return to current builder using Done()
+	AsRequestCommand() interface {
+		RequestCommandBuilder
+		Done() RequestBuilder
+	}
+	// AsRequestNull converts this build to a subType of Request. It is always possible to return to current builder using Done()
+	AsRequestNull() interface {
+		RequestNullBuilder
+		Done() RequestBuilder
+	}
+	// AsRequestEmpty converts this build to a subType of Request. It is always possible to return to current builder using Done()
+	AsRequestEmpty() interface {
+		RequestEmptyBuilder
+		Done() RequestBuilder
+	}
+	// AsRequestObsolete converts this build to a subType of Request. It is always possible to return to current builder using Done()
+	AsRequestObsolete() interface {
+		RequestObsoleteBuilder
+		Done() RequestBuilder
+	}
 	// Build builds the Request or returns an error if something is wrong
-	Build() (RequestContract, error)
+	PartialBuild() (RequestContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() RequestContract
+	PartialMustBuild() RequestContract
+	// Build builds the Request or returns an error if something is wrong
+	Build() (Request, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Request
 }
 
 // NewRequestBuilder() creates a RequestBuilder
@@ -133,87 +172,233 @@ func NewRequestBuilder() RequestBuilder {
 	return &_RequestBuilder{_Request: new(_Request)}
 }
 
+type _RequestChildBuilder interface {
+	utils.Copyable
+	setParent(RequestContract)
+	buildForRequest() (Request, error)
+}
+
 type _RequestBuilder struct {
 	*_Request
+
+	childBuilder _RequestChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (RequestBuilder) = (*_RequestBuilder)(nil)
 
-func (m *_RequestBuilder) WithMandatoryFields(peekedByte RequestType, secondPeek RequestType, termination RequestTermination) RequestBuilder {
-	return m.WithPeekedByte(peekedByte).WithSecondPeek(secondPeek).WithTermination(termination)
+func (b *_RequestBuilder) WithMandatoryFields(peekedByte RequestType, secondPeek RequestType, termination RequestTermination) RequestBuilder {
+	return b.WithPeekedByte(peekedByte).WithSecondPeek(secondPeek).WithTermination(termination)
 }
 
-func (m *_RequestBuilder) WithPeekedByte(peekedByte RequestType) RequestBuilder {
-	m.PeekedByte = peekedByte
-	return m
+func (b *_RequestBuilder) WithPeekedByte(peekedByte RequestType) RequestBuilder {
+	b.PeekedByte = peekedByte
+	return b
 }
 
-func (m *_RequestBuilder) WithOptionalStartingCR(startingCR RequestType) RequestBuilder {
-	m.StartingCR = &startingCR
-	return m
+func (b *_RequestBuilder) WithOptionalStartingCR(startingCR RequestType) RequestBuilder {
+	b.StartingCR = &startingCR
+	return b
 }
 
-func (m *_RequestBuilder) WithOptionalResetMode(resetMode RequestType) RequestBuilder {
-	m.ResetMode = &resetMode
-	return m
+func (b *_RequestBuilder) WithOptionalResetMode(resetMode RequestType) RequestBuilder {
+	b.ResetMode = &resetMode
+	return b
 }
 
-func (m *_RequestBuilder) WithSecondPeek(secondPeek RequestType) RequestBuilder {
-	m.SecondPeek = secondPeek
-	return m
+func (b *_RequestBuilder) WithSecondPeek(secondPeek RequestType) RequestBuilder {
+	b.SecondPeek = secondPeek
+	return b
 }
 
-func (m *_RequestBuilder) WithTermination(termination RequestTermination) RequestBuilder {
-	m.Termination = termination
-	return m
+func (b *_RequestBuilder) WithTermination(termination RequestTermination) RequestBuilder {
+	b.Termination = termination
+	return b
 }
 
-func (m *_RequestBuilder) WithTerminationBuilder(builderSupplier func(RequestTerminationBuilder) RequestTerminationBuilder) RequestBuilder {
-	builder := builderSupplier(m.Termination.CreateRequestTerminationBuilder())
+func (b *_RequestBuilder) WithTerminationBuilder(builderSupplier func(RequestTerminationBuilder) RequestTerminationBuilder) RequestBuilder {
+	builder := builderSupplier(b.Termination.CreateRequestTerminationBuilder())
 	var err error
-	m.Termination, err = builder.Build()
+	b.Termination, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "RequestTerminationBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestTerminationBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_RequestBuilder) Build() (RequestContract, error) {
-	if m.Termination == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_RequestBuilder) PartialBuild() (RequestContract, error) {
+	if b.Termination == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'termination' not set"))
+		b.err.Append(errors.New("mandatory field 'termination' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Request.deepCopy(), nil
+	return b._Request.deepCopy(), nil
 }
 
-func (m *_RequestBuilder) MustBuild() RequestContract {
-	build, err := m.Build()
+func (b *_RequestBuilder) PartialMustBuild() RequestContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RequestBuilder) DeepCopy() any {
-	return m.CreateRequestBuilder()
+func (b *_RequestBuilder) AsRequestSmartConnectShortcut() interface {
+	RequestSmartConnectShortcutBuilder
+	Done() RequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		RequestSmartConnectShortcutBuilder
+		Done() RequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewRequestSmartConnectShortcutBuilder().(*_RequestSmartConnectShortcutBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_RequestBuilder) AsRequestReset() interface {
+	RequestResetBuilder
+	Done() RequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		RequestResetBuilder
+		Done() RequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewRequestResetBuilder().(*_RequestResetBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_RequestBuilder) AsRequestDirectCommandAccess() interface {
+	RequestDirectCommandAccessBuilder
+	Done() RequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		RequestDirectCommandAccessBuilder
+		Done() RequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewRequestDirectCommandAccessBuilder().(*_RequestDirectCommandAccessBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_RequestBuilder) AsRequestCommand() interface {
+	RequestCommandBuilder
+	Done() RequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		RequestCommandBuilder
+		Done() RequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewRequestCommandBuilder().(*_RequestCommandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_RequestBuilder) AsRequestNull() interface {
+	RequestNullBuilder
+	Done() RequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		RequestNullBuilder
+		Done() RequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewRequestNullBuilder().(*_RequestNullBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_RequestBuilder) AsRequestEmpty() interface {
+	RequestEmptyBuilder
+	Done() RequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		RequestEmptyBuilder
+		Done() RequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewRequestEmptyBuilder().(*_RequestEmptyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_RequestBuilder) AsRequestObsolete() interface {
+	RequestObsoleteBuilder
+	Done() RequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		RequestObsoleteBuilder
+		Done() RequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewRequestObsoleteBuilder().(*_RequestObsoleteBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_RequestBuilder) Build() (Request, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForRequest()
+}
+
+func (b *_RequestBuilder) MustBuild() Request {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_RequestBuilder) DeepCopy() any {
+	_copy := b.CreateRequestBuilder().(*_RequestBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_RequestChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRequestBuilder creates a RequestBuilder
-func (m *_Request) CreateRequestBuilder() RequestBuilder {
-	if m == nil {
+func (b *_Request) CreateRequestBuilder() RequestBuilder {
+	if b == nil {
 		return NewRequestBuilder()
 	}
-	return &_RequestBuilder{_Request: m.deepCopy()}
+	return &_RequestBuilder{_Request: b.deepCopy()}
 }
 
 ///////////////////////

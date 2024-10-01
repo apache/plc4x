@@ -121,98 +121,117 @@ func NewAirConditioningDataZoneTemperatureBuilder() AirConditioningDataZoneTempe
 type _AirConditioningDataZoneTemperatureBuilder struct {
 	*_AirConditioningDataZoneTemperature
 
+	parentBuilder *_AirConditioningDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AirConditioningDataZoneTemperatureBuilder) = (*_AirConditioningDataZoneTemperatureBuilder)(nil)
 
-func (m *_AirConditioningDataZoneTemperatureBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, temperature HVACTemperature, sensorStatus HVACSensorStatus) AirConditioningDataZoneTemperatureBuilder {
-	return m.WithZoneGroup(zoneGroup).WithZoneList(zoneList).WithTemperature(temperature).WithSensorStatus(sensorStatus)
+func (b *_AirConditioningDataZoneTemperatureBuilder) setParent(contract AirConditioningDataContract) {
+	b.AirConditioningDataContract = contract
 }
 
-func (m *_AirConditioningDataZoneTemperatureBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataZoneTemperatureBuilder {
-	m.ZoneGroup = zoneGroup
-	return m
+func (b *_AirConditioningDataZoneTemperatureBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, temperature HVACTemperature, sensorStatus HVACSensorStatus) AirConditioningDataZoneTemperatureBuilder {
+	return b.WithZoneGroup(zoneGroup).WithZoneList(zoneList).WithTemperature(temperature).WithSensorStatus(sensorStatus)
 }
 
-func (m *_AirConditioningDataZoneTemperatureBuilder) WithZoneList(zoneList HVACZoneList) AirConditioningDataZoneTemperatureBuilder {
-	m.ZoneList = zoneList
-	return m
+func (b *_AirConditioningDataZoneTemperatureBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataZoneTemperatureBuilder {
+	b.ZoneGroup = zoneGroup
+	return b
 }
 
-func (m *_AirConditioningDataZoneTemperatureBuilder) WithZoneListBuilder(builderSupplier func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataZoneTemperatureBuilder {
-	builder := builderSupplier(m.ZoneList.CreateHVACZoneListBuilder())
+func (b *_AirConditioningDataZoneTemperatureBuilder) WithZoneList(zoneList HVACZoneList) AirConditioningDataZoneTemperatureBuilder {
+	b.ZoneList = zoneList
+	return b
+}
+
+func (b *_AirConditioningDataZoneTemperatureBuilder) WithZoneListBuilder(builderSupplier func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataZoneTemperatureBuilder {
+	builder := builderSupplier(b.ZoneList.CreateHVACZoneListBuilder())
 	var err error
-	m.ZoneList, err = builder.Build()
+	b.ZoneList, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataZoneTemperatureBuilder) WithTemperature(temperature HVACTemperature) AirConditioningDataZoneTemperatureBuilder {
-	m.Temperature = temperature
-	return m
+func (b *_AirConditioningDataZoneTemperatureBuilder) WithTemperature(temperature HVACTemperature) AirConditioningDataZoneTemperatureBuilder {
+	b.Temperature = temperature
+	return b
 }
 
-func (m *_AirConditioningDataZoneTemperatureBuilder) WithTemperatureBuilder(builderSupplier func(HVACTemperatureBuilder) HVACTemperatureBuilder) AirConditioningDataZoneTemperatureBuilder {
-	builder := builderSupplier(m.Temperature.CreateHVACTemperatureBuilder())
+func (b *_AirConditioningDataZoneTemperatureBuilder) WithTemperatureBuilder(builderSupplier func(HVACTemperatureBuilder) HVACTemperatureBuilder) AirConditioningDataZoneTemperatureBuilder {
+	builder := builderSupplier(b.Temperature.CreateHVACTemperatureBuilder())
 	var err error
-	m.Temperature, err = builder.Build()
+	b.Temperature, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "HVACTemperatureBuilder failed"))
+		b.err.Append(errors.Wrap(err, "HVACTemperatureBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AirConditioningDataZoneTemperatureBuilder) WithSensorStatus(sensorStatus HVACSensorStatus) AirConditioningDataZoneTemperatureBuilder {
-	m.SensorStatus = sensorStatus
-	return m
+func (b *_AirConditioningDataZoneTemperatureBuilder) WithSensorStatus(sensorStatus HVACSensorStatus) AirConditioningDataZoneTemperatureBuilder {
+	b.SensorStatus = sensorStatus
+	return b
 }
 
-func (m *_AirConditioningDataZoneTemperatureBuilder) Build() (AirConditioningDataZoneTemperature, error) {
-	if m.ZoneList == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AirConditioningDataZoneTemperatureBuilder) Build() (AirConditioningDataZoneTemperature, error) {
+	if b.ZoneList == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'zoneList' not set"))
+		b.err.Append(errors.New("mandatory field 'zoneList' not set"))
 	}
-	if m.Temperature == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Temperature == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'temperature' not set"))
+		b.err.Append(errors.New("mandatory field 'temperature' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AirConditioningDataZoneTemperature.deepCopy(), nil
+	return b._AirConditioningDataZoneTemperature.deepCopy(), nil
 }
 
-func (m *_AirConditioningDataZoneTemperatureBuilder) MustBuild() AirConditioningDataZoneTemperature {
-	build, err := m.Build()
+func (b *_AirConditioningDataZoneTemperatureBuilder) MustBuild() AirConditioningDataZoneTemperature {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AirConditioningDataZoneTemperatureBuilder) DeepCopy() any {
-	return m.CreateAirConditioningDataZoneTemperatureBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AirConditioningDataZoneTemperatureBuilder) Done() AirConditioningDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AirConditioningDataZoneTemperatureBuilder) buildForAirConditioningData() (AirConditioningData, error) {
+	return b.Build()
+}
+
+func (b *_AirConditioningDataZoneTemperatureBuilder) DeepCopy() any {
+	_copy := b.CreateAirConditioningDataZoneTemperatureBuilder().(*_AirConditioningDataZoneTemperatureBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAirConditioningDataZoneTemperatureBuilder creates a AirConditioningDataZoneTemperatureBuilder
-func (m *_AirConditioningDataZoneTemperature) CreateAirConditioningDataZoneTemperatureBuilder() AirConditioningDataZoneTemperatureBuilder {
-	if m == nil {
+func (b *_AirConditioningDataZoneTemperature) CreateAirConditioningDataZoneTemperatureBuilder() AirConditioningDataZoneTemperatureBuilder {
+	if b == nil {
 		return NewAirConditioningDataZoneTemperatureBuilder()
 	}
-	return &_AirConditioningDataZoneTemperatureBuilder{_AirConditioningDataZoneTemperature: m.deepCopy()}
+	return &_AirConditioningDataZoneTemperatureBuilder{_AirConditioningDataZoneTemperature: b.deepCopy()}
 }
 
 ///////////////////////
@@ -406,9 +425,13 @@ func (m *_AirConditioningDataZoneTemperature) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

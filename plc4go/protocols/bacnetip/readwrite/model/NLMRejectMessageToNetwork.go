@@ -99,50 +99,69 @@ func NewNLMRejectMessageToNetworkBuilder() NLMRejectMessageToNetworkBuilder {
 type _NLMRejectMessageToNetworkBuilder struct {
 	*_NLMRejectMessageToNetwork
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMRejectMessageToNetworkBuilder) = (*_NLMRejectMessageToNetworkBuilder)(nil)
 
-func (m *_NLMRejectMessageToNetworkBuilder) WithMandatoryFields(rejectReason NLMRejectMessageToNetworkRejectReason, destinationNetworkAddress uint16) NLMRejectMessageToNetworkBuilder {
-	return m.WithRejectReason(rejectReason).WithDestinationNetworkAddress(destinationNetworkAddress)
+func (b *_NLMRejectMessageToNetworkBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMRejectMessageToNetworkBuilder) WithRejectReason(rejectReason NLMRejectMessageToNetworkRejectReason) NLMRejectMessageToNetworkBuilder {
-	m.RejectReason = rejectReason
-	return m
+func (b *_NLMRejectMessageToNetworkBuilder) WithMandatoryFields(rejectReason NLMRejectMessageToNetworkRejectReason, destinationNetworkAddress uint16) NLMRejectMessageToNetworkBuilder {
+	return b.WithRejectReason(rejectReason).WithDestinationNetworkAddress(destinationNetworkAddress)
 }
 
-func (m *_NLMRejectMessageToNetworkBuilder) WithDestinationNetworkAddress(destinationNetworkAddress uint16) NLMRejectMessageToNetworkBuilder {
-	m.DestinationNetworkAddress = destinationNetworkAddress
-	return m
+func (b *_NLMRejectMessageToNetworkBuilder) WithRejectReason(rejectReason NLMRejectMessageToNetworkRejectReason) NLMRejectMessageToNetworkBuilder {
+	b.RejectReason = rejectReason
+	return b
 }
 
-func (m *_NLMRejectMessageToNetworkBuilder) Build() (NLMRejectMessageToNetwork, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMRejectMessageToNetworkBuilder) WithDestinationNetworkAddress(destinationNetworkAddress uint16) NLMRejectMessageToNetworkBuilder {
+	b.DestinationNetworkAddress = destinationNetworkAddress
+	return b
+}
+
+func (b *_NLMRejectMessageToNetworkBuilder) Build() (NLMRejectMessageToNetwork, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMRejectMessageToNetwork.deepCopy(), nil
+	return b._NLMRejectMessageToNetwork.deepCopy(), nil
 }
 
-func (m *_NLMRejectMessageToNetworkBuilder) MustBuild() NLMRejectMessageToNetwork {
-	build, err := m.Build()
+func (b *_NLMRejectMessageToNetworkBuilder) MustBuild() NLMRejectMessageToNetwork {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMRejectMessageToNetworkBuilder) DeepCopy() any {
-	return m.CreateNLMRejectMessageToNetworkBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMRejectMessageToNetworkBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMRejectMessageToNetworkBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMRejectMessageToNetworkBuilder) DeepCopy() any {
+	_copy := b.CreateNLMRejectMessageToNetworkBuilder().(*_NLMRejectMessageToNetworkBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMRejectMessageToNetworkBuilder creates a NLMRejectMessageToNetworkBuilder
-func (m *_NLMRejectMessageToNetwork) CreateNLMRejectMessageToNetworkBuilder() NLMRejectMessageToNetworkBuilder {
-	if m == nil {
+func (b *_NLMRejectMessageToNetwork) CreateNLMRejectMessageToNetworkBuilder() NLMRejectMessageToNetworkBuilder {
+	if b == nil {
 		return NewNLMRejectMessageToNetworkBuilder()
 	}
-	return &_NLMRejectMessageToNetworkBuilder{_NLMRejectMessageToNetwork: m.deepCopy()}
+	return &_NLMRejectMessageToNetworkBuilder{_NLMRejectMessageToNetwork: b.deepCopy()}
 }
 
 ///////////////////////
@@ -304,9 +323,13 @@ func (m *_NLMRejectMessageToNetwork) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

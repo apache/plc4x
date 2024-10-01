@@ -98,64 +98,83 @@ func NewBACnetOptionalREALValueBuilder() BACnetOptionalREALValueBuilder {
 type _BACnetOptionalREALValueBuilder struct {
 	*_BACnetOptionalREALValue
 
+	parentBuilder *_BACnetOptionalREALBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetOptionalREALValueBuilder) = (*_BACnetOptionalREALValueBuilder)(nil)
 
-func (m *_BACnetOptionalREALValueBuilder) WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetOptionalREALValueBuilder {
-	return m.WithRealValue(realValue)
+func (b *_BACnetOptionalREALValueBuilder) setParent(contract BACnetOptionalREALContract) {
+	b.BACnetOptionalREALContract = contract
 }
 
-func (m *_BACnetOptionalREALValueBuilder) WithRealValue(realValue BACnetApplicationTagReal) BACnetOptionalREALValueBuilder {
-	m.RealValue = realValue
-	return m
+func (b *_BACnetOptionalREALValueBuilder) WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetOptionalREALValueBuilder {
+	return b.WithRealValue(realValue)
 }
 
-func (m *_BACnetOptionalREALValueBuilder) WithRealValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetOptionalREALValueBuilder {
-	builder := builderSupplier(m.RealValue.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetOptionalREALValueBuilder) WithRealValue(realValue BACnetApplicationTagReal) BACnetOptionalREALValueBuilder {
+	b.RealValue = realValue
+	return b
+}
+
+func (b *_BACnetOptionalREALValueBuilder) WithRealValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetOptionalREALValueBuilder {
+	builder := builderSupplier(b.RealValue.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.RealValue, err = builder.Build()
+	b.RealValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetOptionalREALValueBuilder) Build() (BACnetOptionalREALValue, error) {
-	if m.RealValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetOptionalREALValueBuilder) Build() (BACnetOptionalREALValue, error) {
+	if b.RealValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'realValue' not set"))
+		b.err.Append(errors.New("mandatory field 'realValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetOptionalREALValue.deepCopy(), nil
+	return b._BACnetOptionalREALValue.deepCopy(), nil
 }
 
-func (m *_BACnetOptionalREALValueBuilder) MustBuild() BACnetOptionalREALValue {
-	build, err := m.Build()
+func (b *_BACnetOptionalREALValueBuilder) MustBuild() BACnetOptionalREALValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetOptionalREALValueBuilder) DeepCopy() any {
-	return m.CreateBACnetOptionalREALValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetOptionalREALValueBuilder) Done() BACnetOptionalREALBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetOptionalREALValueBuilder) buildForBACnetOptionalREAL() (BACnetOptionalREAL, error) {
+	return b.Build()
+}
+
+func (b *_BACnetOptionalREALValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetOptionalREALValueBuilder().(*_BACnetOptionalREALValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetOptionalREALValueBuilder creates a BACnetOptionalREALValueBuilder
-func (m *_BACnetOptionalREALValue) CreateBACnetOptionalREALValueBuilder() BACnetOptionalREALValueBuilder {
-	if m == nil {
+func (b *_BACnetOptionalREALValue) CreateBACnetOptionalREALValueBuilder() BACnetOptionalREALValueBuilder {
+	if b == nil {
 		return NewBACnetOptionalREALValueBuilder()
 	}
-	return &_BACnetOptionalREALValueBuilder{_BACnetOptionalREALValue: m.deepCopy()}
+	return &_BACnetOptionalREALValueBuilder{_BACnetOptionalREALValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetOptionalREALValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

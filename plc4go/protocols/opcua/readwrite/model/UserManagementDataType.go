@@ -115,93 +115,112 @@ func NewUserManagementDataTypeBuilder() UserManagementDataTypeBuilder {
 type _UserManagementDataTypeBuilder struct {
 	*_UserManagementDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (UserManagementDataTypeBuilder) = (*_UserManagementDataTypeBuilder)(nil)
 
-func (m *_UserManagementDataTypeBuilder) WithMandatoryFields(userName PascalString, userConfiguration UserConfigurationMask, description PascalString) UserManagementDataTypeBuilder {
-	return m.WithUserName(userName).WithUserConfiguration(userConfiguration).WithDescription(description)
+func (b *_UserManagementDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_UserManagementDataTypeBuilder) WithUserName(userName PascalString) UserManagementDataTypeBuilder {
-	m.UserName = userName
-	return m
+func (b *_UserManagementDataTypeBuilder) WithMandatoryFields(userName PascalString, userConfiguration UserConfigurationMask, description PascalString) UserManagementDataTypeBuilder {
+	return b.WithUserName(userName).WithUserConfiguration(userConfiguration).WithDescription(description)
 }
 
-func (m *_UserManagementDataTypeBuilder) WithUserNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserManagementDataTypeBuilder {
-	builder := builderSupplier(m.UserName.CreatePascalStringBuilder())
+func (b *_UserManagementDataTypeBuilder) WithUserName(userName PascalString) UserManagementDataTypeBuilder {
+	b.UserName = userName
+	return b
+}
+
+func (b *_UserManagementDataTypeBuilder) WithUserNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserManagementDataTypeBuilder {
+	builder := builderSupplier(b.UserName.CreatePascalStringBuilder())
 	var err error
-	m.UserName, err = builder.Build()
+	b.UserName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_UserManagementDataTypeBuilder) WithUserConfiguration(userConfiguration UserConfigurationMask) UserManagementDataTypeBuilder {
-	m.UserConfiguration = userConfiguration
-	return m
+func (b *_UserManagementDataTypeBuilder) WithUserConfiguration(userConfiguration UserConfigurationMask) UserManagementDataTypeBuilder {
+	b.UserConfiguration = userConfiguration
+	return b
 }
 
-func (m *_UserManagementDataTypeBuilder) WithDescription(description PascalString) UserManagementDataTypeBuilder {
-	m.Description = description
-	return m
+func (b *_UserManagementDataTypeBuilder) WithDescription(description PascalString) UserManagementDataTypeBuilder {
+	b.Description = description
+	return b
 }
 
-func (m *_UserManagementDataTypeBuilder) WithDescriptionBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserManagementDataTypeBuilder {
-	builder := builderSupplier(m.Description.CreatePascalStringBuilder())
+func (b *_UserManagementDataTypeBuilder) WithDescriptionBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserManagementDataTypeBuilder {
+	builder := builderSupplier(b.Description.CreatePascalStringBuilder())
 	var err error
-	m.Description, err = builder.Build()
+	b.Description, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_UserManagementDataTypeBuilder) Build() (UserManagementDataType, error) {
-	if m.UserName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_UserManagementDataTypeBuilder) Build() (UserManagementDataType, error) {
+	if b.UserName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'userName' not set"))
+		b.err.Append(errors.New("mandatory field 'userName' not set"))
 	}
-	if m.Description == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'description' not set"))
+		b.err.Append(errors.New("mandatory field 'description' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._UserManagementDataType.deepCopy(), nil
+	return b._UserManagementDataType.deepCopy(), nil
 }
 
-func (m *_UserManagementDataTypeBuilder) MustBuild() UserManagementDataType {
-	build, err := m.Build()
+func (b *_UserManagementDataTypeBuilder) MustBuild() UserManagementDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_UserManagementDataTypeBuilder) DeepCopy() any {
-	return m.CreateUserManagementDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UserManagementDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UserManagementDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_UserManagementDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateUserManagementDataTypeBuilder().(*_UserManagementDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateUserManagementDataTypeBuilder creates a UserManagementDataTypeBuilder
-func (m *_UserManagementDataType) CreateUserManagementDataTypeBuilder() UserManagementDataTypeBuilder {
-	if m == nil {
+func (b *_UserManagementDataType) CreateUserManagementDataTypeBuilder() UserManagementDataTypeBuilder {
+	if b == nil {
 		return NewUserManagementDataTypeBuilder()
 	}
-	return &_UserManagementDataTypeBuilder{_UserManagementDataType: m.deepCopy()}
+	return &_UserManagementDataTypeBuilder{_UserManagementDataType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -381,9 +400,13 @@ func (m *_UserManagementDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

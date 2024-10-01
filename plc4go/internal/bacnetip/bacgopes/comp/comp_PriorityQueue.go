@@ -42,7 +42,7 @@ func (p *PriorityItem[P, V]) String() string {
 	return fmt.Sprintf("[%v: prio %v - value %s], ", p.Index, p.Priority, v)
 }
 
-// GA PriorityQueue implements heap.Interface and holds Items.
+// PriorityQueue implements heap.Interface and holds Items.
 type PriorityQueue[P cmp.Ordered, V any] []*PriorityItem[P, V]
 
 //goland:noinspection GoMixedReceiverTypes

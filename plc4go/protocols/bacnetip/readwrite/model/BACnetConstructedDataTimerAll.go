@@ -85,40 +85,59 @@ func NewBACnetConstructedDataTimerAllBuilder() BACnetConstructedDataTimerAllBuil
 type _BACnetConstructedDataTimerAllBuilder struct {
 	*_BACnetConstructedDataTimerAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataTimerAllBuilder) = (*_BACnetConstructedDataTimerAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataTimerAllBuilder) WithMandatoryFields() BACnetConstructedDataTimerAllBuilder {
-	return m
+func (b *_BACnetConstructedDataTimerAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataTimerAllBuilder) Build() (BACnetConstructedDataTimerAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataTimerAllBuilder) WithMandatoryFields() BACnetConstructedDataTimerAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataTimerAllBuilder) Build() (BACnetConstructedDataTimerAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataTimerAll.deepCopy(), nil
+	return b._BACnetConstructedDataTimerAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataTimerAllBuilder) MustBuild() BACnetConstructedDataTimerAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataTimerAllBuilder) MustBuild() BACnetConstructedDataTimerAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataTimerAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataTimerAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTimerAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTimerAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTimerAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTimerAllBuilder().(*_BACnetConstructedDataTimerAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataTimerAllBuilder creates a BACnetConstructedDataTimerAllBuilder
-func (m *_BACnetConstructedDataTimerAll) CreateBACnetConstructedDataTimerAllBuilder() BACnetConstructedDataTimerAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataTimerAll) CreateBACnetConstructedDataTimerAllBuilder() BACnetConstructedDataTimerAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataTimerAllBuilder()
 	}
-	return &_BACnetConstructedDataTimerAllBuilder{_BACnetConstructedDataTimerAll: m.deepCopy()}
+	return &_BACnetConstructedDataTimerAllBuilder{_BACnetConstructedDataTimerAll: b.deepCopy()}
 }
 
 ///////////////////////
@@ -243,9 +262,13 @@ func (m *_BACnetConstructedDataTimerAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -85,40 +85,59 @@ func NewApduDataExtGroupPropertyValueWriteBuilder() ApduDataExtGroupPropertyValu
 type _ApduDataExtGroupPropertyValueWriteBuilder struct {
 	*_ApduDataExtGroupPropertyValueWrite
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtGroupPropertyValueWriteBuilder) = (*_ApduDataExtGroupPropertyValueWriteBuilder)(nil)
 
-func (m *_ApduDataExtGroupPropertyValueWriteBuilder) WithMandatoryFields() ApduDataExtGroupPropertyValueWriteBuilder {
-	return m
+func (b *_ApduDataExtGroupPropertyValueWriteBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtGroupPropertyValueWriteBuilder) Build() (ApduDataExtGroupPropertyValueWrite, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtGroupPropertyValueWriteBuilder) WithMandatoryFields() ApduDataExtGroupPropertyValueWriteBuilder {
+	return b
+}
+
+func (b *_ApduDataExtGroupPropertyValueWriteBuilder) Build() (ApduDataExtGroupPropertyValueWrite, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtGroupPropertyValueWrite.deepCopy(), nil
+	return b._ApduDataExtGroupPropertyValueWrite.deepCopy(), nil
 }
 
-func (m *_ApduDataExtGroupPropertyValueWriteBuilder) MustBuild() ApduDataExtGroupPropertyValueWrite {
-	build, err := m.Build()
+func (b *_ApduDataExtGroupPropertyValueWriteBuilder) MustBuild() ApduDataExtGroupPropertyValueWrite {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtGroupPropertyValueWriteBuilder) DeepCopy() any {
-	return m.CreateApduDataExtGroupPropertyValueWriteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtGroupPropertyValueWriteBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtGroupPropertyValueWriteBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtGroupPropertyValueWriteBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtGroupPropertyValueWriteBuilder().(*_ApduDataExtGroupPropertyValueWriteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtGroupPropertyValueWriteBuilder creates a ApduDataExtGroupPropertyValueWriteBuilder
-func (m *_ApduDataExtGroupPropertyValueWrite) CreateApduDataExtGroupPropertyValueWriteBuilder() ApduDataExtGroupPropertyValueWriteBuilder {
-	if m == nil {
+func (b *_ApduDataExtGroupPropertyValueWrite) CreateApduDataExtGroupPropertyValueWriteBuilder() ApduDataExtGroupPropertyValueWriteBuilder {
+	if b == nil {
 		return NewApduDataExtGroupPropertyValueWriteBuilder()
 	}
-	return &_ApduDataExtGroupPropertyValueWriteBuilder{_ApduDataExtGroupPropertyValueWrite: m.deepCopy()}
+	return &_ApduDataExtGroupPropertyValueWriteBuilder{_ApduDataExtGroupPropertyValueWrite: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_ApduDataExtGroupPropertyValueWrite) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

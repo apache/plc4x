@@ -126,117 +126,136 @@ func NewEndpointTypeBuilder() EndpointTypeBuilder {
 type _EndpointTypeBuilder struct {
 	*_EndpointType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (EndpointTypeBuilder) = (*_EndpointTypeBuilder)(nil)
 
-func (m *_EndpointTypeBuilder) WithMandatoryFields(endpointUrl PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, transportProfileUri PascalString) EndpointTypeBuilder {
-	return m.WithEndpointUrl(endpointUrl).WithSecurityMode(securityMode).WithSecurityPolicyUri(securityPolicyUri).WithTransportProfileUri(transportProfileUri)
+func (b *_EndpointTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_EndpointTypeBuilder) WithEndpointUrl(endpointUrl PascalString) EndpointTypeBuilder {
-	m.EndpointUrl = endpointUrl
-	return m
+func (b *_EndpointTypeBuilder) WithMandatoryFields(endpointUrl PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, transportProfileUri PascalString) EndpointTypeBuilder {
+	return b.WithEndpointUrl(endpointUrl).WithSecurityMode(securityMode).WithSecurityPolicyUri(securityPolicyUri).WithTransportProfileUri(transportProfileUri)
 }
 
-func (m *_EndpointTypeBuilder) WithEndpointUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EndpointTypeBuilder {
-	builder := builderSupplier(m.EndpointUrl.CreatePascalStringBuilder())
+func (b *_EndpointTypeBuilder) WithEndpointUrl(endpointUrl PascalString) EndpointTypeBuilder {
+	b.EndpointUrl = endpointUrl
+	return b
+}
+
+func (b *_EndpointTypeBuilder) WithEndpointUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EndpointTypeBuilder {
+	builder := builderSupplier(b.EndpointUrl.CreatePascalStringBuilder())
 	var err error
-	m.EndpointUrl, err = builder.Build()
+	b.EndpointUrl, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_EndpointTypeBuilder) WithSecurityMode(securityMode MessageSecurityMode) EndpointTypeBuilder {
-	m.SecurityMode = securityMode
-	return m
+func (b *_EndpointTypeBuilder) WithSecurityMode(securityMode MessageSecurityMode) EndpointTypeBuilder {
+	b.SecurityMode = securityMode
+	return b
 }
 
-func (m *_EndpointTypeBuilder) WithSecurityPolicyUri(securityPolicyUri PascalString) EndpointTypeBuilder {
-	m.SecurityPolicyUri = securityPolicyUri
-	return m
+func (b *_EndpointTypeBuilder) WithSecurityPolicyUri(securityPolicyUri PascalString) EndpointTypeBuilder {
+	b.SecurityPolicyUri = securityPolicyUri
+	return b
 }
 
-func (m *_EndpointTypeBuilder) WithSecurityPolicyUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EndpointTypeBuilder {
-	builder := builderSupplier(m.SecurityPolicyUri.CreatePascalStringBuilder())
+func (b *_EndpointTypeBuilder) WithSecurityPolicyUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EndpointTypeBuilder {
+	builder := builderSupplier(b.SecurityPolicyUri.CreatePascalStringBuilder())
 	var err error
-	m.SecurityPolicyUri, err = builder.Build()
+	b.SecurityPolicyUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_EndpointTypeBuilder) WithTransportProfileUri(transportProfileUri PascalString) EndpointTypeBuilder {
-	m.TransportProfileUri = transportProfileUri
-	return m
+func (b *_EndpointTypeBuilder) WithTransportProfileUri(transportProfileUri PascalString) EndpointTypeBuilder {
+	b.TransportProfileUri = transportProfileUri
+	return b
 }
 
-func (m *_EndpointTypeBuilder) WithTransportProfileUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EndpointTypeBuilder {
-	builder := builderSupplier(m.TransportProfileUri.CreatePascalStringBuilder())
+func (b *_EndpointTypeBuilder) WithTransportProfileUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EndpointTypeBuilder {
+	builder := builderSupplier(b.TransportProfileUri.CreatePascalStringBuilder())
 	var err error
-	m.TransportProfileUri, err = builder.Build()
+	b.TransportProfileUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_EndpointTypeBuilder) Build() (EndpointType, error) {
-	if m.EndpointUrl == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_EndpointTypeBuilder) Build() (EndpointType, error) {
+	if b.EndpointUrl == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
+		b.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
 	}
-	if m.SecurityPolicyUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.SecurityPolicyUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
+		b.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
 	}
-	if m.TransportProfileUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TransportProfileUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'transportProfileUri' not set"))
+		b.err.Append(errors.New("mandatory field 'transportProfileUri' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EndpointType.deepCopy(), nil
+	return b._EndpointType.deepCopy(), nil
 }
 
-func (m *_EndpointTypeBuilder) MustBuild() EndpointType {
-	build, err := m.Build()
+func (b *_EndpointTypeBuilder) MustBuild() EndpointType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EndpointTypeBuilder) DeepCopy() any {
-	return m.CreateEndpointTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EndpointTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EndpointTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_EndpointTypeBuilder) DeepCopy() any {
+	_copy := b.CreateEndpointTypeBuilder().(*_EndpointTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEndpointTypeBuilder creates a EndpointTypeBuilder
-func (m *_EndpointType) CreateEndpointTypeBuilder() EndpointTypeBuilder {
-	if m == nil {
+func (b *_EndpointType) CreateEndpointTypeBuilder() EndpointTypeBuilder {
+	if b == nil {
 		return NewEndpointTypeBuilder()
 	}
-	return &_EndpointTypeBuilder{_EndpointType: m.deepCopy()}
+	return &_EndpointTypeBuilder{_EndpointType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -434,9 +453,13 @@ func (m *_EndpointType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

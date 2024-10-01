@@ -98,64 +98,83 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder() BACnet
 type _BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntryUnsigned
 
+	parentBuilder *_BACnetFaultParameterFaultExtendedParametersEntryBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder)(nil)
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) WithMandatoryFields(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder {
-	return m.WithUnsignedValue(unsignedValue)
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) setParent(contract BACnetFaultParameterFaultExtendedParametersEntryContract) {
+	b.BACnetFaultParameterFaultExtendedParametersEntryContract = contract
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) WithUnsignedValue(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder {
-	m.UnsignedValue = unsignedValue
-	return m
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) WithMandatoryFields(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder {
+	return b.WithUnsignedValue(unsignedValue)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) WithUnsignedValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder {
-	builder := builderSupplier(m.UnsignedValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) WithUnsignedValue(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder {
+	b.UnsignedValue = unsignedValue
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) WithUnsignedValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder {
+	builder := builderSupplier(b.UnsignedValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.UnsignedValue, err = builder.Build()
+	b.UnsignedValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryUnsigned, error) {
-	if m.UnsignedValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryUnsigned, error) {
+	if b.UnsignedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'unsignedValue' not set"))
+		b.err.Append(errors.New("mandatory field 'unsignedValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetFaultParameterFaultExtendedParametersEntryUnsigned.deepCopy(), nil
+	return b._BACnetFaultParameterFaultExtendedParametersEntryUnsigned.deepCopy(), nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryUnsigned {
-	build, err := m.Build()
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryUnsigned {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) DeepCopy() any {
-	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) buildForBACnetFaultParameterFaultExtendedParametersEntry() (BACnetFaultParameterFaultExtendedParametersEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) CreateBACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder() BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder {
-	if m == nil {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) CreateBACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder() BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder {
+	if b == nil {
 		return NewBACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder()
 	}
-	return &_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder{_BACnetFaultParameterFaultExtendedParametersEntryUnsigned: m.deepCopy()}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder{_BACnetFaultParameterFaultExtendedParametersEntryUnsigned: b.deepCopy()}
 }
 
 ///////////////////////
@@ -296,9 +315,13 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) String() str
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

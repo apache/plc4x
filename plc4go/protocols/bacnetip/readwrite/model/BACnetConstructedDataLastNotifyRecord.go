@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLastNotifyRecordBuilder() BACnetConstructedDataLast
 type _BACnetConstructedDataLastNotifyRecordBuilder struct {
 	*_BACnetConstructedDataLastNotifyRecord
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLastNotifyRecordBuilder) = (*_BACnetConstructedDataLastNotifyRecordBuilder)(nil)
 
-func (m *_BACnetConstructedDataLastNotifyRecordBuilder) WithMandatoryFields(lastNotifyRecord BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLastNotifyRecordBuilder {
-	return m.WithLastNotifyRecord(lastNotifyRecord)
+func (b *_BACnetConstructedDataLastNotifyRecordBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLastNotifyRecordBuilder) WithLastNotifyRecord(lastNotifyRecord BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLastNotifyRecordBuilder {
-	m.LastNotifyRecord = lastNotifyRecord
-	return m
+func (b *_BACnetConstructedDataLastNotifyRecordBuilder) WithMandatoryFields(lastNotifyRecord BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLastNotifyRecordBuilder {
+	return b.WithLastNotifyRecord(lastNotifyRecord)
 }
 
-func (m *_BACnetConstructedDataLastNotifyRecordBuilder) WithLastNotifyRecordBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLastNotifyRecordBuilder {
-	builder := builderSupplier(m.LastNotifyRecord.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataLastNotifyRecordBuilder) WithLastNotifyRecord(lastNotifyRecord BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLastNotifyRecordBuilder {
+	b.LastNotifyRecord = lastNotifyRecord
+	return b
+}
+
+func (b *_BACnetConstructedDataLastNotifyRecordBuilder) WithLastNotifyRecordBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLastNotifyRecordBuilder {
+	builder := builderSupplier(b.LastNotifyRecord.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.LastNotifyRecord, err = builder.Build()
+	b.LastNotifyRecord, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLastNotifyRecordBuilder) Build() (BACnetConstructedDataLastNotifyRecord, error) {
-	if m.LastNotifyRecord == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLastNotifyRecordBuilder) Build() (BACnetConstructedDataLastNotifyRecord, error) {
+	if b.LastNotifyRecord == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lastNotifyRecord' not set"))
+		b.err.Append(errors.New("mandatory field 'lastNotifyRecord' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLastNotifyRecord.deepCopy(), nil
+	return b._BACnetConstructedDataLastNotifyRecord.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLastNotifyRecordBuilder) MustBuild() BACnetConstructedDataLastNotifyRecord {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLastNotifyRecordBuilder) MustBuild() BACnetConstructedDataLastNotifyRecord {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLastNotifyRecordBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLastNotifyRecordBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLastNotifyRecordBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLastNotifyRecordBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLastNotifyRecordBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLastNotifyRecordBuilder().(*_BACnetConstructedDataLastNotifyRecordBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLastNotifyRecordBuilder creates a BACnetConstructedDataLastNotifyRecordBuilder
-func (m *_BACnetConstructedDataLastNotifyRecord) CreateBACnetConstructedDataLastNotifyRecordBuilder() BACnetConstructedDataLastNotifyRecordBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLastNotifyRecord) CreateBACnetConstructedDataLastNotifyRecordBuilder() BACnetConstructedDataLastNotifyRecordBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLastNotifyRecordBuilder()
 	}
-	return &_BACnetConstructedDataLastNotifyRecordBuilder{_BACnetConstructedDataLastNotifyRecord: m.deepCopy()}
+	return &_BACnetConstructedDataLastNotifyRecordBuilder{_BACnetConstructedDataLastNotifyRecord: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataLastNotifyRecord) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

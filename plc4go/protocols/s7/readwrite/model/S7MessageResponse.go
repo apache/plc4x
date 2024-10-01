@@ -99,50 +99,69 @@ func NewS7MessageResponseBuilder() S7MessageResponseBuilder {
 type _S7MessageResponseBuilder struct {
 	*_S7MessageResponse
 
+	parentBuilder *_S7MessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7MessageResponseBuilder) = (*_S7MessageResponseBuilder)(nil)
 
-func (m *_S7MessageResponseBuilder) WithMandatoryFields(errorClass uint8, errorCode uint8) S7MessageResponseBuilder {
-	return m.WithErrorClass(errorClass).WithErrorCode(errorCode)
+func (b *_S7MessageResponseBuilder) setParent(contract S7MessageContract) {
+	b.S7MessageContract = contract
 }
 
-func (m *_S7MessageResponseBuilder) WithErrorClass(errorClass uint8) S7MessageResponseBuilder {
-	m.ErrorClass = errorClass
-	return m
+func (b *_S7MessageResponseBuilder) WithMandatoryFields(errorClass uint8, errorCode uint8) S7MessageResponseBuilder {
+	return b.WithErrorClass(errorClass).WithErrorCode(errorCode)
 }
 
-func (m *_S7MessageResponseBuilder) WithErrorCode(errorCode uint8) S7MessageResponseBuilder {
-	m.ErrorCode = errorCode
-	return m
+func (b *_S7MessageResponseBuilder) WithErrorClass(errorClass uint8) S7MessageResponseBuilder {
+	b.ErrorClass = errorClass
+	return b
 }
 
-func (m *_S7MessageResponseBuilder) Build() (S7MessageResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7MessageResponseBuilder) WithErrorCode(errorCode uint8) S7MessageResponseBuilder {
+	b.ErrorCode = errorCode
+	return b
+}
+
+func (b *_S7MessageResponseBuilder) Build() (S7MessageResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7MessageResponse.deepCopy(), nil
+	return b._S7MessageResponse.deepCopy(), nil
 }
 
-func (m *_S7MessageResponseBuilder) MustBuild() S7MessageResponse {
-	build, err := m.Build()
+func (b *_S7MessageResponseBuilder) MustBuild() S7MessageResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7MessageResponseBuilder) DeepCopy() any {
-	return m.CreateS7MessageResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7MessageResponseBuilder) Done() S7MessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7MessageResponseBuilder) buildForS7Message() (S7Message, error) {
+	return b.Build()
+}
+
+func (b *_S7MessageResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7MessageResponseBuilder().(*_S7MessageResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7MessageResponseBuilder creates a S7MessageResponseBuilder
-func (m *_S7MessageResponse) CreateS7MessageResponseBuilder() S7MessageResponseBuilder {
-	if m == nil {
+func (b *_S7MessageResponse) CreateS7MessageResponseBuilder() S7MessageResponseBuilder {
+	if b == nil {
 		return NewS7MessageResponseBuilder()
 	}
-	return &_S7MessageResponseBuilder{_S7MessageResponse: m.deepCopy()}
+	return &_S7MessageResponseBuilder{_S7MessageResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -304,9 +323,13 @@ func (m *_S7MessageResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

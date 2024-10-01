@@ -99,50 +99,69 @@ func NewAnsiExtendedSymbolSegmentBuilder() AnsiExtendedSymbolSegmentBuilder {
 type _AnsiExtendedSymbolSegmentBuilder struct {
 	*_AnsiExtendedSymbolSegment
 
+	parentBuilder *_DataSegmentTypeBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AnsiExtendedSymbolSegmentBuilder) = (*_AnsiExtendedSymbolSegmentBuilder)(nil)
 
-func (m *_AnsiExtendedSymbolSegmentBuilder) WithMandatoryFields(symbol string) AnsiExtendedSymbolSegmentBuilder {
-	return m.WithSymbol(symbol)
+func (b *_AnsiExtendedSymbolSegmentBuilder) setParent(contract DataSegmentTypeContract) {
+	b.DataSegmentTypeContract = contract
 }
 
-func (m *_AnsiExtendedSymbolSegmentBuilder) WithSymbol(symbol string) AnsiExtendedSymbolSegmentBuilder {
-	m.Symbol = symbol
-	return m
+func (b *_AnsiExtendedSymbolSegmentBuilder) WithMandatoryFields(symbol string) AnsiExtendedSymbolSegmentBuilder {
+	return b.WithSymbol(symbol)
 }
 
-func (m *_AnsiExtendedSymbolSegmentBuilder) WithOptionalPad(pad uint8) AnsiExtendedSymbolSegmentBuilder {
-	m.Pad = &pad
-	return m
+func (b *_AnsiExtendedSymbolSegmentBuilder) WithSymbol(symbol string) AnsiExtendedSymbolSegmentBuilder {
+	b.Symbol = symbol
+	return b
 }
 
-func (m *_AnsiExtendedSymbolSegmentBuilder) Build() (AnsiExtendedSymbolSegment, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AnsiExtendedSymbolSegmentBuilder) WithOptionalPad(pad uint8) AnsiExtendedSymbolSegmentBuilder {
+	b.Pad = &pad
+	return b
+}
+
+func (b *_AnsiExtendedSymbolSegmentBuilder) Build() (AnsiExtendedSymbolSegment, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AnsiExtendedSymbolSegment.deepCopy(), nil
+	return b._AnsiExtendedSymbolSegment.deepCopy(), nil
 }
 
-func (m *_AnsiExtendedSymbolSegmentBuilder) MustBuild() AnsiExtendedSymbolSegment {
-	build, err := m.Build()
+func (b *_AnsiExtendedSymbolSegmentBuilder) MustBuild() AnsiExtendedSymbolSegment {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AnsiExtendedSymbolSegmentBuilder) DeepCopy() any {
-	return m.CreateAnsiExtendedSymbolSegmentBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AnsiExtendedSymbolSegmentBuilder) Done() DataSegmentTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AnsiExtendedSymbolSegmentBuilder) buildForDataSegmentType() (DataSegmentType, error) {
+	return b.Build()
+}
+
+func (b *_AnsiExtendedSymbolSegmentBuilder) DeepCopy() any {
+	_copy := b.CreateAnsiExtendedSymbolSegmentBuilder().(*_AnsiExtendedSymbolSegmentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAnsiExtendedSymbolSegmentBuilder creates a AnsiExtendedSymbolSegmentBuilder
-func (m *_AnsiExtendedSymbolSegment) CreateAnsiExtendedSymbolSegmentBuilder() AnsiExtendedSymbolSegmentBuilder {
-	if m == nil {
+func (b *_AnsiExtendedSymbolSegment) CreateAnsiExtendedSymbolSegmentBuilder() AnsiExtendedSymbolSegmentBuilder {
+	if b == nil {
 		return NewAnsiExtendedSymbolSegmentBuilder()
 	}
-	return &_AnsiExtendedSymbolSegmentBuilder{_AnsiExtendedSymbolSegment: m.deepCopy()}
+	return &_AnsiExtendedSymbolSegmentBuilder{_AnsiExtendedSymbolSegment: b.deepCopy()}
 }
 
 ///////////////////////
@@ -320,9 +339,13 @@ func (m *_AnsiExtendedSymbolSegment) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

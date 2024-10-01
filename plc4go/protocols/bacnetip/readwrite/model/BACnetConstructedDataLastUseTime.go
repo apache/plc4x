@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLastUseTimeBuilder() BACnetConstructedDataLastUseTi
 type _BACnetConstructedDataLastUseTimeBuilder struct {
 	*_BACnetConstructedDataLastUseTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLastUseTimeBuilder) = (*_BACnetConstructedDataLastUseTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataLastUseTimeBuilder) WithMandatoryFields(lastUseTime BACnetDateTime) BACnetConstructedDataLastUseTimeBuilder {
-	return m.WithLastUseTime(lastUseTime)
+func (b *_BACnetConstructedDataLastUseTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLastUseTimeBuilder) WithLastUseTime(lastUseTime BACnetDateTime) BACnetConstructedDataLastUseTimeBuilder {
-	m.LastUseTime = lastUseTime
-	return m
+func (b *_BACnetConstructedDataLastUseTimeBuilder) WithMandatoryFields(lastUseTime BACnetDateTime) BACnetConstructedDataLastUseTimeBuilder {
+	return b.WithLastUseTime(lastUseTime)
 }
 
-func (m *_BACnetConstructedDataLastUseTimeBuilder) WithLastUseTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataLastUseTimeBuilder {
-	builder := builderSupplier(m.LastUseTime.CreateBACnetDateTimeBuilder())
+func (b *_BACnetConstructedDataLastUseTimeBuilder) WithLastUseTime(lastUseTime BACnetDateTime) BACnetConstructedDataLastUseTimeBuilder {
+	b.LastUseTime = lastUseTime
+	return b
+}
+
+func (b *_BACnetConstructedDataLastUseTimeBuilder) WithLastUseTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataLastUseTimeBuilder {
+	builder := builderSupplier(b.LastUseTime.CreateBACnetDateTimeBuilder())
 	var err error
-	m.LastUseTime, err = builder.Build()
+	b.LastUseTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLastUseTimeBuilder) Build() (BACnetConstructedDataLastUseTime, error) {
-	if m.LastUseTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLastUseTimeBuilder) Build() (BACnetConstructedDataLastUseTime, error) {
+	if b.LastUseTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lastUseTime' not set"))
+		b.err.Append(errors.New("mandatory field 'lastUseTime' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLastUseTime.deepCopy(), nil
+	return b._BACnetConstructedDataLastUseTime.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLastUseTimeBuilder) MustBuild() BACnetConstructedDataLastUseTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLastUseTimeBuilder) MustBuild() BACnetConstructedDataLastUseTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLastUseTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLastUseTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLastUseTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLastUseTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLastUseTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLastUseTimeBuilder().(*_BACnetConstructedDataLastUseTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLastUseTimeBuilder creates a BACnetConstructedDataLastUseTimeBuilder
-func (m *_BACnetConstructedDataLastUseTime) CreateBACnetConstructedDataLastUseTimeBuilder() BACnetConstructedDataLastUseTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLastUseTime) CreateBACnetConstructedDataLastUseTimeBuilder() BACnetConstructedDataLastUseTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLastUseTimeBuilder()
 	}
-	return &_BACnetConstructedDataLastUseTimeBuilder{_BACnetConstructedDataLastUseTime: m.deepCopy()}
+	return &_BACnetConstructedDataLastUseTimeBuilder{_BACnetConstructedDataLastUseTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataLastUseTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -153,184 +153,203 @@ func NewBACnetNotificationParametersChangeOfLifeSafetyBuilder() BACnetNotificati
 type _BACnetNotificationParametersChangeOfLifeSafetyBuilder struct {
 	*_BACnetNotificationParametersChangeOfLifeSafety
 
+	parentBuilder *_BACnetNotificationParametersBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersChangeOfLifeSafetyBuilder) = (*_BACnetNotificationParametersChangeOfLifeSafetyBuilder)(nil)
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, newState BACnetLifeSafetyStateTagged, newMode BACnetLifeSafetyModeTagged, statusFlags BACnetStatusFlagsTagged, operationExpected BACnetLifeSafetyOperationTagged, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
-	return m.WithInnerOpeningTag(innerOpeningTag).WithNewState(newState).WithNewMode(newMode).WithStatusFlags(statusFlags).WithOperationExpected(operationExpected).WithInnerClosingTag(innerClosingTag)
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) setParent(contract BACnetNotificationParametersContract) {
+	b.BACnetNotificationParametersContract = contract
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
-	m.InnerOpeningTag = innerOpeningTag
-	return m
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, newState BACnetLifeSafetyStateTagged, newMode BACnetLifeSafetyModeTagged, statusFlags BACnetStatusFlagsTagged, operationExpected BACnetLifeSafetyOperationTagged, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithNewState(newState).WithNewMode(newMode).WithStatusFlags(statusFlags).WithOperationExpected(operationExpected).WithInnerClosingTag(innerClosingTag)
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
-	builder := builderSupplier(m.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.InnerOpeningTag, err = builder.Build()
+	b.InnerOpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithNewState(newState BACnetLifeSafetyStateTagged) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
-	m.NewState = newState
-	return m
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithNewState(newState BACnetLifeSafetyStateTagged) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
+	b.NewState = newState
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithNewStateBuilder(builderSupplier func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
-	builder := builderSupplier(m.NewState.CreateBACnetLifeSafetyStateTaggedBuilder())
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithNewStateBuilder(builderSupplier func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
+	builder := builderSupplier(b.NewState.CreateBACnetLifeSafetyStateTaggedBuilder())
 	var err error
-	m.NewState, err = builder.Build()
+	b.NewState, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLifeSafetyStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLifeSafetyStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithNewMode(newMode BACnetLifeSafetyModeTagged) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
-	m.NewMode = newMode
-	return m
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithNewMode(newMode BACnetLifeSafetyModeTagged) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
+	b.NewMode = newMode
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithNewModeBuilder(builderSupplier func(BACnetLifeSafetyModeTaggedBuilder) BACnetLifeSafetyModeTaggedBuilder) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
-	builder := builderSupplier(m.NewMode.CreateBACnetLifeSafetyModeTaggedBuilder())
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithNewModeBuilder(builderSupplier func(BACnetLifeSafetyModeTaggedBuilder) BACnetLifeSafetyModeTaggedBuilder) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
+	builder := builderSupplier(b.NewMode.CreateBACnetLifeSafetyModeTaggedBuilder())
 	var err error
-	m.NewMode, err = builder.Build()
+	b.NewMode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLifeSafetyModeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLifeSafetyModeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
-	m.StatusFlags = statusFlags
-	return m
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
+	b.StatusFlags = statusFlags
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
-	builder := builderSupplier(m.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
+	builder := builderSupplier(b.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
 	var err error
-	m.StatusFlags, err = builder.Build()
+	b.StatusFlags, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithOperationExpected(operationExpected BACnetLifeSafetyOperationTagged) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
-	m.OperationExpected = operationExpected
-	return m
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithOperationExpected(operationExpected BACnetLifeSafetyOperationTagged) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
+	b.OperationExpected = operationExpected
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithOperationExpectedBuilder(builderSupplier func(BACnetLifeSafetyOperationTaggedBuilder) BACnetLifeSafetyOperationTaggedBuilder) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
-	builder := builderSupplier(m.OperationExpected.CreateBACnetLifeSafetyOperationTaggedBuilder())
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithOperationExpectedBuilder(builderSupplier func(BACnetLifeSafetyOperationTaggedBuilder) BACnetLifeSafetyOperationTaggedBuilder) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
+	builder := builderSupplier(b.OperationExpected.CreateBACnetLifeSafetyOperationTaggedBuilder())
 	var err error
-	m.OperationExpected, err = builder.Build()
+	b.OperationExpected, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLifeSafetyOperationTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLifeSafetyOperationTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
-	m.InnerClosingTag = innerClosingTag
-	return m
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
-	builder := builderSupplier(m.InnerClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.InnerClosingTag, err = builder.Build()
+	b.InnerClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) Build() (BACnetNotificationParametersChangeOfLifeSafety, error) {
-	if m.InnerOpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) Build() (BACnetNotificationParametersChangeOfLifeSafety, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
 	}
-	if m.NewState == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.NewState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'newState' not set"))
+		b.err.Append(errors.New("mandatory field 'newState' not set"))
 	}
-	if m.NewMode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.NewMode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'newMode' not set"))
+		b.err.Append(errors.New("mandatory field 'newMode' not set"))
 	}
-	if m.StatusFlags == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.StatusFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusFlags' not set"))
+		b.err.Append(errors.New("mandatory field 'statusFlags' not set"))
 	}
-	if m.OperationExpected == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.OperationExpected == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'operationExpected' not set"))
+		b.err.Append(errors.New("mandatory field 'operationExpected' not set"))
 	}
-	if m.InnerClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNotificationParametersChangeOfLifeSafety.deepCopy(), nil
+	return b._BACnetNotificationParametersChangeOfLifeSafety.deepCopy(), nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) MustBuild() BACnetNotificationParametersChangeOfLifeSafety {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) MustBuild() BACnetNotificationParametersChangeOfLifeSafety {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersChangeOfLifeSafetyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) Done() BACnetNotificationParametersBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) buildForBACnetNotificationParameters() (BACnetNotificationParameters, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersChangeOfLifeSafetyBuilder().(*_BACnetNotificationParametersChangeOfLifeSafetyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersChangeOfLifeSafetyBuilder creates a BACnetNotificationParametersChangeOfLifeSafetyBuilder
-func (m *_BACnetNotificationParametersChangeOfLifeSafety) CreateBACnetNotificationParametersChangeOfLifeSafetyBuilder() BACnetNotificationParametersChangeOfLifeSafetyBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersChangeOfLifeSafety) CreateBACnetNotificationParametersChangeOfLifeSafetyBuilder() BACnetNotificationParametersChangeOfLifeSafetyBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersChangeOfLifeSafetyBuilder()
 	}
-	return &_BACnetNotificationParametersChangeOfLifeSafetyBuilder{_BACnetNotificationParametersChangeOfLifeSafety: m.deepCopy()}
+	return &_BACnetNotificationParametersChangeOfLifeSafetyBuilder{_BACnetNotificationParametersChangeOfLifeSafety: b.deepCopy()}
 }
 
 ///////////////////////
@@ -561,9 +580,13 @@ func (m *_BACnetNotificationParametersChangeOfLifeSafety) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

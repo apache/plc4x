@@ -126,70 +126,89 @@ func NewCEMIAdditionalInformationBusmonitorInfoBuilder() CEMIAdditionalInformati
 type _CEMIAdditionalInformationBusmonitorInfoBuilder struct {
 	*_CEMIAdditionalInformationBusmonitorInfo
 
+	parentBuilder *_CEMIAdditionalInformationBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CEMIAdditionalInformationBusmonitorInfoBuilder) = (*_CEMIAdditionalInformationBusmonitorInfoBuilder)(nil)
 
-func (m *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithMandatoryFields(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) CEMIAdditionalInformationBusmonitorInfoBuilder {
-	return m.WithFrameErrorFlag(frameErrorFlag).WithBitErrorFlag(bitErrorFlag).WithParityErrorFlag(parityErrorFlag).WithUnknownFlag(unknownFlag).WithLostFlag(lostFlag).WithSequenceNumber(sequenceNumber)
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) setParent(contract CEMIAdditionalInformationContract) {
+	b.CEMIAdditionalInformationContract = contract
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithFrameErrorFlag(frameErrorFlag bool) CEMIAdditionalInformationBusmonitorInfoBuilder {
-	m.FrameErrorFlag = frameErrorFlag
-	return m
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithMandatoryFields(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) CEMIAdditionalInformationBusmonitorInfoBuilder {
+	return b.WithFrameErrorFlag(frameErrorFlag).WithBitErrorFlag(bitErrorFlag).WithParityErrorFlag(parityErrorFlag).WithUnknownFlag(unknownFlag).WithLostFlag(lostFlag).WithSequenceNumber(sequenceNumber)
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithBitErrorFlag(bitErrorFlag bool) CEMIAdditionalInformationBusmonitorInfoBuilder {
-	m.BitErrorFlag = bitErrorFlag
-	return m
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithFrameErrorFlag(frameErrorFlag bool) CEMIAdditionalInformationBusmonitorInfoBuilder {
+	b.FrameErrorFlag = frameErrorFlag
+	return b
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithParityErrorFlag(parityErrorFlag bool) CEMIAdditionalInformationBusmonitorInfoBuilder {
-	m.ParityErrorFlag = parityErrorFlag
-	return m
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithBitErrorFlag(bitErrorFlag bool) CEMIAdditionalInformationBusmonitorInfoBuilder {
+	b.BitErrorFlag = bitErrorFlag
+	return b
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithUnknownFlag(unknownFlag bool) CEMIAdditionalInformationBusmonitorInfoBuilder {
-	m.UnknownFlag = unknownFlag
-	return m
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithParityErrorFlag(parityErrorFlag bool) CEMIAdditionalInformationBusmonitorInfoBuilder {
+	b.ParityErrorFlag = parityErrorFlag
+	return b
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithLostFlag(lostFlag bool) CEMIAdditionalInformationBusmonitorInfoBuilder {
-	m.LostFlag = lostFlag
-	return m
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithUnknownFlag(unknownFlag bool) CEMIAdditionalInformationBusmonitorInfoBuilder {
+	b.UnknownFlag = unknownFlag
+	return b
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithSequenceNumber(sequenceNumber uint8) CEMIAdditionalInformationBusmonitorInfoBuilder {
-	m.SequenceNumber = sequenceNumber
-	return m
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithLostFlag(lostFlag bool) CEMIAdditionalInformationBusmonitorInfoBuilder {
+	b.LostFlag = lostFlag
+	return b
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfoBuilder) Build() (CEMIAdditionalInformationBusmonitorInfo, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithSequenceNumber(sequenceNumber uint8) CEMIAdditionalInformationBusmonitorInfoBuilder {
+	b.SequenceNumber = sequenceNumber
+	return b
+}
+
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) Build() (CEMIAdditionalInformationBusmonitorInfo, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CEMIAdditionalInformationBusmonitorInfo.deepCopy(), nil
+	return b._CEMIAdditionalInformationBusmonitorInfo.deepCopy(), nil
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfoBuilder) MustBuild() CEMIAdditionalInformationBusmonitorInfo {
-	build, err := m.Build()
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) MustBuild() CEMIAdditionalInformationBusmonitorInfo {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfoBuilder) DeepCopy() any {
-	return m.CreateCEMIAdditionalInformationBusmonitorInfoBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) Done() CEMIAdditionalInformationBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) buildForCEMIAdditionalInformation() (CEMIAdditionalInformation, error) {
+	return b.Build()
+}
+
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) DeepCopy() any {
+	_copy := b.CreateCEMIAdditionalInformationBusmonitorInfoBuilder().(*_CEMIAdditionalInformationBusmonitorInfoBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCEMIAdditionalInformationBusmonitorInfoBuilder creates a CEMIAdditionalInformationBusmonitorInfoBuilder
-func (m *_CEMIAdditionalInformationBusmonitorInfo) CreateCEMIAdditionalInformationBusmonitorInfoBuilder() CEMIAdditionalInformationBusmonitorInfoBuilder {
-	if m == nil {
+func (b *_CEMIAdditionalInformationBusmonitorInfo) CreateCEMIAdditionalInformationBusmonitorInfoBuilder() CEMIAdditionalInformationBusmonitorInfoBuilder {
+	if b == nil {
 		return NewCEMIAdditionalInformationBusmonitorInfoBuilder()
 	}
-	return &_CEMIAdditionalInformationBusmonitorInfoBuilder{_CEMIAdditionalInformationBusmonitorInfo: m.deepCopy()}
+	return &_CEMIAdditionalInformationBusmonitorInfoBuilder{_CEMIAdditionalInformationBusmonitorInfo: b.deepCopy()}
 }
 
 ///////////////////////
@@ -449,9 +468,13 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

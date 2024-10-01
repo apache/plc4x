@@ -90,40 +90,44 @@ type _S7VarPayloadStatusItemBuilder struct {
 
 var _ (S7VarPayloadStatusItemBuilder) = (*_S7VarPayloadStatusItemBuilder)(nil)
 
-func (m *_S7VarPayloadStatusItemBuilder) WithMandatoryFields(returnCode DataTransportErrorCode) S7VarPayloadStatusItemBuilder {
-	return m.WithReturnCode(returnCode)
+func (b *_S7VarPayloadStatusItemBuilder) WithMandatoryFields(returnCode DataTransportErrorCode) S7VarPayloadStatusItemBuilder {
+	return b.WithReturnCode(returnCode)
 }
 
-func (m *_S7VarPayloadStatusItemBuilder) WithReturnCode(returnCode DataTransportErrorCode) S7VarPayloadStatusItemBuilder {
-	m.ReturnCode = returnCode
-	return m
+func (b *_S7VarPayloadStatusItemBuilder) WithReturnCode(returnCode DataTransportErrorCode) S7VarPayloadStatusItemBuilder {
+	b.ReturnCode = returnCode
+	return b
 }
 
-func (m *_S7VarPayloadStatusItemBuilder) Build() (S7VarPayloadStatusItem, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7VarPayloadStatusItemBuilder) Build() (S7VarPayloadStatusItem, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7VarPayloadStatusItem.deepCopy(), nil
+	return b._S7VarPayloadStatusItem.deepCopy(), nil
 }
 
-func (m *_S7VarPayloadStatusItemBuilder) MustBuild() S7VarPayloadStatusItem {
-	build, err := m.Build()
+func (b *_S7VarPayloadStatusItemBuilder) MustBuild() S7VarPayloadStatusItem {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7VarPayloadStatusItemBuilder) DeepCopy() any {
-	return m.CreateS7VarPayloadStatusItemBuilder()
+func (b *_S7VarPayloadStatusItemBuilder) DeepCopy() any {
+	_copy := b.CreateS7VarPayloadStatusItemBuilder().(*_S7VarPayloadStatusItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7VarPayloadStatusItemBuilder creates a S7VarPayloadStatusItemBuilder
-func (m *_S7VarPayloadStatusItem) CreateS7VarPayloadStatusItemBuilder() S7VarPayloadStatusItemBuilder {
-	if m == nil {
+func (b *_S7VarPayloadStatusItem) CreateS7VarPayloadStatusItemBuilder() S7VarPayloadStatusItemBuilder {
+	if b == nil {
 		return NewS7VarPayloadStatusItemBuilder()
 	}
-	return &_S7VarPayloadStatusItemBuilder{_S7VarPayloadStatusItem: m.deepCopy()}
+	return &_S7VarPayloadStatusItemBuilder{_S7VarPayloadStatusItem: b.deepCopy()}
 }
 
 ///////////////////////
@@ -260,9 +264,13 @@ func (m *_S7VarPayloadStatusItem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

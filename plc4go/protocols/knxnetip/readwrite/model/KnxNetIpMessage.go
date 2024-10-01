@@ -90,10 +90,94 @@ type KnxNetIpMessageBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() KnxNetIpMessageBuilder
+	// AsSearchRequest converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsSearchRequest() interface {
+		SearchRequestBuilder
+		Done() KnxNetIpMessageBuilder
+	}
+	// AsSearchResponse converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsSearchResponse() interface {
+		SearchResponseBuilder
+		Done() KnxNetIpMessageBuilder
+	}
+	// AsDescriptionRequest converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsDescriptionRequest() interface {
+		DescriptionRequestBuilder
+		Done() KnxNetIpMessageBuilder
+	}
+	// AsDescriptionResponse converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsDescriptionResponse() interface {
+		DescriptionResponseBuilder
+		Done() KnxNetIpMessageBuilder
+	}
+	// AsConnectionRequest converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsConnectionRequest() interface {
+		ConnectionRequestBuilder
+		Done() KnxNetIpMessageBuilder
+	}
+	// AsConnectionResponse converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsConnectionResponse() interface {
+		ConnectionResponseBuilder
+		Done() KnxNetIpMessageBuilder
+	}
+	// AsConnectionStateRequest converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsConnectionStateRequest() interface {
+		ConnectionStateRequestBuilder
+		Done() KnxNetIpMessageBuilder
+	}
+	// AsConnectionStateResponse converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsConnectionStateResponse() interface {
+		ConnectionStateResponseBuilder
+		Done() KnxNetIpMessageBuilder
+	}
+	// AsDisconnectRequest converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsDisconnectRequest() interface {
+		DisconnectRequestBuilder
+		Done() KnxNetIpMessageBuilder
+	}
+	// AsDisconnectResponse converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsDisconnectResponse() interface {
+		DisconnectResponseBuilder
+		Done() KnxNetIpMessageBuilder
+	}
+	// AsUnknownMessage converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsUnknownMessage() interface {
+		UnknownMessageBuilder
+		Done() KnxNetIpMessageBuilder
+	}
+	// AsDeviceConfigurationRequest converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsDeviceConfigurationRequest() interface {
+		DeviceConfigurationRequestBuilder
+		Done() KnxNetIpMessageBuilder
+	}
+	// AsDeviceConfigurationAck converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsDeviceConfigurationAck() interface {
+		DeviceConfigurationAckBuilder
+		Done() KnxNetIpMessageBuilder
+	}
+	// AsTunnelingRequest converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsTunnelingRequest() interface {
+		TunnelingRequestBuilder
+		Done() KnxNetIpMessageBuilder
+	}
+	// AsTunnelingResponse converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsTunnelingResponse() interface {
+		TunnelingResponseBuilder
+		Done() KnxNetIpMessageBuilder
+	}
+	// AsRoutingIndication converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
+	AsRoutingIndication() interface {
+		RoutingIndicationBuilder
+		Done() KnxNetIpMessageBuilder
+	}
 	// Build builds the KnxNetIpMessage or returns an error if something is wrong
-	Build() (KnxNetIpMessageContract, error)
+	PartialBuild() (KnxNetIpMessageContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() KnxNetIpMessageContract
+	PartialMustBuild() KnxNetIpMessageContract
+	// Build builds the KnxNetIpMessage or returns an error if something is wrong
+	Build() (KnxNetIpMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() KnxNetIpMessage
 }
 
 // NewKnxNetIpMessageBuilder() creates a KnxNetIpMessageBuilder
@@ -101,43 +185,333 @@ func NewKnxNetIpMessageBuilder() KnxNetIpMessageBuilder {
 	return &_KnxNetIpMessageBuilder{_KnxNetIpMessage: new(_KnxNetIpMessage)}
 }
 
+type _KnxNetIpMessageChildBuilder interface {
+	utils.Copyable
+	setParent(KnxNetIpMessageContract)
+	buildForKnxNetIpMessage() (KnxNetIpMessage, error)
+}
+
 type _KnxNetIpMessageBuilder struct {
 	*_KnxNetIpMessage
+
+	childBuilder _KnxNetIpMessageChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (KnxNetIpMessageBuilder) = (*_KnxNetIpMessageBuilder)(nil)
 
-func (m *_KnxNetIpMessageBuilder) WithMandatoryFields() KnxNetIpMessageBuilder {
-	return m
+func (b *_KnxNetIpMessageBuilder) WithMandatoryFields() KnxNetIpMessageBuilder {
+	return b
 }
 
-func (m *_KnxNetIpMessageBuilder) Build() (KnxNetIpMessageContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_KnxNetIpMessageBuilder) PartialBuild() (KnxNetIpMessageContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._KnxNetIpMessage.deepCopy(), nil
+	return b._KnxNetIpMessage.deepCopy(), nil
 }
 
-func (m *_KnxNetIpMessageBuilder) MustBuild() KnxNetIpMessageContract {
-	build, err := m.Build()
+func (b *_KnxNetIpMessageBuilder) PartialMustBuild() KnxNetIpMessageContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_KnxNetIpMessageBuilder) DeepCopy() any {
-	return m.CreateKnxNetIpMessageBuilder()
+func (b *_KnxNetIpMessageBuilder) AsSearchRequest() interface {
+	SearchRequestBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SearchRequestBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSearchRequestBuilder().(*_SearchRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) AsSearchResponse() interface {
+	SearchResponseBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SearchResponseBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSearchResponseBuilder().(*_SearchResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) AsDescriptionRequest() interface {
+	DescriptionRequestBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DescriptionRequestBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDescriptionRequestBuilder().(*_DescriptionRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) AsDescriptionResponse() interface {
+	DescriptionResponseBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DescriptionResponseBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDescriptionResponseBuilder().(*_DescriptionResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) AsConnectionRequest() interface {
+	ConnectionRequestBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectionRequestBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectionRequestBuilder().(*_ConnectionRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) AsConnectionResponse() interface {
+	ConnectionResponseBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectionResponseBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectionResponseBuilder().(*_ConnectionResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) AsConnectionStateRequest() interface {
+	ConnectionStateRequestBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectionStateRequestBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectionStateRequestBuilder().(*_ConnectionStateRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) AsConnectionStateResponse() interface {
+	ConnectionStateResponseBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectionStateResponseBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectionStateResponseBuilder().(*_ConnectionStateResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) AsDisconnectRequest() interface {
+	DisconnectRequestBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DisconnectRequestBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDisconnectRequestBuilder().(*_DisconnectRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) AsDisconnectResponse() interface {
+	DisconnectResponseBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DisconnectResponseBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDisconnectResponseBuilder().(*_DisconnectResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) AsUnknownMessage() interface {
+	UnknownMessageBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UnknownMessageBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUnknownMessageBuilder().(*_UnknownMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) AsDeviceConfigurationRequest() interface {
+	DeviceConfigurationRequestBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DeviceConfigurationRequestBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDeviceConfigurationRequestBuilder().(*_DeviceConfigurationRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) AsDeviceConfigurationAck() interface {
+	DeviceConfigurationAckBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DeviceConfigurationAckBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDeviceConfigurationAckBuilder().(*_DeviceConfigurationAckBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) AsTunnelingRequest() interface {
+	TunnelingRequestBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TunnelingRequestBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTunnelingRequestBuilder().(*_TunnelingRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) AsTunnelingResponse() interface {
+	TunnelingResponseBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TunnelingResponseBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTunnelingResponseBuilder().(*_TunnelingResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) AsRoutingIndication() interface {
+	RoutingIndicationBuilder
+	Done() KnxNetIpMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		RoutingIndicationBuilder
+		Done() KnxNetIpMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewRoutingIndicationBuilder().(*_RoutingIndicationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxNetIpMessageBuilder) Build() (KnxNetIpMessage, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForKnxNetIpMessage()
+}
+
+func (b *_KnxNetIpMessageBuilder) MustBuild() KnxNetIpMessage {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_KnxNetIpMessageBuilder) DeepCopy() any {
+	_copy := b.CreateKnxNetIpMessageBuilder().(*_KnxNetIpMessageBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_KnxNetIpMessageChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateKnxNetIpMessageBuilder creates a KnxNetIpMessageBuilder
-func (m *_KnxNetIpMessage) CreateKnxNetIpMessageBuilder() KnxNetIpMessageBuilder {
-	if m == nil {
+func (b *_KnxNetIpMessage) CreateKnxNetIpMessageBuilder() KnxNetIpMessageBuilder {
+	if b == nil {
 		return NewKnxNetIpMessageBuilder()
 	}
-	return &_KnxNetIpMessageBuilder{_KnxNetIpMessage: m.deepCopy()}
+	return &_KnxNetIpMessageBuilder{_KnxNetIpMessage: b.deepCopy()}
 }
 
 ///////////////////////

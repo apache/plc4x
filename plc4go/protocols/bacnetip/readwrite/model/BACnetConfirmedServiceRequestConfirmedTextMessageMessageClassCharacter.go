@@ -98,64 +98,83 @@ func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBu
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder struct {
 	*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 
+	parentBuilder *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) WithMandatoryFields(characterValue BACnetContextTagCharacterString) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder {
-	return m.WithCharacterValue(characterValue)
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) setParent(contract BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract) {
+	b.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) WithCharacterValue(characterValue BACnetContextTagCharacterString) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder {
-	m.CharacterValue = characterValue
-	return m
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) WithMandatoryFields(characterValue BACnetContextTagCharacterString) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder {
+	return b.WithCharacterValue(characterValue)
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) WithCharacterValueBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder {
-	builder := builderSupplier(m.CharacterValue.CreateBACnetContextTagCharacterStringBuilder())
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) WithCharacterValue(characterValue BACnetContextTagCharacterString) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder {
+	b.CharacterValue = characterValue
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) WithCharacterValueBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder {
+	builder := builderSupplier(b.CharacterValue.CreateBACnetContextTagCharacterStringBuilder())
 	var err error
-	m.CharacterValue, err = builder.Build()
+	b.CharacterValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) Build() (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter, error) {
-	if m.CharacterValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) Build() (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter, error) {
+	if b.CharacterValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'characterValue' not set"))
+		b.err.Append(errors.New("mandatory field 'characterValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) MustBuild() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) MustBuild() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) Done() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) buildForBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass() (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder().(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder creates a BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder{_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder{_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter: b.deepCopy()}
 }
 
 ///////////////////////
@@ -296,9 +315,13 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

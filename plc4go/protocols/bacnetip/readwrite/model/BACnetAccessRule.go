@@ -129,143 +129,147 @@ type _BACnetAccessRuleBuilder struct {
 
 var _ (BACnetAccessRuleBuilder) = (*_BACnetAccessRuleBuilder)(nil)
 
-func (m *_BACnetAccessRuleBuilder) WithMandatoryFields(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTagged, locationSpecifier BACnetAccessRuleLocationSpecifierTagged, enable BACnetContextTagBoolean) BACnetAccessRuleBuilder {
-	return m.WithTimeRangeSpecifier(timeRangeSpecifier).WithLocationSpecifier(locationSpecifier).WithEnable(enable)
+func (b *_BACnetAccessRuleBuilder) WithMandatoryFields(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTagged, locationSpecifier BACnetAccessRuleLocationSpecifierTagged, enable BACnetContextTagBoolean) BACnetAccessRuleBuilder {
+	return b.WithTimeRangeSpecifier(timeRangeSpecifier).WithLocationSpecifier(locationSpecifier).WithEnable(enable)
 }
 
-func (m *_BACnetAccessRuleBuilder) WithTimeRangeSpecifier(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTagged) BACnetAccessRuleBuilder {
-	m.TimeRangeSpecifier = timeRangeSpecifier
-	return m
+func (b *_BACnetAccessRuleBuilder) WithTimeRangeSpecifier(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTagged) BACnetAccessRuleBuilder {
+	b.TimeRangeSpecifier = timeRangeSpecifier
+	return b
 }
 
-func (m *_BACnetAccessRuleBuilder) WithTimeRangeSpecifierBuilder(builderSupplier func(BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) BACnetAccessRuleBuilder {
-	builder := builderSupplier(m.TimeRangeSpecifier.CreateBACnetAccessRuleTimeRangeSpecifierTaggedBuilder())
+func (b *_BACnetAccessRuleBuilder) WithTimeRangeSpecifierBuilder(builderSupplier func(BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) BACnetAccessRuleBuilder {
+	builder := builderSupplier(b.TimeRangeSpecifier.CreateBACnetAccessRuleTimeRangeSpecifierTaggedBuilder())
 	var err error
-	m.TimeRangeSpecifier, err = builder.Build()
+	b.TimeRangeSpecifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAccessRuleTimeRangeSpecifierTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAccessRuleTimeRangeSpecifierTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAccessRuleBuilder) WithOptionalTimeRange(timeRange BACnetDeviceObjectPropertyReferenceEnclosed) BACnetAccessRuleBuilder {
-	m.TimeRange = timeRange
-	return m
+func (b *_BACnetAccessRuleBuilder) WithOptionalTimeRange(timeRange BACnetDeviceObjectPropertyReferenceEnclosed) BACnetAccessRuleBuilder {
+	b.TimeRange = timeRange
+	return b
 }
 
-func (m *_BACnetAccessRuleBuilder) WithOptionalTimeRangeBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetAccessRuleBuilder {
-	builder := builderSupplier(m.TimeRange.CreateBACnetDeviceObjectPropertyReferenceEnclosedBuilder())
+func (b *_BACnetAccessRuleBuilder) WithOptionalTimeRangeBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetAccessRuleBuilder {
+	builder := builderSupplier(b.TimeRange.CreateBACnetDeviceObjectPropertyReferenceEnclosedBuilder())
 	var err error
-	m.TimeRange, err = builder.Build()
+	b.TimeRange, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAccessRuleBuilder) WithLocationSpecifier(locationSpecifier BACnetAccessRuleLocationSpecifierTagged) BACnetAccessRuleBuilder {
-	m.LocationSpecifier = locationSpecifier
-	return m
+func (b *_BACnetAccessRuleBuilder) WithLocationSpecifier(locationSpecifier BACnetAccessRuleLocationSpecifierTagged) BACnetAccessRuleBuilder {
+	b.LocationSpecifier = locationSpecifier
+	return b
 }
 
-func (m *_BACnetAccessRuleBuilder) WithLocationSpecifierBuilder(builderSupplier func(BACnetAccessRuleLocationSpecifierTaggedBuilder) BACnetAccessRuleLocationSpecifierTaggedBuilder) BACnetAccessRuleBuilder {
-	builder := builderSupplier(m.LocationSpecifier.CreateBACnetAccessRuleLocationSpecifierTaggedBuilder())
+func (b *_BACnetAccessRuleBuilder) WithLocationSpecifierBuilder(builderSupplier func(BACnetAccessRuleLocationSpecifierTaggedBuilder) BACnetAccessRuleLocationSpecifierTaggedBuilder) BACnetAccessRuleBuilder {
+	builder := builderSupplier(b.LocationSpecifier.CreateBACnetAccessRuleLocationSpecifierTaggedBuilder())
 	var err error
-	m.LocationSpecifier, err = builder.Build()
+	b.LocationSpecifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAccessRuleLocationSpecifierTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAccessRuleLocationSpecifierTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAccessRuleBuilder) WithOptionalLocation(location BACnetDeviceObjectReferenceEnclosed) BACnetAccessRuleBuilder {
-	m.Location = location
-	return m
+func (b *_BACnetAccessRuleBuilder) WithOptionalLocation(location BACnetDeviceObjectReferenceEnclosed) BACnetAccessRuleBuilder {
+	b.Location = location
+	return b
 }
 
-func (m *_BACnetAccessRuleBuilder) WithOptionalLocationBuilder(builderSupplier func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetAccessRuleBuilder {
-	builder := builderSupplier(m.Location.CreateBACnetDeviceObjectReferenceEnclosedBuilder())
+func (b *_BACnetAccessRuleBuilder) WithOptionalLocationBuilder(builderSupplier func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetAccessRuleBuilder {
+	builder := builderSupplier(b.Location.CreateBACnetDeviceObjectReferenceEnclosedBuilder())
 	var err error
-	m.Location, err = builder.Build()
+	b.Location, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAccessRuleBuilder) WithEnable(enable BACnetContextTagBoolean) BACnetAccessRuleBuilder {
-	m.Enable = enable
-	return m
+func (b *_BACnetAccessRuleBuilder) WithEnable(enable BACnetContextTagBoolean) BACnetAccessRuleBuilder {
+	b.Enable = enable
+	return b
 }
 
-func (m *_BACnetAccessRuleBuilder) WithEnableBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetAccessRuleBuilder {
-	builder := builderSupplier(m.Enable.CreateBACnetContextTagBooleanBuilder())
+func (b *_BACnetAccessRuleBuilder) WithEnableBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetAccessRuleBuilder {
+	builder := builderSupplier(b.Enable.CreateBACnetContextTagBooleanBuilder())
 	var err error
-	m.Enable, err = builder.Build()
+	b.Enable, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAccessRuleBuilder) Build() (BACnetAccessRule, error) {
-	if m.TimeRangeSpecifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAccessRuleBuilder) Build() (BACnetAccessRule, error) {
+	if b.TimeRangeSpecifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeRangeSpecifier' not set"))
+		b.err.Append(errors.New("mandatory field 'timeRangeSpecifier' not set"))
 	}
-	if m.LocationSpecifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.LocationSpecifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'locationSpecifier' not set"))
+		b.err.Append(errors.New("mandatory field 'locationSpecifier' not set"))
 	}
-	if m.Enable == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Enable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'enable' not set"))
+		b.err.Append(errors.New("mandatory field 'enable' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAccessRule.deepCopy(), nil
+	return b._BACnetAccessRule.deepCopy(), nil
 }
 
-func (m *_BACnetAccessRuleBuilder) MustBuild() BACnetAccessRule {
-	build, err := m.Build()
+func (b *_BACnetAccessRuleBuilder) MustBuild() BACnetAccessRule {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAccessRuleBuilder) DeepCopy() any {
-	return m.CreateBACnetAccessRuleBuilder()
+func (b *_BACnetAccessRuleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAccessRuleBuilder().(*_BACnetAccessRuleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAccessRuleBuilder creates a BACnetAccessRuleBuilder
-func (m *_BACnetAccessRule) CreateBACnetAccessRuleBuilder() BACnetAccessRuleBuilder {
-	if m == nil {
+func (b *_BACnetAccessRule) CreateBACnetAccessRuleBuilder() BACnetAccessRuleBuilder {
+	if b == nil {
 		return NewBACnetAccessRuleBuilder()
 	}
-	return &_BACnetAccessRuleBuilder{_BACnetAccessRule: m.deepCopy()}
+	return &_BACnetAccessRuleBuilder{_BACnetAccessRule: b.deepCopy()}
 }
 
 ///////////////////////
@@ -486,9 +490,13 @@ func (m *_BACnetAccessRule) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

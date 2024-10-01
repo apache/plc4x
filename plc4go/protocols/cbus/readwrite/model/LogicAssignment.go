@@ -118,65 +118,69 @@ type _LogicAssignmentBuilder struct {
 
 var _ (LogicAssignmentBuilder) = (*_LogicAssignmentBuilder)(nil)
 
-func (m *_LogicAssignmentBuilder) WithMandatoryFields(greaterOfOrLogic bool, reStrikeDelay bool, assignedToGav16 bool, assignedToGav15 bool, assignedToGav14 bool, assignedToGav13 bool) LogicAssignmentBuilder {
-	return m.WithGreaterOfOrLogic(greaterOfOrLogic).WithReStrikeDelay(reStrikeDelay).WithAssignedToGav16(assignedToGav16).WithAssignedToGav15(assignedToGav15).WithAssignedToGav14(assignedToGav14).WithAssignedToGav13(assignedToGav13)
+func (b *_LogicAssignmentBuilder) WithMandatoryFields(greaterOfOrLogic bool, reStrikeDelay bool, assignedToGav16 bool, assignedToGav15 bool, assignedToGav14 bool, assignedToGav13 bool) LogicAssignmentBuilder {
+	return b.WithGreaterOfOrLogic(greaterOfOrLogic).WithReStrikeDelay(reStrikeDelay).WithAssignedToGav16(assignedToGav16).WithAssignedToGav15(assignedToGav15).WithAssignedToGav14(assignedToGav14).WithAssignedToGav13(assignedToGav13)
 }
 
-func (m *_LogicAssignmentBuilder) WithGreaterOfOrLogic(greaterOfOrLogic bool) LogicAssignmentBuilder {
-	m.GreaterOfOrLogic = greaterOfOrLogic
-	return m
+func (b *_LogicAssignmentBuilder) WithGreaterOfOrLogic(greaterOfOrLogic bool) LogicAssignmentBuilder {
+	b.GreaterOfOrLogic = greaterOfOrLogic
+	return b
 }
 
-func (m *_LogicAssignmentBuilder) WithReStrikeDelay(reStrikeDelay bool) LogicAssignmentBuilder {
-	m.ReStrikeDelay = reStrikeDelay
-	return m
+func (b *_LogicAssignmentBuilder) WithReStrikeDelay(reStrikeDelay bool) LogicAssignmentBuilder {
+	b.ReStrikeDelay = reStrikeDelay
+	return b
 }
 
-func (m *_LogicAssignmentBuilder) WithAssignedToGav16(assignedToGav16 bool) LogicAssignmentBuilder {
-	m.AssignedToGav16 = assignedToGav16
-	return m
+func (b *_LogicAssignmentBuilder) WithAssignedToGav16(assignedToGav16 bool) LogicAssignmentBuilder {
+	b.AssignedToGav16 = assignedToGav16
+	return b
 }
 
-func (m *_LogicAssignmentBuilder) WithAssignedToGav15(assignedToGav15 bool) LogicAssignmentBuilder {
-	m.AssignedToGav15 = assignedToGav15
-	return m
+func (b *_LogicAssignmentBuilder) WithAssignedToGav15(assignedToGav15 bool) LogicAssignmentBuilder {
+	b.AssignedToGav15 = assignedToGav15
+	return b
 }
 
-func (m *_LogicAssignmentBuilder) WithAssignedToGav14(assignedToGav14 bool) LogicAssignmentBuilder {
-	m.AssignedToGav14 = assignedToGav14
-	return m
+func (b *_LogicAssignmentBuilder) WithAssignedToGav14(assignedToGav14 bool) LogicAssignmentBuilder {
+	b.AssignedToGav14 = assignedToGav14
+	return b
 }
 
-func (m *_LogicAssignmentBuilder) WithAssignedToGav13(assignedToGav13 bool) LogicAssignmentBuilder {
-	m.AssignedToGav13 = assignedToGav13
-	return m
+func (b *_LogicAssignmentBuilder) WithAssignedToGav13(assignedToGav13 bool) LogicAssignmentBuilder {
+	b.AssignedToGav13 = assignedToGav13
+	return b
 }
 
-func (m *_LogicAssignmentBuilder) Build() (LogicAssignment, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_LogicAssignmentBuilder) Build() (LogicAssignment, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LogicAssignment.deepCopy(), nil
+	return b._LogicAssignment.deepCopy(), nil
 }
 
-func (m *_LogicAssignmentBuilder) MustBuild() LogicAssignment {
-	build, err := m.Build()
+func (b *_LogicAssignmentBuilder) MustBuild() LogicAssignment {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LogicAssignmentBuilder) DeepCopy() any {
-	return m.CreateLogicAssignmentBuilder()
+func (b *_LogicAssignmentBuilder) DeepCopy() any {
+	_copy := b.CreateLogicAssignmentBuilder().(*_LogicAssignmentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLogicAssignmentBuilder creates a LogicAssignmentBuilder
-func (m *_LogicAssignment) CreateLogicAssignmentBuilder() LogicAssignmentBuilder {
-	if m == nil {
+func (b *_LogicAssignment) CreateLogicAssignmentBuilder() LogicAssignmentBuilder {
+	if b == nil {
 		return NewLogicAssignmentBuilder()
 	}
-	return &_LogicAssignmentBuilder{_LogicAssignment: m.deepCopy()}
+	return &_LogicAssignmentBuilder{_LogicAssignment: b.deepCopy()}
 }
 
 ///////////////////////
@@ -431,9 +435,13 @@ func (m *_LogicAssignment) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

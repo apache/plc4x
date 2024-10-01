@@ -95,45 +95,64 @@ func NewNodeIdTwoByteBuilder() NodeIdTwoByteBuilder {
 type _NodeIdTwoByteBuilder struct {
 	*_NodeIdTwoByte
 
+	parentBuilder *_NodeIdTypeDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NodeIdTwoByteBuilder) = (*_NodeIdTwoByteBuilder)(nil)
 
-func (m *_NodeIdTwoByteBuilder) WithMandatoryFields(id uint8) NodeIdTwoByteBuilder {
-	return m.WithId(id)
+func (b *_NodeIdTwoByteBuilder) setParent(contract NodeIdTypeDefinitionContract) {
+	b.NodeIdTypeDefinitionContract = contract
 }
 
-func (m *_NodeIdTwoByteBuilder) WithId(id uint8) NodeIdTwoByteBuilder {
-	m.Id = id
-	return m
+func (b *_NodeIdTwoByteBuilder) WithMandatoryFields(id uint8) NodeIdTwoByteBuilder {
+	return b.WithId(id)
 }
 
-func (m *_NodeIdTwoByteBuilder) Build() (NodeIdTwoByte, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NodeIdTwoByteBuilder) WithId(id uint8) NodeIdTwoByteBuilder {
+	b.Id = id
+	return b
+}
+
+func (b *_NodeIdTwoByteBuilder) Build() (NodeIdTwoByte, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NodeIdTwoByte.deepCopy(), nil
+	return b._NodeIdTwoByte.deepCopy(), nil
 }
 
-func (m *_NodeIdTwoByteBuilder) MustBuild() NodeIdTwoByte {
-	build, err := m.Build()
+func (b *_NodeIdTwoByteBuilder) MustBuild() NodeIdTwoByte {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NodeIdTwoByteBuilder) DeepCopy() any {
-	return m.CreateNodeIdTwoByteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NodeIdTwoByteBuilder) Done() NodeIdTypeDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NodeIdTwoByteBuilder) buildForNodeIdTypeDefinition() (NodeIdTypeDefinition, error) {
+	return b.Build()
+}
+
+func (b *_NodeIdTwoByteBuilder) DeepCopy() any {
+	_copy := b.CreateNodeIdTwoByteBuilder().(*_NodeIdTwoByteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNodeIdTwoByteBuilder creates a NodeIdTwoByteBuilder
-func (m *_NodeIdTwoByte) CreateNodeIdTwoByteBuilder() NodeIdTwoByteBuilder {
-	if m == nil {
+func (b *_NodeIdTwoByte) CreateNodeIdTwoByteBuilder() NodeIdTwoByteBuilder {
+	if b == nil {
 		return NewNodeIdTwoByteBuilder()
 	}
-	return &_NodeIdTwoByteBuilder{_NodeIdTwoByte: m.deepCopy()}
+	return &_NodeIdTwoByteBuilder{_NodeIdTwoByte: b.deepCopy()}
 }
 
 ///////////////////////
@@ -306,9 +325,13 @@ func (m *_NodeIdTwoByte) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

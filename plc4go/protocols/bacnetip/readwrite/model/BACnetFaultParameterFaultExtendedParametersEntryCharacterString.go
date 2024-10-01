@@ -98,64 +98,83 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder()
 type _BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntryCharacterString
 
+	parentBuilder *_BACnetFaultParameterFaultExtendedParametersEntryBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder)(nil)
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder {
-	return m.WithCharacterStringValue(characterStringValue)
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) setParent(contract BACnetFaultParameterFaultExtendedParametersEntryContract) {
+	b.BACnetFaultParameterFaultExtendedParametersEntryContract = contract
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) WithCharacterStringValue(characterStringValue BACnetApplicationTagCharacterString) BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder {
-	m.CharacterStringValue = characterStringValue
-	return m
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder {
+	return b.WithCharacterStringValue(characterStringValue)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) WithCharacterStringValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder {
-	builder := builderSupplier(m.CharacterStringValue.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) WithCharacterStringValue(characterStringValue BACnetApplicationTagCharacterString) BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder {
+	b.CharacterStringValue = characterStringValue
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) WithCharacterStringValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder {
+	builder := builderSupplier(b.CharacterStringValue.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.CharacterStringValue, err = builder.Build()
+	b.CharacterStringValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryCharacterString, error) {
-	if m.CharacterStringValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryCharacterString, error) {
+	if b.CharacterStringValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'characterStringValue' not set"))
+		b.err.Append(errors.New("mandatory field 'characterStringValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetFaultParameterFaultExtendedParametersEntryCharacterString.deepCopy(), nil
+	return b._BACnetFaultParameterFaultExtendedParametersEntryCharacterString.deepCopy(), nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryCharacterString {
-	build, err := m.Build()
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryCharacterString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) DeepCopy() any {
-	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) buildForBACnetFaultParameterFaultExtendedParametersEntry() (BACnetFaultParameterFaultExtendedParametersEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) CreateBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder() BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder {
-	if m == nil {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) CreateBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder() BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder {
+	if b == nil {
 		return NewBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder()
 	}
-	return &_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder{_BACnetFaultParameterFaultExtendedParametersEntryCharacterString: m.deepCopy()}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder{_BACnetFaultParameterFaultExtendedParametersEntryCharacterString: b.deepCopy()}
 }
 
 ///////////////////////
@@ -296,9 +315,13 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) Strin
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

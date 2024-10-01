@@ -95,58 +95,77 @@ func NewBACnetConfirmedServiceRequestGetEventInformationBuilder() BACnetConfirme
 type _BACnetConfirmedServiceRequestGetEventInformationBuilder struct {
 	*_BACnetConfirmedServiceRequestGetEventInformation
 
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestGetEventInformationBuilder) = (*_BACnetConfirmedServiceRequestGetEventInformationBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformationBuilder) WithMandatoryFields() BACnetConfirmedServiceRequestGetEventInformationBuilder {
-	return m
+func (b *_BACnetConfirmedServiceRequestGetEventInformationBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformationBuilder) WithOptionalLastReceivedObjectIdentifier(lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestGetEventInformationBuilder {
-	m.LastReceivedObjectIdentifier = lastReceivedObjectIdentifier
-	return m
+func (b *_BACnetConfirmedServiceRequestGetEventInformationBuilder) WithMandatoryFields() BACnetConfirmedServiceRequestGetEventInformationBuilder {
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformationBuilder) WithOptionalLastReceivedObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestGetEventInformationBuilder {
-	builder := builderSupplier(m.LastReceivedObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+func (b *_BACnetConfirmedServiceRequestGetEventInformationBuilder) WithOptionalLastReceivedObjectIdentifier(lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestGetEventInformationBuilder {
+	b.LastReceivedObjectIdentifier = lastReceivedObjectIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEventInformationBuilder) WithOptionalLastReceivedObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestGetEventInformationBuilder {
+	builder := builderSupplier(b.LastReceivedObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
 	var err error
-	m.LastReceivedObjectIdentifier, err = builder.Build()
+	b.LastReceivedObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformationBuilder) Build() (BACnetConfirmedServiceRequestGetEventInformation, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConfirmedServiceRequestGetEventInformationBuilder) Build() (BACnetConfirmedServiceRequestGetEventInformation, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestGetEventInformation.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestGetEventInformation.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformationBuilder) MustBuild() BACnetConfirmedServiceRequestGetEventInformation {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestGetEventInformationBuilder) MustBuild() BACnetConfirmedServiceRequestGetEventInformation {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformationBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestGetEventInformationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestGetEventInformationBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEventInformationBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEventInformationBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestGetEventInformationBuilder().(*_BACnetConfirmedServiceRequestGetEventInformationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestGetEventInformationBuilder creates a BACnetConfirmedServiceRequestGetEventInformationBuilder
-func (m *_BACnetConfirmedServiceRequestGetEventInformation) CreateBACnetConfirmedServiceRequestGetEventInformationBuilder() BACnetConfirmedServiceRequestGetEventInformationBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestGetEventInformation) CreateBACnetConfirmedServiceRequestGetEventInformationBuilder() BACnetConfirmedServiceRequestGetEventInformationBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestGetEventInformationBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestGetEventInformationBuilder{_BACnetConfirmedServiceRequestGetEventInformation: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestGetEventInformationBuilder{_BACnetConfirmedServiceRequestGetEventInformation: b.deepCopy()}
 }
 
 ///////////////////////
@@ -297,9 +316,13 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -97,45 +97,64 @@ func NewMediaTransportControlDataSourcePowerControlBuilder() MediaTransportContr
 type _MediaTransportControlDataSourcePowerControlBuilder struct {
 	*_MediaTransportControlDataSourcePowerControl
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataSourcePowerControlBuilder) = (*_MediaTransportControlDataSourcePowerControlBuilder)(nil)
 
-func (m *_MediaTransportControlDataSourcePowerControlBuilder) WithMandatoryFields(state byte) MediaTransportControlDataSourcePowerControlBuilder {
-	return m.WithState(state)
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataSourcePowerControlBuilder) WithState(state byte) MediaTransportControlDataSourcePowerControlBuilder {
-	m.State = state
-	return m
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) WithMandatoryFields(state byte) MediaTransportControlDataSourcePowerControlBuilder {
+	return b.WithState(state)
 }
 
-func (m *_MediaTransportControlDataSourcePowerControlBuilder) Build() (MediaTransportControlDataSourcePowerControl, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) WithState(state byte) MediaTransportControlDataSourcePowerControlBuilder {
+	b.State = state
+	return b
+}
+
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) Build() (MediaTransportControlDataSourcePowerControl, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataSourcePowerControl.deepCopy(), nil
+	return b._MediaTransportControlDataSourcePowerControl.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataSourcePowerControlBuilder) MustBuild() MediaTransportControlDataSourcePowerControl {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) MustBuild() MediaTransportControlDataSourcePowerControl {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataSourcePowerControlBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataSourcePowerControlBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataSourcePowerControlBuilder().(*_MediaTransportControlDataSourcePowerControlBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataSourcePowerControlBuilder creates a MediaTransportControlDataSourcePowerControlBuilder
-func (m *_MediaTransportControlDataSourcePowerControl) CreateMediaTransportControlDataSourcePowerControlBuilder() MediaTransportControlDataSourcePowerControlBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataSourcePowerControl) CreateMediaTransportControlDataSourcePowerControlBuilder() MediaTransportControlDataSourcePowerControlBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataSourcePowerControlBuilder()
 	}
-	return &_MediaTransportControlDataSourcePowerControlBuilder{_MediaTransportControlDataSourcePowerControl: m.deepCopy()}
+	return &_MediaTransportControlDataSourcePowerControlBuilder{_MediaTransportControlDataSourcePowerControl: b.deepCopy()}
 }
 
 ///////////////////////
@@ -325,9 +344,13 @@ func (m *_MediaTransportControlDataSourcePowerControl) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

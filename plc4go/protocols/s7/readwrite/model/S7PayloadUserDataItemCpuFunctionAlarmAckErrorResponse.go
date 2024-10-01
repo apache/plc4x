@@ -85,40 +85,59 @@ func NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder() S7Payload
 type _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder struct {
 	*_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) = (*_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder)(nil)
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) WithMandatoryFields() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder {
-	return m
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) WithMandatoryFields() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder {
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse.deepCopy(), nil
+	return b._S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse.deepCopy(), nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse {
-	build, err := m.Build()
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) DeepCopy() any {
-	return m.CreateS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder creates a S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) CreateS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder {
-	if m == nil {
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) CreateS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder {
+	if b == nil {
 		return NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder()
 	}
-	return &_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder{_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse: m.deepCopy()}
+	return &_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder{_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -243,9 +262,13 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) String() string
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

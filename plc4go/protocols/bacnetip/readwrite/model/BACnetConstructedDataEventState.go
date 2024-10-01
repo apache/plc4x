@@ -100,64 +100,83 @@ func NewBACnetConstructedDataEventStateBuilder() BACnetConstructedDataEventState
 type _BACnetConstructedDataEventStateBuilder struct {
 	*_BACnetConstructedDataEventState
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataEventStateBuilder) = (*_BACnetConstructedDataEventStateBuilder)(nil)
 
-func (m *_BACnetConstructedDataEventStateBuilder) WithMandatoryFields(eventState BACnetEventStateTagged) BACnetConstructedDataEventStateBuilder {
-	return m.WithEventState(eventState)
+func (b *_BACnetConstructedDataEventStateBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataEventStateBuilder) WithEventState(eventState BACnetEventStateTagged) BACnetConstructedDataEventStateBuilder {
-	m.EventState = eventState
-	return m
+func (b *_BACnetConstructedDataEventStateBuilder) WithMandatoryFields(eventState BACnetEventStateTagged) BACnetConstructedDataEventStateBuilder {
+	return b.WithEventState(eventState)
 }
 
-func (m *_BACnetConstructedDataEventStateBuilder) WithEventStateBuilder(builderSupplier func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetConstructedDataEventStateBuilder {
-	builder := builderSupplier(m.EventState.CreateBACnetEventStateTaggedBuilder())
+func (b *_BACnetConstructedDataEventStateBuilder) WithEventState(eventState BACnetEventStateTagged) BACnetConstructedDataEventStateBuilder {
+	b.EventState = eventState
+	return b
+}
+
+func (b *_BACnetConstructedDataEventStateBuilder) WithEventStateBuilder(builderSupplier func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetConstructedDataEventStateBuilder {
+	builder := builderSupplier(b.EventState.CreateBACnetEventStateTaggedBuilder())
 	var err error
-	m.EventState, err = builder.Build()
+	b.EventState, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataEventStateBuilder) Build() (BACnetConstructedDataEventState, error) {
-	if m.EventState == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataEventStateBuilder) Build() (BACnetConstructedDataEventState, error) {
+	if b.EventState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'eventState' not set"))
+		b.err.Append(errors.New("mandatory field 'eventState' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataEventState.deepCopy(), nil
+	return b._BACnetConstructedDataEventState.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataEventStateBuilder) MustBuild() BACnetConstructedDataEventState {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataEventStateBuilder) MustBuild() BACnetConstructedDataEventState {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataEventStateBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataEventStateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEventStateBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEventStateBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEventStateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEventStateBuilder().(*_BACnetConstructedDataEventStateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataEventStateBuilder creates a BACnetConstructedDataEventStateBuilder
-func (m *_BACnetConstructedDataEventState) CreateBACnetConstructedDataEventStateBuilder() BACnetConstructedDataEventStateBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataEventState) CreateBACnetConstructedDataEventStateBuilder() BACnetConstructedDataEventStateBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataEventStateBuilder()
 	}
-	return &_BACnetConstructedDataEventStateBuilder{_BACnetConstructedDataEventState: m.deepCopy()}
+	return &_BACnetConstructedDataEventStateBuilder{_BACnetConstructedDataEventState: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataEventState) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -85,40 +85,59 @@ func NewVariantNullBuilder() VariantNullBuilder {
 type _VariantNullBuilder struct {
 	*_VariantNull
 
+	parentBuilder *_VariantBuilder
+
 	err *utils.MultiError
 }
 
 var _ (VariantNullBuilder) = (*_VariantNullBuilder)(nil)
 
-func (m *_VariantNullBuilder) WithMandatoryFields() VariantNullBuilder {
-	return m
+func (b *_VariantNullBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
 }
 
-func (m *_VariantNullBuilder) Build() (VariantNull, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_VariantNullBuilder) WithMandatoryFields() VariantNullBuilder {
+	return b
+}
+
+func (b *_VariantNullBuilder) Build() (VariantNull, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._VariantNull.deepCopy(), nil
+	return b._VariantNull.deepCopy(), nil
 }
 
-func (m *_VariantNullBuilder) MustBuild() VariantNull {
-	build, err := m.Build()
+func (b *_VariantNullBuilder) MustBuild() VariantNull {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_VariantNullBuilder) DeepCopy() any {
-	return m.CreateVariantNullBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantNullBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantNullBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantNullBuilder) DeepCopy() any {
+	_copy := b.CreateVariantNullBuilder().(*_VariantNullBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateVariantNullBuilder creates a VariantNullBuilder
-func (m *_VariantNull) CreateVariantNullBuilder() VariantNullBuilder {
-	if m == nil {
+func (b *_VariantNull) CreateVariantNullBuilder() VariantNullBuilder {
+	if b == nil {
 		return NewVariantNullBuilder()
 	}
-	return &_VariantNullBuilder{_VariantNull: m.deepCopy()}
+	return &_VariantNullBuilder{_VariantNull: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_VariantNull) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -98,64 +98,83 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder struct {
 	*_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
 
+	parentBuilder *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder)(nil)
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder {
-	return m.WithDateTimeValue(dateTimeValue)
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) setParent(contract BACnetNotificationParametersChangeOfDiscreteValueNewValueContract) {
+	b.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract = contract
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) WithDateTimeValue(dateTimeValue BACnetDateTimeEnclosed) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder {
-	m.DateTimeValue = dateTimeValue
-	return m
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder {
+	return b.WithDateTimeValue(dateTimeValue)
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) WithDateTimeValueBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder {
-	builder := builderSupplier(m.DateTimeValue.CreateBACnetDateTimeEnclosedBuilder())
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) WithDateTimeValue(dateTimeValue BACnetDateTimeEnclosed) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder {
+	b.DateTimeValue = dateTimeValue
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) WithDateTimeValueBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder {
+	builder := builderSupplier(b.DateTimeValue.CreateBACnetDateTimeEnclosedBuilder())
 	var err error
-	m.DateTimeValue, err = builder.Build()
+	b.DateTimeValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime, error) {
-	if m.DateTimeValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime, error) {
+	if b.DateTimeValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dateTimeValue' not set"))
+		b.err.Append(errors.New("mandatory field 'dateTimeValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime.deepCopy(), nil
+	return b._BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime.deepCopy(), nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) buildForBACnetNotificationParametersChangeOfDiscreteValueNewValue() (BACnetNotificationParametersChangeOfDiscreteValueNewValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder()
 	}
-	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime: m.deepCopy()}
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -296,9 +315,13 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) Str
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

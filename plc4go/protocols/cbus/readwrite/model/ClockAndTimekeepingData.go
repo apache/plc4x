@@ -99,10 +99,29 @@ type ClockAndTimekeepingDataBuilder interface {
 	WithCommandTypeContainer(ClockAndTimekeepingCommandTypeContainer) ClockAndTimekeepingDataBuilder
 	// WithArgument adds Argument (property field)
 	WithArgument(byte) ClockAndTimekeepingDataBuilder
+	// AsClockAndTimekeepingDataUpdateTime converts this build to a subType of ClockAndTimekeepingData. It is always possible to return to current builder using Done()
+	AsClockAndTimekeepingDataUpdateTime() interface {
+		ClockAndTimekeepingDataUpdateTimeBuilder
+		Done() ClockAndTimekeepingDataBuilder
+	}
+	// AsClockAndTimekeepingDataUpdateDate converts this build to a subType of ClockAndTimekeepingData. It is always possible to return to current builder using Done()
+	AsClockAndTimekeepingDataUpdateDate() interface {
+		ClockAndTimekeepingDataUpdateDateBuilder
+		Done() ClockAndTimekeepingDataBuilder
+	}
+	// AsClockAndTimekeepingDataRequestRefresh converts this build to a subType of ClockAndTimekeepingData. It is always possible to return to current builder using Done()
+	AsClockAndTimekeepingDataRequestRefresh() interface {
+		ClockAndTimekeepingDataRequestRefreshBuilder
+		Done() ClockAndTimekeepingDataBuilder
+	}
 	// Build builds the ClockAndTimekeepingData or returns an error if something is wrong
-	Build() (ClockAndTimekeepingDataContract, error)
+	PartialBuild() (ClockAndTimekeepingDataContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() ClockAndTimekeepingDataContract
+	PartialMustBuild() ClockAndTimekeepingDataContract
+	// Build builds the ClockAndTimekeepingData or returns an error if something is wrong
+	Build() (ClockAndTimekeepingData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ClockAndTimekeepingData
 }
 
 // NewClockAndTimekeepingDataBuilder() creates a ClockAndTimekeepingDataBuilder
@@ -110,53 +129,135 @@ func NewClockAndTimekeepingDataBuilder() ClockAndTimekeepingDataBuilder {
 	return &_ClockAndTimekeepingDataBuilder{_ClockAndTimekeepingData: new(_ClockAndTimekeepingData)}
 }
 
+type _ClockAndTimekeepingDataChildBuilder interface {
+	utils.Copyable
+	setParent(ClockAndTimekeepingDataContract)
+	buildForClockAndTimekeepingData() (ClockAndTimekeepingData, error)
+}
+
 type _ClockAndTimekeepingDataBuilder struct {
 	*_ClockAndTimekeepingData
+
+	childBuilder _ClockAndTimekeepingDataChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (ClockAndTimekeepingDataBuilder) = (*_ClockAndTimekeepingDataBuilder)(nil)
 
-func (m *_ClockAndTimekeepingDataBuilder) WithMandatoryFields(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) ClockAndTimekeepingDataBuilder {
-	return m.WithCommandTypeContainer(commandTypeContainer).WithArgument(argument)
+func (b *_ClockAndTimekeepingDataBuilder) WithMandatoryFields(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) ClockAndTimekeepingDataBuilder {
+	return b.WithCommandTypeContainer(commandTypeContainer).WithArgument(argument)
 }
 
-func (m *_ClockAndTimekeepingDataBuilder) WithCommandTypeContainer(commandTypeContainer ClockAndTimekeepingCommandTypeContainer) ClockAndTimekeepingDataBuilder {
-	m.CommandTypeContainer = commandTypeContainer
-	return m
+func (b *_ClockAndTimekeepingDataBuilder) WithCommandTypeContainer(commandTypeContainer ClockAndTimekeepingCommandTypeContainer) ClockAndTimekeepingDataBuilder {
+	b.CommandTypeContainer = commandTypeContainer
+	return b
 }
 
-func (m *_ClockAndTimekeepingDataBuilder) WithArgument(argument byte) ClockAndTimekeepingDataBuilder {
-	m.Argument = argument
-	return m
+func (b *_ClockAndTimekeepingDataBuilder) WithArgument(argument byte) ClockAndTimekeepingDataBuilder {
+	b.Argument = argument
+	return b
 }
 
-func (m *_ClockAndTimekeepingDataBuilder) Build() (ClockAndTimekeepingDataContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ClockAndTimekeepingDataBuilder) PartialBuild() (ClockAndTimekeepingDataContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ClockAndTimekeepingData.deepCopy(), nil
+	return b._ClockAndTimekeepingData.deepCopy(), nil
 }
 
-func (m *_ClockAndTimekeepingDataBuilder) MustBuild() ClockAndTimekeepingDataContract {
-	build, err := m.Build()
+func (b *_ClockAndTimekeepingDataBuilder) PartialMustBuild() ClockAndTimekeepingDataContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ClockAndTimekeepingDataBuilder) DeepCopy() any {
-	return m.CreateClockAndTimekeepingDataBuilder()
+func (b *_ClockAndTimekeepingDataBuilder) AsClockAndTimekeepingDataUpdateTime() interface {
+	ClockAndTimekeepingDataUpdateTimeBuilder
+	Done() ClockAndTimekeepingDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ClockAndTimekeepingDataUpdateTimeBuilder
+		Done() ClockAndTimekeepingDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewClockAndTimekeepingDataUpdateTimeBuilder().(*_ClockAndTimekeepingDataUpdateTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ClockAndTimekeepingDataBuilder) AsClockAndTimekeepingDataUpdateDate() interface {
+	ClockAndTimekeepingDataUpdateDateBuilder
+	Done() ClockAndTimekeepingDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ClockAndTimekeepingDataUpdateDateBuilder
+		Done() ClockAndTimekeepingDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewClockAndTimekeepingDataUpdateDateBuilder().(*_ClockAndTimekeepingDataUpdateDateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ClockAndTimekeepingDataBuilder) AsClockAndTimekeepingDataRequestRefresh() interface {
+	ClockAndTimekeepingDataRequestRefreshBuilder
+	Done() ClockAndTimekeepingDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ClockAndTimekeepingDataRequestRefreshBuilder
+		Done() ClockAndTimekeepingDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewClockAndTimekeepingDataRequestRefreshBuilder().(*_ClockAndTimekeepingDataRequestRefreshBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ClockAndTimekeepingDataBuilder) Build() (ClockAndTimekeepingData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForClockAndTimekeepingData()
+}
+
+func (b *_ClockAndTimekeepingDataBuilder) MustBuild() ClockAndTimekeepingData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ClockAndTimekeepingDataBuilder) DeepCopy() any {
+	_copy := b.CreateClockAndTimekeepingDataBuilder().(*_ClockAndTimekeepingDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ClockAndTimekeepingDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateClockAndTimekeepingDataBuilder creates a ClockAndTimekeepingDataBuilder
-func (m *_ClockAndTimekeepingData) CreateClockAndTimekeepingDataBuilder() ClockAndTimekeepingDataBuilder {
-	if m == nil {
+func (b *_ClockAndTimekeepingData) CreateClockAndTimekeepingDataBuilder() ClockAndTimekeepingDataBuilder {
+	if b == nil {
 		return NewClockAndTimekeepingDataBuilder()
 	}
-	return &_ClockAndTimekeepingDataBuilder{_ClockAndTimekeepingData: m.deepCopy()}
+	return &_ClockAndTimekeepingDataBuilder{_ClockAndTimekeepingData: b.deepCopy()}
 }
 
 ///////////////////////

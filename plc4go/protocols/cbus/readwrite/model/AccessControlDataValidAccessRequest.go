@@ -99,50 +99,69 @@ func NewAccessControlDataValidAccessRequestBuilder() AccessControlDataValidAcces
 type _AccessControlDataValidAccessRequestBuilder struct {
 	*_AccessControlDataValidAccessRequest
 
+	parentBuilder *_AccessControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AccessControlDataValidAccessRequestBuilder) = (*_AccessControlDataValidAccessRequestBuilder)(nil)
 
-func (m *_AccessControlDataValidAccessRequestBuilder) WithMandatoryFields(accessControlDirection AccessControlDirection, data []byte) AccessControlDataValidAccessRequestBuilder {
-	return m.WithAccessControlDirection(accessControlDirection).WithData(data...)
+func (b *_AccessControlDataValidAccessRequestBuilder) setParent(contract AccessControlDataContract) {
+	b.AccessControlDataContract = contract
 }
 
-func (m *_AccessControlDataValidAccessRequestBuilder) WithAccessControlDirection(accessControlDirection AccessControlDirection) AccessControlDataValidAccessRequestBuilder {
-	m.AccessControlDirection = accessControlDirection
-	return m
+func (b *_AccessControlDataValidAccessRequestBuilder) WithMandatoryFields(accessControlDirection AccessControlDirection, data []byte) AccessControlDataValidAccessRequestBuilder {
+	return b.WithAccessControlDirection(accessControlDirection).WithData(data...)
 }
 
-func (m *_AccessControlDataValidAccessRequestBuilder) WithData(data ...byte) AccessControlDataValidAccessRequestBuilder {
-	m.Data = data
-	return m
+func (b *_AccessControlDataValidAccessRequestBuilder) WithAccessControlDirection(accessControlDirection AccessControlDirection) AccessControlDataValidAccessRequestBuilder {
+	b.AccessControlDirection = accessControlDirection
+	return b
 }
 
-func (m *_AccessControlDataValidAccessRequestBuilder) Build() (AccessControlDataValidAccessRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AccessControlDataValidAccessRequestBuilder) WithData(data ...byte) AccessControlDataValidAccessRequestBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_AccessControlDataValidAccessRequestBuilder) Build() (AccessControlDataValidAccessRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AccessControlDataValidAccessRequest.deepCopy(), nil
+	return b._AccessControlDataValidAccessRequest.deepCopy(), nil
 }
 
-func (m *_AccessControlDataValidAccessRequestBuilder) MustBuild() AccessControlDataValidAccessRequest {
-	build, err := m.Build()
+func (b *_AccessControlDataValidAccessRequestBuilder) MustBuild() AccessControlDataValidAccessRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AccessControlDataValidAccessRequestBuilder) DeepCopy() any {
-	return m.CreateAccessControlDataValidAccessRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AccessControlDataValidAccessRequestBuilder) Done() AccessControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AccessControlDataValidAccessRequestBuilder) buildForAccessControlData() (AccessControlData, error) {
+	return b.Build()
+}
+
+func (b *_AccessControlDataValidAccessRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAccessControlDataValidAccessRequestBuilder().(*_AccessControlDataValidAccessRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAccessControlDataValidAccessRequestBuilder creates a AccessControlDataValidAccessRequestBuilder
-func (m *_AccessControlDataValidAccessRequest) CreateAccessControlDataValidAccessRequestBuilder() AccessControlDataValidAccessRequestBuilder {
-	if m == nil {
+func (b *_AccessControlDataValidAccessRequest) CreateAccessControlDataValidAccessRequestBuilder() AccessControlDataValidAccessRequestBuilder {
+	if b == nil {
 		return NewAccessControlDataValidAccessRequestBuilder()
 	}
-	return &_AccessControlDataValidAccessRequestBuilder{_AccessControlDataValidAccessRequest: m.deepCopy()}
+	return &_AccessControlDataValidAccessRequestBuilder{_AccessControlDataValidAccessRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -302,9 +321,13 @@ func (m *_AccessControlDataValidAccessRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

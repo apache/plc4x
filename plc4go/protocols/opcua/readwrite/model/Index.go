@@ -83,35 +83,39 @@ type _IndexBuilder struct {
 
 var _ (IndexBuilder) = (*_IndexBuilder)(nil)
 
-func (m *_IndexBuilder) WithMandatoryFields() IndexBuilder {
-	return m
+func (b *_IndexBuilder) WithMandatoryFields() IndexBuilder {
+	return b
 }
 
-func (m *_IndexBuilder) Build() (Index, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IndexBuilder) Build() (Index, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Index.deepCopy(), nil
+	return b._Index.deepCopy(), nil
 }
 
-func (m *_IndexBuilder) MustBuild() Index {
-	build, err := m.Build()
+func (b *_IndexBuilder) MustBuild() Index {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IndexBuilder) DeepCopy() any {
-	return m.CreateIndexBuilder()
+func (b *_IndexBuilder) DeepCopy() any {
+	_copy := b.CreateIndexBuilder().(*_IndexBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIndexBuilder creates a IndexBuilder
-func (m *_Index) CreateIndexBuilder() IndexBuilder {
-	if m == nil {
+func (b *_Index) CreateIndexBuilder() IndexBuilder {
+	if b == nil {
 		return NewIndexBuilder()
 	}
-	return &_IndexBuilder{_Index: m.deepCopy()}
+	return &_IndexBuilder{_Index: b.deepCopy()}
 }
 
 ///////////////////////
@@ -219,9 +223,13 @@ func (m *_Index) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

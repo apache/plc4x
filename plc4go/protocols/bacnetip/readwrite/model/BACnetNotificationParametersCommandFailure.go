@@ -114,12 +114,16 @@ type BACnetNotificationParametersCommandFailureBuilder interface {
 	WithInnerOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersCommandFailureBuilder
 	// WithCommandValue adds CommandValue (property field)
 	WithCommandValue(BACnetConstructedData) BACnetNotificationParametersCommandFailureBuilder
+	// WithCommandValueBuilder adds CommandValue (property field) which is build by the builder
+	WithCommandValueBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetNotificationParametersCommandFailureBuilder
 	// WithStatusFlags adds StatusFlags (property field)
 	WithStatusFlags(BACnetStatusFlagsTagged) BACnetNotificationParametersCommandFailureBuilder
 	// WithStatusFlagsBuilder adds StatusFlags (property field) which is build by the builder
 	WithStatusFlagsBuilder(func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersCommandFailureBuilder
 	// WithFeedbackValue adds FeedbackValue (property field)
 	WithFeedbackValue(BACnetConstructedData) BACnetNotificationParametersCommandFailureBuilder
+	// WithFeedbackValueBuilder adds FeedbackValue (property field) which is build by the builder
+	WithFeedbackValueBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetNotificationParametersCommandFailureBuilder
 	// WithInnerClosingTag adds InnerClosingTag (property field)
 	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersCommandFailureBuilder
 	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
@@ -138,134 +142,179 @@ func NewBACnetNotificationParametersCommandFailureBuilder() BACnetNotificationPa
 type _BACnetNotificationParametersCommandFailureBuilder struct {
 	*_BACnetNotificationParametersCommandFailure
 
+	parentBuilder *_BACnetNotificationParametersBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersCommandFailureBuilder) = (*_BACnetNotificationParametersCommandFailureBuilder)(nil)
 
-func (m *_BACnetNotificationParametersCommandFailureBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, commandValue BACnetConstructedData, statusFlags BACnetStatusFlagsTagged, feedbackValue BACnetConstructedData, innerClosingTag BACnetClosingTag) BACnetNotificationParametersCommandFailureBuilder {
-	return m.WithInnerOpeningTag(innerOpeningTag).WithCommandValue(commandValue).WithStatusFlags(statusFlags).WithFeedbackValue(feedbackValue).WithInnerClosingTag(innerClosingTag)
+func (b *_BACnetNotificationParametersCommandFailureBuilder) setParent(contract BACnetNotificationParametersContract) {
+	b.BACnetNotificationParametersContract = contract
 }
 
-func (m *_BACnetNotificationParametersCommandFailureBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersCommandFailureBuilder {
-	m.InnerOpeningTag = innerOpeningTag
-	return m
+func (b *_BACnetNotificationParametersCommandFailureBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, commandValue BACnetConstructedData, statusFlags BACnetStatusFlagsTagged, feedbackValue BACnetConstructedData, innerClosingTag BACnetClosingTag) BACnetNotificationParametersCommandFailureBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithCommandValue(commandValue).WithStatusFlags(statusFlags).WithFeedbackValue(feedbackValue).WithInnerClosingTag(innerClosingTag)
 }
 
-func (m *_BACnetNotificationParametersCommandFailureBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersCommandFailureBuilder {
-	builder := builderSupplier(m.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetNotificationParametersCommandFailureBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersCommandFailureBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersCommandFailureBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersCommandFailureBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.InnerOpeningTag, err = builder.Build()
+	b.InnerOpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersCommandFailureBuilder) WithCommandValue(commandValue BACnetConstructedData) BACnetNotificationParametersCommandFailureBuilder {
-	m.CommandValue = commandValue
-	return m
+func (b *_BACnetNotificationParametersCommandFailureBuilder) WithCommandValue(commandValue BACnetConstructedData) BACnetNotificationParametersCommandFailureBuilder {
+	b.CommandValue = commandValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersCommandFailureBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersCommandFailureBuilder {
-	m.StatusFlags = statusFlags
-	return m
-}
-
-func (m *_BACnetNotificationParametersCommandFailureBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersCommandFailureBuilder {
-	builder := builderSupplier(m.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
+func (b *_BACnetNotificationParametersCommandFailureBuilder) WithCommandValueBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetNotificationParametersCommandFailureBuilder {
+	builder := builderSupplier(b.CommandValue.CreateBACnetConstructedDataBuilder())
 	var err error
-	m.StatusFlags, err = builder.Build()
+	b.CommandValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersCommandFailureBuilder) WithFeedbackValue(feedbackValue BACnetConstructedData) BACnetNotificationParametersCommandFailureBuilder {
-	m.FeedbackValue = feedbackValue
-	return m
+func (b *_BACnetNotificationParametersCommandFailureBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersCommandFailureBuilder {
+	b.StatusFlags = statusFlags
+	return b
 }
 
-func (m *_BACnetNotificationParametersCommandFailureBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersCommandFailureBuilder {
-	m.InnerClosingTag = innerClosingTag
-	return m
-}
-
-func (m *_BACnetNotificationParametersCommandFailureBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersCommandFailureBuilder {
-	builder := builderSupplier(m.InnerClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetNotificationParametersCommandFailureBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersCommandFailureBuilder {
+	builder := builderSupplier(b.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
 	var err error
-	m.InnerClosingTag, err = builder.Build()
+	b.StatusFlags, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersCommandFailureBuilder) Build() (BACnetNotificationParametersCommandFailure, error) {
-	if m.InnerOpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
-	}
-	if m.CommandValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'commandValue' not set"))
-	}
-	if m.StatusFlags == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'statusFlags' not set"))
-	}
-	if m.FeedbackValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'feedbackValue' not set"))
-	}
-	if m.InnerClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetNotificationParametersCommandFailure.deepCopy(), nil
+func (b *_BACnetNotificationParametersCommandFailureBuilder) WithFeedbackValue(feedbackValue BACnetConstructedData) BACnetNotificationParametersCommandFailureBuilder {
+	b.FeedbackValue = feedbackValue
+	return b
 }
 
-func (m *_BACnetNotificationParametersCommandFailureBuilder) MustBuild() BACnetNotificationParametersCommandFailure {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersCommandFailureBuilder) WithFeedbackValueBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetNotificationParametersCommandFailureBuilder {
+	builder := builderSupplier(b.FeedbackValue.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.FeedbackValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersCommandFailureBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersCommandFailureBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersCommandFailureBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersCommandFailureBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.InnerClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersCommandFailureBuilder) Build() (BACnetNotificationParametersCommandFailure, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+	}
+	if b.CommandValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'commandValue' not set"))
+	}
+	if b.StatusFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'statusFlags' not set"))
+	}
+	if b.FeedbackValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'feedbackValue' not set"))
+	}
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetNotificationParametersCommandFailure.deepCopy(), nil
+}
+
+func (b *_BACnetNotificationParametersCommandFailureBuilder) MustBuild() BACnetNotificationParametersCommandFailure {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersCommandFailureBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersCommandFailureBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersCommandFailureBuilder) Done() BACnetNotificationParametersBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersCommandFailureBuilder) buildForBACnetNotificationParameters() (BACnetNotificationParameters, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersCommandFailureBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersCommandFailureBuilder().(*_BACnetNotificationParametersCommandFailureBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersCommandFailureBuilder creates a BACnetNotificationParametersCommandFailureBuilder
-func (m *_BACnetNotificationParametersCommandFailure) CreateBACnetNotificationParametersCommandFailureBuilder() BACnetNotificationParametersCommandFailureBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersCommandFailure) CreateBACnetNotificationParametersCommandFailureBuilder() BACnetNotificationParametersCommandFailureBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersCommandFailureBuilder()
 	}
-	return &_BACnetNotificationParametersCommandFailureBuilder{_BACnetNotificationParametersCommandFailure: m.deepCopy()}
+	return &_BACnetNotificationParametersCommandFailureBuilder{_BACnetNotificationParametersCommandFailure: b.deepCopy()}
 }
 
 ///////////////////////
@@ -478,9 +527,13 @@ func (m *_BACnetNotificationParametersCommandFailure) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

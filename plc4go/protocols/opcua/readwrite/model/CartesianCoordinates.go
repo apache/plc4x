@@ -85,40 +85,59 @@ func NewCartesianCoordinatesBuilder() CartesianCoordinatesBuilder {
 type _CartesianCoordinatesBuilder struct {
 	*_CartesianCoordinates
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CartesianCoordinatesBuilder) = (*_CartesianCoordinatesBuilder)(nil)
 
-func (m *_CartesianCoordinatesBuilder) WithMandatoryFields() CartesianCoordinatesBuilder {
-	return m
+func (b *_CartesianCoordinatesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_CartesianCoordinatesBuilder) Build() (CartesianCoordinates, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CartesianCoordinatesBuilder) WithMandatoryFields() CartesianCoordinatesBuilder {
+	return b
+}
+
+func (b *_CartesianCoordinatesBuilder) Build() (CartesianCoordinates, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CartesianCoordinates.deepCopy(), nil
+	return b._CartesianCoordinates.deepCopy(), nil
 }
 
-func (m *_CartesianCoordinatesBuilder) MustBuild() CartesianCoordinates {
-	build, err := m.Build()
+func (b *_CartesianCoordinatesBuilder) MustBuild() CartesianCoordinates {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CartesianCoordinatesBuilder) DeepCopy() any {
-	return m.CreateCartesianCoordinatesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CartesianCoordinatesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CartesianCoordinatesBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_CartesianCoordinatesBuilder) DeepCopy() any {
+	_copy := b.CreateCartesianCoordinatesBuilder().(*_CartesianCoordinatesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCartesianCoordinatesBuilder creates a CartesianCoordinatesBuilder
-func (m *_CartesianCoordinates) CreateCartesianCoordinatesBuilder() CartesianCoordinatesBuilder {
-	if m == nil {
+func (b *_CartesianCoordinates) CreateCartesianCoordinatesBuilder() CartesianCoordinatesBuilder {
+	if b == nil {
 		return NewCartesianCoordinatesBuilder()
 	}
-	return &_CartesianCoordinatesBuilder{_CartesianCoordinates: m.deepCopy()}
+	return &_CartesianCoordinatesBuilder{_CartesianCoordinates: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_CartesianCoordinates) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

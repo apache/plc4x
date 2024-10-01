@@ -99,50 +99,69 @@ func NewDoubleComplexNumberTypeBuilder() DoubleComplexNumberTypeBuilder {
 type _DoubleComplexNumberTypeBuilder struct {
 	*_DoubleComplexNumberType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DoubleComplexNumberTypeBuilder) = (*_DoubleComplexNumberTypeBuilder)(nil)
 
-func (m *_DoubleComplexNumberTypeBuilder) WithMandatoryFields(real float64, imaginary float64) DoubleComplexNumberTypeBuilder {
-	return m.WithReal(real).WithImaginary(imaginary)
+func (b *_DoubleComplexNumberTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_DoubleComplexNumberTypeBuilder) WithReal(real float64) DoubleComplexNumberTypeBuilder {
-	m.Real = real
-	return m
+func (b *_DoubleComplexNumberTypeBuilder) WithMandatoryFields(real float64, imaginary float64) DoubleComplexNumberTypeBuilder {
+	return b.WithReal(real).WithImaginary(imaginary)
 }
 
-func (m *_DoubleComplexNumberTypeBuilder) WithImaginary(imaginary float64) DoubleComplexNumberTypeBuilder {
-	m.Imaginary = imaginary
-	return m
+func (b *_DoubleComplexNumberTypeBuilder) WithReal(real float64) DoubleComplexNumberTypeBuilder {
+	b.Real = real
+	return b
 }
 
-func (m *_DoubleComplexNumberTypeBuilder) Build() (DoubleComplexNumberType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DoubleComplexNumberTypeBuilder) WithImaginary(imaginary float64) DoubleComplexNumberTypeBuilder {
+	b.Imaginary = imaginary
+	return b
+}
+
+func (b *_DoubleComplexNumberTypeBuilder) Build() (DoubleComplexNumberType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DoubleComplexNumberType.deepCopy(), nil
+	return b._DoubleComplexNumberType.deepCopy(), nil
 }
 
-func (m *_DoubleComplexNumberTypeBuilder) MustBuild() DoubleComplexNumberType {
-	build, err := m.Build()
+func (b *_DoubleComplexNumberTypeBuilder) MustBuild() DoubleComplexNumberType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DoubleComplexNumberTypeBuilder) DeepCopy() any {
-	return m.CreateDoubleComplexNumberTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DoubleComplexNumberTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DoubleComplexNumberTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DoubleComplexNumberTypeBuilder) DeepCopy() any {
+	_copy := b.CreateDoubleComplexNumberTypeBuilder().(*_DoubleComplexNumberTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDoubleComplexNumberTypeBuilder creates a DoubleComplexNumberTypeBuilder
-func (m *_DoubleComplexNumberType) CreateDoubleComplexNumberTypeBuilder() DoubleComplexNumberTypeBuilder {
-	if m == nil {
+func (b *_DoubleComplexNumberType) CreateDoubleComplexNumberTypeBuilder() DoubleComplexNumberTypeBuilder {
+	if b == nil {
 		return NewDoubleComplexNumberTypeBuilder()
 	}
-	return &_DoubleComplexNumberTypeBuilder{_DoubleComplexNumberType: m.deepCopy()}
+	return &_DoubleComplexNumberTypeBuilder{_DoubleComplexNumberType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -304,9 +323,13 @@ func (m *_DoubleComplexNumberType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

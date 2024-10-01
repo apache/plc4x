@@ -123,70 +123,89 @@ func NewMPropReadConBuilder() MPropReadConBuilder {
 type _MPropReadConBuilder struct {
 	*_MPropReadCon
 
+	parentBuilder *_CEMIBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MPropReadConBuilder) = (*_MPropReadConBuilder)(nil)
 
-func (m *_MPropReadConBuilder) WithMandatoryFields(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16) MPropReadConBuilder {
-	return m.WithInterfaceObjectType(interfaceObjectType).WithObjectInstance(objectInstance).WithPropertyId(propertyId).WithNumberOfElements(numberOfElements).WithStartIndex(startIndex).WithData(data)
+func (b *_MPropReadConBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
 }
 
-func (m *_MPropReadConBuilder) WithInterfaceObjectType(interfaceObjectType uint16) MPropReadConBuilder {
-	m.InterfaceObjectType = interfaceObjectType
-	return m
+func (b *_MPropReadConBuilder) WithMandatoryFields(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16) MPropReadConBuilder {
+	return b.WithInterfaceObjectType(interfaceObjectType).WithObjectInstance(objectInstance).WithPropertyId(propertyId).WithNumberOfElements(numberOfElements).WithStartIndex(startIndex).WithData(data)
 }
 
-func (m *_MPropReadConBuilder) WithObjectInstance(objectInstance uint8) MPropReadConBuilder {
-	m.ObjectInstance = objectInstance
-	return m
+func (b *_MPropReadConBuilder) WithInterfaceObjectType(interfaceObjectType uint16) MPropReadConBuilder {
+	b.InterfaceObjectType = interfaceObjectType
+	return b
 }
 
-func (m *_MPropReadConBuilder) WithPropertyId(propertyId uint8) MPropReadConBuilder {
-	m.PropertyId = propertyId
-	return m
+func (b *_MPropReadConBuilder) WithObjectInstance(objectInstance uint8) MPropReadConBuilder {
+	b.ObjectInstance = objectInstance
+	return b
 }
 
-func (m *_MPropReadConBuilder) WithNumberOfElements(numberOfElements uint8) MPropReadConBuilder {
-	m.NumberOfElements = numberOfElements
-	return m
+func (b *_MPropReadConBuilder) WithPropertyId(propertyId uint8) MPropReadConBuilder {
+	b.PropertyId = propertyId
+	return b
 }
 
-func (m *_MPropReadConBuilder) WithStartIndex(startIndex uint16) MPropReadConBuilder {
-	m.StartIndex = startIndex
-	return m
+func (b *_MPropReadConBuilder) WithNumberOfElements(numberOfElements uint8) MPropReadConBuilder {
+	b.NumberOfElements = numberOfElements
+	return b
 }
 
-func (m *_MPropReadConBuilder) WithData(data uint16) MPropReadConBuilder {
-	m.Data = data
-	return m
+func (b *_MPropReadConBuilder) WithStartIndex(startIndex uint16) MPropReadConBuilder {
+	b.StartIndex = startIndex
+	return b
 }
 
-func (m *_MPropReadConBuilder) Build() (MPropReadCon, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MPropReadConBuilder) WithData(data uint16) MPropReadConBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_MPropReadConBuilder) Build() (MPropReadCon, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MPropReadCon.deepCopy(), nil
+	return b._MPropReadCon.deepCopy(), nil
 }
 
-func (m *_MPropReadConBuilder) MustBuild() MPropReadCon {
-	build, err := m.Build()
+func (b *_MPropReadConBuilder) MustBuild() MPropReadCon {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MPropReadConBuilder) DeepCopy() any {
-	return m.CreateMPropReadConBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MPropReadConBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MPropReadConBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_MPropReadConBuilder) DeepCopy() any {
+	_copy := b.CreateMPropReadConBuilder().(*_MPropReadConBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMPropReadConBuilder creates a MPropReadConBuilder
-func (m *_MPropReadCon) CreateMPropReadConBuilder() MPropReadConBuilder {
-	if m == nil {
+func (b *_MPropReadCon) CreateMPropReadConBuilder() MPropReadConBuilder {
+	if b == nil {
 		return NewMPropReadConBuilder()
 	}
-	return &_MPropReadConBuilder{_MPropReadCon: m.deepCopy()}
+	return &_MPropReadConBuilder{_MPropReadCon: b.deepCopy()}
 }
 
 ///////////////////////
@@ -420,9 +439,13 @@ func (m *_MPropReadCon) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

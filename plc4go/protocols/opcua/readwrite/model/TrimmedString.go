@@ -83,35 +83,39 @@ type _TrimmedStringBuilder struct {
 
 var _ (TrimmedStringBuilder) = (*_TrimmedStringBuilder)(nil)
 
-func (m *_TrimmedStringBuilder) WithMandatoryFields() TrimmedStringBuilder {
-	return m
+func (b *_TrimmedStringBuilder) WithMandatoryFields() TrimmedStringBuilder {
+	return b
 }
 
-func (m *_TrimmedStringBuilder) Build() (TrimmedString, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TrimmedStringBuilder) Build() (TrimmedString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TrimmedString.deepCopy(), nil
+	return b._TrimmedString.deepCopy(), nil
 }
 
-func (m *_TrimmedStringBuilder) MustBuild() TrimmedString {
-	build, err := m.Build()
+func (b *_TrimmedStringBuilder) MustBuild() TrimmedString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TrimmedStringBuilder) DeepCopy() any {
-	return m.CreateTrimmedStringBuilder()
+func (b *_TrimmedStringBuilder) DeepCopy() any {
+	_copy := b.CreateTrimmedStringBuilder().(*_TrimmedStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTrimmedStringBuilder creates a TrimmedStringBuilder
-func (m *_TrimmedString) CreateTrimmedStringBuilder() TrimmedStringBuilder {
-	if m == nil {
+func (b *_TrimmedString) CreateTrimmedStringBuilder() TrimmedStringBuilder {
+	if b == nil {
 		return NewTrimmedStringBuilder()
 	}
-	return &_TrimmedStringBuilder{_TrimmedString: m.deepCopy()}
+	return &_TrimmedStringBuilder{_TrimmedString: b.deepCopy()}
 }
 
 ///////////////////////
@@ -219,9 +223,13 @@ func (m *_TrimmedString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

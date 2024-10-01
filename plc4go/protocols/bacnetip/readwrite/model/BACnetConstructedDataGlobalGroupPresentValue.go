@@ -103,63 +103,82 @@ func NewBACnetConstructedDataGlobalGroupPresentValueBuilder() BACnetConstructedD
 type _BACnetConstructedDataGlobalGroupPresentValueBuilder struct {
 	*_BACnetConstructedDataGlobalGroupPresentValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataGlobalGroupPresentValueBuilder) = (*_BACnetConstructedDataGlobalGroupPresentValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataGlobalGroupPresentValueBuilder) WithMandatoryFields(presentValue []BACnetPropertyAccessResult) BACnetConstructedDataGlobalGroupPresentValueBuilder {
-	return m.WithPresentValue(presentValue...)
+func (b *_BACnetConstructedDataGlobalGroupPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataGlobalGroupPresentValueBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGlobalGroupPresentValueBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataGlobalGroupPresentValueBuilder) WithMandatoryFields(presentValue []BACnetPropertyAccessResult) BACnetConstructedDataGlobalGroupPresentValueBuilder {
+	return b.WithPresentValue(presentValue...)
 }
 
-func (m *_BACnetConstructedDataGlobalGroupPresentValueBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGlobalGroupPresentValueBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataGlobalGroupPresentValueBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGlobalGroupPresentValueBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataGlobalGroupPresentValueBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGlobalGroupPresentValueBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataGlobalGroupPresentValueBuilder) WithPresentValue(presentValue ...BACnetPropertyAccessResult) BACnetConstructedDataGlobalGroupPresentValueBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetConstructedDataGlobalGroupPresentValueBuilder) WithPresentValue(presentValue ...BACnetPropertyAccessResult) BACnetConstructedDataGlobalGroupPresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
 }
 
-func (m *_BACnetConstructedDataGlobalGroupPresentValueBuilder) Build() (BACnetConstructedDataGlobalGroupPresentValue, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataGlobalGroupPresentValueBuilder) Build() (BACnetConstructedDataGlobalGroupPresentValue, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataGlobalGroupPresentValue.deepCopy(), nil
+	return b._BACnetConstructedDataGlobalGroupPresentValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataGlobalGroupPresentValueBuilder) MustBuild() BACnetConstructedDataGlobalGroupPresentValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataGlobalGroupPresentValueBuilder) MustBuild() BACnetConstructedDataGlobalGroupPresentValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataGlobalGroupPresentValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataGlobalGroupPresentValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataGlobalGroupPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataGlobalGroupPresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataGlobalGroupPresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataGlobalGroupPresentValueBuilder().(*_BACnetConstructedDataGlobalGroupPresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataGlobalGroupPresentValueBuilder creates a BACnetConstructedDataGlobalGroupPresentValueBuilder
-func (m *_BACnetConstructedDataGlobalGroupPresentValue) CreateBACnetConstructedDataGlobalGroupPresentValueBuilder() BACnetConstructedDataGlobalGroupPresentValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataGlobalGroupPresentValue) CreateBACnetConstructedDataGlobalGroupPresentValueBuilder() BACnetConstructedDataGlobalGroupPresentValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataGlobalGroupPresentValueBuilder()
 	}
-	return &_BACnetConstructedDataGlobalGroupPresentValueBuilder{_BACnetConstructedDataGlobalGroupPresentValue: m.deepCopy()}
+	return &_BACnetConstructedDataGlobalGroupPresentValueBuilder{_BACnetConstructedDataGlobalGroupPresentValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -367,9 +386,13 @@ func (m *_BACnetConstructedDataGlobalGroupPresentValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

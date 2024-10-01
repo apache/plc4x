@@ -100,64 +100,83 @@ func NewBACnetConstructedDataVendorNameBuilder() BACnetConstructedDataVendorName
 type _BACnetConstructedDataVendorNameBuilder struct {
 	*_BACnetConstructedDataVendorName
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataVendorNameBuilder) = (*_BACnetConstructedDataVendorNameBuilder)(nil)
 
-func (m *_BACnetConstructedDataVendorNameBuilder) WithMandatoryFields(vendorName BACnetApplicationTagCharacterString) BACnetConstructedDataVendorNameBuilder {
-	return m.WithVendorName(vendorName)
+func (b *_BACnetConstructedDataVendorNameBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataVendorNameBuilder) WithVendorName(vendorName BACnetApplicationTagCharacterString) BACnetConstructedDataVendorNameBuilder {
-	m.VendorName = vendorName
-	return m
+func (b *_BACnetConstructedDataVendorNameBuilder) WithMandatoryFields(vendorName BACnetApplicationTagCharacterString) BACnetConstructedDataVendorNameBuilder {
+	return b.WithVendorName(vendorName)
 }
 
-func (m *_BACnetConstructedDataVendorNameBuilder) WithVendorNameBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataVendorNameBuilder {
-	builder := builderSupplier(m.VendorName.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetConstructedDataVendorNameBuilder) WithVendorName(vendorName BACnetApplicationTagCharacterString) BACnetConstructedDataVendorNameBuilder {
+	b.VendorName = vendorName
+	return b
+}
+
+func (b *_BACnetConstructedDataVendorNameBuilder) WithVendorNameBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataVendorNameBuilder {
+	builder := builderSupplier(b.VendorName.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.VendorName, err = builder.Build()
+	b.VendorName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataVendorNameBuilder) Build() (BACnetConstructedDataVendorName, error) {
-	if m.VendorName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataVendorNameBuilder) Build() (BACnetConstructedDataVendorName, error) {
+	if b.VendorName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'vendorName' not set"))
+		b.err.Append(errors.New("mandatory field 'vendorName' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataVendorName.deepCopy(), nil
+	return b._BACnetConstructedDataVendorName.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataVendorNameBuilder) MustBuild() BACnetConstructedDataVendorName {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataVendorNameBuilder) MustBuild() BACnetConstructedDataVendorName {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataVendorNameBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataVendorNameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataVendorNameBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataVendorNameBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataVendorNameBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataVendorNameBuilder().(*_BACnetConstructedDataVendorNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataVendorNameBuilder creates a BACnetConstructedDataVendorNameBuilder
-func (m *_BACnetConstructedDataVendorName) CreateBACnetConstructedDataVendorNameBuilder() BACnetConstructedDataVendorNameBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataVendorName) CreateBACnetConstructedDataVendorNameBuilder() BACnetConstructedDataVendorNameBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataVendorNameBuilder()
 	}
-	return &_BACnetConstructedDataVendorNameBuilder{_BACnetConstructedDataVendorName: m.deepCopy()}
+	return &_BACnetConstructedDataVendorNameBuilder{_BACnetConstructedDataVendorName: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataVendorName) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

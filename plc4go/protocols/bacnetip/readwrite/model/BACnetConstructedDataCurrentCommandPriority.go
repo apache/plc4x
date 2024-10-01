@@ -84,6 +84,8 @@ type BACnetConstructedDataCurrentCommandPriorityBuilder interface {
 	WithMandatoryFields(currentCommandPriority BACnetOptionalUnsigned) BACnetConstructedDataCurrentCommandPriorityBuilder
 	// WithCurrentCommandPriority adds CurrentCommandPriority (property field)
 	WithCurrentCommandPriority(BACnetOptionalUnsigned) BACnetConstructedDataCurrentCommandPriorityBuilder
+	// WithCurrentCommandPriorityBuilder adds CurrentCommandPriority (property field) which is build by the builder
+	WithCurrentCommandPriorityBuilder(func(BACnetOptionalUnsignedBuilder) BACnetOptionalUnsignedBuilder) BACnetConstructedDataCurrentCommandPriorityBuilder
 	// Build builds the BACnetConstructedDataCurrentCommandPriority or returns an error if something is wrong
 	Build() (BACnetConstructedDataCurrentCommandPriority, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewBACnetConstructedDataCurrentCommandPriorityBuilder() BACnetConstructedDa
 type _BACnetConstructedDataCurrentCommandPriorityBuilder struct {
 	*_BACnetConstructedDataCurrentCommandPriority
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCurrentCommandPriorityBuilder) = (*_BACnetConstructedDataCurrentCommandPriorityBuilder)(nil)
 
-func (m *_BACnetConstructedDataCurrentCommandPriorityBuilder) WithMandatoryFields(currentCommandPriority BACnetOptionalUnsigned) BACnetConstructedDataCurrentCommandPriorityBuilder {
-	return m.WithCurrentCommandPriority(currentCommandPriority)
+func (b *_BACnetConstructedDataCurrentCommandPriorityBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCurrentCommandPriorityBuilder) WithCurrentCommandPriority(currentCommandPriority BACnetOptionalUnsigned) BACnetConstructedDataCurrentCommandPriorityBuilder {
-	m.CurrentCommandPriority = currentCommandPriority
-	return m
+func (b *_BACnetConstructedDataCurrentCommandPriorityBuilder) WithMandatoryFields(currentCommandPriority BACnetOptionalUnsigned) BACnetConstructedDataCurrentCommandPriorityBuilder {
+	return b.WithCurrentCommandPriority(currentCommandPriority)
 }
 
-func (m *_BACnetConstructedDataCurrentCommandPriorityBuilder) Build() (BACnetConstructedDataCurrentCommandPriority, error) {
-	if m.CurrentCommandPriority == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataCurrentCommandPriorityBuilder) WithCurrentCommandPriority(currentCommandPriority BACnetOptionalUnsigned) BACnetConstructedDataCurrentCommandPriorityBuilder {
+	b.CurrentCommandPriority = currentCommandPriority
+	return b
+}
+
+func (b *_BACnetConstructedDataCurrentCommandPriorityBuilder) WithCurrentCommandPriorityBuilder(builderSupplier func(BACnetOptionalUnsignedBuilder) BACnetOptionalUnsignedBuilder) BACnetConstructedDataCurrentCommandPriorityBuilder {
+	builder := builderSupplier(b.CurrentCommandPriority.CreateBACnetOptionalUnsignedBuilder())
+	var err error
+	b.CurrentCommandPriority, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'currentCommandPriority' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetOptionalUnsignedBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetConstructedDataCurrentCommandPriority.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetConstructedDataCurrentCommandPriorityBuilder) MustBuild() BACnetConstructedDataCurrentCommandPriority {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCurrentCommandPriorityBuilder) Build() (BACnetConstructedDataCurrentCommandPriority, error) {
+	if b.CurrentCommandPriority == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'currentCommandPriority' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataCurrentCommandPriority.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataCurrentCommandPriorityBuilder) MustBuild() BACnetConstructedDataCurrentCommandPriority {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCurrentCommandPriorityBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCurrentCommandPriorityBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCurrentCommandPriorityBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCurrentCommandPriorityBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCurrentCommandPriorityBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCurrentCommandPriorityBuilder().(*_BACnetConstructedDataCurrentCommandPriorityBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCurrentCommandPriorityBuilder creates a BACnetConstructedDataCurrentCommandPriorityBuilder
-func (m *_BACnetConstructedDataCurrentCommandPriority) CreateBACnetConstructedDataCurrentCommandPriorityBuilder() BACnetConstructedDataCurrentCommandPriorityBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCurrentCommandPriority) CreateBACnetConstructedDataCurrentCommandPriorityBuilder() BACnetConstructedDataCurrentCommandPriorityBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCurrentCommandPriorityBuilder()
 	}
-	return &_BACnetConstructedDataCurrentCommandPriorityBuilder{_BACnetConstructedDataCurrentCommandPriority: m.deepCopy()}
+	return &_BACnetConstructedDataCurrentCommandPriorityBuilder{_BACnetConstructedDataCurrentCommandPriority: b.deepCopy()}
 }
 
 ///////////////////////
@@ -320,9 +354,13 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

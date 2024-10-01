@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDefaultRampRateBuilder() BACnetConstructedDataDefau
 type _BACnetConstructedDataDefaultRampRateBuilder struct {
 	*_BACnetConstructedDataDefaultRampRate
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDefaultRampRateBuilder) = (*_BACnetConstructedDataDefaultRampRateBuilder)(nil)
 
-func (m *_BACnetConstructedDataDefaultRampRateBuilder) WithMandatoryFields(defaultRampRate BACnetApplicationTagReal) BACnetConstructedDataDefaultRampRateBuilder {
-	return m.WithDefaultRampRate(defaultRampRate)
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDefaultRampRateBuilder) WithDefaultRampRate(defaultRampRate BACnetApplicationTagReal) BACnetConstructedDataDefaultRampRateBuilder {
-	m.DefaultRampRate = defaultRampRate
-	return m
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) WithMandatoryFields(defaultRampRate BACnetApplicationTagReal) BACnetConstructedDataDefaultRampRateBuilder {
+	return b.WithDefaultRampRate(defaultRampRate)
 }
 
-func (m *_BACnetConstructedDataDefaultRampRateBuilder) WithDefaultRampRateBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDefaultRampRateBuilder {
-	builder := builderSupplier(m.DefaultRampRate.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) WithDefaultRampRate(defaultRampRate BACnetApplicationTagReal) BACnetConstructedDataDefaultRampRateBuilder {
+	b.DefaultRampRate = defaultRampRate
+	return b
+}
+
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) WithDefaultRampRateBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDefaultRampRateBuilder {
+	builder := builderSupplier(b.DefaultRampRate.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.DefaultRampRate, err = builder.Build()
+	b.DefaultRampRate, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDefaultRampRateBuilder) Build() (BACnetConstructedDataDefaultRampRate, error) {
-	if m.DefaultRampRate == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) Build() (BACnetConstructedDataDefaultRampRate, error) {
+	if b.DefaultRampRate == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'defaultRampRate' not set"))
+		b.err.Append(errors.New("mandatory field 'defaultRampRate' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDefaultRampRate.deepCopy(), nil
+	return b._BACnetConstructedDataDefaultRampRate.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDefaultRampRateBuilder) MustBuild() BACnetConstructedDataDefaultRampRate {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) MustBuild() BACnetConstructedDataDefaultRampRate {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDefaultRampRateBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDefaultRampRateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDefaultRampRateBuilder().(*_BACnetConstructedDataDefaultRampRateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDefaultRampRateBuilder creates a BACnetConstructedDataDefaultRampRateBuilder
-func (m *_BACnetConstructedDataDefaultRampRate) CreateBACnetConstructedDataDefaultRampRateBuilder() BACnetConstructedDataDefaultRampRateBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDefaultRampRate) CreateBACnetConstructedDataDefaultRampRateBuilder() BACnetConstructedDataDefaultRampRateBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDefaultRampRateBuilder()
 	}
-	return &_BACnetConstructedDataDefaultRampRateBuilder{_BACnetConstructedDataDefaultRampRate: m.deepCopy()}
+	return &_BACnetConstructedDataDefaultRampRateBuilder{_BACnetConstructedDataDefaultRampRate: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataDefaultRampRate) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

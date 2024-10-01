@@ -93,45 +93,64 @@ func NewMediaTransportControlDataSelectionNameBuilder() MediaTransportControlDat
 type _MediaTransportControlDataSelectionNameBuilder struct {
 	*_MediaTransportControlDataSelectionName
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataSelectionNameBuilder) = (*_MediaTransportControlDataSelectionNameBuilder)(nil)
 
-func (m *_MediaTransportControlDataSelectionNameBuilder) WithMandatoryFields(selectionName string) MediaTransportControlDataSelectionNameBuilder {
-	return m.WithSelectionName(selectionName)
+func (b *_MediaTransportControlDataSelectionNameBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataSelectionNameBuilder) WithSelectionName(selectionName string) MediaTransportControlDataSelectionNameBuilder {
-	m.SelectionName = selectionName
-	return m
+func (b *_MediaTransportControlDataSelectionNameBuilder) WithMandatoryFields(selectionName string) MediaTransportControlDataSelectionNameBuilder {
+	return b.WithSelectionName(selectionName)
 }
 
-func (m *_MediaTransportControlDataSelectionNameBuilder) Build() (MediaTransportControlDataSelectionName, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataSelectionNameBuilder) WithSelectionName(selectionName string) MediaTransportControlDataSelectionNameBuilder {
+	b.SelectionName = selectionName
+	return b
+}
+
+func (b *_MediaTransportControlDataSelectionNameBuilder) Build() (MediaTransportControlDataSelectionName, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataSelectionName.deepCopy(), nil
+	return b._MediaTransportControlDataSelectionName.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataSelectionNameBuilder) MustBuild() MediaTransportControlDataSelectionName {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataSelectionNameBuilder) MustBuild() MediaTransportControlDataSelectionName {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataSelectionNameBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataSelectionNameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataSelectionNameBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataSelectionNameBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataSelectionNameBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataSelectionNameBuilder().(*_MediaTransportControlDataSelectionNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataSelectionNameBuilder creates a MediaTransportControlDataSelectionNameBuilder
-func (m *_MediaTransportControlDataSelectionName) CreateMediaTransportControlDataSelectionNameBuilder() MediaTransportControlDataSelectionNameBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataSelectionName) CreateMediaTransportControlDataSelectionNameBuilder() MediaTransportControlDataSelectionNameBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataSelectionNameBuilder()
 	}
-	return &_MediaTransportControlDataSelectionNameBuilder{_MediaTransportControlDataSelectionName: m.deepCopy()}
+	return &_MediaTransportControlDataSelectionNameBuilder{_MediaTransportControlDataSelectionName: b.deepCopy()}
 }
 
 ///////////////////////
@@ -271,9 +290,13 @@ func (m *_MediaTransportControlDataSelectionName) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

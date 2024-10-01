@@ -92,10 +92,174 @@ type BACnetConfirmedServiceRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConfirmedServiceRequestBuilder
+	// AsBACnetConfirmedServiceRequestAcknowledgeAlarm converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestAcknowledgeAlarm() interface {
+		BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestConfirmedCOVNotification converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestConfirmedCOVNotification() interface {
+		BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple() interface {
+		BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestConfirmedEventNotification converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestConfirmedEventNotification() interface {
+		BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestGetEnrollmentSummary converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestGetEnrollmentSummary() interface {
+		BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestGetEventInformation converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestGetEventInformation() interface {
+		BACnetConfirmedServiceRequestGetEventInformationBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestLifeSafetyOperation converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestLifeSafetyOperation() interface {
+		BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestSubscribeCOV converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestSubscribeCOV() interface {
+		BACnetConfirmedServiceRequestSubscribeCOVBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestSubscribeCOVProperty converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestSubscribeCOVProperty() interface {
+		BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple() interface {
+		BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestAtomicReadFile converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestAtomicReadFile() interface {
+		BACnetConfirmedServiceRequestAtomicReadFileBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestAtomicWriteFile converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestAtomicWriteFile() interface {
+		BACnetConfirmedServiceRequestAtomicWriteFileBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestAddListElement converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestAddListElement() interface {
+		BACnetConfirmedServiceRequestAddListElementBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestRemoveListElement converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestRemoveListElement() interface {
+		BACnetConfirmedServiceRequestRemoveListElementBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestCreateObject converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestCreateObject() interface {
+		BACnetConfirmedServiceRequestCreateObjectBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestDeleteObject converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestDeleteObject() interface {
+		BACnetConfirmedServiceRequestDeleteObjectBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestReadProperty converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestReadProperty() interface {
+		BACnetConfirmedServiceRequestReadPropertyBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestReadPropertyMultiple converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestReadPropertyMultiple() interface {
+		BACnetConfirmedServiceRequestReadPropertyMultipleBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestReadRange converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestReadRange() interface {
+		BACnetConfirmedServiceRequestReadRangeBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestWriteProperty converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestWriteProperty() interface {
+		BACnetConfirmedServiceRequestWritePropertyBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestWritePropertyMultiple converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestWritePropertyMultiple() interface {
+		BACnetConfirmedServiceRequestWritePropertyMultipleBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestDeviceCommunicationControl converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestDeviceCommunicationControl() interface {
+		BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestConfirmedPrivateTransfer converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestConfirmedPrivateTransfer() interface {
+		BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestConfirmedTextMessage converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestConfirmedTextMessage() interface {
+		BACnetConfirmedServiceRequestConfirmedTextMessageBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestReinitializeDevice converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestReinitializeDevice() interface {
+		BACnetConfirmedServiceRequestReinitializeDeviceBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestVTOpen converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestVTOpen() interface {
+		BACnetConfirmedServiceRequestVTOpenBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestVTClose converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestVTClose() interface {
+		BACnetConfirmedServiceRequestVTCloseBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestVTData converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestVTData() interface {
+		BACnetConfirmedServiceRequestVTDataBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestAuthenticate converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestAuthenticate() interface {
+		BACnetConfirmedServiceRequestAuthenticateBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestRequestKey converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestRequestKey() interface {
+		BACnetConfirmedServiceRequestRequestKeyBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestReadPropertyConditional converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestReadPropertyConditional() interface {
+		BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
+	// AsBACnetConfirmedServiceRequestUnknown converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestUnknown() interface {
+		BACnetConfirmedServiceRequestUnknownBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}
 	// Build builds the BACnetConfirmedServiceRequest or returns an error if something is wrong
-	Build() (BACnetConfirmedServiceRequestContract, error)
+	PartialBuild() (BACnetConfirmedServiceRequestContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetConfirmedServiceRequestContract
+	PartialMustBuild() BACnetConfirmedServiceRequestContract
+	// Build builds the BACnetConfirmedServiceRequest or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequest
 }
 
 // NewBACnetConfirmedServiceRequestBuilder() creates a BACnetConfirmedServiceRequestBuilder
@@ -103,43 +267,589 @@ func NewBACnetConfirmedServiceRequestBuilder() BACnetConfirmedServiceRequestBuil
 	return &_BACnetConfirmedServiceRequestBuilder{_BACnetConfirmedServiceRequest: new(_BACnetConfirmedServiceRequest)}
 }
 
+type _BACnetConfirmedServiceRequestChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetConfirmedServiceRequestContract)
+	buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error)
+}
+
 type _BACnetConfirmedServiceRequestBuilder struct {
 	*_BACnetConfirmedServiceRequest
+
+	childBuilder _BACnetConfirmedServiceRequestChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestBuilder) = (*_BACnetConfirmedServiceRequestBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestBuilder) WithMandatoryFields() BACnetConfirmedServiceRequestBuilder {
-	return m
+func (b *_BACnetConfirmedServiceRequestBuilder) WithMandatoryFields() BACnetConfirmedServiceRequestBuilder {
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestBuilder) Build() (BACnetConfirmedServiceRequestContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConfirmedServiceRequestBuilder) PartialBuild() (BACnetConfirmedServiceRequestContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequest.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequest.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestBuilder) MustBuild() BACnetConfirmedServiceRequestContract {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestBuilder) PartialMustBuild() BACnetConfirmedServiceRequestContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestBuilder()
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestAcknowledgeAlarm() interface {
+	BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestAcknowledgeAlarmBuilder().(*_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestConfirmedCOVNotification() interface {
+	BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder().(*_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple() interface {
+	BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder().(*_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestConfirmedEventNotification() interface {
+	BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestConfirmedEventNotificationBuilder().(*_BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestGetEnrollmentSummary() interface {
+	BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder().(*_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestGetEventInformation() interface {
+	BACnetConfirmedServiceRequestGetEventInformationBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestGetEventInformationBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestGetEventInformationBuilder().(*_BACnetConfirmedServiceRequestGetEventInformationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestLifeSafetyOperation() interface {
+	BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestLifeSafetyOperationBuilder().(*_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestSubscribeCOV() interface {
+	BACnetConfirmedServiceRequestSubscribeCOVBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestSubscribeCOVBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestSubscribeCOVBuilder().(*_BACnetConfirmedServiceRequestSubscribeCOVBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestSubscribeCOVProperty() interface {
+	BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder().(*_BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple() interface {
+	BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder().(*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestAtomicReadFile() interface {
+	BACnetConfirmedServiceRequestAtomicReadFileBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestAtomicReadFileBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestAtomicReadFileBuilder().(*_BACnetConfirmedServiceRequestAtomicReadFileBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestAtomicWriteFile() interface {
+	BACnetConfirmedServiceRequestAtomicWriteFileBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestAtomicWriteFileBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestAtomicWriteFileBuilder().(*_BACnetConfirmedServiceRequestAtomicWriteFileBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestAddListElement() interface {
+	BACnetConfirmedServiceRequestAddListElementBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestAddListElementBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestAddListElementBuilder().(*_BACnetConfirmedServiceRequestAddListElementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestRemoveListElement() interface {
+	BACnetConfirmedServiceRequestRemoveListElementBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestRemoveListElementBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestRemoveListElementBuilder().(*_BACnetConfirmedServiceRequestRemoveListElementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestCreateObject() interface {
+	BACnetConfirmedServiceRequestCreateObjectBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestCreateObjectBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestCreateObjectBuilder().(*_BACnetConfirmedServiceRequestCreateObjectBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestDeleteObject() interface {
+	BACnetConfirmedServiceRequestDeleteObjectBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestDeleteObjectBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestDeleteObjectBuilder().(*_BACnetConfirmedServiceRequestDeleteObjectBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestReadProperty() interface {
+	BACnetConfirmedServiceRequestReadPropertyBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestReadPropertyBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestReadPropertyBuilder().(*_BACnetConfirmedServiceRequestReadPropertyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestReadPropertyMultiple() interface {
+	BACnetConfirmedServiceRequestReadPropertyMultipleBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestReadPropertyMultipleBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestReadPropertyMultipleBuilder().(*_BACnetConfirmedServiceRequestReadPropertyMultipleBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestReadRange() interface {
+	BACnetConfirmedServiceRequestReadRangeBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestReadRangeBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestReadRangeBuilder().(*_BACnetConfirmedServiceRequestReadRangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestWriteProperty() interface {
+	BACnetConfirmedServiceRequestWritePropertyBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestWritePropertyBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestWritePropertyBuilder().(*_BACnetConfirmedServiceRequestWritePropertyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestWritePropertyMultiple() interface {
+	BACnetConfirmedServiceRequestWritePropertyMultipleBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestWritePropertyMultipleBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestWritePropertyMultipleBuilder().(*_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestDeviceCommunicationControl() interface {
+	BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestDeviceCommunicationControlBuilder().(*_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestConfirmedPrivateTransfer() interface {
+	BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder().(*_BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestConfirmedTextMessage() interface {
+	BACnetConfirmedServiceRequestConfirmedTextMessageBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestConfirmedTextMessageBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestConfirmedTextMessageBuilder().(*_BACnetConfirmedServiceRequestConfirmedTextMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestReinitializeDevice() interface {
+	BACnetConfirmedServiceRequestReinitializeDeviceBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestReinitializeDeviceBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestReinitializeDeviceBuilder().(*_BACnetConfirmedServiceRequestReinitializeDeviceBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestVTOpen() interface {
+	BACnetConfirmedServiceRequestVTOpenBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestVTOpenBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestVTOpenBuilder().(*_BACnetConfirmedServiceRequestVTOpenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestVTClose() interface {
+	BACnetConfirmedServiceRequestVTCloseBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestVTCloseBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestVTCloseBuilder().(*_BACnetConfirmedServiceRequestVTCloseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestVTData() interface {
+	BACnetConfirmedServiceRequestVTDataBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestVTDataBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestVTDataBuilder().(*_BACnetConfirmedServiceRequestVTDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestAuthenticate() interface {
+	BACnetConfirmedServiceRequestAuthenticateBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestAuthenticateBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestAuthenticateBuilder().(*_BACnetConfirmedServiceRequestAuthenticateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestRequestKey() interface {
+	BACnetConfirmedServiceRequestRequestKeyBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestRequestKeyBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestRequestKeyBuilder().(*_BACnetConfirmedServiceRequestRequestKeyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestReadPropertyConditional() interface {
+	BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestReadPropertyConditionalBuilder().(*_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) AsBACnetConfirmedServiceRequestUnknown() interface {
+	BACnetConfirmedServiceRequestUnknownBuilder
+	Done() BACnetConfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestUnknownBuilder
+		Done() BACnetConfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestUnknownBuilder().(*_BACnetConfirmedServiceRequestUnknownBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) Build() (BACnetConfirmedServiceRequest, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetConfirmedServiceRequest()
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) MustBuild() BACnetConfirmedServiceRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetConfirmedServiceRequestChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestBuilder creates a BACnetConfirmedServiceRequestBuilder
-func (m *_BACnetConfirmedServiceRequest) CreateBACnetConfirmedServiceRequestBuilder() BACnetConfirmedServiceRequestBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequest) CreateBACnetConfirmedServiceRequestBuilder() BACnetConfirmedServiceRequestBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestBuilder{_BACnetConfirmedServiceRequest: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestBuilder{_BACnetConfirmedServiceRequest: b.deepCopy()}
 }
 
 ///////////////////////

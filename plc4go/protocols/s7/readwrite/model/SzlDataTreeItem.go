@@ -110,60 +110,64 @@ type _SzlDataTreeItemBuilder struct {
 
 var _ (SzlDataTreeItemBuilder) = (*_SzlDataTreeItemBuilder)(nil)
 
-func (m *_SzlDataTreeItemBuilder) WithMandatoryFields(itemIndex uint16, mlfb []byte, moduleTypeId uint16, ausbg uint16, ausbe uint16) SzlDataTreeItemBuilder {
-	return m.WithItemIndex(itemIndex).WithMlfb(mlfb...).WithModuleTypeId(moduleTypeId).WithAusbg(ausbg).WithAusbe(ausbe)
+func (b *_SzlDataTreeItemBuilder) WithMandatoryFields(itemIndex uint16, mlfb []byte, moduleTypeId uint16, ausbg uint16, ausbe uint16) SzlDataTreeItemBuilder {
+	return b.WithItemIndex(itemIndex).WithMlfb(mlfb...).WithModuleTypeId(moduleTypeId).WithAusbg(ausbg).WithAusbe(ausbe)
 }
 
-func (m *_SzlDataTreeItemBuilder) WithItemIndex(itemIndex uint16) SzlDataTreeItemBuilder {
-	m.ItemIndex = itemIndex
-	return m
+func (b *_SzlDataTreeItemBuilder) WithItemIndex(itemIndex uint16) SzlDataTreeItemBuilder {
+	b.ItemIndex = itemIndex
+	return b
 }
 
-func (m *_SzlDataTreeItemBuilder) WithMlfb(mlfb ...byte) SzlDataTreeItemBuilder {
-	m.Mlfb = mlfb
-	return m
+func (b *_SzlDataTreeItemBuilder) WithMlfb(mlfb ...byte) SzlDataTreeItemBuilder {
+	b.Mlfb = mlfb
+	return b
 }
 
-func (m *_SzlDataTreeItemBuilder) WithModuleTypeId(moduleTypeId uint16) SzlDataTreeItemBuilder {
-	m.ModuleTypeId = moduleTypeId
-	return m
+func (b *_SzlDataTreeItemBuilder) WithModuleTypeId(moduleTypeId uint16) SzlDataTreeItemBuilder {
+	b.ModuleTypeId = moduleTypeId
+	return b
 }
 
-func (m *_SzlDataTreeItemBuilder) WithAusbg(ausbg uint16) SzlDataTreeItemBuilder {
-	m.Ausbg = ausbg
-	return m
+func (b *_SzlDataTreeItemBuilder) WithAusbg(ausbg uint16) SzlDataTreeItemBuilder {
+	b.Ausbg = ausbg
+	return b
 }
 
-func (m *_SzlDataTreeItemBuilder) WithAusbe(ausbe uint16) SzlDataTreeItemBuilder {
-	m.Ausbe = ausbe
-	return m
+func (b *_SzlDataTreeItemBuilder) WithAusbe(ausbe uint16) SzlDataTreeItemBuilder {
+	b.Ausbe = ausbe
+	return b
 }
 
-func (m *_SzlDataTreeItemBuilder) Build() (SzlDataTreeItem, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SzlDataTreeItemBuilder) Build() (SzlDataTreeItem, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SzlDataTreeItem.deepCopy(), nil
+	return b._SzlDataTreeItem.deepCopy(), nil
 }
 
-func (m *_SzlDataTreeItemBuilder) MustBuild() SzlDataTreeItem {
-	build, err := m.Build()
+func (b *_SzlDataTreeItemBuilder) MustBuild() SzlDataTreeItem {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SzlDataTreeItemBuilder) DeepCopy() any {
-	return m.CreateSzlDataTreeItemBuilder()
+func (b *_SzlDataTreeItemBuilder) DeepCopy() any {
+	_copy := b.CreateSzlDataTreeItemBuilder().(*_SzlDataTreeItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSzlDataTreeItemBuilder creates a SzlDataTreeItemBuilder
-func (m *_SzlDataTreeItem) CreateSzlDataTreeItemBuilder() SzlDataTreeItemBuilder {
-	if m == nil {
+func (b *_SzlDataTreeItem) CreateSzlDataTreeItemBuilder() SzlDataTreeItemBuilder {
+	if b == nil {
 		return NewSzlDataTreeItemBuilder()
 	}
-	return &_SzlDataTreeItemBuilder{_SzlDataTreeItem: m.deepCopy()}
+	return &_SzlDataTreeItemBuilder{_SzlDataTreeItem: b.deepCopy()}
 }
 
 ///////////////////////
@@ -374,9 +378,13 @@ func (m *_SzlDataTreeItem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

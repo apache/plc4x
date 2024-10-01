@@ -100,50 +100,54 @@ type _TransportTypeBuilder struct {
 
 var _ (TransportTypeBuilder) = (*_TransportTypeBuilder)(nil)
 
-func (m *_TransportTypeBuilder) WithMandatoryFields(direction bool, trigger uint8, classTransport uint8) TransportTypeBuilder {
-	return m.WithDirection(direction).WithTrigger(trigger).WithClassTransport(classTransport)
+func (b *_TransportTypeBuilder) WithMandatoryFields(direction bool, trigger uint8, classTransport uint8) TransportTypeBuilder {
+	return b.WithDirection(direction).WithTrigger(trigger).WithClassTransport(classTransport)
 }
 
-func (m *_TransportTypeBuilder) WithDirection(direction bool) TransportTypeBuilder {
-	m.Direction = direction
-	return m
+func (b *_TransportTypeBuilder) WithDirection(direction bool) TransportTypeBuilder {
+	b.Direction = direction
+	return b
 }
 
-func (m *_TransportTypeBuilder) WithTrigger(trigger uint8) TransportTypeBuilder {
-	m.Trigger = trigger
-	return m
+func (b *_TransportTypeBuilder) WithTrigger(trigger uint8) TransportTypeBuilder {
+	b.Trigger = trigger
+	return b
 }
 
-func (m *_TransportTypeBuilder) WithClassTransport(classTransport uint8) TransportTypeBuilder {
-	m.ClassTransport = classTransport
-	return m
+func (b *_TransportTypeBuilder) WithClassTransport(classTransport uint8) TransportTypeBuilder {
+	b.ClassTransport = classTransport
+	return b
 }
 
-func (m *_TransportTypeBuilder) Build() (TransportType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TransportTypeBuilder) Build() (TransportType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TransportType.deepCopy(), nil
+	return b._TransportType.deepCopy(), nil
 }
 
-func (m *_TransportTypeBuilder) MustBuild() TransportType {
-	build, err := m.Build()
+func (b *_TransportTypeBuilder) MustBuild() TransportType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TransportTypeBuilder) DeepCopy() any {
-	return m.CreateTransportTypeBuilder()
+func (b *_TransportTypeBuilder) DeepCopy() any {
+	_copy := b.CreateTransportTypeBuilder().(*_TransportTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTransportTypeBuilder creates a TransportTypeBuilder
-func (m *_TransportType) CreateTransportTypeBuilder() TransportTypeBuilder {
-	if m == nil {
+func (b *_TransportType) CreateTransportTypeBuilder() TransportTypeBuilder {
+	if b == nil {
 		return NewTransportTypeBuilder()
 	}
-	return &_TransportTypeBuilder{_TransportType: m.deepCopy()}
+	return &_TransportTypeBuilder{_TransportType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -316,9 +320,13 @@ func (m *_TransportType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

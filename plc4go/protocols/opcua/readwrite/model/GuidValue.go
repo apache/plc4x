@@ -110,60 +110,64 @@ type _GuidValueBuilder struct {
 
 var _ (GuidValueBuilder) = (*_GuidValueBuilder)(nil)
 
-func (m *_GuidValueBuilder) WithMandatoryFields(data1 uint32, data2 uint16, data3 uint16, data4 []byte, data5 []byte) GuidValueBuilder {
-	return m.WithData1(data1).WithData2(data2).WithData3(data3).WithData4(data4...).WithData5(data5...)
+func (b *_GuidValueBuilder) WithMandatoryFields(data1 uint32, data2 uint16, data3 uint16, data4 []byte, data5 []byte) GuidValueBuilder {
+	return b.WithData1(data1).WithData2(data2).WithData3(data3).WithData4(data4...).WithData5(data5...)
 }
 
-func (m *_GuidValueBuilder) WithData1(data1 uint32) GuidValueBuilder {
-	m.Data1 = data1
-	return m
+func (b *_GuidValueBuilder) WithData1(data1 uint32) GuidValueBuilder {
+	b.Data1 = data1
+	return b
 }
 
-func (m *_GuidValueBuilder) WithData2(data2 uint16) GuidValueBuilder {
-	m.Data2 = data2
-	return m
+func (b *_GuidValueBuilder) WithData2(data2 uint16) GuidValueBuilder {
+	b.Data2 = data2
+	return b
 }
 
-func (m *_GuidValueBuilder) WithData3(data3 uint16) GuidValueBuilder {
-	m.Data3 = data3
-	return m
+func (b *_GuidValueBuilder) WithData3(data3 uint16) GuidValueBuilder {
+	b.Data3 = data3
+	return b
 }
 
-func (m *_GuidValueBuilder) WithData4(data4 ...byte) GuidValueBuilder {
-	m.Data4 = data4
-	return m
+func (b *_GuidValueBuilder) WithData4(data4 ...byte) GuidValueBuilder {
+	b.Data4 = data4
+	return b
 }
 
-func (m *_GuidValueBuilder) WithData5(data5 ...byte) GuidValueBuilder {
-	m.Data5 = data5
-	return m
+func (b *_GuidValueBuilder) WithData5(data5 ...byte) GuidValueBuilder {
+	b.Data5 = data5
+	return b
 }
 
-func (m *_GuidValueBuilder) Build() (GuidValue, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_GuidValueBuilder) Build() (GuidValue, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._GuidValue.deepCopy(), nil
+	return b._GuidValue.deepCopy(), nil
 }
 
-func (m *_GuidValueBuilder) MustBuild() GuidValue {
-	build, err := m.Build()
+func (b *_GuidValueBuilder) MustBuild() GuidValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_GuidValueBuilder) DeepCopy() any {
-	return m.CreateGuidValueBuilder()
+func (b *_GuidValueBuilder) DeepCopy() any {
+	_copy := b.CreateGuidValueBuilder().(*_GuidValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateGuidValueBuilder creates a GuidValueBuilder
-func (m *_GuidValue) CreateGuidValueBuilder() GuidValueBuilder {
-	if m == nil {
+func (b *_GuidValue) CreateGuidValueBuilder() GuidValueBuilder {
+	if b == nil {
 		return NewGuidValueBuilder()
 	}
-	return &_GuidValueBuilder{_GuidValue: m.deepCopy()}
+	return &_GuidValueBuilder{_GuidValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -376,9 +380,13 @@ func (m *_GuidValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -99,50 +99,69 @@ func NewParameterValueBaudRateSelectorBuilder() ParameterValueBaudRateSelectorBu
 type _ParameterValueBaudRateSelectorBuilder struct {
 	*_ParameterValueBaudRateSelector
 
+	parentBuilder *_ParameterValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ParameterValueBaudRateSelectorBuilder) = (*_ParameterValueBaudRateSelectorBuilder)(nil)
 
-func (m *_ParameterValueBaudRateSelectorBuilder) WithMandatoryFields(value BaudRateSelector, data []byte) ParameterValueBaudRateSelectorBuilder {
-	return m.WithValue(value).WithData(data...)
+func (b *_ParameterValueBaudRateSelectorBuilder) setParent(contract ParameterValueContract) {
+	b.ParameterValueContract = contract
 }
 
-func (m *_ParameterValueBaudRateSelectorBuilder) WithValue(value BaudRateSelector) ParameterValueBaudRateSelectorBuilder {
-	m.Value = value
-	return m
+func (b *_ParameterValueBaudRateSelectorBuilder) WithMandatoryFields(value BaudRateSelector, data []byte) ParameterValueBaudRateSelectorBuilder {
+	return b.WithValue(value).WithData(data...)
 }
 
-func (m *_ParameterValueBaudRateSelectorBuilder) WithData(data ...byte) ParameterValueBaudRateSelectorBuilder {
-	m.Data = data
-	return m
+func (b *_ParameterValueBaudRateSelectorBuilder) WithValue(value BaudRateSelector) ParameterValueBaudRateSelectorBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_ParameterValueBaudRateSelectorBuilder) Build() (ParameterValueBaudRateSelector, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ParameterValueBaudRateSelectorBuilder) WithData(data ...byte) ParameterValueBaudRateSelectorBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ParameterValueBaudRateSelectorBuilder) Build() (ParameterValueBaudRateSelector, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ParameterValueBaudRateSelector.deepCopy(), nil
+	return b._ParameterValueBaudRateSelector.deepCopy(), nil
 }
 
-func (m *_ParameterValueBaudRateSelectorBuilder) MustBuild() ParameterValueBaudRateSelector {
-	build, err := m.Build()
+func (b *_ParameterValueBaudRateSelectorBuilder) MustBuild() ParameterValueBaudRateSelector {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ParameterValueBaudRateSelectorBuilder) DeepCopy() any {
-	return m.CreateParameterValueBaudRateSelectorBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ParameterValueBaudRateSelectorBuilder) Done() ParameterValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ParameterValueBaudRateSelectorBuilder) buildForParameterValue() (ParameterValue, error) {
+	return b.Build()
+}
+
+func (b *_ParameterValueBaudRateSelectorBuilder) DeepCopy() any {
+	_copy := b.CreateParameterValueBaudRateSelectorBuilder().(*_ParameterValueBaudRateSelectorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateParameterValueBaudRateSelectorBuilder creates a ParameterValueBaudRateSelectorBuilder
-func (m *_ParameterValueBaudRateSelector) CreateParameterValueBaudRateSelectorBuilder() ParameterValueBaudRateSelectorBuilder {
-	if m == nil {
+func (b *_ParameterValueBaudRateSelector) CreateParameterValueBaudRateSelectorBuilder() ParameterValueBaudRateSelectorBuilder {
+	if b == nil {
 		return NewParameterValueBaudRateSelectorBuilder()
 	}
-	return &_ParameterValueBaudRateSelectorBuilder{_ParameterValueBaudRateSelector: m.deepCopy()}
+	return &_ParameterValueBaudRateSelectorBuilder{_ParameterValueBaudRateSelector: b.deepCopy()}
 }
 
 ///////////////////////
@@ -311,9 +330,13 @@ func (m *_ParameterValueBaudRateSelector) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -85,40 +85,59 @@ func NewTDataIndividualIndBuilder() TDataIndividualIndBuilder {
 type _TDataIndividualIndBuilder struct {
 	*_TDataIndividualInd
 
+	parentBuilder *_CEMIBuilder
+
 	err *utils.MultiError
 }
 
 var _ (TDataIndividualIndBuilder) = (*_TDataIndividualIndBuilder)(nil)
 
-func (m *_TDataIndividualIndBuilder) WithMandatoryFields() TDataIndividualIndBuilder {
-	return m
+func (b *_TDataIndividualIndBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
 }
 
-func (m *_TDataIndividualIndBuilder) Build() (TDataIndividualInd, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TDataIndividualIndBuilder) WithMandatoryFields() TDataIndividualIndBuilder {
+	return b
+}
+
+func (b *_TDataIndividualIndBuilder) Build() (TDataIndividualInd, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TDataIndividualInd.deepCopy(), nil
+	return b._TDataIndividualInd.deepCopy(), nil
 }
 
-func (m *_TDataIndividualIndBuilder) MustBuild() TDataIndividualInd {
-	build, err := m.Build()
+func (b *_TDataIndividualIndBuilder) MustBuild() TDataIndividualInd {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TDataIndividualIndBuilder) DeepCopy() any {
-	return m.CreateTDataIndividualIndBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TDataIndividualIndBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TDataIndividualIndBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_TDataIndividualIndBuilder) DeepCopy() any {
+	_copy := b.CreateTDataIndividualIndBuilder().(*_TDataIndividualIndBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTDataIndividualIndBuilder creates a TDataIndividualIndBuilder
-func (m *_TDataIndividualInd) CreateTDataIndividualIndBuilder() TDataIndividualIndBuilder {
-	if m == nil {
+func (b *_TDataIndividualInd) CreateTDataIndividualIndBuilder() TDataIndividualIndBuilder {
+	if b == nil {
 		return NewTDataIndividualIndBuilder()
 	}
-	return &_TDataIndividualIndBuilder{_TDataIndividualInd: m.deepCopy()}
+	return &_TDataIndividualIndBuilder{_TDataIndividualInd: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_TDataIndividualInd) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

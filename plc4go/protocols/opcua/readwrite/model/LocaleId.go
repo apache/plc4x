@@ -83,35 +83,39 @@ type _LocaleIdBuilder struct {
 
 var _ (LocaleIdBuilder) = (*_LocaleIdBuilder)(nil)
 
-func (m *_LocaleIdBuilder) WithMandatoryFields() LocaleIdBuilder {
-	return m
+func (b *_LocaleIdBuilder) WithMandatoryFields() LocaleIdBuilder {
+	return b
 }
 
-func (m *_LocaleIdBuilder) Build() (LocaleId, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_LocaleIdBuilder) Build() (LocaleId, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LocaleId.deepCopy(), nil
+	return b._LocaleId.deepCopy(), nil
 }
 
-func (m *_LocaleIdBuilder) MustBuild() LocaleId {
-	build, err := m.Build()
+func (b *_LocaleIdBuilder) MustBuild() LocaleId {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LocaleIdBuilder) DeepCopy() any {
-	return m.CreateLocaleIdBuilder()
+func (b *_LocaleIdBuilder) DeepCopy() any {
+	_copy := b.CreateLocaleIdBuilder().(*_LocaleIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLocaleIdBuilder creates a LocaleIdBuilder
-func (m *_LocaleId) CreateLocaleIdBuilder() LocaleIdBuilder {
-	if m == nil {
+func (b *_LocaleId) CreateLocaleIdBuilder() LocaleIdBuilder {
+	if b == nil {
 		return NewLocaleIdBuilder()
 	}
-	return &_LocaleIdBuilder{_LocaleId: m.deepCopy()}
+	return &_LocaleIdBuilder{_LocaleId: b.deepCopy()}
 }
 
 ///////////////////////
@@ -219,9 +223,13 @@ func (m *_LocaleId) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

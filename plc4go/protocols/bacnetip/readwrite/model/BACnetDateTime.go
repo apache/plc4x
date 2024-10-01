@@ -105,83 +105,87 @@ type _BACnetDateTimeBuilder struct {
 
 var _ (BACnetDateTimeBuilder) = (*_BACnetDateTimeBuilder)(nil)
 
-func (m *_BACnetDateTimeBuilder) WithMandatoryFields(dateValue BACnetApplicationTagDate, timeValue BACnetApplicationTagTime) BACnetDateTimeBuilder {
-	return m.WithDateValue(dateValue).WithTimeValue(timeValue)
+func (b *_BACnetDateTimeBuilder) WithMandatoryFields(dateValue BACnetApplicationTagDate, timeValue BACnetApplicationTagTime) BACnetDateTimeBuilder {
+	return b.WithDateValue(dateValue).WithTimeValue(timeValue)
 }
 
-func (m *_BACnetDateTimeBuilder) WithDateValue(dateValue BACnetApplicationTagDate) BACnetDateTimeBuilder {
-	m.DateValue = dateValue
-	return m
+func (b *_BACnetDateTimeBuilder) WithDateValue(dateValue BACnetApplicationTagDate) BACnetDateTimeBuilder {
+	b.DateValue = dateValue
+	return b
 }
 
-func (m *_BACnetDateTimeBuilder) WithDateValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetDateTimeBuilder {
-	builder := builderSupplier(m.DateValue.CreateBACnetApplicationTagDateBuilder())
+func (b *_BACnetDateTimeBuilder) WithDateValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetDateTimeBuilder {
+	builder := builderSupplier(b.DateValue.CreateBACnetApplicationTagDateBuilder())
 	var err error
-	m.DateValue, err = builder.Build()
+	b.DateValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetDateTimeBuilder) WithTimeValue(timeValue BACnetApplicationTagTime) BACnetDateTimeBuilder {
-	m.TimeValue = timeValue
-	return m
+func (b *_BACnetDateTimeBuilder) WithTimeValue(timeValue BACnetApplicationTagTime) BACnetDateTimeBuilder {
+	b.TimeValue = timeValue
+	return b
 }
 
-func (m *_BACnetDateTimeBuilder) WithTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetDateTimeBuilder {
-	builder := builderSupplier(m.TimeValue.CreateBACnetApplicationTagTimeBuilder())
+func (b *_BACnetDateTimeBuilder) WithTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetDateTimeBuilder {
+	builder := builderSupplier(b.TimeValue.CreateBACnetApplicationTagTimeBuilder())
 	var err error
-	m.TimeValue, err = builder.Build()
+	b.TimeValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetDateTimeBuilder) Build() (BACnetDateTime, error) {
-	if m.DateValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetDateTimeBuilder) Build() (BACnetDateTime, error) {
+	if b.DateValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'dateValue' not set"))
+		b.err.Append(errors.New("mandatory field 'dateValue' not set"))
 	}
-	if m.TimeValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TimeValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeValue' not set"))
+		b.err.Append(errors.New("mandatory field 'timeValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetDateTime.deepCopy(), nil
+	return b._BACnetDateTime.deepCopy(), nil
 }
 
-func (m *_BACnetDateTimeBuilder) MustBuild() BACnetDateTime {
-	build, err := m.Build()
+func (b *_BACnetDateTimeBuilder) MustBuild() BACnetDateTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetDateTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetDateTimeBuilder()
+func (b *_BACnetDateTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetDateTimeBuilder().(*_BACnetDateTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetDateTimeBuilder creates a BACnetDateTimeBuilder
-func (m *_BACnetDateTime) CreateBACnetDateTimeBuilder() BACnetDateTimeBuilder {
-	if m == nil {
+func (b *_BACnetDateTime) CreateBACnetDateTimeBuilder() BACnetDateTimeBuilder {
+	if b == nil {
 		return NewBACnetDateTimeBuilder()
 	}
-	return &_BACnetDateTimeBuilder{_BACnetDateTime: m.deepCopy()}
+	return &_BACnetDateTimeBuilder{_BACnetDateTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -336,9 +340,13 @@ func (m *_BACnetDateTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

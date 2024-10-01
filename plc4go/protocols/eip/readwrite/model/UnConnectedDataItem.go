@@ -82,6 +82,8 @@ type UnConnectedDataItemBuilder interface {
 	WithMandatoryFields(service CipService) UnConnectedDataItemBuilder
 	// WithService adds Service (property field)
 	WithService(CipService) UnConnectedDataItemBuilder
+	// WithServiceBuilder adds Service (property field) which is build by the builder
+	WithServiceBuilder(func(CipServiceBuilder) CipServiceBuilder) UnConnectedDataItemBuilder
 	// Build builds the UnConnectedDataItem or returns an error if something is wrong
 	Build() (UnConnectedDataItem, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewUnConnectedDataItemBuilder() UnConnectedDataItemBuilder {
 type _UnConnectedDataItemBuilder struct {
 	*_UnConnectedDataItem
 
+	parentBuilder *_TypeIdBuilder
+
 	err *utils.MultiError
 }
 
 var _ (UnConnectedDataItemBuilder) = (*_UnConnectedDataItemBuilder)(nil)
 
-func (m *_UnConnectedDataItemBuilder) WithMandatoryFields(service CipService) UnConnectedDataItemBuilder {
-	return m.WithService(service)
+func (b *_UnConnectedDataItemBuilder) setParent(contract TypeIdContract) {
+	b.TypeIdContract = contract
 }
 
-func (m *_UnConnectedDataItemBuilder) WithService(service CipService) UnConnectedDataItemBuilder {
-	m.Service = service
-	return m
+func (b *_UnConnectedDataItemBuilder) WithMandatoryFields(service CipService) UnConnectedDataItemBuilder {
+	return b.WithService(service)
 }
 
-func (m *_UnConnectedDataItemBuilder) Build() (UnConnectedDataItem, error) {
-	if m.Service == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_UnConnectedDataItemBuilder) WithService(service CipService) UnConnectedDataItemBuilder {
+	b.Service = service
+	return b
+}
+
+func (b *_UnConnectedDataItemBuilder) WithServiceBuilder(builderSupplier func(CipServiceBuilder) CipServiceBuilder) UnConnectedDataItemBuilder {
+	builder := builderSupplier(b.Service.CreateCipServiceBuilder())
+	var err error
+	b.Service, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'service' not set"))
+		b.err.Append(errors.Wrap(err, "CipServiceBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._UnConnectedDataItem.deepCopy(), nil
+	return b
 }
 
-func (m *_UnConnectedDataItemBuilder) MustBuild() UnConnectedDataItem {
-	build, err := m.Build()
+func (b *_UnConnectedDataItemBuilder) Build() (UnConnectedDataItem, error) {
+	if b.Service == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'service' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._UnConnectedDataItem.deepCopy(), nil
+}
+
+func (b *_UnConnectedDataItemBuilder) MustBuild() UnConnectedDataItem {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_UnConnectedDataItemBuilder) DeepCopy() any {
-	return m.CreateUnConnectedDataItemBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UnConnectedDataItemBuilder) Done() TypeIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UnConnectedDataItemBuilder) buildForTypeId() (TypeId, error) {
+	return b.Build()
+}
+
+func (b *_UnConnectedDataItemBuilder) DeepCopy() any {
+	_copy := b.CreateUnConnectedDataItemBuilder().(*_UnConnectedDataItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateUnConnectedDataItemBuilder creates a UnConnectedDataItemBuilder
-func (m *_UnConnectedDataItem) CreateUnConnectedDataItemBuilder() UnConnectedDataItemBuilder {
-	if m == nil {
+func (b *_UnConnectedDataItem) CreateUnConnectedDataItemBuilder() UnConnectedDataItemBuilder {
+	if b == nil {
 		return NewUnConnectedDataItemBuilder()
 	}
-	return &_UnConnectedDataItemBuilder{_UnConnectedDataItem: m.deepCopy()}
+	return &_UnConnectedDataItemBuilder{_UnConnectedDataItem: b.deepCopy()}
 }
 
 ///////////////////////
@@ -297,9 +331,13 @@ func (m *_UnConnectedDataItem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

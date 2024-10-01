@@ -111,69 +111,73 @@ type _BACnetLiftCarDriveStatusTaggedBuilder struct {
 
 var _ (BACnetLiftCarDriveStatusTaggedBuilder) = (*_BACnetLiftCarDriveStatusTaggedBuilder)(nil)
 
-func (m *_BACnetLiftCarDriveStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLiftCarDriveStatus, proprietaryValue uint32) BACnetLiftCarDriveStatusTaggedBuilder {
-	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLiftCarDriveStatus, proprietaryValue uint32) BACnetLiftCarDriveStatusTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
 }
 
-func (m *_BACnetLiftCarDriveStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLiftCarDriveStatusTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLiftCarDriveStatusTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetLiftCarDriveStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftCarDriveStatusTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftCarDriveStatusTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLiftCarDriveStatusTaggedBuilder) WithValue(value BACnetLiftCarDriveStatus) BACnetLiftCarDriveStatusTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) WithValue(value BACnetLiftCarDriveStatus) BACnetLiftCarDriveStatusTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetLiftCarDriveStatusTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLiftCarDriveStatusTaggedBuilder {
-	m.ProprietaryValue = proprietaryValue
-	return m
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLiftCarDriveStatusTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
 }
 
-func (m *_BACnetLiftCarDriveStatusTaggedBuilder) Build() (BACnetLiftCarDriveStatusTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) Build() (BACnetLiftCarDriveStatusTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLiftCarDriveStatusTagged.deepCopy(), nil
+	return b._BACnetLiftCarDriveStatusTagged.deepCopy(), nil
 }
 
-func (m *_BACnetLiftCarDriveStatusTaggedBuilder) MustBuild() BACnetLiftCarDriveStatusTagged {
-	build, err := m.Build()
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) MustBuild() BACnetLiftCarDriveStatusTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLiftCarDriveStatusTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetLiftCarDriveStatusTaggedBuilder()
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLiftCarDriveStatusTaggedBuilder().(*_BACnetLiftCarDriveStatusTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLiftCarDriveStatusTaggedBuilder creates a BACnetLiftCarDriveStatusTaggedBuilder
-func (m *_BACnetLiftCarDriveStatusTagged) CreateBACnetLiftCarDriveStatusTaggedBuilder() BACnetLiftCarDriveStatusTaggedBuilder {
-	if m == nil {
+func (b *_BACnetLiftCarDriveStatusTagged) CreateBACnetLiftCarDriveStatusTaggedBuilder() BACnetLiftCarDriveStatusTaggedBuilder {
+	if b == nil {
 		return NewBACnetLiftCarDriveStatusTaggedBuilder()
 	}
-	return &_BACnetLiftCarDriveStatusTaggedBuilder{_BACnetLiftCarDriveStatusTagged: m.deepCopy()}
+	return &_BACnetLiftCarDriveStatusTaggedBuilder{_BACnetLiftCarDriveStatusTagged: b.deepCopy()}
 }
 
 ///////////////////////
@@ -402,9 +406,13 @@ func (m *_BACnetLiftCarDriveStatusTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

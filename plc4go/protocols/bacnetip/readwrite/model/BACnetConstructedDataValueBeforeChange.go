@@ -100,64 +100,83 @@ func NewBACnetConstructedDataValueBeforeChangeBuilder() BACnetConstructedDataVal
 type _BACnetConstructedDataValueBeforeChangeBuilder struct {
 	*_BACnetConstructedDataValueBeforeChange
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataValueBeforeChangeBuilder) = (*_BACnetConstructedDataValueBeforeChangeBuilder)(nil)
 
-func (m *_BACnetConstructedDataValueBeforeChangeBuilder) WithMandatoryFields(valuesBeforeChange BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueBeforeChangeBuilder {
-	return m.WithValuesBeforeChange(valuesBeforeChange)
+func (b *_BACnetConstructedDataValueBeforeChangeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataValueBeforeChangeBuilder) WithValuesBeforeChange(valuesBeforeChange BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueBeforeChangeBuilder {
-	m.ValuesBeforeChange = valuesBeforeChange
-	return m
+func (b *_BACnetConstructedDataValueBeforeChangeBuilder) WithMandatoryFields(valuesBeforeChange BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueBeforeChangeBuilder {
+	return b.WithValuesBeforeChange(valuesBeforeChange)
 }
 
-func (m *_BACnetConstructedDataValueBeforeChangeBuilder) WithValuesBeforeChangeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValueBeforeChangeBuilder {
-	builder := builderSupplier(m.ValuesBeforeChange.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataValueBeforeChangeBuilder) WithValuesBeforeChange(valuesBeforeChange BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueBeforeChangeBuilder {
+	b.ValuesBeforeChange = valuesBeforeChange
+	return b
+}
+
+func (b *_BACnetConstructedDataValueBeforeChangeBuilder) WithValuesBeforeChangeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValueBeforeChangeBuilder {
+	builder := builderSupplier(b.ValuesBeforeChange.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.ValuesBeforeChange, err = builder.Build()
+	b.ValuesBeforeChange, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataValueBeforeChangeBuilder) Build() (BACnetConstructedDataValueBeforeChange, error) {
-	if m.ValuesBeforeChange == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataValueBeforeChangeBuilder) Build() (BACnetConstructedDataValueBeforeChange, error) {
+	if b.ValuesBeforeChange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'valuesBeforeChange' not set"))
+		b.err.Append(errors.New("mandatory field 'valuesBeforeChange' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataValueBeforeChange.deepCopy(), nil
+	return b._BACnetConstructedDataValueBeforeChange.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataValueBeforeChangeBuilder) MustBuild() BACnetConstructedDataValueBeforeChange {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataValueBeforeChangeBuilder) MustBuild() BACnetConstructedDataValueBeforeChange {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataValueBeforeChangeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataValueBeforeChangeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataValueBeforeChangeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataValueBeforeChangeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataValueBeforeChangeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataValueBeforeChangeBuilder().(*_BACnetConstructedDataValueBeforeChangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataValueBeforeChangeBuilder creates a BACnetConstructedDataValueBeforeChangeBuilder
-func (m *_BACnetConstructedDataValueBeforeChange) CreateBACnetConstructedDataValueBeforeChangeBuilder() BACnetConstructedDataValueBeforeChangeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataValueBeforeChange) CreateBACnetConstructedDataValueBeforeChangeBuilder() BACnetConstructedDataValueBeforeChangeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataValueBeforeChangeBuilder()
 	}
-	return &_BACnetConstructedDataValueBeforeChangeBuilder{_BACnetConstructedDataValueBeforeChange: m.deepCopy()}
+	return &_BACnetConstructedDataValueBeforeChangeBuilder{_BACnetConstructedDataValueBeforeChange: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataValueBeforeChange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

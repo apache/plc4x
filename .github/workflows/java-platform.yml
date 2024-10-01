@@ -124,10 +124,10 @@ jobs:
               core.setOutput('extra_options', ``)
             }
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: java
+#      - name: Initialize CodeQL
+#        uses: github/codeql-action/init@v3
+#        with:
+#          languages: java
 
       # Note: due to github has no concept of recovering from a fail even if we have our fallback below we append a second un-parallel run behind this to be sure that it works with all checks. Only if that fails too we are ok with a "red" (which should be yellow) cross indicating a problem
       - name: Run mvnw

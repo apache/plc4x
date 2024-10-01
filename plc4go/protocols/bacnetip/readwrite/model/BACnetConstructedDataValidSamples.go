@@ -100,64 +100,83 @@ func NewBACnetConstructedDataValidSamplesBuilder() BACnetConstructedDataValidSam
 type _BACnetConstructedDataValidSamplesBuilder struct {
 	*_BACnetConstructedDataValidSamples
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataValidSamplesBuilder) = (*_BACnetConstructedDataValidSamplesBuilder)(nil)
 
-func (m *_BACnetConstructedDataValidSamplesBuilder) WithMandatoryFields(validSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValidSamplesBuilder {
-	return m.WithValidSamples(validSamples)
+func (b *_BACnetConstructedDataValidSamplesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataValidSamplesBuilder) WithValidSamples(validSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValidSamplesBuilder {
-	m.ValidSamples = validSamples
-	return m
+func (b *_BACnetConstructedDataValidSamplesBuilder) WithMandatoryFields(validSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValidSamplesBuilder {
+	return b.WithValidSamples(validSamples)
 }
 
-func (m *_BACnetConstructedDataValidSamplesBuilder) WithValidSamplesBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValidSamplesBuilder {
-	builder := builderSupplier(m.ValidSamples.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataValidSamplesBuilder) WithValidSamples(validSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValidSamplesBuilder {
+	b.ValidSamples = validSamples
+	return b
+}
+
+func (b *_BACnetConstructedDataValidSamplesBuilder) WithValidSamplesBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValidSamplesBuilder {
+	builder := builderSupplier(b.ValidSamples.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.ValidSamples, err = builder.Build()
+	b.ValidSamples, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataValidSamplesBuilder) Build() (BACnetConstructedDataValidSamples, error) {
-	if m.ValidSamples == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataValidSamplesBuilder) Build() (BACnetConstructedDataValidSamples, error) {
+	if b.ValidSamples == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'validSamples' not set"))
+		b.err.Append(errors.New("mandatory field 'validSamples' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataValidSamples.deepCopy(), nil
+	return b._BACnetConstructedDataValidSamples.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataValidSamplesBuilder) MustBuild() BACnetConstructedDataValidSamples {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataValidSamplesBuilder) MustBuild() BACnetConstructedDataValidSamples {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataValidSamplesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataValidSamplesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataValidSamplesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataValidSamplesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataValidSamplesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataValidSamplesBuilder().(*_BACnetConstructedDataValidSamplesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataValidSamplesBuilder creates a BACnetConstructedDataValidSamplesBuilder
-func (m *_BACnetConstructedDataValidSamples) CreateBACnetConstructedDataValidSamplesBuilder() BACnetConstructedDataValidSamplesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataValidSamples) CreateBACnetConstructedDataValidSamplesBuilder() BACnetConstructedDataValidSamplesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataValidSamplesBuilder()
 	}
-	return &_BACnetConstructedDataValidSamplesBuilder{_BACnetConstructedDataValidSamples: m.deepCopy()}
+	return &_BACnetConstructedDataValidSamplesBuilder{_BACnetConstructedDataValidSamples: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataValidSamples) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

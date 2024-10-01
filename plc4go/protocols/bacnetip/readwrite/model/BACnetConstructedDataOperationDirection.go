@@ -100,64 +100,83 @@ func NewBACnetConstructedDataOperationDirectionBuilder() BACnetConstructedDataOp
 type _BACnetConstructedDataOperationDirectionBuilder struct {
 	*_BACnetConstructedDataOperationDirection
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataOperationDirectionBuilder) = (*_BACnetConstructedDataOperationDirectionBuilder)(nil)
 
-func (m *_BACnetConstructedDataOperationDirectionBuilder) WithMandatoryFields(operationDirection BACnetEscalatorOperationDirectionTagged) BACnetConstructedDataOperationDirectionBuilder {
-	return m.WithOperationDirection(operationDirection)
+func (b *_BACnetConstructedDataOperationDirectionBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataOperationDirectionBuilder) WithOperationDirection(operationDirection BACnetEscalatorOperationDirectionTagged) BACnetConstructedDataOperationDirectionBuilder {
-	m.OperationDirection = operationDirection
-	return m
+func (b *_BACnetConstructedDataOperationDirectionBuilder) WithMandatoryFields(operationDirection BACnetEscalatorOperationDirectionTagged) BACnetConstructedDataOperationDirectionBuilder {
+	return b.WithOperationDirection(operationDirection)
 }
 
-func (m *_BACnetConstructedDataOperationDirectionBuilder) WithOperationDirectionBuilder(builderSupplier func(BACnetEscalatorOperationDirectionTaggedBuilder) BACnetEscalatorOperationDirectionTaggedBuilder) BACnetConstructedDataOperationDirectionBuilder {
-	builder := builderSupplier(m.OperationDirection.CreateBACnetEscalatorOperationDirectionTaggedBuilder())
+func (b *_BACnetConstructedDataOperationDirectionBuilder) WithOperationDirection(operationDirection BACnetEscalatorOperationDirectionTagged) BACnetConstructedDataOperationDirectionBuilder {
+	b.OperationDirection = operationDirection
+	return b
+}
+
+func (b *_BACnetConstructedDataOperationDirectionBuilder) WithOperationDirectionBuilder(builderSupplier func(BACnetEscalatorOperationDirectionTaggedBuilder) BACnetEscalatorOperationDirectionTaggedBuilder) BACnetConstructedDataOperationDirectionBuilder {
+	builder := builderSupplier(b.OperationDirection.CreateBACnetEscalatorOperationDirectionTaggedBuilder())
 	var err error
-	m.OperationDirection, err = builder.Build()
+	b.OperationDirection, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetEscalatorOperationDirectionTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetEscalatorOperationDirectionTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataOperationDirectionBuilder) Build() (BACnetConstructedDataOperationDirection, error) {
-	if m.OperationDirection == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataOperationDirectionBuilder) Build() (BACnetConstructedDataOperationDirection, error) {
+	if b.OperationDirection == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'operationDirection' not set"))
+		b.err.Append(errors.New("mandatory field 'operationDirection' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataOperationDirection.deepCopy(), nil
+	return b._BACnetConstructedDataOperationDirection.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataOperationDirectionBuilder) MustBuild() BACnetConstructedDataOperationDirection {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataOperationDirectionBuilder) MustBuild() BACnetConstructedDataOperationDirection {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataOperationDirectionBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataOperationDirectionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataOperationDirectionBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataOperationDirectionBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataOperationDirectionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataOperationDirectionBuilder().(*_BACnetConstructedDataOperationDirectionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataOperationDirectionBuilder creates a BACnetConstructedDataOperationDirectionBuilder
-func (m *_BACnetConstructedDataOperationDirection) CreateBACnetConstructedDataOperationDirectionBuilder() BACnetConstructedDataOperationDirectionBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataOperationDirection) CreateBACnetConstructedDataOperationDirectionBuilder() BACnetConstructedDataOperationDirectionBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataOperationDirectionBuilder()
 	}
-	return &_BACnetConstructedDataOperationDirectionBuilder{_BACnetConstructedDataOperationDirection: m.deepCopy()}
+	return &_BACnetConstructedDataOperationDirectionBuilder{_BACnetConstructedDataOperationDirection: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataOperationDirection) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

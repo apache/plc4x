@@ -96,6 +96,8 @@ type APDUErrorBuilder interface {
 	WithErrorChoice(BACnetConfirmedServiceChoice) APDUErrorBuilder
 	// WithError adds Error (property field)
 	WithError(BACnetError) APDUErrorBuilder
+	// WithErrorBuilder adds Error (property field) which is build by the builder
+	WithErrorBuilder(func(BACnetErrorBuilder) BACnetErrorBuilder) APDUErrorBuilder
 	// Build builds the APDUError or returns an error if something is wrong
 	Build() (APDUError, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,61 +112,93 @@ func NewAPDUErrorBuilder() APDUErrorBuilder {
 type _APDUErrorBuilder struct {
 	*_APDUError
 
+	parentBuilder *_APDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (APDUErrorBuilder) = (*_APDUErrorBuilder)(nil)
 
-func (m *_APDUErrorBuilder) WithMandatoryFields(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoice, error BACnetError) APDUErrorBuilder {
-	return m.WithOriginalInvokeId(originalInvokeId).WithErrorChoice(errorChoice).WithError(error)
+func (b *_APDUErrorBuilder) setParent(contract APDUContract) {
+	b.APDUContract = contract
 }
 
-func (m *_APDUErrorBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDUErrorBuilder {
-	m.OriginalInvokeId = originalInvokeId
-	return m
+func (b *_APDUErrorBuilder) WithMandatoryFields(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoice, error BACnetError) APDUErrorBuilder {
+	return b.WithOriginalInvokeId(originalInvokeId).WithErrorChoice(errorChoice).WithError(error)
 }
 
-func (m *_APDUErrorBuilder) WithErrorChoice(errorChoice BACnetConfirmedServiceChoice) APDUErrorBuilder {
-	m.ErrorChoice = errorChoice
-	return m
+func (b *_APDUErrorBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDUErrorBuilder {
+	b.OriginalInvokeId = originalInvokeId
+	return b
 }
 
-func (m *_APDUErrorBuilder) WithError(error BACnetError) APDUErrorBuilder {
-	m.Error = error
-	return m
+func (b *_APDUErrorBuilder) WithErrorChoice(errorChoice BACnetConfirmedServiceChoice) APDUErrorBuilder {
+	b.ErrorChoice = errorChoice
+	return b
 }
 
-func (m *_APDUErrorBuilder) Build() (APDUError, error) {
-	if m.Error == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_APDUErrorBuilder) WithError(error BACnetError) APDUErrorBuilder {
+	b.Error = error
+	return b
+}
+
+func (b *_APDUErrorBuilder) WithErrorBuilder(builderSupplier func(BACnetErrorBuilder) BACnetErrorBuilder) APDUErrorBuilder {
+	builder := builderSupplier(b.Error.CreateBACnetErrorBuilder())
+	var err error
+	b.Error, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'error' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetErrorBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._APDUError.deepCopy(), nil
+	return b
 }
 
-func (m *_APDUErrorBuilder) MustBuild() APDUError {
-	build, err := m.Build()
+func (b *_APDUErrorBuilder) Build() (APDUError, error) {
+	if b.Error == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'error' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._APDUError.deepCopy(), nil
+}
+
+func (b *_APDUErrorBuilder) MustBuild() APDUError {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_APDUErrorBuilder) DeepCopy() any {
-	return m.CreateAPDUErrorBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_APDUErrorBuilder) Done() APDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_APDUErrorBuilder) buildForAPDU() (APDU, error) {
+	return b.Build()
+}
+
+func (b *_APDUErrorBuilder) DeepCopy() any {
+	_copy := b.CreateAPDUErrorBuilder().(*_APDUErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAPDUErrorBuilder creates a APDUErrorBuilder
-func (m *_APDUError) CreateAPDUErrorBuilder() APDUErrorBuilder {
-	if m == nil {
+func (b *_APDUError) CreateAPDUErrorBuilder() APDUErrorBuilder {
+	if b == nil {
 		return NewAPDUErrorBuilder()
 	}
-	return &_APDUErrorBuilder{_APDUError: m.deepCopy()}
+	return &_APDUErrorBuilder{_APDUError: b.deepCopy()}
 }
 
 ///////////////////////
@@ -358,9 +392,13 @@ func (m *_APDUError) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

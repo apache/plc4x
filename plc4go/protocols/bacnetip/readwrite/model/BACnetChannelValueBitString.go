@@ -98,64 +98,83 @@ func NewBACnetChannelValueBitStringBuilder() BACnetChannelValueBitStringBuilder 
 type _BACnetChannelValueBitStringBuilder struct {
 	*_BACnetChannelValueBitString
 
+	parentBuilder *_BACnetChannelValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetChannelValueBitStringBuilder) = (*_BACnetChannelValueBitStringBuilder)(nil)
 
-func (m *_BACnetChannelValueBitStringBuilder) WithMandatoryFields(bitStringValue BACnetApplicationTagBitString) BACnetChannelValueBitStringBuilder {
-	return m.WithBitStringValue(bitStringValue)
+func (b *_BACnetChannelValueBitStringBuilder) setParent(contract BACnetChannelValueContract) {
+	b.BACnetChannelValueContract = contract
 }
 
-func (m *_BACnetChannelValueBitStringBuilder) WithBitStringValue(bitStringValue BACnetApplicationTagBitString) BACnetChannelValueBitStringBuilder {
-	m.BitStringValue = bitStringValue
-	return m
+func (b *_BACnetChannelValueBitStringBuilder) WithMandatoryFields(bitStringValue BACnetApplicationTagBitString) BACnetChannelValueBitStringBuilder {
+	return b.WithBitStringValue(bitStringValue)
 }
 
-func (m *_BACnetChannelValueBitStringBuilder) WithBitStringValueBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetChannelValueBitStringBuilder {
-	builder := builderSupplier(m.BitStringValue.CreateBACnetApplicationTagBitStringBuilder())
+func (b *_BACnetChannelValueBitStringBuilder) WithBitStringValue(bitStringValue BACnetApplicationTagBitString) BACnetChannelValueBitStringBuilder {
+	b.BitStringValue = bitStringValue
+	return b
+}
+
+func (b *_BACnetChannelValueBitStringBuilder) WithBitStringValueBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetChannelValueBitStringBuilder {
+	builder := builderSupplier(b.BitStringValue.CreateBACnetApplicationTagBitStringBuilder())
 	var err error
-	m.BitStringValue, err = builder.Build()
+	b.BitStringValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetChannelValueBitStringBuilder) Build() (BACnetChannelValueBitString, error) {
-	if m.BitStringValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetChannelValueBitStringBuilder) Build() (BACnetChannelValueBitString, error) {
+	if b.BitStringValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'bitStringValue' not set"))
+		b.err.Append(errors.New("mandatory field 'bitStringValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetChannelValueBitString.deepCopy(), nil
+	return b._BACnetChannelValueBitString.deepCopy(), nil
 }
 
-func (m *_BACnetChannelValueBitStringBuilder) MustBuild() BACnetChannelValueBitString {
-	build, err := m.Build()
+func (b *_BACnetChannelValueBitStringBuilder) MustBuild() BACnetChannelValueBitString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetChannelValueBitStringBuilder) DeepCopy() any {
-	return m.CreateBACnetChannelValueBitStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetChannelValueBitStringBuilder) Done() BACnetChannelValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetChannelValueBitStringBuilder) buildForBACnetChannelValue() (BACnetChannelValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetChannelValueBitStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetChannelValueBitStringBuilder().(*_BACnetChannelValueBitStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetChannelValueBitStringBuilder creates a BACnetChannelValueBitStringBuilder
-func (m *_BACnetChannelValueBitString) CreateBACnetChannelValueBitStringBuilder() BACnetChannelValueBitStringBuilder {
-	if m == nil {
+func (b *_BACnetChannelValueBitString) CreateBACnetChannelValueBitStringBuilder() BACnetChannelValueBitStringBuilder {
+	if b == nil {
 		return NewBACnetChannelValueBitStringBuilder()
 	}
-	return &_BACnetChannelValueBitStringBuilder{_BACnetChannelValueBitString: m.deepCopy()}
+	return &_BACnetChannelValueBitStringBuilder{_BACnetChannelValueBitString: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetChannelValueBitString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

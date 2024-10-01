@@ -146,6 +146,8 @@ type PubSubConnectionDataTypeBuilder interface {
 	WithEnabled(bool) PubSubConnectionDataTypeBuilder
 	// WithPublisherId adds PublisherId (property field)
 	WithPublisherId(Variant) PubSubConnectionDataTypeBuilder
+	// WithPublisherIdBuilder adds PublisherId (property field) which is build by the builder
+	WithPublisherIdBuilder(func(VariantBuilder) VariantBuilder) PubSubConnectionDataTypeBuilder
 	// WithTransportProfileUri adds TransportProfileUri (property field)
 	WithTransportProfileUri(PascalString) PubSubConnectionDataTypeBuilder
 	// WithTransportProfileUriBuilder adds TransportProfileUri (property field) which is build by the builder
@@ -184,182 +186,214 @@ func NewPubSubConnectionDataTypeBuilder() PubSubConnectionDataTypeBuilder {
 type _PubSubConnectionDataTypeBuilder struct {
 	*_PubSubConnectionDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (PubSubConnectionDataTypeBuilder) = (*_PubSubConnectionDataTypeBuilder)(nil)
 
-func (m *_PubSubConnectionDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, publisherId Variant, transportProfileUri PascalString, address ExtensionObject, noOfConnectionProperties int32, connectionProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, noOfWriterGroups int32, writerGroups []PubSubGroupDataType, noOfReaderGroups int32, readerGroups []PubSubGroupDataType) PubSubConnectionDataTypeBuilder {
-	return m.WithName(name).WithEnabled(enabled).WithPublisherId(publisherId).WithTransportProfileUri(transportProfileUri).WithAddress(address).WithNoOfConnectionProperties(noOfConnectionProperties).WithConnectionProperties(connectionProperties...).WithTransportSettings(transportSettings).WithNoOfWriterGroups(noOfWriterGroups).WithWriterGroups(writerGroups...).WithNoOfReaderGroups(noOfReaderGroups).WithReaderGroups(readerGroups...)
+func (b *_PubSubConnectionDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) WithName(name PascalString) PubSubConnectionDataTypeBuilder {
-	m.Name = name
-	return m
+func (b *_PubSubConnectionDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, publisherId Variant, transportProfileUri PascalString, address ExtensionObject, noOfConnectionProperties int32, connectionProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, noOfWriterGroups int32, writerGroups []PubSubGroupDataType, noOfReaderGroups int32, readerGroups []PubSubGroupDataType) PubSubConnectionDataTypeBuilder {
+	return b.WithName(name).WithEnabled(enabled).WithPublisherId(publisherId).WithTransportProfileUri(transportProfileUri).WithAddress(address).WithNoOfConnectionProperties(noOfConnectionProperties).WithConnectionProperties(connectionProperties...).WithTransportSettings(transportSettings).WithNoOfWriterGroups(noOfWriterGroups).WithWriterGroups(writerGroups...).WithNoOfReaderGroups(noOfReaderGroups).WithReaderGroups(readerGroups...)
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PubSubConnectionDataTypeBuilder {
-	builder := builderSupplier(m.Name.CreatePascalStringBuilder())
+func (b *_PubSubConnectionDataTypeBuilder) WithName(name PascalString) PubSubConnectionDataTypeBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_PubSubConnectionDataTypeBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PubSubConnectionDataTypeBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
 	var err error
-	m.Name, err = builder.Build()
+	b.Name, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) WithEnabled(enabled bool) PubSubConnectionDataTypeBuilder {
-	m.Enabled = enabled
-	return m
+func (b *_PubSubConnectionDataTypeBuilder) WithEnabled(enabled bool) PubSubConnectionDataTypeBuilder {
+	b.Enabled = enabled
+	return b
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) WithPublisherId(publisherId Variant) PubSubConnectionDataTypeBuilder {
-	m.PublisherId = publisherId
-	return m
+func (b *_PubSubConnectionDataTypeBuilder) WithPublisherId(publisherId Variant) PubSubConnectionDataTypeBuilder {
+	b.PublisherId = publisherId
+	return b
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) WithTransportProfileUri(transportProfileUri PascalString) PubSubConnectionDataTypeBuilder {
-	m.TransportProfileUri = transportProfileUri
-	return m
-}
-
-func (m *_PubSubConnectionDataTypeBuilder) WithTransportProfileUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PubSubConnectionDataTypeBuilder {
-	builder := builderSupplier(m.TransportProfileUri.CreatePascalStringBuilder())
+func (b *_PubSubConnectionDataTypeBuilder) WithPublisherIdBuilder(builderSupplier func(VariantBuilder) VariantBuilder) PubSubConnectionDataTypeBuilder {
+	builder := builderSupplier(b.PublisherId.CreateVariantBuilder())
 	var err error
-	m.TransportProfileUri, err = builder.Build()
+	b.PublisherId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "VariantBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) WithAddress(address ExtensionObject) PubSubConnectionDataTypeBuilder {
-	m.Address = address
-	return m
+func (b *_PubSubConnectionDataTypeBuilder) WithTransportProfileUri(transportProfileUri PascalString) PubSubConnectionDataTypeBuilder {
+	b.TransportProfileUri = transportProfileUri
+	return b
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) WithAddressBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) PubSubConnectionDataTypeBuilder {
-	builder := builderSupplier(m.Address.CreateExtensionObjectBuilder())
+func (b *_PubSubConnectionDataTypeBuilder) WithTransportProfileUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PubSubConnectionDataTypeBuilder {
+	builder := builderSupplier(b.TransportProfileUri.CreatePascalStringBuilder())
 	var err error
-	m.Address, err = builder.Build()
+	b.TransportProfileUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) WithNoOfConnectionProperties(noOfConnectionProperties int32) PubSubConnectionDataTypeBuilder {
-	m.NoOfConnectionProperties = noOfConnectionProperties
-	return m
+func (b *_PubSubConnectionDataTypeBuilder) WithAddress(address ExtensionObject) PubSubConnectionDataTypeBuilder {
+	b.Address = address
+	return b
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) WithConnectionProperties(connectionProperties ...ExtensionObjectDefinition) PubSubConnectionDataTypeBuilder {
-	m.ConnectionProperties = connectionProperties
-	return m
-}
-
-func (m *_PubSubConnectionDataTypeBuilder) WithTransportSettings(transportSettings ExtensionObject) PubSubConnectionDataTypeBuilder {
-	m.TransportSettings = transportSettings
-	return m
-}
-
-func (m *_PubSubConnectionDataTypeBuilder) WithTransportSettingsBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) PubSubConnectionDataTypeBuilder {
-	builder := builderSupplier(m.TransportSettings.CreateExtensionObjectBuilder())
+func (b *_PubSubConnectionDataTypeBuilder) WithAddressBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) PubSubConnectionDataTypeBuilder {
+	builder := builderSupplier(b.Address.CreateExtensionObjectBuilder())
 	var err error
-	m.TransportSettings, err = builder.Build()
+	b.Address, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) WithNoOfWriterGroups(noOfWriterGroups int32) PubSubConnectionDataTypeBuilder {
-	m.NoOfWriterGroups = noOfWriterGroups
-	return m
+func (b *_PubSubConnectionDataTypeBuilder) WithNoOfConnectionProperties(noOfConnectionProperties int32) PubSubConnectionDataTypeBuilder {
+	b.NoOfConnectionProperties = noOfConnectionProperties
+	return b
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) WithWriterGroups(writerGroups ...PubSubGroupDataType) PubSubConnectionDataTypeBuilder {
-	m.WriterGroups = writerGroups
-	return m
+func (b *_PubSubConnectionDataTypeBuilder) WithConnectionProperties(connectionProperties ...ExtensionObjectDefinition) PubSubConnectionDataTypeBuilder {
+	b.ConnectionProperties = connectionProperties
+	return b
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) WithNoOfReaderGroups(noOfReaderGroups int32) PubSubConnectionDataTypeBuilder {
-	m.NoOfReaderGroups = noOfReaderGroups
-	return m
+func (b *_PubSubConnectionDataTypeBuilder) WithTransportSettings(transportSettings ExtensionObject) PubSubConnectionDataTypeBuilder {
+	b.TransportSettings = transportSettings
+	return b
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) WithReaderGroups(readerGroups ...PubSubGroupDataType) PubSubConnectionDataTypeBuilder {
-	m.ReaderGroups = readerGroups
-	return m
+func (b *_PubSubConnectionDataTypeBuilder) WithTransportSettingsBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) PubSubConnectionDataTypeBuilder {
+	builder := builderSupplier(b.TransportSettings.CreateExtensionObjectBuilder())
+	var err error
+	b.TransportSettings, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return b
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) Build() (PubSubConnectionDataType, error) {
-	if m.Name == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'name' not set"))
-	}
-	if m.PublisherId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'publisherId' not set"))
-	}
-	if m.TransportProfileUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'transportProfileUri' not set"))
-	}
-	if m.Address == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'address' not set"))
-	}
-	if m.TransportSettings == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'transportSettings' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._PubSubConnectionDataType.deepCopy(), nil
+func (b *_PubSubConnectionDataTypeBuilder) WithNoOfWriterGroups(noOfWriterGroups int32) PubSubConnectionDataTypeBuilder {
+	b.NoOfWriterGroups = noOfWriterGroups
+	return b
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) MustBuild() PubSubConnectionDataType {
-	build, err := m.Build()
+func (b *_PubSubConnectionDataTypeBuilder) WithWriterGroups(writerGroups ...PubSubGroupDataType) PubSubConnectionDataTypeBuilder {
+	b.WriterGroups = writerGroups
+	return b
+}
+
+func (b *_PubSubConnectionDataTypeBuilder) WithNoOfReaderGroups(noOfReaderGroups int32) PubSubConnectionDataTypeBuilder {
+	b.NoOfReaderGroups = noOfReaderGroups
+	return b
+}
+
+func (b *_PubSubConnectionDataTypeBuilder) WithReaderGroups(readerGroups ...PubSubGroupDataType) PubSubConnectionDataTypeBuilder {
+	b.ReaderGroups = readerGroups
+	return b
+}
+
+func (b *_PubSubConnectionDataTypeBuilder) Build() (PubSubConnectionDataType, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if b.PublisherId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'publisherId' not set"))
+	}
+	if b.TransportProfileUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'transportProfileUri' not set"))
+	}
+	if b.Address == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'address' not set"))
+	}
+	if b.TransportSettings == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'transportSettings' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PubSubConnectionDataType.deepCopy(), nil
+}
+
+func (b *_PubSubConnectionDataTypeBuilder) MustBuild() PubSubConnectionDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PubSubConnectionDataTypeBuilder) DeepCopy() any {
-	return m.CreatePubSubConnectionDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PubSubConnectionDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PubSubConnectionDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PubSubConnectionDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreatePubSubConnectionDataTypeBuilder().(*_PubSubConnectionDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePubSubConnectionDataTypeBuilder creates a PubSubConnectionDataTypeBuilder
-func (m *_PubSubConnectionDataType) CreatePubSubConnectionDataTypeBuilder() PubSubConnectionDataTypeBuilder {
-	if m == nil {
+func (b *_PubSubConnectionDataType) CreatePubSubConnectionDataTypeBuilder() PubSubConnectionDataTypeBuilder {
+	if b == nil {
 		return NewPubSubConnectionDataTypeBuilder()
 	}
-	return &_PubSubConnectionDataTypeBuilder{_PubSubConnectionDataType: m.deepCopy()}
+	return &_PubSubConnectionDataTypeBuilder{_PubSubConnectionDataType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -736,9 +770,13 @@ func (m *_PubSubConnectionDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

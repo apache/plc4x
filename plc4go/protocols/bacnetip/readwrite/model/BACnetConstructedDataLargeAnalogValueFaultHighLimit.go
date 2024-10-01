@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder() BACnetConst
 type _BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder struct {
 	*_BACnetConstructedDataLargeAnalogValueFaultHighLimit
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) = (*_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder)(nil)
 
-func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) WithMandatoryFields(faultHighLimit BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder {
-	return m.WithFaultHighLimit(faultHighLimit)
+func (b *_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) WithFaultHighLimit(faultHighLimit BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder {
-	m.FaultHighLimit = faultHighLimit
-	return m
+func (b *_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) WithMandatoryFields(faultHighLimit BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder {
+	return b.WithFaultHighLimit(faultHighLimit)
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) WithFaultHighLimitBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder {
-	builder := builderSupplier(m.FaultHighLimit.CreateBACnetApplicationTagDoubleBuilder())
+func (b *_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) WithFaultHighLimit(faultHighLimit BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder {
+	b.FaultHighLimit = faultHighLimit
+	return b
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) WithFaultHighLimitBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder {
+	builder := builderSupplier(b.FaultHighLimit.CreateBACnetApplicationTagDoubleBuilder())
 	var err error
-	m.FaultHighLimit, err = builder.Build()
+	b.FaultHighLimit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) Build() (BACnetConstructedDataLargeAnalogValueFaultHighLimit, error) {
-	if m.FaultHighLimit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) Build() (BACnetConstructedDataLargeAnalogValueFaultHighLimit, error) {
+	if b.FaultHighLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'faultHighLimit' not set"))
+		b.err.Append(errors.New("mandatory field 'faultHighLimit' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLargeAnalogValueFaultHighLimit.deepCopy(), nil
+	return b._BACnetConstructedDataLargeAnalogValueFaultHighLimit.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueFaultHighLimit {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueFaultHighLimit {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder().(*_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder creates a BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder
-func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) CreateBACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder() BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) CreateBACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder() BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder()
 	}
-	return &_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder{_BACnetConstructedDataLargeAnalogValueFaultHighLimit: m.deepCopy()}
+	return &_BACnetConstructedDataLargeAnalogValueFaultHighLimitBuilder{_BACnetConstructedDataLargeAnalogValueFaultHighLimit: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataLargeAnalogValueFaultHighLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

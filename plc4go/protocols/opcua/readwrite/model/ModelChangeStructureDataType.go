@@ -115,93 +115,112 @@ func NewModelChangeStructureDataTypeBuilder() ModelChangeStructureDataTypeBuilde
 type _ModelChangeStructureDataTypeBuilder struct {
 	*_ModelChangeStructureDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModelChangeStructureDataTypeBuilder) = (*_ModelChangeStructureDataTypeBuilder)(nil)
 
-func (m *_ModelChangeStructureDataTypeBuilder) WithMandatoryFields(affected NodeId, affectedType NodeId, verb uint8) ModelChangeStructureDataTypeBuilder {
-	return m.WithAffected(affected).WithAffectedType(affectedType).WithVerb(verb)
+func (b *_ModelChangeStructureDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ModelChangeStructureDataTypeBuilder) WithAffected(affected NodeId) ModelChangeStructureDataTypeBuilder {
-	m.Affected = affected
-	return m
+func (b *_ModelChangeStructureDataTypeBuilder) WithMandatoryFields(affected NodeId, affectedType NodeId, verb uint8) ModelChangeStructureDataTypeBuilder {
+	return b.WithAffected(affected).WithAffectedType(affectedType).WithVerb(verb)
 }
 
-func (m *_ModelChangeStructureDataTypeBuilder) WithAffectedBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ModelChangeStructureDataTypeBuilder {
-	builder := builderSupplier(m.Affected.CreateNodeIdBuilder())
+func (b *_ModelChangeStructureDataTypeBuilder) WithAffected(affected NodeId) ModelChangeStructureDataTypeBuilder {
+	b.Affected = affected
+	return b
+}
+
+func (b *_ModelChangeStructureDataTypeBuilder) WithAffectedBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ModelChangeStructureDataTypeBuilder {
+	builder := builderSupplier(b.Affected.CreateNodeIdBuilder())
 	var err error
-	m.Affected, err = builder.Build()
+	b.Affected, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ModelChangeStructureDataTypeBuilder) WithAffectedType(affectedType NodeId) ModelChangeStructureDataTypeBuilder {
-	m.AffectedType = affectedType
-	return m
+func (b *_ModelChangeStructureDataTypeBuilder) WithAffectedType(affectedType NodeId) ModelChangeStructureDataTypeBuilder {
+	b.AffectedType = affectedType
+	return b
 }
 
-func (m *_ModelChangeStructureDataTypeBuilder) WithAffectedTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ModelChangeStructureDataTypeBuilder {
-	builder := builderSupplier(m.AffectedType.CreateNodeIdBuilder())
+func (b *_ModelChangeStructureDataTypeBuilder) WithAffectedTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ModelChangeStructureDataTypeBuilder {
+	builder := builderSupplier(b.AffectedType.CreateNodeIdBuilder())
 	var err error
-	m.AffectedType, err = builder.Build()
+	b.AffectedType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ModelChangeStructureDataTypeBuilder) WithVerb(verb uint8) ModelChangeStructureDataTypeBuilder {
-	m.Verb = verb
-	return m
+func (b *_ModelChangeStructureDataTypeBuilder) WithVerb(verb uint8) ModelChangeStructureDataTypeBuilder {
+	b.Verb = verb
+	return b
 }
 
-func (m *_ModelChangeStructureDataTypeBuilder) Build() (ModelChangeStructureDataType, error) {
-	if m.Affected == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ModelChangeStructureDataTypeBuilder) Build() (ModelChangeStructureDataType, error) {
+	if b.Affected == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'affected' not set"))
+		b.err.Append(errors.New("mandatory field 'affected' not set"))
 	}
-	if m.AffectedType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.AffectedType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'affectedType' not set"))
+		b.err.Append(errors.New("mandatory field 'affectedType' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModelChangeStructureDataType.deepCopy(), nil
+	return b._ModelChangeStructureDataType.deepCopy(), nil
 }
 
-func (m *_ModelChangeStructureDataTypeBuilder) MustBuild() ModelChangeStructureDataType {
-	build, err := m.Build()
+func (b *_ModelChangeStructureDataTypeBuilder) MustBuild() ModelChangeStructureDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModelChangeStructureDataTypeBuilder) DeepCopy() any {
-	return m.CreateModelChangeStructureDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModelChangeStructureDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModelChangeStructureDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ModelChangeStructureDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateModelChangeStructureDataTypeBuilder().(*_ModelChangeStructureDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModelChangeStructureDataTypeBuilder creates a ModelChangeStructureDataTypeBuilder
-func (m *_ModelChangeStructureDataType) CreateModelChangeStructureDataTypeBuilder() ModelChangeStructureDataTypeBuilder {
-	if m == nil {
+func (b *_ModelChangeStructureDataType) CreateModelChangeStructureDataTypeBuilder() ModelChangeStructureDataTypeBuilder {
+	if b == nil {
 		return NewModelChangeStructureDataTypeBuilder()
 	}
-	return &_ModelChangeStructureDataTypeBuilder{_ModelChangeStructureDataType: m.deepCopy()}
+	return &_ModelChangeStructureDataTypeBuilder{_ModelChangeStructureDataType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -381,9 +400,13 @@ func (m *_ModelChangeStructureDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

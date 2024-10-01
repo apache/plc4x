@@ -99,50 +99,69 @@ func NewCOTPPacketTpduErrorBuilder() COTPPacketTpduErrorBuilder {
 type _COTPPacketTpduErrorBuilder struct {
 	*_COTPPacketTpduError
 
+	parentBuilder *_COTPPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (COTPPacketTpduErrorBuilder) = (*_COTPPacketTpduErrorBuilder)(nil)
 
-func (m *_COTPPacketTpduErrorBuilder) WithMandatoryFields(destinationReference uint16, rejectCause uint8) COTPPacketTpduErrorBuilder {
-	return m.WithDestinationReference(destinationReference).WithRejectCause(rejectCause)
+func (b *_COTPPacketTpduErrorBuilder) setParent(contract COTPPacketContract) {
+	b.COTPPacketContract = contract
 }
 
-func (m *_COTPPacketTpduErrorBuilder) WithDestinationReference(destinationReference uint16) COTPPacketTpduErrorBuilder {
-	m.DestinationReference = destinationReference
-	return m
+func (b *_COTPPacketTpduErrorBuilder) WithMandatoryFields(destinationReference uint16, rejectCause uint8) COTPPacketTpduErrorBuilder {
+	return b.WithDestinationReference(destinationReference).WithRejectCause(rejectCause)
 }
 
-func (m *_COTPPacketTpduErrorBuilder) WithRejectCause(rejectCause uint8) COTPPacketTpduErrorBuilder {
-	m.RejectCause = rejectCause
-	return m
+func (b *_COTPPacketTpduErrorBuilder) WithDestinationReference(destinationReference uint16) COTPPacketTpduErrorBuilder {
+	b.DestinationReference = destinationReference
+	return b
 }
 
-func (m *_COTPPacketTpduErrorBuilder) Build() (COTPPacketTpduError, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_COTPPacketTpduErrorBuilder) WithRejectCause(rejectCause uint8) COTPPacketTpduErrorBuilder {
+	b.RejectCause = rejectCause
+	return b
+}
+
+func (b *_COTPPacketTpduErrorBuilder) Build() (COTPPacketTpduError, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._COTPPacketTpduError.deepCopy(), nil
+	return b._COTPPacketTpduError.deepCopy(), nil
 }
 
-func (m *_COTPPacketTpduErrorBuilder) MustBuild() COTPPacketTpduError {
-	build, err := m.Build()
+func (b *_COTPPacketTpduErrorBuilder) MustBuild() COTPPacketTpduError {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_COTPPacketTpduErrorBuilder) DeepCopy() any {
-	return m.CreateCOTPPacketTpduErrorBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_COTPPacketTpduErrorBuilder) Done() COTPPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_COTPPacketTpduErrorBuilder) buildForCOTPPacket() (COTPPacket, error) {
+	return b.Build()
+}
+
+func (b *_COTPPacketTpduErrorBuilder) DeepCopy() any {
+	_copy := b.CreateCOTPPacketTpduErrorBuilder().(*_COTPPacketTpduErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCOTPPacketTpduErrorBuilder creates a COTPPacketTpduErrorBuilder
-func (m *_COTPPacketTpduError) CreateCOTPPacketTpduErrorBuilder() COTPPacketTpduErrorBuilder {
-	if m == nil {
+func (b *_COTPPacketTpduError) CreateCOTPPacketTpduErrorBuilder() COTPPacketTpduErrorBuilder {
+	if b == nil {
 		return NewCOTPPacketTpduErrorBuilder()
 	}
-	return &_COTPPacketTpduErrorBuilder{_COTPPacketTpduError: m.deepCopy()}
+	return &_COTPPacketTpduErrorBuilder{_COTPPacketTpduError: b.deepCopy()}
 }
 
 ///////////////////////
@@ -304,9 +323,13 @@ func (m *_COTPPacketTpduError) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

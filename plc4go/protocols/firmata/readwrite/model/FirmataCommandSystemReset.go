@@ -85,40 +85,59 @@ func NewFirmataCommandSystemResetBuilder() FirmataCommandSystemResetBuilder {
 type _FirmataCommandSystemResetBuilder struct {
 	*_FirmataCommandSystemReset
 
+	parentBuilder *_FirmataCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (FirmataCommandSystemResetBuilder) = (*_FirmataCommandSystemResetBuilder)(nil)
 
-func (m *_FirmataCommandSystemResetBuilder) WithMandatoryFields() FirmataCommandSystemResetBuilder {
-	return m
+func (b *_FirmataCommandSystemResetBuilder) setParent(contract FirmataCommandContract) {
+	b.FirmataCommandContract = contract
 }
 
-func (m *_FirmataCommandSystemResetBuilder) Build() (FirmataCommandSystemReset, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_FirmataCommandSystemResetBuilder) WithMandatoryFields() FirmataCommandSystemResetBuilder {
+	return b
+}
+
+func (b *_FirmataCommandSystemResetBuilder) Build() (FirmataCommandSystemReset, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._FirmataCommandSystemReset.deepCopy(), nil
+	return b._FirmataCommandSystemReset.deepCopy(), nil
 }
 
-func (m *_FirmataCommandSystemResetBuilder) MustBuild() FirmataCommandSystemReset {
-	build, err := m.Build()
+func (b *_FirmataCommandSystemResetBuilder) MustBuild() FirmataCommandSystemReset {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FirmataCommandSystemResetBuilder) DeepCopy() any {
-	return m.CreateFirmataCommandSystemResetBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FirmataCommandSystemResetBuilder) Done() FirmataCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FirmataCommandSystemResetBuilder) buildForFirmataCommand() (FirmataCommand, error) {
+	return b.Build()
+}
+
+func (b *_FirmataCommandSystemResetBuilder) DeepCopy() any {
+	_copy := b.CreateFirmataCommandSystemResetBuilder().(*_FirmataCommandSystemResetBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFirmataCommandSystemResetBuilder creates a FirmataCommandSystemResetBuilder
-func (m *_FirmataCommandSystemReset) CreateFirmataCommandSystemResetBuilder() FirmataCommandSystemResetBuilder {
-	if m == nil {
+func (b *_FirmataCommandSystemReset) CreateFirmataCommandSystemResetBuilder() FirmataCommandSystemResetBuilder {
+	if b == nil {
 		return NewFirmataCommandSystemResetBuilder()
 	}
-	return &_FirmataCommandSystemResetBuilder{_FirmataCommandSystemReset: m.deepCopy()}
+	return &_FirmataCommandSystemResetBuilder{_FirmataCommandSystemReset: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_FirmataCommandSystemReset) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

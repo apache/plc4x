@@ -100,64 +100,83 @@ func NewBACnetConstructedDataDaylightSavingsStatusBuilder() BACnetConstructedDat
 type _BACnetConstructedDataDaylightSavingsStatusBuilder struct {
 	*_BACnetConstructedDataDaylightSavingsStatus
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataDaylightSavingsStatusBuilder) = (*_BACnetConstructedDataDaylightSavingsStatusBuilder)(nil)
 
-func (m *_BACnetConstructedDataDaylightSavingsStatusBuilder) WithMandatoryFields(daylightSavingsStatus BACnetApplicationTagBoolean) BACnetConstructedDataDaylightSavingsStatusBuilder {
-	return m.WithDaylightSavingsStatus(daylightSavingsStatus)
+func (b *_BACnetConstructedDataDaylightSavingsStatusBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataDaylightSavingsStatusBuilder) WithDaylightSavingsStatus(daylightSavingsStatus BACnetApplicationTagBoolean) BACnetConstructedDataDaylightSavingsStatusBuilder {
-	m.DaylightSavingsStatus = daylightSavingsStatus
-	return m
+func (b *_BACnetConstructedDataDaylightSavingsStatusBuilder) WithMandatoryFields(daylightSavingsStatus BACnetApplicationTagBoolean) BACnetConstructedDataDaylightSavingsStatusBuilder {
+	return b.WithDaylightSavingsStatus(daylightSavingsStatus)
 }
 
-func (m *_BACnetConstructedDataDaylightSavingsStatusBuilder) WithDaylightSavingsStatusBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataDaylightSavingsStatusBuilder {
-	builder := builderSupplier(m.DaylightSavingsStatus.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataDaylightSavingsStatusBuilder) WithDaylightSavingsStatus(daylightSavingsStatus BACnetApplicationTagBoolean) BACnetConstructedDataDaylightSavingsStatusBuilder {
+	b.DaylightSavingsStatus = daylightSavingsStatus
+	return b
+}
+
+func (b *_BACnetConstructedDataDaylightSavingsStatusBuilder) WithDaylightSavingsStatusBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataDaylightSavingsStatusBuilder {
+	builder := builderSupplier(b.DaylightSavingsStatus.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.DaylightSavingsStatus, err = builder.Build()
+	b.DaylightSavingsStatus, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataDaylightSavingsStatusBuilder) Build() (BACnetConstructedDataDaylightSavingsStatus, error) {
-	if m.DaylightSavingsStatus == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataDaylightSavingsStatusBuilder) Build() (BACnetConstructedDataDaylightSavingsStatus, error) {
+	if b.DaylightSavingsStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'daylightSavingsStatus' not set"))
+		b.err.Append(errors.New("mandatory field 'daylightSavingsStatus' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataDaylightSavingsStatus.deepCopy(), nil
+	return b._BACnetConstructedDataDaylightSavingsStatus.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataDaylightSavingsStatusBuilder) MustBuild() BACnetConstructedDataDaylightSavingsStatus {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataDaylightSavingsStatusBuilder) MustBuild() BACnetConstructedDataDaylightSavingsStatus {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataDaylightSavingsStatusBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataDaylightSavingsStatusBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDaylightSavingsStatusBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDaylightSavingsStatusBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDaylightSavingsStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDaylightSavingsStatusBuilder().(*_BACnetConstructedDataDaylightSavingsStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataDaylightSavingsStatusBuilder creates a BACnetConstructedDataDaylightSavingsStatusBuilder
-func (m *_BACnetConstructedDataDaylightSavingsStatus) CreateBACnetConstructedDataDaylightSavingsStatusBuilder() BACnetConstructedDataDaylightSavingsStatusBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataDaylightSavingsStatus) CreateBACnetConstructedDataDaylightSavingsStatusBuilder() BACnetConstructedDataDaylightSavingsStatusBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataDaylightSavingsStatusBuilder()
 	}
-	return &_BACnetConstructedDataDaylightSavingsStatusBuilder{_BACnetConstructedDataDaylightSavingsStatus: m.deepCopy()}
+	return &_BACnetConstructedDataDaylightSavingsStatusBuilder{_BACnetConstructedDataDaylightSavingsStatus: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

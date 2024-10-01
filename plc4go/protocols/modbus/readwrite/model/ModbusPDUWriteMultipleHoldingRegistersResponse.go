@@ -99,50 +99,69 @@ func NewModbusPDUWriteMultipleHoldingRegistersResponseBuilder() ModbusPDUWriteMu
 type _ModbusPDUWriteMultipleHoldingRegistersResponseBuilder struct {
 	*_ModbusPDUWriteMultipleHoldingRegistersResponse
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) = (*_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder)(nil)
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUWriteMultipleHoldingRegistersResponseBuilder {
-	return m.WithStartingAddress(startingAddress).WithQuantity(quantity)
+func (b *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUWriteMultipleHoldingRegistersResponseBuilder {
-	m.StartingAddress = startingAddress
-	return m
+func (b *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUWriteMultipleHoldingRegistersResponseBuilder {
+	return b.WithStartingAddress(startingAddress).WithQuantity(quantity)
 }
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) WithQuantity(quantity uint16) ModbusPDUWriteMultipleHoldingRegistersResponseBuilder {
-	m.Quantity = quantity
-	return m
+func (b *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUWriteMultipleHoldingRegistersResponseBuilder {
+	b.StartingAddress = startingAddress
+	return b
 }
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) Build() (ModbusPDUWriteMultipleHoldingRegistersResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) WithQuantity(quantity uint16) ModbusPDUWriteMultipleHoldingRegistersResponseBuilder {
+	b.Quantity = quantity
+	return b
+}
+
+func (b *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) Build() (ModbusPDUWriteMultipleHoldingRegistersResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUWriteMultipleHoldingRegistersResponse.deepCopy(), nil
+	return b._ModbusPDUWriteMultipleHoldingRegistersResponse.deepCopy(), nil
 }
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) MustBuild() ModbusPDUWriteMultipleHoldingRegistersResponse {
-	build, err := m.Build()
+func (b *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) MustBuild() ModbusPDUWriteMultipleHoldingRegistersResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) DeepCopy() any {
-	return m.CreateModbusPDUWriteMultipleHoldingRegistersResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUWriteMultipleHoldingRegistersResponseBuilder().(*_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUWriteMultipleHoldingRegistersResponseBuilder creates a ModbusPDUWriteMultipleHoldingRegistersResponseBuilder
-func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) CreateModbusPDUWriteMultipleHoldingRegistersResponseBuilder() ModbusPDUWriteMultipleHoldingRegistersResponseBuilder {
-	if m == nil {
+func (b *_ModbusPDUWriteMultipleHoldingRegistersResponse) CreateModbusPDUWriteMultipleHoldingRegistersResponseBuilder() ModbusPDUWriteMultipleHoldingRegistersResponseBuilder {
+	if b == nil {
 		return NewModbusPDUWriteMultipleHoldingRegistersResponseBuilder()
 	}
-	return &_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder{_ModbusPDUWriteMultipleHoldingRegistersResponse: m.deepCopy()}
+	return &_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder{_ModbusPDUWriteMultipleHoldingRegistersResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -313,9 +332,13 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

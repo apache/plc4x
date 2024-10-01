@@ -85,40 +85,59 @@ func NewBACnetConstructedDataFileAllBuilder() BACnetConstructedDataFileAllBuilde
 type _BACnetConstructedDataFileAllBuilder struct {
 	*_BACnetConstructedDataFileAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataFileAllBuilder) = (*_BACnetConstructedDataFileAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataFileAllBuilder) WithMandatoryFields() BACnetConstructedDataFileAllBuilder {
-	return m
+func (b *_BACnetConstructedDataFileAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataFileAllBuilder) Build() (BACnetConstructedDataFileAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataFileAllBuilder) WithMandatoryFields() BACnetConstructedDataFileAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataFileAllBuilder) Build() (BACnetConstructedDataFileAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataFileAll.deepCopy(), nil
+	return b._BACnetConstructedDataFileAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataFileAllBuilder) MustBuild() BACnetConstructedDataFileAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataFileAllBuilder) MustBuild() BACnetConstructedDataFileAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataFileAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataFileAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFileAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFileAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFileAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFileAllBuilder().(*_BACnetConstructedDataFileAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataFileAllBuilder creates a BACnetConstructedDataFileAllBuilder
-func (m *_BACnetConstructedDataFileAll) CreateBACnetConstructedDataFileAllBuilder() BACnetConstructedDataFileAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataFileAll) CreateBACnetConstructedDataFileAllBuilder() BACnetConstructedDataFileAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataFileAllBuilder()
 	}
-	return &_BACnetConstructedDataFileAllBuilder{_BACnetConstructedDataFileAll: m.deepCopy()}
+	return &_BACnetConstructedDataFileAllBuilder{_BACnetConstructedDataFileAll: b.deepCopy()}
 }
 
 ///////////////////////
@@ -243,9 +262,13 @@ func (m *_BACnetConstructedDataFileAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

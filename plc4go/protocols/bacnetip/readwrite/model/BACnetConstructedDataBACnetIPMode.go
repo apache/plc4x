@@ -100,64 +100,83 @@ func NewBACnetConstructedDataBACnetIPModeBuilder() BACnetConstructedDataBACnetIP
 type _BACnetConstructedDataBACnetIPModeBuilder struct {
 	*_BACnetConstructedDataBACnetIPMode
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBACnetIPModeBuilder) = (*_BACnetConstructedDataBACnetIPModeBuilder)(nil)
 
-func (m *_BACnetConstructedDataBACnetIPModeBuilder) WithMandatoryFields(bacnetIpMode BACnetIPModeTagged) BACnetConstructedDataBACnetIPModeBuilder {
-	return m.WithBacnetIpMode(bacnetIpMode)
+func (b *_BACnetConstructedDataBACnetIPModeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBACnetIPModeBuilder) WithBacnetIpMode(bacnetIpMode BACnetIPModeTagged) BACnetConstructedDataBACnetIPModeBuilder {
-	m.BacnetIpMode = bacnetIpMode
-	return m
+func (b *_BACnetConstructedDataBACnetIPModeBuilder) WithMandatoryFields(bacnetIpMode BACnetIPModeTagged) BACnetConstructedDataBACnetIPModeBuilder {
+	return b.WithBacnetIpMode(bacnetIpMode)
 }
 
-func (m *_BACnetConstructedDataBACnetIPModeBuilder) WithBacnetIpModeBuilder(builderSupplier func(BACnetIPModeTaggedBuilder) BACnetIPModeTaggedBuilder) BACnetConstructedDataBACnetIPModeBuilder {
-	builder := builderSupplier(m.BacnetIpMode.CreateBACnetIPModeTaggedBuilder())
+func (b *_BACnetConstructedDataBACnetIPModeBuilder) WithBacnetIpMode(bacnetIpMode BACnetIPModeTagged) BACnetConstructedDataBACnetIPModeBuilder {
+	b.BacnetIpMode = bacnetIpMode
+	return b
+}
+
+func (b *_BACnetConstructedDataBACnetIPModeBuilder) WithBacnetIpModeBuilder(builderSupplier func(BACnetIPModeTaggedBuilder) BACnetIPModeTaggedBuilder) BACnetConstructedDataBACnetIPModeBuilder {
+	builder := builderSupplier(b.BacnetIpMode.CreateBACnetIPModeTaggedBuilder())
 	var err error
-	m.BacnetIpMode, err = builder.Build()
+	b.BacnetIpMode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetIPModeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetIPModeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBACnetIPModeBuilder) Build() (BACnetConstructedDataBACnetIPMode, error) {
-	if m.BacnetIpMode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBACnetIPModeBuilder) Build() (BACnetConstructedDataBACnetIPMode, error) {
+	if b.BacnetIpMode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'bacnetIpMode' not set"))
+		b.err.Append(errors.New("mandatory field 'bacnetIpMode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBACnetIPMode.deepCopy(), nil
+	return b._BACnetConstructedDataBACnetIPMode.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPModeBuilder) MustBuild() BACnetConstructedDataBACnetIPMode {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBACnetIPModeBuilder) MustBuild() BACnetConstructedDataBACnetIPMode {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBACnetIPModeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBACnetIPModeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBACnetIPModeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBACnetIPModeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBACnetIPModeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBACnetIPModeBuilder().(*_BACnetConstructedDataBACnetIPModeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBACnetIPModeBuilder creates a BACnetConstructedDataBACnetIPModeBuilder
-func (m *_BACnetConstructedDataBACnetIPMode) CreateBACnetConstructedDataBACnetIPModeBuilder() BACnetConstructedDataBACnetIPModeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBACnetIPMode) CreateBACnetConstructedDataBACnetIPModeBuilder() BACnetConstructedDataBACnetIPModeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBACnetIPModeBuilder()
 	}
-	return &_BACnetConstructedDataBACnetIPModeBuilder{_BACnetConstructedDataBACnetIPMode: m.deepCopy()}
+	return &_BACnetConstructedDataBACnetIPModeBuilder{_BACnetConstructedDataBACnetIPMode: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataBACnetIPMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -119,60 +119,79 @@ func NewClockAndTimekeepingDataUpdateTimeBuilder() ClockAndTimekeepingDataUpdate
 type _ClockAndTimekeepingDataUpdateTimeBuilder struct {
 	*_ClockAndTimekeepingDataUpdateTime
 
+	parentBuilder *_ClockAndTimekeepingDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ClockAndTimekeepingDataUpdateTimeBuilder) = (*_ClockAndTimekeepingDataUpdateTimeBuilder)(nil)
 
-func (m *_ClockAndTimekeepingDataUpdateTimeBuilder) WithMandatoryFields(hours uint8, minute uint8, second uint8, daylightSaving byte) ClockAndTimekeepingDataUpdateTimeBuilder {
-	return m.WithHours(hours).WithMinute(minute).WithSecond(second).WithDaylightSaving(daylightSaving)
+func (b *_ClockAndTimekeepingDataUpdateTimeBuilder) setParent(contract ClockAndTimekeepingDataContract) {
+	b.ClockAndTimekeepingDataContract = contract
 }
 
-func (m *_ClockAndTimekeepingDataUpdateTimeBuilder) WithHours(hours uint8) ClockAndTimekeepingDataUpdateTimeBuilder {
-	m.Hours = hours
-	return m
+func (b *_ClockAndTimekeepingDataUpdateTimeBuilder) WithMandatoryFields(hours uint8, minute uint8, second uint8, daylightSaving byte) ClockAndTimekeepingDataUpdateTimeBuilder {
+	return b.WithHours(hours).WithMinute(minute).WithSecond(second).WithDaylightSaving(daylightSaving)
 }
 
-func (m *_ClockAndTimekeepingDataUpdateTimeBuilder) WithMinute(minute uint8) ClockAndTimekeepingDataUpdateTimeBuilder {
-	m.Minute = minute
-	return m
+func (b *_ClockAndTimekeepingDataUpdateTimeBuilder) WithHours(hours uint8) ClockAndTimekeepingDataUpdateTimeBuilder {
+	b.Hours = hours
+	return b
 }
 
-func (m *_ClockAndTimekeepingDataUpdateTimeBuilder) WithSecond(second uint8) ClockAndTimekeepingDataUpdateTimeBuilder {
-	m.Second = second
-	return m
+func (b *_ClockAndTimekeepingDataUpdateTimeBuilder) WithMinute(minute uint8) ClockAndTimekeepingDataUpdateTimeBuilder {
+	b.Minute = minute
+	return b
 }
 
-func (m *_ClockAndTimekeepingDataUpdateTimeBuilder) WithDaylightSaving(daylightSaving byte) ClockAndTimekeepingDataUpdateTimeBuilder {
-	m.DaylightSaving = daylightSaving
-	return m
+func (b *_ClockAndTimekeepingDataUpdateTimeBuilder) WithSecond(second uint8) ClockAndTimekeepingDataUpdateTimeBuilder {
+	b.Second = second
+	return b
 }
 
-func (m *_ClockAndTimekeepingDataUpdateTimeBuilder) Build() (ClockAndTimekeepingDataUpdateTime, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ClockAndTimekeepingDataUpdateTimeBuilder) WithDaylightSaving(daylightSaving byte) ClockAndTimekeepingDataUpdateTimeBuilder {
+	b.DaylightSaving = daylightSaving
+	return b
+}
+
+func (b *_ClockAndTimekeepingDataUpdateTimeBuilder) Build() (ClockAndTimekeepingDataUpdateTime, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ClockAndTimekeepingDataUpdateTime.deepCopy(), nil
+	return b._ClockAndTimekeepingDataUpdateTime.deepCopy(), nil
 }
 
-func (m *_ClockAndTimekeepingDataUpdateTimeBuilder) MustBuild() ClockAndTimekeepingDataUpdateTime {
-	build, err := m.Build()
+func (b *_ClockAndTimekeepingDataUpdateTimeBuilder) MustBuild() ClockAndTimekeepingDataUpdateTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ClockAndTimekeepingDataUpdateTimeBuilder) DeepCopy() any {
-	return m.CreateClockAndTimekeepingDataUpdateTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ClockAndTimekeepingDataUpdateTimeBuilder) Done() ClockAndTimekeepingDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ClockAndTimekeepingDataUpdateTimeBuilder) buildForClockAndTimekeepingData() (ClockAndTimekeepingData, error) {
+	return b.Build()
+}
+
+func (b *_ClockAndTimekeepingDataUpdateTimeBuilder) DeepCopy() any {
+	_copy := b.CreateClockAndTimekeepingDataUpdateTimeBuilder().(*_ClockAndTimekeepingDataUpdateTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateClockAndTimekeepingDataUpdateTimeBuilder creates a ClockAndTimekeepingDataUpdateTimeBuilder
-func (m *_ClockAndTimekeepingDataUpdateTime) CreateClockAndTimekeepingDataUpdateTimeBuilder() ClockAndTimekeepingDataUpdateTimeBuilder {
-	if m == nil {
+func (b *_ClockAndTimekeepingDataUpdateTime) CreateClockAndTimekeepingDataUpdateTimeBuilder() ClockAndTimekeepingDataUpdateTimeBuilder {
+	if b == nil {
 		return NewClockAndTimekeepingDataUpdateTimeBuilder()
 	}
-	return &_ClockAndTimekeepingDataUpdateTimeBuilder{_ClockAndTimekeepingDataUpdateTime: m.deepCopy()}
+	return &_ClockAndTimekeepingDataUpdateTimeBuilder{_ClockAndTimekeepingDataUpdateTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -455,9 +474,13 @@ func (m *_ClockAndTimekeepingDataUpdateTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

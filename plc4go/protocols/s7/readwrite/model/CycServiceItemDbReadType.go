@@ -99,50 +99,69 @@ func NewCycServiceItemDbReadTypeBuilder() CycServiceItemDbReadTypeBuilder {
 type _CycServiceItemDbReadTypeBuilder struct {
 	*_CycServiceItemDbReadType
 
+	parentBuilder *_CycServiceItemTypeBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CycServiceItemDbReadTypeBuilder) = (*_CycServiceItemDbReadTypeBuilder)(nil)
 
-func (m *_CycServiceItemDbReadTypeBuilder) WithMandatoryFields(numberOfAreas uint8, items []SubItem) CycServiceItemDbReadTypeBuilder {
-	return m.WithNumberOfAreas(numberOfAreas).WithItems(items...)
+func (b *_CycServiceItemDbReadTypeBuilder) setParent(contract CycServiceItemTypeContract) {
+	b.CycServiceItemTypeContract = contract
 }
 
-func (m *_CycServiceItemDbReadTypeBuilder) WithNumberOfAreas(numberOfAreas uint8) CycServiceItemDbReadTypeBuilder {
-	m.NumberOfAreas = numberOfAreas
-	return m
+func (b *_CycServiceItemDbReadTypeBuilder) WithMandatoryFields(numberOfAreas uint8, items []SubItem) CycServiceItemDbReadTypeBuilder {
+	return b.WithNumberOfAreas(numberOfAreas).WithItems(items...)
 }
 
-func (m *_CycServiceItemDbReadTypeBuilder) WithItems(items ...SubItem) CycServiceItemDbReadTypeBuilder {
-	m.Items = items
-	return m
+func (b *_CycServiceItemDbReadTypeBuilder) WithNumberOfAreas(numberOfAreas uint8) CycServiceItemDbReadTypeBuilder {
+	b.NumberOfAreas = numberOfAreas
+	return b
 }
 
-func (m *_CycServiceItemDbReadTypeBuilder) Build() (CycServiceItemDbReadType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CycServiceItemDbReadTypeBuilder) WithItems(items ...SubItem) CycServiceItemDbReadTypeBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_CycServiceItemDbReadTypeBuilder) Build() (CycServiceItemDbReadType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CycServiceItemDbReadType.deepCopy(), nil
+	return b._CycServiceItemDbReadType.deepCopy(), nil
 }
 
-func (m *_CycServiceItemDbReadTypeBuilder) MustBuild() CycServiceItemDbReadType {
-	build, err := m.Build()
+func (b *_CycServiceItemDbReadTypeBuilder) MustBuild() CycServiceItemDbReadType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CycServiceItemDbReadTypeBuilder) DeepCopy() any {
-	return m.CreateCycServiceItemDbReadTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CycServiceItemDbReadTypeBuilder) Done() CycServiceItemTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CycServiceItemDbReadTypeBuilder) buildForCycServiceItemType() (CycServiceItemType, error) {
+	return b.Build()
+}
+
+func (b *_CycServiceItemDbReadTypeBuilder) DeepCopy() any {
+	_copy := b.CreateCycServiceItemDbReadTypeBuilder().(*_CycServiceItemDbReadTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCycServiceItemDbReadTypeBuilder creates a CycServiceItemDbReadTypeBuilder
-func (m *_CycServiceItemDbReadType) CreateCycServiceItemDbReadTypeBuilder() CycServiceItemDbReadTypeBuilder {
-	if m == nil {
+func (b *_CycServiceItemDbReadType) CreateCycServiceItemDbReadTypeBuilder() CycServiceItemDbReadTypeBuilder {
+	if b == nil {
 		return NewCycServiceItemDbReadTypeBuilder()
 	}
-	return &_CycServiceItemDbReadTypeBuilder{_CycServiceItemDbReadType: m.deepCopy()}
+	return &_CycServiceItemDbReadTypeBuilder{_CycServiceItemDbReadType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -307,9 +326,13 @@ func (m *_CycServiceItemDbReadType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

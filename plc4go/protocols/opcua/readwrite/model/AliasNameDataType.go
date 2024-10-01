@@ -110,74 +110,93 @@ func NewAliasNameDataTypeBuilder() AliasNameDataTypeBuilder {
 type _AliasNameDataTypeBuilder struct {
 	*_AliasNameDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AliasNameDataTypeBuilder) = (*_AliasNameDataTypeBuilder)(nil)
 
-func (m *_AliasNameDataTypeBuilder) WithMandatoryFields(aliasName QualifiedName, noOfReferencedNodes int32, referencedNodes []ExpandedNodeId) AliasNameDataTypeBuilder {
-	return m.WithAliasName(aliasName).WithNoOfReferencedNodes(noOfReferencedNodes).WithReferencedNodes(referencedNodes...)
+func (b *_AliasNameDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_AliasNameDataTypeBuilder) WithAliasName(aliasName QualifiedName) AliasNameDataTypeBuilder {
-	m.AliasName = aliasName
-	return m
+func (b *_AliasNameDataTypeBuilder) WithMandatoryFields(aliasName QualifiedName, noOfReferencedNodes int32, referencedNodes []ExpandedNodeId) AliasNameDataTypeBuilder {
+	return b.WithAliasName(aliasName).WithNoOfReferencedNodes(noOfReferencedNodes).WithReferencedNodes(referencedNodes...)
 }
 
-func (m *_AliasNameDataTypeBuilder) WithAliasNameBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) AliasNameDataTypeBuilder {
-	builder := builderSupplier(m.AliasName.CreateQualifiedNameBuilder())
+func (b *_AliasNameDataTypeBuilder) WithAliasName(aliasName QualifiedName) AliasNameDataTypeBuilder {
+	b.AliasName = aliasName
+	return b
+}
+
+func (b *_AliasNameDataTypeBuilder) WithAliasNameBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) AliasNameDataTypeBuilder {
+	builder := builderSupplier(b.AliasName.CreateQualifiedNameBuilder())
 	var err error
-	m.AliasName, err = builder.Build()
+	b.AliasName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AliasNameDataTypeBuilder) WithNoOfReferencedNodes(noOfReferencedNodes int32) AliasNameDataTypeBuilder {
-	m.NoOfReferencedNodes = noOfReferencedNodes
-	return m
+func (b *_AliasNameDataTypeBuilder) WithNoOfReferencedNodes(noOfReferencedNodes int32) AliasNameDataTypeBuilder {
+	b.NoOfReferencedNodes = noOfReferencedNodes
+	return b
 }
 
-func (m *_AliasNameDataTypeBuilder) WithReferencedNodes(referencedNodes ...ExpandedNodeId) AliasNameDataTypeBuilder {
-	m.ReferencedNodes = referencedNodes
-	return m
+func (b *_AliasNameDataTypeBuilder) WithReferencedNodes(referencedNodes ...ExpandedNodeId) AliasNameDataTypeBuilder {
+	b.ReferencedNodes = referencedNodes
+	return b
 }
 
-func (m *_AliasNameDataTypeBuilder) Build() (AliasNameDataType, error) {
-	if m.AliasName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AliasNameDataTypeBuilder) Build() (AliasNameDataType, error) {
+	if b.AliasName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'aliasName' not set"))
+		b.err.Append(errors.New("mandatory field 'aliasName' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AliasNameDataType.deepCopy(), nil
+	return b._AliasNameDataType.deepCopy(), nil
 }
 
-func (m *_AliasNameDataTypeBuilder) MustBuild() AliasNameDataType {
-	build, err := m.Build()
+func (b *_AliasNameDataTypeBuilder) MustBuild() AliasNameDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AliasNameDataTypeBuilder) DeepCopy() any {
-	return m.CreateAliasNameDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AliasNameDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AliasNameDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AliasNameDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAliasNameDataTypeBuilder().(*_AliasNameDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAliasNameDataTypeBuilder creates a AliasNameDataTypeBuilder
-func (m *_AliasNameDataType) CreateAliasNameDataTypeBuilder() AliasNameDataTypeBuilder {
-	if m == nil {
+func (b *_AliasNameDataType) CreateAliasNameDataTypeBuilder() AliasNameDataTypeBuilder {
+	if b == nil {
 		return NewAliasNameDataTypeBuilder()
 	}
-	return &_AliasNameDataTypeBuilder{_AliasNameDataType: m.deepCopy()}
+	return &_AliasNameDataTypeBuilder{_AliasNameDataType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -364,9 +383,13 @@ func (m *_AliasNameDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

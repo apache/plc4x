@@ -105,83 +105,87 @@ type _BACnetAddressBindingBuilder struct {
 
 var _ (BACnetAddressBindingBuilder) = (*_BACnetAddressBindingBuilder)(nil)
 
-func (m *_BACnetAddressBindingBuilder) WithMandatoryFields(deviceIdentifier BACnetApplicationTagObjectIdentifier, deviceAddress BACnetAddress) BACnetAddressBindingBuilder {
-	return m.WithDeviceIdentifier(deviceIdentifier).WithDeviceAddress(deviceAddress)
+func (b *_BACnetAddressBindingBuilder) WithMandatoryFields(deviceIdentifier BACnetApplicationTagObjectIdentifier, deviceAddress BACnetAddress) BACnetAddressBindingBuilder {
+	return b.WithDeviceIdentifier(deviceIdentifier).WithDeviceAddress(deviceAddress)
 }
 
-func (m *_BACnetAddressBindingBuilder) WithDeviceIdentifier(deviceIdentifier BACnetApplicationTagObjectIdentifier) BACnetAddressBindingBuilder {
-	m.DeviceIdentifier = deviceIdentifier
-	return m
+func (b *_BACnetAddressBindingBuilder) WithDeviceIdentifier(deviceIdentifier BACnetApplicationTagObjectIdentifier) BACnetAddressBindingBuilder {
+	b.DeviceIdentifier = deviceIdentifier
+	return b
 }
 
-func (m *_BACnetAddressBindingBuilder) WithDeviceIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetAddressBindingBuilder {
-	builder := builderSupplier(m.DeviceIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
+func (b *_BACnetAddressBindingBuilder) WithDeviceIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetAddressBindingBuilder {
+	builder := builderSupplier(b.DeviceIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
 	var err error
-	m.DeviceIdentifier, err = builder.Build()
+	b.DeviceIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAddressBindingBuilder) WithDeviceAddress(deviceAddress BACnetAddress) BACnetAddressBindingBuilder {
-	m.DeviceAddress = deviceAddress
-	return m
+func (b *_BACnetAddressBindingBuilder) WithDeviceAddress(deviceAddress BACnetAddress) BACnetAddressBindingBuilder {
+	b.DeviceAddress = deviceAddress
+	return b
 }
 
-func (m *_BACnetAddressBindingBuilder) WithDeviceAddressBuilder(builderSupplier func(BACnetAddressBuilder) BACnetAddressBuilder) BACnetAddressBindingBuilder {
-	builder := builderSupplier(m.DeviceAddress.CreateBACnetAddressBuilder())
+func (b *_BACnetAddressBindingBuilder) WithDeviceAddressBuilder(builderSupplier func(BACnetAddressBuilder) BACnetAddressBuilder) BACnetAddressBindingBuilder {
+	builder := builderSupplier(b.DeviceAddress.CreateBACnetAddressBuilder())
 	var err error
-	m.DeviceAddress, err = builder.Build()
+	b.DeviceAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAddressBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAddressBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAddressBindingBuilder) Build() (BACnetAddressBinding, error) {
-	if m.DeviceIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAddressBindingBuilder) Build() (BACnetAddressBinding, error) {
+	if b.DeviceIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'deviceIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'deviceIdentifier' not set"))
 	}
-	if m.DeviceAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.DeviceAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'deviceAddress' not set"))
+		b.err.Append(errors.New("mandatory field 'deviceAddress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAddressBinding.deepCopy(), nil
+	return b._BACnetAddressBinding.deepCopy(), nil
 }
 
-func (m *_BACnetAddressBindingBuilder) MustBuild() BACnetAddressBinding {
-	build, err := m.Build()
+func (b *_BACnetAddressBindingBuilder) MustBuild() BACnetAddressBinding {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAddressBindingBuilder) DeepCopy() any {
-	return m.CreateBACnetAddressBindingBuilder()
+func (b *_BACnetAddressBindingBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAddressBindingBuilder().(*_BACnetAddressBindingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAddressBindingBuilder creates a BACnetAddressBindingBuilder
-func (m *_BACnetAddressBinding) CreateBACnetAddressBindingBuilder() BACnetAddressBindingBuilder {
-	if m == nil {
+func (b *_BACnetAddressBinding) CreateBACnetAddressBindingBuilder() BACnetAddressBindingBuilder {
+	if b == nil {
 		return NewBACnetAddressBindingBuilder()
 	}
-	return &_BACnetAddressBindingBuilder{_BACnetAddressBinding: m.deepCopy()}
+	return &_BACnetAddressBindingBuilder{_BACnetAddressBinding: b.deepCopy()}
 }
 
 ///////////////////////
@@ -336,9 +340,13 @@ func (m *_BACnetAddressBinding) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

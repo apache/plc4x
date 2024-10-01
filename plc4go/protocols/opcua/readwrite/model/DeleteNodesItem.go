@@ -106,69 +106,88 @@ func NewDeleteNodesItemBuilder() DeleteNodesItemBuilder {
 type _DeleteNodesItemBuilder struct {
 	*_DeleteNodesItem
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DeleteNodesItemBuilder) = (*_DeleteNodesItemBuilder)(nil)
 
-func (m *_DeleteNodesItemBuilder) WithMandatoryFields(nodeId NodeId, deleteTargetReferences bool) DeleteNodesItemBuilder {
-	return m.WithNodeId(nodeId).WithDeleteTargetReferences(deleteTargetReferences)
+func (b *_DeleteNodesItemBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_DeleteNodesItemBuilder) WithNodeId(nodeId NodeId) DeleteNodesItemBuilder {
-	m.NodeId = nodeId
-	return m
+func (b *_DeleteNodesItemBuilder) WithMandatoryFields(nodeId NodeId, deleteTargetReferences bool) DeleteNodesItemBuilder {
+	return b.WithNodeId(nodeId).WithDeleteTargetReferences(deleteTargetReferences)
 }
 
-func (m *_DeleteNodesItemBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) DeleteNodesItemBuilder {
-	builder := builderSupplier(m.NodeId.CreateNodeIdBuilder())
+func (b *_DeleteNodesItemBuilder) WithNodeId(nodeId NodeId) DeleteNodesItemBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_DeleteNodesItemBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) DeleteNodesItemBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdBuilder())
 	var err error
-	m.NodeId, err = builder.Build()
+	b.NodeId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_DeleteNodesItemBuilder) WithDeleteTargetReferences(deleteTargetReferences bool) DeleteNodesItemBuilder {
-	m.DeleteTargetReferences = deleteTargetReferences
-	return m
+func (b *_DeleteNodesItemBuilder) WithDeleteTargetReferences(deleteTargetReferences bool) DeleteNodesItemBuilder {
+	b.DeleteTargetReferences = deleteTargetReferences
+	return b
 }
 
-func (m *_DeleteNodesItemBuilder) Build() (DeleteNodesItem, error) {
-	if m.NodeId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_DeleteNodesItemBuilder) Build() (DeleteNodesItem, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nodeId' not set"))
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DeleteNodesItem.deepCopy(), nil
+	return b._DeleteNodesItem.deepCopy(), nil
 }
 
-func (m *_DeleteNodesItemBuilder) MustBuild() DeleteNodesItem {
-	build, err := m.Build()
+func (b *_DeleteNodesItemBuilder) MustBuild() DeleteNodesItem {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DeleteNodesItemBuilder) DeepCopy() any {
-	return m.CreateDeleteNodesItemBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DeleteNodesItemBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DeleteNodesItemBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DeleteNodesItemBuilder) DeepCopy() any {
+	_copy := b.CreateDeleteNodesItemBuilder().(*_DeleteNodesItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDeleteNodesItemBuilder creates a DeleteNodesItemBuilder
-func (m *_DeleteNodesItem) CreateDeleteNodesItemBuilder() DeleteNodesItemBuilder {
-	if m == nil {
+func (b *_DeleteNodesItem) CreateDeleteNodesItemBuilder() DeleteNodesItemBuilder {
+	if b == nil {
 		return NewDeleteNodesItemBuilder()
 	}
-	return &_DeleteNodesItemBuilder{_DeleteNodesItem: m.deepCopy()}
+	return &_DeleteNodesItemBuilder{_DeleteNodesItem: b.deepCopy()}
 }
 
 ///////////////////////
@@ -344,9 +363,13 @@ func (m *_DeleteNodesItem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -90,6 +90,8 @@ type DeleteSubscriptionsRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32) DeleteSubscriptionsRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) DeleteSubscriptionsRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteSubscriptionsRequestBuilder
 	// WithNoOfSubscriptionIds adds NoOfSubscriptionIds (property field)
 	WithNoOfSubscriptionIds(int32) DeleteSubscriptionsRequestBuilder
 	// WithSubscriptionIds adds SubscriptionIds (property field)
@@ -108,61 +110,93 @@ func NewDeleteSubscriptionsRequestBuilder() DeleteSubscriptionsRequestBuilder {
 type _DeleteSubscriptionsRequestBuilder struct {
 	*_DeleteSubscriptionsRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DeleteSubscriptionsRequestBuilder) = (*_DeleteSubscriptionsRequestBuilder)(nil)
 
-func (m *_DeleteSubscriptionsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32) DeleteSubscriptionsRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithNoOfSubscriptionIds(noOfSubscriptionIds).WithSubscriptionIds(subscriptionIds...)
+func (b *_DeleteSubscriptionsRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_DeleteSubscriptionsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteSubscriptionsRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_DeleteSubscriptionsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32) DeleteSubscriptionsRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNoOfSubscriptionIds(noOfSubscriptionIds).WithSubscriptionIds(subscriptionIds...)
 }
 
-func (m *_DeleteSubscriptionsRequestBuilder) WithNoOfSubscriptionIds(noOfSubscriptionIds int32) DeleteSubscriptionsRequestBuilder {
-	m.NoOfSubscriptionIds = noOfSubscriptionIds
-	return m
+func (b *_DeleteSubscriptionsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteSubscriptionsRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_DeleteSubscriptionsRequestBuilder) WithSubscriptionIds(subscriptionIds ...uint32) DeleteSubscriptionsRequestBuilder {
-	m.SubscriptionIds = subscriptionIds
-	return m
-}
-
-func (m *_DeleteSubscriptionsRequestBuilder) Build() (DeleteSubscriptionsRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_DeleteSubscriptionsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteSubscriptionsRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._DeleteSubscriptionsRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_DeleteSubscriptionsRequestBuilder) MustBuild() DeleteSubscriptionsRequest {
-	build, err := m.Build()
+func (b *_DeleteSubscriptionsRequestBuilder) WithNoOfSubscriptionIds(noOfSubscriptionIds int32) DeleteSubscriptionsRequestBuilder {
+	b.NoOfSubscriptionIds = noOfSubscriptionIds
+	return b
+}
+
+func (b *_DeleteSubscriptionsRequestBuilder) WithSubscriptionIds(subscriptionIds ...uint32) DeleteSubscriptionsRequestBuilder {
+	b.SubscriptionIds = subscriptionIds
+	return b
+}
+
+func (b *_DeleteSubscriptionsRequestBuilder) Build() (DeleteSubscriptionsRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DeleteSubscriptionsRequest.deepCopy(), nil
+}
+
+func (b *_DeleteSubscriptionsRequestBuilder) MustBuild() DeleteSubscriptionsRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DeleteSubscriptionsRequestBuilder) DeepCopy() any {
-	return m.CreateDeleteSubscriptionsRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DeleteSubscriptionsRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DeleteSubscriptionsRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DeleteSubscriptionsRequestBuilder) DeepCopy() any {
+	_copy := b.CreateDeleteSubscriptionsRequestBuilder().(*_DeleteSubscriptionsRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDeleteSubscriptionsRequestBuilder creates a DeleteSubscriptionsRequestBuilder
-func (m *_DeleteSubscriptionsRequest) CreateDeleteSubscriptionsRequestBuilder() DeleteSubscriptionsRequestBuilder {
-	if m == nil {
+func (b *_DeleteSubscriptionsRequest) CreateDeleteSubscriptionsRequestBuilder() DeleteSubscriptionsRequestBuilder {
+	if b == nil {
 		return NewDeleteSubscriptionsRequestBuilder()
 	}
-	return &_DeleteSubscriptionsRequestBuilder{_DeleteSubscriptionsRequest: m.deepCopy()}
+	return &_DeleteSubscriptionsRequestBuilder{_DeleteSubscriptionsRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -344,9 +378,13 @@ func (m *_DeleteSubscriptionsRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

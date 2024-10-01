@@ -100,10 +100,24 @@ type ApduBuilder interface {
 	WithNumbered(bool) ApduBuilder
 	// WithCounter adds Counter (property field)
 	WithCounter(uint8) ApduBuilder
+	// AsApduControlContainer converts this build to a subType of Apdu. It is always possible to return to current builder using Done()
+	AsApduControlContainer() interface {
+		ApduControlContainerBuilder
+		Done() ApduBuilder
+	}
+	// AsApduDataContainer converts this build to a subType of Apdu. It is always possible to return to current builder using Done()
+	AsApduDataContainer() interface {
+		ApduDataContainerBuilder
+		Done() ApduBuilder
+	}
 	// Build builds the Apdu or returns an error if something is wrong
-	Build() (ApduContract, error)
+	PartialBuild() (ApduContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() ApduContract
+	PartialMustBuild() ApduContract
+	// Build builds the Apdu or returns an error if something is wrong
+	Build() (Apdu, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Apdu
 }
 
 // NewApduBuilder() creates a ApduBuilder
@@ -111,53 +125,119 @@ func NewApduBuilder() ApduBuilder {
 	return &_ApduBuilder{_Apdu: new(_Apdu)}
 }
 
+type _ApduChildBuilder interface {
+	utils.Copyable
+	setParent(ApduContract)
+	buildForApdu() (Apdu, error)
+}
+
 type _ApduBuilder struct {
 	*_Apdu
+
+	childBuilder _ApduChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (ApduBuilder) = (*_ApduBuilder)(nil)
 
-func (m *_ApduBuilder) WithMandatoryFields(numbered bool, counter uint8) ApduBuilder {
-	return m.WithNumbered(numbered).WithCounter(counter)
+func (b *_ApduBuilder) WithMandatoryFields(numbered bool, counter uint8) ApduBuilder {
+	return b.WithNumbered(numbered).WithCounter(counter)
 }
 
-func (m *_ApduBuilder) WithNumbered(numbered bool) ApduBuilder {
-	m.Numbered = numbered
-	return m
+func (b *_ApduBuilder) WithNumbered(numbered bool) ApduBuilder {
+	b.Numbered = numbered
+	return b
 }
 
-func (m *_ApduBuilder) WithCounter(counter uint8) ApduBuilder {
-	m.Counter = counter
-	return m
+func (b *_ApduBuilder) WithCounter(counter uint8) ApduBuilder {
+	b.Counter = counter
+	return b
 }
 
-func (m *_ApduBuilder) Build() (ApduContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduBuilder) PartialBuild() (ApduContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Apdu.deepCopy(), nil
+	return b._Apdu.deepCopy(), nil
 }
 
-func (m *_ApduBuilder) MustBuild() ApduContract {
-	build, err := m.Build()
+func (b *_ApduBuilder) PartialMustBuild() ApduContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduBuilder) DeepCopy() any {
-	return m.CreateApduBuilder()
+func (b *_ApduBuilder) AsApduControlContainer() interface {
+	ApduControlContainerBuilder
+	Done() ApduBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduControlContainerBuilder
+		Done() ApduBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduControlContainerBuilder().(*_ApduControlContainerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduBuilder) AsApduDataContainer() interface {
+	ApduDataContainerBuilder
+	Done() ApduBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataContainerBuilder
+		Done() ApduBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataContainerBuilder().(*_ApduDataContainerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduBuilder) Build() (Apdu, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForApdu()
+}
+
+func (b *_ApduBuilder) MustBuild() Apdu {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ApduBuilder) DeepCopy() any {
+	_copy := b.CreateApduBuilder().(*_ApduBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ApduChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduBuilder creates a ApduBuilder
-func (m *_Apdu) CreateApduBuilder() ApduBuilder {
-	if m == nil {
+func (b *_Apdu) CreateApduBuilder() ApduBuilder {
+	if b == nil {
 		return NewApduBuilder()
 	}
-	return &_ApduBuilder{_Apdu: m.deepCopy()}
+	return &_ApduBuilder{_Apdu: b.deepCopy()}
 }
 
 ///////////////////////

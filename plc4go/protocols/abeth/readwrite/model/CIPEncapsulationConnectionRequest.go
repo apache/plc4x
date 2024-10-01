@@ -86,40 +86,59 @@ func NewCIPEncapsulationConnectionRequestBuilder() CIPEncapsulationConnectionReq
 type _CIPEncapsulationConnectionRequestBuilder struct {
 	*_CIPEncapsulationConnectionRequest
 
+	parentBuilder *_CIPEncapsulationPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CIPEncapsulationConnectionRequestBuilder) = (*_CIPEncapsulationConnectionRequestBuilder)(nil)
 
-func (m *_CIPEncapsulationConnectionRequestBuilder) WithMandatoryFields() CIPEncapsulationConnectionRequestBuilder {
-	return m
+func (b *_CIPEncapsulationConnectionRequestBuilder) setParent(contract CIPEncapsulationPacketContract) {
+	b.CIPEncapsulationPacketContract = contract
 }
 
-func (m *_CIPEncapsulationConnectionRequestBuilder) Build() (CIPEncapsulationConnectionRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CIPEncapsulationConnectionRequestBuilder) WithMandatoryFields() CIPEncapsulationConnectionRequestBuilder {
+	return b
+}
+
+func (b *_CIPEncapsulationConnectionRequestBuilder) Build() (CIPEncapsulationConnectionRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CIPEncapsulationConnectionRequest.deepCopy(), nil
+	return b._CIPEncapsulationConnectionRequest.deepCopy(), nil
 }
 
-func (m *_CIPEncapsulationConnectionRequestBuilder) MustBuild() CIPEncapsulationConnectionRequest {
-	build, err := m.Build()
+func (b *_CIPEncapsulationConnectionRequestBuilder) MustBuild() CIPEncapsulationConnectionRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CIPEncapsulationConnectionRequestBuilder) DeepCopy() any {
-	return m.CreateCIPEncapsulationConnectionRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CIPEncapsulationConnectionRequestBuilder) Done() CIPEncapsulationPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CIPEncapsulationConnectionRequestBuilder) buildForCIPEncapsulationPacket() (CIPEncapsulationPacket, error) {
+	return b.Build()
+}
+
+func (b *_CIPEncapsulationConnectionRequestBuilder) DeepCopy() any {
+	_copy := b.CreateCIPEncapsulationConnectionRequestBuilder().(*_CIPEncapsulationConnectionRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCIPEncapsulationConnectionRequestBuilder creates a CIPEncapsulationConnectionRequestBuilder
-func (m *_CIPEncapsulationConnectionRequest) CreateCIPEncapsulationConnectionRequestBuilder() CIPEncapsulationConnectionRequestBuilder {
-	if m == nil {
+func (b *_CIPEncapsulationConnectionRequest) CreateCIPEncapsulationConnectionRequestBuilder() CIPEncapsulationConnectionRequestBuilder {
+	if b == nil {
 		return NewCIPEncapsulationConnectionRequestBuilder()
 	}
-	return &_CIPEncapsulationConnectionRequestBuilder{_CIPEncapsulationConnectionRequest: m.deepCopy()}
+	return &_CIPEncapsulationConnectionRequestBuilder{_CIPEncapsulationConnectionRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -235,9 +254,13 @@ func (m *_CIPEncapsulationConnectionRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

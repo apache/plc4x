@@ -98,6 +98,8 @@ type SetPublishingModeResponseBuilder interface {
 	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) SetPublishingModeResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
 	WithResponseHeader(ExtensionObjectDefinition) SetPublishingModeResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetPublishingModeResponseBuilder
 	// WithNoOfResults adds NoOfResults (property field)
 	WithNoOfResults(int32) SetPublishingModeResponseBuilder
 	// WithResults adds Results (property field)
@@ -120,71 +122,103 @@ func NewSetPublishingModeResponseBuilder() SetPublishingModeResponseBuilder {
 type _SetPublishingModeResponseBuilder struct {
 	*_SetPublishingModeResponse
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SetPublishingModeResponseBuilder) = (*_SetPublishingModeResponseBuilder)(nil)
 
-func (m *_SetPublishingModeResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) SetPublishingModeResponseBuilder {
-	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_SetPublishingModeResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_SetPublishingModeResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) SetPublishingModeResponseBuilder {
-	m.ResponseHeader = responseHeader
-	return m
+func (b *_SetPublishingModeResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) SetPublishingModeResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (m *_SetPublishingModeResponseBuilder) WithNoOfResults(noOfResults int32) SetPublishingModeResponseBuilder {
-	m.NoOfResults = noOfResults
-	return m
+func (b *_SetPublishingModeResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) SetPublishingModeResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
 }
 
-func (m *_SetPublishingModeResponseBuilder) WithResults(results ...StatusCode) SetPublishingModeResponseBuilder {
-	m.Results = results
-	return m
-}
-
-func (m *_SetPublishingModeResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) SetPublishingModeResponseBuilder {
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
-	return m
-}
-
-func (m *_SetPublishingModeResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) SetPublishingModeResponseBuilder {
-	m.DiagnosticInfos = diagnosticInfos
-	return m
-}
-
-func (m *_SetPublishingModeResponseBuilder) Build() (SetPublishingModeResponse, error) {
-	if m.ResponseHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SetPublishingModeResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetPublishingModeResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._SetPublishingModeResponse.deepCopy(), nil
+	return b
 }
 
-func (m *_SetPublishingModeResponseBuilder) MustBuild() SetPublishingModeResponse {
-	build, err := m.Build()
+func (b *_SetPublishingModeResponseBuilder) WithNoOfResults(noOfResults int32) SetPublishingModeResponseBuilder {
+	b.NoOfResults = noOfResults
+	return b
+}
+
+func (b *_SetPublishingModeResponseBuilder) WithResults(results ...StatusCode) SetPublishingModeResponseBuilder {
+	b.Results = results
+	return b
+}
+
+func (b *_SetPublishingModeResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) SetPublishingModeResponseBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_SetPublishingModeResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) SetPublishingModeResponseBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_SetPublishingModeResponseBuilder) Build() (SetPublishingModeResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SetPublishingModeResponse.deepCopy(), nil
+}
+
+func (b *_SetPublishingModeResponseBuilder) MustBuild() SetPublishingModeResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SetPublishingModeResponseBuilder) DeepCopy() any {
-	return m.CreateSetPublishingModeResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SetPublishingModeResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SetPublishingModeResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SetPublishingModeResponseBuilder) DeepCopy() any {
+	_copy := b.CreateSetPublishingModeResponseBuilder().(*_SetPublishingModeResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSetPublishingModeResponseBuilder creates a SetPublishingModeResponseBuilder
-func (m *_SetPublishingModeResponse) CreateSetPublishingModeResponseBuilder() SetPublishingModeResponseBuilder {
-	if m == nil {
+func (b *_SetPublishingModeResponse) CreateSetPublishingModeResponseBuilder() SetPublishingModeResponseBuilder {
+	if b == nil {
 		return NewSetPublishingModeResponseBuilder()
 	}
-	return &_SetPublishingModeResponseBuilder{_SetPublishingModeResponse: m.deepCopy()}
+	return &_SetPublishingModeResponseBuilder{_SetPublishingModeResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -414,9 +448,13 @@ func (m *_SetPublishingModeResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

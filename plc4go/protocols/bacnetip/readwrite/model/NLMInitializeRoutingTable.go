@@ -99,50 +99,69 @@ func NewNLMInitializeRoutingTableBuilder() NLMInitializeRoutingTableBuilder {
 type _NLMInitializeRoutingTableBuilder struct {
 	*_NLMInitializeRoutingTable
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMInitializeRoutingTableBuilder) = (*_NLMInitializeRoutingTableBuilder)(nil)
 
-func (m *_NLMInitializeRoutingTableBuilder) WithMandatoryFields(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableBuilder {
-	return m.WithNumberOfPorts(numberOfPorts).WithPortMappings(portMappings...)
+func (b *_NLMInitializeRoutingTableBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMInitializeRoutingTableBuilder) WithNumberOfPorts(numberOfPorts uint8) NLMInitializeRoutingTableBuilder {
-	m.NumberOfPorts = numberOfPorts
-	return m
+func (b *_NLMInitializeRoutingTableBuilder) WithMandatoryFields(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableBuilder {
+	return b.WithNumberOfPorts(numberOfPorts).WithPortMappings(portMappings...)
 }
 
-func (m *_NLMInitializeRoutingTableBuilder) WithPortMappings(portMappings ...NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableBuilder {
-	m.PortMappings = portMappings
-	return m
+func (b *_NLMInitializeRoutingTableBuilder) WithNumberOfPorts(numberOfPorts uint8) NLMInitializeRoutingTableBuilder {
+	b.NumberOfPorts = numberOfPorts
+	return b
 }
 
-func (m *_NLMInitializeRoutingTableBuilder) Build() (NLMInitializeRoutingTable, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMInitializeRoutingTableBuilder) WithPortMappings(portMappings ...NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableBuilder {
+	b.PortMappings = portMappings
+	return b
+}
+
+func (b *_NLMInitializeRoutingTableBuilder) Build() (NLMInitializeRoutingTable, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMInitializeRoutingTable.deepCopy(), nil
+	return b._NLMInitializeRoutingTable.deepCopy(), nil
 }
 
-func (m *_NLMInitializeRoutingTableBuilder) MustBuild() NLMInitializeRoutingTable {
-	build, err := m.Build()
+func (b *_NLMInitializeRoutingTableBuilder) MustBuild() NLMInitializeRoutingTable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMInitializeRoutingTableBuilder) DeepCopy() any {
-	return m.CreateNLMInitializeRoutingTableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMInitializeRoutingTableBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMInitializeRoutingTableBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMInitializeRoutingTableBuilder) DeepCopy() any {
+	_copy := b.CreateNLMInitializeRoutingTableBuilder().(*_NLMInitializeRoutingTableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMInitializeRoutingTableBuilder creates a NLMInitializeRoutingTableBuilder
-func (m *_NLMInitializeRoutingTable) CreateNLMInitializeRoutingTableBuilder() NLMInitializeRoutingTableBuilder {
-	if m == nil {
+func (b *_NLMInitializeRoutingTable) CreateNLMInitializeRoutingTableBuilder() NLMInitializeRoutingTableBuilder {
+	if b == nil {
 		return NewNLMInitializeRoutingTableBuilder()
 	}
-	return &_NLMInitializeRoutingTableBuilder{_NLMInitializeRoutingTable: m.deepCopy()}
+	return &_NLMInitializeRoutingTableBuilder{_NLMInitializeRoutingTable: b.deepCopy()}
 }
 
 ///////////////////////
@@ -311,9 +330,13 @@ func (m *_NLMInitializeRoutingTable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

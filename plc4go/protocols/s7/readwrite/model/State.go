@@ -125,75 +125,79 @@ type _StateBuilder struct {
 
 var _ (StateBuilder) = (*_StateBuilder)(nil)
 
-func (m *_StateBuilder) WithMandatoryFields(SIG_8 bool, SIG_7 bool, SIG_6 bool, SIG_5 bool, SIG_4 bool, SIG_3 bool, SIG_2 bool, SIG_1 bool) StateBuilder {
-	return m.WithSIG_8(SIG_8).WithSIG_7(SIG_7).WithSIG_6(SIG_6).WithSIG_5(SIG_5).WithSIG_4(SIG_4).WithSIG_3(SIG_3).WithSIG_2(SIG_2).WithSIG_1(SIG_1)
+func (b *_StateBuilder) WithMandatoryFields(SIG_8 bool, SIG_7 bool, SIG_6 bool, SIG_5 bool, SIG_4 bool, SIG_3 bool, SIG_2 bool, SIG_1 bool) StateBuilder {
+	return b.WithSIG_8(SIG_8).WithSIG_7(SIG_7).WithSIG_6(SIG_6).WithSIG_5(SIG_5).WithSIG_4(SIG_4).WithSIG_3(SIG_3).WithSIG_2(SIG_2).WithSIG_1(SIG_1)
 }
 
-func (m *_StateBuilder) WithSIG_8(SIG_8 bool) StateBuilder {
-	m.SIG_8 = SIG_8
-	return m
+func (b *_StateBuilder) WithSIG_8(SIG_8 bool) StateBuilder {
+	b.SIG_8 = SIG_8
+	return b
 }
 
-func (m *_StateBuilder) WithSIG_7(SIG_7 bool) StateBuilder {
-	m.SIG_7 = SIG_7
-	return m
+func (b *_StateBuilder) WithSIG_7(SIG_7 bool) StateBuilder {
+	b.SIG_7 = SIG_7
+	return b
 }
 
-func (m *_StateBuilder) WithSIG_6(SIG_6 bool) StateBuilder {
-	m.SIG_6 = SIG_6
-	return m
+func (b *_StateBuilder) WithSIG_6(SIG_6 bool) StateBuilder {
+	b.SIG_6 = SIG_6
+	return b
 }
 
-func (m *_StateBuilder) WithSIG_5(SIG_5 bool) StateBuilder {
-	m.SIG_5 = SIG_5
-	return m
+func (b *_StateBuilder) WithSIG_5(SIG_5 bool) StateBuilder {
+	b.SIG_5 = SIG_5
+	return b
 }
 
-func (m *_StateBuilder) WithSIG_4(SIG_4 bool) StateBuilder {
-	m.SIG_4 = SIG_4
-	return m
+func (b *_StateBuilder) WithSIG_4(SIG_4 bool) StateBuilder {
+	b.SIG_4 = SIG_4
+	return b
 }
 
-func (m *_StateBuilder) WithSIG_3(SIG_3 bool) StateBuilder {
-	m.SIG_3 = SIG_3
-	return m
+func (b *_StateBuilder) WithSIG_3(SIG_3 bool) StateBuilder {
+	b.SIG_3 = SIG_3
+	return b
 }
 
-func (m *_StateBuilder) WithSIG_2(SIG_2 bool) StateBuilder {
-	m.SIG_2 = SIG_2
-	return m
+func (b *_StateBuilder) WithSIG_2(SIG_2 bool) StateBuilder {
+	b.SIG_2 = SIG_2
+	return b
 }
 
-func (m *_StateBuilder) WithSIG_1(SIG_1 bool) StateBuilder {
-	m.SIG_1 = SIG_1
-	return m
+func (b *_StateBuilder) WithSIG_1(SIG_1 bool) StateBuilder {
+	b.SIG_1 = SIG_1
+	return b
 }
 
-func (m *_StateBuilder) Build() (State, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_StateBuilder) Build() (State, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._State.deepCopy(), nil
+	return b._State.deepCopy(), nil
 }
 
-func (m *_StateBuilder) MustBuild() State {
-	build, err := m.Build()
+func (b *_StateBuilder) MustBuild() State {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_StateBuilder) DeepCopy() any {
-	return m.CreateStateBuilder()
+func (b *_StateBuilder) DeepCopy() any {
+	_copy := b.CreateStateBuilder().(*_StateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateStateBuilder creates a StateBuilder
-func (m *_State) CreateStateBuilder() StateBuilder {
-	if m == nil {
+func (b *_State) CreateStateBuilder() StateBuilder {
+	if b == nil {
 		return NewStateBuilder()
 	}
-	return &_StateBuilder{_State: m.deepCopy()}
+	return &_StateBuilder{_State: b.deepCopy()}
 }
 
 ///////////////////////
@@ -456,9 +460,13 @@ func (m *_State) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

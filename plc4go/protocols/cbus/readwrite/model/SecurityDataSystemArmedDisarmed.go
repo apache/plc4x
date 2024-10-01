@@ -98,64 +98,83 @@ func NewSecurityDataSystemArmedDisarmedBuilder() SecurityDataSystemArmedDisarmed
 type _SecurityDataSystemArmedDisarmedBuilder struct {
 	*_SecurityDataSystemArmedDisarmed
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataSystemArmedDisarmedBuilder) = (*_SecurityDataSystemArmedDisarmedBuilder)(nil)
 
-func (m *_SecurityDataSystemArmedDisarmedBuilder) WithMandatoryFields(armCodeType SecurityArmCode) SecurityDataSystemArmedDisarmedBuilder {
-	return m.WithArmCodeType(armCodeType)
+func (b *_SecurityDataSystemArmedDisarmedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataSystemArmedDisarmedBuilder) WithArmCodeType(armCodeType SecurityArmCode) SecurityDataSystemArmedDisarmedBuilder {
-	m.ArmCodeType = armCodeType
-	return m
+func (b *_SecurityDataSystemArmedDisarmedBuilder) WithMandatoryFields(armCodeType SecurityArmCode) SecurityDataSystemArmedDisarmedBuilder {
+	return b.WithArmCodeType(armCodeType)
 }
 
-func (m *_SecurityDataSystemArmedDisarmedBuilder) WithArmCodeTypeBuilder(builderSupplier func(SecurityArmCodeBuilder) SecurityArmCodeBuilder) SecurityDataSystemArmedDisarmedBuilder {
-	builder := builderSupplier(m.ArmCodeType.CreateSecurityArmCodeBuilder())
+func (b *_SecurityDataSystemArmedDisarmedBuilder) WithArmCodeType(armCodeType SecurityArmCode) SecurityDataSystemArmedDisarmedBuilder {
+	b.ArmCodeType = armCodeType
+	return b
+}
+
+func (b *_SecurityDataSystemArmedDisarmedBuilder) WithArmCodeTypeBuilder(builderSupplier func(SecurityArmCodeBuilder) SecurityArmCodeBuilder) SecurityDataSystemArmedDisarmedBuilder {
+	builder := builderSupplier(b.ArmCodeType.CreateSecurityArmCodeBuilder())
 	var err error
-	m.ArmCodeType, err = builder.Build()
+	b.ArmCodeType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "SecurityArmCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "SecurityArmCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SecurityDataSystemArmedDisarmedBuilder) Build() (SecurityDataSystemArmedDisarmed, error) {
-	if m.ArmCodeType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SecurityDataSystemArmedDisarmedBuilder) Build() (SecurityDataSystemArmedDisarmed, error) {
+	if b.ArmCodeType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'armCodeType' not set"))
+		b.err.Append(errors.New("mandatory field 'armCodeType' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataSystemArmedDisarmed.deepCopy(), nil
+	return b._SecurityDataSystemArmedDisarmed.deepCopy(), nil
 }
 
-func (m *_SecurityDataSystemArmedDisarmedBuilder) MustBuild() SecurityDataSystemArmedDisarmed {
-	build, err := m.Build()
+func (b *_SecurityDataSystemArmedDisarmedBuilder) MustBuild() SecurityDataSystemArmedDisarmed {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataSystemArmedDisarmedBuilder) DeepCopy() any {
-	return m.CreateSecurityDataSystemArmedDisarmedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataSystemArmedDisarmedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataSystemArmedDisarmedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataSystemArmedDisarmedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataSystemArmedDisarmedBuilder().(*_SecurityDataSystemArmedDisarmedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataSystemArmedDisarmedBuilder creates a SecurityDataSystemArmedDisarmedBuilder
-func (m *_SecurityDataSystemArmedDisarmed) CreateSecurityDataSystemArmedDisarmedBuilder() SecurityDataSystemArmedDisarmedBuilder {
-	if m == nil {
+func (b *_SecurityDataSystemArmedDisarmed) CreateSecurityDataSystemArmedDisarmedBuilder() SecurityDataSystemArmedDisarmedBuilder {
+	if b == nil {
 		return NewSecurityDataSystemArmedDisarmedBuilder()
 	}
-	return &_SecurityDataSystemArmedDisarmedBuilder{_SecurityDataSystemArmedDisarmed: m.deepCopy()}
+	return &_SecurityDataSystemArmedDisarmedBuilder{_SecurityDataSystemArmedDisarmed: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_SecurityDataSystemArmedDisarmed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

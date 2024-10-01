@@ -85,40 +85,59 @@ func NewMeteringDataMeasureElectricityBuilder() MeteringDataMeasureElectricityBu
 type _MeteringDataMeasureElectricityBuilder struct {
 	*_MeteringDataMeasureElectricity
 
+	parentBuilder *_MeteringDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MeteringDataMeasureElectricityBuilder) = (*_MeteringDataMeasureElectricityBuilder)(nil)
 
-func (m *_MeteringDataMeasureElectricityBuilder) WithMandatoryFields() MeteringDataMeasureElectricityBuilder {
-	return m
+func (b *_MeteringDataMeasureElectricityBuilder) setParent(contract MeteringDataContract) {
+	b.MeteringDataContract = contract
 }
 
-func (m *_MeteringDataMeasureElectricityBuilder) Build() (MeteringDataMeasureElectricity, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MeteringDataMeasureElectricityBuilder) WithMandatoryFields() MeteringDataMeasureElectricityBuilder {
+	return b
+}
+
+func (b *_MeteringDataMeasureElectricityBuilder) Build() (MeteringDataMeasureElectricity, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MeteringDataMeasureElectricity.deepCopy(), nil
+	return b._MeteringDataMeasureElectricity.deepCopy(), nil
 }
 
-func (m *_MeteringDataMeasureElectricityBuilder) MustBuild() MeteringDataMeasureElectricity {
-	build, err := m.Build()
+func (b *_MeteringDataMeasureElectricityBuilder) MustBuild() MeteringDataMeasureElectricity {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MeteringDataMeasureElectricityBuilder) DeepCopy() any {
-	return m.CreateMeteringDataMeasureElectricityBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MeteringDataMeasureElectricityBuilder) Done() MeteringDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MeteringDataMeasureElectricityBuilder) buildForMeteringData() (MeteringData, error) {
+	return b.Build()
+}
+
+func (b *_MeteringDataMeasureElectricityBuilder) DeepCopy() any {
+	_copy := b.CreateMeteringDataMeasureElectricityBuilder().(*_MeteringDataMeasureElectricityBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMeteringDataMeasureElectricityBuilder creates a MeteringDataMeasureElectricityBuilder
-func (m *_MeteringDataMeasureElectricity) CreateMeteringDataMeasureElectricityBuilder() MeteringDataMeasureElectricityBuilder {
-	if m == nil {
+func (b *_MeteringDataMeasureElectricity) CreateMeteringDataMeasureElectricityBuilder() MeteringDataMeasureElectricityBuilder {
+	if b == nil {
 		return NewMeteringDataMeasureElectricityBuilder()
 	}
-	return &_MeteringDataMeasureElectricityBuilder{_MeteringDataMeasureElectricity: m.deepCopy()}
+	return &_MeteringDataMeasureElectricityBuilder{_MeteringDataMeasureElectricity: b.deepCopy()}
 }
 
 ///////////////////////
@@ -230,9 +249,13 @@ func (m *_MeteringDataMeasureElectricity) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

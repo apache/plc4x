@@ -94,6 +94,8 @@ type LDataIndBuilder interface {
 	WithAdditionalInformation(...CEMIAdditionalInformation) LDataIndBuilder
 	// WithDataFrame adds DataFrame (property field)
 	WithDataFrame(LDataFrame) LDataIndBuilder
+	// WithDataFrameBuilder adds DataFrame (property field) which is build by the builder
+	WithDataFrameBuilder(func(LDataFrameBuilder) LDataFrameBuilder) LDataIndBuilder
 	// Build builds the LDataInd or returns an error if something is wrong
 	Build() (LDataInd, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,61 +110,93 @@ func NewLDataIndBuilder() LDataIndBuilder {
 type _LDataIndBuilder struct {
 	*_LDataInd
 
+	parentBuilder *_CEMIBuilder
+
 	err *utils.MultiError
 }
 
 var _ (LDataIndBuilder) = (*_LDataIndBuilder)(nil)
 
-func (m *_LDataIndBuilder) WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LDataIndBuilder {
-	return m.WithAdditionalInformationLength(additionalInformationLength).WithAdditionalInformation(additionalInformation...).WithDataFrame(dataFrame)
+func (b *_LDataIndBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
 }
 
-func (m *_LDataIndBuilder) WithAdditionalInformationLength(additionalInformationLength uint8) LDataIndBuilder {
-	m.AdditionalInformationLength = additionalInformationLength
-	return m
+func (b *_LDataIndBuilder) WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LDataIndBuilder {
+	return b.WithAdditionalInformationLength(additionalInformationLength).WithAdditionalInformation(additionalInformation...).WithDataFrame(dataFrame)
 }
 
-func (m *_LDataIndBuilder) WithAdditionalInformation(additionalInformation ...CEMIAdditionalInformation) LDataIndBuilder {
-	m.AdditionalInformation = additionalInformation
-	return m
+func (b *_LDataIndBuilder) WithAdditionalInformationLength(additionalInformationLength uint8) LDataIndBuilder {
+	b.AdditionalInformationLength = additionalInformationLength
+	return b
 }
 
-func (m *_LDataIndBuilder) WithDataFrame(dataFrame LDataFrame) LDataIndBuilder {
-	m.DataFrame = dataFrame
-	return m
+func (b *_LDataIndBuilder) WithAdditionalInformation(additionalInformation ...CEMIAdditionalInformation) LDataIndBuilder {
+	b.AdditionalInformation = additionalInformation
+	return b
 }
 
-func (m *_LDataIndBuilder) Build() (LDataInd, error) {
-	if m.DataFrame == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_LDataIndBuilder) WithDataFrame(dataFrame LDataFrame) LDataIndBuilder {
+	b.DataFrame = dataFrame
+	return b
+}
+
+func (b *_LDataIndBuilder) WithDataFrameBuilder(builderSupplier func(LDataFrameBuilder) LDataFrameBuilder) LDataIndBuilder {
+	builder := builderSupplier(b.DataFrame.CreateLDataFrameBuilder())
+	var err error
+	b.DataFrame, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'dataFrame' not set"))
+		b.err.Append(errors.Wrap(err, "LDataFrameBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._LDataInd.deepCopy(), nil
+	return b
 }
 
-func (m *_LDataIndBuilder) MustBuild() LDataInd {
-	build, err := m.Build()
+func (b *_LDataIndBuilder) Build() (LDataInd, error) {
+	if b.DataFrame == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataFrame' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LDataInd.deepCopy(), nil
+}
+
+func (b *_LDataIndBuilder) MustBuild() LDataInd {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LDataIndBuilder) DeepCopy() any {
-	return m.CreateLDataIndBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LDataIndBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LDataIndBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_LDataIndBuilder) DeepCopy() any {
+	_copy := b.CreateLDataIndBuilder().(*_LDataIndBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLDataIndBuilder creates a LDataIndBuilder
-func (m *_LDataInd) CreateLDataIndBuilder() LDataIndBuilder {
-	if m == nil {
+func (b *_LDataInd) CreateLDataIndBuilder() LDataIndBuilder {
+	if b == nil {
 		return NewLDataIndBuilder()
 	}
-	return &_LDataIndBuilder{_LDataInd: m.deepCopy()}
+	return &_LDataIndBuilder{_LDataInd: b.deepCopy()}
 }
 
 ///////////////////////
@@ -346,9 +380,13 @@ func (m *_LDataInd) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

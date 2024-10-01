@@ -97,10 +97,24 @@ type BACnetOptionalBinaryPVBuilder interface {
 	WithPeekedTagHeader(BACnetTagHeader) BACnetOptionalBinaryPVBuilder
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalBinaryPVBuilder
+	// AsBACnetOptionalBinaryPVNull converts this build to a subType of BACnetOptionalBinaryPV. It is always possible to return to current builder using Done()
+	AsBACnetOptionalBinaryPVNull() interface {
+		BACnetOptionalBinaryPVNullBuilder
+		Done() BACnetOptionalBinaryPVBuilder
+	}
+	// AsBACnetOptionalBinaryPVValue converts this build to a subType of BACnetOptionalBinaryPV. It is always possible to return to current builder using Done()
+	AsBACnetOptionalBinaryPVValue() interface {
+		BACnetOptionalBinaryPVValueBuilder
+		Done() BACnetOptionalBinaryPVBuilder
+	}
 	// Build builds the BACnetOptionalBinaryPV or returns an error if something is wrong
-	Build() (BACnetOptionalBinaryPVContract, error)
+	PartialBuild() (BACnetOptionalBinaryPVContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetOptionalBinaryPVContract
+	PartialMustBuild() BACnetOptionalBinaryPVContract
+	// Build builds the BACnetOptionalBinaryPV or returns an error if something is wrong
+	Build() (BACnetOptionalBinaryPV, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetOptionalBinaryPV
 }
 
 // NewBACnetOptionalBinaryPVBuilder() creates a BACnetOptionalBinaryPVBuilder
@@ -108,67 +122,133 @@ func NewBACnetOptionalBinaryPVBuilder() BACnetOptionalBinaryPVBuilder {
 	return &_BACnetOptionalBinaryPVBuilder{_BACnetOptionalBinaryPV: new(_BACnetOptionalBinaryPV)}
 }
 
+type _BACnetOptionalBinaryPVChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetOptionalBinaryPVContract)
+	buildForBACnetOptionalBinaryPV() (BACnetOptionalBinaryPV, error)
+}
+
 type _BACnetOptionalBinaryPVBuilder struct {
 	*_BACnetOptionalBinaryPV
+
+	childBuilder _BACnetOptionalBinaryPVChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetOptionalBinaryPVBuilder) = (*_BACnetOptionalBinaryPVBuilder)(nil)
 
-func (m *_BACnetOptionalBinaryPVBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetOptionalBinaryPVBuilder {
-	return m.WithPeekedTagHeader(peekedTagHeader)
+func (b *_BACnetOptionalBinaryPVBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetOptionalBinaryPVBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
 }
 
-func (m *_BACnetOptionalBinaryPVBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetOptionalBinaryPVBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetOptionalBinaryPVBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetOptionalBinaryPVBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetOptionalBinaryPVBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalBinaryPVBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetOptionalBinaryPVBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalBinaryPVBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetOptionalBinaryPVBuilder) Build() (BACnetOptionalBinaryPVContract, error) {
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetOptionalBinaryPVBuilder) PartialBuild() (BACnetOptionalBinaryPVContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetOptionalBinaryPV.deepCopy(), nil
+	return b._BACnetOptionalBinaryPV.deepCopy(), nil
 }
 
-func (m *_BACnetOptionalBinaryPVBuilder) MustBuild() BACnetOptionalBinaryPVContract {
-	build, err := m.Build()
+func (b *_BACnetOptionalBinaryPVBuilder) PartialMustBuild() BACnetOptionalBinaryPVContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetOptionalBinaryPVBuilder) DeepCopy() any {
-	return m.CreateBACnetOptionalBinaryPVBuilder()
+func (b *_BACnetOptionalBinaryPVBuilder) AsBACnetOptionalBinaryPVNull() interface {
+	BACnetOptionalBinaryPVNullBuilder
+	Done() BACnetOptionalBinaryPVBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetOptionalBinaryPVNullBuilder
+		Done() BACnetOptionalBinaryPVBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetOptionalBinaryPVNullBuilder().(*_BACnetOptionalBinaryPVNullBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetOptionalBinaryPVBuilder) AsBACnetOptionalBinaryPVValue() interface {
+	BACnetOptionalBinaryPVValueBuilder
+	Done() BACnetOptionalBinaryPVBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetOptionalBinaryPVValueBuilder
+		Done() BACnetOptionalBinaryPVBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetOptionalBinaryPVValueBuilder().(*_BACnetOptionalBinaryPVValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetOptionalBinaryPVBuilder) Build() (BACnetOptionalBinaryPV, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetOptionalBinaryPV()
+}
+
+func (b *_BACnetOptionalBinaryPVBuilder) MustBuild() BACnetOptionalBinaryPV {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetOptionalBinaryPVBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetOptionalBinaryPVBuilder().(*_BACnetOptionalBinaryPVBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetOptionalBinaryPVChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetOptionalBinaryPVBuilder creates a BACnetOptionalBinaryPVBuilder
-func (m *_BACnetOptionalBinaryPV) CreateBACnetOptionalBinaryPVBuilder() BACnetOptionalBinaryPVBuilder {
-	if m == nil {
+func (b *_BACnetOptionalBinaryPV) CreateBACnetOptionalBinaryPVBuilder() BACnetOptionalBinaryPVBuilder {
+	if b == nil {
 		return NewBACnetOptionalBinaryPVBuilder()
 	}
-	return &_BACnetOptionalBinaryPVBuilder{_BACnetOptionalBinaryPV: m.deepCopy()}
+	return &_BACnetOptionalBinaryPVBuilder{_BACnetOptionalBinaryPV: b.deepCopy()}
 }
 
 ///////////////////////

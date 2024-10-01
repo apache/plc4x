@@ -102,50 +102,54 @@ type _EnableControlDataBuilder struct {
 
 var _ (EnableControlDataBuilder) = (*_EnableControlDataBuilder)(nil)
 
-func (m *_EnableControlDataBuilder) WithMandatoryFields(commandTypeContainer EnableControlCommandTypeContainer, enableNetworkVariable byte, value byte) EnableControlDataBuilder {
-	return m.WithCommandTypeContainer(commandTypeContainer).WithEnableNetworkVariable(enableNetworkVariable).WithValue(value)
+func (b *_EnableControlDataBuilder) WithMandatoryFields(commandTypeContainer EnableControlCommandTypeContainer, enableNetworkVariable byte, value byte) EnableControlDataBuilder {
+	return b.WithCommandTypeContainer(commandTypeContainer).WithEnableNetworkVariable(enableNetworkVariable).WithValue(value)
 }
 
-func (m *_EnableControlDataBuilder) WithCommandTypeContainer(commandTypeContainer EnableControlCommandTypeContainer) EnableControlDataBuilder {
-	m.CommandTypeContainer = commandTypeContainer
-	return m
+func (b *_EnableControlDataBuilder) WithCommandTypeContainer(commandTypeContainer EnableControlCommandTypeContainer) EnableControlDataBuilder {
+	b.CommandTypeContainer = commandTypeContainer
+	return b
 }
 
-func (m *_EnableControlDataBuilder) WithEnableNetworkVariable(enableNetworkVariable byte) EnableControlDataBuilder {
-	m.EnableNetworkVariable = enableNetworkVariable
-	return m
+func (b *_EnableControlDataBuilder) WithEnableNetworkVariable(enableNetworkVariable byte) EnableControlDataBuilder {
+	b.EnableNetworkVariable = enableNetworkVariable
+	return b
 }
 
-func (m *_EnableControlDataBuilder) WithValue(value byte) EnableControlDataBuilder {
-	m.Value = value
-	return m
+func (b *_EnableControlDataBuilder) WithValue(value byte) EnableControlDataBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_EnableControlDataBuilder) Build() (EnableControlData, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_EnableControlDataBuilder) Build() (EnableControlData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EnableControlData.deepCopy(), nil
+	return b._EnableControlData.deepCopy(), nil
 }
 
-func (m *_EnableControlDataBuilder) MustBuild() EnableControlData {
-	build, err := m.Build()
+func (b *_EnableControlDataBuilder) MustBuild() EnableControlData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EnableControlDataBuilder) DeepCopy() any {
-	return m.CreateEnableControlDataBuilder()
+func (b *_EnableControlDataBuilder) DeepCopy() any {
+	_copy := b.CreateEnableControlDataBuilder().(*_EnableControlDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEnableControlDataBuilder creates a EnableControlDataBuilder
-func (m *_EnableControlData) CreateEnableControlDataBuilder() EnableControlDataBuilder {
-	if m == nil {
+func (b *_EnableControlData) CreateEnableControlDataBuilder() EnableControlDataBuilder {
+	if b == nil {
 		return NewEnableControlDataBuilder()
 	}
-	return &_EnableControlDataBuilder{_EnableControlData: m.deepCopy()}
+	return &_EnableControlDataBuilder{_EnableControlData: b.deepCopy()}
 }
 
 ///////////////////////
@@ -352,9 +356,13 @@ func (m *_EnableControlData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataMaxFailedAttemptsBuilder() BACnetConstructedDataMax
 type _BACnetConstructedDataMaxFailedAttemptsBuilder struct {
 	*_BACnetConstructedDataMaxFailedAttempts
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMaxFailedAttemptsBuilder) = (*_BACnetConstructedDataMaxFailedAttemptsBuilder)(nil)
 
-func (m *_BACnetConstructedDataMaxFailedAttemptsBuilder) WithMandatoryFields(maxFailedAttempts BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxFailedAttemptsBuilder {
-	return m.WithMaxFailedAttempts(maxFailedAttempts)
+func (b *_BACnetConstructedDataMaxFailedAttemptsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMaxFailedAttemptsBuilder) WithMaxFailedAttempts(maxFailedAttempts BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxFailedAttemptsBuilder {
-	m.MaxFailedAttempts = maxFailedAttempts
-	return m
+func (b *_BACnetConstructedDataMaxFailedAttemptsBuilder) WithMandatoryFields(maxFailedAttempts BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxFailedAttemptsBuilder {
+	return b.WithMaxFailedAttempts(maxFailedAttempts)
 }
 
-func (m *_BACnetConstructedDataMaxFailedAttemptsBuilder) WithMaxFailedAttemptsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxFailedAttemptsBuilder {
-	builder := builderSupplier(m.MaxFailedAttempts.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataMaxFailedAttemptsBuilder) WithMaxFailedAttempts(maxFailedAttempts BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxFailedAttemptsBuilder {
+	b.MaxFailedAttempts = maxFailedAttempts
+	return b
+}
+
+func (b *_BACnetConstructedDataMaxFailedAttemptsBuilder) WithMaxFailedAttemptsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxFailedAttemptsBuilder {
+	builder := builderSupplier(b.MaxFailedAttempts.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.MaxFailedAttempts, err = builder.Build()
+	b.MaxFailedAttempts, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataMaxFailedAttemptsBuilder) Build() (BACnetConstructedDataMaxFailedAttempts, error) {
-	if m.MaxFailedAttempts == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataMaxFailedAttemptsBuilder) Build() (BACnetConstructedDataMaxFailedAttempts, error) {
+	if b.MaxFailedAttempts == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'maxFailedAttempts' not set"))
+		b.err.Append(errors.New("mandatory field 'maxFailedAttempts' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataMaxFailedAttempts.deepCopy(), nil
+	return b._BACnetConstructedDataMaxFailedAttempts.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataMaxFailedAttemptsBuilder) MustBuild() BACnetConstructedDataMaxFailedAttempts {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMaxFailedAttemptsBuilder) MustBuild() BACnetConstructedDataMaxFailedAttempts {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMaxFailedAttemptsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMaxFailedAttemptsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMaxFailedAttemptsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMaxFailedAttemptsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMaxFailedAttemptsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMaxFailedAttemptsBuilder().(*_BACnetConstructedDataMaxFailedAttemptsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMaxFailedAttemptsBuilder creates a BACnetConstructedDataMaxFailedAttemptsBuilder
-func (m *_BACnetConstructedDataMaxFailedAttempts) CreateBACnetConstructedDataMaxFailedAttemptsBuilder() BACnetConstructedDataMaxFailedAttemptsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMaxFailedAttempts) CreateBACnetConstructedDataMaxFailedAttemptsBuilder() BACnetConstructedDataMaxFailedAttemptsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMaxFailedAttemptsBuilder()
 	}
-	return &_BACnetConstructedDataMaxFailedAttemptsBuilder{_BACnetConstructedDataMaxFailedAttempts: m.deepCopy()}
+	return &_BACnetConstructedDataMaxFailedAttemptsBuilder{_BACnetConstructedDataMaxFailedAttempts: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

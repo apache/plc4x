@@ -93,45 +93,64 @@ func NewCALDataIdentifyBuilder() CALDataIdentifyBuilder {
 type _CALDataIdentifyBuilder struct {
 	*_CALDataIdentify
 
+	parentBuilder *_CALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CALDataIdentifyBuilder) = (*_CALDataIdentifyBuilder)(nil)
 
-func (m *_CALDataIdentifyBuilder) WithMandatoryFields(attribute Attribute) CALDataIdentifyBuilder {
-	return m.WithAttribute(attribute)
+func (b *_CALDataIdentifyBuilder) setParent(contract CALDataContract) {
+	b.CALDataContract = contract
 }
 
-func (m *_CALDataIdentifyBuilder) WithAttribute(attribute Attribute) CALDataIdentifyBuilder {
-	m.Attribute = attribute
-	return m
+func (b *_CALDataIdentifyBuilder) WithMandatoryFields(attribute Attribute) CALDataIdentifyBuilder {
+	return b.WithAttribute(attribute)
 }
 
-func (m *_CALDataIdentifyBuilder) Build() (CALDataIdentify, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CALDataIdentifyBuilder) WithAttribute(attribute Attribute) CALDataIdentifyBuilder {
+	b.Attribute = attribute
+	return b
+}
+
+func (b *_CALDataIdentifyBuilder) Build() (CALDataIdentify, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CALDataIdentify.deepCopy(), nil
+	return b._CALDataIdentify.deepCopy(), nil
 }
 
-func (m *_CALDataIdentifyBuilder) MustBuild() CALDataIdentify {
-	build, err := m.Build()
+func (b *_CALDataIdentifyBuilder) MustBuild() CALDataIdentify {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CALDataIdentifyBuilder) DeepCopy() any {
-	return m.CreateCALDataIdentifyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CALDataIdentifyBuilder) Done() CALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CALDataIdentifyBuilder) buildForCALData() (CALData, error) {
+	return b.Build()
+}
+
+func (b *_CALDataIdentifyBuilder) DeepCopy() any {
+	_copy := b.CreateCALDataIdentifyBuilder().(*_CALDataIdentifyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCALDataIdentifyBuilder creates a CALDataIdentifyBuilder
-func (m *_CALDataIdentify) CreateCALDataIdentifyBuilder() CALDataIdentifyBuilder {
-	if m == nil {
+func (b *_CALDataIdentify) CreateCALDataIdentifyBuilder() CALDataIdentifyBuilder {
+	if b == nil {
 		return NewCALDataIdentifyBuilder()
 	}
-	return &_CALDataIdentifyBuilder{_CALDataIdentify: m.deepCopy()}
+	return &_CALDataIdentifyBuilder{_CALDataIdentify: b.deepCopy()}
 }
 
 ///////////////////////
@@ -271,9 +290,13 @@ func (m *_CALDataIdentify) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

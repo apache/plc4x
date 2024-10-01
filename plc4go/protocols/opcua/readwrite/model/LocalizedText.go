@@ -111,81 +111,85 @@ type _LocalizedTextBuilder struct {
 
 var _ (LocalizedTextBuilder) = (*_LocalizedTextBuilder)(nil)
 
-func (m *_LocalizedTextBuilder) WithMandatoryFields(textSpecified bool, localeSpecified bool) LocalizedTextBuilder {
-	return m.WithTextSpecified(textSpecified).WithLocaleSpecified(localeSpecified)
+func (b *_LocalizedTextBuilder) WithMandatoryFields(textSpecified bool, localeSpecified bool) LocalizedTextBuilder {
+	return b.WithTextSpecified(textSpecified).WithLocaleSpecified(localeSpecified)
 }
 
-func (m *_LocalizedTextBuilder) WithTextSpecified(textSpecified bool) LocalizedTextBuilder {
-	m.TextSpecified = textSpecified
-	return m
+func (b *_LocalizedTextBuilder) WithTextSpecified(textSpecified bool) LocalizedTextBuilder {
+	b.TextSpecified = textSpecified
+	return b
 }
 
-func (m *_LocalizedTextBuilder) WithLocaleSpecified(localeSpecified bool) LocalizedTextBuilder {
-	m.LocaleSpecified = localeSpecified
-	return m
+func (b *_LocalizedTextBuilder) WithLocaleSpecified(localeSpecified bool) LocalizedTextBuilder {
+	b.LocaleSpecified = localeSpecified
+	return b
 }
 
-func (m *_LocalizedTextBuilder) WithOptionalLocale(locale PascalString) LocalizedTextBuilder {
-	m.Locale = locale
-	return m
+func (b *_LocalizedTextBuilder) WithOptionalLocale(locale PascalString) LocalizedTextBuilder {
+	b.Locale = locale
+	return b
 }
 
-func (m *_LocalizedTextBuilder) WithOptionalLocaleBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) LocalizedTextBuilder {
-	builder := builderSupplier(m.Locale.CreatePascalStringBuilder())
+func (b *_LocalizedTextBuilder) WithOptionalLocaleBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) LocalizedTextBuilder {
+	builder := builderSupplier(b.Locale.CreatePascalStringBuilder())
 	var err error
-	m.Locale, err = builder.Build()
+	b.Locale, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_LocalizedTextBuilder) WithOptionalText(text PascalString) LocalizedTextBuilder {
-	m.Text = text
-	return m
+func (b *_LocalizedTextBuilder) WithOptionalText(text PascalString) LocalizedTextBuilder {
+	b.Text = text
+	return b
 }
 
-func (m *_LocalizedTextBuilder) WithOptionalTextBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) LocalizedTextBuilder {
-	builder := builderSupplier(m.Text.CreatePascalStringBuilder())
+func (b *_LocalizedTextBuilder) WithOptionalTextBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) LocalizedTextBuilder {
+	builder := builderSupplier(b.Text.CreatePascalStringBuilder())
 	var err error
-	m.Text, err = builder.Build()
+	b.Text, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_LocalizedTextBuilder) Build() (LocalizedText, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_LocalizedTextBuilder) Build() (LocalizedText, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._LocalizedText.deepCopy(), nil
+	return b._LocalizedText.deepCopy(), nil
 }
 
-func (m *_LocalizedTextBuilder) MustBuild() LocalizedText {
-	build, err := m.Build()
+func (b *_LocalizedTextBuilder) MustBuild() LocalizedText {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_LocalizedTextBuilder) DeepCopy() any {
-	return m.CreateLocalizedTextBuilder()
+func (b *_LocalizedTextBuilder) DeepCopy() any {
+	_copy := b.CreateLocalizedTextBuilder().(*_LocalizedTextBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateLocalizedTextBuilder creates a LocalizedTextBuilder
-func (m *_LocalizedText) CreateLocalizedTextBuilder() LocalizedTextBuilder {
-	if m == nil {
+func (b *_LocalizedText) CreateLocalizedTextBuilder() LocalizedTextBuilder {
+	if b == nil {
 		return NewLocalizedTextBuilder()
 	}
-	return &_LocalizedTextBuilder{_LocalizedText: m.deepCopy()}
+	return &_LocalizedTextBuilder{_LocalizedText: b.deepCopy()}
 }
 
 ///////////////////////
@@ -402,9 +406,13 @@ func (m *_LocalizedText) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

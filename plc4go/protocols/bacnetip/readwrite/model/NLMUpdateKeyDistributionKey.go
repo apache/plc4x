@@ -104,69 +104,88 @@ func NewNLMUpdateKeyDistributionKeyBuilder() NLMUpdateKeyDistributionKeyBuilder 
 type _NLMUpdateKeyDistributionKeyBuilder struct {
 	*_NLMUpdateKeyDistributionKey
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMUpdateKeyDistributionKeyBuilder) = (*_NLMUpdateKeyDistributionKeyBuilder)(nil)
 
-func (m *_NLMUpdateKeyDistributionKeyBuilder) WithMandatoryFields(keyRevision byte, key NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyDistributionKeyBuilder {
-	return m.WithKeyRevision(keyRevision).WithKey(key)
+func (b *_NLMUpdateKeyDistributionKeyBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMUpdateKeyDistributionKeyBuilder) WithKeyRevision(keyRevision byte) NLMUpdateKeyDistributionKeyBuilder {
-	m.KeyRevision = keyRevision
-	return m
+func (b *_NLMUpdateKeyDistributionKeyBuilder) WithMandatoryFields(keyRevision byte, key NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyDistributionKeyBuilder {
+	return b.WithKeyRevision(keyRevision).WithKey(key)
 }
 
-func (m *_NLMUpdateKeyDistributionKeyBuilder) WithKey(key NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyDistributionKeyBuilder {
-	m.Key = key
-	return m
+func (b *_NLMUpdateKeyDistributionKeyBuilder) WithKeyRevision(keyRevision byte) NLMUpdateKeyDistributionKeyBuilder {
+	b.KeyRevision = keyRevision
+	return b
 }
 
-func (m *_NLMUpdateKeyDistributionKeyBuilder) WithKeyBuilder(builderSupplier func(NLMUpdateKeyUpdateKeyEntryBuilder) NLMUpdateKeyUpdateKeyEntryBuilder) NLMUpdateKeyDistributionKeyBuilder {
-	builder := builderSupplier(m.Key.CreateNLMUpdateKeyUpdateKeyEntryBuilder())
+func (b *_NLMUpdateKeyDistributionKeyBuilder) WithKey(key NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyDistributionKeyBuilder {
+	b.Key = key
+	return b
+}
+
+func (b *_NLMUpdateKeyDistributionKeyBuilder) WithKeyBuilder(builderSupplier func(NLMUpdateKeyUpdateKeyEntryBuilder) NLMUpdateKeyUpdateKeyEntryBuilder) NLMUpdateKeyDistributionKeyBuilder {
+	builder := builderSupplier(b.Key.CreateNLMUpdateKeyUpdateKeyEntryBuilder())
 	var err error
-	m.Key, err = builder.Build()
+	b.Key, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NLMUpdateKeyUpdateKeyEntryBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NLMUpdateKeyUpdateKeyEntryBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_NLMUpdateKeyDistributionKeyBuilder) Build() (NLMUpdateKeyDistributionKey, error) {
-	if m.Key == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_NLMUpdateKeyDistributionKeyBuilder) Build() (NLMUpdateKeyDistributionKey, error) {
+	if b.Key == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'key' not set"))
+		b.err.Append(errors.New("mandatory field 'key' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMUpdateKeyDistributionKey.deepCopy(), nil
+	return b._NLMUpdateKeyDistributionKey.deepCopy(), nil
 }
 
-func (m *_NLMUpdateKeyDistributionKeyBuilder) MustBuild() NLMUpdateKeyDistributionKey {
-	build, err := m.Build()
+func (b *_NLMUpdateKeyDistributionKeyBuilder) MustBuild() NLMUpdateKeyDistributionKey {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMUpdateKeyDistributionKeyBuilder) DeepCopy() any {
-	return m.CreateNLMUpdateKeyDistributionKeyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMUpdateKeyDistributionKeyBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMUpdateKeyDistributionKeyBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMUpdateKeyDistributionKeyBuilder) DeepCopy() any {
+	_copy := b.CreateNLMUpdateKeyDistributionKeyBuilder().(*_NLMUpdateKeyDistributionKeyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMUpdateKeyDistributionKeyBuilder creates a NLMUpdateKeyDistributionKeyBuilder
-func (m *_NLMUpdateKeyDistributionKey) CreateNLMUpdateKeyDistributionKeyBuilder() NLMUpdateKeyDistributionKeyBuilder {
-	if m == nil {
+func (b *_NLMUpdateKeyDistributionKey) CreateNLMUpdateKeyDistributionKeyBuilder() NLMUpdateKeyDistributionKeyBuilder {
+	if b == nil {
 		return NewNLMUpdateKeyDistributionKeyBuilder()
 	}
-	return &_NLMUpdateKeyDistributionKeyBuilder{_NLMUpdateKeyDistributionKey: m.deepCopy()}
+	return &_NLMUpdateKeyDistributionKeyBuilder{_NLMUpdateKeyDistributionKey: b.deepCopy()}
 }
 
 ///////////////////////
@@ -328,9 +347,13 @@ func (m *_NLMUpdateKeyDistributionKey) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

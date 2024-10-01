@@ -118,79 +118,98 @@ func NewNodeTypeDescriptionBuilder() NodeTypeDescriptionBuilder {
 type _NodeTypeDescriptionBuilder struct {
 	*_NodeTypeDescription
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NodeTypeDescriptionBuilder) = (*_NodeTypeDescriptionBuilder)(nil)
 
-func (m *_NodeTypeDescriptionBuilder) WithMandatoryFields(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, noOfDataToReturn int32, dataToReturn []ExtensionObjectDefinition) NodeTypeDescriptionBuilder {
-	return m.WithTypeDefinitionNode(typeDefinitionNode).WithIncludeSubTypes(includeSubTypes).WithNoOfDataToReturn(noOfDataToReturn).WithDataToReturn(dataToReturn...)
+func (b *_NodeTypeDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_NodeTypeDescriptionBuilder) WithTypeDefinitionNode(typeDefinitionNode ExpandedNodeId) NodeTypeDescriptionBuilder {
-	m.TypeDefinitionNode = typeDefinitionNode
-	return m
+func (b *_NodeTypeDescriptionBuilder) WithMandatoryFields(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, noOfDataToReturn int32, dataToReturn []ExtensionObjectDefinition) NodeTypeDescriptionBuilder {
+	return b.WithTypeDefinitionNode(typeDefinitionNode).WithIncludeSubTypes(includeSubTypes).WithNoOfDataToReturn(noOfDataToReturn).WithDataToReturn(dataToReturn...)
 }
 
-func (m *_NodeTypeDescriptionBuilder) WithTypeDefinitionNodeBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) NodeTypeDescriptionBuilder {
-	builder := builderSupplier(m.TypeDefinitionNode.CreateExpandedNodeIdBuilder())
+func (b *_NodeTypeDescriptionBuilder) WithTypeDefinitionNode(typeDefinitionNode ExpandedNodeId) NodeTypeDescriptionBuilder {
+	b.TypeDefinitionNode = typeDefinitionNode
+	return b
+}
+
+func (b *_NodeTypeDescriptionBuilder) WithTypeDefinitionNodeBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) NodeTypeDescriptionBuilder {
+	builder := builderSupplier(b.TypeDefinitionNode.CreateExpandedNodeIdBuilder())
 	var err error
-	m.TypeDefinitionNode, err = builder.Build()
+	b.TypeDefinitionNode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_NodeTypeDescriptionBuilder) WithIncludeSubTypes(includeSubTypes bool) NodeTypeDescriptionBuilder {
-	m.IncludeSubTypes = includeSubTypes
-	return m
+func (b *_NodeTypeDescriptionBuilder) WithIncludeSubTypes(includeSubTypes bool) NodeTypeDescriptionBuilder {
+	b.IncludeSubTypes = includeSubTypes
+	return b
 }
 
-func (m *_NodeTypeDescriptionBuilder) WithNoOfDataToReturn(noOfDataToReturn int32) NodeTypeDescriptionBuilder {
-	m.NoOfDataToReturn = noOfDataToReturn
-	return m
+func (b *_NodeTypeDescriptionBuilder) WithNoOfDataToReturn(noOfDataToReturn int32) NodeTypeDescriptionBuilder {
+	b.NoOfDataToReturn = noOfDataToReturn
+	return b
 }
 
-func (m *_NodeTypeDescriptionBuilder) WithDataToReturn(dataToReturn ...ExtensionObjectDefinition) NodeTypeDescriptionBuilder {
-	m.DataToReturn = dataToReturn
-	return m
+func (b *_NodeTypeDescriptionBuilder) WithDataToReturn(dataToReturn ...ExtensionObjectDefinition) NodeTypeDescriptionBuilder {
+	b.DataToReturn = dataToReturn
+	return b
 }
 
-func (m *_NodeTypeDescriptionBuilder) Build() (NodeTypeDescription, error) {
-	if m.TypeDefinitionNode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_NodeTypeDescriptionBuilder) Build() (NodeTypeDescription, error) {
+	if b.TypeDefinitionNode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'typeDefinitionNode' not set"))
+		b.err.Append(errors.New("mandatory field 'typeDefinitionNode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NodeTypeDescription.deepCopy(), nil
+	return b._NodeTypeDescription.deepCopy(), nil
 }
 
-func (m *_NodeTypeDescriptionBuilder) MustBuild() NodeTypeDescription {
-	build, err := m.Build()
+func (b *_NodeTypeDescriptionBuilder) MustBuild() NodeTypeDescription {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NodeTypeDescriptionBuilder) DeepCopy() any {
-	return m.CreateNodeTypeDescriptionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NodeTypeDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NodeTypeDescriptionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_NodeTypeDescriptionBuilder) DeepCopy() any {
+	_copy := b.CreateNodeTypeDescriptionBuilder().(*_NodeTypeDescriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNodeTypeDescriptionBuilder creates a NodeTypeDescriptionBuilder
-func (m *_NodeTypeDescription) CreateNodeTypeDescriptionBuilder() NodeTypeDescriptionBuilder {
-	if m == nil {
+func (b *_NodeTypeDescription) CreateNodeTypeDescriptionBuilder() NodeTypeDescriptionBuilder {
+	if b == nil {
 		return NewNodeTypeDescriptionBuilder()
 	}
-	return &_NodeTypeDescriptionBuilder{_NodeTypeDescription: m.deepCopy()}
+	return &_NodeTypeDescriptionBuilder{_NodeTypeDescription: b.deepCopy()}
 }
 
 ///////////////////////
@@ -409,9 +428,13 @@ func (m *_NodeTypeDescription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

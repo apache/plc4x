@@ -93,45 +93,64 @@ func NewSecurityDataArmReadyNotReadyBuilder() SecurityDataArmReadyNotReadyBuilde
 type _SecurityDataArmReadyNotReadyBuilder struct {
 	*_SecurityDataArmReadyNotReady
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataArmReadyNotReadyBuilder) = (*_SecurityDataArmReadyNotReadyBuilder)(nil)
 
-func (m *_SecurityDataArmReadyNotReadyBuilder) WithMandatoryFields(zoneNumber uint8) SecurityDataArmReadyNotReadyBuilder {
-	return m.WithZoneNumber(zoneNumber)
+func (b *_SecurityDataArmReadyNotReadyBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataArmReadyNotReadyBuilder) WithZoneNumber(zoneNumber uint8) SecurityDataArmReadyNotReadyBuilder {
-	m.ZoneNumber = zoneNumber
-	return m
+func (b *_SecurityDataArmReadyNotReadyBuilder) WithMandatoryFields(zoneNumber uint8) SecurityDataArmReadyNotReadyBuilder {
+	return b.WithZoneNumber(zoneNumber)
 }
 
-func (m *_SecurityDataArmReadyNotReadyBuilder) Build() (SecurityDataArmReadyNotReady, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataArmReadyNotReadyBuilder) WithZoneNumber(zoneNumber uint8) SecurityDataArmReadyNotReadyBuilder {
+	b.ZoneNumber = zoneNumber
+	return b
+}
+
+func (b *_SecurityDataArmReadyNotReadyBuilder) Build() (SecurityDataArmReadyNotReady, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataArmReadyNotReady.deepCopy(), nil
+	return b._SecurityDataArmReadyNotReady.deepCopy(), nil
 }
 
-func (m *_SecurityDataArmReadyNotReadyBuilder) MustBuild() SecurityDataArmReadyNotReady {
-	build, err := m.Build()
+func (b *_SecurityDataArmReadyNotReadyBuilder) MustBuild() SecurityDataArmReadyNotReady {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataArmReadyNotReadyBuilder) DeepCopy() any {
-	return m.CreateSecurityDataArmReadyNotReadyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataArmReadyNotReadyBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataArmReadyNotReadyBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataArmReadyNotReadyBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataArmReadyNotReadyBuilder().(*_SecurityDataArmReadyNotReadyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataArmReadyNotReadyBuilder creates a SecurityDataArmReadyNotReadyBuilder
-func (m *_SecurityDataArmReadyNotReady) CreateSecurityDataArmReadyNotReadyBuilder() SecurityDataArmReadyNotReadyBuilder {
-	if m == nil {
+func (b *_SecurityDataArmReadyNotReady) CreateSecurityDataArmReadyNotReadyBuilder() SecurityDataArmReadyNotReadyBuilder {
+	if b == nil {
 		return NewSecurityDataArmReadyNotReadyBuilder()
 	}
-	return &_SecurityDataArmReadyNotReadyBuilder{_SecurityDataArmReadyNotReady: m.deepCopy()}
+	return &_SecurityDataArmReadyNotReadyBuilder{_SecurityDataArmReadyNotReady: b.deepCopy()}
 }
 
 ///////////////////////
@@ -271,9 +290,13 @@ func (m *_SecurityDataArmReadyNotReady) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -97,45 +97,49 @@ type _ExtensionHeaderBuilder struct {
 
 var _ (ExtensionHeaderBuilder) = (*_ExtensionHeaderBuilder)(nil)
 
-func (m *_ExtensionHeaderBuilder) WithMandatoryFields(xmlbody bool, binaryBody bool) ExtensionHeaderBuilder {
-	return m.WithXmlbody(xmlbody).WithBinaryBody(binaryBody)
+func (b *_ExtensionHeaderBuilder) WithMandatoryFields(xmlbody bool, binaryBody bool) ExtensionHeaderBuilder {
+	return b.WithXmlbody(xmlbody).WithBinaryBody(binaryBody)
 }
 
-func (m *_ExtensionHeaderBuilder) WithXmlbody(xmlbody bool) ExtensionHeaderBuilder {
-	m.Xmlbody = xmlbody
-	return m
+func (b *_ExtensionHeaderBuilder) WithXmlbody(xmlbody bool) ExtensionHeaderBuilder {
+	b.Xmlbody = xmlbody
+	return b
 }
 
-func (m *_ExtensionHeaderBuilder) WithBinaryBody(binaryBody bool) ExtensionHeaderBuilder {
-	m.BinaryBody = binaryBody
-	return m
+func (b *_ExtensionHeaderBuilder) WithBinaryBody(binaryBody bool) ExtensionHeaderBuilder {
+	b.BinaryBody = binaryBody
+	return b
 }
 
-func (m *_ExtensionHeaderBuilder) Build() (ExtensionHeader, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ExtensionHeaderBuilder) Build() (ExtensionHeader, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ExtensionHeader.deepCopy(), nil
+	return b._ExtensionHeader.deepCopy(), nil
 }
 
-func (m *_ExtensionHeaderBuilder) MustBuild() ExtensionHeader {
-	build, err := m.Build()
+func (b *_ExtensionHeaderBuilder) MustBuild() ExtensionHeader {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ExtensionHeaderBuilder) DeepCopy() any {
-	return m.CreateExtensionHeaderBuilder()
+func (b *_ExtensionHeaderBuilder) DeepCopy() any {
+	_copy := b.CreateExtensionHeaderBuilder().(*_ExtensionHeaderBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateExtensionHeaderBuilder creates a ExtensionHeaderBuilder
-func (m *_ExtensionHeader) CreateExtensionHeaderBuilder() ExtensionHeaderBuilder {
-	if m == nil {
+func (b *_ExtensionHeader) CreateExtensionHeaderBuilder() ExtensionHeaderBuilder {
+	if b == nil {
 		return NewExtensionHeaderBuilder()
 	}
-	return &_ExtensionHeaderBuilder{_ExtensionHeader: m.deepCopy()}
+	return &_ExtensionHeaderBuilder{_ExtensionHeader: b.deepCopy()}
 }
 
 ///////////////////////
@@ -304,9 +308,13 @@ func (m *_ExtensionHeader) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

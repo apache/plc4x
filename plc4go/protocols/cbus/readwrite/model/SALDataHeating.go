@@ -82,6 +82,8 @@ type SALDataHeatingBuilder interface {
 	WithMandatoryFields(heatingData LightingData) SALDataHeatingBuilder
 	// WithHeatingData adds HeatingData (property field)
 	WithHeatingData(LightingData) SALDataHeatingBuilder
+	// WithHeatingDataBuilder adds HeatingData (property field) which is build by the builder
+	WithHeatingDataBuilder(func(LightingDataBuilder) LightingDataBuilder) SALDataHeatingBuilder
 	// Build builds the SALDataHeating or returns an error if something is wrong
 	Build() (SALDataHeating, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewSALDataHeatingBuilder() SALDataHeatingBuilder {
 type _SALDataHeatingBuilder struct {
 	*_SALDataHeating
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataHeatingBuilder) = (*_SALDataHeatingBuilder)(nil)
 
-func (m *_SALDataHeatingBuilder) WithMandatoryFields(heatingData LightingData) SALDataHeatingBuilder {
-	return m.WithHeatingData(heatingData)
+func (b *_SALDataHeatingBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataHeatingBuilder) WithHeatingData(heatingData LightingData) SALDataHeatingBuilder {
-	m.HeatingData = heatingData
-	return m
+func (b *_SALDataHeatingBuilder) WithMandatoryFields(heatingData LightingData) SALDataHeatingBuilder {
+	return b.WithHeatingData(heatingData)
 }
 
-func (m *_SALDataHeatingBuilder) Build() (SALDataHeating, error) {
-	if m.HeatingData == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SALDataHeatingBuilder) WithHeatingData(heatingData LightingData) SALDataHeatingBuilder {
+	b.HeatingData = heatingData
+	return b
+}
+
+func (b *_SALDataHeatingBuilder) WithHeatingDataBuilder(builderSupplier func(LightingDataBuilder) LightingDataBuilder) SALDataHeatingBuilder {
+	builder := builderSupplier(b.HeatingData.CreateLightingDataBuilder())
+	var err error
+	b.HeatingData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'heatingData' not set"))
+		b.err.Append(errors.Wrap(err, "LightingDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._SALDataHeating.deepCopy(), nil
+	return b
 }
 
-func (m *_SALDataHeatingBuilder) MustBuild() SALDataHeating {
-	build, err := m.Build()
+func (b *_SALDataHeatingBuilder) Build() (SALDataHeating, error) {
+	if b.HeatingData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'heatingData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataHeating.deepCopy(), nil
+}
+
+func (b *_SALDataHeatingBuilder) MustBuild() SALDataHeating {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataHeatingBuilder) DeepCopy() any {
-	return m.CreateSALDataHeatingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataHeatingBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataHeatingBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataHeatingBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataHeatingBuilder().(*_SALDataHeatingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataHeatingBuilder creates a SALDataHeatingBuilder
-func (m *_SALDataHeating) CreateSALDataHeatingBuilder() SALDataHeatingBuilder {
-	if m == nil {
+func (b *_SALDataHeating) CreateSALDataHeatingBuilder() SALDataHeatingBuilder {
+	if b == nil {
 		return NewSALDataHeatingBuilder()
 	}
-	return &_SALDataHeatingBuilder{_SALDataHeating: m.deepCopy()}
+	return &_SALDataHeatingBuilder{_SALDataHeating: b.deepCopy()}
 }
 
 ///////////////////////
@@ -284,9 +318,13 @@ func (m *_SALDataHeating) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

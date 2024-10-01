@@ -97,10 +97,309 @@ type BACnetPropertyStatesBuilder interface {
 	WithPeekedTagHeader(BACnetTagHeader) BACnetPropertyStatesBuilder
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPropertyStatesBuilder
+	// AsBACnetPropertyStatesBoolean converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesBoolean() interface {
+		BACnetPropertyStatesBooleanBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesBinaryValue converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesBinaryValue() interface {
+		BACnetPropertyStatesBinaryValueBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesEventType converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesEventType() interface {
+		BACnetPropertyStatesEventTypeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesPolarity converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesPolarity() interface {
+		BACnetPropertyStatesPolarityBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesProgramChange converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesProgramChange() interface {
+		BACnetPropertyStatesProgramChangeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesProgramState converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesProgramState() interface {
+		BACnetPropertyStatesProgramStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesReasonForHalt converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesReasonForHalt() interface {
+		BACnetPropertyStatesReasonForHaltBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesReliability converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesReliability() interface {
+		BACnetPropertyStatesReliabilityBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesState converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesState() interface {
+		BACnetPropertyStatesStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesSystemStatus converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesSystemStatus() interface {
+		BACnetPropertyStatesSystemStatusBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesUnits converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesUnits() interface {
+		BACnetPropertyStatesUnitsBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesUnsignedValue converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesUnsignedValue() interface {
+		BACnetPropertyStatesUnsignedValueBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesLifeSafetyMode converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesLifeSafetyMode() interface {
+		BACnetPropertyStatesLifeSafetyModeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesLifeSafetyState converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesLifeSafetyState() interface {
+		BACnetPropertyStatesLifeSafetyStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesRestartReason converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesRestartReason() interface {
+		BACnetPropertyStatesRestartReasonBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesDoorAlarmState converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesDoorAlarmState() interface {
+		BACnetPropertyStatesDoorAlarmStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesAction converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesAction() interface {
+		BACnetPropertyStatesActionBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesDoorSecuredStatus converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesDoorSecuredStatus() interface {
+		BACnetPropertyStatesDoorSecuredStatusBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesDoorStatus converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesDoorStatus() interface {
+		BACnetPropertyStatesDoorStatusBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesDoorValue converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesDoorValue() interface {
+		BACnetPropertyStatesDoorValueBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesFileAccessMethod converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesFileAccessMethod() interface {
+		BACnetPropertyStatesFileAccessMethodBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesLockStatus converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesLockStatus() interface {
+		BACnetPropertyStatesLockStatusBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesLifeSafetyOperations converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesLifeSafetyOperations() interface {
+		BACnetPropertyStatesLifeSafetyOperationsBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesMaintenance converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesMaintenance() interface {
+		BACnetPropertyStatesMaintenanceBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesNodeType converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesNodeType() interface {
+		BACnetPropertyStatesNodeTypeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesNotifyType converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesNotifyType() interface {
+		BACnetPropertyStatesNotifyTypeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesSecurityLevel converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesSecurityLevel() interface {
+		BACnetPropertyStatesSecurityLevelBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesShedState converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesShedState() interface {
+		BACnetPropertyStatesShedStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesSilencedState converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesSilencedState() interface {
+		BACnetPropertyStatesSilencedStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesAccessEvent converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesAccessEvent() interface {
+		BACnetPropertyStatesAccessEventBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesZoneOccupanyState converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesZoneOccupanyState() interface {
+		BACnetPropertyStatesZoneOccupanyStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesAccessCredentialDisableReason converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesAccessCredentialDisableReason() interface {
+		BACnetPropertyStatesAccessCredentialDisableReasonBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesAccessCredentialDisable converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesAccessCredentialDisable() interface {
+		BACnetPropertyStatesAccessCredentialDisableBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesAuthenticationStatus converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesAuthenticationStatus() interface {
+		BACnetPropertyStatesAuthenticationStatusBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesBackupState converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesBackupState() interface {
+		BACnetPropertyStatesBackupStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesWriteStatus converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesWriteStatus() interface {
+		BACnetPropertyStatesWriteStatusBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesLightningInProgress converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesLightningInProgress() interface {
+		BACnetPropertyStatesLightningInProgressBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesLightningOperation converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesLightningOperation() interface {
+		BACnetPropertyStatesLightningOperationBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesLightningTransition converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesLightningTransition() interface {
+		BACnetPropertyStatesLightningTransitionBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesIntegerValue converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesIntegerValue() interface {
+		BACnetPropertyStatesIntegerValueBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesBinaryLightningValue converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesBinaryLightningValue() interface {
+		BACnetPropertyStatesBinaryLightningValueBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesTimerState converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesTimerState() interface {
+		BACnetPropertyStatesTimerStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesTimerTransition converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesTimerTransition() interface {
+		BACnetPropertyStatesTimerTransitionBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesBacnetIpMode converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesBacnetIpMode() interface {
+		BACnetPropertyStatesBacnetIpModeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesNetworkPortCommand converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesNetworkPortCommand() interface {
+		BACnetPropertyStatesNetworkPortCommandBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesNetworkType converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesNetworkType() interface {
+		BACnetPropertyStatesNetworkTypeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesNetworkNumberQuality converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesNetworkNumberQuality() interface {
+		BACnetPropertyStatesNetworkNumberQualityBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesEscalatorOperationDirection converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesEscalatorOperationDirection() interface {
+		BACnetPropertyStatesEscalatorOperationDirectionBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesEscalatorFault converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesEscalatorFault() interface {
+		BACnetPropertyStatesEscalatorFaultBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesEscalatorMode converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesEscalatorMode() interface {
+		BACnetPropertyStatesEscalatorModeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesLiftCarDirection converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesLiftCarDirection() interface {
+		BACnetPropertyStatesLiftCarDirectionBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesLiftCarDoorCommand converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesLiftCarDoorCommand() interface {
+		BACnetPropertyStatesLiftCarDoorCommandBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesLiftCarDriveStatus converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesLiftCarDriveStatus() interface {
+		BACnetPropertyStatesLiftCarDriveStatusBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesLiftCarMode converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesLiftCarMode() interface {
+		BACnetPropertyStatesLiftCarModeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesLiftGroupMode converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesLiftGroupMode() interface {
+		BACnetPropertyStatesLiftGroupModeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesLiftFault converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesLiftFault() interface {
+		BACnetPropertyStatesLiftFaultBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesProtocolLevel converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesProtocolLevel() interface {
+		BACnetPropertyStatesProtocolLevelBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStatesExtendedValue converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStatesExtendedValue() interface {
+		BACnetPropertyStatesExtendedValueBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
+	// AsBACnetPropertyStateActionUnknown converts this build to a subType of BACnetPropertyStates. It is always possible to return to current builder using Done()
+	AsBACnetPropertyStateActionUnknown() interface {
+		BACnetPropertyStateActionUnknownBuilder
+		Done() BACnetPropertyStatesBuilder
+	}
 	// Build builds the BACnetPropertyStates or returns an error if something is wrong
-	Build() (BACnetPropertyStatesContract, error)
+	PartialBuild() (BACnetPropertyStatesContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetPropertyStatesContract
+	PartialMustBuild() BACnetPropertyStatesContract
+	// Build builds the BACnetPropertyStates or returns an error if something is wrong
+	Build() (BACnetPropertyStates, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStates
 }
 
 // NewBACnetPropertyStatesBuilder() creates a BACnetPropertyStatesBuilder
@@ -108,67 +407,1045 @@ func NewBACnetPropertyStatesBuilder() BACnetPropertyStatesBuilder {
 	return &_BACnetPropertyStatesBuilder{_BACnetPropertyStates: new(_BACnetPropertyStates)}
 }
 
+type _BACnetPropertyStatesChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetPropertyStatesContract)
+	buildForBACnetPropertyStates() (BACnetPropertyStates, error)
+}
+
 type _BACnetPropertyStatesBuilder struct {
 	*_BACnetPropertyStates
+
+	childBuilder _BACnetPropertyStatesChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesBuilder) = (*_BACnetPropertyStatesBuilder)(nil)
 
-func (m *_BACnetPropertyStatesBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetPropertyStatesBuilder {
-	return m.WithPeekedTagHeader(peekedTagHeader)
+func (b *_BACnetPropertyStatesBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetPropertyStatesBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
 }
 
-func (m *_BACnetPropertyStatesBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetPropertyStatesBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetPropertyStatesBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetPropertyStatesBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetPropertyStatesBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPropertyStatesBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetPropertyStatesBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPropertyStatesBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesBuilder) Build() (BACnetPropertyStatesContract, error) {
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesBuilder) PartialBuild() (BACnetPropertyStatesContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStates.deepCopy(), nil
+	return b._BACnetPropertyStates.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesBuilder) MustBuild() BACnetPropertyStatesContract {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesBuilder) PartialMustBuild() BACnetPropertyStatesContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesBuilder()
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesBoolean() interface {
+	BACnetPropertyStatesBooleanBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesBooleanBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesBooleanBuilder().(*_BACnetPropertyStatesBooleanBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesBinaryValue() interface {
+	BACnetPropertyStatesBinaryValueBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesBinaryValueBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesBinaryValueBuilder().(*_BACnetPropertyStatesBinaryValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesEventType() interface {
+	BACnetPropertyStatesEventTypeBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesEventTypeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesEventTypeBuilder().(*_BACnetPropertyStatesEventTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesPolarity() interface {
+	BACnetPropertyStatesPolarityBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesPolarityBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesPolarityBuilder().(*_BACnetPropertyStatesPolarityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesProgramChange() interface {
+	BACnetPropertyStatesProgramChangeBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesProgramChangeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesProgramChangeBuilder().(*_BACnetPropertyStatesProgramChangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesProgramState() interface {
+	BACnetPropertyStatesProgramStateBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesProgramStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesProgramStateBuilder().(*_BACnetPropertyStatesProgramStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesReasonForHalt() interface {
+	BACnetPropertyStatesReasonForHaltBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesReasonForHaltBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesReasonForHaltBuilder().(*_BACnetPropertyStatesReasonForHaltBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesReliability() interface {
+	BACnetPropertyStatesReliabilityBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesReliabilityBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesReliabilityBuilder().(*_BACnetPropertyStatesReliabilityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesState() interface {
+	BACnetPropertyStatesStateBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesStateBuilder().(*_BACnetPropertyStatesStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesSystemStatus() interface {
+	BACnetPropertyStatesSystemStatusBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesSystemStatusBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesSystemStatusBuilder().(*_BACnetPropertyStatesSystemStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesUnits() interface {
+	BACnetPropertyStatesUnitsBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesUnitsBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesUnitsBuilder().(*_BACnetPropertyStatesUnitsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesUnsignedValue() interface {
+	BACnetPropertyStatesUnsignedValueBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesUnsignedValueBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesUnsignedValueBuilder().(*_BACnetPropertyStatesUnsignedValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesLifeSafetyMode() interface {
+	BACnetPropertyStatesLifeSafetyModeBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesLifeSafetyModeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesLifeSafetyModeBuilder().(*_BACnetPropertyStatesLifeSafetyModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesLifeSafetyState() interface {
+	BACnetPropertyStatesLifeSafetyStateBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesLifeSafetyStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesLifeSafetyStateBuilder().(*_BACnetPropertyStatesLifeSafetyStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesRestartReason() interface {
+	BACnetPropertyStatesRestartReasonBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesRestartReasonBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesRestartReasonBuilder().(*_BACnetPropertyStatesRestartReasonBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesDoorAlarmState() interface {
+	BACnetPropertyStatesDoorAlarmStateBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesDoorAlarmStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesDoorAlarmStateBuilder().(*_BACnetPropertyStatesDoorAlarmStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesAction() interface {
+	BACnetPropertyStatesActionBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesActionBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesActionBuilder().(*_BACnetPropertyStatesActionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesDoorSecuredStatus() interface {
+	BACnetPropertyStatesDoorSecuredStatusBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesDoorSecuredStatusBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesDoorSecuredStatusBuilder().(*_BACnetPropertyStatesDoorSecuredStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesDoorStatus() interface {
+	BACnetPropertyStatesDoorStatusBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesDoorStatusBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesDoorStatusBuilder().(*_BACnetPropertyStatesDoorStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesDoorValue() interface {
+	BACnetPropertyStatesDoorValueBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesDoorValueBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesDoorValueBuilder().(*_BACnetPropertyStatesDoorValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesFileAccessMethod() interface {
+	BACnetPropertyStatesFileAccessMethodBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesFileAccessMethodBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesFileAccessMethodBuilder().(*_BACnetPropertyStatesFileAccessMethodBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesLockStatus() interface {
+	BACnetPropertyStatesLockStatusBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesLockStatusBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesLockStatusBuilder().(*_BACnetPropertyStatesLockStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesLifeSafetyOperations() interface {
+	BACnetPropertyStatesLifeSafetyOperationsBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesLifeSafetyOperationsBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesLifeSafetyOperationsBuilder().(*_BACnetPropertyStatesLifeSafetyOperationsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesMaintenance() interface {
+	BACnetPropertyStatesMaintenanceBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesMaintenanceBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesMaintenanceBuilder().(*_BACnetPropertyStatesMaintenanceBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesNodeType() interface {
+	BACnetPropertyStatesNodeTypeBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesNodeTypeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesNodeTypeBuilder().(*_BACnetPropertyStatesNodeTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesNotifyType() interface {
+	BACnetPropertyStatesNotifyTypeBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesNotifyTypeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesNotifyTypeBuilder().(*_BACnetPropertyStatesNotifyTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesSecurityLevel() interface {
+	BACnetPropertyStatesSecurityLevelBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesSecurityLevelBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesSecurityLevelBuilder().(*_BACnetPropertyStatesSecurityLevelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesShedState() interface {
+	BACnetPropertyStatesShedStateBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesShedStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesShedStateBuilder().(*_BACnetPropertyStatesShedStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesSilencedState() interface {
+	BACnetPropertyStatesSilencedStateBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesSilencedStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesSilencedStateBuilder().(*_BACnetPropertyStatesSilencedStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesAccessEvent() interface {
+	BACnetPropertyStatesAccessEventBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesAccessEventBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesAccessEventBuilder().(*_BACnetPropertyStatesAccessEventBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesZoneOccupanyState() interface {
+	BACnetPropertyStatesZoneOccupanyStateBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesZoneOccupanyStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesZoneOccupanyStateBuilder().(*_BACnetPropertyStatesZoneOccupanyStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesAccessCredentialDisableReason() interface {
+	BACnetPropertyStatesAccessCredentialDisableReasonBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesAccessCredentialDisableReasonBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesAccessCredentialDisableReasonBuilder().(*_BACnetPropertyStatesAccessCredentialDisableReasonBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesAccessCredentialDisable() interface {
+	BACnetPropertyStatesAccessCredentialDisableBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesAccessCredentialDisableBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesAccessCredentialDisableBuilder().(*_BACnetPropertyStatesAccessCredentialDisableBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesAuthenticationStatus() interface {
+	BACnetPropertyStatesAuthenticationStatusBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesAuthenticationStatusBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesAuthenticationStatusBuilder().(*_BACnetPropertyStatesAuthenticationStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesBackupState() interface {
+	BACnetPropertyStatesBackupStateBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesBackupStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesBackupStateBuilder().(*_BACnetPropertyStatesBackupStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesWriteStatus() interface {
+	BACnetPropertyStatesWriteStatusBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesWriteStatusBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesWriteStatusBuilder().(*_BACnetPropertyStatesWriteStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesLightningInProgress() interface {
+	BACnetPropertyStatesLightningInProgressBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesLightningInProgressBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesLightningInProgressBuilder().(*_BACnetPropertyStatesLightningInProgressBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesLightningOperation() interface {
+	BACnetPropertyStatesLightningOperationBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesLightningOperationBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesLightningOperationBuilder().(*_BACnetPropertyStatesLightningOperationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesLightningTransition() interface {
+	BACnetPropertyStatesLightningTransitionBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesLightningTransitionBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesLightningTransitionBuilder().(*_BACnetPropertyStatesLightningTransitionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesIntegerValue() interface {
+	BACnetPropertyStatesIntegerValueBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesIntegerValueBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesIntegerValueBuilder().(*_BACnetPropertyStatesIntegerValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesBinaryLightningValue() interface {
+	BACnetPropertyStatesBinaryLightningValueBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesBinaryLightningValueBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesBinaryLightningValueBuilder().(*_BACnetPropertyStatesBinaryLightningValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesTimerState() interface {
+	BACnetPropertyStatesTimerStateBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesTimerStateBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesTimerStateBuilder().(*_BACnetPropertyStatesTimerStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesTimerTransition() interface {
+	BACnetPropertyStatesTimerTransitionBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesTimerTransitionBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesTimerTransitionBuilder().(*_BACnetPropertyStatesTimerTransitionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesBacnetIpMode() interface {
+	BACnetPropertyStatesBacnetIpModeBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesBacnetIpModeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesBacnetIpModeBuilder().(*_BACnetPropertyStatesBacnetIpModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesNetworkPortCommand() interface {
+	BACnetPropertyStatesNetworkPortCommandBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesNetworkPortCommandBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesNetworkPortCommandBuilder().(*_BACnetPropertyStatesNetworkPortCommandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesNetworkType() interface {
+	BACnetPropertyStatesNetworkTypeBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesNetworkTypeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesNetworkTypeBuilder().(*_BACnetPropertyStatesNetworkTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesNetworkNumberQuality() interface {
+	BACnetPropertyStatesNetworkNumberQualityBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesNetworkNumberQualityBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesNetworkNumberQualityBuilder().(*_BACnetPropertyStatesNetworkNumberQualityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesEscalatorOperationDirection() interface {
+	BACnetPropertyStatesEscalatorOperationDirectionBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesEscalatorOperationDirectionBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesEscalatorOperationDirectionBuilder().(*_BACnetPropertyStatesEscalatorOperationDirectionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesEscalatorFault() interface {
+	BACnetPropertyStatesEscalatorFaultBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesEscalatorFaultBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesEscalatorFaultBuilder().(*_BACnetPropertyStatesEscalatorFaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesEscalatorMode() interface {
+	BACnetPropertyStatesEscalatorModeBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesEscalatorModeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesEscalatorModeBuilder().(*_BACnetPropertyStatesEscalatorModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesLiftCarDirection() interface {
+	BACnetPropertyStatesLiftCarDirectionBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesLiftCarDirectionBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesLiftCarDirectionBuilder().(*_BACnetPropertyStatesLiftCarDirectionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesLiftCarDoorCommand() interface {
+	BACnetPropertyStatesLiftCarDoorCommandBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesLiftCarDoorCommandBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesLiftCarDoorCommandBuilder().(*_BACnetPropertyStatesLiftCarDoorCommandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesLiftCarDriveStatus() interface {
+	BACnetPropertyStatesLiftCarDriveStatusBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesLiftCarDriveStatusBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesLiftCarDriveStatusBuilder().(*_BACnetPropertyStatesLiftCarDriveStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesLiftCarMode() interface {
+	BACnetPropertyStatesLiftCarModeBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesLiftCarModeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesLiftCarModeBuilder().(*_BACnetPropertyStatesLiftCarModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesLiftGroupMode() interface {
+	BACnetPropertyStatesLiftGroupModeBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesLiftGroupModeBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesLiftGroupModeBuilder().(*_BACnetPropertyStatesLiftGroupModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesLiftFault() interface {
+	BACnetPropertyStatesLiftFaultBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesLiftFaultBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesLiftFaultBuilder().(*_BACnetPropertyStatesLiftFaultBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesProtocolLevel() interface {
+	BACnetPropertyStatesProtocolLevelBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesProtocolLevelBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesProtocolLevelBuilder().(*_BACnetPropertyStatesProtocolLevelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStatesExtendedValue() interface {
+	BACnetPropertyStatesExtendedValueBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStatesExtendedValueBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStatesExtendedValueBuilder().(*_BACnetPropertyStatesExtendedValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) AsBACnetPropertyStateActionUnknown() interface {
+	BACnetPropertyStateActionUnknownBuilder
+	Done() BACnetPropertyStatesBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPropertyStateActionUnknownBuilder
+		Done() BACnetPropertyStatesBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPropertyStateActionUnknownBuilder().(*_BACnetPropertyStateActionUnknownBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPropertyStatesBuilder) Build() (BACnetPropertyStates, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetPropertyStates()
+}
+
+func (b *_BACnetPropertyStatesBuilder) MustBuild() BACnetPropertyStates {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetPropertyStatesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetPropertyStatesChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesBuilder creates a BACnetPropertyStatesBuilder
-func (m *_BACnetPropertyStates) CreateBACnetPropertyStatesBuilder() BACnetPropertyStatesBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStates) CreateBACnetPropertyStatesBuilder() BACnetPropertyStatesBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesBuilder()
 	}
-	return &_BACnetPropertyStatesBuilder{_BACnetPropertyStates: m.deepCopy()}
+	return &_BACnetPropertyStatesBuilder{_BACnetPropertyStates: b.deepCopy()}
 }
 
 ///////////////////////
@@ -306,9 +1583,9 @@ func (m *_BACnetPropertyStates) parse(ctx context.Context, readBuffer utils.Read
 		if _child, err = new(_BACnetPropertyStatesProgramChange).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesProgramChange for type-switch of BACnetPropertyStates")
 		}
-	case peekedTagNumber == uint8(5): // BACnetPropertyStatesProgramChange
-		if _child, err = new(_BACnetPropertyStatesProgramChange).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesProgramChange for type-switch of BACnetPropertyStates")
+	case peekedTagNumber == uint8(5): // BACnetPropertyStatesProgramState
+		if _child, err = new(_BACnetPropertyStatesProgramState).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesProgramState for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(6): // BACnetPropertyStatesReasonForHalt
 		if _child, err = new(_BACnetPropertyStatesReasonForHalt).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
@@ -330,9 +1607,9 @@ func (m *_BACnetPropertyStates) parse(ctx context.Context, readBuffer utils.Read
 		if _child, err = new(_BACnetPropertyStatesUnits).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesUnits for type-switch of BACnetPropertyStates")
 		}
-	case peekedTagNumber == uint8(11): // BACnetPropertyStatesExtendedValue
-		if _child, err = new(_BACnetPropertyStatesExtendedValue).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
-			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesExtendedValue for type-switch of BACnetPropertyStates")
+	case peekedTagNumber == uint8(11): // BACnetPropertyStatesUnsignedValue
+		if _child, err = new(_BACnetPropertyStatesUnsignedValue).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesUnsignedValue for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(12): // BACnetPropertyStatesLifeSafetyMode
 		if _child, err = new(_BACnetPropertyStatesLifeSafetyMode).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {

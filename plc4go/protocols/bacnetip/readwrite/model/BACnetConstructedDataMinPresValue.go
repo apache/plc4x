@@ -100,64 +100,83 @@ func NewBACnetConstructedDataMinPresValueBuilder() BACnetConstructedDataMinPresV
 type _BACnetConstructedDataMinPresValueBuilder struct {
 	*_BACnetConstructedDataMinPresValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMinPresValueBuilder) = (*_BACnetConstructedDataMinPresValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataMinPresValueBuilder) WithMandatoryFields(minPresValue BACnetApplicationTagReal) BACnetConstructedDataMinPresValueBuilder {
-	return m.WithMinPresValue(minPresValue)
+func (b *_BACnetConstructedDataMinPresValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMinPresValueBuilder) WithMinPresValue(minPresValue BACnetApplicationTagReal) BACnetConstructedDataMinPresValueBuilder {
-	m.MinPresValue = minPresValue
-	return m
+func (b *_BACnetConstructedDataMinPresValueBuilder) WithMandatoryFields(minPresValue BACnetApplicationTagReal) BACnetConstructedDataMinPresValueBuilder {
+	return b.WithMinPresValue(minPresValue)
 }
 
-func (m *_BACnetConstructedDataMinPresValueBuilder) WithMinPresValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMinPresValueBuilder {
-	builder := builderSupplier(m.MinPresValue.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataMinPresValueBuilder) WithMinPresValue(minPresValue BACnetApplicationTagReal) BACnetConstructedDataMinPresValueBuilder {
+	b.MinPresValue = minPresValue
+	return b
+}
+
+func (b *_BACnetConstructedDataMinPresValueBuilder) WithMinPresValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMinPresValueBuilder {
+	builder := builderSupplier(b.MinPresValue.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.MinPresValue, err = builder.Build()
+	b.MinPresValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataMinPresValueBuilder) Build() (BACnetConstructedDataMinPresValue, error) {
-	if m.MinPresValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataMinPresValueBuilder) Build() (BACnetConstructedDataMinPresValue, error) {
+	if b.MinPresValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'minPresValue' not set"))
+		b.err.Append(errors.New("mandatory field 'minPresValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataMinPresValue.deepCopy(), nil
+	return b._BACnetConstructedDataMinPresValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataMinPresValueBuilder) MustBuild() BACnetConstructedDataMinPresValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMinPresValueBuilder) MustBuild() BACnetConstructedDataMinPresValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMinPresValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMinPresValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMinPresValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMinPresValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMinPresValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMinPresValueBuilder().(*_BACnetConstructedDataMinPresValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMinPresValueBuilder creates a BACnetConstructedDataMinPresValueBuilder
-func (m *_BACnetConstructedDataMinPresValue) CreateBACnetConstructedDataMinPresValueBuilder() BACnetConstructedDataMinPresValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMinPresValue) CreateBACnetConstructedDataMinPresValueBuilder() BACnetConstructedDataMinPresValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMinPresValueBuilder()
 	}
-	return &_BACnetConstructedDataMinPresValueBuilder{_BACnetConstructedDataMinPresValue: m.deepCopy()}
+	return &_BACnetConstructedDataMinPresValueBuilder{_BACnetConstructedDataMinPresValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataMinPresValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

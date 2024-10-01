@@ -85,10 +85,24 @@ type ConnectionRequestInformationBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ConnectionRequestInformationBuilder
+	// AsConnectionRequestInformationDeviceManagement converts this build to a subType of ConnectionRequestInformation. It is always possible to return to current builder using Done()
+	AsConnectionRequestInformationDeviceManagement() interface {
+		ConnectionRequestInformationDeviceManagementBuilder
+		Done() ConnectionRequestInformationBuilder
+	}
+	// AsConnectionRequestInformationTunnelConnection converts this build to a subType of ConnectionRequestInformation. It is always possible to return to current builder using Done()
+	AsConnectionRequestInformationTunnelConnection() interface {
+		ConnectionRequestInformationTunnelConnectionBuilder
+		Done() ConnectionRequestInformationBuilder
+	}
 	// Build builds the ConnectionRequestInformation or returns an error if something is wrong
-	Build() (ConnectionRequestInformationContract, error)
+	PartialBuild() (ConnectionRequestInformationContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() ConnectionRequestInformationContract
+	PartialMustBuild() ConnectionRequestInformationContract
+	// Build builds the ConnectionRequestInformation or returns an error if something is wrong
+	Build() (ConnectionRequestInformation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectionRequestInformation
 }
 
 // NewConnectionRequestInformationBuilder() creates a ConnectionRequestInformationBuilder
@@ -96,43 +110,109 @@ func NewConnectionRequestInformationBuilder() ConnectionRequestInformationBuilde
 	return &_ConnectionRequestInformationBuilder{_ConnectionRequestInformation: new(_ConnectionRequestInformation)}
 }
 
+type _ConnectionRequestInformationChildBuilder interface {
+	utils.Copyable
+	setParent(ConnectionRequestInformationContract)
+	buildForConnectionRequestInformation() (ConnectionRequestInformation, error)
+}
+
 type _ConnectionRequestInformationBuilder struct {
 	*_ConnectionRequestInformation
+
+	childBuilder _ConnectionRequestInformationChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (ConnectionRequestInformationBuilder) = (*_ConnectionRequestInformationBuilder)(nil)
 
-func (m *_ConnectionRequestInformationBuilder) WithMandatoryFields() ConnectionRequestInformationBuilder {
-	return m
+func (b *_ConnectionRequestInformationBuilder) WithMandatoryFields() ConnectionRequestInformationBuilder {
+	return b
 }
 
-func (m *_ConnectionRequestInformationBuilder) Build() (ConnectionRequestInformationContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ConnectionRequestInformationBuilder) PartialBuild() (ConnectionRequestInformationContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ConnectionRequestInformation.deepCopy(), nil
+	return b._ConnectionRequestInformation.deepCopy(), nil
 }
 
-func (m *_ConnectionRequestInformationBuilder) MustBuild() ConnectionRequestInformationContract {
-	build, err := m.Build()
+func (b *_ConnectionRequestInformationBuilder) PartialMustBuild() ConnectionRequestInformationContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ConnectionRequestInformationBuilder) DeepCopy() any {
-	return m.CreateConnectionRequestInformationBuilder()
+func (b *_ConnectionRequestInformationBuilder) AsConnectionRequestInformationDeviceManagement() interface {
+	ConnectionRequestInformationDeviceManagementBuilder
+	Done() ConnectionRequestInformationBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectionRequestInformationDeviceManagementBuilder
+		Done() ConnectionRequestInformationBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectionRequestInformationDeviceManagementBuilder().(*_ConnectionRequestInformationDeviceManagementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ConnectionRequestInformationBuilder) AsConnectionRequestInformationTunnelConnection() interface {
+	ConnectionRequestInformationTunnelConnectionBuilder
+	Done() ConnectionRequestInformationBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectionRequestInformationTunnelConnectionBuilder
+		Done() ConnectionRequestInformationBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectionRequestInformationTunnelConnectionBuilder().(*_ConnectionRequestInformationTunnelConnectionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ConnectionRequestInformationBuilder) Build() (ConnectionRequestInformation, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForConnectionRequestInformation()
+}
+
+func (b *_ConnectionRequestInformationBuilder) MustBuild() ConnectionRequestInformation {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ConnectionRequestInformationBuilder) DeepCopy() any {
+	_copy := b.CreateConnectionRequestInformationBuilder().(*_ConnectionRequestInformationBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ConnectionRequestInformationChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateConnectionRequestInformationBuilder creates a ConnectionRequestInformationBuilder
-func (m *_ConnectionRequestInformation) CreateConnectionRequestInformationBuilder() ConnectionRequestInformationBuilder {
-	if m == nil {
+func (b *_ConnectionRequestInformation) CreateConnectionRequestInformationBuilder() ConnectionRequestInformationBuilder {
+	if b == nil {
 		return NewConnectionRequestInformationBuilder()
 	}
-	return &_ConnectionRequestInformationBuilder{_ConnectionRequestInformation: m.deepCopy()}
+	return &_ConnectionRequestInformationBuilder{_ConnectionRequestInformation: b.deepCopy()}
 }
 
 ///////////////////////

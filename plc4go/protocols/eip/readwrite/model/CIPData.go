@@ -98,45 +98,49 @@ type _CIPDataBuilder struct {
 
 var _ (CIPDataBuilder) = (*_CIPDataBuilder)(nil)
 
-func (m *_CIPDataBuilder) WithMandatoryFields(dataType CIPDataTypeCode, data []byte) CIPDataBuilder {
-	return m.WithDataType(dataType).WithData(data...)
+func (b *_CIPDataBuilder) WithMandatoryFields(dataType CIPDataTypeCode, data []byte) CIPDataBuilder {
+	return b.WithDataType(dataType).WithData(data...)
 }
 
-func (m *_CIPDataBuilder) WithDataType(dataType CIPDataTypeCode) CIPDataBuilder {
-	m.DataType = dataType
-	return m
+func (b *_CIPDataBuilder) WithDataType(dataType CIPDataTypeCode) CIPDataBuilder {
+	b.DataType = dataType
+	return b
 }
 
-func (m *_CIPDataBuilder) WithData(data ...byte) CIPDataBuilder {
-	m.Data = data
-	return m
+func (b *_CIPDataBuilder) WithData(data ...byte) CIPDataBuilder {
+	b.Data = data
+	return b
 }
 
-func (m *_CIPDataBuilder) Build() (CIPData, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CIPDataBuilder) Build() (CIPData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CIPData.deepCopy(), nil
+	return b._CIPData.deepCopy(), nil
 }
 
-func (m *_CIPDataBuilder) MustBuild() CIPData {
-	build, err := m.Build()
+func (b *_CIPDataBuilder) MustBuild() CIPData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CIPDataBuilder) DeepCopy() any {
-	return m.CreateCIPDataBuilder()
+func (b *_CIPDataBuilder) DeepCopy() any {
+	_copy := b.CreateCIPDataBuilder().(*_CIPDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCIPDataBuilder creates a CIPDataBuilder
-func (m *_CIPData) CreateCIPDataBuilder() CIPDataBuilder {
-	if m == nil {
+func (b *_CIPData) CreateCIPDataBuilder() CIPDataBuilder {
+	if b == nil {
 		return NewCIPDataBuilder()
 	}
-	return &_CIPDataBuilder{_CIPData: m.deepCopy()}
+	return &_CIPDataBuilder{_CIPData: b.deepCopy()}
 }
 
 ///////////////////////
@@ -304,9 +308,13 @@ func (m *_CIPData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

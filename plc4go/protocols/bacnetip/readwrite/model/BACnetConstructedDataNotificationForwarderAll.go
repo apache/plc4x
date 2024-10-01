@@ -85,40 +85,59 @@ func NewBACnetConstructedDataNotificationForwarderAllBuilder() BACnetConstructed
 type _BACnetConstructedDataNotificationForwarderAllBuilder struct {
 	*_BACnetConstructedDataNotificationForwarderAll
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataNotificationForwarderAllBuilder) = (*_BACnetConstructedDataNotificationForwarderAllBuilder)(nil)
 
-func (m *_BACnetConstructedDataNotificationForwarderAllBuilder) WithMandatoryFields() BACnetConstructedDataNotificationForwarderAllBuilder {
-	return m
+func (b *_BACnetConstructedDataNotificationForwarderAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataNotificationForwarderAllBuilder) Build() (BACnetConstructedDataNotificationForwarderAll, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataNotificationForwarderAllBuilder) WithMandatoryFields() BACnetConstructedDataNotificationForwarderAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataNotificationForwarderAllBuilder) Build() (BACnetConstructedDataNotificationForwarderAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataNotificationForwarderAll.deepCopy(), nil
+	return b._BACnetConstructedDataNotificationForwarderAll.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataNotificationForwarderAllBuilder) MustBuild() BACnetConstructedDataNotificationForwarderAll {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataNotificationForwarderAllBuilder) MustBuild() BACnetConstructedDataNotificationForwarderAll {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataNotificationForwarderAllBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataNotificationForwarderAllBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNotificationForwarderAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNotificationForwarderAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNotificationForwarderAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNotificationForwarderAllBuilder().(*_BACnetConstructedDataNotificationForwarderAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataNotificationForwarderAllBuilder creates a BACnetConstructedDataNotificationForwarderAllBuilder
-func (m *_BACnetConstructedDataNotificationForwarderAll) CreateBACnetConstructedDataNotificationForwarderAllBuilder() BACnetConstructedDataNotificationForwarderAllBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataNotificationForwarderAll) CreateBACnetConstructedDataNotificationForwarderAllBuilder() BACnetConstructedDataNotificationForwarderAllBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataNotificationForwarderAllBuilder()
 	}
-	return &_BACnetConstructedDataNotificationForwarderAllBuilder{_BACnetConstructedDataNotificationForwarderAll: m.deepCopy()}
+	return &_BACnetConstructedDataNotificationForwarderAllBuilder{_BACnetConstructedDataNotificationForwarderAll: b.deepCopy()}
 }
 
 ///////////////////////
@@ -244,9 +263,13 @@ func (m *_BACnetConstructedDataNotificationForwarderAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

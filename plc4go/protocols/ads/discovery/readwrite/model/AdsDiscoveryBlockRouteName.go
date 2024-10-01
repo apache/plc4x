@@ -98,64 +98,83 @@ func NewAdsDiscoveryBlockRouteNameBuilder() AdsDiscoveryBlockRouteNameBuilder {
 type _AdsDiscoveryBlockRouteNameBuilder struct {
 	*_AdsDiscoveryBlockRouteName
 
+	parentBuilder *_AdsDiscoveryBlockBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsDiscoveryBlockRouteNameBuilder) = (*_AdsDiscoveryBlockRouteNameBuilder)(nil)
 
-func (m *_AdsDiscoveryBlockRouteNameBuilder) WithMandatoryFields(routeName AmsString) AdsDiscoveryBlockRouteNameBuilder {
-	return m.WithRouteName(routeName)
+func (b *_AdsDiscoveryBlockRouteNameBuilder) setParent(contract AdsDiscoveryBlockContract) {
+	b.AdsDiscoveryBlockContract = contract
 }
 
-func (m *_AdsDiscoveryBlockRouteNameBuilder) WithRouteName(routeName AmsString) AdsDiscoveryBlockRouteNameBuilder {
-	m.RouteName = routeName
-	return m
+func (b *_AdsDiscoveryBlockRouteNameBuilder) WithMandatoryFields(routeName AmsString) AdsDiscoveryBlockRouteNameBuilder {
+	return b.WithRouteName(routeName)
 }
 
-func (m *_AdsDiscoveryBlockRouteNameBuilder) WithRouteNameBuilder(builderSupplier func(AmsStringBuilder) AmsStringBuilder) AdsDiscoveryBlockRouteNameBuilder {
-	builder := builderSupplier(m.RouteName.CreateAmsStringBuilder())
+func (b *_AdsDiscoveryBlockRouteNameBuilder) WithRouteName(routeName AmsString) AdsDiscoveryBlockRouteNameBuilder {
+	b.RouteName = routeName
+	return b
+}
+
+func (b *_AdsDiscoveryBlockRouteNameBuilder) WithRouteNameBuilder(builderSupplier func(AmsStringBuilder) AmsStringBuilder) AdsDiscoveryBlockRouteNameBuilder {
+	builder := builderSupplier(b.RouteName.CreateAmsStringBuilder())
 	var err error
-	m.RouteName, err = builder.Build()
+	b.RouteName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AmsStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AmsStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AdsDiscoveryBlockRouteNameBuilder) Build() (AdsDiscoveryBlockRouteName, error) {
-	if m.RouteName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AdsDiscoveryBlockRouteNameBuilder) Build() (AdsDiscoveryBlockRouteName, error) {
+	if b.RouteName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'routeName' not set"))
+		b.err.Append(errors.New("mandatory field 'routeName' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsDiscoveryBlockRouteName.deepCopy(), nil
+	return b._AdsDiscoveryBlockRouteName.deepCopy(), nil
 }
 
-func (m *_AdsDiscoveryBlockRouteNameBuilder) MustBuild() AdsDiscoveryBlockRouteName {
-	build, err := m.Build()
+func (b *_AdsDiscoveryBlockRouteNameBuilder) MustBuild() AdsDiscoveryBlockRouteName {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsDiscoveryBlockRouteNameBuilder) DeepCopy() any {
-	return m.CreateAdsDiscoveryBlockRouteNameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsDiscoveryBlockRouteNameBuilder) Done() AdsDiscoveryBlockBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsDiscoveryBlockRouteNameBuilder) buildForAdsDiscoveryBlock() (AdsDiscoveryBlock, error) {
+	return b.Build()
+}
+
+func (b *_AdsDiscoveryBlockRouteNameBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryBlockRouteNameBuilder().(*_AdsDiscoveryBlockRouteNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsDiscoveryBlockRouteNameBuilder creates a AdsDiscoveryBlockRouteNameBuilder
-func (m *_AdsDiscoveryBlockRouteName) CreateAdsDiscoveryBlockRouteNameBuilder() AdsDiscoveryBlockRouteNameBuilder {
-	if m == nil {
+func (b *_AdsDiscoveryBlockRouteName) CreateAdsDiscoveryBlockRouteNameBuilder() AdsDiscoveryBlockRouteNameBuilder {
+	if b == nil {
 		return NewAdsDiscoveryBlockRouteNameBuilder()
 	}
-	return &_AdsDiscoveryBlockRouteNameBuilder{_AdsDiscoveryBlockRouteName: m.deepCopy()}
+	return &_AdsDiscoveryBlockRouteNameBuilder{_AdsDiscoveryBlockRouteName: b.deepCopy()}
 }
 
 ///////////////////////
@@ -299,9 +318,13 @@ func (m *_AdsDiscoveryBlockRouteName) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

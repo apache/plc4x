@@ -102,50 +102,69 @@ func NewRequestSmartConnectShortcutBuilder() RequestSmartConnectShortcutBuilder 
 type _RequestSmartConnectShortcutBuilder struct {
 	*_RequestSmartConnectShortcut
 
+	parentBuilder *_RequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (RequestSmartConnectShortcutBuilder) = (*_RequestSmartConnectShortcutBuilder)(nil)
 
-func (m *_RequestSmartConnectShortcutBuilder) WithMandatoryFields(pipePeek RequestType) RequestSmartConnectShortcutBuilder {
-	return m.WithPipePeek(pipePeek)
+func (b *_RequestSmartConnectShortcutBuilder) setParent(contract RequestContract) {
+	b.RequestContract = contract
 }
 
-func (m *_RequestSmartConnectShortcutBuilder) WithPipePeek(pipePeek RequestType) RequestSmartConnectShortcutBuilder {
-	m.PipePeek = pipePeek
-	return m
+func (b *_RequestSmartConnectShortcutBuilder) WithMandatoryFields(pipePeek RequestType) RequestSmartConnectShortcutBuilder {
+	return b.WithPipePeek(pipePeek)
 }
 
-func (m *_RequestSmartConnectShortcutBuilder) WithOptionalSecondPipe(secondPipe byte) RequestSmartConnectShortcutBuilder {
-	m.SecondPipe = &secondPipe
-	return m
+func (b *_RequestSmartConnectShortcutBuilder) WithPipePeek(pipePeek RequestType) RequestSmartConnectShortcutBuilder {
+	b.PipePeek = pipePeek
+	return b
 }
 
-func (m *_RequestSmartConnectShortcutBuilder) Build() (RequestSmartConnectShortcut, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_RequestSmartConnectShortcutBuilder) WithOptionalSecondPipe(secondPipe byte) RequestSmartConnectShortcutBuilder {
+	b.SecondPipe = &secondPipe
+	return b
+}
+
+func (b *_RequestSmartConnectShortcutBuilder) Build() (RequestSmartConnectShortcut, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._RequestSmartConnectShortcut.deepCopy(), nil
+	return b._RequestSmartConnectShortcut.deepCopy(), nil
 }
 
-func (m *_RequestSmartConnectShortcutBuilder) MustBuild() RequestSmartConnectShortcut {
-	build, err := m.Build()
+func (b *_RequestSmartConnectShortcutBuilder) MustBuild() RequestSmartConnectShortcut {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_RequestSmartConnectShortcutBuilder) DeepCopy() any {
-	return m.CreateRequestSmartConnectShortcutBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RequestSmartConnectShortcutBuilder) Done() RequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RequestSmartConnectShortcutBuilder) buildForRequest() (Request, error) {
+	return b.Build()
+}
+
+func (b *_RequestSmartConnectShortcutBuilder) DeepCopy() any {
+	_copy := b.CreateRequestSmartConnectShortcutBuilder().(*_RequestSmartConnectShortcutBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateRequestSmartConnectShortcutBuilder creates a RequestSmartConnectShortcutBuilder
-func (m *_RequestSmartConnectShortcut) CreateRequestSmartConnectShortcutBuilder() RequestSmartConnectShortcutBuilder {
-	if m == nil {
+func (b *_RequestSmartConnectShortcut) CreateRequestSmartConnectShortcutBuilder() RequestSmartConnectShortcutBuilder {
+	if b == nil {
 		return NewRequestSmartConnectShortcutBuilder()
 	}
-	return &_RequestSmartConnectShortcutBuilder{_RequestSmartConnectShortcut: m.deepCopy()}
+	return &_RequestSmartConnectShortcutBuilder{_RequestSmartConnectShortcut: b.deepCopy()}
 }
 
 ///////////////////////
@@ -325,9 +344,13 @@ func (m *_RequestSmartConnectShortcut) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

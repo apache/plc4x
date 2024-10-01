@@ -93,45 +93,64 @@ func NewIdentifyReplyCommandGAVValuesStoredBuilder() IdentifyReplyCommandGAVValu
 type _IdentifyReplyCommandGAVValuesStoredBuilder struct {
 	*_IdentifyReplyCommandGAVValuesStored
 
+	parentBuilder *_IdentifyReplyCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (IdentifyReplyCommandGAVValuesStoredBuilder) = (*_IdentifyReplyCommandGAVValuesStoredBuilder)(nil)
 
-func (m *_IdentifyReplyCommandGAVValuesStoredBuilder) WithMandatoryFields(values []byte) IdentifyReplyCommandGAVValuesStoredBuilder {
-	return m.WithValues(values...)
+func (b *_IdentifyReplyCommandGAVValuesStoredBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
 }
 
-func (m *_IdentifyReplyCommandGAVValuesStoredBuilder) WithValues(values ...byte) IdentifyReplyCommandGAVValuesStoredBuilder {
-	m.Values = values
-	return m
+func (b *_IdentifyReplyCommandGAVValuesStoredBuilder) WithMandatoryFields(values []byte) IdentifyReplyCommandGAVValuesStoredBuilder {
+	return b.WithValues(values...)
 }
 
-func (m *_IdentifyReplyCommandGAVValuesStoredBuilder) Build() (IdentifyReplyCommandGAVValuesStored, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_IdentifyReplyCommandGAVValuesStoredBuilder) WithValues(values ...byte) IdentifyReplyCommandGAVValuesStoredBuilder {
+	b.Values = values
+	return b
+}
+
+func (b *_IdentifyReplyCommandGAVValuesStoredBuilder) Build() (IdentifyReplyCommandGAVValuesStored, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommandGAVValuesStored.deepCopy(), nil
+	return b._IdentifyReplyCommandGAVValuesStored.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandGAVValuesStoredBuilder) MustBuild() IdentifyReplyCommandGAVValuesStored {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandGAVValuesStoredBuilder) MustBuild() IdentifyReplyCommandGAVValuesStored {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandGAVValuesStoredBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandGAVValuesStoredBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandGAVValuesStoredBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandGAVValuesStoredBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandGAVValuesStoredBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandGAVValuesStoredBuilder().(*_IdentifyReplyCommandGAVValuesStoredBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandGAVValuesStoredBuilder creates a IdentifyReplyCommandGAVValuesStoredBuilder
-func (m *_IdentifyReplyCommandGAVValuesStored) CreateIdentifyReplyCommandGAVValuesStoredBuilder() IdentifyReplyCommandGAVValuesStoredBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommandGAVValuesStored) CreateIdentifyReplyCommandGAVValuesStoredBuilder() IdentifyReplyCommandGAVValuesStoredBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandGAVValuesStoredBuilder()
 	}
-	return &_IdentifyReplyCommandGAVValuesStoredBuilder{_IdentifyReplyCommandGAVValuesStored: m.deepCopy()}
+	return &_IdentifyReplyCommandGAVValuesStoredBuilder{_IdentifyReplyCommandGAVValuesStored: b.deepCopy()}
 }
 
 ///////////////////////
@@ -277,9 +296,13 @@ func (m *_IdentifyReplyCommandGAVValuesStored) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataStartTimeBuilder() BACnetConstructedDataStartTimeBu
 type _BACnetConstructedDataStartTimeBuilder struct {
 	*_BACnetConstructedDataStartTime
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataStartTimeBuilder) = (*_BACnetConstructedDataStartTimeBuilder)(nil)
 
-func (m *_BACnetConstructedDataStartTimeBuilder) WithMandatoryFields(startTime BACnetDateTime) BACnetConstructedDataStartTimeBuilder {
-	return m.WithStartTime(startTime)
+func (b *_BACnetConstructedDataStartTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataStartTimeBuilder) WithStartTime(startTime BACnetDateTime) BACnetConstructedDataStartTimeBuilder {
-	m.StartTime = startTime
-	return m
+func (b *_BACnetConstructedDataStartTimeBuilder) WithMandatoryFields(startTime BACnetDateTime) BACnetConstructedDataStartTimeBuilder {
+	return b.WithStartTime(startTime)
 }
 
-func (m *_BACnetConstructedDataStartTimeBuilder) WithStartTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataStartTimeBuilder {
-	builder := builderSupplier(m.StartTime.CreateBACnetDateTimeBuilder())
+func (b *_BACnetConstructedDataStartTimeBuilder) WithStartTime(startTime BACnetDateTime) BACnetConstructedDataStartTimeBuilder {
+	b.StartTime = startTime
+	return b
+}
+
+func (b *_BACnetConstructedDataStartTimeBuilder) WithStartTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataStartTimeBuilder {
+	builder := builderSupplier(b.StartTime.CreateBACnetDateTimeBuilder())
 	var err error
-	m.StartTime, err = builder.Build()
+	b.StartTime, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataStartTimeBuilder) Build() (BACnetConstructedDataStartTime, error) {
-	if m.StartTime == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataStartTimeBuilder) Build() (BACnetConstructedDataStartTime, error) {
+	if b.StartTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'startTime' not set"))
+		b.err.Append(errors.New("mandatory field 'startTime' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataStartTime.deepCopy(), nil
+	return b._BACnetConstructedDataStartTime.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataStartTimeBuilder) MustBuild() BACnetConstructedDataStartTime {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataStartTimeBuilder) MustBuild() BACnetConstructedDataStartTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataStartTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataStartTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataStartTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataStartTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataStartTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataStartTimeBuilder().(*_BACnetConstructedDataStartTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataStartTimeBuilder creates a BACnetConstructedDataStartTimeBuilder
-func (m *_BACnetConstructedDataStartTime) CreateBACnetConstructedDataStartTimeBuilder() BACnetConstructedDataStartTimeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataStartTime) CreateBACnetConstructedDataStartTimeBuilder() BACnetConstructedDataStartTimeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataStartTimeBuilder()
 	}
-	return &_BACnetConstructedDataStartTimeBuilder{_BACnetConstructedDataStartTime: m.deepCopy()}
+	return &_BACnetConstructedDataStartTimeBuilder{_BACnetConstructedDataStartTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataStartTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -98,59 +98,63 @@ type _BACnetClosingTagBuilder struct {
 
 var _ (BACnetClosingTagBuilder) = (*_BACnetClosingTagBuilder)(nil)
 
-func (m *_BACnetClosingTagBuilder) WithMandatoryFields(header BACnetTagHeader) BACnetClosingTagBuilder {
-	return m.WithHeader(header)
+func (b *_BACnetClosingTagBuilder) WithMandatoryFields(header BACnetTagHeader) BACnetClosingTagBuilder {
+	return b.WithHeader(header)
 }
 
-func (m *_BACnetClosingTagBuilder) WithHeader(header BACnetTagHeader) BACnetClosingTagBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetClosingTagBuilder) WithHeader(header BACnetTagHeader) BACnetClosingTagBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetClosingTagBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetClosingTagBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetClosingTagBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetClosingTagBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetClosingTagBuilder) Build() (BACnetClosingTag, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetClosingTagBuilder) Build() (BACnetClosingTag, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetClosingTag.deepCopy(), nil
+	return b._BACnetClosingTag.deepCopy(), nil
 }
 
-func (m *_BACnetClosingTagBuilder) MustBuild() BACnetClosingTag {
-	build, err := m.Build()
+func (b *_BACnetClosingTagBuilder) MustBuild() BACnetClosingTag {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetClosingTagBuilder) DeepCopy() any {
-	return m.CreateBACnetClosingTagBuilder()
+func (b *_BACnetClosingTagBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetClosingTagBuilder().(*_BACnetClosingTagBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetClosingTagBuilder creates a BACnetClosingTagBuilder
-func (m *_BACnetClosingTag) CreateBACnetClosingTagBuilder() BACnetClosingTagBuilder {
-	if m == nil {
+func (b *_BACnetClosingTag) CreateBACnetClosingTagBuilder() BACnetClosingTagBuilder {
+	if b == nil {
 		return NewBACnetClosingTagBuilder()
 	}
-	return &_BACnetClosingTagBuilder{_BACnetClosingTag: m.deepCopy()}
+	return &_BACnetClosingTagBuilder{_BACnetClosingTag: b.deepCopy()}
 }
 
 ///////////////////////
@@ -313,9 +317,13 @@ func (m *_BACnetClosingTag) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

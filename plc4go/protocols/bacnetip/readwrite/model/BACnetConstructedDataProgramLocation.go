@@ -100,64 +100,83 @@ func NewBACnetConstructedDataProgramLocationBuilder() BACnetConstructedDataProgr
 type _BACnetConstructedDataProgramLocationBuilder struct {
 	*_BACnetConstructedDataProgramLocation
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataProgramLocationBuilder) = (*_BACnetConstructedDataProgramLocationBuilder)(nil)
 
-func (m *_BACnetConstructedDataProgramLocationBuilder) WithMandatoryFields(programLocation BACnetApplicationTagCharacterString) BACnetConstructedDataProgramLocationBuilder {
-	return m.WithProgramLocation(programLocation)
+func (b *_BACnetConstructedDataProgramLocationBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataProgramLocationBuilder) WithProgramLocation(programLocation BACnetApplicationTagCharacterString) BACnetConstructedDataProgramLocationBuilder {
-	m.ProgramLocation = programLocation
-	return m
+func (b *_BACnetConstructedDataProgramLocationBuilder) WithMandatoryFields(programLocation BACnetApplicationTagCharacterString) BACnetConstructedDataProgramLocationBuilder {
+	return b.WithProgramLocation(programLocation)
 }
 
-func (m *_BACnetConstructedDataProgramLocationBuilder) WithProgramLocationBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataProgramLocationBuilder {
-	builder := builderSupplier(m.ProgramLocation.CreateBACnetApplicationTagCharacterStringBuilder())
+func (b *_BACnetConstructedDataProgramLocationBuilder) WithProgramLocation(programLocation BACnetApplicationTagCharacterString) BACnetConstructedDataProgramLocationBuilder {
+	b.ProgramLocation = programLocation
+	return b
+}
+
+func (b *_BACnetConstructedDataProgramLocationBuilder) WithProgramLocationBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataProgramLocationBuilder {
+	builder := builderSupplier(b.ProgramLocation.CreateBACnetApplicationTagCharacterStringBuilder())
 	var err error
-	m.ProgramLocation, err = builder.Build()
+	b.ProgramLocation, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataProgramLocationBuilder) Build() (BACnetConstructedDataProgramLocation, error) {
-	if m.ProgramLocation == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataProgramLocationBuilder) Build() (BACnetConstructedDataProgramLocation, error) {
+	if b.ProgramLocation == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'programLocation' not set"))
+		b.err.Append(errors.New("mandatory field 'programLocation' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataProgramLocation.deepCopy(), nil
+	return b._BACnetConstructedDataProgramLocation.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataProgramLocationBuilder) MustBuild() BACnetConstructedDataProgramLocation {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataProgramLocationBuilder) MustBuild() BACnetConstructedDataProgramLocation {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataProgramLocationBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataProgramLocationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataProgramLocationBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataProgramLocationBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataProgramLocationBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataProgramLocationBuilder().(*_BACnetConstructedDataProgramLocationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataProgramLocationBuilder creates a BACnetConstructedDataProgramLocationBuilder
-func (m *_BACnetConstructedDataProgramLocation) CreateBACnetConstructedDataProgramLocationBuilder() BACnetConstructedDataProgramLocationBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataProgramLocation) CreateBACnetConstructedDataProgramLocationBuilder() BACnetConstructedDataProgramLocationBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataProgramLocationBuilder()
 	}
-	return &_BACnetConstructedDataProgramLocationBuilder{_BACnetConstructedDataProgramLocation: m.deepCopy()}
+	return &_BACnetConstructedDataProgramLocationBuilder{_BACnetConstructedDataProgramLocation: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataProgramLocation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

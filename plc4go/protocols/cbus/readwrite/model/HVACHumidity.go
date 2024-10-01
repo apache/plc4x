@@ -92,40 +92,44 @@ type _HVACHumidityBuilder struct {
 
 var _ (HVACHumidityBuilder) = (*_HVACHumidityBuilder)(nil)
 
-func (m *_HVACHumidityBuilder) WithMandatoryFields(humidityValue uint16) HVACHumidityBuilder {
-	return m.WithHumidityValue(humidityValue)
+func (b *_HVACHumidityBuilder) WithMandatoryFields(humidityValue uint16) HVACHumidityBuilder {
+	return b.WithHumidityValue(humidityValue)
 }
 
-func (m *_HVACHumidityBuilder) WithHumidityValue(humidityValue uint16) HVACHumidityBuilder {
-	m.HumidityValue = humidityValue
-	return m
+func (b *_HVACHumidityBuilder) WithHumidityValue(humidityValue uint16) HVACHumidityBuilder {
+	b.HumidityValue = humidityValue
+	return b
 }
 
-func (m *_HVACHumidityBuilder) Build() (HVACHumidity, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_HVACHumidityBuilder) Build() (HVACHumidity, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HVACHumidity.deepCopy(), nil
+	return b._HVACHumidity.deepCopy(), nil
 }
 
-func (m *_HVACHumidityBuilder) MustBuild() HVACHumidity {
-	build, err := m.Build()
+func (b *_HVACHumidityBuilder) MustBuild() HVACHumidity {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HVACHumidityBuilder) DeepCopy() any {
-	return m.CreateHVACHumidityBuilder()
+func (b *_HVACHumidityBuilder) DeepCopy() any {
+	_copy := b.CreateHVACHumidityBuilder().(*_HVACHumidityBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHVACHumidityBuilder creates a HVACHumidityBuilder
-func (m *_HVACHumidity) CreateHVACHumidityBuilder() HVACHumidityBuilder {
-	if m == nil {
+func (b *_HVACHumidity) CreateHVACHumidityBuilder() HVACHumidityBuilder {
+	if b == nil {
 		return NewHVACHumidityBuilder()
 	}
-	return &_HVACHumidityBuilder{_HVACHumidity: m.deepCopy()}
+	return &_HVACHumidityBuilder{_HVACHumidity: b.deepCopy()}
 }
 
 ///////////////////////
@@ -291,9 +295,13 @@ func (m *_HVACHumidity) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

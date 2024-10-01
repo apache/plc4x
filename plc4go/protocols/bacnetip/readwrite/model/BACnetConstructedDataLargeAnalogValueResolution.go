@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLargeAnalogValueResolutionBuilder() BACnetConstruct
 type _BACnetConstructedDataLargeAnalogValueResolutionBuilder struct {
 	*_BACnetConstructedDataLargeAnalogValueResolution
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLargeAnalogValueResolutionBuilder) = (*_BACnetConstructedDataLargeAnalogValueResolutionBuilder)(nil)
 
-func (m *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) WithMandatoryFields(resolution BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueResolutionBuilder {
-	return m.WithResolution(resolution)
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) WithResolution(resolution BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueResolutionBuilder {
-	m.Resolution = resolution
-	return m
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) WithMandatoryFields(resolution BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueResolutionBuilder {
+	return b.WithResolution(resolution)
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) WithResolutionBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueResolutionBuilder {
-	builder := builderSupplier(m.Resolution.CreateBACnetApplicationTagDoubleBuilder())
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) WithResolution(resolution BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueResolutionBuilder {
+	b.Resolution = resolution
+	return b
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) WithResolutionBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueResolutionBuilder {
+	builder := builderSupplier(b.Resolution.CreateBACnetApplicationTagDoubleBuilder())
 	var err error
-	m.Resolution, err = builder.Build()
+	b.Resolution, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) Build() (BACnetConstructedDataLargeAnalogValueResolution, error) {
-	if m.Resolution == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) Build() (BACnetConstructedDataLargeAnalogValueResolution, error) {
+	if b.Resolution == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'resolution' not set"))
+		b.err.Append(errors.New("mandatory field 'resolution' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLargeAnalogValueResolution.deepCopy(), nil
+	return b._BACnetConstructedDataLargeAnalogValueResolution.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueResolution {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueResolution {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLargeAnalogValueResolutionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLargeAnalogValueResolutionBuilder().(*_BACnetConstructedDataLargeAnalogValueResolutionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLargeAnalogValueResolutionBuilder creates a BACnetConstructedDataLargeAnalogValueResolutionBuilder
-func (m *_BACnetConstructedDataLargeAnalogValueResolution) CreateBACnetConstructedDataLargeAnalogValueResolutionBuilder() BACnetConstructedDataLargeAnalogValueResolutionBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLargeAnalogValueResolution) CreateBACnetConstructedDataLargeAnalogValueResolutionBuilder() BACnetConstructedDataLargeAnalogValueResolutionBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLargeAnalogValueResolutionBuilder()
 	}
-	return &_BACnetConstructedDataLargeAnalogValueResolutionBuilder{_BACnetConstructedDataLargeAnalogValueResolution: m.deepCopy()}
+	return &_BACnetConstructedDataLargeAnalogValueResolutionBuilder{_BACnetConstructedDataLargeAnalogValueResolution: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

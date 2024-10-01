@@ -117,65 +117,84 @@ func NewCycServiceItemAnyTypeBuilder() CycServiceItemAnyTypeBuilder {
 type _CycServiceItemAnyTypeBuilder struct {
 	*_CycServiceItemAnyType
 
+	parentBuilder *_CycServiceItemTypeBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CycServiceItemAnyTypeBuilder) = (*_CycServiceItemAnyTypeBuilder)(nil)
 
-func (m *_CycServiceItemAnyTypeBuilder) WithMandatoryFields(transportSize TransportSize, length uint16, dbNumber uint16, memoryArea MemoryArea, address uint32) CycServiceItemAnyTypeBuilder {
-	return m.WithTransportSize(transportSize).WithLength(length).WithDbNumber(dbNumber).WithMemoryArea(memoryArea).WithAddress(address)
+func (b *_CycServiceItemAnyTypeBuilder) setParent(contract CycServiceItemTypeContract) {
+	b.CycServiceItemTypeContract = contract
 }
 
-func (m *_CycServiceItemAnyTypeBuilder) WithTransportSize(transportSize TransportSize) CycServiceItemAnyTypeBuilder {
-	m.TransportSize = transportSize
-	return m
+func (b *_CycServiceItemAnyTypeBuilder) WithMandatoryFields(transportSize TransportSize, length uint16, dbNumber uint16, memoryArea MemoryArea, address uint32) CycServiceItemAnyTypeBuilder {
+	return b.WithTransportSize(transportSize).WithLength(length).WithDbNumber(dbNumber).WithMemoryArea(memoryArea).WithAddress(address)
 }
 
-func (m *_CycServiceItemAnyTypeBuilder) WithLength(length uint16) CycServiceItemAnyTypeBuilder {
-	m.Length = length
-	return m
+func (b *_CycServiceItemAnyTypeBuilder) WithTransportSize(transportSize TransportSize) CycServiceItemAnyTypeBuilder {
+	b.TransportSize = transportSize
+	return b
 }
 
-func (m *_CycServiceItemAnyTypeBuilder) WithDbNumber(dbNumber uint16) CycServiceItemAnyTypeBuilder {
-	m.DbNumber = dbNumber
-	return m
+func (b *_CycServiceItemAnyTypeBuilder) WithLength(length uint16) CycServiceItemAnyTypeBuilder {
+	b.Length = length
+	return b
 }
 
-func (m *_CycServiceItemAnyTypeBuilder) WithMemoryArea(memoryArea MemoryArea) CycServiceItemAnyTypeBuilder {
-	m.MemoryArea = memoryArea
-	return m
+func (b *_CycServiceItemAnyTypeBuilder) WithDbNumber(dbNumber uint16) CycServiceItemAnyTypeBuilder {
+	b.DbNumber = dbNumber
+	return b
 }
 
-func (m *_CycServiceItemAnyTypeBuilder) WithAddress(address uint32) CycServiceItemAnyTypeBuilder {
-	m.Address = address
-	return m
+func (b *_CycServiceItemAnyTypeBuilder) WithMemoryArea(memoryArea MemoryArea) CycServiceItemAnyTypeBuilder {
+	b.MemoryArea = memoryArea
+	return b
 }
 
-func (m *_CycServiceItemAnyTypeBuilder) Build() (CycServiceItemAnyType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CycServiceItemAnyTypeBuilder) WithAddress(address uint32) CycServiceItemAnyTypeBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_CycServiceItemAnyTypeBuilder) Build() (CycServiceItemAnyType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CycServiceItemAnyType.deepCopy(), nil
+	return b._CycServiceItemAnyType.deepCopy(), nil
 }
 
-func (m *_CycServiceItemAnyTypeBuilder) MustBuild() CycServiceItemAnyType {
-	build, err := m.Build()
+func (b *_CycServiceItemAnyTypeBuilder) MustBuild() CycServiceItemAnyType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CycServiceItemAnyTypeBuilder) DeepCopy() any {
-	return m.CreateCycServiceItemAnyTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CycServiceItemAnyTypeBuilder) Done() CycServiceItemTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CycServiceItemAnyTypeBuilder) buildForCycServiceItemType() (CycServiceItemType, error) {
+	return b.Build()
+}
+
+func (b *_CycServiceItemAnyTypeBuilder) DeepCopy() any {
+	_copy := b.CreateCycServiceItemAnyTypeBuilder().(*_CycServiceItemAnyTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCycServiceItemAnyTypeBuilder creates a CycServiceItemAnyTypeBuilder
-func (m *_CycServiceItemAnyType) CreateCycServiceItemAnyTypeBuilder() CycServiceItemAnyTypeBuilder {
-	if m == nil {
+func (b *_CycServiceItemAnyType) CreateCycServiceItemAnyTypeBuilder() CycServiceItemAnyTypeBuilder {
+	if b == nil {
 		return NewCycServiceItemAnyTypeBuilder()
 	}
-	return &_CycServiceItemAnyTypeBuilder{_CycServiceItemAnyType: m.deepCopy()}
+	return &_CycServiceItemAnyTypeBuilder{_CycServiceItemAnyType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -387,9 +406,13 @@ func (m *_CycServiceItemAnyType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

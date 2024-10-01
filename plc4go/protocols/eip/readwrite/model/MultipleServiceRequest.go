@@ -102,64 +102,83 @@ func NewMultipleServiceRequestBuilder() MultipleServiceRequestBuilder {
 type _MultipleServiceRequestBuilder struct {
 	*_MultipleServiceRequest
 
+	parentBuilder *_CipServiceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MultipleServiceRequestBuilder) = (*_MultipleServiceRequestBuilder)(nil)
 
-func (m *_MultipleServiceRequestBuilder) WithMandatoryFields(data Services) MultipleServiceRequestBuilder {
-	return m.WithData(data)
+func (b *_MultipleServiceRequestBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
 }
 
-func (m *_MultipleServiceRequestBuilder) WithData(data Services) MultipleServiceRequestBuilder {
-	m.Data = data
-	return m
+func (b *_MultipleServiceRequestBuilder) WithMandatoryFields(data Services) MultipleServiceRequestBuilder {
+	return b.WithData(data)
 }
 
-func (m *_MultipleServiceRequestBuilder) WithDataBuilder(builderSupplier func(ServicesBuilder) ServicesBuilder) MultipleServiceRequestBuilder {
-	builder := builderSupplier(m.Data.CreateServicesBuilder())
+func (b *_MultipleServiceRequestBuilder) WithData(data Services) MultipleServiceRequestBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_MultipleServiceRequestBuilder) WithDataBuilder(builderSupplier func(ServicesBuilder) ServicesBuilder) MultipleServiceRequestBuilder {
+	builder := builderSupplier(b.Data.CreateServicesBuilder())
 	var err error
-	m.Data, err = builder.Build()
+	b.Data, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ServicesBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ServicesBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_MultipleServiceRequestBuilder) Build() (MultipleServiceRequest, error) {
-	if m.Data == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_MultipleServiceRequestBuilder) Build() (MultipleServiceRequest, error) {
+	if b.Data == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'data' not set"))
+		b.err.Append(errors.New("mandatory field 'data' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MultipleServiceRequest.deepCopy(), nil
+	return b._MultipleServiceRequest.deepCopy(), nil
 }
 
-func (m *_MultipleServiceRequestBuilder) MustBuild() MultipleServiceRequest {
-	build, err := m.Build()
+func (b *_MultipleServiceRequestBuilder) MustBuild() MultipleServiceRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MultipleServiceRequestBuilder) DeepCopy() any {
-	return m.CreateMultipleServiceRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MultipleServiceRequestBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MultipleServiceRequestBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_MultipleServiceRequestBuilder) DeepCopy() any {
+	_copy := b.CreateMultipleServiceRequestBuilder().(*_MultipleServiceRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMultipleServiceRequestBuilder creates a MultipleServiceRequestBuilder
-func (m *_MultipleServiceRequest) CreateMultipleServiceRequestBuilder() MultipleServiceRequestBuilder {
-	if m == nil {
+func (b *_MultipleServiceRequest) CreateMultipleServiceRequestBuilder() MultipleServiceRequestBuilder {
+	if b == nil {
 		return NewMultipleServiceRequestBuilder()
 	}
-	return &_MultipleServiceRequestBuilder{_MultipleServiceRequest: m.deepCopy()}
+	return &_MultipleServiceRequestBuilder{_MultipleServiceRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -354,9 +373,13 @@ func (m *_MultipleServiceRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

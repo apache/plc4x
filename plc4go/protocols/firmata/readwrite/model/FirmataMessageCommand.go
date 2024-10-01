@@ -84,6 +84,8 @@ type FirmataMessageCommandBuilder interface {
 	WithMandatoryFields(command FirmataCommand) FirmataMessageCommandBuilder
 	// WithCommand adds Command (property field)
 	WithCommand(FirmataCommand) FirmataMessageCommandBuilder
+	// WithCommandBuilder adds Command (property field) which is build by the builder
+	WithCommandBuilder(func(FirmataCommandBuilder) FirmataCommandBuilder) FirmataMessageCommandBuilder
 	// Build builds the FirmataMessageCommand or returns an error if something is wrong
 	Build() (FirmataMessageCommand, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewFirmataMessageCommandBuilder() FirmataMessageCommandBuilder {
 type _FirmataMessageCommandBuilder struct {
 	*_FirmataMessageCommand
 
+	parentBuilder *_FirmataMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (FirmataMessageCommandBuilder) = (*_FirmataMessageCommandBuilder)(nil)
 
-func (m *_FirmataMessageCommandBuilder) WithMandatoryFields(command FirmataCommand) FirmataMessageCommandBuilder {
-	return m.WithCommand(command)
+func (b *_FirmataMessageCommandBuilder) setParent(contract FirmataMessageContract) {
+	b.FirmataMessageContract = contract
 }
 
-func (m *_FirmataMessageCommandBuilder) WithCommand(command FirmataCommand) FirmataMessageCommandBuilder {
-	m.Command = command
-	return m
+func (b *_FirmataMessageCommandBuilder) WithMandatoryFields(command FirmataCommand) FirmataMessageCommandBuilder {
+	return b.WithCommand(command)
 }
 
-func (m *_FirmataMessageCommandBuilder) Build() (FirmataMessageCommand, error) {
-	if m.Command == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_FirmataMessageCommandBuilder) WithCommand(command FirmataCommand) FirmataMessageCommandBuilder {
+	b.Command = command
+	return b
+}
+
+func (b *_FirmataMessageCommandBuilder) WithCommandBuilder(builderSupplier func(FirmataCommandBuilder) FirmataCommandBuilder) FirmataMessageCommandBuilder {
+	builder := builderSupplier(b.Command.CreateFirmataCommandBuilder())
+	var err error
+	b.Command, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'command' not set"))
+		b.err.Append(errors.Wrap(err, "FirmataCommandBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._FirmataMessageCommand.deepCopy(), nil
+	return b
 }
 
-func (m *_FirmataMessageCommandBuilder) MustBuild() FirmataMessageCommand {
-	build, err := m.Build()
+func (b *_FirmataMessageCommandBuilder) Build() (FirmataMessageCommand, error) {
+	if b.Command == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'command' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._FirmataMessageCommand.deepCopy(), nil
+}
+
+func (b *_FirmataMessageCommandBuilder) MustBuild() FirmataMessageCommand {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FirmataMessageCommandBuilder) DeepCopy() any {
-	return m.CreateFirmataMessageCommandBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FirmataMessageCommandBuilder) Done() FirmataMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FirmataMessageCommandBuilder) buildForFirmataMessage() (FirmataMessage, error) {
+	return b.Build()
+}
+
+func (b *_FirmataMessageCommandBuilder) DeepCopy() any {
+	_copy := b.CreateFirmataMessageCommandBuilder().(*_FirmataMessageCommandBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFirmataMessageCommandBuilder creates a FirmataMessageCommandBuilder
-func (m *_FirmataMessageCommand) CreateFirmataMessageCommandBuilder() FirmataMessageCommandBuilder {
-	if m == nil {
+func (b *_FirmataMessageCommand) CreateFirmataMessageCommandBuilder() FirmataMessageCommandBuilder {
+	if b == nil {
 		return NewFirmataMessageCommandBuilder()
 	}
-	return &_FirmataMessageCommandBuilder{_FirmataMessageCommand: m.deepCopy()}
+	return &_FirmataMessageCommandBuilder{_FirmataMessageCommand: b.deepCopy()}
 }
 
 ///////////////////////
@@ -286,9 +320,13 @@ func (m *_FirmataMessageCommand) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

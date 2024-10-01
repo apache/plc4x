@@ -116,79 +116,98 @@ func NewIdentifyReplyCommandOutputUnitSummaryBuilder() IdentifyReplyCommandOutpu
 type _IdentifyReplyCommandOutputUnitSummaryBuilder struct {
 	*_IdentifyReplyCommandOutputUnitSummary
 
+	parentBuilder *_IdentifyReplyCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (IdentifyReplyCommandOutputUnitSummaryBuilder) = (*_IdentifyReplyCommandOutputUnitSummaryBuilder)(nil)
 
-func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithMandatoryFields(unitFlags IdentifyReplyCommandUnitSummary, timeFromLastRecoverOfMainsInSeconds uint8) IdentifyReplyCommandOutputUnitSummaryBuilder {
-	return m.WithUnitFlags(unitFlags).WithTimeFromLastRecoverOfMainsInSeconds(timeFromLastRecoverOfMainsInSeconds)
+func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithUnitFlags(unitFlags IdentifyReplyCommandUnitSummary) IdentifyReplyCommandOutputUnitSummaryBuilder {
-	m.UnitFlags = unitFlags
-	return m
+func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithMandatoryFields(unitFlags IdentifyReplyCommandUnitSummary, timeFromLastRecoverOfMainsInSeconds uint8) IdentifyReplyCommandOutputUnitSummaryBuilder {
+	return b.WithUnitFlags(unitFlags).WithTimeFromLastRecoverOfMainsInSeconds(timeFromLastRecoverOfMainsInSeconds)
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithUnitFlagsBuilder(builderSupplier func(IdentifyReplyCommandUnitSummaryBuilder) IdentifyReplyCommandUnitSummaryBuilder) IdentifyReplyCommandOutputUnitSummaryBuilder {
-	builder := builderSupplier(m.UnitFlags.CreateIdentifyReplyCommandUnitSummaryBuilder())
+func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithUnitFlags(unitFlags IdentifyReplyCommandUnitSummary) IdentifyReplyCommandOutputUnitSummaryBuilder {
+	b.UnitFlags = unitFlags
+	return b
+}
+
+func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithUnitFlagsBuilder(builderSupplier func(IdentifyReplyCommandUnitSummaryBuilder) IdentifyReplyCommandUnitSummaryBuilder) IdentifyReplyCommandOutputUnitSummaryBuilder {
+	builder := builderSupplier(b.UnitFlags.CreateIdentifyReplyCommandUnitSummaryBuilder())
 	var err error
-	m.UnitFlags, err = builder.Build()
+	b.UnitFlags, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "IdentifyReplyCommandUnitSummaryBuilder failed"))
+		b.err.Append(errors.Wrap(err, "IdentifyReplyCommandUnitSummaryBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithOptionalGavStoreEnabledByte1(gavStoreEnabledByte1 byte) IdentifyReplyCommandOutputUnitSummaryBuilder {
-	m.GavStoreEnabledByte1 = &gavStoreEnabledByte1
-	return m
+func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithOptionalGavStoreEnabledByte1(gavStoreEnabledByte1 byte) IdentifyReplyCommandOutputUnitSummaryBuilder {
+	b.GavStoreEnabledByte1 = &gavStoreEnabledByte1
+	return b
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithOptionalGavStoreEnabledByte2(gavStoreEnabledByte2 byte) IdentifyReplyCommandOutputUnitSummaryBuilder {
-	m.GavStoreEnabledByte2 = &gavStoreEnabledByte2
-	return m
+func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithOptionalGavStoreEnabledByte2(gavStoreEnabledByte2 byte) IdentifyReplyCommandOutputUnitSummaryBuilder {
+	b.GavStoreEnabledByte2 = &gavStoreEnabledByte2
+	return b
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithTimeFromLastRecoverOfMainsInSeconds(timeFromLastRecoverOfMainsInSeconds uint8) IdentifyReplyCommandOutputUnitSummaryBuilder {
-	m.TimeFromLastRecoverOfMainsInSeconds = timeFromLastRecoverOfMainsInSeconds
-	return m
+func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithTimeFromLastRecoverOfMainsInSeconds(timeFromLastRecoverOfMainsInSeconds uint8) IdentifyReplyCommandOutputUnitSummaryBuilder {
+	b.TimeFromLastRecoverOfMainsInSeconds = timeFromLastRecoverOfMainsInSeconds
+	return b
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) Build() (IdentifyReplyCommandOutputUnitSummary, error) {
-	if m.UnitFlags == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) Build() (IdentifyReplyCommandOutputUnitSummary, error) {
+	if b.UnitFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'unitFlags' not set"))
+		b.err.Append(errors.New("mandatory field 'unitFlags' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._IdentifyReplyCommandOutputUnitSummary.deepCopy(), nil
+	return b._IdentifyReplyCommandOutputUnitSummary.deepCopy(), nil
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) MustBuild() IdentifyReplyCommandOutputUnitSummary {
-	build, err := m.Build()
+func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) MustBuild() IdentifyReplyCommandOutputUnitSummary {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) DeepCopy() any {
-	return m.CreateIdentifyReplyCommandOutputUnitSummaryBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandOutputUnitSummaryBuilder().(*_IdentifyReplyCommandOutputUnitSummaryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateIdentifyReplyCommandOutputUnitSummaryBuilder creates a IdentifyReplyCommandOutputUnitSummaryBuilder
-func (m *_IdentifyReplyCommandOutputUnitSummary) CreateIdentifyReplyCommandOutputUnitSummaryBuilder() IdentifyReplyCommandOutputUnitSummaryBuilder {
-	if m == nil {
+func (b *_IdentifyReplyCommandOutputUnitSummary) CreateIdentifyReplyCommandOutputUnitSummaryBuilder() IdentifyReplyCommandOutputUnitSummaryBuilder {
+	if b == nil {
 		return NewIdentifyReplyCommandOutputUnitSummaryBuilder()
 	}
-	return &_IdentifyReplyCommandOutputUnitSummaryBuilder{_IdentifyReplyCommandOutputUnitSummary: m.deepCopy()}
+	return &_IdentifyReplyCommandOutputUnitSummaryBuilder{_IdentifyReplyCommandOutputUnitSummary: b.deepCopy()}
 }
 
 ///////////////////////
@@ -392,9 +411,13 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

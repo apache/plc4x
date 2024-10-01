@@ -93,45 +93,64 @@ func NewKnxNetRemoteLoggingBuilder() KnxNetRemoteLoggingBuilder {
 type _KnxNetRemoteLoggingBuilder struct {
 	*_KnxNetRemoteLogging
 
+	parentBuilder *_ServiceIdBuilder
+
 	err *utils.MultiError
 }
 
 var _ (KnxNetRemoteLoggingBuilder) = (*_KnxNetRemoteLoggingBuilder)(nil)
 
-func (m *_KnxNetRemoteLoggingBuilder) WithMandatoryFields(version uint8) KnxNetRemoteLoggingBuilder {
-	return m.WithVersion(version)
+func (b *_KnxNetRemoteLoggingBuilder) setParent(contract ServiceIdContract) {
+	b.ServiceIdContract = contract
 }
 
-func (m *_KnxNetRemoteLoggingBuilder) WithVersion(version uint8) KnxNetRemoteLoggingBuilder {
-	m.Version = version
-	return m
+func (b *_KnxNetRemoteLoggingBuilder) WithMandatoryFields(version uint8) KnxNetRemoteLoggingBuilder {
+	return b.WithVersion(version)
 }
 
-func (m *_KnxNetRemoteLoggingBuilder) Build() (KnxNetRemoteLogging, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_KnxNetRemoteLoggingBuilder) WithVersion(version uint8) KnxNetRemoteLoggingBuilder {
+	b.Version = version
+	return b
+}
+
+func (b *_KnxNetRemoteLoggingBuilder) Build() (KnxNetRemoteLogging, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._KnxNetRemoteLogging.deepCopy(), nil
+	return b._KnxNetRemoteLogging.deepCopy(), nil
 }
 
-func (m *_KnxNetRemoteLoggingBuilder) MustBuild() KnxNetRemoteLogging {
-	build, err := m.Build()
+func (b *_KnxNetRemoteLoggingBuilder) MustBuild() KnxNetRemoteLogging {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_KnxNetRemoteLoggingBuilder) DeepCopy() any {
-	return m.CreateKnxNetRemoteLoggingBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_KnxNetRemoteLoggingBuilder) Done() ServiceIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_KnxNetRemoteLoggingBuilder) buildForServiceId() (ServiceId, error) {
+	return b.Build()
+}
+
+func (b *_KnxNetRemoteLoggingBuilder) DeepCopy() any {
+	_copy := b.CreateKnxNetRemoteLoggingBuilder().(*_KnxNetRemoteLoggingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateKnxNetRemoteLoggingBuilder creates a KnxNetRemoteLoggingBuilder
-func (m *_KnxNetRemoteLogging) CreateKnxNetRemoteLoggingBuilder() KnxNetRemoteLoggingBuilder {
-	if m == nil {
+func (b *_KnxNetRemoteLogging) CreateKnxNetRemoteLoggingBuilder() KnxNetRemoteLoggingBuilder {
+	if b == nil {
 		return NewKnxNetRemoteLoggingBuilder()
 	}
-	return &_KnxNetRemoteLoggingBuilder{_KnxNetRemoteLogging: m.deepCopy()}
+	return &_KnxNetRemoteLoggingBuilder{_KnxNetRemoteLogging: b.deepCopy()}
 }
 
 ///////////////////////
@@ -275,9 +294,13 @@ func (m *_KnxNetRemoteLogging) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

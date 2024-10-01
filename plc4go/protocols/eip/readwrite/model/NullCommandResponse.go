@@ -85,40 +85,59 @@ func NewNullCommandResponseBuilder() NullCommandResponseBuilder {
 type _NullCommandResponseBuilder struct {
 	*_NullCommandResponse
 
+	parentBuilder *_EipPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NullCommandResponseBuilder) = (*_NullCommandResponseBuilder)(nil)
 
-func (m *_NullCommandResponseBuilder) WithMandatoryFields() NullCommandResponseBuilder {
-	return m
+func (b *_NullCommandResponseBuilder) setParent(contract EipPacketContract) {
+	b.EipPacketContract = contract
 }
 
-func (m *_NullCommandResponseBuilder) Build() (NullCommandResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NullCommandResponseBuilder) WithMandatoryFields() NullCommandResponseBuilder {
+	return b
+}
+
+func (b *_NullCommandResponseBuilder) Build() (NullCommandResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NullCommandResponse.deepCopy(), nil
+	return b._NullCommandResponse.deepCopy(), nil
 }
 
-func (m *_NullCommandResponseBuilder) MustBuild() NullCommandResponse {
-	build, err := m.Build()
+func (b *_NullCommandResponseBuilder) MustBuild() NullCommandResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NullCommandResponseBuilder) DeepCopy() any {
-	return m.CreateNullCommandResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NullCommandResponseBuilder) Done() EipPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NullCommandResponseBuilder) buildForEipPacket() (EipPacket, error) {
+	return b.Build()
+}
+
+func (b *_NullCommandResponseBuilder) DeepCopy() any {
+	_copy := b.CreateNullCommandResponseBuilder().(*_NullCommandResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNullCommandResponseBuilder creates a NullCommandResponseBuilder
-func (m *_NullCommandResponse) CreateNullCommandResponseBuilder() NullCommandResponseBuilder {
-	if m == nil {
+func (b *_NullCommandResponse) CreateNullCommandResponseBuilder() NullCommandResponseBuilder {
+	if b == nil {
 		return NewNullCommandResponseBuilder()
 	}
-	return &_NullCommandResponseBuilder{_NullCommandResponse: m.deepCopy()}
+	return &_NullCommandResponseBuilder{_NullCommandResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -242,9 +261,13 @@ func (m *_NullCommandResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

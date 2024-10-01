@@ -90,6 +90,8 @@ type DeleteNodesRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) DeleteNodesRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) DeleteNodesRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteNodesRequestBuilder
 	// WithNoOfNodesToDelete adds NoOfNodesToDelete (property field)
 	WithNoOfNodesToDelete(int32) DeleteNodesRequestBuilder
 	// WithNodesToDelete adds NodesToDelete (property field)
@@ -108,61 +110,93 @@ func NewDeleteNodesRequestBuilder() DeleteNodesRequestBuilder {
 type _DeleteNodesRequestBuilder struct {
 	*_DeleteNodesRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (DeleteNodesRequestBuilder) = (*_DeleteNodesRequestBuilder)(nil)
 
-func (m *_DeleteNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) DeleteNodesRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithNoOfNodesToDelete(noOfNodesToDelete).WithNodesToDelete(nodesToDelete...)
+func (b *_DeleteNodesRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_DeleteNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteNodesRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_DeleteNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) DeleteNodesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNoOfNodesToDelete(noOfNodesToDelete).WithNodesToDelete(nodesToDelete...)
 }
 
-func (m *_DeleteNodesRequestBuilder) WithNoOfNodesToDelete(noOfNodesToDelete int32) DeleteNodesRequestBuilder {
-	m.NoOfNodesToDelete = noOfNodesToDelete
-	return m
+func (b *_DeleteNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteNodesRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_DeleteNodesRequestBuilder) WithNodesToDelete(nodesToDelete ...ExtensionObjectDefinition) DeleteNodesRequestBuilder {
-	m.NodesToDelete = nodesToDelete
-	return m
-}
-
-func (m *_DeleteNodesRequestBuilder) Build() (DeleteNodesRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_DeleteNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteNodesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._DeleteNodesRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_DeleteNodesRequestBuilder) MustBuild() DeleteNodesRequest {
-	build, err := m.Build()
+func (b *_DeleteNodesRequestBuilder) WithNoOfNodesToDelete(noOfNodesToDelete int32) DeleteNodesRequestBuilder {
+	b.NoOfNodesToDelete = noOfNodesToDelete
+	return b
+}
+
+func (b *_DeleteNodesRequestBuilder) WithNodesToDelete(nodesToDelete ...ExtensionObjectDefinition) DeleteNodesRequestBuilder {
+	b.NodesToDelete = nodesToDelete
+	return b
+}
+
+func (b *_DeleteNodesRequestBuilder) Build() (DeleteNodesRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DeleteNodesRequest.deepCopy(), nil
+}
+
+func (b *_DeleteNodesRequestBuilder) MustBuild() DeleteNodesRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DeleteNodesRequestBuilder) DeepCopy() any {
-	return m.CreateDeleteNodesRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DeleteNodesRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DeleteNodesRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DeleteNodesRequestBuilder) DeepCopy() any {
+	_copy := b.CreateDeleteNodesRequestBuilder().(*_DeleteNodesRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDeleteNodesRequestBuilder creates a DeleteNodesRequestBuilder
-func (m *_DeleteNodesRequest) CreateDeleteNodesRequestBuilder() DeleteNodesRequestBuilder {
-	if m == nil {
+func (b *_DeleteNodesRequest) CreateDeleteNodesRequestBuilder() DeleteNodesRequestBuilder {
+	if b == nil {
 		return NewDeleteNodesRequestBuilder()
 	}
-	return &_DeleteNodesRequestBuilder{_DeleteNodesRequest: m.deepCopy()}
+	return &_DeleteNodesRequestBuilder{_DeleteNodesRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -349,9 +383,13 @@ func (m *_DeleteNodesRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

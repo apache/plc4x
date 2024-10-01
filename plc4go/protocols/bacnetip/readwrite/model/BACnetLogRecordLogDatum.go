@@ -122,10 +122,69 @@ type BACnetLogRecordLogDatumBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetLogRecordLogDatumBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogRecordLogDatumBuilder
+	// AsBACnetLogRecordLogDatumLogStatus converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
+	AsBACnetLogRecordLogDatumLogStatus() interface {
+		BACnetLogRecordLogDatumLogStatusBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}
+	// AsBACnetLogRecordLogDatumBooleanValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
+	AsBACnetLogRecordLogDatumBooleanValue() interface {
+		BACnetLogRecordLogDatumBooleanValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}
+	// AsBACnetLogRecordLogDatumRealValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
+	AsBACnetLogRecordLogDatumRealValue() interface {
+		BACnetLogRecordLogDatumRealValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}
+	// AsBACnetLogRecordLogDatumEnumeratedValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
+	AsBACnetLogRecordLogDatumEnumeratedValue() interface {
+		BACnetLogRecordLogDatumEnumeratedValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}
+	// AsBACnetLogRecordLogDatumUnsignedValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
+	AsBACnetLogRecordLogDatumUnsignedValue() interface {
+		BACnetLogRecordLogDatumUnsignedValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}
+	// AsBACnetLogRecordLogDatumIntegerValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
+	AsBACnetLogRecordLogDatumIntegerValue() interface {
+		BACnetLogRecordLogDatumIntegerValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}
+	// AsBACnetLogRecordLogDatumBitStringValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
+	AsBACnetLogRecordLogDatumBitStringValue() interface {
+		BACnetLogRecordLogDatumBitStringValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}
+	// AsBACnetLogRecordLogDatumNullValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
+	AsBACnetLogRecordLogDatumNullValue() interface {
+		BACnetLogRecordLogDatumNullValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}
+	// AsBACnetLogRecordLogDatumFailure converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
+	AsBACnetLogRecordLogDatumFailure() interface {
+		BACnetLogRecordLogDatumFailureBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}
+	// AsBACnetLogRecordLogDatumTimeChange converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
+	AsBACnetLogRecordLogDatumTimeChange() interface {
+		BACnetLogRecordLogDatumTimeChangeBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}
+	// AsBACnetLogRecordLogDatumAnyValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
+	AsBACnetLogRecordLogDatumAnyValue() interface {
+		BACnetLogRecordLogDatumAnyValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}
 	// Build builds the BACnetLogRecordLogDatum or returns an error if something is wrong
-	Build() (BACnetLogRecordLogDatumContract, error)
+	PartialBuild() (BACnetLogRecordLogDatumContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetLogRecordLogDatumContract
+	PartialMustBuild() BACnetLogRecordLogDatumContract
+	// Build builds the BACnetLogRecordLogDatum or returns an error if something is wrong
+	Build() (BACnetLogRecordLogDatum, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogRecordLogDatum
 }
 
 // NewBACnetLogRecordLogDatumBuilder() creates a BACnetLogRecordLogDatumBuilder
@@ -133,115 +192,325 @@ func NewBACnetLogRecordLogDatumBuilder() BACnetLogRecordLogDatumBuilder {
 	return &_BACnetLogRecordLogDatumBuilder{_BACnetLogRecordLogDatum: new(_BACnetLogRecordLogDatum)}
 }
 
+type _BACnetLogRecordLogDatumChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetLogRecordLogDatumContract)
+	buildForBACnetLogRecordLogDatum() (BACnetLogRecordLogDatum, error)
+}
+
 type _BACnetLogRecordLogDatumBuilder struct {
 	*_BACnetLogRecordLogDatum
+
+	childBuilder _BACnetLogRecordLogDatumChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetLogRecordLogDatumBuilder) = (*_BACnetLogRecordLogDatumBuilder)(nil)
 
-func (m *_BACnetLogRecordLogDatumBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetLogRecordLogDatumBuilder {
-	return m.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+func (b *_BACnetLogRecordLogDatumBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetLogRecordLogDatumBuilder {
+	return b.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetLogRecordLogDatumBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetLogRecordLogDatumBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetLogRecordLogDatumBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetLogRecordLogDatumBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetLogRecordLogDatumBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLogRecordLogDatumBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetLogRecordLogDatumBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLogRecordLogDatumBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogRecordLogDatumBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetLogRecordLogDatumBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetLogRecordLogDatumBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetLogRecordLogDatumBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetLogRecordLogDatumBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLogRecordLogDatumBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetLogRecordLogDatumBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLogRecordLogDatumBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogRecordLogDatumBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetLogRecordLogDatumBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetLogRecordLogDatumBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetLogRecordLogDatumBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetLogRecordLogDatumBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogRecordLogDatumBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetLogRecordLogDatumBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogRecordLogDatumBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogRecordLogDatumBuilder) Build() (BACnetLogRecordLogDatumContract, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLogRecordLogDatumBuilder) PartialBuild() (BACnetLogRecordLogDatumContract, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLogRecordLogDatum.deepCopy(), nil
+	return b._BACnetLogRecordLogDatum.deepCopy(), nil
 }
 
-func (m *_BACnetLogRecordLogDatumBuilder) MustBuild() BACnetLogRecordLogDatumContract {
-	build, err := m.Build()
+func (b *_BACnetLogRecordLogDatumBuilder) PartialMustBuild() BACnetLogRecordLogDatumContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLogRecordLogDatumBuilder) DeepCopy() any {
-	return m.CreateBACnetLogRecordLogDatumBuilder()
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumLogStatus() interface {
+	BACnetLogRecordLogDatumLogStatusBuilder
+	Done() BACnetLogRecordLogDatumBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogRecordLogDatumLogStatusBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogRecordLogDatumLogStatusBuilder().(*_BACnetLogRecordLogDatumLogStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumBooleanValue() interface {
+	BACnetLogRecordLogDatumBooleanValueBuilder
+	Done() BACnetLogRecordLogDatumBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogRecordLogDatumBooleanValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogRecordLogDatumBooleanValueBuilder().(*_BACnetLogRecordLogDatumBooleanValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumRealValue() interface {
+	BACnetLogRecordLogDatumRealValueBuilder
+	Done() BACnetLogRecordLogDatumBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogRecordLogDatumRealValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogRecordLogDatumRealValueBuilder().(*_BACnetLogRecordLogDatumRealValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumEnumeratedValue() interface {
+	BACnetLogRecordLogDatumEnumeratedValueBuilder
+	Done() BACnetLogRecordLogDatumBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogRecordLogDatumEnumeratedValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogRecordLogDatumEnumeratedValueBuilder().(*_BACnetLogRecordLogDatumEnumeratedValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumUnsignedValue() interface {
+	BACnetLogRecordLogDatumUnsignedValueBuilder
+	Done() BACnetLogRecordLogDatumBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogRecordLogDatumUnsignedValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogRecordLogDatumUnsignedValueBuilder().(*_BACnetLogRecordLogDatumUnsignedValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumIntegerValue() interface {
+	BACnetLogRecordLogDatumIntegerValueBuilder
+	Done() BACnetLogRecordLogDatumBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogRecordLogDatumIntegerValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogRecordLogDatumIntegerValueBuilder().(*_BACnetLogRecordLogDatumIntegerValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumBitStringValue() interface {
+	BACnetLogRecordLogDatumBitStringValueBuilder
+	Done() BACnetLogRecordLogDatumBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogRecordLogDatumBitStringValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogRecordLogDatumBitStringValueBuilder().(*_BACnetLogRecordLogDatumBitStringValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumNullValue() interface {
+	BACnetLogRecordLogDatumNullValueBuilder
+	Done() BACnetLogRecordLogDatumBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogRecordLogDatumNullValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogRecordLogDatumNullValueBuilder().(*_BACnetLogRecordLogDatumNullValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumFailure() interface {
+	BACnetLogRecordLogDatumFailureBuilder
+	Done() BACnetLogRecordLogDatumBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogRecordLogDatumFailureBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogRecordLogDatumFailureBuilder().(*_BACnetLogRecordLogDatumFailureBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumTimeChange() interface {
+	BACnetLogRecordLogDatumTimeChangeBuilder
+	Done() BACnetLogRecordLogDatumBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogRecordLogDatumTimeChangeBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogRecordLogDatumTimeChangeBuilder().(*_BACnetLogRecordLogDatumTimeChangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumAnyValue() interface {
+	BACnetLogRecordLogDatumAnyValueBuilder
+	Done() BACnetLogRecordLogDatumBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogRecordLogDatumAnyValueBuilder
+		Done() BACnetLogRecordLogDatumBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogRecordLogDatumAnyValueBuilder().(*_BACnetLogRecordLogDatumAnyValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogRecordLogDatumBuilder) Build() (BACnetLogRecordLogDatum, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetLogRecordLogDatum()
+}
+
+func (b *_BACnetLogRecordLogDatumBuilder) MustBuild() BACnetLogRecordLogDatum {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetLogRecordLogDatumBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogRecordLogDatumBuilder().(*_BACnetLogRecordLogDatumBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetLogRecordLogDatumChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLogRecordLogDatumBuilder creates a BACnetLogRecordLogDatumBuilder
-func (m *_BACnetLogRecordLogDatum) CreateBACnetLogRecordLogDatumBuilder() BACnetLogRecordLogDatumBuilder {
-	if m == nil {
+func (b *_BACnetLogRecordLogDatum) CreateBACnetLogRecordLogDatumBuilder() BACnetLogRecordLogDatumBuilder {
+	if b == nil {
 		return NewBACnetLogRecordLogDatumBuilder()
 	}
-	return &_BACnetLogRecordLogDatumBuilder{_BACnetLogRecordLogDatum: m.deepCopy()}
+	return &_BACnetLogRecordLogDatumBuilder{_BACnetLogRecordLogDatum: b.deepCopy()}
 }
 
 ///////////////////////

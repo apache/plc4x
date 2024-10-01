@@ -111,69 +111,73 @@ type _BACnetVendorIdTaggedBuilder struct {
 
 var _ (BACnetVendorIdTaggedBuilder) = (*_BACnetVendorIdTaggedBuilder)(nil)
 
-func (m *_BACnetVendorIdTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetVendorId, unknownId uint32) BACnetVendorIdTaggedBuilder {
-	return m.WithHeader(header).WithValue(value).WithUnknownId(unknownId)
+func (b *_BACnetVendorIdTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetVendorId, unknownId uint32) BACnetVendorIdTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithUnknownId(unknownId)
 }
 
-func (m *_BACnetVendorIdTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetVendorIdTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetVendorIdTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetVendorIdTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetVendorIdTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetVendorIdTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetVendorIdTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetVendorIdTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetVendorIdTaggedBuilder) WithValue(value BACnetVendorId) BACnetVendorIdTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetVendorIdTaggedBuilder) WithValue(value BACnetVendorId) BACnetVendorIdTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetVendorIdTaggedBuilder) WithUnknownId(unknownId uint32) BACnetVendorIdTaggedBuilder {
-	m.UnknownId = unknownId
-	return m
+func (b *_BACnetVendorIdTaggedBuilder) WithUnknownId(unknownId uint32) BACnetVendorIdTaggedBuilder {
+	b.UnknownId = unknownId
+	return b
 }
 
-func (m *_BACnetVendorIdTaggedBuilder) Build() (BACnetVendorIdTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetVendorIdTaggedBuilder) Build() (BACnetVendorIdTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetVendorIdTagged.deepCopy(), nil
+	return b._BACnetVendorIdTagged.deepCopy(), nil
 }
 
-func (m *_BACnetVendorIdTaggedBuilder) MustBuild() BACnetVendorIdTagged {
-	build, err := m.Build()
+func (b *_BACnetVendorIdTaggedBuilder) MustBuild() BACnetVendorIdTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetVendorIdTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetVendorIdTaggedBuilder()
+func (b *_BACnetVendorIdTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetVendorIdTaggedBuilder().(*_BACnetVendorIdTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetVendorIdTaggedBuilder creates a BACnetVendorIdTaggedBuilder
-func (m *_BACnetVendorIdTagged) CreateBACnetVendorIdTaggedBuilder() BACnetVendorIdTaggedBuilder {
-	if m == nil {
+func (b *_BACnetVendorIdTagged) CreateBACnetVendorIdTaggedBuilder() BACnetVendorIdTaggedBuilder {
+	if b == nil {
 		return NewBACnetVendorIdTaggedBuilder()
 	}
-	return &_BACnetVendorIdTaggedBuilder{_BACnetVendorIdTagged: m.deepCopy()}
+	return &_BACnetVendorIdTaggedBuilder{_BACnetVendorIdTagged: b.deepCopy()}
 }
 
 ///////////////////////
@@ -402,9 +406,13 @@ func (m *_BACnetVendorIdTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

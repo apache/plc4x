@@ -84,6 +84,8 @@ type CIPEncapsulationReadRequestBuilder interface {
 	WithMandatoryFields(request DF1RequestMessage) CIPEncapsulationReadRequestBuilder
 	// WithRequest adds Request (property field)
 	WithRequest(DF1RequestMessage) CIPEncapsulationReadRequestBuilder
+	// WithRequestBuilder adds Request (property field) which is build by the builder
+	WithRequestBuilder(func(DF1RequestMessageBuilder) DF1RequestMessageBuilder) CIPEncapsulationReadRequestBuilder
 	// Build builds the CIPEncapsulationReadRequest or returns an error if something is wrong
 	Build() (CIPEncapsulationReadRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewCIPEncapsulationReadRequestBuilder() CIPEncapsulationReadRequestBuilder 
 type _CIPEncapsulationReadRequestBuilder struct {
 	*_CIPEncapsulationReadRequest
 
+	parentBuilder *_CIPEncapsulationPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CIPEncapsulationReadRequestBuilder) = (*_CIPEncapsulationReadRequestBuilder)(nil)
 
-func (m *_CIPEncapsulationReadRequestBuilder) WithMandatoryFields(request DF1RequestMessage) CIPEncapsulationReadRequestBuilder {
-	return m.WithRequest(request)
+func (b *_CIPEncapsulationReadRequestBuilder) setParent(contract CIPEncapsulationPacketContract) {
+	b.CIPEncapsulationPacketContract = contract
 }
 
-func (m *_CIPEncapsulationReadRequestBuilder) WithRequest(request DF1RequestMessage) CIPEncapsulationReadRequestBuilder {
-	m.Request = request
-	return m
+func (b *_CIPEncapsulationReadRequestBuilder) WithMandatoryFields(request DF1RequestMessage) CIPEncapsulationReadRequestBuilder {
+	return b.WithRequest(request)
 }
 
-func (m *_CIPEncapsulationReadRequestBuilder) Build() (CIPEncapsulationReadRequest, error) {
-	if m.Request == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CIPEncapsulationReadRequestBuilder) WithRequest(request DF1RequestMessage) CIPEncapsulationReadRequestBuilder {
+	b.Request = request
+	return b
+}
+
+func (b *_CIPEncapsulationReadRequestBuilder) WithRequestBuilder(builderSupplier func(DF1RequestMessageBuilder) DF1RequestMessageBuilder) CIPEncapsulationReadRequestBuilder {
+	builder := builderSupplier(b.Request.CreateDF1RequestMessageBuilder())
+	var err error
+	b.Request, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'request' not set"))
+		b.err.Append(errors.Wrap(err, "DF1RequestMessageBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._CIPEncapsulationReadRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_CIPEncapsulationReadRequestBuilder) MustBuild() CIPEncapsulationReadRequest {
-	build, err := m.Build()
+func (b *_CIPEncapsulationReadRequestBuilder) Build() (CIPEncapsulationReadRequest, error) {
+	if b.Request == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'request' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CIPEncapsulationReadRequest.deepCopy(), nil
+}
+
+func (b *_CIPEncapsulationReadRequestBuilder) MustBuild() CIPEncapsulationReadRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CIPEncapsulationReadRequestBuilder) DeepCopy() any {
-	return m.CreateCIPEncapsulationReadRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CIPEncapsulationReadRequestBuilder) Done() CIPEncapsulationPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CIPEncapsulationReadRequestBuilder) buildForCIPEncapsulationPacket() (CIPEncapsulationPacket, error) {
+	return b.Build()
+}
+
+func (b *_CIPEncapsulationReadRequestBuilder) DeepCopy() any {
+	_copy := b.CreateCIPEncapsulationReadRequestBuilder().(*_CIPEncapsulationReadRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCIPEncapsulationReadRequestBuilder creates a CIPEncapsulationReadRequestBuilder
-func (m *_CIPEncapsulationReadRequest) CreateCIPEncapsulationReadRequestBuilder() CIPEncapsulationReadRequestBuilder {
-	if m == nil {
+func (b *_CIPEncapsulationReadRequest) CreateCIPEncapsulationReadRequestBuilder() CIPEncapsulationReadRequestBuilder {
+	if b == nil {
 		return NewCIPEncapsulationReadRequestBuilder()
 	}
-	return &_CIPEncapsulationReadRequestBuilder{_CIPEncapsulationReadRequest: m.deepCopy()}
+	return &_CIPEncapsulationReadRequestBuilder{_CIPEncapsulationReadRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -286,9 +320,13 @@ func (m *_CIPEncapsulationReadRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

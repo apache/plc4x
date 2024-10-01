@@ -98,64 +98,83 @@ func NewBACnetLogRecordLogDatumFailureBuilder() BACnetLogRecordLogDatumFailureBu
 type _BACnetLogRecordLogDatumFailureBuilder struct {
 	*_BACnetLogRecordLogDatumFailure
 
+	parentBuilder *_BACnetLogRecordLogDatumBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetLogRecordLogDatumFailureBuilder) = (*_BACnetLogRecordLogDatumFailureBuilder)(nil)
 
-func (m *_BACnetLogRecordLogDatumFailureBuilder) WithMandatoryFields(failure ErrorEnclosed) BACnetLogRecordLogDatumFailureBuilder {
-	return m.WithFailure(failure)
+func (b *_BACnetLogRecordLogDatumFailureBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
+	b.BACnetLogRecordLogDatumContract = contract
 }
 
-func (m *_BACnetLogRecordLogDatumFailureBuilder) WithFailure(failure ErrorEnclosed) BACnetLogRecordLogDatumFailureBuilder {
-	m.Failure = failure
-	return m
+func (b *_BACnetLogRecordLogDatumFailureBuilder) WithMandatoryFields(failure ErrorEnclosed) BACnetLogRecordLogDatumFailureBuilder {
+	return b.WithFailure(failure)
 }
 
-func (m *_BACnetLogRecordLogDatumFailureBuilder) WithFailureBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) BACnetLogRecordLogDatumFailureBuilder {
-	builder := builderSupplier(m.Failure.CreateErrorEnclosedBuilder())
+func (b *_BACnetLogRecordLogDatumFailureBuilder) WithFailure(failure ErrorEnclosed) BACnetLogRecordLogDatumFailureBuilder {
+	b.Failure = failure
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumFailureBuilder) WithFailureBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) BACnetLogRecordLogDatumFailureBuilder {
+	builder := builderSupplier(b.Failure.CreateErrorEnclosedBuilder())
 	var err error
-	m.Failure, err = builder.Build()
+	b.Failure, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLogRecordLogDatumFailureBuilder) Build() (BACnetLogRecordLogDatumFailure, error) {
-	if m.Failure == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLogRecordLogDatumFailureBuilder) Build() (BACnetLogRecordLogDatumFailure, error) {
+	if b.Failure == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'failure' not set"))
+		b.err.Append(errors.New("mandatory field 'failure' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLogRecordLogDatumFailure.deepCopy(), nil
+	return b._BACnetLogRecordLogDatumFailure.deepCopy(), nil
 }
 
-func (m *_BACnetLogRecordLogDatumFailureBuilder) MustBuild() BACnetLogRecordLogDatumFailure {
-	build, err := m.Build()
+func (b *_BACnetLogRecordLogDatumFailureBuilder) MustBuild() BACnetLogRecordLogDatumFailure {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLogRecordLogDatumFailureBuilder) DeepCopy() any {
-	return m.CreateBACnetLogRecordLogDatumFailureBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogRecordLogDatumFailureBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogRecordLogDatumFailureBuilder) buildForBACnetLogRecordLogDatum() (BACnetLogRecordLogDatum, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogRecordLogDatumFailureBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogRecordLogDatumFailureBuilder().(*_BACnetLogRecordLogDatumFailureBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLogRecordLogDatumFailureBuilder creates a BACnetLogRecordLogDatumFailureBuilder
-func (m *_BACnetLogRecordLogDatumFailure) CreateBACnetLogRecordLogDatumFailureBuilder() BACnetLogRecordLogDatumFailureBuilder {
-	if m == nil {
+func (b *_BACnetLogRecordLogDatumFailure) CreateBACnetLogRecordLogDatumFailureBuilder() BACnetLogRecordLogDatumFailureBuilder {
+	if b == nil {
 		return NewBACnetLogRecordLogDatumFailureBuilder()
 	}
-	return &_BACnetLogRecordLogDatumFailureBuilder{_BACnetLogRecordLogDatumFailure: m.deepCopy()}
+	return &_BACnetLogRecordLogDatumFailureBuilder{_BACnetLogRecordLogDatumFailure: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetLogRecordLogDatumFailure) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -97,45 +97,49 @@ type _TunnelingRequestDataBlockBuilder struct {
 
 var _ (TunnelingRequestDataBlockBuilder) = (*_TunnelingRequestDataBlockBuilder)(nil)
 
-func (m *_TunnelingRequestDataBlockBuilder) WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8) TunnelingRequestDataBlockBuilder {
-	return m.WithCommunicationChannelId(communicationChannelId).WithSequenceCounter(sequenceCounter)
+func (b *_TunnelingRequestDataBlockBuilder) WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8) TunnelingRequestDataBlockBuilder {
+	return b.WithCommunicationChannelId(communicationChannelId).WithSequenceCounter(sequenceCounter)
 }
 
-func (m *_TunnelingRequestDataBlockBuilder) WithCommunicationChannelId(communicationChannelId uint8) TunnelingRequestDataBlockBuilder {
-	m.CommunicationChannelId = communicationChannelId
-	return m
+func (b *_TunnelingRequestDataBlockBuilder) WithCommunicationChannelId(communicationChannelId uint8) TunnelingRequestDataBlockBuilder {
+	b.CommunicationChannelId = communicationChannelId
+	return b
 }
 
-func (m *_TunnelingRequestDataBlockBuilder) WithSequenceCounter(sequenceCounter uint8) TunnelingRequestDataBlockBuilder {
-	m.SequenceCounter = sequenceCounter
-	return m
+func (b *_TunnelingRequestDataBlockBuilder) WithSequenceCounter(sequenceCounter uint8) TunnelingRequestDataBlockBuilder {
+	b.SequenceCounter = sequenceCounter
+	return b
 }
 
-func (m *_TunnelingRequestDataBlockBuilder) Build() (TunnelingRequestDataBlock, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TunnelingRequestDataBlockBuilder) Build() (TunnelingRequestDataBlock, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TunnelingRequestDataBlock.deepCopy(), nil
+	return b._TunnelingRequestDataBlock.deepCopy(), nil
 }
 
-func (m *_TunnelingRequestDataBlockBuilder) MustBuild() TunnelingRequestDataBlock {
-	build, err := m.Build()
+func (b *_TunnelingRequestDataBlockBuilder) MustBuild() TunnelingRequestDataBlock {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TunnelingRequestDataBlockBuilder) DeepCopy() any {
-	return m.CreateTunnelingRequestDataBlockBuilder()
+func (b *_TunnelingRequestDataBlockBuilder) DeepCopy() any {
+	_copy := b.CreateTunnelingRequestDataBlockBuilder().(*_TunnelingRequestDataBlockBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTunnelingRequestDataBlockBuilder creates a TunnelingRequestDataBlockBuilder
-func (m *_TunnelingRequestDataBlock) CreateTunnelingRequestDataBlockBuilder() TunnelingRequestDataBlockBuilder {
-	if m == nil {
+func (b *_TunnelingRequestDataBlock) CreateTunnelingRequestDataBlockBuilder() TunnelingRequestDataBlockBuilder {
+	if b == nil {
 		return NewTunnelingRequestDataBlockBuilder()
 	}
-	return &_TunnelingRequestDataBlockBuilder{_TunnelingRequestDataBlock: m.deepCopy()}
+	return &_TunnelingRequestDataBlockBuilder{_TunnelingRequestDataBlock: b.deepCopy()}
 }
 
 ///////////////////////
@@ -317,9 +321,13 @@ func (m *_TunnelingRequestDataBlock) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

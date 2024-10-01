@@ -99,50 +99,69 @@ func NewModbusPDUReadCoilsRequestBuilder() ModbusPDUReadCoilsRequestBuilder {
 type _ModbusPDUReadCoilsRequestBuilder struct {
 	*_ModbusPDUReadCoilsRequest
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUReadCoilsRequestBuilder) = (*_ModbusPDUReadCoilsRequestBuilder)(nil)
 
-func (m *_ModbusPDUReadCoilsRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUReadCoilsRequestBuilder {
-	return m.WithStartingAddress(startingAddress).WithQuantity(quantity)
+func (b *_ModbusPDUReadCoilsRequestBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUReadCoilsRequestBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUReadCoilsRequestBuilder {
-	m.StartingAddress = startingAddress
-	return m
+func (b *_ModbusPDUReadCoilsRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUReadCoilsRequestBuilder {
+	return b.WithStartingAddress(startingAddress).WithQuantity(quantity)
 }
 
-func (m *_ModbusPDUReadCoilsRequestBuilder) WithQuantity(quantity uint16) ModbusPDUReadCoilsRequestBuilder {
-	m.Quantity = quantity
-	return m
+func (b *_ModbusPDUReadCoilsRequestBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUReadCoilsRequestBuilder {
+	b.StartingAddress = startingAddress
+	return b
 }
 
-func (m *_ModbusPDUReadCoilsRequestBuilder) Build() (ModbusPDUReadCoilsRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUReadCoilsRequestBuilder) WithQuantity(quantity uint16) ModbusPDUReadCoilsRequestBuilder {
+	b.Quantity = quantity
+	return b
+}
+
+func (b *_ModbusPDUReadCoilsRequestBuilder) Build() (ModbusPDUReadCoilsRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUReadCoilsRequest.deepCopy(), nil
+	return b._ModbusPDUReadCoilsRequest.deepCopy(), nil
 }
 
-func (m *_ModbusPDUReadCoilsRequestBuilder) MustBuild() ModbusPDUReadCoilsRequest {
-	build, err := m.Build()
+func (b *_ModbusPDUReadCoilsRequestBuilder) MustBuild() ModbusPDUReadCoilsRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUReadCoilsRequestBuilder) DeepCopy() any {
-	return m.CreateModbusPDUReadCoilsRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUReadCoilsRequestBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUReadCoilsRequestBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUReadCoilsRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUReadCoilsRequestBuilder().(*_ModbusPDUReadCoilsRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUReadCoilsRequestBuilder creates a ModbusPDUReadCoilsRequestBuilder
-func (m *_ModbusPDUReadCoilsRequest) CreateModbusPDUReadCoilsRequestBuilder() ModbusPDUReadCoilsRequestBuilder {
-	if m == nil {
+func (b *_ModbusPDUReadCoilsRequest) CreateModbusPDUReadCoilsRequestBuilder() ModbusPDUReadCoilsRequestBuilder {
+	if b == nil {
 		return NewModbusPDUReadCoilsRequestBuilder()
 	}
-	return &_ModbusPDUReadCoilsRequestBuilder{_ModbusPDUReadCoilsRequest: m.deepCopy()}
+	return &_ModbusPDUReadCoilsRequestBuilder{_ModbusPDUReadCoilsRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -312,9 +331,13 @@ func (m *_ModbusPDUReadCoilsRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -99,50 +99,69 @@ func NewModbusPDUWriteMultipleCoilsResponseBuilder() ModbusPDUWriteMultipleCoils
 type _ModbusPDUWriteMultipleCoilsResponseBuilder struct {
 	*_ModbusPDUWriteMultipleCoilsResponse
 
+	parentBuilder *_ModbusPDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ModbusPDUWriteMultipleCoilsResponseBuilder) = (*_ModbusPDUWriteMultipleCoilsResponseBuilder)(nil)
 
-func (m *_ModbusPDUWriteMultipleCoilsResponseBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUWriteMultipleCoilsResponseBuilder {
-	return m.WithStartingAddress(startingAddress).WithQuantity(quantity)
+func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsResponseBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUWriteMultipleCoilsResponseBuilder {
-	m.StartingAddress = startingAddress
-	return m
+func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUWriteMultipleCoilsResponseBuilder {
+	return b.WithStartingAddress(startingAddress).WithQuantity(quantity)
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsResponseBuilder) WithQuantity(quantity uint16) ModbusPDUWriteMultipleCoilsResponseBuilder {
-	m.Quantity = quantity
-	return m
+func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUWriteMultipleCoilsResponseBuilder {
+	b.StartingAddress = startingAddress
+	return b
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsResponseBuilder) Build() (ModbusPDUWriteMultipleCoilsResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) WithQuantity(quantity uint16) ModbusPDUWriteMultipleCoilsResponseBuilder {
+	b.Quantity = quantity
+	return b
+}
+
+func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) Build() (ModbusPDUWriteMultipleCoilsResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUWriteMultipleCoilsResponse.deepCopy(), nil
+	return b._ModbusPDUWriteMultipleCoilsResponse.deepCopy(), nil
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsResponseBuilder) MustBuild() ModbusPDUWriteMultipleCoilsResponse {
-	build, err := m.Build()
+func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) MustBuild() ModbusPDUWriteMultipleCoilsResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUWriteMultipleCoilsResponseBuilder) DeepCopy() any {
-	return m.CreateModbusPDUWriteMultipleCoilsResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUWriteMultipleCoilsResponseBuilder().(*_ModbusPDUWriteMultipleCoilsResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUWriteMultipleCoilsResponseBuilder creates a ModbusPDUWriteMultipleCoilsResponseBuilder
-func (m *_ModbusPDUWriteMultipleCoilsResponse) CreateModbusPDUWriteMultipleCoilsResponseBuilder() ModbusPDUWriteMultipleCoilsResponseBuilder {
-	if m == nil {
+func (b *_ModbusPDUWriteMultipleCoilsResponse) CreateModbusPDUWriteMultipleCoilsResponseBuilder() ModbusPDUWriteMultipleCoilsResponseBuilder {
+	if b == nil {
 		return NewModbusPDUWriteMultipleCoilsResponseBuilder()
 	}
-	return &_ModbusPDUWriteMultipleCoilsResponseBuilder{_ModbusPDUWriteMultipleCoilsResponse: m.deepCopy()}
+	return &_ModbusPDUWriteMultipleCoilsResponseBuilder{_ModbusPDUWriteMultipleCoilsResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -312,9 +331,13 @@ func (m *_ModbusPDUWriteMultipleCoilsResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

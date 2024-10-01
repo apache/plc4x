@@ -88,35 +88,39 @@ type _AdsDiscoveryConstantsBuilder struct {
 
 var _ (AdsDiscoveryConstantsBuilder) = (*_AdsDiscoveryConstantsBuilder)(nil)
 
-func (m *_AdsDiscoveryConstantsBuilder) WithMandatoryFields() AdsDiscoveryConstantsBuilder {
-	return m
+func (b *_AdsDiscoveryConstantsBuilder) WithMandatoryFields() AdsDiscoveryConstantsBuilder {
+	return b
 }
 
-func (m *_AdsDiscoveryConstantsBuilder) Build() (AdsDiscoveryConstants, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsDiscoveryConstantsBuilder) Build() (AdsDiscoveryConstants, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsDiscoveryConstants.deepCopy(), nil
+	return b._AdsDiscoveryConstants.deepCopy(), nil
 }
 
-func (m *_AdsDiscoveryConstantsBuilder) MustBuild() AdsDiscoveryConstants {
-	build, err := m.Build()
+func (b *_AdsDiscoveryConstantsBuilder) MustBuild() AdsDiscoveryConstants {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsDiscoveryConstantsBuilder) DeepCopy() any {
-	return m.CreateAdsDiscoveryConstantsBuilder()
+func (b *_AdsDiscoveryConstantsBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryConstantsBuilder().(*_AdsDiscoveryConstantsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsDiscoveryConstantsBuilder creates a AdsDiscoveryConstantsBuilder
-func (m *_AdsDiscoveryConstants) CreateAdsDiscoveryConstantsBuilder() AdsDiscoveryConstantsBuilder {
-	if m == nil {
+func (b *_AdsDiscoveryConstants) CreateAdsDiscoveryConstantsBuilder() AdsDiscoveryConstantsBuilder {
+	if b == nil {
 		return NewAdsDiscoveryConstantsBuilder()
 	}
-	return &_AdsDiscoveryConstantsBuilder{_AdsDiscoveryConstants: m.deepCopy()}
+	return &_AdsDiscoveryConstantsBuilder{_AdsDiscoveryConstants: b.deepCopy()}
 }
 
 ///////////////////////
@@ -251,9 +255,13 @@ func (m *_AdsDiscoveryConstants) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

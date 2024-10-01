@@ -103,63 +103,82 @@ func NewBACnetConstructedDataAuthenticationFactorsBuilder() BACnetConstructedDat
 type _BACnetConstructedDataAuthenticationFactorsBuilder struct {
 	*_BACnetConstructedDataAuthenticationFactors
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAuthenticationFactorsBuilder) = (*_BACnetConstructedDataAuthenticationFactorsBuilder)(nil)
 
-func (m *_BACnetConstructedDataAuthenticationFactorsBuilder) WithMandatoryFields(authenticationFactors []BACnetCredentialAuthenticationFactor) BACnetConstructedDataAuthenticationFactorsBuilder {
-	return m.WithAuthenticationFactors(authenticationFactors...)
+func (b *_BACnetConstructedDataAuthenticationFactorsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAuthenticationFactorsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAuthenticationFactorsBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataAuthenticationFactorsBuilder) WithMandatoryFields(authenticationFactors []BACnetCredentialAuthenticationFactor) BACnetConstructedDataAuthenticationFactorsBuilder {
+	return b.WithAuthenticationFactors(authenticationFactors...)
 }
 
-func (m *_BACnetConstructedDataAuthenticationFactorsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAuthenticationFactorsBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataAuthenticationFactorsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAuthenticationFactorsBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataAuthenticationFactorsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAuthenticationFactorsBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAuthenticationFactorsBuilder) WithAuthenticationFactors(authenticationFactors ...BACnetCredentialAuthenticationFactor) BACnetConstructedDataAuthenticationFactorsBuilder {
-	m.AuthenticationFactors = authenticationFactors
-	return m
+func (b *_BACnetConstructedDataAuthenticationFactorsBuilder) WithAuthenticationFactors(authenticationFactors ...BACnetCredentialAuthenticationFactor) BACnetConstructedDataAuthenticationFactorsBuilder {
+	b.AuthenticationFactors = authenticationFactors
+	return b
 }
 
-func (m *_BACnetConstructedDataAuthenticationFactorsBuilder) Build() (BACnetConstructedDataAuthenticationFactors, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataAuthenticationFactorsBuilder) Build() (BACnetConstructedDataAuthenticationFactors, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAuthenticationFactors.deepCopy(), nil
+	return b._BACnetConstructedDataAuthenticationFactors.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAuthenticationFactorsBuilder) MustBuild() BACnetConstructedDataAuthenticationFactors {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAuthenticationFactorsBuilder) MustBuild() BACnetConstructedDataAuthenticationFactors {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAuthenticationFactorsBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAuthenticationFactorsBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAuthenticationFactorsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAuthenticationFactorsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAuthenticationFactorsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAuthenticationFactorsBuilder().(*_BACnetConstructedDataAuthenticationFactorsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAuthenticationFactorsBuilder creates a BACnetConstructedDataAuthenticationFactorsBuilder
-func (m *_BACnetConstructedDataAuthenticationFactors) CreateBACnetConstructedDataAuthenticationFactorsBuilder() BACnetConstructedDataAuthenticationFactorsBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAuthenticationFactors) CreateBACnetConstructedDataAuthenticationFactorsBuilder() BACnetConstructedDataAuthenticationFactorsBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAuthenticationFactorsBuilder()
 	}
-	return &_BACnetConstructedDataAuthenticationFactorsBuilder{_BACnetConstructedDataAuthenticationFactors: m.deepCopy()}
+	return &_BACnetConstructedDataAuthenticationFactorsBuilder{_BACnetConstructedDataAuthenticationFactors: b.deepCopy()}
 }
 
 ///////////////////////
@@ -367,9 +386,13 @@ func (m *_BACnetConstructedDataAuthenticationFactors) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

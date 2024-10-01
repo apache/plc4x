@@ -82,6 +82,8 @@ type BACnetPropertyAccessResultAccessResultPropertyValueBuilder interface {
 	WithMandatoryFields(propertyValue BACnetConstructedData) BACnetPropertyAccessResultAccessResultPropertyValueBuilder
 	// WithPropertyValue adds PropertyValue (property field)
 	WithPropertyValue(BACnetConstructedData) BACnetPropertyAccessResultAccessResultPropertyValueBuilder
+	// WithPropertyValueBuilder adds PropertyValue (property field) which is build by the builder
+	WithPropertyValueBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetPropertyAccessResultAccessResultPropertyValueBuilder
 	// Build builds the BACnetPropertyAccessResultAccessResultPropertyValue or returns an error if something is wrong
 	Build() (BACnetPropertyAccessResultAccessResultPropertyValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewBACnetPropertyAccessResultAccessResultPropertyValueBuilder() BACnetPrope
 type _BACnetPropertyAccessResultAccessResultPropertyValueBuilder struct {
 	*_BACnetPropertyAccessResultAccessResultPropertyValue
 
+	parentBuilder *_BACnetPropertyAccessResultAccessResultBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyAccessResultAccessResultPropertyValueBuilder) = (*_BACnetPropertyAccessResultAccessResultPropertyValueBuilder)(nil)
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) WithMandatoryFields(propertyValue BACnetConstructedData) BACnetPropertyAccessResultAccessResultPropertyValueBuilder {
-	return m.WithPropertyValue(propertyValue)
+func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) setParent(contract BACnetPropertyAccessResultAccessResultContract) {
+	b.BACnetPropertyAccessResultAccessResultContract = contract
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) WithPropertyValue(propertyValue BACnetConstructedData) BACnetPropertyAccessResultAccessResultPropertyValueBuilder {
-	m.PropertyValue = propertyValue
-	return m
+func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) WithMandatoryFields(propertyValue BACnetConstructedData) BACnetPropertyAccessResultAccessResultPropertyValueBuilder {
+	return b.WithPropertyValue(propertyValue)
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) Build() (BACnetPropertyAccessResultAccessResultPropertyValue, error) {
-	if m.PropertyValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) WithPropertyValue(propertyValue BACnetConstructedData) BACnetPropertyAccessResultAccessResultPropertyValueBuilder {
+	b.PropertyValue = propertyValue
+	return b
+}
+
+func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) WithPropertyValueBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetPropertyAccessResultAccessResultPropertyValueBuilder {
+	builder := builderSupplier(b.PropertyValue.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.PropertyValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'propertyValue' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetPropertyAccessResultAccessResultPropertyValue.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) MustBuild() BACnetPropertyAccessResultAccessResultPropertyValue {
-	build, err := m.Build()
+func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) Build() (BACnetPropertyAccessResultAccessResultPropertyValue, error) {
+	if b.PropertyValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'propertyValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyAccessResultAccessResultPropertyValue.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) MustBuild() BACnetPropertyAccessResultAccessResultPropertyValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyAccessResultAccessResultPropertyValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) Done() BACnetPropertyAccessResultAccessResultBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) buildForBACnetPropertyAccessResultAccessResult() (BACnetPropertyAccessResultAccessResult, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyAccessResultAccessResultPropertyValueBuilder().(*_BACnetPropertyAccessResultAccessResultPropertyValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyAccessResultAccessResultPropertyValueBuilder creates a BACnetPropertyAccessResultAccessResultPropertyValueBuilder
-func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) CreateBACnetPropertyAccessResultAccessResultPropertyValueBuilder() BACnetPropertyAccessResultAccessResultPropertyValueBuilder {
-	if m == nil {
+func (b *_BACnetPropertyAccessResultAccessResultPropertyValue) CreateBACnetPropertyAccessResultAccessResultPropertyValueBuilder() BACnetPropertyAccessResultAccessResultPropertyValueBuilder {
+	if b == nil {
 		return NewBACnetPropertyAccessResultAccessResultPropertyValueBuilder()
 	}
-	return &_BACnetPropertyAccessResultAccessResultPropertyValueBuilder{_BACnetPropertyAccessResultAccessResultPropertyValue: m.deepCopy()}
+	return &_BACnetPropertyAccessResultAccessResultPropertyValueBuilder{_BACnetPropertyAccessResultAccessResultPropertyValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -281,9 +315,13 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -146,75 +146,79 @@ type _BACnetTagPayloadSignedIntegerBuilder struct {
 
 var _ (BACnetTagPayloadSignedIntegerBuilder) = (*_BACnetTagPayloadSignedIntegerBuilder)(nil)
 
-func (m *_BACnetTagPayloadSignedIntegerBuilder) WithMandatoryFields() BACnetTagPayloadSignedIntegerBuilder {
-	return m
+func (b *_BACnetTagPayloadSignedIntegerBuilder) WithMandatoryFields() BACnetTagPayloadSignedIntegerBuilder {
+	return b
 }
 
-func (m *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt8(valueInt8 int8) BACnetTagPayloadSignedIntegerBuilder {
-	m.ValueInt8 = &valueInt8
-	return m
+func (b *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt8(valueInt8 int8) BACnetTagPayloadSignedIntegerBuilder {
+	b.ValueInt8 = &valueInt8
+	return b
 }
 
-func (m *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt16(valueInt16 int16) BACnetTagPayloadSignedIntegerBuilder {
-	m.ValueInt16 = &valueInt16
-	return m
+func (b *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt16(valueInt16 int16) BACnetTagPayloadSignedIntegerBuilder {
+	b.ValueInt16 = &valueInt16
+	return b
 }
 
-func (m *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt24(valueInt24 int32) BACnetTagPayloadSignedIntegerBuilder {
-	m.ValueInt24 = &valueInt24
-	return m
+func (b *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt24(valueInt24 int32) BACnetTagPayloadSignedIntegerBuilder {
+	b.ValueInt24 = &valueInt24
+	return b
 }
 
-func (m *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt32(valueInt32 int32) BACnetTagPayloadSignedIntegerBuilder {
-	m.ValueInt32 = &valueInt32
-	return m
+func (b *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt32(valueInt32 int32) BACnetTagPayloadSignedIntegerBuilder {
+	b.ValueInt32 = &valueInt32
+	return b
 }
 
-func (m *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt40(valueInt40 int64) BACnetTagPayloadSignedIntegerBuilder {
-	m.ValueInt40 = &valueInt40
-	return m
+func (b *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt40(valueInt40 int64) BACnetTagPayloadSignedIntegerBuilder {
+	b.ValueInt40 = &valueInt40
+	return b
 }
 
-func (m *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt48(valueInt48 int64) BACnetTagPayloadSignedIntegerBuilder {
-	m.ValueInt48 = &valueInt48
-	return m
+func (b *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt48(valueInt48 int64) BACnetTagPayloadSignedIntegerBuilder {
+	b.ValueInt48 = &valueInt48
+	return b
 }
 
-func (m *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt56(valueInt56 int64) BACnetTagPayloadSignedIntegerBuilder {
-	m.ValueInt56 = &valueInt56
-	return m
+func (b *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt56(valueInt56 int64) BACnetTagPayloadSignedIntegerBuilder {
+	b.ValueInt56 = &valueInt56
+	return b
 }
 
-func (m *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt64(valueInt64 int64) BACnetTagPayloadSignedIntegerBuilder {
-	m.ValueInt64 = &valueInt64
-	return m
+func (b *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt64(valueInt64 int64) BACnetTagPayloadSignedIntegerBuilder {
+	b.ValueInt64 = &valueInt64
+	return b
 }
 
-func (m *_BACnetTagPayloadSignedIntegerBuilder) Build() (BACnetTagPayloadSignedInteger, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetTagPayloadSignedIntegerBuilder) Build() (BACnetTagPayloadSignedInteger, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTagPayloadSignedInteger.deepCopy(), nil
+	return b._BACnetTagPayloadSignedInteger.deepCopy(), nil
 }
 
-func (m *_BACnetTagPayloadSignedIntegerBuilder) MustBuild() BACnetTagPayloadSignedInteger {
-	build, err := m.Build()
+func (b *_BACnetTagPayloadSignedIntegerBuilder) MustBuild() BACnetTagPayloadSignedInteger {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTagPayloadSignedIntegerBuilder) DeepCopy() any {
-	return m.CreateBACnetTagPayloadSignedIntegerBuilder()
+func (b *_BACnetTagPayloadSignedIntegerBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadSignedIntegerBuilder().(*_BACnetTagPayloadSignedIntegerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTagPayloadSignedIntegerBuilder creates a BACnetTagPayloadSignedIntegerBuilder
-func (m *_BACnetTagPayloadSignedInteger) CreateBACnetTagPayloadSignedIntegerBuilder() BACnetTagPayloadSignedIntegerBuilder {
-	if m == nil {
+func (b *_BACnetTagPayloadSignedInteger) CreateBACnetTagPayloadSignedIntegerBuilder() BACnetTagPayloadSignedIntegerBuilder {
+	if b == nil {
 		return NewBACnetTagPayloadSignedIntegerBuilder()
 	}
-	return &_BACnetTagPayloadSignedIntegerBuilder{_BACnetTagPayloadSignedInteger: m.deepCopy()}
+	return &_BACnetTagPayloadSignedIntegerBuilder{_BACnetTagPayloadSignedInteger: b.deepCopy()}
 }
 
 ///////////////////////
@@ -874,9 +878,13 @@ func (m *_BACnetTagPayloadSignedInteger) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

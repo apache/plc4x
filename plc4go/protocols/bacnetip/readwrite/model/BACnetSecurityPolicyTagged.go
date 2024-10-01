@@ -104,64 +104,68 @@ type _BACnetSecurityPolicyTaggedBuilder struct {
 
 var _ (BACnetSecurityPolicyTaggedBuilder) = (*_BACnetSecurityPolicyTaggedBuilder)(nil)
 
-func (m *_BACnetSecurityPolicyTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetSecurityPolicy) BACnetSecurityPolicyTaggedBuilder {
-	return m.WithHeader(header).WithValue(value)
+func (b *_BACnetSecurityPolicyTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetSecurityPolicy) BACnetSecurityPolicyTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
 }
 
-func (m *_BACnetSecurityPolicyTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetSecurityPolicyTaggedBuilder {
-	m.Header = header
-	return m
+func (b *_BACnetSecurityPolicyTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetSecurityPolicyTaggedBuilder {
+	b.Header = header
+	return b
 }
 
-func (m *_BACnetSecurityPolicyTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSecurityPolicyTaggedBuilder {
-	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetSecurityPolicyTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSecurityPolicyTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.Header, err = builder.Build()
+	b.Header, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetSecurityPolicyTaggedBuilder) WithValue(value BACnetSecurityPolicy) BACnetSecurityPolicyTaggedBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetSecurityPolicyTaggedBuilder) WithValue(value BACnetSecurityPolicy) BACnetSecurityPolicyTaggedBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetSecurityPolicyTaggedBuilder) Build() (BACnetSecurityPolicyTagged, error) {
-	if m.Header == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetSecurityPolicyTaggedBuilder) Build() (BACnetSecurityPolicyTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'header' not set"))
+		b.err.Append(errors.New("mandatory field 'header' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetSecurityPolicyTagged.deepCopy(), nil
+	return b._BACnetSecurityPolicyTagged.deepCopy(), nil
 }
 
-func (m *_BACnetSecurityPolicyTaggedBuilder) MustBuild() BACnetSecurityPolicyTagged {
-	build, err := m.Build()
+func (b *_BACnetSecurityPolicyTaggedBuilder) MustBuild() BACnetSecurityPolicyTagged {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetSecurityPolicyTaggedBuilder) DeepCopy() any {
-	return m.CreateBACnetSecurityPolicyTaggedBuilder()
+func (b *_BACnetSecurityPolicyTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetSecurityPolicyTaggedBuilder().(*_BACnetSecurityPolicyTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetSecurityPolicyTaggedBuilder creates a BACnetSecurityPolicyTaggedBuilder
-func (m *_BACnetSecurityPolicyTagged) CreateBACnetSecurityPolicyTaggedBuilder() BACnetSecurityPolicyTaggedBuilder {
-	if m == nil {
+func (b *_BACnetSecurityPolicyTagged) CreateBACnetSecurityPolicyTaggedBuilder() BACnetSecurityPolicyTaggedBuilder {
+	if b == nil {
 		return NewBACnetSecurityPolicyTaggedBuilder()
 	}
-	return &_BACnetSecurityPolicyTaggedBuilder{_BACnetSecurityPolicyTagged: m.deepCopy()}
+	return &_BACnetSecurityPolicyTaggedBuilder{_BACnetSecurityPolicyTagged: b.deepCopy()}
 }
 
 ///////////////////////
@@ -341,9 +345,13 @@ func (m *_BACnetSecurityPolicyTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

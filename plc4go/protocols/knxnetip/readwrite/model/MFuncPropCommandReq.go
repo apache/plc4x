@@ -85,40 +85,59 @@ func NewMFuncPropCommandReqBuilder() MFuncPropCommandReqBuilder {
 type _MFuncPropCommandReqBuilder struct {
 	*_MFuncPropCommandReq
 
+	parentBuilder *_CEMIBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MFuncPropCommandReqBuilder) = (*_MFuncPropCommandReqBuilder)(nil)
 
-func (m *_MFuncPropCommandReqBuilder) WithMandatoryFields() MFuncPropCommandReqBuilder {
-	return m
+func (b *_MFuncPropCommandReqBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
 }
 
-func (m *_MFuncPropCommandReqBuilder) Build() (MFuncPropCommandReq, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MFuncPropCommandReqBuilder) WithMandatoryFields() MFuncPropCommandReqBuilder {
+	return b
+}
+
+func (b *_MFuncPropCommandReqBuilder) Build() (MFuncPropCommandReq, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MFuncPropCommandReq.deepCopy(), nil
+	return b._MFuncPropCommandReq.deepCopy(), nil
 }
 
-func (m *_MFuncPropCommandReqBuilder) MustBuild() MFuncPropCommandReq {
-	build, err := m.Build()
+func (b *_MFuncPropCommandReqBuilder) MustBuild() MFuncPropCommandReq {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MFuncPropCommandReqBuilder) DeepCopy() any {
-	return m.CreateMFuncPropCommandReqBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MFuncPropCommandReqBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MFuncPropCommandReqBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_MFuncPropCommandReqBuilder) DeepCopy() any {
+	_copy := b.CreateMFuncPropCommandReqBuilder().(*_MFuncPropCommandReqBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMFuncPropCommandReqBuilder creates a MFuncPropCommandReqBuilder
-func (m *_MFuncPropCommandReq) CreateMFuncPropCommandReqBuilder() MFuncPropCommandReqBuilder {
-	if m == nil {
+func (b *_MFuncPropCommandReq) CreateMFuncPropCommandReqBuilder() MFuncPropCommandReqBuilder {
+	if b == nil {
 		return NewMFuncPropCommandReqBuilder()
 	}
-	return &_MFuncPropCommandReqBuilder{_MFuncPropCommandReq: m.deepCopy()}
+	return &_MFuncPropCommandReqBuilder{_MFuncPropCommandReq: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_MFuncPropCommandReq) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

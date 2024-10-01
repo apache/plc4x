@@ -126,117 +126,136 @@ func NewOpenChannelMessageResponseBuilder() OpenChannelMessageResponseBuilder {
 type _OpenChannelMessageResponseBuilder struct {
 	*_OpenChannelMessageResponse
 
+	parentBuilder *_OpenChannelMessageBuilder
+
 	err *utils.MultiError
 }
 
 var _ (OpenChannelMessageResponseBuilder) = (*_OpenChannelMessageResponseBuilder)(nil)
 
-func (m *_OpenChannelMessageResponseBuilder) WithMandatoryFields(secureChannelId int32, securityPolicyUri PascalString, senderCertificate PascalByteString, receiverCertificateThumbprint PascalByteString) OpenChannelMessageResponseBuilder {
-	return m.WithSecureChannelId(secureChannelId).WithSecurityPolicyUri(securityPolicyUri).WithSenderCertificate(senderCertificate).WithReceiverCertificateThumbprint(receiverCertificateThumbprint)
+func (b *_OpenChannelMessageResponseBuilder) setParent(contract OpenChannelMessageContract) {
+	b.OpenChannelMessageContract = contract
 }
 
-func (m *_OpenChannelMessageResponseBuilder) WithSecureChannelId(secureChannelId int32) OpenChannelMessageResponseBuilder {
-	m.SecureChannelId = secureChannelId
-	return m
+func (b *_OpenChannelMessageResponseBuilder) WithMandatoryFields(secureChannelId int32, securityPolicyUri PascalString, senderCertificate PascalByteString, receiverCertificateThumbprint PascalByteString) OpenChannelMessageResponseBuilder {
+	return b.WithSecureChannelId(secureChannelId).WithSecurityPolicyUri(securityPolicyUri).WithSenderCertificate(senderCertificate).WithReceiverCertificateThumbprint(receiverCertificateThumbprint)
 }
 
-func (m *_OpenChannelMessageResponseBuilder) WithSecurityPolicyUri(securityPolicyUri PascalString) OpenChannelMessageResponseBuilder {
-	m.SecurityPolicyUri = securityPolicyUri
-	return m
+func (b *_OpenChannelMessageResponseBuilder) WithSecureChannelId(secureChannelId int32) OpenChannelMessageResponseBuilder {
+	b.SecureChannelId = secureChannelId
+	return b
 }
 
-func (m *_OpenChannelMessageResponseBuilder) WithSecurityPolicyUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) OpenChannelMessageResponseBuilder {
-	builder := builderSupplier(m.SecurityPolicyUri.CreatePascalStringBuilder())
+func (b *_OpenChannelMessageResponseBuilder) WithSecurityPolicyUri(securityPolicyUri PascalString) OpenChannelMessageResponseBuilder {
+	b.SecurityPolicyUri = securityPolicyUri
+	return b
+}
+
+func (b *_OpenChannelMessageResponseBuilder) WithSecurityPolicyUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) OpenChannelMessageResponseBuilder {
+	builder := builderSupplier(b.SecurityPolicyUri.CreatePascalStringBuilder())
 	var err error
-	m.SecurityPolicyUri, err = builder.Build()
+	b.SecurityPolicyUri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_OpenChannelMessageResponseBuilder) WithSenderCertificate(senderCertificate PascalByteString) OpenChannelMessageResponseBuilder {
-	m.SenderCertificate = senderCertificate
-	return m
+func (b *_OpenChannelMessageResponseBuilder) WithSenderCertificate(senderCertificate PascalByteString) OpenChannelMessageResponseBuilder {
+	b.SenderCertificate = senderCertificate
+	return b
 }
 
-func (m *_OpenChannelMessageResponseBuilder) WithSenderCertificateBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) OpenChannelMessageResponseBuilder {
-	builder := builderSupplier(m.SenderCertificate.CreatePascalByteStringBuilder())
+func (b *_OpenChannelMessageResponseBuilder) WithSenderCertificateBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) OpenChannelMessageResponseBuilder {
+	builder := builderSupplier(b.SenderCertificate.CreatePascalByteStringBuilder())
 	var err error
-	m.SenderCertificate, err = builder.Build()
+	b.SenderCertificate, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_OpenChannelMessageResponseBuilder) WithReceiverCertificateThumbprint(receiverCertificateThumbprint PascalByteString) OpenChannelMessageResponseBuilder {
-	m.ReceiverCertificateThumbprint = receiverCertificateThumbprint
-	return m
+func (b *_OpenChannelMessageResponseBuilder) WithReceiverCertificateThumbprint(receiverCertificateThumbprint PascalByteString) OpenChannelMessageResponseBuilder {
+	b.ReceiverCertificateThumbprint = receiverCertificateThumbprint
+	return b
 }
 
-func (m *_OpenChannelMessageResponseBuilder) WithReceiverCertificateThumbprintBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) OpenChannelMessageResponseBuilder {
-	builder := builderSupplier(m.ReceiverCertificateThumbprint.CreatePascalByteStringBuilder())
+func (b *_OpenChannelMessageResponseBuilder) WithReceiverCertificateThumbprintBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) OpenChannelMessageResponseBuilder {
+	builder := builderSupplier(b.ReceiverCertificateThumbprint.CreatePascalByteStringBuilder())
 	var err error
-	m.ReceiverCertificateThumbprint, err = builder.Build()
+	b.ReceiverCertificateThumbprint, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_OpenChannelMessageResponseBuilder) Build() (OpenChannelMessageResponse, error) {
-	if m.SecurityPolicyUri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_OpenChannelMessageResponseBuilder) Build() (OpenChannelMessageResponse, error) {
+	if b.SecurityPolicyUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
+		b.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
 	}
-	if m.SenderCertificate == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.SenderCertificate == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'senderCertificate' not set"))
+		b.err.Append(errors.New("mandatory field 'senderCertificate' not set"))
 	}
-	if m.ReceiverCertificateThumbprint == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ReceiverCertificateThumbprint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'receiverCertificateThumbprint' not set"))
+		b.err.Append(errors.New("mandatory field 'receiverCertificateThumbprint' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._OpenChannelMessageResponse.deepCopy(), nil
+	return b._OpenChannelMessageResponse.deepCopy(), nil
 }
 
-func (m *_OpenChannelMessageResponseBuilder) MustBuild() OpenChannelMessageResponse {
-	build, err := m.Build()
+func (b *_OpenChannelMessageResponseBuilder) MustBuild() OpenChannelMessageResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_OpenChannelMessageResponseBuilder) DeepCopy() any {
-	return m.CreateOpenChannelMessageResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OpenChannelMessageResponseBuilder) Done() OpenChannelMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OpenChannelMessageResponseBuilder) buildForOpenChannelMessage() (OpenChannelMessage, error) {
+	return b.Build()
+}
+
+func (b *_OpenChannelMessageResponseBuilder) DeepCopy() any {
+	_copy := b.CreateOpenChannelMessageResponseBuilder().(*_OpenChannelMessageResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateOpenChannelMessageResponseBuilder creates a OpenChannelMessageResponseBuilder
-func (m *_OpenChannelMessageResponse) CreateOpenChannelMessageResponseBuilder() OpenChannelMessageResponseBuilder {
-	if m == nil {
+func (b *_OpenChannelMessageResponse) CreateOpenChannelMessageResponseBuilder() OpenChannelMessageResponseBuilder {
+	if b == nil {
 		return NewOpenChannelMessageResponseBuilder()
 	}
-	return &_OpenChannelMessageResponseBuilder{_OpenChannelMessageResponse: m.deepCopy()}
+	return &_OpenChannelMessageResponseBuilder{_OpenChannelMessageResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -434,9 +453,13 @@ func (m *_OpenChannelMessageResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

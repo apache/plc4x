@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesBinaryLightningValueBuilder() BACnetPropertyStatesBi
 type _BACnetPropertyStatesBinaryLightningValueBuilder struct {
 	*_BACnetPropertyStatesBinaryLightningValue
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesBinaryLightningValueBuilder) = (*_BACnetPropertyStatesBinaryLightningValueBuilder)(nil)
 
-func (m *_BACnetPropertyStatesBinaryLightningValueBuilder) WithMandatoryFields(binaryLightningValue BACnetBinaryLightingPVTagged) BACnetPropertyStatesBinaryLightningValueBuilder {
-	return m.WithBinaryLightningValue(binaryLightningValue)
+func (b *_BACnetPropertyStatesBinaryLightningValueBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesBinaryLightningValueBuilder) WithBinaryLightningValue(binaryLightningValue BACnetBinaryLightingPVTagged) BACnetPropertyStatesBinaryLightningValueBuilder {
-	m.BinaryLightningValue = binaryLightningValue
-	return m
+func (b *_BACnetPropertyStatesBinaryLightningValueBuilder) WithMandatoryFields(binaryLightningValue BACnetBinaryLightingPVTagged) BACnetPropertyStatesBinaryLightningValueBuilder {
+	return b.WithBinaryLightningValue(binaryLightningValue)
 }
 
-func (m *_BACnetPropertyStatesBinaryLightningValueBuilder) WithBinaryLightningValueBuilder(builderSupplier func(BACnetBinaryLightingPVTaggedBuilder) BACnetBinaryLightingPVTaggedBuilder) BACnetPropertyStatesBinaryLightningValueBuilder {
-	builder := builderSupplier(m.BinaryLightningValue.CreateBACnetBinaryLightingPVTaggedBuilder())
+func (b *_BACnetPropertyStatesBinaryLightningValueBuilder) WithBinaryLightningValue(binaryLightningValue BACnetBinaryLightingPVTagged) BACnetPropertyStatesBinaryLightningValueBuilder {
+	b.BinaryLightningValue = binaryLightningValue
+	return b
+}
+
+func (b *_BACnetPropertyStatesBinaryLightningValueBuilder) WithBinaryLightningValueBuilder(builderSupplier func(BACnetBinaryLightingPVTaggedBuilder) BACnetBinaryLightingPVTaggedBuilder) BACnetPropertyStatesBinaryLightningValueBuilder {
+	builder := builderSupplier(b.BinaryLightningValue.CreateBACnetBinaryLightingPVTaggedBuilder())
 	var err error
-	m.BinaryLightningValue, err = builder.Build()
+	b.BinaryLightningValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetBinaryLightingPVTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetBinaryLightingPVTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesBinaryLightningValueBuilder) Build() (BACnetPropertyStatesBinaryLightningValue, error) {
-	if m.BinaryLightningValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesBinaryLightningValueBuilder) Build() (BACnetPropertyStatesBinaryLightningValue, error) {
+	if b.BinaryLightningValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'binaryLightningValue' not set"))
+		b.err.Append(errors.New("mandatory field 'binaryLightningValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesBinaryLightningValue.deepCopy(), nil
+	return b._BACnetPropertyStatesBinaryLightningValue.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesBinaryLightningValueBuilder) MustBuild() BACnetPropertyStatesBinaryLightningValue {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesBinaryLightningValueBuilder) MustBuild() BACnetPropertyStatesBinaryLightningValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesBinaryLightningValueBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesBinaryLightningValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesBinaryLightningValueBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesBinaryLightningValueBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesBinaryLightningValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesBinaryLightningValueBuilder().(*_BACnetPropertyStatesBinaryLightningValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesBinaryLightningValueBuilder creates a BACnetPropertyStatesBinaryLightningValueBuilder
-func (m *_BACnetPropertyStatesBinaryLightningValue) CreateBACnetPropertyStatesBinaryLightningValueBuilder() BACnetPropertyStatesBinaryLightningValueBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesBinaryLightningValue) CreateBACnetPropertyStatesBinaryLightningValueBuilder() BACnetPropertyStatesBinaryLightningValueBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesBinaryLightningValueBuilder()
 	}
-	return &_BACnetPropertyStatesBinaryLightningValueBuilder{_BACnetPropertyStatesBinaryLightningValue: m.deepCopy()}
+	return &_BACnetPropertyStatesBinaryLightningValueBuilder{_BACnetPropertyStatesBinaryLightningValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

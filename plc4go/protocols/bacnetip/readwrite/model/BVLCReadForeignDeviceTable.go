@@ -86,40 +86,59 @@ func NewBVLCReadForeignDeviceTableBuilder() BVLCReadForeignDeviceTableBuilder {
 type _BVLCReadForeignDeviceTableBuilder struct {
 	*_BVLCReadForeignDeviceTable
 
+	parentBuilder *_BVLCBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BVLCReadForeignDeviceTableBuilder) = (*_BVLCReadForeignDeviceTableBuilder)(nil)
 
-func (m *_BVLCReadForeignDeviceTableBuilder) WithMandatoryFields() BVLCReadForeignDeviceTableBuilder {
-	return m
+func (b *_BVLCReadForeignDeviceTableBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
 }
 
-func (m *_BVLCReadForeignDeviceTableBuilder) Build() (BVLCReadForeignDeviceTable, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BVLCReadForeignDeviceTableBuilder) WithMandatoryFields() BVLCReadForeignDeviceTableBuilder {
+	return b
+}
+
+func (b *_BVLCReadForeignDeviceTableBuilder) Build() (BVLCReadForeignDeviceTable, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BVLCReadForeignDeviceTable.deepCopy(), nil
+	return b._BVLCReadForeignDeviceTable.deepCopy(), nil
 }
 
-func (m *_BVLCReadForeignDeviceTableBuilder) MustBuild() BVLCReadForeignDeviceTable {
-	build, err := m.Build()
+func (b *_BVLCReadForeignDeviceTableBuilder) MustBuild() BVLCReadForeignDeviceTable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BVLCReadForeignDeviceTableBuilder) DeepCopy() any {
-	return m.CreateBVLCReadForeignDeviceTableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCReadForeignDeviceTableBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCReadForeignDeviceTableBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCReadForeignDeviceTableBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCReadForeignDeviceTableBuilder().(*_BVLCReadForeignDeviceTableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBVLCReadForeignDeviceTableBuilder creates a BVLCReadForeignDeviceTableBuilder
-func (m *_BVLCReadForeignDeviceTable) CreateBVLCReadForeignDeviceTableBuilder() BVLCReadForeignDeviceTableBuilder {
-	if m == nil {
+func (b *_BVLCReadForeignDeviceTable) CreateBVLCReadForeignDeviceTableBuilder() BVLCReadForeignDeviceTableBuilder {
+	if b == nil {
 		return NewBVLCReadForeignDeviceTableBuilder()
 	}
-	return &_BVLCReadForeignDeviceTableBuilder{_BVLCReadForeignDeviceTable: m.deepCopy()}
+	return &_BVLCReadForeignDeviceTableBuilder{_BVLCReadForeignDeviceTable: b.deepCopy()}
 }
 
 ///////////////////////
@@ -235,9 +254,13 @@ func (m *_BVLCReadForeignDeviceTable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

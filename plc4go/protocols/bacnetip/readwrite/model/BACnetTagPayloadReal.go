@@ -90,40 +90,44 @@ type _BACnetTagPayloadRealBuilder struct {
 
 var _ (BACnetTagPayloadRealBuilder) = (*_BACnetTagPayloadRealBuilder)(nil)
 
-func (m *_BACnetTagPayloadRealBuilder) WithMandatoryFields(value float32) BACnetTagPayloadRealBuilder {
-	return m.WithValue(value)
+func (b *_BACnetTagPayloadRealBuilder) WithMandatoryFields(value float32) BACnetTagPayloadRealBuilder {
+	return b.WithValue(value)
 }
 
-func (m *_BACnetTagPayloadRealBuilder) WithValue(value float32) BACnetTagPayloadRealBuilder {
-	m.Value = value
-	return m
+func (b *_BACnetTagPayloadRealBuilder) WithValue(value float32) BACnetTagPayloadRealBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_BACnetTagPayloadRealBuilder) Build() (BACnetTagPayloadReal, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetTagPayloadRealBuilder) Build() (BACnetTagPayloadReal, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetTagPayloadReal.deepCopy(), nil
+	return b._BACnetTagPayloadReal.deepCopy(), nil
 }
 
-func (m *_BACnetTagPayloadRealBuilder) MustBuild() BACnetTagPayloadReal {
-	build, err := m.Build()
+func (b *_BACnetTagPayloadRealBuilder) MustBuild() BACnetTagPayloadReal {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetTagPayloadRealBuilder) DeepCopy() any {
-	return m.CreateBACnetTagPayloadRealBuilder()
+func (b *_BACnetTagPayloadRealBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadRealBuilder().(*_BACnetTagPayloadRealBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetTagPayloadRealBuilder creates a BACnetTagPayloadRealBuilder
-func (m *_BACnetTagPayloadReal) CreateBACnetTagPayloadRealBuilder() BACnetTagPayloadRealBuilder {
-	if m == nil {
+func (b *_BACnetTagPayloadReal) CreateBACnetTagPayloadRealBuilder() BACnetTagPayloadRealBuilder {
+	if b == nil {
 		return NewBACnetTagPayloadRealBuilder()
 	}
-	return &_BACnetTagPayloadRealBuilder{_BACnetTagPayloadReal: m.deepCopy()}
+	return &_BACnetTagPayloadRealBuilder{_BACnetTagPayloadReal: b.deepCopy()}
 }
 
 ///////////////////////
@@ -260,9 +264,13 @@ func (m *_BACnetTagPayloadReal) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -144,132 +144,151 @@ func NewResponseHeaderBuilder() ResponseHeaderBuilder {
 type _ResponseHeaderBuilder struct {
 	*_ResponseHeader
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ResponseHeaderBuilder) = (*_ResponseHeaderBuilder)(nil)
 
-func (m *_ResponseHeaderBuilder) WithMandatoryFields(timestamp int64, requestHandle uint32, serviceResult StatusCode, serviceDiagnostics DiagnosticInfo, noOfStringTable int32, stringTable []PascalString, additionalHeader ExtensionObject) ResponseHeaderBuilder {
-	return m.WithTimestamp(timestamp).WithRequestHandle(requestHandle).WithServiceResult(serviceResult).WithServiceDiagnostics(serviceDiagnostics).WithNoOfStringTable(noOfStringTable).WithStringTable(stringTable...).WithAdditionalHeader(additionalHeader)
+func (b *_ResponseHeaderBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ResponseHeaderBuilder) WithTimestamp(timestamp int64) ResponseHeaderBuilder {
-	m.Timestamp = timestamp
-	return m
+func (b *_ResponseHeaderBuilder) WithMandatoryFields(timestamp int64, requestHandle uint32, serviceResult StatusCode, serviceDiagnostics DiagnosticInfo, noOfStringTable int32, stringTable []PascalString, additionalHeader ExtensionObject) ResponseHeaderBuilder {
+	return b.WithTimestamp(timestamp).WithRequestHandle(requestHandle).WithServiceResult(serviceResult).WithServiceDiagnostics(serviceDiagnostics).WithNoOfStringTable(noOfStringTable).WithStringTable(stringTable...).WithAdditionalHeader(additionalHeader)
 }
 
-func (m *_ResponseHeaderBuilder) WithRequestHandle(requestHandle uint32) ResponseHeaderBuilder {
-	m.RequestHandle = requestHandle
-	return m
+func (b *_ResponseHeaderBuilder) WithTimestamp(timestamp int64) ResponseHeaderBuilder {
+	b.Timestamp = timestamp
+	return b
 }
 
-func (m *_ResponseHeaderBuilder) WithServiceResult(serviceResult StatusCode) ResponseHeaderBuilder {
-	m.ServiceResult = serviceResult
-	return m
+func (b *_ResponseHeaderBuilder) WithRequestHandle(requestHandle uint32) ResponseHeaderBuilder {
+	b.RequestHandle = requestHandle
+	return b
 }
 
-func (m *_ResponseHeaderBuilder) WithServiceResultBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) ResponseHeaderBuilder {
-	builder := builderSupplier(m.ServiceResult.CreateStatusCodeBuilder())
+func (b *_ResponseHeaderBuilder) WithServiceResult(serviceResult StatusCode) ResponseHeaderBuilder {
+	b.ServiceResult = serviceResult
+	return b
+}
+
+func (b *_ResponseHeaderBuilder) WithServiceResultBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) ResponseHeaderBuilder {
+	builder := builderSupplier(b.ServiceResult.CreateStatusCodeBuilder())
 	var err error
-	m.ServiceResult, err = builder.Build()
+	b.ServiceResult, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ResponseHeaderBuilder) WithServiceDiagnostics(serviceDiagnostics DiagnosticInfo) ResponseHeaderBuilder {
-	m.ServiceDiagnostics = serviceDiagnostics
-	return m
+func (b *_ResponseHeaderBuilder) WithServiceDiagnostics(serviceDiagnostics DiagnosticInfo) ResponseHeaderBuilder {
+	b.ServiceDiagnostics = serviceDiagnostics
+	return b
 }
 
-func (m *_ResponseHeaderBuilder) WithServiceDiagnosticsBuilder(builderSupplier func(DiagnosticInfoBuilder) DiagnosticInfoBuilder) ResponseHeaderBuilder {
-	builder := builderSupplier(m.ServiceDiagnostics.CreateDiagnosticInfoBuilder())
+func (b *_ResponseHeaderBuilder) WithServiceDiagnosticsBuilder(builderSupplier func(DiagnosticInfoBuilder) DiagnosticInfoBuilder) ResponseHeaderBuilder {
+	builder := builderSupplier(b.ServiceDiagnostics.CreateDiagnosticInfoBuilder())
 	var err error
-	m.ServiceDiagnostics, err = builder.Build()
+	b.ServiceDiagnostics, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "DiagnosticInfoBuilder failed"))
+		b.err.Append(errors.Wrap(err, "DiagnosticInfoBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ResponseHeaderBuilder) WithNoOfStringTable(noOfStringTable int32) ResponseHeaderBuilder {
-	m.NoOfStringTable = noOfStringTable
-	return m
+func (b *_ResponseHeaderBuilder) WithNoOfStringTable(noOfStringTable int32) ResponseHeaderBuilder {
+	b.NoOfStringTable = noOfStringTable
+	return b
 }
 
-func (m *_ResponseHeaderBuilder) WithStringTable(stringTable ...PascalString) ResponseHeaderBuilder {
-	m.StringTable = stringTable
-	return m
+func (b *_ResponseHeaderBuilder) WithStringTable(stringTable ...PascalString) ResponseHeaderBuilder {
+	b.StringTable = stringTable
+	return b
 }
 
-func (m *_ResponseHeaderBuilder) WithAdditionalHeader(additionalHeader ExtensionObject) ResponseHeaderBuilder {
-	m.AdditionalHeader = additionalHeader
-	return m
+func (b *_ResponseHeaderBuilder) WithAdditionalHeader(additionalHeader ExtensionObject) ResponseHeaderBuilder {
+	b.AdditionalHeader = additionalHeader
+	return b
 }
 
-func (m *_ResponseHeaderBuilder) WithAdditionalHeaderBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) ResponseHeaderBuilder {
-	builder := builderSupplier(m.AdditionalHeader.CreateExtensionObjectBuilder())
+func (b *_ResponseHeaderBuilder) WithAdditionalHeaderBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) ResponseHeaderBuilder {
+	builder := builderSupplier(b.AdditionalHeader.CreateExtensionObjectBuilder())
 	var err error
-	m.AdditionalHeader, err = builder.Build()
+	b.AdditionalHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ResponseHeaderBuilder) Build() (ResponseHeader, error) {
-	if m.ServiceResult == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ResponseHeaderBuilder) Build() (ResponseHeader, error) {
+	if b.ServiceResult == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'serviceResult' not set"))
+		b.err.Append(errors.New("mandatory field 'serviceResult' not set"))
 	}
-	if m.ServiceDiagnostics == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ServiceDiagnostics == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'serviceDiagnostics' not set"))
+		b.err.Append(errors.New("mandatory field 'serviceDiagnostics' not set"))
 	}
-	if m.AdditionalHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.AdditionalHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'additionalHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'additionalHeader' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ResponseHeader.deepCopy(), nil
+	return b._ResponseHeader.deepCopy(), nil
 }
 
-func (m *_ResponseHeaderBuilder) MustBuild() ResponseHeader {
-	build, err := m.Build()
+func (b *_ResponseHeaderBuilder) MustBuild() ResponseHeader {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ResponseHeaderBuilder) DeepCopy() any {
-	return m.CreateResponseHeaderBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ResponseHeaderBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ResponseHeaderBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ResponseHeaderBuilder) DeepCopy() any {
+	_copy := b.CreateResponseHeaderBuilder().(*_ResponseHeaderBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateResponseHeaderBuilder creates a ResponseHeaderBuilder
-func (m *_ResponseHeader) CreateResponseHeaderBuilder() ResponseHeaderBuilder {
-	if m == nil {
+func (b *_ResponseHeader) CreateResponseHeaderBuilder() ResponseHeaderBuilder {
+	if b == nil {
 		return NewResponseHeaderBuilder()
 	}
-	return &_ResponseHeaderBuilder{_ResponseHeader: m.deepCopy()}
+	return &_ResponseHeaderBuilder{_ResponseHeader: b.deepCopy()}
 }
 
 ///////////////////////
@@ -528,9 +547,13 @@ func (m *_ResponseHeader) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

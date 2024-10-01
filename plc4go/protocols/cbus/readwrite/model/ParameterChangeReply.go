@@ -98,64 +98,83 @@ func NewParameterChangeReplyBuilder() ParameterChangeReplyBuilder {
 type _ParameterChangeReplyBuilder struct {
 	*_ParameterChangeReply
 
+	parentBuilder *_ReplyBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ParameterChangeReplyBuilder) = (*_ParameterChangeReplyBuilder)(nil)
 
-func (m *_ParameterChangeReplyBuilder) WithMandatoryFields(parameterChange ParameterChange) ParameterChangeReplyBuilder {
-	return m.WithParameterChange(parameterChange)
+func (b *_ParameterChangeReplyBuilder) setParent(contract ReplyContract) {
+	b.ReplyContract = contract
 }
 
-func (m *_ParameterChangeReplyBuilder) WithParameterChange(parameterChange ParameterChange) ParameterChangeReplyBuilder {
-	m.ParameterChange = parameterChange
-	return m
+func (b *_ParameterChangeReplyBuilder) WithMandatoryFields(parameterChange ParameterChange) ParameterChangeReplyBuilder {
+	return b.WithParameterChange(parameterChange)
 }
 
-func (m *_ParameterChangeReplyBuilder) WithParameterChangeBuilder(builderSupplier func(ParameterChangeBuilder) ParameterChangeBuilder) ParameterChangeReplyBuilder {
-	builder := builderSupplier(m.ParameterChange.CreateParameterChangeBuilder())
+func (b *_ParameterChangeReplyBuilder) WithParameterChange(parameterChange ParameterChange) ParameterChangeReplyBuilder {
+	b.ParameterChange = parameterChange
+	return b
+}
+
+func (b *_ParameterChangeReplyBuilder) WithParameterChangeBuilder(builderSupplier func(ParameterChangeBuilder) ParameterChangeBuilder) ParameterChangeReplyBuilder {
+	builder := builderSupplier(b.ParameterChange.CreateParameterChangeBuilder())
 	var err error
-	m.ParameterChange, err = builder.Build()
+	b.ParameterChange, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ParameterChangeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ParameterChangeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ParameterChangeReplyBuilder) Build() (ParameterChangeReply, error) {
-	if m.ParameterChange == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ParameterChangeReplyBuilder) Build() (ParameterChangeReply, error) {
+	if b.ParameterChange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'parameterChange' not set"))
+		b.err.Append(errors.New("mandatory field 'parameterChange' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ParameterChangeReply.deepCopy(), nil
+	return b._ParameterChangeReply.deepCopy(), nil
 }
 
-func (m *_ParameterChangeReplyBuilder) MustBuild() ParameterChangeReply {
-	build, err := m.Build()
+func (b *_ParameterChangeReplyBuilder) MustBuild() ParameterChangeReply {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ParameterChangeReplyBuilder) DeepCopy() any {
-	return m.CreateParameterChangeReplyBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ParameterChangeReplyBuilder) Done() ReplyBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ParameterChangeReplyBuilder) buildForReply() (Reply, error) {
+	return b.Build()
+}
+
+func (b *_ParameterChangeReplyBuilder) DeepCopy() any {
+	_copy := b.CreateParameterChangeReplyBuilder().(*_ParameterChangeReplyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateParameterChangeReplyBuilder creates a ParameterChangeReplyBuilder
-func (m *_ParameterChangeReply) CreateParameterChangeReplyBuilder() ParameterChangeReplyBuilder {
-	if m == nil {
+func (b *_ParameterChangeReply) CreateParameterChangeReplyBuilder() ParameterChangeReplyBuilder {
+	if b == nil {
 		return NewParameterChangeReplyBuilder()
 	}
-	return &_ParameterChangeReplyBuilder{_ParameterChangeReply: m.deepCopy()}
+	return &_ParameterChangeReplyBuilder{_ParameterChangeReply: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_ParameterChangeReply) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

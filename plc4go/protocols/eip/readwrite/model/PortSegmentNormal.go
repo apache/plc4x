@@ -99,50 +99,69 @@ func NewPortSegmentNormalBuilder() PortSegmentNormalBuilder {
 type _PortSegmentNormalBuilder struct {
 	*_PortSegmentNormal
 
+	parentBuilder *_PortSegmentTypeBuilder
+
 	err *utils.MultiError
 }
 
 var _ (PortSegmentNormalBuilder) = (*_PortSegmentNormalBuilder)(nil)
 
-func (m *_PortSegmentNormalBuilder) WithMandatoryFields(port uint8, linkAddress uint8) PortSegmentNormalBuilder {
-	return m.WithPort(port).WithLinkAddress(linkAddress)
+func (b *_PortSegmentNormalBuilder) setParent(contract PortSegmentTypeContract) {
+	b.PortSegmentTypeContract = contract
 }
 
-func (m *_PortSegmentNormalBuilder) WithPort(port uint8) PortSegmentNormalBuilder {
-	m.Port = port
-	return m
+func (b *_PortSegmentNormalBuilder) WithMandatoryFields(port uint8, linkAddress uint8) PortSegmentNormalBuilder {
+	return b.WithPort(port).WithLinkAddress(linkAddress)
 }
 
-func (m *_PortSegmentNormalBuilder) WithLinkAddress(linkAddress uint8) PortSegmentNormalBuilder {
-	m.LinkAddress = linkAddress
-	return m
+func (b *_PortSegmentNormalBuilder) WithPort(port uint8) PortSegmentNormalBuilder {
+	b.Port = port
+	return b
 }
 
-func (m *_PortSegmentNormalBuilder) Build() (PortSegmentNormal, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_PortSegmentNormalBuilder) WithLinkAddress(linkAddress uint8) PortSegmentNormalBuilder {
+	b.LinkAddress = linkAddress
+	return b
+}
+
+func (b *_PortSegmentNormalBuilder) Build() (PortSegmentNormal, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._PortSegmentNormal.deepCopy(), nil
+	return b._PortSegmentNormal.deepCopy(), nil
 }
 
-func (m *_PortSegmentNormalBuilder) MustBuild() PortSegmentNormal {
-	build, err := m.Build()
+func (b *_PortSegmentNormalBuilder) MustBuild() PortSegmentNormal {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PortSegmentNormalBuilder) DeepCopy() any {
-	return m.CreatePortSegmentNormalBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PortSegmentNormalBuilder) Done() PortSegmentTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PortSegmentNormalBuilder) buildForPortSegmentType() (PortSegmentType, error) {
+	return b.Build()
+}
+
+func (b *_PortSegmentNormalBuilder) DeepCopy() any {
+	_copy := b.CreatePortSegmentNormalBuilder().(*_PortSegmentNormalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePortSegmentNormalBuilder creates a PortSegmentNormalBuilder
-func (m *_PortSegmentNormal) CreatePortSegmentNormalBuilder() PortSegmentNormalBuilder {
-	if m == nil {
+func (b *_PortSegmentNormal) CreatePortSegmentNormalBuilder() PortSegmentNormalBuilder {
+	if b == nil {
 		return NewPortSegmentNormalBuilder()
 	}
-	return &_PortSegmentNormalBuilder{_PortSegmentNormal: m.deepCopy()}
+	return &_PortSegmentNormalBuilder{_PortSegmentNormal: b.deepCopy()}
 }
 
 ///////////////////////
@@ -304,9 +323,13 @@ func (m *_PortSegmentNormal) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -90,40 +90,44 @@ type _MACAddressBuilder struct {
 
 var _ (MACAddressBuilder) = (*_MACAddressBuilder)(nil)
 
-func (m *_MACAddressBuilder) WithMandatoryFields(addr []byte) MACAddressBuilder {
-	return m.WithAddr(addr...)
+func (b *_MACAddressBuilder) WithMandatoryFields(addr []byte) MACAddressBuilder {
+	return b.WithAddr(addr...)
 }
 
-func (m *_MACAddressBuilder) WithAddr(addr ...byte) MACAddressBuilder {
-	m.Addr = addr
-	return m
+func (b *_MACAddressBuilder) WithAddr(addr ...byte) MACAddressBuilder {
+	b.Addr = addr
+	return b
 }
 
-func (m *_MACAddressBuilder) Build() (MACAddress, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MACAddressBuilder) Build() (MACAddress, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MACAddress.deepCopy(), nil
+	return b._MACAddress.deepCopy(), nil
 }
 
-func (m *_MACAddressBuilder) MustBuild() MACAddress {
-	build, err := m.Build()
+func (b *_MACAddressBuilder) MustBuild() MACAddress {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MACAddressBuilder) DeepCopy() any {
-	return m.CreateMACAddressBuilder()
+func (b *_MACAddressBuilder) DeepCopy() any {
+	_copy := b.CreateMACAddressBuilder().(*_MACAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMACAddressBuilder creates a MACAddressBuilder
-func (m *_MACAddress) CreateMACAddressBuilder() MACAddressBuilder {
-	if m == nil {
+func (b *_MACAddress) CreateMACAddressBuilder() MACAddressBuilder {
+	if b == nil {
 		return NewMACAddressBuilder()
 	}
-	return &_MACAddressBuilder{_MACAddress: m.deepCopy()}
+	return &_MACAddressBuilder{_MACAddress: b.deepCopy()}
 }
 
 ///////////////////////
@@ -262,9 +266,13 @@ func (m *_MACAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

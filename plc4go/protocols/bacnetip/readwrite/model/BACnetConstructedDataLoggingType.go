@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLoggingTypeBuilder() BACnetConstructedDataLoggingTy
 type _BACnetConstructedDataLoggingTypeBuilder struct {
 	*_BACnetConstructedDataLoggingType
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLoggingTypeBuilder) = (*_BACnetConstructedDataLoggingTypeBuilder)(nil)
 
-func (m *_BACnetConstructedDataLoggingTypeBuilder) WithMandatoryFields(loggingType BACnetLoggingTypeTagged) BACnetConstructedDataLoggingTypeBuilder {
-	return m.WithLoggingType(loggingType)
+func (b *_BACnetConstructedDataLoggingTypeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLoggingTypeBuilder) WithLoggingType(loggingType BACnetLoggingTypeTagged) BACnetConstructedDataLoggingTypeBuilder {
-	m.LoggingType = loggingType
-	return m
+func (b *_BACnetConstructedDataLoggingTypeBuilder) WithMandatoryFields(loggingType BACnetLoggingTypeTagged) BACnetConstructedDataLoggingTypeBuilder {
+	return b.WithLoggingType(loggingType)
 }
 
-func (m *_BACnetConstructedDataLoggingTypeBuilder) WithLoggingTypeBuilder(builderSupplier func(BACnetLoggingTypeTaggedBuilder) BACnetLoggingTypeTaggedBuilder) BACnetConstructedDataLoggingTypeBuilder {
-	builder := builderSupplier(m.LoggingType.CreateBACnetLoggingTypeTaggedBuilder())
+func (b *_BACnetConstructedDataLoggingTypeBuilder) WithLoggingType(loggingType BACnetLoggingTypeTagged) BACnetConstructedDataLoggingTypeBuilder {
+	b.LoggingType = loggingType
+	return b
+}
+
+func (b *_BACnetConstructedDataLoggingTypeBuilder) WithLoggingTypeBuilder(builderSupplier func(BACnetLoggingTypeTaggedBuilder) BACnetLoggingTypeTaggedBuilder) BACnetConstructedDataLoggingTypeBuilder {
+	builder := builderSupplier(b.LoggingType.CreateBACnetLoggingTypeTaggedBuilder())
 	var err error
-	m.LoggingType, err = builder.Build()
+	b.LoggingType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLoggingTypeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLoggingTypeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLoggingTypeBuilder) Build() (BACnetConstructedDataLoggingType, error) {
-	if m.LoggingType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLoggingTypeBuilder) Build() (BACnetConstructedDataLoggingType, error) {
+	if b.LoggingType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'loggingType' not set"))
+		b.err.Append(errors.New("mandatory field 'loggingType' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLoggingType.deepCopy(), nil
+	return b._BACnetConstructedDataLoggingType.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLoggingTypeBuilder) MustBuild() BACnetConstructedDataLoggingType {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLoggingTypeBuilder) MustBuild() BACnetConstructedDataLoggingType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLoggingTypeBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLoggingTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLoggingTypeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLoggingTypeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLoggingTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLoggingTypeBuilder().(*_BACnetConstructedDataLoggingTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLoggingTypeBuilder creates a BACnetConstructedDataLoggingTypeBuilder
-func (m *_BACnetConstructedDataLoggingType) CreateBACnetConstructedDataLoggingTypeBuilder() BACnetConstructedDataLoggingTypeBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLoggingType) CreateBACnetConstructedDataLoggingTypeBuilder() BACnetConstructedDataLoggingTypeBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLoggingTypeBuilder()
 	}
-	return &_BACnetConstructedDataLoggingTypeBuilder{_BACnetConstructedDataLoggingType: m.deepCopy()}
+	return &_BACnetConstructedDataLoggingTypeBuilder{_BACnetConstructedDataLoggingType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataLoggingType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

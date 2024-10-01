@@ -82,6 +82,8 @@ type ApduDataContainerBuilder interface {
 	WithMandatoryFields(dataApdu ApduData) ApduDataContainerBuilder
 	// WithDataApdu adds DataApdu (property field)
 	WithDataApdu(ApduData) ApduDataContainerBuilder
+	// WithDataApduBuilder adds DataApdu (property field) which is build by the builder
+	WithDataApduBuilder(func(ApduDataBuilder) ApduDataBuilder) ApduDataContainerBuilder
 	// Build builds the ApduDataContainer or returns an error if something is wrong
 	Build() (ApduDataContainer, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewApduDataContainerBuilder() ApduDataContainerBuilder {
 type _ApduDataContainerBuilder struct {
 	*_ApduDataContainer
 
+	parentBuilder *_ApduBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataContainerBuilder) = (*_ApduDataContainerBuilder)(nil)
 
-func (m *_ApduDataContainerBuilder) WithMandatoryFields(dataApdu ApduData) ApduDataContainerBuilder {
-	return m.WithDataApdu(dataApdu)
+func (b *_ApduDataContainerBuilder) setParent(contract ApduContract) {
+	b.ApduContract = contract
 }
 
-func (m *_ApduDataContainerBuilder) WithDataApdu(dataApdu ApduData) ApduDataContainerBuilder {
-	m.DataApdu = dataApdu
-	return m
+func (b *_ApduDataContainerBuilder) WithMandatoryFields(dataApdu ApduData) ApduDataContainerBuilder {
+	return b.WithDataApdu(dataApdu)
 }
 
-func (m *_ApduDataContainerBuilder) Build() (ApduDataContainer, error) {
-	if m.DataApdu == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ApduDataContainerBuilder) WithDataApdu(dataApdu ApduData) ApduDataContainerBuilder {
+	b.DataApdu = dataApdu
+	return b
+}
+
+func (b *_ApduDataContainerBuilder) WithDataApduBuilder(builderSupplier func(ApduDataBuilder) ApduDataBuilder) ApduDataContainerBuilder {
+	builder := builderSupplier(b.DataApdu.CreateApduDataBuilder())
+	var err error
+	b.DataApdu, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'dataApdu' not set"))
+		b.err.Append(errors.Wrap(err, "ApduDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._ApduDataContainer.deepCopy(), nil
+	return b
 }
 
-func (m *_ApduDataContainerBuilder) MustBuild() ApduDataContainer {
-	build, err := m.Build()
+func (b *_ApduDataContainerBuilder) Build() (ApduDataContainer, error) {
+	if b.DataApdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataApdu' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduDataContainer.deepCopy(), nil
+}
+
+func (b *_ApduDataContainerBuilder) MustBuild() ApduDataContainer {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataContainerBuilder) DeepCopy() any {
-	return m.CreateApduDataContainerBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataContainerBuilder) Done() ApduBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataContainerBuilder) buildForApdu() (Apdu, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataContainerBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataContainerBuilder().(*_ApduDataContainerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataContainerBuilder creates a ApduDataContainerBuilder
-func (m *_ApduDataContainer) CreateApduDataContainerBuilder() ApduDataContainerBuilder {
-	if m == nil {
+func (b *_ApduDataContainer) CreateApduDataContainerBuilder() ApduDataContainerBuilder {
+	if b == nil {
 		return NewApduDataContainerBuilder()
 	}
-	return &_ApduDataContainerBuilder{_ApduDataContainer: m.deepCopy()}
+	return &_ApduDataContainerBuilder{_ApduDataContainer: b.deepCopy()}
 }
 
 ///////////////////////
@@ -284,9 +318,13 @@ func (m *_ApduDataContainer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -98,64 +98,83 @@ func NewBACnetShedLevelAmountBuilder() BACnetShedLevelAmountBuilder {
 type _BACnetShedLevelAmountBuilder struct {
 	*_BACnetShedLevelAmount
 
+	parentBuilder *_BACnetShedLevelBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetShedLevelAmountBuilder) = (*_BACnetShedLevelAmountBuilder)(nil)
 
-func (m *_BACnetShedLevelAmountBuilder) WithMandatoryFields(amount BACnetContextTagReal) BACnetShedLevelAmountBuilder {
-	return m.WithAmount(amount)
+func (b *_BACnetShedLevelAmountBuilder) setParent(contract BACnetShedLevelContract) {
+	b.BACnetShedLevelContract = contract
 }
 
-func (m *_BACnetShedLevelAmountBuilder) WithAmount(amount BACnetContextTagReal) BACnetShedLevelAmountBuilder {
-	m.Amount = amount
-	return m
+func (b *_BACnetShedLevelAmountBuilder) WithMandatoryFields(amount BACnetContextTagReal) BACnetShedLevelAmountBuilder {
+	return b.WithAmount(amount)
 }
 
-func (m *_BACnetShedLevelAmountBuilder) WithAmountBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetShedLevelAmountBuilder {
-	builder := builderSupplier(m.Amount.CreateBACnetContextTagRealBuilder())
+func (b *_BACnetShedLevelAmountBuilder) WithAmount(amount BACnetContextTagReal) BACnetShedLevelAmountBuilder {
+	b.Amount = amount
+	return b
+}
+
+func (b *_BACnetShedLevelAmountBuilder) WithAmountBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetShedLevelAmountBuilder {
+	builder := builderSupplier(b.Amount.CreateBACnetContextTagRealBuilder())
 	var err error
-	m.Amount, err = builder.Build()
+	b.Amount, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetShedLevelAmountBuilder) Build() (BACnetShedLevelAmount, error) {
-	if m.Amount == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetShedLevelAmountBuilder) Build() (BACnetShedLevelAmount, error) {
+	if b.Amount == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'amount' not set"))
+		b.err.Append(errors.New("mandatory field 'amount' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetShedLevelAmount.deepCopy(), nil
+	return b._BACnetShedLevelAmount.deepCopy(), nil
 }
 
-func (m *_BACnetShedLevelAmountBuilder) MustBuild() BACnetShedLevelAmount {
-	build, err := m.Build()
+func (b *_BACnetShedLevelAmountBuilder) MustBuild() BACnetShedLevelAmount {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetShedLevelAmountBuilder) DeepCopy() any {
-	return m.CreateBACnetShedLevelAmountBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetShedLevelAmountBuilder) Done() BACnetShedLevelBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetShedLevelAmountBuilder) buildForBACnetShedLevel() (BACnetShedLevel, error) {
+	return b.Build()
+}
+
+func (b *_BACnetShedLevelAmountBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetShedLevelAmountBuilder().(*_BACnetShedLevelAmountBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetShedLevelAmountBuilder creates a BACnetShedLevelAmountBuilder
-func (m *_BACnetShedLevelAmount) CreateBACnetShedLevelAmountBuilder() BACnetShedLevelAmountBuilder {
-	if m == nil {
+func (b *_BACnetShedLevelAmount) CreateBACnetShedLevelAmountBuilder() BACnetShedLevelAmountBuilder {
+	if b == nil {
 		return NewBACnetShedLevelAmountBuilder()
 	}
-	return &_BACnetShedLevelAmountBuilder{_BACnetShedLevelAmount: m.deepCopy()}
+	return &_BACnetShedLevelAmountBuilder{_BACnetShedLevelAmount: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetShedLevelAmount) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

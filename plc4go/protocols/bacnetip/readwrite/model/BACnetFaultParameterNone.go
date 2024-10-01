@@ -98,64 +98,83 @@ func NewBACnetFaultParameterNoneBuilder() BACnetFaultParameterNoneBuilder {
 type _BACnetFaultParameterNoneBuilder struct {
 	*_BACnetFaultParameterNone
 
+	parentBuilder *_BACnetFaultParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetFaultParameterNoneBuilder) = (*_BACnetFaultParameterNoneBuilder)(nil)
 
-func (m *_BACnetFaultParameterNoneBuilder) WithMandatoryFields(none BACnetContextTagNull) BACnetFaultParameterNoneBuilder {
-	return m.WithNone(none)
+func (b *_BACnetFaultParameterNoneBuilder) setParent(contract BACnetFaultParameterContract) {
+	b.BACnetFaultParameterContract = contract
 }
 
-func (m *_BACnetFaultParameterNoneBuilder) WithNone(none BACnetContextTagNull) BACnetFaultParameterNoneBuilder {
-	m.None = none
-	return m
+func (b *_BACnetFaultParameterNoneBuilder) WithMandatoryFields(none BACnetContextTagNull) BACnetFaultParameterNoneBuilder {
+	return b.WithNone(none)
 }
 
-func (m *_BACnetFaultParameterNoneBuilder) WithNoneBuilder(builderSupplier func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetFaultParameterNoneBuilder {
-	builder := builderSupplier(m.None.CreateBACnetContextTagNullBuilder())
+func (b *_BACnetFaultParameterNoneBuilder) WithNone(none BACnetContextTagNull) BACnetFaultParameterNoneBuilder {
+	b.None = none
+	return b
+}
+
+func (b *_BACnetFaultParameterNoneBuilder) WithNoneBuilder(builderSupplier func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetFaultParameterNoneBuilder {
+	builder := builderSupplier(b.None.CreateBACnetContextTagNullBuilder())
 	var err error
-	m.None, err = builder.Build()
+	b.None, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetFaultParameterNoneBuilder) Build() (BACnetFaultParameterNone, error) {
-	if m.None == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetFaultParameterNoneBuilder) Build() (BACnetFaultParameterNone, error) {
+	if b.None == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'none' not set"))
+		b.err.Append(errors.New("mandatory field 'none' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetFaultParameterNone.deepCopy(), nil
+	return b._BACnetFaultParameterNone.deepCopy(), nil
 }
 
-func (m *_BACnetFaultParameterNoneBuilder) MustBuild() BACnetFaultParameterNone {
-	build, err := m.Build()
+func (b *_BACnetFaultParameterNoneBuilder) MustBuild() BACnetFaultParameterNone {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetFaultParameterNoneBuilder) DeepCopy() any {
-	return m.CreateBACnetFaultParameterNoneBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetFaultParameterNoneBuilder) Done() BACnetFaultParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetFaultParameterNoneBuilder) buildForBACnetFaultParameter() (BACnetFaultParameter, error) {
+	return b.Build()
+}
+
+func (b *_BACnetFaultParameterNoneBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultParameterNoneBuilder().(*_BACnetFaultParameterNoneBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetFaultParameterNoneBuilder creates a BACnetFaultParameterNoneBuilder
-func (m *_BACnetFaultParameterNone) CreateBACnetFaultParameterNoneBuilder() BACnetFaultParameterNoneBuilder {
-	if m == nil {
+func (b *_BACnetFaultParameterNone) CreateBACnetFaultParameterNoneBuilder() BACnetFaultParameterNoneBuilder {
+	if b == nil {
 		return NewBACnetFaultParameterNoneBuilder()
 	}
-	return &_BACnetFaultParameterNoneBuilder{_BACnetFaultParameterNone: m.deepCopy()}
+	return &_BACnetFaultParameterNoneBuilder{_BACnetFaultParameterNone: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetFaultParameterNone) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

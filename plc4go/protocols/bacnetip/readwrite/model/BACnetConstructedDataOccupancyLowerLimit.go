@@ -100,64 +100,83 @@ func NewBACnetConstructedDataOccupancyLowerLimitBuilder() BACnetConstructedDataO
 type _BACnetConstructedDataOccupancyLowerLimitBuilder struct {
 	*_BACnetConstructedDataOccupancyLowerLimit
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataOccupancyLowerLimitBuilder) = (*_BACnetConstructedDataOccupancyLowerLimitBuilder)(nil)
 
-func (m *_BACnetConstructedDataOccupancyLowerLimitBuilder) WithMandatoryFields(occupancyLowerLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataOccupancyLowerLimitBuilder {
-	return m.WithOccupancyLowerLimit(occupancyLowerLimit)
+func (b *_BACnetConstructedDataOccupancyLowerLimitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimitBuilder) WithOccupancyLowerLimit(occupancyLowerLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataOccupancyLowerLimitBuilder {
-	m.OccupancyLowerLimit = occupancyLowerLimit
-	return m
+func (b *_BACnetConstructedDataOccupancyLowerLimitBuilder) WithMandatoryFields(occupancyLowerLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataOccupancyLowerLimitBuilder {
+	return b.WithOccupancyLowerLimit(occupancyLowerLimit)
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimitBuilder) WithOccupancyLowerLimitBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataOccupancyLowerLimitBuilder {
-	builder := builderSupplier(m.OccupancyLowerLimit.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataOccupancyLowerLimitBuilder) WithOccupancyLowerLimit(occupancyLowerLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataOccupancyLowerLimitBuilder {
+	b.OccupancyLowerLimit = occupancyLowerLimit
+	return b
+}
+
+func (b *_BACnetConstructedDataOccupancyLowerLimitBuilder) WithOccupancyLowerLimitBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataOccupancyLowerLimitBuilder {
+	builder := builderSupplier(b.OccupancyLowerLimit.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.OccupancyLowerLimit, err = builder.Build()
+	b.OccupancyLowerLimit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimitBuilder) Build() (BACnetConstructedDataOccupancyLowerLimit, error) {
-	if m.OccupancyLowerLimit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataOccupancyLowerLimitBuilder) Build() (BACnetConstructedDataOccupancyLowerLimit, error) {
+	if b.OccupancyLowerLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'occupancyLowerLimit' not set"))
+		b.err.Append(errors.New("mandatory field 'occupancyLowerLimit' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataOccupancyLowerLimit.deepCopy(), nil
+	return b._BACnetConstructedDataOccupancyLowerLimit.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimitBuilder) MustBuild() BACnetConstructedDataOccupancyLowerLimit {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataOccupancyLowerLimitBuilder) MustBuild() BACnetConstructedDataOccupancyLowerLimit {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimitBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataOccupancyLowerLimitBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataOccupancyLowerLimitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataOccupancyLowerLimitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataOccupancyLowerLimitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataOccupancyLowerLimitBuilder().(*_BACnetConstructedDataOccupancyLowerLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataOccupancyLowerLimitBuilder creates a BACnetConstructedDataOccupancyLowerLimitBuilder
-func (m *_BACnetConstructedDataOccupancyLowerLimit) CreateBACnetConstructedDataOccupancyLowerLimitBuilder() BACnetConstructedDataOccupancyLowerLimitBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataOccupancyLowerLimit) CreateBACnetConstructedDataOccupancyLowerLimitBuilder() BACnetConstructedDataOccupancyLowerLimitBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataOccupancyLowerLimitBuilder()
 	}
-	return &_BACnetConstructedDataOccupancyLowerLimitBuilder{_BACnetConstructedDataOccupancyLowerLimit: m.deepCopy()}
+	return &_BACnetConstructedDataOccupancyLowerLimitBuilder{_BACnetConstructedDataOccupancyLowerLimit: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataOccupancyLowerLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

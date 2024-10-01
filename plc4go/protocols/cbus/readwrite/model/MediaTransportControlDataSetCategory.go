@@ -93,45 +93,64 @@ func NewMediaTransportControlDataSetCategoryBuilder() MediaTransportControlDataS
 type _MediaTransportControlDataSetCategoryBuilder struct {
 	*_MediaTransportControlDataSetCategory
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataSetCategoryBuilder) = (*_MediaTransportControlDataSetCategoryBuilder)(nil)
 
-func (m *_MediaTransportControlDataSetCategoryBuilder) WithMandatoryFields(categoryNumber uint8) MediaTransportControlDataSetCategoryBuilder {
-	return m.WithCategoryNumber(categoryNumber)
+func (b *_MediaTransportControlDataSetCategoryBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataSetCategoryBuilder) WithCategoryNumber(categoryNumber uint8) MediaTransportControlDataSetCategoryBuilder {
-	m.CategoryNumber = categoryNumber
-	return m
+func (b *_MediaTransportControlDataSetCategoryBuilder) WithMandatoryFields(categoryNumber uint8) MediaTransportControlDataSetCategoryBuilder {
+	return b.WithCategoryNumber(categoryNumber)
 }
 
-func (m *_MediaTransportControlDataSetCategoryBuilder) Build() (MediaTransportControlDataSetCategory, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataSetCategoryBuilder) WithCategoryNumber(categoryNumber uint8) MediaTransportControlDataSetCategoryBuilder {
+	b.CategoryNumber = categoryNumber
+	return b
+}
+
+func (b *_MediaTransportControlDataSetCategoryBuilder) Build() (MediaTransportControlDataSetCategory, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataSetCategory.deepCopy(), nil
+	return b._MediaTransportControlDataSetCategory.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataSetCategoryBuilder) MustBuild() MediaTransportControlDataSetCategory {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataSetCategoryBuilder) MustBuild() MediaTransportControlDataSetCategory {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataSetCategoryBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataSetCategoryBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataSetCategoryBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataSetCategoryBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataSetCategoryBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataSetCategoryBuilder().(*_MediaTransportControlDataSetCategoryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataSetCategoryBuilder creates a MediaTransportControlDataSetCategoryBuilder
-func (m *_MediaTransportControlDataSetCategory) CreateMediaTransportControlDataSetCategoryBuilder() MediaTransportControlDataSetCategoryBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataSetCategory) CreateMediaTransportControlDataSetCategoryBuilder() MediaTransportControlDataSetCategoryBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataSetCategoryBuilder()
 	}
-	return &_MediaTransportControlDataSetCategoryBuilder{_MediaTransportControlDataSetCategory: m.deepCopy()}
+	return &_MediaTransportControlDataSetCategoryBuilder{_MediaTransportControlDataSetCategory: b.deepCopy()}
 }
 
 ///////////////////////
@@ -271,9 +290,13 @@ func (m *_MediaTransportControlDataSetCategory) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

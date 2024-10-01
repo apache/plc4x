@@ -106,82 +106,101 @@ func NewBACnetConfirmedServiceRequestCreateObjectBuilder() BACnetConfirmedServic
 type _BACnetConfirmedServiceRequestCreateObjectBuilder struct {
 	*_BACnetConfirmedServiceRequestCreateObject
 
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestCreateObjectBuilder) = (*_BACnetConfirmedServiceRequestCreateObjectBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectBuilder) WithMandatoryFields(objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) BACnetConfirmedServiceRequestCreateObjectBuilder {
-	return m.WithObjectSpecifier(objectSpecifier)
+func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectBuilder) WithObjectSpecifier(objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) BACnetConfirmedServiceRequestCreateObjectBuilder {
-	m.ObjectSpecifier = objectSpecifier
-	return m
+func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) WithMandatoryFields(objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) BACnetConfirmedServiceRequestCreateObjectBuilder {
+	return b.WithObjectSpecifier(objectSpecifier)
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectBuilder) WithObjectSpecifierBuilder(builderSupplier func(BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) BACnetConfirmedServiceRequestCreateObjectBuilder {
-	builder := builderSupplier(m.ObjectSpecifier.CreateBACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder())
+func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) WithObjectSpecifier(objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) BACnetConfirmedServiceRequestCreateObjectBuilder {
+	b.ObjectSpecifier = objectSpecifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) WithObjectSpecifierBuilder(builderSupplier func(BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) BACnetConfirmedServiceRequestCreateObjectBuilder {
+	builder := builderSupplier(b.ObjectSpecifier.CreateBACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder())
 	var err error
-	m.ObjectSpecifier, err = builder.Build()
+	b.ObjectSpecifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectBuilder) WithOptionalListOfValues(listOfValues BACnetPropertyValues) BACnetConfirmedServiceRequestCreateObjectBuilder {
-	m.ListOfValues = listOfValues
-	return m
+func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) WithOptionalListOfValues(listOfValues BACnetPropertyValues) BACnetConfirmedServiceRequestCreateObjectBuilder {
+	b.ListOfValues = listOfValues
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectBuilder) WithOptionalListOfValuesBuilder(builderSupplier func(BACnetPropertyValuesBuilder) BACnetPropertyValuesBuilder) BACnetConfirmedServiceRequestCreateObjectBuilder {
-	builder := builderSupplier(m.ListOfValues.CreateBACnetPropertyValuesBuilder())
+func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) WithOptionalListOfValuesBuilder(builderSupplier func(BACnetPropertyValuesBuilder) BACnetPropertyValuesBuilder) BACnetConfirmedServiceRequestCreateObjectBuilder {
+	builder := builderSupplier(b.ListOfValues.CreateBACnetPropertyValuesBuilder())
 	var err error
-	m.ListOfValues, err = builder.Build()
+	b.ListOfValues, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetPropertyValuesBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetPropertyValuesBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectBuilder) Build() (BACnetConfirmedServiceRequestCreateObject, error) {
-	if m.ObjectSpecifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) Build() (BACnetConfirmedServiceRequestCreateObject, error) {
+	if b.ObjectSpecifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectSpecifier' not set"))
+		b.err.Append(errors.New("mandatory field 'objectSpecifier' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestCreateObject.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestCreateObject.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectBuilder) MustBuild() BACnetConfirmedServiceRequestCreateObject {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) MustBuild() BACnetConfirmedServiceRequestCreateObject {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestCreateObjectBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestCreateObjectBuilder().(*_BACnetConfirmedServiceRequestCreateObjectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestCreateObjectBuilder creates a BACnetConfirmedServiceRequestCreateObjectBuilder
-func (m *_BACnetConfirmedServiceRequestCreateObject) CreateBACnetConfirmedServiceRequestCreateObjectBuilder() BACnetConfirmedServiceRequestCreateObjectBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestCreateObject) CreateBACnetConfirmedServiceRequestCreateObjectBuilder() BACnetConfirmedServiceRequestCreateObjectBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestCreateObjectBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestCreateObjectBuilder{_BACnetConfirmedServiceRequestCreateObject: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestCreateObjectBuilder{_BACnetConfirmedServiceRequestCreateObject: b.deepCopy()}
 }
 
 ///////////////////////
@@ -349,9 +368,13 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

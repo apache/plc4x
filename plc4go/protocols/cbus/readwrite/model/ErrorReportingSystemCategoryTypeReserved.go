@@ -93,45 +93,64 @@ func NewErrorReportingSystemCategoryTypeReservedBuilder() ErrorReportingSystemCa
 type _ErrorReportingSystemCategoryTypeReservedBuilder struct {
 	*_ErrorReportingSystemCategoryTypeReserved
 
+	parentBuilder *_ErrorReportingSystemCategoryTypeBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ErrorReportingSystemCategoryTypeReservedBuilder) = (*_ErrorReportingSystemCategoryTypeReservedBuilder)(nil)
 
-func (m *_ErrorReportingSystemCategoryTypeReservedBuilder) WithMandatoryFields(reservedValue uint8) ErrorReportingSystemCategoryTypeReservedBuilder {
-	return m.WithReservedValue(reservedValue)
+func (b *_ErrorReportingSystemCategoryTypeReservedBuilder) setParent(contract ErrorReportingSystemCategoryTypeContract) {
+	b.ErrorReportingSystemCategoryTypeContract = contract
 }
 
-func (m *_ErrorReportingSystemCategoryTypeReservedBuilder) WithReservedValue(reservedValue uint8) ErrorReportingSystemCategoryTypeReservedBuilder {
-	m.ReservedValue = reservedValue
-	return m
+func (b *_ErrorReportingSystemCategoryTypeReservedBuilder) WithMandatoryFields(reservedValue uint8) ErrorReportingSystemCategoryTypeReservedBuilder {
+	return b.WithReservedValue(reservedValue)
 }
 
-func (m *_ErrorReportingSystemCategoryTypeReservedBuilder) Build() (ErrorReportingSystemCategoryTypeReserved, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ErrorReportingSystemCategoryTypeReservedBuilder) WithReservedValue(reservedValue uint8) ErrorReportingSystemCategoryTypeReservedBuilder {
+	b.ReservedValue = reservedValue
+	return b
+}
+
+func (b *_ErrorReportingSystemCategoryTypeReservedBuilder) Build() (ErrorReportingSystemCategoryTypeReserved, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ErrorReportingSystemCategoryTypeReserved.deepCopy(), nil
+	return b._ErrorReportingSystemCategoryTypeReserved.deepCopy(), nil
 }
 
-func (m *_ErrorReportingSystemCategoryTypeReservedBuilder) MustBuild() ErrorReportingSystemCategoryTypeReserved {
-	build, err := m.Build()
+func (b *_ErrorReportingSystemCategoryTypeReservedBuilder) MustBuild() ErrorReportingSystemCategoryTypeReserved {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ErrorReportingSystemCategoryTypeReservedBuilder) DeepCopy() any {
-	return m.CreateErrorReportingSystemCategoryTypeReservedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ErrorReportingSystemCategoryTypeReservedBuilder) Done() ErrorReportingSystemCategoryTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ErrorReportingSystemCategoryTypeReservedBuilder) buildForErrorReportingSystemCategoryType() (ErrorReportingSystemCategoryType, error) {
+	return b.Build()
+}
+
+func (b *_ErrorReportingSystemCategoryTypeReservedBuilder) DeepCopy() any {
+	_copy := b.CreateErrorReportingSystemCategoryTypeReservedBuilder().(*_ErrorReportingSystemCategoryTypeReservedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateErrorReportingSystemCategoryTypeReservedBuilder creates a ErrorReportingSystemCategoryTypeReservedBuilder
-func (m *_ErrorReportingSystemCategoryTypeReserved) CreateErrorReportingSystemCategoryTypeReservedBuilder() ErrorReportingSystemCategoryTypeReservedBuilder {
-	if m == nil {
+func (b *_ErrorReportingSystemCategoryTypeReserved) CreateErrorReportingSystemCategoryTypeReservedBuilder() ErrorReportingSystemCategoryTypeReservedBuilder {
+	if b == nil {
 		return NewErrorReportingSystemCategoryTypeReservedBuilder()
 	}
-	return &_ErrorReportingSystemCategoryTypeReservedBuilder{_ErrorReportingSystemCategoryTypeReserved: m.deepCopy()}
+	return &_ErrorReportingSystemCategoryTypeReservedBuilder{_ErrorReportingSystemCategoryTypeReserved: b.deepCopy()}
 }
 
 ///////////////////////
@@ -275,9 +294,13 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

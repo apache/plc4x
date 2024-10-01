@@ -100,64 +100,83 @@ func NewBACnetConstructedDataBACnetIPGlobalAddressBuilder() BACnetConstructedDat
 type _BACnetConstructedDataBACnetIPGlobalAddressBuilder struct {
 	*_BACnetConstructedDataBACnetIPGlobalAddress
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataBACnetIPGlobalAddressBuilder) = (*_BACnetConstructedDataBACnetIPGlobalAddressBuilder)(nil)
 
-func (m *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) WithMandatoryFields(bacnetIpGlobalAddress BACnetHostNPort) BACnetConstructedDataBACnetIPGlobalAddressBuilder {
-	return m.WithBacnetIpGlobalAddress(bacnetIpGlobalAddress)
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) WithBacnetIpGlobalAddress(bacnetIpGlobalAddress BACnetHostNPort) BACnetConstructedDataBACnetIPGlobalAddressBuilder {
-	m.BacnetIpGlobalAddress = bacnetIpGlobalAddress
-	return m
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) WithMandatoryFields(bacnetIpGlobalAddress BACnetHostNPort) BACnetConstructedDataBACnetIPGlobalAddressBuilder {
+	return b.WithBacnetIpGlobalAddress(bacnetIpGlobalAddress)
 }
 
-func (m *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) WithBacnetIpGlobalAddressBuilder(builderSupplier func(BACnetHostNPortBuilder) BACnetHostNPortBuilder) BACnetConstructedDataBACnetIPGlobalAddressBuilder {
-	builder := builderSupplier(m.BacnetIpGlobalAddress.CreateBACnetHostNPortBuilder())
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) WithBacnetIpGlobalAddress(bacnetIpGlobalAddress BACnetHostNPort) BACnetConstructedDataBACnetIPGlobalAddressBuilder {
+	b.BacnetIpGlobalAddress = bacnetIpGlobalAddress
+	return b
+}
+
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) WithBacnetIpGlobalAddressBuilder(builderSupplier func(BACnetHostNPortBuilder) BACnetHostNPortBuilder) BACnetConstructedDataBACnetIPGlobalAddressBuilder {
+	builder := builderSupplier(b.BacnetIpGlobalAddress.CreateBACnetHostNPortBuilder())
 	var err error
-	m.BacnetIpGlobalAddress, err = builder.Build()
+	b.BacnetIpGlobalAddress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetHostNPortBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetHostNPortBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) Build() (BACnetConstructedDataBACnetIPGlobalAddress, error) {
-	if m.BacnetIpGlobalAddress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) Build() (BACnetConstructedDataBACnetIPGlobalAddress, error) {
+	if b.BacnetIpGlobalAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'bacnetIpGlobalAddress' not set"))
+		b.err.Append(errors.New("mandatory field 'bacnetIpGlobalAddress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataBACnetIPGlobalAddress.deepCopy(), nil
+	return b._BACnetConstructedDataBACnetIPGlobalAddress.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) MustBuild() BACnetConstructedDataBACnetIPGlobalAddress {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) MustBuild() BACnetConstructedDataBACnetIPGlobalAddress {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataBACnetIPGlobalAddressBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBACnetIPGlobalAddressBuilder().(*_BACnetConstructedDataBACnetIPGlobalAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataBACnetIPGlobalAddressBuilder creates a BACnetConstructedDataBACnetIPGlobalAddressBuilder
-func (m *_BACnetConstructedDataBACnetIPGlobalAddress) CreateBACnetConstructedDataBACnetIPGlobalAddressBuilder() BACnetConstructedDataBACnetIPGlobalAddressBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataBACnetIPGlobalAddress) CreateBACnetConstructedDataBACnetIPGlobalAddressBuilder() BACnetConstructedDataBACnetIPGlobalAddressBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataBACnetIPGlobalAddressBuilder()
 	}
-	return &_BACnetConstructedDataBACnetIPGlobalAddressBuilder{_BACnetConstructedDataBACnetIPGlobalAddress: m.deepCopy()}
+	return &_BACnetConstructedDataBACnetIPGlobalAddressBuilder{_BACnetConstructedDataBACnetIPGlobalAddress: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataBACnetIPGlobalAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

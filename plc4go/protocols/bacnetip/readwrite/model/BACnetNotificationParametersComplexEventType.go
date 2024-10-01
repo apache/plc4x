@@ -98,64 +98,83 @@ func NewBACnetNotificationParametersComplexEventTypeBuilder() BACnetNotification
 type _BACnetNotificationParametersComplexEventTypeBuilder struct {
 	*_BACnetNotificationParametersComplexEventType
 
+	parentBuilder *_BACnetNotificationParametersBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersComplexEventTypeBuilder) = (*_BACnetNotificationParametersComplexEventTypeBuilder)(nil)
 
-func (m *_BACnetNotificationParametersComplexEventTypeBuilder) WithMandatoryFields(listOfValues BACnetPropertyValues) BACnetNotificationParametersComplexEventTypeBuilder {
-	return m.WithListOfValues(listOfValues)
+func (b *_BACnetNotificationParametersComplexEventTypeBuilder) setParent(contract BACnetNotificationParametersContract) {
+	b.BACnetNotificationParametersContract = contract
 }
 
-func (m *_BACnetNotificationParametersComplexEventTypeBuilder) WithListOfValues(listOfValues BACnetPropertyValues) BACnetNotificationParametersComplexEventTypeBuilder {
-	m.ListOfValues = listOfValues
-	return m
+func (b *_BACnetNotificationParametersComplexEventTypeBuilder) WithMandatoryFields(listOfValues BACnetPropertyValues) BACnetNotificationParametersComplexEventTypeBuilder {
+	return b.WithListOfValues(listOfValues)
 }
 
-func (m *_BACnetNotificationParametersComplexEventTypeBuilder) WithListOfValuesBuilder(builderSupplier func(BACnetPropertyValuesBuilder) BACnetPropertyValuesBuilder) BACnetNotificationParametersComplexEventTypeBuilder {
-	builder := builderSupplier(m.ListOfValues.CreateBACnetPropertyValuesBuilder())
+func (b *_BACnetNotificationParametersComplexEventTypeBuilder) WithListOfValues(listOfValues BACnetPropertyValues) BACnetNotificationParametersComplexEventTypeBuilder {
+	b.ListOfValues = listOfValues
+	return b
+}
+
+func (b *_BACnetNotificationParametersComplexEventTypeBuilder) WithListOfValuesBuilder(builderSupplier func(BACnetPropertyValuesBuilder) BACnetPropertyValuesBuilder) BACnetNotificationParametersComplexEventTypeBuilder {
+	builder := builderSupplier(b.ListOfValues.CreateBACnetPropertyValuesBuilder())
 	var err error
-	m.ListOfValues, err = builder.Build()
+	b.ListOfValues, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetPropertyValuesBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetPropertyValuesBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersComplexEventTypeBuilder) Build() (BACnetNotificationParametersComplexEventType, error) {
-	if m.ListOfValues == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNotificationParametersComplexEventTypeBuilder) Build() (BACnetNotificationParametersComplexEventType, error) {
+	if b.ListOfValues == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'listOfValues' not set"))
+		b.err.Append(errors.New("mandatory field 'listOfValues' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNotificationParametersComplexEventType.deepCopy(), nil
+	return b._BACnetNotificationParametersComplexEventType.deepCopy(), nil
 }
 
-func (m *_BACnetNotificationParametersComplexEventTypeBuilder) MustBuild() BACnetNotificationParametersComplexEventType {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersComplexEventTypeBuilder) MustBuild() BACnetNotificationParametersComplexEventType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersComplexEventTypeBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersComplexEventTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersComplexEventTypeBuilder) Done() BACnetNotificationParametersBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersComplexEventTypeBuilder) buildForBACnetNotificationParameters() (BACnetNotificationParameters, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersComplexEventTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersComplexEventTypeBuilder().(*_BACnetNotificationParametersComplexEventTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersComplexEventTypeBuilder creates a BACnetNotificationParametersComplexEventTypeBuilder
-func (m *_BACnetNotificationParametersComplexEventType) CreateBACnetNotificationParametersComplexEventTypeBuilder() BACnetNotificationParametersComplexEventTypeBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParametersComplexEventType) CreateBACnetNotificationParametersComplexEventTypeBuilder() BACnetNotificationParametersComplexEventTypeBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersComplexEventTypeBuilder()
 	}
-	return &_BACnetNotificationParametersComplexEventTypeBuilder{_BACnetNotificationParametersComplexEventType: m.deepCopy()}
+	return &_BACnetNotificationParametersComplexEventTypeBuilder{_BACnetNotificationParametersComplexEventType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -296,9 +315,13 @@ func (m *_BACnetNotificationParametersComplexEventType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

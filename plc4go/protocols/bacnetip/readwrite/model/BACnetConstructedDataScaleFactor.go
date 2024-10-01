@@ -100,64 +100,83 @@ func NewBACnetConstructedDataScaleFactorBuilder() BACnetConstructedDataScaleFact
 type _BACnetConstructedDataScaleFactorBuilder struct {
 	*_BACnetConstructedDataScaleFactor
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataScaleFactorBuilder) = (*_BACnetConstructedDataScaleFactorBuilder)(nil)
 
-func (m *_BACnetConstructedDataScaleFactorBuilder) WithMandatoryFields(scaleFactor BACnetApplicationTagReal) BACnetConstructedDataScaleFactorBuilder {
-	return m.WithScaleFactor(scaleFactor)
+func (b *_BACnetConstructedDataScaleFactorBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataScaleFactorBuilder) WithScaleFactor(scaleFactor BACnetApplicationTagReal) BACnetConstructedDataScaleFactorBuilder {
-	m.ScaleFactor = scaleFactor
-	return m
+func (b *_BACnetConstructedDataScaleFactorBuilder) WithMandatoryFields(scaleFactor BACnetApplicationTagReal) BACnetConstructedDataScaleFactorBuilder {
+	return b.WithScaleFactor(scaleFactor)
 }
 
-func (m *_BACnetConstructedDataScaleFactorBuilder) WithScaleFactorBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataScaleFactorBuilder {
-	builder := builderSupplier(m.ScaleFactor.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataScaleFactorBuilder) WithScaleFactor(scaleFactor BACnetApplicationTagReal) BACnetConstructedDataScaleFactorBuilder {
+	b.ScaleFactor = scaleFactor
+	return b
+}
+
+func (b *_BACnetConstructedDataScaleFactorBuilder) WithScaleFactorBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataScaleFactorBuilder {
+	builder := builderSupplier(b.ScaleFactor.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.ScaleFactor, err = builder.Build()
+	b.ScaleFactor, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataScaleFactorBuilder) Build() (BACnetConstructedDataScaleFactor, error) {
-	if m.ScaleFactor == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataScaleFactorBuilder) Build() (BACnetConstructedDataScaleFactor, error) {
+	if b.ScaleFactor == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'scaleFactor' not set"))
+		b.err.Append(errors.New("mandatory field 'scaleFactor' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataScaleFactor.deepCopy(), nil
+	return b._BACnetConstructedDataScaleFactor.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataScaleFactorBuilder) MustBuild() BACnetConstructedDataScaleFactor {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataScaleFactorBuilder) MustBuild() BACnetConstructedDataScaleFactor {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataScaleFactorBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataScaleFactorBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataScaleFactorBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataScaleFactorBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataScaleFactorBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataScaleFactorBuilder().(*_BACnetConstructedDataScaleFactorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataScaleFactorBuilder creates a BACnetConstructedDataScaleFactorBuilder
-func (m *_BACnetConstructedDataScaleFactor) CreateBACnetConstructedDataScaleFactorBuilder() BACnetConstructedDataScaleFactorBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataScaleFactor) CreateBACnetConstructedDataScaleFactorBuilder() BACnetConstructedDataScaleFactorBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataScaleFactorBuilder()
 	}
-	return &_BACnetConstructedDataScaleFactorBuilder{_BACnetConstructedDataScaleFactor: m.deepCopy()}
+	return &_BACnetConstructedDataScaleFactorBuilder{_BACnetConstructedDataScaleFactor: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataScaleFactor) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

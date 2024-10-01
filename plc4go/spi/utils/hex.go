@@ -113,7 +113,7 @@ func DiffHex(expectedBytes, actualBytes []byte) AsciiBox {
 	}
 	expectedHex := DumpFixedWidth(expectedBytes, 46, diffIndexes...)
 	actialHex := DumpFixedWidth(actualBytes, 46, diffIndexes...)
-	return AsciiBoxWriterDefault.BoxSideBySide(AsciiBoxWriterDefault.BoxString("expected", expectedHex, 0), AsciiBoxWriterDefault.BoxString("actual", actialHex, 0))
+	return AsciiBoxWriterDefault.BoxSideBySide(AsciiBoxWriterDefault.BoxString(expectedHex, WithAsciiBoxName("expected")), AsciiBoxWriterDefault.BoxString(actialHex, WithAsciiBoxName("actual")))
 
 }
 

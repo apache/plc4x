@@ -85,40 +85,59 @@ func NewSecurityDataStatus2RequestBuilder() SecurityDataStatus2RequestBuilder {
 type _SecurityDataStatus2RequestBuilder struct {
 	*_SecurityDataStatus2Request
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataStatus2RequestBuilder) = (*_SecurityDataStatus2RequestBuilder)(nil)
 
-func (m *_SecurityDataStatus2RequestBuilder) WithMandatoryFields() SecurityDataStatus2RequestBuilder {
-	return m
+func (b *_SecurityDataStatus2RequestBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataStatus2RequestBuilder) Build() (SecurityDataStatus2Request, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataStatus2RequestBuilder) WithMandatoryFields() SecurityDataStatus2RequestBuilder {
+	return b
+}
+
+func (b *_SecurityDataStatus2RequestBuilder) Build() (SecurityDataStatus2Request, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataStatus2Request.deepCopy(), nil
+	return b._SecurityDataStatus2Request.deepCopy(), nil
 }
 
-func (m *_SecurityDataStatus2RequestBuilder) MustBuild() SecurityDataStatus2Request {
-	build, err := m.Build()
+func (b *_SecurityDataStatus2RequestBuilder) MustBuild() SecurityDataStatus2Request {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataStatus2RequestBuilder) DeepCopy() any {
-	return m.CreateSecurityDataStatus2RequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataStatus2RequestBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataStatus2RequestBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataStatus2RequestBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataStatus2RequestBuilder().(*_SecurityDataStatus2RequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataStatus2RequestBuilder creates a SecurityDataStatus2RequestBuilder
-func (m *_SecurityDataStatus2Request) CreateSecurityDataStatus2RequestBuilder() SecurityDataStatus2RequestBuilder {
-	if m == nil {
+func (b *_SecurityDataStatus2Request) CreateSecurityDataStatus2RequestBuilder() SecurityDataStatus2RequestBuilder {
+	if b == nil {
 		return NewSecurityDataStatus2RequestBuilder()
 	}
-	return &_SecurityDataStatus2RequestBuilder{_SecurityDataStatus2Request: m.deepCopy()}
+	return &_SecurityDataStatus2RequestBuilder{_SecurityDataStatus2Request: b.deepCopy()}
 }
 
 ///////////////////////
@@ -230,9 +249,13 @@ func (m *_SecurityDataStatus2Request) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

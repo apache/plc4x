@@ -82,6 +82,8 @@ type BACnetPriorityValueConstructedValueBuilder interface {
 	WithMandatoryFields(constructedValue BACnetConstructedData) BACnetPriorityValueConstructedValueBuilder
 	// WithConstructedValue adds ConstructedValue (property field)
 	WithConstructedValue(BACnetConstructedData) BACnetPriorityValueConstructedValueBuilder
+	// WithConstructedValueBuilder adds ConstructedValue (property field) which is build by the builder
+	WithConstructedValueBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetPriorityValueConstructedValueBuilder
 	// Build builds the BACnetPriorityValueConstructedValue or returns an error if something is wrong
 	Build() (BACnetPriorityValueConstructedValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -96,51 +98,83 @@ func NewBACnetPriorityValueConstructedValueBuilder() BACnetPriorityValueConstruc
 type _BACnetPriorityValueConstructedValueBuilder struct {
 	*_BACnetPriorityValueConstructedValue
 
+	parentBuilder *_BACnetPriorityValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPriorityValueConstructedValueBuilder) = (*_BACnetPriorityValueConstructedValueBuilder)(nil)
 
-func (m *_BACnetPriorityValueConstructedValueBuilder) WithMandatoryFields(constructedValue BACnetConstructedData) BACnetPriorityValueConstructedValueBuilder {
-	return m.WithConstructedValue(constructedValue)
+func (b *_BACnetPriorityValueConstructedValueBuilder) setParent(contract BACnetPriorityValueContract) {
+	b.BACnetPriorityValueContract = contract
 }
 
-func (m *_BACnetPriorityValueConstructedValueBuilder) WithConstructedValue(constructedValue BACnetConstructedData) BACnetPriorityValueConstructedValueBuilder {
-	m.ConstructedValue = constructedValue
-	return m
+func (b *_BACnetPriorityValueConstructedValueBuilder) WithMandatoryFields(constructedValue BACnetConstructedData) BACnetPriorityValueConstructedValueBuilder {
+	return b.WithConstructedValue(constructedValue)
 }
 
-func (m *_BACnetPriorityValueConstructedValueBuilder) Build() (BACnetPriorityValueConstructedValue, error) {
-	if m.ConstructedValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPriorityValueConstructedValueBuilder) WithConstructedValue(constructedValue BACnetConstructedData) BACnetPriorityValueConstructedValueBuilder {
+	b.ConstructedValue = constructedValue
+	return b
+}
+
+func (b *_BACnetPriorityValueConstructedValueBuilder) WithConstructedValueBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetPriorityValueConstructedValueBuilder {
+	builder := builderSupplier(b.ConstructedValue.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.ConstructedValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'constructedValue' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetPriorityValueConstructedValue.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetPriorityValueConstructedValueBuilder) MustBuild() BACnetPriorityValueConstructedValue {
-	build, err := m.Build()
+func (b *_BACnetPriorityValueConstructedValueBuilder) Build() (BACnetPriorityValueConstructedValue, error) {
+	if b.ConstructedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'constructedValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPriorityValueConstructedValue.deepCopy(), nil
+}
+
+func (b *_BACnetPriorityValueConstructedValueBuilder) MustBuild() BACnetPriorityValueConstructedValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPriorityValueConstructedValueBuilder) DeepCopy() any {
-	return m.CreateBACnetPriorityValueConstructedValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPriorityValueConstructedValueBuilder) Done() BACnetPriorityValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPriorityValueConstructedValueBuilder) buildForBACnetPriorityValue() (BACnetPriorityValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPriorityValueConstructedValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityValueConstructedValueBuilder().(*_BACnetPriorityValueConstructedValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPriorityValueConstructedValueBuilder creates a BACnetPriorityValueConstructedValueBuilder
-func (m *_BACnetPriorityValueConstructedValue) CreateBACnetPriorityValueConstructedValueBuilder() BACnetPriorityValueConstructedValueBuilder {
-	if m == nil {
+func (b *_BACnetPriorityValueConstructedValue) CreateBACnetPriorityValueConstructedValueBuilder() BACnetPriorityValueConstructedValueBuilder {
+	if b == nil {
 		return NewBACnetPriorityValueConstructedValueBuilder()
 	}
-	return &_BACnetPriorityValueConstructedValueBuilder{_BACnetPriorityValueConstructedValue: m.deepCopy()}
+	return &_BACnetPriorityValueConstructedValueBuilder{_BACnetPriorityValueConstructedValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -280,9 +314,13 @@ func (m *_BACnetPriorityValueConstructedValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

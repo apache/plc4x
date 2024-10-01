@@ -105,55 +105,74 @@ func NewEventFieldListBuilder() EventFieldListBuilder {
 type _EventFieldListBuilder struct {
 	*_EventFieldList
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (EventFieldListBuilder) = (*_EventFieldListBuilder)(nil)
 
-func (m *_EventFieldListBuilder) WithMandatoryFields(clientHandle uint32, noOfEventFields int32, eventFields []Variant) EventFieldListBuilder {
-	return m.WithClientHandle(clientHandle).WithNoOfEventFields(noOfEventFields).WithEventFields(eventFields...)
+func (b *_EventFieldListBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_EventFieldListBuilder) WithClientHandle(clientHandle uint32) EventFieldListBuilder {
-	m.ClientHandle = clientHandle
-	return m
+func (b *_EventFieldListBuilder) WithMandatoryFields(clientHandle uint32, noOfEventFields int32, eventFields []Variant) EventFieldListBuilder {
+	return b.WithClientHandle(clientHandle).WithNoOfEventFields(noOfEventFields).WithEventFields(eventFields...)
 }
 
-func (m *_EventFieldListBuilder) WithNoOfEventFields(noOfEventFields int32) EventFieldListBuilder {
-	m.NoOfEventFields = noOfEventFields
-	return m
+func (b *_EventFieldListBuilder) WithClientHandle(clientHandle uint32) EventFieldListBuilder {
+	b.ClientHandle = clientHandle
+	return b
 }
 
-func (m *_EventFieldListBuilder) WithEventFields(eventFields ...Variant) EventFieldListBuilder {
-	m.EventFields = eventFields
-	return m
+func (b *_EventFieldListBuilder) WithNoOfEventFields(noOfEventFields int32) EventFieldListBuilder {
+	b.NoOfEventFields = noOfEventFields
+	return b
 }
 
-func (m *_EventFieldListBuilder) Build() (EventFieldList, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_EventFieldListBuilder) WithEventFields(eventFields ...Variant) EventFieldListBuilder {
+	b.EventFields = eventFields
+	return b
+}
+
+func (b *_EventFieldListBuilder) Build() (EventFieldList, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EventFieldList.deepCopy(), nil
+	return b._EventFieldList.deepCopy(), nil
 }
 
-func (m *_EventFieldListBuilder) MustBuild() EventFieldList {
-	build, err := m.Build()
+func (b *_EventFieldListBuilder) MustBuild() EventFieldList {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EventFieldListBuilder) DeepCopy() any {
-	return m.CreateEventFieldListBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EventFieldListBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EventFieldListBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_EventFieldListBuilder) DeepCopy() any {
+	_copy := b.CreateEventFieldListBuilder().(*_EventFieldListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEventFieldListBuilder creates a EventFieldListBuilder
-func (m *_EventFieldList) CreateEventFieldListBuilder() EventFieldListBuilder {
-	if m == nil {
+func (b *_EventFieldList) CreateEventFieldListBuilder() EventFieldListBuilder {
+	if b == nil {
 		return NewEventFieldListBuilder()
 	}
-	return &_EventFieldListBuilder{_EventFieldList: m.deepCopy()}
+	return &_EventFieldListBuilder{_EventFieldList: b.deepCopy()}
 }
 
 ///////////////////////
@@ -340,9 +359,13 @@ func (m *_EventFieldList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

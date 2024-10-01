@@ -20,6 +20,7 @@
 package device
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 )
@@ -36,12 +37,12 @@ func NewCurrentLocalDate() *CurrentLocalDate {
 
 // TODO: implement readproperty
 
-func (p *CurrentLocalDate) ReadProperty() error {
+func (p *CurrentLocalDate) ReadProperty(comp.Args, comp.KWArgs) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (p *CurrentLocalDate) WriteProperty() error {
+func (p *CurrentLocalDate) WriteProperty(comp.Args, comp.KWArgs) error {
 	//TODO implement me
 	panic("implement me")
 }

@@ -111,60 +111,79 @@ func NewChannelSecurityTokenBuilder() ChannelSecurityTokenBuilder {
 type _ChannelSecurityTokenBuilder struct {
 	*_ChannelSecurityToken
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ChannelSecurityTokenBuilder) = (*_ChannelSecurityTokenBuilder)(nil)
 
-func (m *_ChannelSecurityTokenBuilder) WithMandatoryFields(channelId uint32, tokenId uint32, createdAt int64, revisedLifetime uint32) ChannelSecurityTokenBuilder {
-	return m.WithChannelId(channelId).WithTokenId(tokenId).WithCreatedAt(createdAt).WithRevisedLifetime(revisedLifetime)
+func (b *_ChannelSecurityTokenBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ChannelSecurityTokenBuilder) WithChannelId(channelId uint32) ChannelSecurityTokenBuilder {
-	m.ChannelId = channelId
-	return m
+func (b *_ChannelSecurityTokenBuilder) WithMandatoryFields(channelId uint32, tokenId uint32, createdAt int64, revisedLifetime uint32) ChannelSecurityTokenBuilder {
+	return b.WithChannelId(channelId).WithTokenId(tokenId).WithCreatedAt(createdAt).WithRevisedLifetime(revisedLifetime)
 }
 
-func (m *_ChannelSecurityTokenBuilder) WithTokenId(tokenId uint32) ChannelSecurityTokenBuilder {
-	m.TokenId = tokenId
-	return m
+func (b *_ChannelSecurityTokenBuilder) WithChannelId(channelId uint32) ChannelSecurityTokenBuilder {
+	b.ChannelId = channelId
+	return b
 }
 
-func (m *_ChannelSecurityTokenBuilder) WithCreatedAt(createdAt int64) ChannelSecurityTokenBuilder {
-	m.CreatedAt = createdAt
-	return m
+func (b *_ChannelSecurityTokenBuilder) WithTokenId(tokenId uint32) ChannelSecurityTokenBuilder {
+	b.TokenId = tokenId
+	return b
 }
 
-func (m *_ChannelSecurityTokenBuilder) WithRevisedLifetime(revisedLifetime uint32) ChannelSecurityTokenBuilder {
-	m.RevisedLifetime = revisedLifetime
-	return m
+func (b *_ChannelSecurityTokenBuilder) WithCreatedAt(createdAt int64) ChannelSecurityTokenBuilder {
+	b.CreatedAt = createdAt
+	return b
 }
 
-func (m *_ChannelSecurityTokenBuilder) Build() (ChannelSecurityToken, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ChannelSecurityTokenBuilder) WithRevisedLifetime(revisedLifetime uint32) ChannelSecurityTokenBuilder {
+	b.RevisedLifetime = revisedLifetime
+	return b
+}
+
+func (b *_ChannelSecurityTokenBuilder) Build() (ChannelSecurityToken, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ChannelSecurityToken.deepCopy(), nil
+	return b._ChannelSecurityToken.deepCopy(), nil
 }
 
-func (m *_ChannelSecurityTokenBuilder) MustBuild() ChannelSecurityToken {
-	build, err := m.Build()
+func (b *_ChannelSecurityTokenBuilder) MustBuild() ChannelSecurityToken {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ChannelSecurityTokenBuilder) DeepCopy() any {
-	return m.CreateChannelSecurityTokenBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ChannelSecurityTokenBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ChannelSecurityTokenBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ChannelSecurityTokenBuilder) DeepCopy() any {
+	_copy := b.CreateChannelSecurityTokenBuilder().(*_ChannelSecurityTokenBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateChannelSecurityTokenBuilder creates a ChannelSecurityTokenBuilder
-func (m *_ChannelSecurityToken) CreateChannelSecurityTokenBuilder() ChannelSecurityTokenBuilder {
-	if m == nil {
+func (b *_ChannelSecurityToken) CreateChannelSecurityTokenBuilder() ChannelSecurityTokenBuilder {
+	if b == nil {
 		return NewChannelSecurityTokenBuilder()
 	}
-	return &_ChannelSecurityTokenBuilder{_ChannelSecurityToken: m.deepCopy()}
+	return &_ChannelSecurityTokenBuilder{_ChannelSecurityToken: b.deepCopy()}
 }
 
 ///////////////////////
@@ -362,9 +381,13 @@ func (m *_ChannelSecurityToken) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -119,65 +119,84 @@ func NewAPDUSegmentAckBuilder() APDUSegmentAckBuilder {
 type _APDUSegmentAckBuilder struct {
 	*_APDUSegmentAck
 
+	parentBuilder *_APDUBuilder
+
 	err *utils.MultiError
 }
 
 var _ (APDUSegmentAckBuilder) = (*_APDUSegmentAckBuilder)(nil)
 
-func (m *_APDUSegmentAckBuilder) WithMandatoryFields(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8) APDUSegmentAckBuilder {
-	return m.WithNegativeAck(negativeAck).WithServer(server).WithOriginalInvokeId(originalInvokeId).WithSequenceNumber(sequenceNumber).WithActualWindowSize(actualWindowSize)
+func (b *_APDUSegmentAckBuilder) setParent(contract APDUContract) {
+	b.APDUContract = contract
 }
 
-func (m *_APDUSegmentAckBuilder) WithNegativeAck(negativeAck bool) APDUSegmentAckBuilder {
-	m.NegativeAck = negativeAck
-	return m
+func (b *_APDUSegmentAckBuilder) WithMandatoryFields(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8) APDUSegmentAckBuilder {
+	return b.WithNegativeAck(negativeAck).WithServer(server).WithOriginalInvokeId(originalInvokeId).WithSequenceNumber(sequenceNumber).WithActualWindowSize(actualWindowSize)
 }
 
-func (m *_APDUSegmentAckBuilder) WithServer(server bool) APDUSegmentAckBuilder {
-	m.Server = server
-	return m
+func (b *_APDUSegmentAckBuilder) WithNegativeAck(negativeAck bool) APDUSegmentAckBuilder {
+	b.NegativeAck = negativeAck
+	return b
 }
 
-func (m *_APDUSegmentAckBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDUSegmentAckBuilder {
-	m.OriginalInvokeId = originalInvokeId
-	return m
+func (b *_APDUSegmentAckBuilder) WithServer(server bool) APDUSegmentAckBuilder {
+	b.Server = server
+	return b
 }
 
-func (m *_APDUSegmentAckBuilder) WithSequenceNumber(sequenceNumber uint8) APDUSegmentAckBuilder {
-	m.SequenceNumber = sequenceNumber
-	return m
+func (b *_APDUSegmentAckBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDUSegmentAckBuilder {
+	b.OriginalInvokeId = originalInvokeId
+	return b
 }
 
-func (m *_APDUSegmentAckBuilder) WithActualWindowSize(actualWindowSize uint8) APDUSegmentAckBuilder {
-	m.ActualWindowSize = actualWindowSize
-	return m
+func (b *_APDUSegmentAckBuilder) WithSequenceNumber(sequenceNumber uint8) APDUSegmentAckBuilder {
+	b.SequenceNumber = sequenceNumber
+	return b
 }
 
-func (m *_APDUSegmentAckBuilder) Build() (APDUSegmentAck, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_APDUSegmentAckBuilder) WithActualWindowSize(actualWindowSize uint8) APDUSegmentAckBuilder {
+	b.ActualWindowSize = actualWindowSize
+	return b
+}
+
+func (b *_APDUSegmentAckBuilder) Build() (APDUSegmentAck, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._APDUSegmentAck.deepCopy(), nil
+	return b._APDUSegmentAck.deepCopy(), nil
 }
 
-func (m *_APDUSegmentAckBuilder) MustBuild() APDUSegmentAck {
-	build, err := m.Build()
+func (b *_APDUSegmentAckBuilder) MustBuild() APDUSegmentAck {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_APDUSegmentAckBuilder) DeepCopy() any {
-	return m.CreateAPDUSegmentAckBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_APDUSegmentAckBuilder) Done() APDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_APDUSegmentAckBuilder) buildForAPDU() (APDU, error) {
+	return b.Build()
+}
+
+func (b *_APDUSegmentAckBuilder) DeepCopy() any {
+	_copy := b.CreateAPDUSegmentAckBuilder().(*_APDUSegmentAckBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAPDUSegmentAckBuilder creates a APDUSegmentAckBuilder
-func (m *_APDUSegmentAck) CreateAPDUSegmentAckBuilder() APDUSegmentAckBuilder {
-	if m == nil {
+func (b *_APDUSegmentAck) CreateAPDUSegmentAckBuilder() APDUSegmentAckBuilder {
+	if b == nil {
 		return NewAPDUSegmentAckBuilder()
 	}
-	return &_APDUSegmentAckBuilder{_APDUSegmentAck: m.deepCopy()}
+	return &_APDUSegmentAckBuilder{_APDUSegmentAck: b.deepCopy()}
 }
 
 ///////////////////////
@@ -407,9 +426,13 @@ func (m *_APDUSegmentAck) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

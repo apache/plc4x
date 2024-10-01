@@ -105,45 +105,49 @@ type _HVACAuxiliaryLevelBuilder struct {
 
 var _ (HVACAuxiliaryLevelBuilder) = (*_HVACAuxiliaryLevelBuilder)(nil)
 
-func (m *_HVACAuxiliaryLevelBuilder) WithMandatoryFields(fanMode bool, mode uint8) HVACAuxiliaryLevelBuilder {
-	return m.WithFanMode(fanMode).WithMode(mode)
+func (b *_HVACAuxiliaryLevelBuilder) WithMandatoryFields(fanMode bool, mode uint8) HVACAuxiliaryLevelBuilder {
+	return b.WithFanMode(fanMode).WithMode(mode)
 }
 
-func (m *_HVACAuxiliaryLevelBuilder) WithFanMode(fanMode bool) HVACAuxiliaryLevelBuilder {
-	m.FanMode = fanMode
-	return m
+func (b *_HVACAuxiliaryLevelBuilder) WithFanMode(fanMode bool) HVACAuxiliaryLevelBuilder {
+	b.FanMode = fanMode
+	return b
 }
 
-func (m *_HVACAuxiliaryLevelBuilder) WithMode(mode uint8) HVACAuxiliaryLevelBuilder {
-	m.Mode = mode
-	return m
+func (b *_HVACAuxiliaryLevelBuilder) WithMode(mode uint8) HVACAuxiliaryLevelBuilder {
+	b.Mode = mode
+	return b
 }
 
-func (m *_HVACAuxiliaryLevelBuilder) Build() (HVACAuxiliaryLevel, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_HVACAuxiliaryLevelBuilder) Build() (HVACAuxiliaryLevel, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HVACAuxiliaryLevel.deepCopy(), nil
+	return b._HVACAuxiliaryLevel.deepCopy(), nil
 }
 
-func (m *_HVACAuxiliaryLevelBuilder) MustBuild() HVACAuxiliaryLevel {
-	build, err := m.Build()
+func (b *_HVACAuxiliaryLevelBuilder) MustBuild() HVACAuxiliaryLevel {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HVACAuxiliaryLevelBuilder) DeepCopy() any {
-	return m.CreateHVACAuxiliaryLevelBuilder()
+func (b *_HVACAuxiliaryLevelBuilder) DeepCopy() any {
+	_copy := b.CreateHVACAuxiliaryLevelBuilder().(*_HVACAuxiliaryLevelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHVACAuxiliaryLevelBuilder creates a HVACAuxiliaryLevelBuilder
-func (m *_HVACAuxiliaryLevel) CreateHVACAuxiliaryLevelBuilder() HVACAuxiliaryLevelBuilder {
-	if m == nil {
+func (b *_HVACAuxiliaryLevel) CreateHVACAuxiliaryLevelBuilder() HVACAuxiliaryLevelBuilder {
+	if b == nil {
 		return NewHVACAuxiliaryLevelBuilder()
 	}
-	return &_HVACAuxiliaryLevelBuilder{_HVACAuxiliaryLevel: m.deepCopy()}
+	return &_HVACAuxiliaryLevelBuilder{_HVACAuxiliaryLevel: b.deepCopy()}
 }
 
 ///////////////////////
@@ -401,9 +405,13 @@ func (m *_HVACAuxiliaryLevel) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

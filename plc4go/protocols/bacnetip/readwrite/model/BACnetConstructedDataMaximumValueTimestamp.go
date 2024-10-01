@@ -100,64 +100,83 @@ func NewBACnetConstructedDataMaximumValueTimestampBuilder() BACnetConstructedDat
 type _BACnetConstructedDataMaximumValueTimestampBuilder struct {
 	*_BACnetConstructedDataMaximumValueTimestamp
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMaximumValueTimestampBuilder) = (*_BACnetConstructedDataMaximumValueTimestampBuilder)(nil)
 
-func (m *_BACnetConstructedDataMaximumValueTimestampBuilder) WithMandatoryFields(maximumValueTimestamp BACnetDateTime) BACnetConstructedDataMaximumValueTimestampBuilder {
-	return m.WithMaximumValueTimestamp(maximumValueTimestamp)
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMaximumValueTimestampBuilder) WithMaximumValueTimestamp(maximumValueTimestamp BACnetDateTime) BACnetConstructedDataMaximumValueTimestampBuilder {
-	m.MaximumValueTimestamp = maximumValueTimestamp
-	return m
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) WithMandatoryFields(maximumValueTimestamp BACnetDateTime) BACnetConstructedDataMaximumValueTimestampBuilder {
+	return b.WithMaximumValueTimestamp(maximumValueTimestamp)
 }
 
-func (m *_BACnetConstructedDataMaximumValueTimestampBuilder) WithMaximumValueTimestampBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataMaximumValueTimestampBuilder {
-	builder := builderSupplier(m.MaximumValueTimestamp.CreateBACnetDateTimeBuilder())
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) WithMaximumValueTimestamp(maximumValueTimestamp BACnetDateTime) BACnetConstructedDataMaximumValueTimestampBuilder {
+	b.MaximumValueTimestamp = maximumValueTimestamp
+	return b
+}
+
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) WithMaximumValueTimestampBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataMaximumValueTimestampBuilder {
+	builder := builderSupplier(b.MaximumValueTimestamp.CreateBACnetDateTimeBuilder())
 	var err error
-	m.MaximumValueTimestamp, err = builder.Build()
+	b.MaximumValueTimestamp, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataMaximumValueTimestampBuilder) Build() (BACnetConstructedDataMaximumValueTimestamp, error) {
-	if m.MaximumValueTimestamp == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) Build() (BACnetConstructedDataMaximumValueTimestamp, error) {
+	if b.MaximumValueTimestamp == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'maximumValueTimestamp' not set"))
+		b.err.Append(errors.New("mandatory field 'maximumValueTimestamp' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataMaximumValueTimestamp.deepCopy(), nil
+	return b._BACnetConstructedDataMaximumValueTimestamp.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataMaximumValueTimestampBuilder) MustBuild() BACnetConstructedDataMaximumValueTimestamp {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) MustBuild() BACnetConstructedDataMaximumValueTimestamp {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMaximumValueTimestampBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMaximumValueTimestampBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMaximumValueTimestampBuilder().(*_BACnetConstructedDataMaximumValueTimestampBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMaximumValueTimestampBuilder creates a BACnetConstructedDataMaximumValueTimestampBuilder
-func (m *_BACnetConstructedDataMaximumValueTimestamp) CreateBACnetConstructedDataMaximumValueTimestampBuilder() BACnetConstructedDataMaximumValueTimestampBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMaximumValueTimestamp) CreateBACnetConstructedDataMaximumValueTimestampBuilder() BACnetConstructedDataMaximumValueTimestampBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMaximumValueTimestampBuilder()
 	}
-	return &_BACnetConstructedDataMaximumValueTimestampBuilder{_BACnetConstructedDataMaximumValueTimestamp: m.deepCopy()}
+	return &_BACnetConstructedDataMaximumValueTimestampBuilder{_BACnetConstructedDataMaximumValueTimestamp: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataMaximumValueTimestamp) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -85,40 +85,59 @@ func NewSysexCommandReportFirmwareRequestBuilder() SysexCommandReportFirmwareReq
 type _SysexCommandReportFirmwareRequestBuilder struct {
 	*_SysexCommandReportFirmwareRequest
 
+	parentBuilder *_SysexCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SysexCommandReportFirmwareRequestBuilder) = (*_SysexCommandReportFirmwareRequestBuilder)(nil)
 
-func (m *_SysexCommandReportFirmwareRequestBuilder) WithMandatoryFields() SysexCommandReportFirmwareRequestBuilder {
-	return m
+func (b *_SysexCommandReportFirmwareRequestBuilder) setParent(contract SysexCommandContract) {
+	b.SysexCommandContract = contract
 }
 
-func (m *_SysexCommandReportFirmwareRequestBuilder) Build() (SysexCommandReportFirmwareRequest, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SysexCommandReportFirmwareRequestBuilder) WithMandatoryFields() SysexCommandReportFirmwareRequestBuilder {
+	return b
+}
+
+func (b *_SysexCommandReportFirmwareRequestBuilder) Build() (SysexCommandReportFirmwareRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SysexCommandReportFirmwareRequest.deepCopy(), nil
+	return b._SysexCommandReportFirmwareRequest.deepCopy(), nil
 }
 
-func (m *_SysexCommandReportFirmwareRequestBuilder) MustBuild() SysexCommandReportFirmwareRequest {
-	build, err := m.Build()
+func (b *_SysexCommandReportFirmwareRequestBuilder) MustBuild() SysexCommandReportFirmwareRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SysexCommandReportFirmwareRequestBuilder) DeepCopy() any {
-	return m.CreateSysexCommandReportFirmwareRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SysexCommandReportFirmwareRequestBuilder) Done() SysexCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SysexCommandReportFirmwareRequestBuilder) buildForSysexCommand() (SysexCommand, error) {
+	return b.Build()
+}
+
+func (b *_SysexCommandReportFirmwareRequestBuilder) DeepCopy() any {
+	_copy := b.CreateSysexCommandReportFirmwareRequestBuilder().(*_SysexCommandReportFirmwareRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSysexCommandReportFirmwareRequestBuilder creates a SysexCommandReportFirmwareRequestBuilder
-func (m *_SysexCommandReportFirmwareRequest) CreateSysexCommandReportFirmwareRequestBuilder() SysexCommandReportFirmwareRequestBuilder {
-	if m == nil {
+func (b *_SysexCommandReportFirmwareRequest) CreateSysexCommandReportFirmwareRequestBuilder() SysexCommandReportFirmwareRequestBuilder {
+	if b == nil {
 		return NewSysexCommandReportFirmwareRequestBuilder()
 	}
-	return &_SysexCommandReportFirmwareRequestBuilder{_SysexCommandReportFirmwareRequest: m.deepCopy()}
+	return &_SysexCommandReportFirmwareRequestBuilder{_SysexCommandReportFirmwareRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -238,9 +257,13 @@ func (m *_SysexCommandReportFirmwareRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

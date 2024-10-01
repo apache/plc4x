@@ -100,64 +100,68 @@ type _QualifiedNameBuilder struct {
 
 var _ (QualifiedNameBuilder) = (*_QualifiedNameBuilder)(nil)
 
-func (m *_QualifiedNameBuilder) WithMandatoryFields(namespaceIndex uint16, name PascalString) QualifiedNameBuilder {
-	return m.WithNamespaceIndex(namespaceIndex).WithName(name)
+func (b *_QualifiedNameBuilder) WithMandatoryFields(namespaceIndex uint16, name PascalString) QualifiedNameBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithName(name)
 }
 
-func (m *_QualifiedNameBuilder) WithNamespaceIndex(namespaceIndex uint16) QualifiedNameBuilder {
-	m.NamespaceIndex = namespaceIndex
-	return m
+func (b *_QualifiedNameBuilder) WithNamespaceIndex(namespaceIndex uint16) QualifiedNameBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
 }
 
-func (m *_QualifiedNameBuilder) WithName(name PascalString) QualifiedNameBuilder {
-	m.Name = name
-	return m
+func (b *_QualifiedNameBuilder) WithName(name PascalString) QualifiedNameBuilder {
+	b.Name = name
+	return b
 }
 
-func (m *_QualifiedNameBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) QualifiedNameBuilder {
-	builder := builderSupplier(m.Name.CreatePascalStringBuilder())
+func (b *_QualifiedNameBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) QualifiedNameBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
 	var err error
-	m.Name, err = builder.Build()
+	b.Name, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_QualifiedNameBuilder) Build() (QualifiedName, error) {
-	if m.Name == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_QualifiedNameBuilder) Build() (QualifiedName, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'name' not set"))
+		b.err.Append(errors.New("mandatory field 'name' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._QualifiedName.deepCopy(), nil
+	return b._QualifiedName.deepCopy(), nil
 }
 
-func (m *_QualifiedNameBuilder) MustBuild() QualifiedName {
-	build, err := m.Build()
+func (b *_QualifiedNameBuilder) MustBuild() QualifiedName {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_QualifiedNameBuilder) DeepCopy() any {
-	return m.CreateQualifiedNameBuilder()
+func (b *_QualifiedNameBuilder) DeepCopy() any {
+	_copy := b.CreateQualifiedNameBuilder().(*_QualifiedNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateQualifiedNameBuilder creates a QualifiedNameBuilder
-func (m *_QualifiedName) CreateQualifiedNameBuilder() QualifiedNameBuilder {
-	if m == nil {
+func (b *_QualifiedName) CreateQualifiedNameBuilder() QualifiedNameBuilder {
+	if b == nil {
 		return NewQualifiedNameBuilder()
 	}
-	return &_QualifiedNameBuilder{_QualifiedName: m.deepCopy()}
+	return &_QualifiedNameBuilder{_QualifiedName: b.deepCopy()}
 }
 
 ///////////////////////
@@ -312,9 +316,13 @@ func (m *_QualifiedName) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

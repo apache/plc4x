@@ -93,45 +93,64 @@ func NewBACnetConstructedDataTimerAlarmValuesBuilder() BACnetConstructedDataTime
 type _BACnetConstructedDataTimerAlarmValuesBuilder struct {
 	*_BACnetConstructedDataTimerAlarmValues
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataTimerAlarmValuesBuilder) = (*_BACnetConstructedDataTimerAlarmValuesBuilder)(nil)
 
-func (m *_BACnetConstructedDataTimerAlarmValuesBuilder) WithMandatoryFields(alarmValues []BACnetTimerStateTagged) BACnetConstructedDataTimerAlarmValuesBuilder {
-	return m.WithAlarmValues(alarmValues...)
+func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataTimerAlarmValuesBuilder) WithAlarmValues(alarmValues ...BACnetTimerStateTagged) BACnetConstructedDataTimerAlarmValuesBuilder {
-	m.AlarmValues = alarmValues
-	return m
+func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) WithMandatoryFields(alarmValues []BACnetTimerStateTagged) BACnetConstructedDataTimerAlarmValuesBuilder {
+	return b.WithAlarmValues(alarmValues...)
 }
 
-func (m *_BACnetConstructedDataTimerAlarmValuesBuilder) Build() (BACnetConstructedDataTimerAlarmValues, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) WithAlarmValues(alarmValues ...BACnetTimerStateTagged) BACnetConstructedDataTimerAlarmValuesBuilder {
+	b.AlarmValues = alarmValues
+	return b
+}
+
+func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) Build() (BACnetConstructedDataTimerAlarmValues, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataTimerAlarmValues.deepCopy(), nil
+	return b._BACnetConstructedDataTimerAlarmValues.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataTimerAlarmValuesBuilder) MustBuild() BACnetConstructedDataTimerAlarmValues {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) MustBuild() BACnetConstructedDataTimerAlarmValues {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataTimerAlarmValuesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataTimerAlarmValuesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTimerAlarmValuesBuilder().(*_BACnetConstructedDataTimerAlarmValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataTimerAlarmValuesBuilder creates a BACnetConstructedDataTimerAlarmValuesBuilder
-func (m *_BACnetConstructedDataTimerAlarmValues) CreateBACnetConstructedDataTimerAlarmValuesBuilder() BACnetConstructedDataTimerAlarmValuesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataTimerAlarmValues) CreateBACnetConstructedDataTimerAlarmValuesBuilder() BACnetConstructedDataTimerAlarmValuesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataTimerAlarmValuesBuilder()
 	}
-	return &_BACnetConstructedDataTimerAlarmValuesBuilder{_BACnetConstructedDataTimerAlarmValues: m.deepCopy()}
+	return &_BACnetConstructedDataTimerAlarmValuesBuilder{_BACnetConstructedDataTimerAlarmValues: b.deepCopy()}
 }
 
 ///////////////////////
@@ -283,9 +302,13 @@ func (m *_BACnetConstructedDataTimerAlarmValues) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

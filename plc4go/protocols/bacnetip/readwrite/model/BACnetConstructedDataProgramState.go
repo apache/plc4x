@@ -100,64 +100,83 @@ func NewBACnetConstructedDataProgramStateBuilder() BACnetConstructedDataProgramS
 type _BACnetConstructedDataProgramStateBuilder struct {
 	*_BACnetConstructedDataProgramState
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataProgramStateBuilder) = (*_BACnetConstructedDataProgramStateBuilder)(nil)
 
-func (m *_BACnetConstructedDataProgramStateBuilder) WithMandatoryFields(programState BACnetProgramStateTagged) BACnetConstructedDataProgramStateBuilder {
-	return m.WithProgramState(programState)
+func (b *_BACnetConstructedDataProgramStateBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataProgramStateBuilder) WithProgramState(programState BACnetProgramStateTagged) BACnetConstructedDataProgramStateBuilder {
-	m.ProgramState = programState
-	return m
+func (b *_BACnetConstructedDataProgramStateBuilder) WithMandatoryFields(programState BACnetProgramStateTagged) BACnetConstructedDataProgramStateBuilder {
+	return b.WithProgramState(programState)
 }
 
-func (m *_BACnetConstructedDataProgramStateBuilder) WithProgramStateBuilder(builderSupplier func(BACnetProgramStateTaggedBuilder) BACnetProgramStateTaggedBuilder) BACnetConstructedDataProgramStateBuilder {
-	builder := builderSupplier(m.ProgramState.CreateBACnetProgramStateTaggedBuilder())
+func (b *_BACnetConstructedDataProgramStateBuilder) WithProgramState(programState BACnetProgramStateTagged) BACnetConstructedDataProgramStateBuilder {
+	b.ProgramState = programState
+	return b
+}
+
+func (b *_BACnetConstructedDataProgramStateBuilder) WithProgramStateBuilder(builderSupplier func(BACnetProgramStateTaggedBuilder) BACnetProgramStateTaggedBuilder) BACnetConstructedDataProgramStateBuilder {
+	builder := builderSupplier(b.ProgramState.CreateBACnetProgramStateTaggedBuilder())
 	var err error
-	m.ProgramState, err = builder.Build()
+	b.ProgramState, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetProgramStateTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetProgramStateTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataProgramStateBuilder) Build() (BACnetConstructedDataProgramState, error) {
-	if m.ProgramState == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataProgramStateBuilder) Build() (BACnetConstructedDataProgramState, error) {
+	if b.ProgramState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'programState' not set"))
+		b.err.Append(errors.New("mandatory field 'programState' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataProgramState.deepCopy(), nil
+	return b._BACnetConstructedDataProgramState.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataProgramStateBuilder) MustBuild() BACnetConstructedDataProgramState {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataProgramStateBuilder) MustBuild() BACnetConstructedDataProgramState {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataProgramStateBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataProgramStateBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataProgramStateBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataProgramStateBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataProgramStateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataProgramStateBuilder().(*_BACnetConstructedDataProgramStateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataProgramStateBuilder creates a BACnetConstructedDataProgramStateBuilder
-func (m *_BACnetConstructedDataProgramState) CreateBACnetConstructedDataProgramStateBuilder() BACnetConstructedDataProgramStateBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataProgramState) CreateBACnetConstructedDataProgramStateBuilder() BACnetConstructedDataProgramStateBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataProgramStateBuilder()
 	}
-	return &_BACnetConstructedDataProgramStateBuilder{_BACnetConstructedDataProgramState: m.deepCopy()}
+	return &_BACnetConstructedDataProgramStateBuilder{_BACnetConstructedDataProgramState: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataProgramState) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

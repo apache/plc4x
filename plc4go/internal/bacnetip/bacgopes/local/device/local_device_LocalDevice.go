@@ -112,9 +112,9 @@ func (l *_LocalDeviceObject) GetSegmentationSupported() *readWriteModel.BACnetSe
 func (l *_LocalDeviceObject) GetVendorIdentifier() any {
 	attr, ok := l.CurrentPropertyListMixIn.GetAttr("vendorIdentifier")
 	if !ok {
-		return ""
+		return 0
 	}
-	return attr.(string)
+	return attr.(int)
 }
 
 func (l *_LocalDeviceObject) GetNumberOfAPDURetries() *uint {

@@ -93,45 +93,64 @@ func NewApduDataDeviceDescriptorReadBuilder() ApduDataDeviceDescriptorReadBuilde
 type _ApduDataDeviceDescriptorReadBuilder struct {
 	*_ApduDataDeviceDescriptorRead
 
+	parentBuilder *_ApduDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataDeviceDescriptorReadBuilder) = (*_ApduDataDeviceDescriptorReadBuilder)(nil)
 
-func (m *_ApduDataDeviceDescriptorReadBuilder) WithMandatoryFields(descriptorType uint8) ApduDataDeviceDescriptorReadBuilder {
-	return m.WithDescriptorType(descriptorType)
+func (b *_ApduDataDeviceDescriptorReadBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
 }
 
-func (m *_ApduDataDeviceDescriptorReadBuilder) WithDescriptorType(descriptorType uint8) ApduDataDeviceDescriptorReadBuilder {
-	m.DescriptorType = descriptorType
-	return m
+func (b *_ApduDataDeviceDescriptorReadBuilder) WithMandatoryFields(descriptorType uint8) ApduDataDeviceDescriptorReadBuilder {
+	return b.WithDescriptorType(descriptorType)
 }
 
-func (m *_ApduDataDeviceDescriptorReadBuilder) Build() (ApduDataDeviceDescriptorRead, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataDeviceDescriptorReadBuilder) WithDescriptorType(descriptorType uint8) ApduDataDeviceDescriptorReadBuilder {
+	b.DescriptorType = descriptorType
+	return b
+}
+
+func (b *_ApduDataDeviceDescriptorReadBuilder) Build() (ApduDataDeviceDescriptorRead, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataDeviceDescriptorRead.deepCopy(), nil
+	return b._ApduDataDeviceDescriptorRead.deepCopy(), nil
 }
 
-func (m *_ApduDataDeviceDescriptorReadBuilder) MustBuild() ApduDataDeviceDescriptorRead {
-	build, err := m.Build()
+func (b *_ApduDataDeviceDescriptorReadBuilder) MustBuild() ApduDataDeviceDescriptorRead {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataDeviceDescriptorReadBuilder) DeepCopy() any {
-	return m.CreateApduDataDeviceDescriptorReadBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataDeviceDescriptorReadBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataDeviceDescriptorReadBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataDeviceDescriptorReadBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataDeviceDescriptorReadBuilder().(*_ApduDataDeviceDescriptorReadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataDeviceDescriptorReadBuilder creates a ApduDataDeviceDescriptorReadBuilder
-func (m *_ApduDataDeviceDescriptorRead) CreateApduDataDeviceDescriptorReadBuilder() ApduDataDeviceDescriptorReadBuilder {
-	if m == nil {
+func (b *_ApduDataDeviceDescriptorRead) CreateApduDataDeviceDescriptorReadBuilder() ApduDataDeviceDescriptorReadBuilder {
+	if b == nil {
 		return NewApduDataDeviceDescriptorReadBuilder()
 	}
-	return &_ApduDataDeviceDescriptorReadBuilder{_ApduDataDeviceDescriptorRead: m.deepCopy()}
+	return &_ApduDataDeviceDescriptorReadBuilder{_ApduDataDeviceDescriptorRead: b.deepCopy()}
 }
 
 ///////////////////////
@@ -275,9 +294,13 @@ func (m *_ApduDataDeviceDescriptorRead) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataSlaveProxyEnableBuilder() BACnetConstructedDataSlav
 type _BACnetConstructedDataSlaveProxyEnableBuilder struct {
 	*_BACnetConstructedDataSlaveProxyEnable
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSlaveProxyEnableBuilder) = (*_BACnetConstructedDataSlaveProxyEnableBuilder)(nil)
 
-func (m *_BACnetConstructedDataSlaveProxyEnableBuilder) WithMandatoryFields(slaveProxyEnable BACnetApplicationTagBoolean) BACnetConstructedDataSlaveProxyEnableBuilder {
-	return m.WithSlaveProxyEnable(slaveProxyEnable)
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSlaveProxyEnableBuilder) WithSlaveProxyEnable(slaveProxyEnable BACnetApplicationTagBoolean) BACnetConstructedDataSlaveProxyEnableBuilder {
-	m.SlaveProxyEnable = slaveProxyEnable
-	return m
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) WithMandatoryFields(slaveProxyEnable BACnetApplicationTagBoolean) BACnetConstructedDataSlaveProxyEnableBuilder {
+	return b.WithSlaveProxyEnable(slaveProxyEnable)
 }
 
-func (m *_BACnetConstructedDataSlaveProxyEnableBuilder) WithSlaveProxyEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataSlaveProxyEnableBuilder {
-	builder := builderSupplier(m.SlaveProxyEnable.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) WithSlaveProxyEnable(slaveProxyEnable BACnetApplicationTagBoolean) BACnetConstructedDataSlaveProxyEnableBuilder {
+	b.SlaveProxyEnable = slaveProxyEnable
+	return b
+}
+
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) WithSlaveProxyEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataSlaveProxyEnableBuilder {
+	builder := builderSupplier(b.SlaveProxyEnable.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.SlaveProxyEnable, err = builder.Build()
+	b.SlaveProxyEnable, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataSlaveProxyEnableBuilder) Build() (BACnetConstructedDataSlaveProxyEnable, error) {
-	if m.SlaveProxyEnable == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) Build() (BACnetConstructedDataSlaveProxyEnable, error) {
+	if b.SlaveProxyEnable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'slaveProxyEnable' not set"))
+		b.err.Append(errors.New("mandatory field 'slaveProxyEnable' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSlaveProxyEnable.deepCopy(), nil
+	return b._BACnetConstructedDataSlaveProxyEnable.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSlaveProxyEnableBuilder) MustBuild() BACnetConstructedDataSlaveProxyEnable {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) MustBuild() BACnetConstructedDataSlaveProxyEnable {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSlaveProxyEnableBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSlaveProxyEnableBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSlaveProxyEnableBuilder().(*_BACnetConstructedDataSlaveProxyEnableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSlaveProxyEnableBuilder creates a BACnetConstructedDataSlaveProxyEnableBuilder
-func (m *_BACnetConstructedDataSlaveProxyEnable) CreateBACnetConstructedDataSlaveProxyEnableBuilder() BACnetConstructedDataSlaveProxyEnableBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSlaveProxyEnable) CreateBACnetConstructedDataSlaveProxyEnableBuilder() BACnetConstructedDataSlaveProxyEnableBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSlaveProxyEnableBuilder()
 	}
-	return &_BACnetConstructedDataSlaveProxyEnableBuilder{_BACnetConstructedDataSlaveProxyEnable: m.deepCopy()}
+	return &_BACnetConstructedDataSlaveProxyEnableBuilder{_BACnetConstructedDataSlaveProxyEnable: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

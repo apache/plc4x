@@ -93,45 +93,64 @@ func NewMeteringDataElectricityConsumptionBuilder() MeteringDataElectricityConsu
 type _MeteringDataElectricityConsumptionBuilder struct {
 	*_MeteringDataElectricityConsumption
 
+	parentBuilder *_MeteringDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MeteringDataElectricityConsumptionBuilder) = (*_MeteringDataElectricityConsumptionBuilder)(nil)
 
-func (m *_MeteringDataElectricityConsumptionBuilder) WithMandatoryFields(kWhr uint32) MeteringDataElectricityConsumptionBuilder {
-	return m.WithKWhr(kWhr)
+func (b *_MeteringDataElectricityConsumptionBuilder) setParent(contract MeteringDataContract) {
+	b.MeteringDataContract = contract
 }
 
-func (m *_MeteringDataElectricityConsumptionBuilder) WithKWhr(kWhr uint32) MeteringDataElectricityConsumptionBuilder {
-	m.KWhr = kWhr
-	return m
+func (b *_MeteringDataElectricityConsumptionBuilder) WithMandatoryFields(kWhr uint32) MeteringDataElectricityConsumptionBuilder {
+	return b.WithKWhr(kWhr)
 }
 
-func (m *_MeteringDataElectricityConsumptionBuilder) Build() (MeteringDataElectricityConsumption, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MeteringDataElectricityConsumptionBuilder) WithKWhr(kWhr uint32) MeteringDataElectricityConsumptionBuilder {
+	b.KWhr = kWhr
+	return b
+}
+
+func (b *_MeteringDataElectricityConsumptionBuilder) Build() (MeteringDataElectricityConsumption, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MeteringDataElectricityConsumption.deepCopy(), nil
+	return b._MeteringDataElectricityConsumption.deepCopy(), nil
 }
 
-func (m *_MeteringDataElectricityConsumptionBuilder) MustBuild() MeteringDataElectricityConsumption {
-	build, err := m.Build()
+func (b *_MeteringDataElectricityConsumptionBuilder) MustBuild() MeteringDataElectricityConsumption {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MeteringDataElectricityConsumptionBuilder) DeepCopy() any {
-	return m.CreateMeteringDataElectricityConsumptionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MeteringDataElectricityConsumptionBuilder) Done() MeteringDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MeteringDataElectricityConsumptionBuilder) buildForMeteringData() (MeteringData, error) {
+	return b.Build()
+}
+
+func (b *_MeteringDataElectricityConsumptionBuilder) DeepCopy() any {
+	_copy := b.CreateMeteringDataElectricityConsumptionBuilder().(*_MeteringDataElectricityConsumptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMeteringDataElectricityConsumptionBuilder creates a MeteringDataElectricityConsumptionBuilder
-func (m *_MeteringDataElectricityConsumption) CreateMeteringDataElectricityConsumptionBuilder() MeteringDataElectricityConsumptionBuilder {
-	if m == nil {
+func (b *_MeteringDataElectricityConsumption) CreateMeteringDataElectricityConsumptionBuilder() MeteringDataElectricityConsumptionBuilder {
+	if b == nil {
 		return NewMeteringDataElectricityConsumptionBuilder()
 	}
-	return &_MeteringDataElectricityConsumptionBuilder{_MeteringDataElectricityConsumption: m.deepCopy()}
+	return &_MeteringDataElectricityConsumptionBuilder{_MeteringDataElectricityConsumption: b.deepCopy()}
 }
 
 ///////////////////////
@@ -271,9 +290,13 @@ func (m *_MeteringDataElectricityConsumption) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

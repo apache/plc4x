@@ -100,64 +100,83 @@ func NewBACnetConstructedDataMultiStateOutputFeedbackValueBuilder() BACnetConstr
 type _BACnetConstructedDataMultiStateOutputFeedbackValueBuilder struct {
 	*_BACnetConstructedDataMultiStateOutputFeedbackValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) = (*_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) WithMandatoryFields(feedbackValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateOutputFeedbackValueBuilder {
-	return m.WithFeedbackValue(feedbackValue)
+func (b *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) WithFeedbackValue(feedbackValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateOutputFeedbackValueBuilder {
-	m.FeedbackValue = feedbackValue
-	return m
+func (b *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) WithMandatoryFields(feedbackValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateOutputFeedbackValueBuilder {
+	return b.WithFeedbackValue(feedbackValue)
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) WithFeedbackValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMultiStateOutputFeedbackValueBuilder {
-	builder := builderSupplier(m.FeedbackValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) WithFeedbackValue(feedbackValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateOutputFeedbackValueBuilder {
+	b.FeedbackValue = feedbackValue
+	return b
+}
+
+func (b *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) WithFeedbackValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMultiStateOutputFeedbackValueBuilder {
+	builder := builderSupplier(b.FeedbackValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.FeedbackValue, err = builder.Build()
+	b.FeedbackValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) Build() (BACnetConstructedDataMultiStateOutputFeedbackValue, error) {
-	if m.FeedbackValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) Build() (BACnetConstructedDataMultiStateOutputFeedbackValue, error) {
+	if b.FeedbackValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'feedbackValue' not set"))
+		b.err.Append(errors.New("mandatory field 'feedbackValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataMultiStateOutputFeedbackValue.deepCopy(), nil
+	return b._BACnetConstructedDataMultiStateOutputFeedbackValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) MustBuild() BACnetConstructedDataMultiStateOutputFeedbackValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) MustBuild() BACnetConstructedDataMultiStateOutputFeedbackValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMultiStateOutputFeedbackValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMultiStateOutputFeedbackValueBuilder().(*_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMultiStateOutputFeedbackValueBuilder creates a BACnetConstructedDataMultiStateOutputFeedbackValueBuilder
-func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) CreateBACnetConstructedDataMultiStateOutputFeedbackValueBuilder() BACnetConstructedDataMultiStateOutputFeedbackValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMultiStateOutputFeedbackValue) CreateBACnetConstructedDataMultiStateOutputFeedbackValueBuilder() BACnetConstructedDataMultiStateOutputFeedbackValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMultiStateOutputFeedbackValueBuilder()
 	}
-	return &_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder{_BACnetConstructedDataMultiStateOutputFeedbackValue: m.deepCopy()}
+	return &_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder{_BACnetConstructedDataMultiStateOutputFeedbackValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

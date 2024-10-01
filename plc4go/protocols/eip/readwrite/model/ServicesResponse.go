@@ -114,60 +114,79 @@ func NewServicesResponseBuilder() ServicesResponseBuilder {
 type _ServicesResponseBuilder struct {
 	*_ServicesResponse
 
+	parentBuilder *_TypeIdBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ServicesResponseBuilder) = (*_ServicesResponseBuilder)(nil)
 
-func (m *_ServicesResponseBuilder) WithMandatoryFields(encapsulationProtocol uint16, supportsCIPEncapsulation bool, supportsUDP bool, data []byte) ServicesResponseBuilder {
-	return m.WithEncapsulationProtocol(encapsulationProtocol).WithSupportsCIPEncapsulation(supportsCIPEncapsulation).WithSupportsUDP(supportsUDP).WithData(data...)
+func (b *_ServicesResponseBuilder) setParent(contract TypeIdContract) {
+	b.TypeIdContract = contract
 }
 
-func (m *_ServicesResponseBuilder) WithEncapsulationProtocol(encapsulationProtocol uint16) ServicesResponseBuilder {
-	m.EncapsulationProtocol = encapsulationProtocol
-	return m
+func (b *_ServicesResponseBuilder) WithMandatoryFields(encapsulationProtocol uint16, supportsCIPEncapsulation bool, supportsUDP bool, data []byte) ServicesResponseBuilder {
+	return b.WithEncapsulationProtocol(encapsulationProtocol).WithSupportsCIPEncapsulation(supportsCIPEncapsulation).WithSupportsUDP(supportsUDP).WithData(data...)
 }
 
-func (m *_ServicesResponseBuilder) WithSupportsCIPEncapsulation(supportsCIPEncapsulation bool) ServicesResponseBuilder {
-	m.SupportsCIPEncapsulation = supportsCIPEncapsulation
-	return m
+func (b *_ServicesResponseBuilder) WithEncapsulationProtocol(encapsulationProtocol uint16) ServicesResponseBuilder {
+	b.EncapsulationProtocol = encapsulationProtocol
+	return b
 }
 
-func (m *_ServicesResponseBuilder) WithSupportsUDP(supportsUDP bool) ServicesResponseBuilder {
-	m.SupportsUDP = supportsUDP
-	return m
+func (b *_ServicesResponseBuilder) WithSupportsCIPEncapsulation(supportsCIPEncapsulation bool) ServicesResponseBuilder {
+	b.SupportsCIPEncapsulation = supportsCIPEncapsulation
+	return b
 }
 
-func (m *_ServicesResponseBuilder) WithData(data ...byte) ServicesResponseBuilder {
-	m.Data = data
-	return m
+func (b *_ServicesResponseBuilder) WithSupportsUDP(supportsUDP bool) ServicesResponseBuilder {
+	b.SupportsUDP = supportsUDP
+	return b
 }
 
-func (m *_ServicesResponseBuilder) Build() (ServicesResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ServicesResponseBuilder) WithData(data ...byte) ServicesResponseBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ServicesResponseBuilder) Build() (ServicesResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ServicesResponse.deepCopy(), nil
+	return b._ServicesResponse.deepCopy(), nil
 }
 
-func (m *_ServicesResponseBuilder) MustBuild() ServicesResponse {
-	build, err := m.Build()
+func (b *_ServicesResponseBuilder) MustBuild() ServicesResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ServicesResponseBuilder) DeepCopy() any {
-	return m.CreateServicesResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ServicesResponseBuilder) Done() TypeIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ServicesResponseBuilder) buildForTypeId() (TypeId, error) {
+	return b.Build()
+}
+
+func (b *_ServicesResponseBuilder) DeepCopy() any {
+	_copy := b.CreateServicesResponseBuilder().(*_ServicesResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateServicesResponseBuilder creates a ServicesResponseBuilder
-func (m *_ServicesResponse) CreateServicesResponseBuilder() ServicesResponseBuilder {
-	if m == nil {
+func (b *_ServicesResponse) CreateServicesResponseBuilder() ServicesResponseBuilder {
+	if b == nil {
 		return NewServicesResponseBuilder()
 	}
-	return &_ServicesResponseBuilder{_ServicesResponse: m.deepCopy()}
+	return &_ServicesResponseBuilder{_ServicesResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -408,9 +427,13 @@ func (m *_ServicesResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

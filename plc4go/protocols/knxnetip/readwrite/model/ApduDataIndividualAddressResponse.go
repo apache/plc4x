@@ -85,40 +85,59 @@ func NewApduDataIndividualAddressResponseBuilder() ApduDataIndividualAddressResp
 type _ApduDataIndividualAddressResponseBuilder struct {
 	*_ApduDataIndividualAddressResponse
 
+	parentBuilder *_ApduDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataIndividualAddressResponseBuilder) = (*_ApduDataIndividualAddressResponseBuilder)(nil)
 
-func (m *_ApduDataIndividualAddressResponseBuilder) WithMandatoryFields() ApduDataIndividualAddressResponseBuilder {
-	return m
+func (b *_ApduDataIndividualAddressResponseBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
 }
 
-func (m *_ApduDataIndividualAddressResponseBuilder) Build() (ApduDataIndividualAddressResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataIndividualAddressResponseBuilder) WithMandatoryFields() ApduDataIndividualAddressResponseBuilder {
+	return b
+}
+
+func (b *_ApduDataIndividualAddressResponseBuilder) Build() (ApduDataIndividualAddressResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataIndividualAddressResponse.deepCopy(), nil
+	return b._ApduDataIndividualAddressResponse.deepCopy(), nil
 }
 
-func (m *_ApduDataIndividualAddressResponseBuilder) MustBuild() ApduDataIndividualAddressResponse {
-	build, err := m.Build()
+func (b *_ApduDataIndividualAddressResponseBuilder) MustBuild() ApduDataIndividualAddressResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataIndividualAddressResponseBuilder) DeepCopy() any {
-	return m.CreateApduDataIndividualAddressResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataIndividualAddressResponseBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataIndividualAddressResponseBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataIndividualAddressResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataIndividualAddressResponseBuilder().(*_ApduDataIndividualAddressResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataIndividualAddressResponseBuilder creates a ApduDataIndividualAddressResponseBuilder
-func (m *_ApduDataIndividualAddressResponse) CreateApduDataIndividualAddressResponseBuilder() ApduDataIndividualAddressResponseBuilder {
-	if m == nil {
+func (b *_ApduDataIndividualAddressResponse) CreateApduDataIndividualAddressResponseBuilder() ApduDataIndividualAddressResponseBuilder {
+	if b == nil {
 		return NewApduDataIndividualAddressResponseBuilder()
 	}
-	return &_ApduDataIndividualAddressResponseBuilder{_ApduDataIndividualAddressResponse: m.deepCopy()}
+	return &_ApduDataIndividualAddressResponseBuilder{_ApduDataIndividualAddressResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_ApduDataIndividualAddressResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

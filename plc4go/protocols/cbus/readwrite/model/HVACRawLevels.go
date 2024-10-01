@@ -92,40 +92,44 @@ type _HVACRawLevelsBuilder struct {
 
 var _ (HVACRawLevelsBuilder) = (*_HVACRawLevelsBuilder)(nil)
 
-func (m *_HVACRawLevelsBuilder) WithMandatoryFields(rawValue int16) HVACRawLevelsBuilder {
-	return m.WithRawValue(rawValue)
+func (b *_HVACRawLevelsBuilder) WithMandatoryFields(rawValue int16) HVACRawLevelsBuilder {
+	return b.WithRawValue(rawValue)
 }
 
-func (m *_HVACRawLevelsBuilder) WithRawValue(rawValue int16) HVACRawLevelsBuilder {
-	m.RawValue = rawValue
-	return m
+func (b *_HVACRawLevelsBuilder) WithRawValue(rawValue int16) HVACRawLevelsBuilder {
+	b.RawValue = rawValue
+	return b
 }
 
-func (m *_HVACRawLevelsBuilder) Build() (HVACRawLevels, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_HVACRawLevelsBuilder) Build() (HVACRawLevels, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HVACRawLevels.deepCopy(), nil
+	return b._HVACRawLevels.deepCopy(), nil
 }
 
-func (m *_HVACRawLevelsBuilder) MustBuild() HVACRawLevels {
-	build, err := m.Build()
+func (b *_HVACRawLevelsBuilder) MustBuild() HVACRawLevels {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HVACRawLevelsBuilder) DeepCopy() any {
-	return m.CreateHVACRawLevelsBuilder()
+func (b *_HVACRawLevelsBuilder) DeepCopy() any {
+	_copy := b.CreateHVACRawLevelsBuilder().(*_HVACRawLevelsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHVACRawLevelsBuilder creates a HVACRawLevelsBuilder
-func (m *_HVACRawLevels) CreateHVACRawLevelsBuilder() HVACRawLevelsBuilder {
-	if m == nil {
+func (b *_HVACRawLevels) CreateHVACRawLevelsBuilder() HVACRawLevelsBuilder {
+	if b == nil {
 		return NewHVACRawLevelsBuilder()
 	}
-	return &_HVACRawLevelsBuilder{_HVACRawLevels: m.deepCopy()}
+	return &_HVACRawLevelsBuilder{_HVACRawLevels: b.deepCopy()}
 }
 
 ///////////////////////
@@ -291,9 +295,13 @@ func (m *_HVACRawLevels) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -98,64 +98,83 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryNullBuilder() BACnetFaul
 type _BACnetFaultParameterFaultExtendedParametersEntryNullBuilder struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntryNull
 
+	parentBuilder *_BACnetFaultParameterFaultExtendedParametersEntryBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder)(nil)
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetFaultParameterFaultExtendedParametersEntryNullBuilder {
-	return m.WithNullValue(nullValue)
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) setParent(contract BACnetFaultParameterFaultExtendedParametersEntryContract) {
+	b.BACnetFaultParameterFaultExtendedParametersEntryContract = contract
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetFaultParameterFaultExtendedParametersEntryNullBuilder {
-	m.NullValue = nullValue
-	return m
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetFaultParameterFaultExtendedParametersEntryNullBuilder {
+	return b.WithNullValue(nullValue)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetFaultParameterFaultExtendedParametersEntryNullBuilder {
-	builder := builderSupplier(m.NullValue.CreateBACnetApplicationTagNullBuilder())
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetFaultParameterFaultExtendedParametersEntryNullBuilder {
+	b.NullValue = nullValue
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetFaultParameterFaultExtendedParametersEntryNullBuilder {
+	builder := builderSupplier(b.NullValue.CreateBACnetApplicationTagNullBuilder())
 	var err error
-	m.NullValue, err = builder.Build()
+	b.NullValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryNull, error) {
-	if m.NullValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryNull, error) {
+	if b.NullValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nullValue' not set"))
+		b.err.Append(errors.New("mandatory field 'nullValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetFaultParameterFaultExtendedParametersEntryNull.deepCopy(), nil
+	return b._BACnetFaultParameterFaultExtendedParametersEntryNull.deepCopy(), nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryNull {
-	build, err := m.Build()
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryNull {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) DeepCopy() any {
-	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryNullBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) buildForBACnetFaultParameterFaultExtendedParametersEntry() (BACnetFaultParameterFaultExtendedParametersEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultParameterFaultExtendedParametersEntryNullBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetFaultParameterFaultExtendedParametersEntryNullBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) CreateBACnetFaultParameterFaultExtendedParametersEntryNullBuilder() BACnetFaultParameterFaultExtendedParametersEntryNullBuilder {
-	if m == nil {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryNull) CreateBACnetFaultParameterFaultExtendedParametersEntryNullBuilder() BACnetFaultParameterFaultExtendedParametersEntryNullBuilder {
+	if b == nil {
 		return NewBACnetFaultParameterFaultExtendedParametersEntryNullBuilder()
 	}
-	return &_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder{_BACnetFaultParameterFaultExtendedParametersEntryNull: m.deepCopy()}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder{_BACnetFaultParameterFaultExtendedParametersEntryNull: b.deepCopy()}
 }
 
 ///////////////////////
@@ -296,9 +315,13 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) String() string 
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

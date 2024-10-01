@@ -84,6 +84,8 @@ type BACnetConstructedDataEventParametersBuilder interface {
 	WithMandatoryFields(eventParameter BACnetEventParameter) BACnetConstructedDataEventParametersBuilder
 	// WithEventParameter adds EventParameter (property field)
 	WithEventParameter(BACnetEventParameter) BACnetConstructedDataEventParametersBuilder
+	// WithEventParameterBuilder adds EventParameter (property field) which is build by the builder
+	WithEventParameterBuilder(func(BACnetEventParameterBuilder) BACnetEventParameterBuilder) BACnetConstructedDataEventParametersBuilder
 	// Build builds the BACnetConstructedDataEventParameters or returns an error if something is wrong
 	Build() (BACnetConstructedDataEventParameters, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewBACnetConstructedDataEventParametersBuilder() BACnetConstructedDataEvent
 type _BACnetConstructedDataEventParametersBuilder struct {
 	*_BACnetConstructedDataEventParameters
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataEventParametersBuilder) = (*_BACnetConstructedDataEventParametersBuilder)(nil)
 
-func (m *_BACnetConstructedDataEventParametersBuilder) WithMandatoryFields(eventParameter BACnetEventParameter) BACnetConstructedDataEventParametersBuilder {
-	return m.WithEventParameter(eventParameter)
+func (b *_BACnetConstructedDataEventParametersBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataEventParametersBuilder) WithEventParameter(eventParameter BACnetEventParameter) BACnetConstructedDataEventParametersBuilder {
-	m.EventParameter = eventParameter
-	return m
+func (b *_BACnetConstructedDataEventParametersBuilder) WithMandatoryFields(eventParameter BACnetEventParameter) BACnetConstructedDataEventParametersBuilder {
+	return b.WithEventParameter(eventParameter)
 }
 
-func (m *_BACnetConstructedDataEventParametersBuilder) Build() (BACnetConstructedDataEventParameters, error) {
-	if m.EventParameter == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataEventParametersBuilder) WithEventParameter(eventParameter BACnetEventParameter) BACnetConstructedDataEventParametersBuilder {
+	b.EventParameter = eventParameter
+	return b
+}
+
+func (b *_BACnetConstructedDataEventParametersBuilder) WithEventParameterBuilder(builderSupplier func(BACnetEventParameterBuilder) BACnetEventParameterBuilder) BACnetConstructedDataEventParametersBuilder {
+	builder := builderSupplier(b.EventParameter.CreateBACnetEventParameterBuilder())
+	var err error
+	b.EventParameter, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'eventParameter' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetEventParameterBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetConstructedDataEventParameters.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetConstructedDataEventParametersBuilder) MustBuild() BACnetConstructedDataEventParameters {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataEventParametersBuilder) Build() (BACnetConstructedDataEventParameters, error) {
+	if b.EventParameter == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'eventParameter' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataEventParameters.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataEventParametersBuilder) MustBuild() BACnetConstructedDataEventParameters {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataEventParametersBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataEventParametersBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEventParametersBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEventParametersBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEventParametersBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEventParametersBuilder().(*_BACnetConstructedDataEventParametersBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataEventParametersBuilder creates a BACnetConstructedDataEventParametersBuilder
-func (m *_BACnetConstructedDataEventParameters) CreateBACnetConstructedDataEventParametersBuilder() BACnetConstructedDataEventParametersBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataEventParameters) CreateBACnetConstructedDataEventParametersBuilder() BACnetConstructedDataEventParametersBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataEventParametersBuilder()
 	}
-	return &_BACnetConstructedDataEventParametersBuilder{_BACnetConstructedDataEventParameters: m.deepCopy()}
+	return &_BACnetConstructedDataEventParametersBuilder{_BACnetConstructedDataEventParameters: b.deepCopy()}
 }
 
 ///////////////////////
@@ -319,9 +353,13 @@ func (m *_BACnetConstructedDataEventParameters) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

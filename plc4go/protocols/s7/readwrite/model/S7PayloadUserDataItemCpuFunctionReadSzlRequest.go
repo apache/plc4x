@@ -104,69 +104,88 @@ func NewS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder() S7PayloadUserDat
 type _S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder struct {
 	*_S7PayloadUserDataItemCpuFunctionReadSzlRequest
 
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) = (*_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder)(nil)
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) WithMandatoryFields(szlId SzlId, szlIndex uint16) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
-	return m.WithSzlId(szlId).WithSzlIndex(szlIndex)
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) WithSzlId(szlId SzlId) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
-	m.SzlId = szlId
-	return m
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) WithMandatoryFields(szlId SzlId, szlIndex uint16) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
+	return b.WithSzlId(szlId).WithSzlIndex(szlIndex)
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) WithSzlIdBuilder(builderSupplier func(SzlIdBuilder) SzlIdBuilder) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
-	builder := builderSupplier(m.SzlId.CreateSzlIdBuilder())
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) WithSzlId(szlId SzlId) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
+	b.SzlId = szlId
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) WithSzlIdBuilder(builderSupplier func(SzlIdBuilder) SzlIdBuilder) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
+	builder := builderSupplier(b.SzlId.CreateSzlIdBuilder())
 	var err error
-	m.SzlId, err = builder.Build()
+	b.SzlId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "SzlIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "SzlIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) WithSzlIndex(szlIndex uint16) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
-	m.SzlIndex = szlIndex
-	return m
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) WithSzlIndex(szlIndex uint16) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
+	b.SzlIndex = szlIndex
+	return b
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) Build() (S7PayloadUserDataItemCpuFunctionReadSzlRequest, error) {
-	if m.SzlId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) Build() (S7PayloadUserDataItemCpuFunctionReadSzlRequest, error) {
+	if b.SzlId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'szlId' not set"))
+		b.err.Append(errors.New("mandatory field 'szlId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadUserDataItemCpuFunctionReadSzlRequest.deepCopy(), nil
+	return b._S7PayloadUserDataItemCpuFunctionReadSzlRequest.deepCopy(), nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionReadSzlRequest {
-	build, err := m.Build()
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionReadSzlRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) DeepCopy() any {
-	return m.CreateS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder creates a S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder
-func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) CreateS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder() S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
-	if m == nil {
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) CreateS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder() S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
+	if b == nil {
 		return NewS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder()
 	}
-	return &_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder{_S7PayloadUserDataItemCpuFunctionReadSzlRequest: m.deepCopy()}
+	return &_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder{_S7PayloadUserDataItemCpuFunctionReadSzlRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -337,9 +356,13 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

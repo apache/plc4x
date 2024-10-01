@@ -104,69 +104,88 @@ func NewParameterValueApplicationAddress1Builder() ParameterValueApplicationAddr
 type _ParameterValueApplicationAddress1Builder struct {
 	*_ParameterValueApplicationAddress1
 
+	parentBuilder *_ParameterValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ParameterValueApplicationAddress1Builder) = (*_ParameterValueApplicationAddress1Builder)(nil)
 
-func (m *_ParameterValueApplicationAddress1Builder) WithMandatoryFields(value ApplicationAddress1, data []byte) ParameterValueApplicationAddress1Builder {
-	return m.WithValue(value).WithData(data...)
+func (b *_ParameterValueApplicationAddress1Builder) setParent(contract ParameterValueContract) {
+	b.ParameterValueContract = contract
 }
 
-func (m *_ParameterValueApplicationAddress1Builder) WithValue(value ApplicationAddress1) ParameterValueApplicationAddress1Builder {
-	m.Value = value
-	return m
+func (b *_ParameterValueApplicationAddress1Builder) WithMandatoryFields(value ApplicationAddress1, data []byte) ParameterValueApplicationAddress1Builder {
+	return b.WithValue(value).WithData(data...)
 }
 
-func (m *_ParameterValueApplicationAddress1Builder) WithValueBuilder(builderSupplier func(ApplicationAddress1Builder) ApplicationAddress1Builder) ParameterValueApplicationAddress1Builder {
-	builder := builderSupplier(m.Value.CreateApplicationAddress1Builder())
+func (b *_ParameterValueApplicationAddress1Builder) WithValue(value ApplicationAddress1) ParameterValueApplicationAddress1Builder {
+	b.Value = value
+	return b
+}
+
+func (b *_ParameterValueApplicationAddress1Builder) WithValueBuilder(builderSupplier func(ApplicationAddress1Builder) ApplicationAddress1Builder) ParameterValueApplicationAddress1Builder {
+	builder := builderSupplier(b.Value.CreateApplicationAddress1Builder())
 	var err error
-	m.Value, err = builder.Build()
+	b.Value, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ApplicationAddress1Builder failed"))
+		b.err.Append(errors.Wrap(err, "ApplicationAddress1Builder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ParameterValueApplicationAddress1Builder) WithData(data ...byte) ParameterValueApplicationAddress1Builder {
-	m.Data = data
-	return m
+func (b *_ParameterValueApplicationAddress1Builder) WithData(data ...byte) ParameterValueApplicationAddress1Builder {
+	b.Data = data
+	return b
 }
 
-func (m *_ParameterValueApplicationAddress1Builder) Build() (ParameterValueApplicationAddress1, error) {
-	if m.Value == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ParameterValueApplicationAddress1Builder) Build() (ParameterValueApplicationAddress1, error) {
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'value' not set"))
+		b.err.Append(errors.New("mandatory field 'value' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ParameterValueApplicationAddress1.deepCopy(), nil
+	return b._ParameterValueApplicationAddress1.deepCopy(), nil
 }
 
-func (m *_ParameterValueApplicationAddress1Builder) MustBuild() ParameterValueApplicationAddress1 {
-	build, err := m.Build()
+func (b *_ParameterValueApplicationAddress1Builder) MustBuild() ParameterValueApplicationAddress1 {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ParameterValueApplicationAddress1Builder) DeepCopy() any {
-	return m.CreateParameterValueApplicationAddress1Builder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ParameterValueApplicationAddress1Builder) Done() ParameterValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ParameterValueApplicationAddress1Builder) buildForParameterValue() (ParameterValue, error) {
+	return b.Build()
+}
+
+func (b *_ParameterValueApplicationAddress1Builder) DeepCopy() any {
+	_copy := b.CreateParameterValueApplicationAddress1Builder().(*_ParameterValueApplicationAddress1Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateParameterValueApplicationAddress1Builder creates a ParameterValueApplicationAddress1Builder
-func (m *_ParameterValueApplicationAddress1) CreateParameterValueApplicationAddress1Builder() ParameterValueApplicationAddress1Builder {
-	if m == nil {
+func (b *_ParameterValueApplicationAddress1) CreateParameterValueApplicationAddress1Builder() ParameterValueApplicationAddress1Builder {
+	if b == nil {
 		return NewParameterValueApplicationAddress1Builder()
 	}
-	return &_ParameterValueApplicationAddress1Builder{_ParameterValueApplicationAddress1: m.deepCopy()}
+	return &_ParameterValueApplicationAddress1Builder{_ParameterValueApplicationAddress1: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_ParameterValueApplicationAddress1) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

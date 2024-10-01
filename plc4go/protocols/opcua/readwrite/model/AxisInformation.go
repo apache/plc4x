@@ -108,8 +108,12 @@ type AxisInformationBuilder interface {
 	WithMandatoryFields(engineeringUnits ExtensionObjectDefinition, eURange ExtensionObjectDefinition, title LocalizedText, axisScaleType AxisScaleEnumeration, noOfAxisSteps int32, axisSteps []float64) AxisInformationBuilder
 	// WithEngineeringUnits adds EngineeringUnits (property field)
 	WithEngineeringUnits(ExtensionObjectDefinition) AxisInformationBuilder
+	// WithEngineeringUnitsBuilder adds EngineeringUnits (property field) which is build by the builder
+	WithEngineeringUnitsBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AxisInformationBuilder
 	// WithEURange adds EURange (property field)
 	WithEURange(ExtensionObjectDefinition) AxisInformationBuilder
+	// WithEURangeBuilder adds EURange (property field) which is build by the builder
+	WithEURangeBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AxisInformationBuilder
 	// WithTitle adds Title (property field)
 	WithTitle(LocalizedText) AxisInformationBuilder
 	// WithTitleBuilder adds Title (property field) which is build by the builder
@@ -134,101 +138,146 @@ func NewAxisInformationBuilder() AxisInformationBuilder {
 type _AxisInformationBuilder struct {
 	*_AxisInformation
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AxisInformationBuilder) = (*_AxisInformationBuilder)(nil)
 
-func (m *_AxisInformationBuilder) WithMandatoryFields(engineeringUnits ExtensionObjectDefinition, eURange ExtensionObjectDefinition, title LocalizedText, axisScaleType AxisScaleEnumeration, noOfAxisSteps int32, axisSteps []float64) AxisInformationBuilder {
-	return m.WithEngineeringUnits(engineeringUnits).WithEURange(eURange).WithTitle(title).WithAxisScaleType(axisScaleType).WithNoOfAxisSteps(noOfAxisSteps).WithAxisSteps(axisSteps...)
+func (b *_AxisInformationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_AxisInformationBuilder) WithEngineeringUnits(engineeringUnits ExtensionObjectDefinition) AxisInformationBuilder {
-	m.EngineeringUnits = engineeringUnits
-	return m
+func (b *_AxisInformationBuilder) WithMandatoryFields(engineeringUnits ExtensionObjectDefinition, eURange ExtensionObjectDefinition, title LocalizedText, axisScaleType AxisScaleEnumeration, noOfAxisSteps int32, axisSteps []float64) AxisInformationBuilder {
+	return b.WithEngineeringUnits(engineeringUnits).WithEURange(eURange).WithTitle(title).WithAxisScaleType(axisScaleType).WithNoOfAxisSteps(noOfAxisSteps).WithAxisSteps(axisSteps...)
 }
 
-func (m *_AxisInformationBuilder) WithEURange(eURange ExtensionObjectDefinition) AxisInformationBuilder {
-	m.EURange = eURange
-	return m
+func (b *_AxisInformationBuilder) WithEngineeringUnits(engineeringUnits ExtensionObjectDefinition) AxisInformationBuilder {
+	b.EngineeringUnits = engineeringUnits
+	return b
 }
 
-func (m *_AxisInformationBuilder) WithTitle(title LocalizedText) AxisInformationBuilder {
-	m.Title = title
-	return m
-}
-
-func (m *_AxisInformationBuilder) WithTitleBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) AxisInformationBuilder {
-	builder := builderSupplier(m.Title.CreateLocalizedTextBuilder())
+func (b *_AxisInformationBuilder) WithEngineeringUnitsBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AxisInformationBuilder {
+	builder := builderSupplier(b.EngineeringUnits.CreateExtensionObjectDefinitionBuilder())
 	var err error
-	m.Title, err = builder.Build()
+	b.EngineeringUnits, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AxisInformationBuilder) WithAxisScaleType(axisScaleType AxisScaleEnumeration) AxisInformationBuilder {
-	m.AxisScaleType = axisScaleType
-	return m
+func (b *_AxisInformationBuilder) WithEURange(eURange ExtensionObjectDefinition) AxisInformationBuilder {
+	b.EURange = eURange
+	return b
 }
 
-func (m *_AxisInformationBuilder) WithNoOfAxisSteps(noOfAxisSteps int32) AxisInformationBuilder {
-	m.NoOfAxisSteps = noOfAxisSteps
-	return m
-}
-
-func (m *_AxisInformationBuilder) WithAxisSteps(axisSteps ...float64) AxisInformationBuilder {
-	m.AxisSteps = axisSteps
-	return m
-}
-
-func (m *_AxisInformationBuilder) Build() (AxisInformation, error) {
-	if m.EngineeringUnits == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AxisInformationBuilder) WithEURangeBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AxisInformationBuilder {
+	builder := builderSupplier(b.EURange.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.EURange, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'engineeringUnits' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.EURange == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'eURange' not set"))
-	}
-	if m.Title == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'title' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._AxisInformation.deepCopy(), nil
+	return b
 }
 
-func (m *_AxisInformationBuilder) MustBuild() AxisInformation {
-	build, err := m.Build()
+func (b *_AxisInformationBuilder) WithTitle(title LocalizedText) AxisInformationBuilder {
+	b.Title = title
+	return b
+}
+
+func (b *_AxisInformationBuilder) WithTitleBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) AxisInformationBuilder {
+	builder := builderSupplier(b.Title.CreateLocalizedTextBuilder())
+	var err error
+	b.Title, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AxisInformationBuilder) WithAxisScaleType(axisScaleType AxisScaleEnumeration) AxisInformationBuilder {
+	b.AxisScaleType = axisScaleType
+	return b
+}
+
+func (b *_AxisInformationBuilder) WithNoOfAxisSteps(noOfAxisSteps int32) AxisInformationBuilder {
+	b.NoOfAxisSteps = noOfAxisSteps
+	return b
+}
+
+func (b *_AxisInformationBuilder) WithAxisSteps(axisSteps ...float64) AxisInformationBuilder {
+	b.AxisSteps = axisSteps
+	return b
+}
+
+func (b *_AxisInformationBuilder) Build() (AxisInformation, error) {
+	if b.EngineeringUnits == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'engineeringUnits' not set"))
+	}
+	if b.EURange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'eURange' not set"))
+	}
+	if b.Title == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'title' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AxisInformation.deepCopy(), nil
+}
+
+func (b *_AxisInformationBuilder) MustBuild() AxisInformation {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AxisInformationBuilder) DeepCopy() any {
-	return m.CreateAxisInformationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AxisInformationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AxisInformationBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AxisInformationBuilder) DeepCopy() any {
+	_copy := b.CreateAxisInformationBuilder().(*_AxisInformationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAxisInformationBuilder creates a AxisInformationBuilder
-func (m *_AxisInformation) CreateAxisInformationBuilder() AxisInformationBuilder {
-	if m == nil {
+func (b *_AxisInformation) CreateAxisInformationBuilder() AxisInformationBuilder {
+	if b == nil {
 		return NewAxisInformationBuilder()
 	}
-	return &_AxisInformationBuilder{_AxisInformation: m.deepCopy()}
+	return &_AxisInformationBuilder{_AxisInformation: b.deepCopy()}
 }
 
 ///////////////////////
@@ -464,9 +513,13 @@ func (m *_AxisInformation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

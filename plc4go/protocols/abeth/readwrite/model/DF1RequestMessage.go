@@ -107,10 +107,19 @@ type DF1RequestMessageBuilder interface {
 	WithStatus(uint8) DF1RequestMessageBuilder
 	// WithTransactionCounter adds TransactionCounter (property field)
 	WithTransactionCounter(uint16) DF1RequestMessageBuilder
+	// AsDF1CommandRequestMessage converts this build to a subType of DF1RequestMessage. It is always possible to return to current builder using Done()
+	AsDF1CommandRequestMessage() interface {
+		DF1CommandRequestMessageBuilder
+		Done() DF1RequestMessageBuilder
+	}
 	// Build builds the DF1RequestMessage or returns an error if something is wrong
-	Build() (DF1RequestMessageContract, error)
+	PartialBuild() (DF1RequestMessageContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() DF1RequestMessageContract
+	PartialMustBuild() DF1RequestMessageContract
+	// Build builds the DF1RequestMessage or returns an error if something is wrong
+	Build() (DF1RequestMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1RequestMessage
 }
 
 // NewDF1RequestMessageBuilder() creates a DF1RequestMessageBuilder
@@ -118,63 +127,113 @@ func NewDF1RequestMessageBuilder() DF1RequestMessageBuilder {
 	return &_DF1RequestMessageBuilder{_DF1RequestMessage: new(_DF1RequestMessage)}
 }
 
+type _DF1RequestMessageChildBuilder interface {
+	utils.Copyable
+	setParent(DF1RequestMessageContract)
+	buildForDF1RequestMessage() (DF1RequestMessage, error)
+}
+
 type _DF1RequestMessageBuilder struct {
 	*_DF1RequestMessage
+
+	childBuilder _DF1RequestMessageChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (DF1RequestMessageBuilder) = (*_DF1RequestMessageBuilder)(nil)
 
-func (m *_DF1RequestMessageBuilder) WithMandatoryFields(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) DF1RequestMessageBuilder {
-	return m.WithDestinationAddress(destinationAddress).WithSourceAddress(sourceAddress).WithStatus(status).WithTransactionCounter(transactionCounter)
+func (b *_DF1RequestMessageBuilder) WithMandatoryFields(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) DF1RequestMessageBuilder {
+	return b.WithDestinationAddress(destinationAddress).WithSourceAddress(sourceAddress).WithStatus(status).WithTransactionCounter(transactionCounter)
 }
 
-func (m *_DF1RequestMessageBuilder) WithDestinationAddress(destinationAddress uint8) DF1RequestMessageBuilder {
-	m.DestinationAddress = destinationAddress
-	return m
+func (b *_DF1RequestMessageBuilder) WithDestinationAddress(destinationAddress uint8) DF1RequestMessageBuilder {
+	b.DestinationAddress = destinationAddress
+	return b
 }
 
-func (m *_DF1RequestMessageBuilder) WithSourceAddress(sourceAddress uint8) DF1RequestMessageBuilder {
-	m.SourceAddress = sourceAddress
-	return m
+func (b *_DF1RequestMessageBuilder) WithSourceAddress(sourceAddress uint8) DF1RequestMessageBuilder {
+	b.SourceAddress = sourceAddress
+	return b
 }
 
-func (m *_DF1RequestMessageBuilder) WithStatus(status uint8) DF1RequestMessageBuilder {
-	m.Status = status
-	return m
+func (b *_DF1RequestMessageBuilder) WithStatus(status uint8) DF1RequestMessageBuilder {
+	b.Status = status
+	return b
 }
 
-func (m *_DF1RequestMessageBuilder) WithTransactionCounter(transactionCounter uint16) DF1RequestMessageBuilder {
-	m.TransactionCounter = transactionCounter
-	return m
+func (b *_DF1RequestMessageBuilder) WithTransactionCounter(transactionCounter uint16) DF1RequestMessageBuilder {
+	b.TransactionCounter = transactionCounter
+	return b
 }
 
-func (m *_DF1RequestMessageBuilder) Build() (DF1RequestMessageContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_DF1RequestMessageBuilder) PartialBuild() (DF1RequestMessageContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._DF1RequestMessage.deepCopy(), nil
+	return b._DF1RequestMessage.deepCopy(), nil
 }
 
-func (m *_DF1RequestMessageBuilder) MustBuild() DF1RequestMessageContract {
-	build, err := m.Build()
+func (b *_DF1RequestMessageBuilder) PartialMustBuild() DF1RequestMessageContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_DF1RequestMessageBuilder) DeepCopy() any {
-	return m.CreateDF1RequestMessageBuilder()
+func (b *_DF1RequestMessageBuilder) AsDF1CommandRequestMessage() interface {
+	DF1CommandRequestMessageBuilder
+	Done() DF1RequestMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DF1CommandRequestMessageBuilder
+		Done() DF1RequestMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDF1CommandRequestMessageBuilder().(*_DF1CommandRequestMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_DF1RequestMessageBuilder) Build() (DF1RequestMessage, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForDF1RequestMessage()
+}
+
+func (b *_DF1RequestMessageBuilder) MustBuild() DF1RequestMessage {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DF1RequestMessageBuilder) DeepCopy() any {
+	_copy := b.CreateDF1RequestMessageBuilder().(*_DF1RequestMessageBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_DF1RequestMessageChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateDF1RequestMessageBuilder creates a DF1RequestMessageBuilder
-func (m *_DF1RequestMessage) CreateDF1RequestMessageBuilder() DF1RequestMessageBuilder {
-	if m == nil {
+func (b *_DF1RequestMessage) CreateDF1RequestMessageBuilder() DF1RequestMessageBuilder {
+	if b == nil {
 		return NewDF1RequestMessageBuilder()
 	}
-	return &_DF1RequestMessageBuilder{_DF1RequestMessage: m.deepCopy()}
+	return &_DF1RequestMessageBuilder{_DF1RequestMessage: b.deepCopy()}
 }
 
 ///////////////////////

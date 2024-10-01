@@ -147,7 +147,7 @@ class UmasVariableBuilder:
     def build(self) -> UmasVariable:
         variable: UmasVariable = None
         _ARRAY_REGEX: str = (
-            r"^ARRAY\[(?P<start_number>[0-9]*)..(?P<end_number>[0-9]*)\] OF (?P<data_type>[a-zA-z0-9]*)"
+            r"^ARRAY\[(?P<start_number>[0-9]*)..(?P<end_number>[0-9]*)\] OF (?P<data_type>[a-zA-z0-9_]*)"
         )
         _ARRAY_COMPILED: Pattern[AnyStr] = re.compile(_ARRAY_REGEX)
 
@@ -192,10 +192,25 @@ class UmasVariableBuilder:
                         )
                     elif data_type_reference.class_identifier == 4:
                         match = _ARRAY_COMPILED.match(data_type_reference.value)
-                        data_type = UmasDataType[match.group("data_type")]
+                        data_type = None
+                        if hasattr(UmasDataType, match.group("data_type")):
+                            data_type = UmasDataType[match.group("data_type")].value
+                        else:
+                            for child_data_type_reference in self.data_type_references:
+                                if (
+                                    match.group("data_type")
+                                    == child_data_type_reference.value
+                                ):
+                                    data_type = child_data_type_reference.data_type
+                                    break
+                        if data_type is None:
+                            raise NotImplementedError(
+                                "Unable to read structures of UDT's"
+                            )
+
                         variable = UmasArrayVariable(
                             self.tag_reference.value,
-                            data_type.value,
+                            data_type,
                             self.block,
                             self.tag_reference.offset + self.offset,
                             int(match.group("start_number")),

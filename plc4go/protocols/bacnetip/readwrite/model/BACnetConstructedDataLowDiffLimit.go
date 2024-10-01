@@ -84,6 +84,8 @@ type BACnetConstructedDataLowDiffLimitBuilder interface {
 	WithMandatoryFields(lowDiffLimit BACnetOptionalREAL) BACnetConstructedDataLowDiffLimitBuilder
 	// WithLowDiffLimit adds LowDiffLimit (property field)
 	WithLowDiffLimit(BACnetOptionalREAL) BACnetConstructedDataLowDiffLimitBuilder
+	// WithLowDiffLimitBuilder adds LowDiffLimit (property field) which is build by the builder
+	WithLowDiffLimitBuilder(func(BACnetOptionalREALBuilder) BACnetOptionalREALBuilder) BACnetConstructedDataLowDiffLimitBuilder
 	// Build builds the BACnetConstructedDataLowDiffLimit or returns an error if something is wrong
 	Build() (BACnetConstructedDataLowDiffLimit, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewBACnetConstructedDataLowDiffLimitBuilder() BACnetConstructedDataLowDiffL
 type _BACnetConstructedDataLowDiffLimitBuilder struct {
 	*_BACnetConstructedDataLowDiffLimit
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLowDiffLimitBuilder) = (*_BACnetConstructedDataLowDiffLimitBuilder)(nil)
 
-func (m *_BACnetConstructedDataLowDiffLimitBuilder) WithMandatoryFields(lowDiffLimit BACnetOptionalREAL) BACnetConstructedDataLowDiffLimitBuilder {
-	return m.WithLowDiffLimit(lowDiffLimit)
+func (b *_BACnetConstructedDataLowDiffLimitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLowDiffLimitBuilder) WithLowDiffLimit(lowDiffLimit BACnetOptionalREAL) BACnetConstructedDataLowDiffLimitBuilder {
-	m.LowDiffLimit = lowDiffLimit
-	return m
+func (b *_BACnetConstructedDataLowDiffLimitBuilder) WithMandatoryFields(lowDiffLimit BACnetOptionalREAL) BACnetConstructedDataLowDiffLimitBuilder {
+	return b.WithLowDiffLimit(lowDiffLimit)
 }
 
-func (m *_BACnetConstructedDataLowDiffLimitBuilder) Build() (BACnetConstructedDataLowDiffLimit, error) {
-	if m.LowDiffLimit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLowDiffLimitBuilder) WithLowDiffLimit(lowDiffLimit BACnetOptionalREAL) BACnetConstructedDataLowDiffLimitBuilder {
+	b.LowDiffLimit = lowDiffLimit
+	return b
+}
+
+func (b *_BACnetConstructedDataLowDiffLimitBuilder) WithLowDiffLimitBuilder(builderSupplier func(BACnetOptionalREALBuilder) BACnetOptionalREALBuilder) BACnetConstructedDataLowDiffLimitBuilder {
+	builder := builderSupplier(b.LowDiffLimit.CreateBACnetOptionalREALBuilder())
+	var err error
+	b.LowDiffLimit, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'lowDiffLimit' not set"))
+		b.err.Append(errors.Wrap(err, "BACnetOptionalREALBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._BACnetConstructedDataLowDiffLimit.deepCopy(), nil
+	return b
 }
 
-func (m *_BACnetConstructedDataLowDiffLimitBuilder) MustBuild() BACnetConstructedDataLowDiffLimit {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLowDiffLimitBuilder) Build() (BACnetConstructedDataLowDiffLimit, error) {
+	if b.LowDiffLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'lowDiffLimit' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLowDiffLimit.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLowDiffLimitBuilder) MustBuild() BACnetConstructedDataLowDiffLimit {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLowDiffLimitBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLowDiffLimitBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLowDiffLimitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLowDiffLimitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLowDiffLimitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLowDiffLimitBuilder().(*_BACnetConstructedDataLowDiffLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLowDiffLimitBuilder creates a BACnetConstructedDataLowDiffLimitBuilder
-func (m *_BACnetConstructedDataLowDiffLimit) CreateBACnetConstructedDataLowDiffLimitBuilder() BACnetConstructedDataLowDiffLimitBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLowDiffLimit) CreateBACnetConstructedDataLowDiffLimitBuilder() BACnetConstructedDataLowDiffLimitBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLowDiffLimitBuilder()
 	}
-	return &_BACnetConstructedDataLowDiffLimitBuilder{_BACnetConstructedDataLowDiffLimit: m.deepCopy()}
+	return &_BACnetConstructedDataLowDiffLimitBuilder{_BACnetConstructedDataLowDiffLimit: b.deepCopy()}
 }
 
 ///////////////////////
@@ -319,9 +353,13 @@ func (m *_BACnetConstructedDataLowDiffLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

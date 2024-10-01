@@ -99,45 +99,64 @@ func NewMediaTransportControlDataRepeatOnOffBuilder() MediaTransportControlDataR
 type _MediaTransportControlDataRepeatOnOffBuilder struct {
 	*_MediaTransportControlDataRepeatOnOff
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataRepeatOnOffBuilder) = (*_MediaTransportControlDataRepeatOnOffBuilder)(nil)
 
-func (m *_MediaTransportControlDataRepeatOnOffBuilder) WithMandatoryFields(repeatType byte) MediaTransportControlDataRepeatOnOffBuilder {
-	return m.WithRepeatType(repeatType)
+func (b *_MediaTransportControlDataRepeatOnOffBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataRepeatOnOffBuilder) WithRepeatType(repeatType byte) MediaTransportControlDataRepeatOnOffBuilder {
-	m.RepeatType = repeatType
-	return m
+func (b *_MediaTransportControlDataRepeatOnOffBuilder) WithMandatoryFields(repeatType byte) MediaTransportControlDataRepeatOnOffBuilder {
+	return b.WithRepeatType(repeatType)
 }
 
-func (m *_MediaTransportControlDataRepeatOnOffBuilder) Build() (MediaTransportControlDataRepeatOnOff, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataRepeatOnOffBuilder) WithRepeatType(repeatType byte) MediaTransportControlDataRepeatOnOffBuilder {
+	b.RepeatType = repeatType
+	return b
+}
+
+func (b *_MediaTransportControlDataRepeatOnOffBuilder) Build() (MediaTransportControlDataRepeatOnOff, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataRepeatOnOff.deepCopy(), nil
+	return b._MediaTransportControlDataRepeatOnOff.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataRepeatOnOffBuilder) MustBuild() MediaTransportControlDataRepeatOnOff {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataRepeatOnOffBuilder) MustBuild() MediaTransportControlDataRepeatOnOff {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataRepeatOnOffBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataRepeatOnOffBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataRepeatOnOffBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataRepeatOnOffBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataRepeatOnOffBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataRepeatOnOffBuilder().(*_MediaTransportControlDataRepeatOnOffBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataRepeatOnOffBuilder creates a MediaTransportControlDataRepeatOnOffBuilder
-func (m *_MediaTransportControlDataRepeatOnOff) CreateMediaTransportControlDataRepeatOnOffBuilder() MediaTransportControlDataRepeatOnOffBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataRepeatOnOff) CreateMediaTransportControlDataRepeatOnOffBuilder() MediaTransportControlDataRepeatOnOffBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataRepeatOnOffBuilder()
 	}
-	return &_MediaTransportControlDataRepeatOnOffBuilder{_MediaTransportControlDataRepeatOnOff: m.deepCopy()}
+	return &_MediaTransportControlDataRepeatOnOffBuilder{_MediaTransportControlDataRepeatOnOff: b.deepCopy()}
 }
 
 ///////////////////////
@@ -346,9 +365,13 @@ func (m *_MediaTransportControlDataRepeatOnOff) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

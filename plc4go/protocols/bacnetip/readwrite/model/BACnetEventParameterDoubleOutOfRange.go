@@ -153,184 +153,203 @@ func NewBACnetEventParameterDoubleOutOfRangeBuilder() BACnetEventParameterDouble
 type _BACnetEventParameterDoubleOutOfRangeBuilder struct {
 	*_BACnetEventParameterDoubleOutOfRange
 
+	parentBuilder *_BACnetEventParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetEventParameterDoubleOutOfRangeBuilder) = (*_BACnetEventParameterDoubleOutOfRangeBuilder)(nil)
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, lowLimit BACnetContextTagDouble, highLimit BACnetContextTagDouble, deadband BACnetContextTagDouble, closingTag BACnetClosingTag) BACnetEventParameterDoubleOutOfRangeBuilder {
-	return m.WithOpeningTag(openingTag).WithTimeDelay(timeDelay).WithLowLimit(lowLimit).WithHighLimit(highLimit).WithDeadband(deadband).WithClosingTag(closingTag)
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) setParent(contract BACnetEventParameterContract) {
+	b.BACnetEventParameterContract = contract
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterDoubleOutOfRangeBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, lowLimit BACnetContextTagDouble, highLimit BACnetContextTagDouble, deadband BACnetContextTagDouble, closingTag BACnetClosingTag) BACnetEventParameterDoubleOutOfRangeBuilder {
+	return b.WithOpeningTag(openingTag).WithTimeDelay(timeDelay).WithLowLimit(lowLimit).WithHighLimit(highLimit).WithDeadband(deadband).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterDoubleOutOfRangeBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterDoubleOutOfRangeBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterDoubleOutOfRangeBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) WithTimeDelay(timeDelay BACnetContextTagUnsignedInteger) BACnetEventParameterDoubleOutOfRangeBuilder {
-	m.TimeDelay = timeDelay
-	return m
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) WithTimeDelay(timeDelay BACnetContextTagUnsignedInteger) BACnetEventParameterDoubleOutOfRangeBuilder {
+	b.TimeDelay = timeDelay
+	return b
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) WithTimeDelayBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventParameterDoubleOutOfRangeBuilder {
-	builder := builderSupplier(m.TimeDelay.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) WithTimeDelayBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventParameterDoubleOutOfRangeBuilder {
+	builder := builderSupplier(b.TimeDelay.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.TimeDelay, err = builder.Build()
+	b.TimeDelay, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) WithLowLimit(lowLimit BACnetContextTagDouble) BACnetEventParameterDoubleOutOfRangeBuilder {
-	m.LowLimit = lowLimit
-	return m
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) WithLowLimit(lowLimit BACnetContextTagDouble) BACnetEventParameterDoubleOutOfRangeBuilder {
+	b.LowLimit = lowLimit
+	return b
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) WithLowLimitBuilder(builderSupplier func(BACnetContextTagDoubleBuilder) BACnetContextTagDoubleBuilder) BACnetEventParameterDoubleOutOfRangeBuilder {
-	builder := builderSupplier(m.LowLimit.CreateBACnetContextTagDoubleBuilder())
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) WithLowLimitBuilder(builderSupplier func(BACnetContextTagDoubleBuilder) BACnetContextTagDoubleBuilder) BACnetEventParameterDoubleOutOfRangeBuilder {
+	builder := builderSupplier(b.LowLimit.CreateBACnetContextTagDoubleBuilder())
 	var err error
-	m.LowLimit, err = builder.Build()
+	b.LowLimit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagDoubleBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagDoubleBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) WithHighLimit(highLimit BACnetContextTagDouble) BACnetEventParameterDoubleOutOfRangeBuilder {
-	m.HighLimit = highLimit
-	return m
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) WithHighLimit(highLimit BACnetContextTagDouble) BACnetEventParameterDoubleOutOfRangeBuilder {
+	b.HighLimit = highLimit
+	return b
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) WithHighLimitBuilder(builderSupplier func(BACnetContextTagDoubleBuilder) BACnetContextTagDoubleBuilder) BACnetEventParameterDoubleOutOfRangeBuilder {
-	builder := builderSupplier(m.HighLimit.CreateBACnetContextTagDoubleBuilder())
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) WithHighLimitBuilder(builderSupplier func(BACnetContextTagDoubleBuilder) BACnetContextTagDoubleBuilder) BACnetEventParameterDoubleOutOfRangeBuilder {
+	builder := builderSupplier(b.HighLimit.CreateBACnetContextTagDoubleBuilder())
 	var err error
-	m.HighLimit, err = builder.Build()
+	b.HighLimit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagDoubleBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagDoubleBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) WithDeadband(deadband BACnetContextTagDouble) BACnetEventParameterDoubleOutOfRangeBuilder {
-	m.Deadband = deadband
-	return m
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) WithDeadband(deadband BACnetContextTagDouble) BACnetEventParameterDoubleOutOfRangeBuilder {
+	b.Deadband = deadband
+	return b
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) WithDeadbandBuilder(builderSupplier func(BACnetContextTagDoubleBuilder) BACnetContextTagDoubleBuilder) BACnetEventParameterDoubleOutOfRangeBuilder {
-	builder := builderSupplier(m.Deadband.CreateBACnetContextTagDoubleBuilder())
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) WithDeadbandBuilder(builderSupplier func(BACnetContextTagDoubleBuilder) BACnetContextTagDoubleBuilder) BACnetEventParameterDoubleOutOfRangeBuilder {
+	builder := builderSupplier(b.Deadband.CreateBACnetContextTagDoubleBuilder())
 	var err error
-	m.Deadband, err = builder.Build()
+	b.Deadband, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagDoubleBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagDoubleBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterDoubleOutOfRangeBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterDoubleOutOfRangeBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterDoubleOutOfRangeBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterDoubleOutOfRangeBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) Build() (BACnetEventParameterDoubleOutOfRange, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) Build() (BACnetEventParameterDoubleOutOfRange, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.TimeDelay == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.TimeDelay == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeDelay' not set"))
+		b.err.Append(errors.New("mandatory field 'timeDelay' not set"))
 	}
-	if m.LowLimit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.LowLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lowLimit' not set"))
+		b.err.Append(errors.New("mandatory field 'lowLimit' not set"))
 	}
-	if m.HighLimit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.HighLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'highLimit' not set"))
+		b.err.Append(errors.New("mandatory field 'highLimit' not set"))
 	}
-	if m.Deadband == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Deadband == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'deadband' not set"))
+		b.err.Append(errors.New("mandatory field 'deadband' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetEventParameterDoubleOutOfRange.deepCopy(), nil
+	return b._BACnetEventParameterDoubleOutOfRange.deepCopy(), nil
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) MustBuild() BACnetEventParameterDoubleOutOfRange {
-	build, err := m.Build()
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) MustBuild() BACnetEventParameterDoubleOutOfRange {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetEventParameterDoubleOutOfRangeBuilder) DeepCopy() any {
-	return m.CreateBACnetEventParameterDoubleOutOfRangeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) Done() BACnetEventParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) buildForBACnetEventParameter() (BACnetEventParameter, error) {
+	return b.Build()
+}
+
+func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventParameterDoubleOutOfRangeBuilder().(*_BACnetEventParameterDoubleOutOfRangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetEventParameterDoubleOutOfRangeBuilder creates a BACnetEventParameterDoubleOutOfRangeBuilder
-func (m *_BACnetEventParameterDoubleOutOfRange) CreateBACnetEventParameterDoubleOutOfRangeBuilder() BACnetEventParameterDoubleOutOfRangeBuilder {
-	if m == nil {
+func (b *_BACnetEventParameterDoubleOutOfRange) CreateBACnetEventParameterDoubleOutOfRangeBuilder() BACnetEventParameterDoubleOutOfRangeBuilder {
+	if b == nil {
 		return NewBACnetEventParameterDoubleOutOfRangeBuilder()
 	}
-	return &_BACnetEventParameterDoubleOutOfRangeBuilder{_BACnetEventParameterDoubleOutOfRange: m.deepCopy()}
+	return &_BACnetEventParameterDoubleOutOfRangeBuilder{_BACnetEventParameterDoubleOutOfRange: b.deepCopy()}
 }
 
 ///////////////////////
@@ -560,9 +579,13 @@ func (m *_BACnetEventParameterDoubleOutOfRange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

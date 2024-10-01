@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAnalogInputPresentValueBuilder() BACnetConstructedD
 type _BACnetConstructedDataAnalogInputPresentValueBuilder struct {
 	*_BACnetConstructedDataAnalogInputPresentValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAnalogInputPresentValueBuilder) = (*_BACnetConstructedDataAnalogInputPresentValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataAnalogInputPresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagReal) BACnetConstructedDataAnalogInputPresentValueBuilder {
-	return m.WithPresentValue(presentValue)
+func (b *_BACnetConstructedDataAnalogInputPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAnalogInputPresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagReal) BACnetConstructedDataAnalogInputPresentValueBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetConstructedDataAnalogInputPresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagReal) BACnetConstructedDataAnalogInputPresentValueBuilder {
+	return b.WithPresentValue(presentValue)
 }
 
-func (m *_BACnetConstructedDataAnalogInputPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataAnalogInputPresentValueBuilder {
-	builder := builderSupplier(m.PresentValue.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataAnalogInputPresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagReal) BACnetConstructedDataAnalogInputPresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataAnalogInputPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataAnalogInputPresentValueBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.PresentValue, err = builder.Build()
+	b.PresentValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAnalogInputPresentValueBuilder) Build() (BACnetConstructedDataAnalogInputPresentValue, error) {
-	if m.PresentValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAnalogInputPresentValueBuilder) Build() (BACnetConstructedDataAnalogInputPresentValue, error) {
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAnalogInputPresentValue.deepCopy(), nil
+	return b._BACnetConstructedDataAnalogInputPresentValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAnalogInputPresentValueBuilder) MustBuild() BACnetConstructedDataAnalogInputPresentValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAnalogInputPresentValueBuilder) MustBuild() BACnetConstructedDataAnalogInputPresentValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAnalogInputPresentValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAnalogInputPresentValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAnalogInputPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAnalogInputPresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAnalogInputPresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAnalogInputPresentValueBuilder().(*_BACnetConstructedDataAnalogInputPresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAnalogInputPresentValueBuilder creates a BACnetConstructedDataAnalogInputPresentValueBuilder
-func (m *_BACnetConstructedDataAnalogInputPresentValue) CreateBACnetConstructedDataAnalogInputPresentValueBuilder() BACnetConstructedDataAnalogInputPresentValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAnalogInputPresentValue) CreateBACnetConstructedDataAnalogInputPresentValueBuilder() BACnetConstructedDataAnalogInputPresentValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAnalogInputPresentValueBuilder()
 	}
-	return &_BACnetConstructedDataAnalogInputPresentValueBuilder{_BACnetConstructedDataAnalogInputPresentValue: m.deepCopy()}
+	return &_BACnetConstructedDataAnalogInputPresentValueBuilder{_BACnetConstructedDataAnalogInputPresentValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataAnalogInputPresentValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

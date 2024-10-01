@@ -109,88 +109,107 @@ func NewSignatureDataBuilder() SignatureDataBuilder {
 type _SignatureDataBuilder struct {
 	*_SignatureData
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SignatureDataBuilder) = (*_SignatureDataBuilder)(nil)
 
-func (m *_SignatureDataBuilder) WithMandatoryFields(algorithm PascalString, signature PascalByteString) SignatureDataBuilder {
-	return m.WithAlgorithm(algorithm).WithSignature(signature)
+func (b *_SignatureDataBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_SignatureDataBuilder) WithAlgorithm(algorithm PascalString) SignatureDataBuilder {
-	m.Algorithm = algorithm
-	return m
+func (b *_SignatureDataBuilder) WithMandatoryFields(algorithm PascalString, signature PascalByteString) SignatureDataBuilder {
+	return b.WithAlgorithm(algorithm).WithSignature(signature)
 }
 
-func (m *_SignatureDataBuilder) WithAlgorithmBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SignatureDataBuilder {
-	builder := builderSupplier(m.Algorithm.CreatePascalStringBuilder())
+func (b *_SignatureDataBuilder) WithAlgorithm(algorithm PascalString) SignatureDataBuilder {
+	b.Algorithm = algorithm
+	return b
+}
+
+func (b *_SignatureDataBuilder) WithAlgorithmBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SignatureDataBuilder {
+	builder := builderSupplier(b.Algorithm.CreatePascalStringBuilder())
 	var err error
-	m.Algorithm, err = builder.Build()
+	b.Algorithm, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SignatureDataBuilder) WithSignature(signature PascalByteString) SignatureDataBuilder {
-	m.Signature = signature
-	return m
+func (b *_SignatureDataBuilder) WithSignature(signature PascalByteString) SignatureDataBuilder {
+	b.Signature = signature
+	return b
 }
 
-func (m *_SignatureDataBuilder) WithSignatureBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) SignatureDataBuilder {
-	builder := builderSupplier(m.Signature.CreatePascalByteStringBuilder())
+func (b *_SignatureDataBuilder) WithSignatureBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) SignatureDataBuilder {
+	builder := builderSupplier(b.Signature.CreatePascalByteStringBuilder())
 	var err error
-	m.Signature, err = builder.Build()
+	b.Signature, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_SignatureDataBuilder) Build() (SignatureData, error) {
-	if m.Algorithm == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_SignatureDataBuilder) Build() (SignatureData, error) {
+	if b.Algorithm == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'algorithm' not set"))
+		b.err.Append(errors.New("mandatory field 'algorithm' not set"))
 	}
-	if m.Signature == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Signature == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'signature' not set"))
+		b.err.Append(errors.New("mandatory field 'signature' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SignatureData.deepCopy(), nil
+	return b._SignatureData.deepCopy(), nil
 }
 
-func (m *_SignatureDataBuilder) MustBuild() SignatureData {
-	build, err := m.Build()
+func (b *_SignatureDataBuilder) MustBuild() SignatureData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SignatureDataBuilder) DeepCopy() any {
-	return m.CreateSignatureDataBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SignatureDataBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SignatureDataBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SignatureDataBuilder) DeepCopy() any {
+	_copy := b.CreateSignatureDataBuilder().(*_SignatureDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSignatureDataBuilder creates a SignatureDataBuilder
-func (m *_SignatureData) CreateSignatureDataBuilder() SignatureDataBuilder {
-	if m == nil {
+func (b *_SignatureData) CreateSignatureDataBuilder() SignatureDataBuilder {
+	if b == nil {
 		return NewSignatureDataBuilder()
 	}
-	return &_SignatureDataBuilder{_SignatureData: m.deepCopy()}
+	return &_SignatureDataBuilder{_SignatureData: b.deepCopy()}
 }
 
 ///////////////////////
@@ -352,9 +371,13 @@ func (m *_SignatureData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

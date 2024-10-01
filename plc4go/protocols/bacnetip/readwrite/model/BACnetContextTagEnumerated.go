@@ -100,64 +100,83 @@ func NewBACnetContextTagEnumeratedBuilder() BACnetContextTagEnumeratedBuilder {
 type _BACnetContextTagEnumeratedBuilder struct {
 	*_BACnetContextTagEnumerated
 
+	parentBuilder *_BACnetContextTagBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetContextTagEnumeratedBuilder) = (*_BACnetContextTagEnumeratedBuilder)(nil)
 
-func (m *_BACnetContextTagEnumeratedBuilder) WithMandatoryFields(payload BACnetTagPayloadEnumerated) BACnetContextTagEnumeratedBuilder {
-	return m.WithPayload(payload)
+func (b *_BACnetContextTagEnumeratedBuilder) setParent(contract BACnetContextTagContract) {
+	b.BACnetContextTagContract = contract
 }
 
-func (m *_BACnetContextTagEnumeratedBuilder) WithPayload(payload BACnetTagPayloadEnumerated) BACnetContextTagEnumeratedBuilder {
-	m.Payload = payload
-	return m
+func (b *_BACnetContextTagEnumeratedBuilder) WithMandatoryFields(payload BACnetTagPayloadEnumerated) BACnetContextTagEnumeratedBuilder {
+	return b.WithPayload(payload)
 }
 
-func (m *_BACnetContextTagEnumeratedBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadEnumeratedBuilder) BACnetTagPayloadEnumeratedBuilder) BACnetContextTagEnumeratedBuilder {
-	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadEnumeratedBuilder())
+func (b *_BACnetContextTagEnumeratedBuilder) WithPayload(payload BACnetTagPayloadEnumerated) BACnetContextTagEnumeratedBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetContextTagEnumeratedBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadEnumeratedBuilder) BACnetTagPayloadEnumeratedBuilder) BACnetContextTagEnumeratedBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadEnumeratedBuilder())
 	var err error
-	m.Payload, err = builder.Build()
+	b.Payload, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagPayloadEnumeratedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadEnumeratedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetContextTagEnumeratedBuilder) Build() (BACnetContextTagEnumerated, error) {
-	if m.Payload == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetContextTagEnumeratedBuilder) Build() (BACnetContextTagEnumerated, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'payload' not set"))
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetContextTagEnumerated.deepCopy(), nil
+	return b._BACnetContextTagEnumerated.deepCopy(), nil
 }
 
-func (m *_BACnetContextTagEnumeratedBuilder) MustBuild() BACnetContextTagEnumerated {
-	build, err := m.Build()
+func (b *_BACnetContextTagEnumeratedBuilder) MustBuild() BACnetContextTagEnumerated {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetContextTagEnumeratedBuilder) DeepCopy() any {
-	return m.CreateBACnetContextTagEnumeratedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetContextTagEnumeratedBuilder) Done() BACnetContextTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetContextTagEnumeratedBuilder) buildForBACnetContextTag() (BACnetContextTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetContextTagEnumeratedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetContextTagEnumeratedBuilder().(*_BACnetContextTagEnumeratedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetContextTagEnumeratedBuilder creates a BACnetContextTagEnumeratedBuilder
-func (m *_BACnetContextTagEnumerated) CreateBACnetContextTagEnumeratedBuilder() BACnetContextTagEnumeratedBuilder {
-	if m == nil {
+func (b *_BACnetContextTagEnumerated) CreateBACnetContextTagEnumeratedBuilder() BACnetContextTagEnumeratedBuilder {
+	if b == nil {
 		return NewBACnetContextTagEnumeratedBuilder()
 	}
-	return &_BACnetContextTagEnumeratedBuilder{_BACnetContextTagEnumerated: m.deepCopy()}
+	return &_BACnetContextTagEnumeratedBuilder{_BACnetContextTagEnumerated: b.deepCopy()}
 }
 
 ///////////////////////
@@ -330,9 +349,13 @@ func (m *_BACnetContextTagEnumerated) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

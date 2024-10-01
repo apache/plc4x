@@ -85,40 +85,59 @@ func NewSALDataRoomControlSystemBuilder() SALDataRoomControlSystemBuilder {
 type _SALDataRoomControlSystemBuilder struct {
 	*_SALDataRoomControlSystem
 
+	parentBuilder *_SALDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SALDataRoomControlSystemBuilder) = (*_SALDataRoomControlSystemBuilder)(nil)
 
-func (m *_SALDataRoomControlSystemBuilder) WithMandatoryFields() SALDataRoomControlSystemBuilder {
-	return m
+func (b *_SALDataRoomControlSystemBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
 }
 
-func (m *_SALDataRoomControlSystemBuilder) Build() (SALDataRoomControlSystem, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SALDataRoomControlSystemBuilder) WithMandatoryFields() SALDataRoomControlSystemBuilder {
+	return b
+}
+
+func (b *_SALDataRoomControlSystemBuilder) Build() (SALDataRoomControlSystem, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SALDataRoomControlSystem.deepCopy(), nil
+	return b._SALDataRoomControlSystem.deepCopy(), nil
 }
 
-func (m *_SALDataRoomControlSystemBuilder) MustBuild() SALDataRoomControlSystem {
-	build, err := m.Build()
+func (b *_SALDataRoomControlSystemBuilder) MustBuild() SALDataRoomControlSystem {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SALDataRoomControlSystemBuilder) DeepCopy() any {
-	return m.CreateSALDataRoomControlSystemBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataRoomControlSystemBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataRoomControlSystemBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataRoomControlSystemBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataRoomControlSystemBuilder().(*_SALDataRoomControlSystemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSALDataRoomControlSystemBuilder creates a SALDataRoomControlSystemBuilder
-func (m *_SALDataRoomControlSystem) CreateSALDataRoomControlSystemBuilder() SALDataRoomControlSystemBuilder {
-	if m == nil {
+func (b *_SALDataRoomControlSystem) CreateSALDataRoomControlSystemBuilder() SALDataRoomControlSystemBuilder {
+	if b == nil {
 		return NewSALDataRoomControlSystemBuilder()
 	}
-	return &_SALDataRoomControlSystemBuilder{_SALDataRoomControlSystem: m.deepCopy()}
+	return &_SALDataRoomControlSystemBuilder{_SALDataRoomControlSystem: b.deepCopy()}
 }
 
 ///////////////////////
@@ -239,9 +258,13 @@ func (m *_SALDataRoomControlSystem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesLightningInProgressBuilder() BACnetPropertyStatesLig
 type _BACnetPropertyStatesLightningInProgressBuilder struct {
 	*_BACnetPropertyStatesLightningInProgress
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesLightningInProgressBuilder) = (*_BACnetPropertyStatesLightningInProgressBuilder)(nil)
 
-func (m *_BACnetPropertyStatesLightningInProgressBuilder) WithMandatoryFields(lightningInProgress BACnetLightingInProgressTagged) BACnetPropertyStatesLightningInProgressBuilder {
-	return m.WithLightningInProgress(lightningInProgress)
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesLightningInProgressBuilder) WithLightningInProgress(lightningInProgress BACnetLightingInProgressTagged) BACnetPropertyStatesLightningInProgressBuilder {
-	m.LightningInProgress = lightningInProgress
-	return m
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) WithMandatoryFields(lightningInProgress BACnetLightingInProgressTagged) BACnetPropertyStatesLightningInProgressBuilder {
+	return b.WithLightningInProgress(lightningInProgress)
 }
 
-func (m *_BACnetPropertyStatesLightningInProgressBuilder) WithLightningInProgressBuilder(builderSupplier func(BACnetLightingInProgressTaggedBuilder) BACnetLightingInProgressTaggedBuilder) BACnetPropertyStatesLightningInProgressBuilder {
-	builder := builderSupplier(m.LightningInProgress.CreateBACnetLightingInProgressTaggedBuilder())
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) WithLightningInProgress(lightningInProgress BACnetLightingInProgressTagged) BACnetPropertyStatesLightningInProgressBuilder {
+	b.LightningInProgress = lightningInProgress
+	return b
+}
+
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) WithLightningInProgressBuilder(builderSupplier func(BACnetLightingInProgressTaggedBuilder) BACnetLightingInProgressTaggedBuilder) BACnetPropertyStatesLightningInProgressBuilder {
+	builder := builderSupplier(b.LightningInProgress.CreateBACnetLightingInProgressTaggedBuilder())
 	var err error
-	m.LightningInProgress, err = builder.Build()
+	b.LightningInProgress, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLightingInProgressTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLightingInProgressTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesLightningInProgressBuilder) Build() (BACnetPropertyStatesLightningInProgress, error) {
-	if m.LightningInProgress == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) Build() (BACnetPropertyStatesLightningInProgress, error) {
+	if b.LightningInProgress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'lightningInProgress' not set"))
+		b.err.Append(errors.New("mandatory field 'lightningInProgress' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesLightningInProgress.deepCopy(), nil
+	return b._BACnetPropertyStatesLightningInProgress.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesLightningInProgressBuilder) MustBuild() BACnetPropertyStatesLightningInProgress {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) MustBuild() BACnetPropertyStatesLightningInProgress {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesLightningInProgressBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesLightningInProgressBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesLightningInProgressBuilder().(*_BACnetPropertyStatesLightningInProgressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesLightningInProgressBuilder creates a BACnetPropertyStatesLightningInProgressBuilder
-func (m *_BACnetPropertyStatesLightningInProgress) CreateBACnetPropertyStatesLightningInProgressBuilder() BACnetPropertyStatesLightningInProgressBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesLightningInProgress) CreateBACnetPropertyStatesLightningInProgressBuilder() BACnetPropertyStatesLightningInProgressBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesLightningInProgressBuilder()
 	}
-	return &_BACnetPropertyStatesLightningInProgressBuilder{_BACnetPropertyStatesLightningInProgress: m.deepCopy()}
+	return &_BACnetPropertyStatesLightningInProgressBuilder{_BACnetPropertyStatesLightningInProgress: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPropertyStatesLightningInProgress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

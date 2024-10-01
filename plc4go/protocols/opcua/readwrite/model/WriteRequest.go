@@ -90,6 +90,8 @@ type WriteRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToWrite int32, nodesToWrite []ExtensionObjectDefinition) WriteRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) WriteRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) WriteRequestBuilder
 	// WithNoOfNodesToWrite adds NoOfNodesToWrite (property field)
 	WithNoOfNodesToWrite(int32) WriteRequestBuilder
 	// WithNodesToWrite adds NodesToWrite (property field)
@@ -108,61 +110,93 @@ func NewWriteRequestBuilder() WriteRequestBuilder {
 type _WriteRequestBuilder struct {
 	*_WriteRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (WriteRequestBuilder) = (*_WriteRequestBuilder)(nil)
 
-func (m *_WriteRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToWrite int32, nodesToWrite []ExtensionObjectDefinition) WriteRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithNoOfNodesToWrite(noOfNodesToWrite).WithNodesToWrite(nodesToWrite...)
+func (b *_WriteRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_WriteRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) WriteRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_WriteRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToWrite int32, nodesToWrite []ExtensionObjectDefinition) WriteRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNoOfNodesToWrite(noOfNodesToWrite).WithNodesToWrite(nodesToWrite...)
 }
 
-func (m *_WriteRequestBuilder) WithNoOfNodesToWrite(noOfNodesToWrite int32) WriteRequestBuilder {
-	m.NoOfNodesToWrite = noOfNodesToWrite
-	return m
+func (b *_WriteRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) WriteRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_WriteRequestBuilder) WithNodesToWrite(nodesToWrite ...ExtensionObjectDefinition) WriteRequestBuilder {
-	m.NodesToWrite = nodesToWrite
-	return m
-}
-
-func (m *_WriteRequestBuilder) Build() (WriteRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_WriteRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) WriteRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._WriteRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_WriteRequestBuilder) MustBuild() WriteRequest {
-	build, err := m.Build()
+func (b *_WriteRequestBuilder) WithNoOfNodesToWrite(noOfNodesToWrite int32) WriteRequestBuilder {
+	b.NoOfNodesToWrite = noOfNodesToWrite
+	return b
+}
+
+func (b *_WriteRequestBuilder) WithNodesToWrite(nodesToWrite ...ExtensionObjectDefinition) WriteRequestBuilder {
+	b.NodesToWrite = nodesToWrite
+	return b
+}
+
+func (b *_WriteRequestBuilder) Build() (WriteRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._WriteRequest.deepCopy(), nil
+}
+
+func (b *_WriteRequestBuilder) MustBuild() WriteRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_WriteRequestBuilder) DeepCopy() any {
-	return m.CreateWriteRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_WriteRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_WriteRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_WriteRequestBuilder) DeepCopy() any {
+	_copy := b.CreateWriteRequestBuilder().(*_WriteRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateWriteRequestBuilder creates a WriteRequestBuilder
-func (m *_WriteRequest) CreateWriteRequestBuilder() WriteRequestBuilder {
-	if m == nil {
+func (b *_WriteRequest) CreateWriteRequestBuilder() WriteRequestBuilder {
+	if b == nil {
 		return NewWriteRequestBuilder()
 	}
-	return &_WriteRequestBuilder{_WriteRequest: m.deepCopy()}
+	return &_WriteRequestBuilder{_WriteRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -349,9 +383,13 @@ func (m *_WriteRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

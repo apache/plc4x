@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesDoorValueBuilder() BACnetPropertyStatesDoorValueBuil
 type _BACnetPropertyStatesDoorValueBuilder struct {
 	*_BACnetPropertyStatesDoorValue
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesDoorValueBuilder) = (*_BACnetPropertyStatesDoorValueBuilder)(nil)
 
-func (m *_BACnetPropertyStatesDoorValueBuilder) WithMandatoryFields(doorValue BACnetDoorValueTagged) BACnetPropertyStatesDoorValueBuilder {
-	return m.WithDoorValue(doorValue)
+func (b *_BACnetPropertyStatesDoorValueBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesDoorValueBuilder) WithDoorValue(doorValue BACnetDoorValueTagged) BACnetPropertyStatesDoorValueBuilder {
-	m.DoorValue = doorValue
-	return m
+func (b *_BACnetPropertyStatesDoorValueBuilder) WithMandatoryFields(doorValue BACnetDoorValueTagged) BACnetPropertyStatesDoorValueBuilder {
+	return b.WithDoorValue(doorValue)
 }
 
-func (m *_BACnetPropertyStatesDoorValueBuilder) WithDoorValueBuilder(builderSupplier func(BACnetDoorValueTaggedBuilder) BACnetDoorValueTaggedBuilder) BACnetPropertyStatesDoorValueBuilder {
-	builder := builderSupplier(m.DoorValue.CreateBACnetDoorValueTaggedBuilder())
+func (b *_BACnetPropertyStatesDoorValueBuilder) WithDoorValue(doorValue BACnetDoorValueTagged) BACnetPropertyStatesDoorValueBuilder {
+	b.DoorValue = doorValue
+	return b
+}
+
+func (b *_BACnetPropertyStatesDoorValueBuilder) WithDoorValueBuilder(builderSupplier func(BACnetDoorValueTaggedBuilder) BACnetDoorValueTaggedBuilder) BACnetPropertyStatesDoorValueBuilder {
+	builder := builderSupplier(b.DoorValue.CreateBACnetDoorValueTaggedBuilder())
 	var err error
-	m.DoorValue, err = builder.Build()
+	b.DoorValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDoorValueTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDoorValueTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesDoorValueBuilder) Build() (BACnetPropertyStatesDoorValue, error) {
-	if m.DoorValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesDoorValueBuilder) Build() (BACnetPropertyStatesDoorValue, error) {
+	if b.DoorValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'doorValue' not set"))
+		b.err.Append(errors.New("mandatory field 'doorValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesDoorValue.deepCopy(), nil
+	return b._BACnetPropertyStatesDoorValue.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesDoorValueBuilder) MustBuild() BACnetPropertyStatesDoorValue {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesDoorValueBuilder) MustBuild() BACnetPropertyStatesDoorValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesDoorValueBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesDoorValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesDoorValueBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesDoorValueBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesDoorValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesDoorValueBuilder().(*_BACnetPropertyStatesDoorValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesDoorValueBuilder creates a BACnetPropertyStatesDoorValueBuilder
-func (m *_BACnetPropertyStatesDoorValue) CreateBACnetPropertyStatesDoorValueBuilder() BACnetPropertyStatesDoorValueBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesDoorValue) CreateBACnetPropertyStatesDoorValueBuilder() BACnetPropertyStatesDoorValueBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesDoorValueBuilder()
 	}
-	return &_BACnetPropertyStatesDoorValueBuilder{_BACnetPropertyStatesDoorValue: m.deepCopy()}
+	return &_BACnetPropertyStatesDoorValueBuilder{_BACnetPropertyStatesDoorValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPropertyStatesDoorValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

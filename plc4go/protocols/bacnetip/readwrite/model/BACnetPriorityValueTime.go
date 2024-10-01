@@ -98,64 +98,83 @@ func NewBACnetPriorityValueTimeBuilder() BACnetPriorityValueTimeBuilder {
 type _BACnetPriorityValueTimeBuilder struct {
 	*_BACnetPriorityValueTime
 
+	parentBuilder *_BACnetPriorityValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPriorityValueTimeBuilder) = (*_BACnetPriorityValueTimeBuilder)(nil)
 
-func (m *_BACnetPriorityValueTimeBuilder) WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetPriorityValueTimeBuilder {
-	return m.WithTimeValue(timeValue)
+func (b *_BACnetPriorityValueTimeBuilder) setParent(contract BACnetPriorityValueContract) {
+	b.BACnetPriorityValueContract = contract
 }
 
-func (m *_BACnetPriorityValueTimeBuilder) WithTimeValue(timeValue BACnetApplicationTagTime) BACnetPriorityValueTimeBuilder {
-	m.TimeValue = timeValue
-	return m
+func (b *_BACnetPriorityValueTimeBuilder) WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetPriorityValueTimeBuilder {
+	return b.WithTimeValue(timeValue)
 }
 
-func (m *_BACnetPriorityValueTimeBuilder) WithTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetPriorityValueTimeBuilder {
-	builder := builderSupplier(m.TimeValue.CreateBACnetApplicationTagTimeBuilder())
+func (b *_BACnetPriorityValueTimeBuilder) WithTimeValue(timeValue BACnetApplicationTagTime) BACnetPriorityValueTimeBuilder {
+	b.TimeValue = timeValue
+	return b
+}
+
+func (b *_BACnetPriorityValueTimeBuilder) WithTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetPriorityValueTimeBuilder {
+	builder := builderSupplier(b.TimeValue.CreateBACnetApplicationTagTimeBuilder())
 	var err error
-	m.TimeValue, err = builder.Build()
+	b.TimeValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPriorityValueTimeBuilder) Build() (BACnetPriorityValueTime, error) {
-	if m.TimeValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPriorityValueTimeBuilder) Build() (BACnetPriorityValueTime, error) {
+	if b.TimeValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'timeValue' not set"))
+		b.err.Append(errors.New("mandatory field 'timeValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPriorityValueTime.deepCopy(), nil
+	return b._BACnetPriorityValueTime.deepCopy(), nil
 }
 
-func (m *_BACnetPriorityValueTimeBuilder) MustBuild() BACnetPriorityValueTime {
-	build, err := m.Build()
+func (b *_BACnetPriorityValueTimeBuilder) MustBuild() BACnetPriorityValueTime {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPriorityValueTimeBuilder) DeepCopy() any {
-	return m.CreateBACnetPriorityValueTimeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPriorityValueTimeBuilder) Done() BACnetPriorityValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPriorityValueTimeBuilder) buildForBACnetPriorityValue() (BACnetPriorityValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPriorityValueTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityValueTimeBuilder().(*_BACnetPriorityValueTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPriorityValueTimeBuilder creates a BACnetPriorityValueTimeBuilder
-func (m *_BACnetPriorityValueTime) CreateBACnetPriorityValueTimeBuilder() BACnetPriorityValueTimeBuilder {
-	if m == nil {
+func (b *_BACnetPriorityValueTime) CreateBACnetPriorityValueTimeBuilder() BACnetPriorityValueTimeBuilder {
+	if b == nil {
 		return NewBACnetPriorityValueTimeBuilder()
 	}
-	return &_BACnetPriorityValueTimeBuilder{_BACnetPriorityValueTime: m.deepCopy()}
+	return &_BACnetPriorityValueTimeBuilder{_BACnetPriorityValueTime: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPriorityValueTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

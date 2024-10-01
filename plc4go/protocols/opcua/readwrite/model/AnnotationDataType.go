@@ -120,112 +120,131 @@ func NewAnnotationDataTypeBuilder() AnnotationDataTypeBuilder {
 type _AnnotationDataTypeBuilder struct {
 	*_AnnotationDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AnnotationDataTypeBuilder) = (*_AnnotationDataTypeBuilder)(nil)
 
-func (m *_AnnotationDataTypeBuilder) WithMandatoryFields(annotation PascalString, discipline PascalString, uri PascalString) AnnotationDataTypeBuilder {
-	return m.WithAnnotation(annotation).WithDiscipline(discipline).WithUri(uri)
+func (b *_AnnotationDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_AnnotationDataTypeBuilder) WithAnnotation(annotation PascalString) AnnotationDataTypeBuilder {
-	m.Annotation = annotation
-	return m
+func (b *_AnnotationDataTypeBuilder) WithMandatoryFields(annotation PascalString, discipline PascalString, uri PascalString) AnnotationDataTypeBuilder {
+	return b.WithAnnotation(annotation).WithDiscipline(discipline).WithUri(uri)
 }
 
-func (m *_AnnotationDataTypeBuilder) WithAnnotationBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder {
-	builder := builderSupplier(m.Annotation.CreatePascalStringBuilder())
+func (b *_AnnotationDataTypeBuilder) WithAnnotation(annotation PascalString) AnnotationDataTypeBuilder {
+	b.Annotation = annotation
+	return b
+}
+
+func (b *_AnnotationDataTypeBuilder) WithAnnotationBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder {
+	builder := builderSupplier(b.Annotation.CreatePascalStringBuilder())
 	var err error
-	m.Annotation, err = builder.Build()
+	b.Annotation, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AnnotationDataTypeBuilder) WithDiscipline(discipline PascalString) AnnotationDataTypeBuilder {
-	m.Discipline = discipline
-	return m
+func (b *_AnnotationDataTypeBuilder) WithDiscipline(discipline PascalString) AnnotationDataTypeBuilder {
+	b.Discipline = discipline
+	return b
 }
 
-func (m *_AnnotationDataTypeBuilder) WithDisciplineBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder {
-	builder := builderSupplier(m.Discipline.CreatePascalStringBuilder())
+func (b *_AnnotationDataTypeBuilder) WithDisciplineBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder {
+	builder := builderSupplier(b.Discipline.CreatePascalStringBuilder())
 	var err error
-	m.Discipline, err = builder.Build()
+	b.Discipline, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AnnotationDataTypeBuilder) WithUri(uri PascalString) AnnotationDataTypeBuilder {
-	m.Uri = uri
-	return m
+func (b *_AnnotationDataTypeBuilder) WithUri(uri PascalString) AnnotationDataTypeBuilder {
+	b.Uri = uri
+	return b
 }
 
-func (m *_AnnotationDataTypeBuilder) WithUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder {
-	builder := builderSupplier(m.Uri.CreatePascalStringBuilder())
+func (b *_AnnotationDataTypeBuilder) WithUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder {
+	builder := builderSupplier(b.Uri.CreatePascalStringBuilder())
 	var err error
-	m.Uri, err = builder.Build()
+	b.Uri, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AnnotationDataTypeBuilder) Build() (AnnotationDataType, error) {
-	if m.Annotation == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AnnotationDataTypeBuilder) Build() (AnnotationDataType, error) {
+	if b.Annotation == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'annotation' not set"))
+		b.err.Append(errors.New("mandatory field 'annotation' not set"))
 	}
-	if m.Discipline == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Discipline == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'discipline' not set"))
+		b.err.Append(errors.New("mandatory field 'discipline' not set"))
 	}
-	if m.Uri == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Uri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'uri' not set"))
+		b.err.Append(errors.New("mandatory field 'uri' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AnnotationDataType.deepCopy(), nil
+	return b._AnnotationDataType.deepCopy(), nil
 }
 
-func (m *_AnnotationDataTypeBuilder) MustBuild() AnnotationDataType {
-	build, err := m.Build()
+func (b *_AnnotationDataTypeBuilder) MustBuild() AnnotationDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AnnotationDataTypeBuilder) DeepCopy() any {
-	return m.CreateAnnotationDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AnnotationDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AnnotationDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AnnotationDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAnnotationDataTypeBuilder().(*_AnnotationDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAnnotationDataTypeBuilder creates a AnnotationDataTypeBuilder
-func (m *_AnnotationDataType) CreateAnnotationDataTypeBuilder() AnnotationDataTypeBuilder {
-	if m == nil {
+func (b *_AnnotationDataType) CreateAnnotationDataTypeBuilder() AnnotationDataTypeBuilder {
+	if b == nil {
 		return NewAnnotationDataTypeBuilder()
 	}
-	return &_AnnotationDataTypeBuilder{_AnnotationDataType: m.deepCopy()}
+	return &_AnnotationDataTypeBuilder{_AnnotationDataType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -405,9 +424,13 @@ func (m *_AnnotationDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

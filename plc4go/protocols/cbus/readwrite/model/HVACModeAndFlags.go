@@ -128,60 +128,64 @@ type _HVACModeAndFlagsBuilder struct {
 
 var _ (HVACModeAndFlagsBuilder) = (*_HVACModeAndFlagsBuilder)(nil)
 
-func (m *_HVACModeAndFlagsBuilder) WithMandatoryFields(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACModeAndFlagsMode) HVACModeAndFlagsBuilder {
-	return m.WithAuxiliaryLevel(auxiliaryLevel).WithGuard(guard).WithSetback(setback).WithLevel(level).WithMode(mode)
+func (b *_HVACModeAndFlagsBuilder) WithMandatoryFields(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACModeAndFlagsMode) HVACModeAndFlagsBuilder {
+	return b.WithAuxiliaryLevel(auxiliaryLevel).WithGuard(guard).WithSetback(setback).WithLevel(level).WithMode(mode)
 }
 
-func (m *_HVACModeAndFlagsBuilder) WithAuxiliaryLevel(auxiliaryLevel bool) HVACModeAndFlagsBuilder {
-	m.AuxiliaryLevel = auxiliaryLevel
-	return m
+func (b *_HVACModeAndFlagsBuilder) WithAuxiliaryLevel(auxiliaryLevel bool) HVACModeAndFlagsBuilder {
+	b.AuxiliaryLevel = auxiliaryLevel
+	return b
 }
 
-func (m *_HVACModeAndFlagsBuilder) WithGuard(guard bool) HVACModeAndFlagsBuilder {
-	m.Guard = guard
-	return m
+func (b *_HVACModeAndFlagsBuilder) WithGuard(guard bool) HVACModeAndFlagsBuilder {
+	b.Guard = guard
+	return b
 }
 
-func (m *_HVACModeAndFlagsBuilder) WithSetback(setback bool) HVACModeAndFlagsBuilder {
-	m.Setback = setback
-	return m
+func (b *_HVACModeAndFlagsBuilder) WithSetback(setback bool) HVACModeAndFlagsBuilder {
+	b.Setback = setback
+	return b
 }
 
-func (m *_HVACModeAndFlagsBuilder) WithLevel(level bool) HVACModeAndFlagsBuilder {
-	m.Level = level
-	return m
+func (b *_HVACModeAndFlagsBuilder) WithLevel(level bool) HVACModeAndFlagsBuilder {
+	b.Level = level
+	return b
 }
 
-func (m *_HVACModeAndFlagsBuilder) WithMode(mode HVACModeAndFlagsMode) HVACModeAndFlagsBuilder {
-	m.Mode = mode
-	return m
+func (b *_HVACModeAndFlagsBuilder) WithMode(mode HVACModeAndFlagsMode) HVACModeAndFlagsBuilder {
+	b.Mode = mode
+	return b
 }
 
-func (m *_HVACModeAndFlagsBuilder) Build() (HVACModeAndFlags, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_HVACModeAndFlagsBuilder) Build() (HVACModeAndFlags, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._HVACModeAndFlags.deepCopy(), nil
+	return b._HVACModeAndFlags.deepCopy(), nil
 }
 
-func (m *_HVACModeAndFlagsBuilder) MustBuild() HVACModeAndFlags {
-	build, err := m.Build()
+func (b *_HVACModeAndFlagsBuilder) MustBuild() HVACModeAndFlags {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_HVACModeAndFlagsBuilder) DeepCopy() any {
-	return m.CreateHVACModeAndFlagsBuilder()
+func (b *_HVACModeAndFlagsBuilder) DeepCopy() any {
+	_copy := b.CreateHVACModeAndFlagsBuilder().(*_HVACModeAndFlagsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateHVACModeAndFlagsBuilder creates a HVACModeAndFlagsBuilder
-func (m *_HVACModeAndFlags) CreateHVACModeAndFlagsBuilder() HVACModeAndFlagsBuilder {
-	if m == nil {
+func (b *_HVACModeAndFlags) CreateHVACModeAndFlagsBuilder() HVACModeAndFlagsBuilder {
+	if b == nil {
 		return NewHVACModeAndFlagsBuilder()
 	}
-	return &_HVACModeAndFlagsBuilder{_HVACModeAndFlags: m.deepCopy()}
+	return &_HVACModeAndFlagsBuilder{_HVACModeAndFlags: b.deepCopy()}
 }
 
 ///////////////////////
@@ -573,9 +577,13 @@ func (m *_HVACModeAndFlags) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -85,40 +85,59 @@ func NewApduControlAckBuilder() ApduControlAckBuilder {
 type _ApduControlAckBuilder struct {
 	*_ApduControlAck
 
+	parentBuilder *_ApduControlBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduControlAckBuilder) = (*_ApduControlAckBuilder)(nil)
 
-func (m *_ApduControlAckBuilder) WithMandatoryFields() ApduControlAckBuilder {
-	return m
+func (b *_ApduControlAckBuilder) setParent(contract ApduControlContract) {
+	b.ApduControlContract = contract
 }
 
-func (m *_ApduControlAckBuilder) Build() (ApduControlAck, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduControlAckBuilder) WithMandatoryFields() ApduControlAckBuilder {
+	return b
+}
+
+func (b *_ApduControlAckBuilder) Build() (ApduControlAck, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduControlAck.deepCopy(), nil
+	return b._ApduControlAck.deepCopy(), nil
 }
 
-func (m *_ApduControlAckBuilder) MustBuild() ApduControlAck {
-	build, err := m.Build()
+func (b *_ApduControlAckBuilder) MustBuild() ApduControlAck {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduControlAckBuilder) DeepCopy() any {
-	return m.CreateApduControlAckBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduControlAckBuilder) Done() ApduControlBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduControlAckBuilder) buildForApduControl() (ApduControl, error) {
+	return b.Build()
+}
+
+func (b *_ApduControlAckBuilder) DeepCopy() any {
+	_copy := b.CreateApduControlAckBuilder().(*_ApduControlAckBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduControlAckBuilder creates a ApduControlAckBuilder
-func (m *_ApduControlAck) CreateApduControlAckBuilder() ApduControlAckBuilder {
-	if m == nil {
+func (b *_ApduControlAck) CreateApduControlAckBuilder() ApduControlAckBuilder {
+	if b == nil {
 		return NewApduControlAckBuilder()
 	}
-	return &_ApduControlAckBuilder{_ApduControlAck: m.deepCopy()}
+	return &_ApduControlAckBuilder{_ApduControlAck: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_ApduControlAck) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

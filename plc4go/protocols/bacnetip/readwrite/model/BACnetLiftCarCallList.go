@@ -95,59 +95,63 @@ type _BACnetLiftCarCallListBuilder struct {
 
 var _ (BACnetLiftCarCallListBuilder) = (*_BACnetLiftCarCallListBuilder)(nil)
 
-func (m *_BACnetLiftCarCallListBuilder) WithMandatoryFields(floorNumbers BACnetLiftCarCallListFloorList) BACnetLiftCarCallListBuilder {
-	return m.WithFloorNumbers(floorNumbers)
+func (b *_BACnetLiftCarCallListBuilder) WithMandatoryFields(floorNumbers BACnetLiftCarCallListFloorList) BACnetLiftCarCallListBuilder {
+	return b.WithFloorNumbers(floorNumbers)
 }
 
-func (m *_BACnetLiftCarCallListBuilder) WithFloorNumbers(floorNumbers BACnetLiftCarCallListFloorList) BACnetLiftCarCallListBuilder {
-	m.FloorNumbers = floorNumbers
-	return m
+func (b *_BACnetLiftCarCallListBuilder) WithFloorNumbers(floorNumbers BACnetLiftCarCallListFloorList) BACnetLiftCarCallListBuilder {
+	b.FloorNumbers = floorNumbers
+	return b
 }
 
-func (m *_BACnetLiftCarCallListBuilder) WithFloorNumbersBuilder(builderSupplier func(BACnetLiftCarCallListFloorListBuilder) BACnetLiftCarCallListFloorListBuilder) BACnetLiftCarCallListBuilder {
-	builder := builderSupplier(m.FloorNumbers.CreateBACnetLiftCarCallListFloorListBuilder())
+func (b *_BACnetLiftCarCallListBuilder) WithFloorNumbersBuilder(builderSupplier func(BACnetLiftCarCallListFloorListBuilder) BACnetLiftCarCallListFloorListBuilder) BACnetLiftCarCallListBuilder {
+	builder := builderSupplier(b.FloorNumbers.CreateBACnetLiftCarCallListFloorListBuilder())
 	var err error
-	m.FloorNumbers, err = builder.Build()
+	b.FloorNumbers, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLiftCarCallListFloorListBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLiftCarCallListFloorListBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetLiftCarCallListBuilder) Build() (BACnetLiftCarCallList, error) {
-	if m.FloorNumbers == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetLiftCarCallListBuilder) Build() (BACnetLiftCarCallList, error) {
+	if b.FloorNumbers == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'floorNumbers' not set"))
+		b.err.Append(errors.New("mandatory field 'floorNumbers' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetLiftCarCallList.deepCopy(), nil
+	return b._BACnetLiftCarCallList.deepCopy(), nil
 }
 
-func (m *_BACnetLiftCarCallListBuilder) MustBuild() BACnetLiftCarCallList {
-	build, err := m.Build()
+func (b *_BACnetLiftCarCallListBuilder) MustBuild() BACnetLiftCarCallList {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetLiftCarCallListBuilder) DeepCopy() any {
-	return m.CreateBACnetLiftCarCallListBuilder()
+func (b *_BACnetLiftCarCallListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLiftCarCallListBuilder().(*_BACnetLiftCarCallListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetLiftCarCallListBuilder creates a BACnetLiftCarCallListBuilder
-func (m *_BACnetLiftCarCallList) CreateBACnetLiftCarCallListBuilder() BACnetLiftCarCallListBuilder {
-	if m == nil {
+func (b *_BACnetLiftCarCallList) CreateBACnetLiftCarCallListBuilder() BACnetLiftCarCallListBuilder {
+	if b == nil {
 		return NewBACnetLiftCarCallListBuilder()
 	}
-	return &_BACnetLiftCarCallListBuilder{_BACnetLiftCarCallList: m.deepCopy()}
+	return &_BACnetLiftCarCallListBuilder{_BACnetLiftCarCallList: b.deepCopy()}
 }
 
 ///////////////////////
@@ -284,9 +288,13 @@ func (m *_BACnetLiftCarCallList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

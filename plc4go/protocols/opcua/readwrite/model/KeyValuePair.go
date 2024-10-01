@@ -93,6 +93,8 @@ type KeyValuePairBuilder interface {
 	WithKeyBuilder(func(QualifiedNameBuilder) QualifiedNameBuilder) KeyValuePairBuilder
 	// WithValue adds Value (property field)
 	WithValue(Variant) KeyValuePairBuilder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(VariantBuilder) VariantBuilder) KeyValuePairBuilder
 	// Build builds the KeyValuePair or returns an error if something is wrong
 	Build() (KeyValuePair, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,75 +109,107 @@ func NewKeyValuePairBuilder() KeyValuePairBuilder {
 type _KeyValuePairBuilder struct {
 	*_KeyValuePair
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (KeyValuePairBuilder) = (*_KeyValuePairBuilder)(nil)
 
-func (m *_KeyValuePairBuilder) WithMandatoryFields(key QualifiedName, value Variant) KeyValuePairBuilder {
-	return m.WithKey(key).WithValue(value)
+func (b *_KeyValuePairBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_KeyValuePairBuilder) WithKey(key QualifiedName) KeyValuePairBuilder {
-	m.Key = key
-	return m
+func (b *_KeyValuePairBuilder) WithMandatoryFields(key QualifiedName, value Variant) KeyValuePairBuilder {
+	return b.WithKey(key).WithValue(value)
 }
 
-func (m *_KeyValuePairBuilder) WithKeyBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) KeyValuePairBuilder {
-	builder := builderSupplier(m.Key.CreateQualifiedNameBuilder())
+func (b *_KeyValuePairBuilder) WithKey(key QualifiedName) KeyValuePairBuilder {
+	b.Key = key
+	return b
+}
+
+func (b *_KeyValuePairBuilder) WithKeyBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) KeyValuePairBuilder {
+	builder := builderSupplier(b.Key.CreateQualifiedNameBuilder())
 	var err error
-	m.Key, err = builder.Build()
+	b.Key, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_KeyValuePairBuilder) WithValue(value Variant) KeyValuePairBuilder {
-	m.Value = value
-	return m
+func (b *_KeyValuePairBuilder) WithValue(value Variant) KeyValuePairBuilder {
+	b.Value = value
+	return b
 }
 
-func (m *_KeyValuePairBuilder) Build() (KeyValuePair, error) {
-	if m.Key == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_KeyValuePairBuilder) WithValueBuilder(builderSupplier func(VariantBuilder) VariantBuilder) KeyValuePairBuilder {
+	builder := builderSupplier(b.Value.CreateVariantBuilder())
+	var err error
+	b.Value, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'key' not set"))
+		b.err.Append(errors.Wrap(err, "VariantBuilder failed"))
 	}
-	if m.Value == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'value' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._KeyValuePair.deepCopy(), nil
+	return b
 }
 
-func (m *_KeyValuePairBuilder) MustBuild() KeyValuePair {
-	build, err := m.Build()
+func (b *_KeyValuePairBuilder) Build() (KeyValuePair, error) {
+	if b.Key == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'key' not set"))
+	}
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._KeyValuePair.deepCopy(), nil
+}
+
+func (b *_KeyValuePairBuilder) MustBuild() KeyValuePair {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_KeyValuePairBuilder) DeepCopy() any {
-	return m.CreateKeyValuePairBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_KeyValuePairBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_KeyValuePairBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_KeyValuePairBuilder) DeepCopy() any {
+	_copy := b.CreateKeyValuePairBuilder().(*_KeyValuePairBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateKeyValuePairBuilder creates a KeyValuePairBuilder
-func (m *_KeyValuePair) CreateKeyValuePairBuilder() KeyValuePairBuilder {
-	if m == nil {
+func (b *_KeyValuePair) CreateKeyValuePairBuilder() KeyValuePairBuilder {
+	if b == nil {
 		return NewKeyValuePairBuilder()
 	}
-	return &_KeyValuePairBuilder{_KeyValuePair: m.deepCopy()}
+	return &_KeyValuePairBuilder{_KeyValuePair: b.deepCopy()}
 }
 
 ///////////////////////
@@ -337,9 +371,13 @@ func (m *_KeyValuePair) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

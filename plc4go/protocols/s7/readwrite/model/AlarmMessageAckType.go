@@ -100,50 +100,54 @@ type _AlarmMessageAckTypeBuilder struct {
 
 var _ (AlarmMessageAckTypeBuilder) = (*_AlarmMessageAckTypeBuilder)(nil)
 
-func (m *_AlarmMessageAckTypeBuilder) WithMandatoryFields(functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageObjectAckType) AlarmMessageAckTypeBuilder {
-	return m.WithFunctionId(functionId).WithNumberOfObjects(numberOfObjects).WithMessageObjects(messageObjects...)
+func (b *_AlarmMessageAckTypeBuilder) WithMandatoryFields(functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageObjectAckType) AlarmMessageAckTypeBuilder {
+	return b.WithFunctionId(functionId).WithNumberOfObjects(numberOfObjects).WithMessageObjects(messageObjects...)
 }
 
-func (m *_AlarmMessageAckTypeBuilder) WithFunctionId(functionId uint8) AlarmMessageAckTypeBuilder {
-	m.FunctionId = functionId
-	return m
+func (b *_AlarmMessageAckTypeBuilder) WithFunctionId(functionId uint8) AlarmMessageAckTypeBuilder {
+	b.FunctionId = functionId
+	return b
 }
 
-func (m *_AlarmMessageAckTypeBuilder) WithNumberOfObjects(numberOfObjects uint8) AlarmMessageAckTypeBuilder {
-	m.NumberOfObjects = numberOfObjects
-	return m
+func (b *_AlarmMessageAckTypeBuilder) WithNumberOfObjects(numberOfObjects uint8) AlarmMessageAckTypeBuilder {
+	b.NumberOfObjects = numberOfObjects
+	return b
 }
 
-func (m *_AlarmMessageAckTypeBuilder) WithMessageObjects(messageObjects ...AlarmMessageObjectAckType) AlarmMessageAckTypeBuilder {
-	m.MessageObjects = messageObjects
-	return m
+func (b *_AlarmMessageAckTypeBuilder) WithMessageObjects(messageObjects ...AlarmMessageObjectAckType) AlarmMessageAckTypeBuilder {
+	b.MessageObjects = messageObjects
+	return b
 }
 
-func (m *_AlarmMessageAckTypeBuilder) Build() (AlarmMessageAckType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AlarmMessageAckTypeBuilder) Build() (AlarmMessageAckType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AlarmMessageAckType.deepCopy(), nil
+	return b._AlarmMessageAckType.deepCopy(), nil
 }
 
-func (m *_AlarmMessageAckTypeBuilder) MustBuild() AlarmMessageAckType {
-	build, err := m.Build()
+func (b *_AlarmMessageAckTypeBuilder) MustBuild() AlarmMessageAckType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AlarmMessageAckTypeBuilder) DeepCopy() any {
-	return m.CreateAlarmMessageAckTypeBuilder()
+func (b *_AlarmMessageAckTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAlarmMessageAckTypeBuilder().(*_AlarmMessageAckTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAlarmMessageAckTypeBuilder creates a AlarmMessageAckTypeBuilder
-func (m *_AlarmMessageAckType) CreateAlarmMessageAckTypeBuilder() AlarmMessageAckTypeBuilder {
-	if m == nil {
+func (b *_AlarmMessageAckType) CreateAlarmMessageAckTypeBuilder() AlarmMessageAckTypeBuilder {
+	if b == nil {
 		return NewAlarmMessageAckTypeBuilder()
 	}
-	return &_AlarmMessageAckTypeBuilder{_AlarmMessageAckType: m.deepCopy()}
+	return &_AlarmMessageAckTypeBuilder{_AlarmMessageAckType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -323,9 +327,13 @@ func (m *_AlarmMessageAckType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -105,55 +105,59 @@ type _CBusHeaderBuilder struct {
 
 var _ (CBusHeaderBuilder) = (*_CBusHeaderBuilder)(nil)
 
-func (m *_CBusHeaderBuilder) WithMandatoryFields(priorityClass PriorityClass, dp bool, rc uint8, destinationAddressType DestinationAddressType) CBusHeaderBuilder {
-	return m.WithPriorityClass(priorityClass).WithDp(dp).WithRc(rc).WithDestinationAddressType(destinationAddressType)
+func (b *_CBusHeaderBuilder) WithMandatoryFields(priorityClass PriorityClass, dp bool, rc uint8, destinationAddressType DestinationAddressType) CBusHeaderBuilder {
+	return b.WithPriorityClass(priorityClass).WithDp(dp).WithRc(rc).WithDestinationAddressType(destinationAddressType)
 }
 
-func (m *_CBusHeaderBuilder) WithPriorityClass(priorityClass PriorityClass) CBusHeaderBuilder {
-	m.PriorityClass = priorityClass
-	return m
+func (b *_CBusHeaderBuilder) WithPriorityClass(priorityClass PriorityClass) CBusHeaderBuilder {
+	b.PriorityClass = priorityClass
+	return b
 }
 
-func (m *_CBusHeaderBuilder) WithDp(dp bool) CBusHeaderBuilder {
-	m.Dp = dp
-	return m
+func (b *_CBusHeaderBuilder) WithDp(dp bool) CBusHeaderBuilder {
+	b.Dp = dp
+	return b
 }
 
-func (m *_CBusHeaderBuilder) WithRc(rc uint8) CBusHeaderBuilder {
-	m.Rc = rc
-	return m
+func (b *_CBusHeaderBuilder) WithRc(rc uint8) CBusHeaderBuilder {
+	b.Rc = rc
+	return b
 }
 
-func (m *_CBusHeaderBuilder) WithDestinationAddressType(destinationAddressType DestinationAddressType) CBusHeaderBuilder {
-	m.DestinationAddressType = destinationAddressType
-	return m
+func (b *_CBusHeaderBuilder) WithDestinationAddressType(destinationAddressType DestinationAddressType) CBusHeaderBuilder {
+	b.DestinationAddressType = destinationAddressType
+	return b
 }
 
-func (m *_CBusHeaderBuilder) Build() (CBusHeader, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CBusHeaderBuilder) Build() (CBusHeader, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CBusHeader.deepCopy(), nil
+	return b._CBusHeader.deepCopy(), nil
 }
 
-func (m *_CBusHeaderBuilder) MustBuild() CBusHeader {
-	build, err := m.Build()
+func (b *_CBusHeaderBuilder) MustBuild() CBusHeader {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CBusHeaderBuilder) DeepCopy() any {
-	return m.CreateCBusHeaderBuilder()
+func (b *_CBusHeaderBuilder) DeepCopy() any {
+	_copy := b.CreateCBusHeaderBuilder().(*_CBusHeaderBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCBusHeaderBuilder creates a CBusHeaderBuilder
-func (m *_CBusHeader) CreateCBusHeaderBuilder() CBusHeaderBuilder {
-	if m == nil {
+func (b *_CBusHeader) CreateCBusHeaderBuilder() CBusHeaderBuilder {
+	if b == nil {
 		return NewCBusHeaderBuilder()
 	}
-	return &_CBusHeaderBuilder{_CBusHeader: m.deepCopy()}
+	return &_CBusHeaderBuilder{_CBusHeader: b.deepCopy()}
 }
 
 ///////////////////////
@@ -344,9 +348,13 @@ func (m *_CBusHeader) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

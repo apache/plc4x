@@ -99,50 +99,69 @@ func NewEndpointUrlListDataTypeBuilder() EndpointUrlListDataTypeBuilder {
 type _EndpointUrlListDataTypeBuilder struct {
 	*_EndpointUrlListDataType
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (EndpointUrlListDataTypeBuilder) = (*_EndpointUrlListDataTypeBuilder)(nil)
 
-func (m *_EndpointUrlListDataTypeBuilder) WithMandatoryFields(noOfEndpointUrlList int32, endpointUrlList []PascalString) EndpointUrlListDataTypeBuilder {
-	return m.WithNoOfEndpointUrlList(noOfEndpointUrlList).WithEndpointUrlList(endpointUrlList...)
+func (b *_EndpointUrlListDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_EndpointUrlListDataTypeBuilder) WithNoOfEndpointUrlList(noOfEndpointUrlList int32) EndpointUrlListDataTypeBuilder {
-	m.NoOfEndpointUrlList = noOfEndpointUrlList
-	return m
+func (b *_EndpointUrlListDataTypeBuilder) WithMandatoryFields(noOfEndpointUrlList int32, endpointUrlList []PascalString) EndpointUrlListDataTypeBuilder {
+	return b.WithNoOfEndpointUrlList(noOfEndpointUrlList).WithEndpointUrlList(endpointUrlList...)
 }
 
-func (m *_EndpointUrlListDataTypeBuilder) WithEndpointUrlList(endpointUrlList ...PascalString) EndpointUrlListDataTypeBuilder {
-	m.EndpointUrlList = endpointUrlList
-	return m
+func (b *_EndpointUrlListDataTypeBuilder) WithNoOfEndpointUrlList(noOfEndpointUrlList int32) EndpointUrlListDataTypeBuilder {
+	b.NoOfEndpointUrlList = noOfEndpointUrlList
+	return b
 }
 
-func (m *_EndpointUrlListDataTypeBuilder) Build() (EndpointUrlListDataType, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_EndpointUrlListDataTypeBuilder) WithEndpointUrlList(endpointUrlList ...PascalString) EndpointUrlListDataTypeBuilder {
+	b.EndpointUrlList = endpointUrlList
+	return b
+}
+
+func (b *_EndpointUrlListDataTypeBuilder) Build() (EndpointUrlListDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._EndpointUrlListDataType.deepCopy(), nil
+	return b._EndpointUrlListDataType.deepCopy(), nil
 }
 
-func (m *_EndpointUrlListDataTypeBuilder) MustBuild() EndpointUrlListDataType {
-	build, err := m.Build()
+func (b *_EndpointUrlListDataTypeBuilder) MustBuild() EndpointUrlListDataType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_EndpointUrlListDataTypeBuilder) DeepCopy() any {
-	return m.CreateEndpointUrlListDataTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EndpointUrlListDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EndpointUrlListDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_EndpointUrlListDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateEndpointUrlListDataTypeBuilder().(*_EndpointUrlListDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateEndpointUrlListDataTypeBuilder creates a EndpointUrlListDataTypeBuilder
-func (m *_EndpointUrlListDataType) CreateEndpointUrlListDataTypeBuilder() EndpointUrlListDataTypeBuilder {
-	if m == nil {
+func (b *_EndpointUrlListDataType) CreateEndpointUrlListDataTypeBuilder() EndpointUrlListDataTypeBuilder {
+	if b == nil {
 		return NewEndpointUrlListDataTypeBuilder()
 	}
-	return &_EndpointUrlListDataTypeBuilder{_EndpointUrlListDataType: m.deepCopy()}
+	return &_EndpointUrlListDataTypeBuilder{_EndpointUrlListDataType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -311,9 +330,13 @@ func (m *_EndpointUrlListDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

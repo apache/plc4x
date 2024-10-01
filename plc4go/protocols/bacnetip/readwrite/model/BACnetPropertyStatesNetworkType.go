@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesNetworkTypeBuilder() BACnetPropertyStatesNetworkType
 type _BACnetPropertyStatesNetworkTypeBuilder struct {
 	*_BACnetPropertyStatesNetworkType
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesNetworkTypeBuilder) = (*_BACnetPropertyStatesNetworkTypeBuilder)(nil)
 
-func (m *_BACnetPropertyStatesNetworkTypeBuilder) WithMandatoryFields(networkType BACnetNetworkTypeTagged) BACnetPropertyStatesNetworkTypeBuilder {
-	return m.WithNetworkType(networkType)
+func (b *_BACnetPropertyStatesNetworkTypeBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesNetworkTypeBuilder) WithNetworkType(networkType BACnetNetworkTypeTagged) BACnetPropertyStatesNetworkTypeBuilder {
-	m.NetworkType = networkType
-	return m
+func (b *_BACnetPropertyStatesNetworkTypeBuilder) WithMandatoryFields(networkType BACnetNetworkTypeTagged) BACnetPropertyStatesNetworkTypeBuilder {
+	return b.WithNetworkType(networkType)
 }
 
-func (m *_BACnetPropertyStatesNetworkTypeBuilder) WithNetworkTypeBuilder(builderSupplier func(BACnetNetworkTypeTaggedBuilder) BACnetNetworkTypeTaggedBuilder) BACnetPropertyStatesNetworkTypeBuilder {
-	builder := builderSupplier(m.NetworkType.CreateBACnetNetworkTypeTaggedBuilder())
+func (b *_BACnetPropertyStatesNetworkTypeBuilder) WithNetworkType(networkType BACnetNetworkTypeTagged) BACnetPropertyStatesNetworkTypeBuilder {
+	b.NetworkType = networkType
+	return b
+}
+
+func (b *_BACnetPropertyStatesNetworkTypeBuilder) WithNetworkTypeBuilder(builderSupplier func(BACnetNetworkTypeTaggedBuilder) BACnetNetworkTypeTaggedBuilder) BACnetPropertyStatesNetworkTypeBuilder {
+	builder := builderSupplier(b.NetworkType.CreateBACnetNetworkTypeTaggedBuilder())
 	var err error
-	m.NetworkType, err = builder.Build()
+	b.NetworkType, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetNetworkTypeTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetNetworkTypeTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesNetworkTypeBuilder) Build() (BACnetPropertyStatesNetworkType, error) {
-	if m.NetworkType == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesNetworkTypeBuilder) Build() (BACnetPropertyStatesNetworkType, error) {
+	if b.NetworkType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'networkType' not set"))
+		b.err.Append(errors.New("mandatory field 'networkType' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesNetworkType.deepCopy(), nil
+	return b._BACnetPropertyStatesNetworkType.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesNetworkTypeBuilder) MustBuild() BACnetPropertyStatesNetworkType {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesNetworkTypeBuilder) MustBuild() BACnetPropertyStatesNetworkType {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesNetworkTypeBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesNetworkTypeBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesNetworkTypeBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesNetworkTypeBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesNetworkTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesNetworkTypeBuilder().(*_BACnetPropertyStatesNetworkTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesNetworkTypeBuilder creates a BACnetPropertyStatesNetworkTypeBuilder
-func (m *_BACnetPropertyStatesNetworkType) CreateBACnetPropertyStatesNetworkTypeBuilder() BACnetPropertyStatesNetworkTypeBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesNetworkType) CreateBACnetPropertyStatesNetworkTypeBuilder() BACnetPropertyStatesNetworkTypeBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesNetworkTypeBuilder()
 	}
-	return &_BACnetPropertyStatesNetworkTypeBuilder{_BACnetPropertyStatesNetworkType: m.deepCopy()}
+	return &_BACnetPropertyStatesNetworkTypeBuilder{_BACnetPropertyStatesNetworkType: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPropertyStatesNetworkType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataLightingOutputPresentValueBuilder() BACnetConstruct
 type _BACnetConstructedDataLightingOutputPresentValueBuilder struct {
 	*_BACnetConstructedDataLightingOutputPresentValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataLightingOutputPresentValueBuilder) = (*_BACnetConstructedDataLightingOutputPresentValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataLightingOutputPresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagReal) BACnetConstructedDataLightingOutputPresentValueBuilder {
-	return m.WithPresentValue(presentValue)
+func (b *_BACnetConstructedDataLightingOutputPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataLightingOutputPresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagReal) BACnetConstructedDataLightingOutputPresentValueBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetConstructedDataLightingOutputPresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagReal) BACnetConstructedDataLightingOutputPresentValueBuilder {
+	return b.WithPresentValue(presentValue)
 }
 
-func (m *_BACnetConstructedDataLightingOutputPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataLightingOutputPresentValueBuilder {
-	builder := builderSupplier(m.PresentValue.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataLightingOutputPresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagReal) BACnetConstructedDataLightingOutputPresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataLightingOutputPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataLightingOutputPresentValueBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.PresentValue, err = builder.Build()
+	b.PresentValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataLightingOutputPresentValueBuilder) Build() (BACnetConstructedDataLightingOutputPresentValue, error) {
-	if m.PresentValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataLightingOutputPresentValueBuilder) Build() (BACnetConstructedDataLightingOutputPresentValue, error) {
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataLightingOutputPresentValue.deepCopy(), nil
+	return b._BACnetConstructedDataLightingOutputPresentValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataLightingOutputPresentValueBuilder) MustBuild() BACnetConstructedDataLightingOutputPresentValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataLightingOutputPresentValueBuilder) MustBuild() BACnetConstructedDataLightingOutputPresentValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataLightingOutputPresentValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataLightingOutputPresentValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLightingOutputPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLightingOutputPresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLightingOutputPresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLightingOutputPresentValueBuilder().(*_BACnetConstructedDataLightingOutputPresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataLightingOutputPresentValueBuilder creates a BACnetConstructedDataLightingOutputPresentValueBuilder
-func (m *_BACnetConstructedDataLightingOutputPresentValue) CreateBACnetConstructedDataLightingOutputPresentValueBuilder() BACnetConstructedDataLightingOutputPresentValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataLightingOutputPresentValue) CreateBACnetConstructedDataLightingOutputPresentValueBuilder() BACnetConstructedDataLightingOutputPresentValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataLightingOutputPresentValueBuilder()
 	}
-	return &_BACnetConstructedDataLightingOutputPresentValueBuilder{_BACnetConstructedDataLightingOutputPresentValue: m.deepCopy()}
+	return &_BACnetConstructedDataLightingOutputPresentValueBuilder{_BACnetConstructedDataLightingOutputPresentValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataLightingOutputPresentValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

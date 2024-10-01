@@ -90,10 +90,29 @@ type StatusRequestBuilder interface {
 	WithMandatoryFields(statusType byte) StatusRequestBuilder
 	// WithStatusType adds StatusType (property field)
 	WithStatusType(byte) StatusRequestBuilder
+	// AsStatusRequestBinaryState converts this build to a subType of StatusRequest. It is always possible to return to current builder using Done()
+	AsStatusRequestBinaryState() interface {
+		StatusRequestBinaryStateBuilder
+		Done() StatusRequestBuilder
+	}
+	// AsStatusRequestBinaryStateDeprecated converts this build to a subType of StatusRequest. It is always possible to return to current builder using Done()
+	AsStatusRequestBinaryStateDeprecated() interface {
+		StatusRequestBinaryStateDeprecatedBuilder
+		Done() StatusRequestBuilder
+	}
+	// AsStatusRequestLevel converts this build to a subType of StatusRequest. It is always possible to return to current builder using Done()
+	AsStatusRequestLevel() interface {
+		StatusRequestLevelBuilder
+		Done() StatusRequestBuilder
+	}
 	// Build builds the StatusRequest or returns an error if something is wrong
-	Build() (StatusRequestContract, error)
+	PartialBuild() (StatusRequestContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() StatusRequestContract
+	PartialMustBuild() StatusRequestContract
+	// Build builds the StatusRequest or returns an error if something is wrong
+	Build() (StatusRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() StatusRequest
 }
 
 // NewStatusRequestBuilder() creates a StatusRequestBuilder
@@ -101,48 +120,130 @@ func NewStatusRequestBuilder() StatusRequestBuilder {
 	return &_StatusRequestBuilder{_StatusRequest: new(_StatusRequest)}
 }
 
+type _StatusRequestChildBuilder interface {
+	utils.Copyable
+	setParent(StatusRequestContract)
+	buildForStatusRequest() (StatusRequest, error)
+}
+
 type _StatusRequestBuilder struct {
 	*_StatusRequest
+
+	childBuilder _StatusRequestChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (StatusRequestBuilder) = (*_StatusRequestBuilder)(nil)
 
-func (m *_StatusRequestBuilder) WithMandatoryFields(statusType byte) StatusRequestBuilder {
-	return m.WithStatusType(statusType)
+func (b *_StatusRequestBuilder) WithMandatoryFields(statusType byte) StatusRequestBuilder {
+	return b.WithStatusType(statusType)
 }
 
-func (m *_StatusRequestBuilder) WithStatusType(statusType byte) StatusRequestBuilder {
-	m.StatusType = statusType
-	return m
+func (b *_StatusRequestBuilder) WithStatusType(statusType byte) StatusRequestBuilder {
+	b.StatusType = statusType
+	return b
 }
 
-func (m *_StatusRequestBuilder) Build() (StatusRequestContract, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_StatusRequestBuilder) PartialBuild() (StatusRequestContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._StatusRequest.deepCopy(), nil
+	return b._StatusRequest.deepCopy(), nil
 }
 
-func (m *_StatusRequestBuilder) MustBuild() StatusRequestContract {
-	build, err := m.Build()
+func (b *_StatusRequestBuilder) PartialMustBuild() StatusRequestContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_StatusRequestBuilder) DeepCopy() any {
-	return m.CreateStatusRequestBuilder()
+func (b *_StatusRequestBuilder) AsStatusRequestBinaryState() interface {
+	StatusRequestBinaryStateBuilder
+	Done() StatusRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		StatusRequestBinaryStateBuilder
+		Done() StatusRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewStatusRequestBinaryStateBuilder().(*_StatusRequestBinaryStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_StatusRequestBuilder) AsStatusRequestBinaryStateDeprecated() interface {
+	StatusRequestBinaryStateDeprecatedBuilder
+	Done() StatusRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		StatusRequestBinaryStateDeprecatedBuilder
+		Done() StatusRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewStatusRequestBinaryStateDeprecatedBuilder().(*_StatusRequestBinaryStateDeprecatedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_StatusRequestBuilder) AsStatusRequestLevel() interface {
+	StatusRequestLevelBuilder
+	Done() StatusRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		StatusRequestLevelBuilder
+		Done() StatusRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewStatusRequestLevelBuilder().(*_StatusRequestLevelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_StatusRequestBuilder) Build() (StatusRequest, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForStatusRequest()
+}
+
+func (b *_StatusRequestBuilder) MustBuild() StatusRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_StatusRequestBuilder) DeepCopy() any {
+	_copy := b.CreateStatusRequestBuilder().(*_StatusRequestBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_StatusRequestChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateStatusRequestBuilder creates a StatusRequestBuilder
-func (m *_StatusRequest) CreateStatusRequestBuilder() StatusRequestBuilder {
-	if m == nil {
+func (b *_StatusRequest) CreateStatusRequestBuilder() StatusRequestBuilder {
+	if b == nil {
 		return NewStatusRequestBuilder()
 	}
-	return &_StatusRequestBuilder{_StatusRequest: m.deepCopy()}
+	return &_StatusRequestBuilder{_StatusRequest: b.deepCopy()}
 }
 
 ///////////////////////

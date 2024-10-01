@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAllowGroupDelayInhibitBuilder() BACnetConstructedDa
 type _BACnetConstructedDataAllowGroupDelayInhibitBuilder struct {
 	*_BACnetConstructedDataAllowGroupDelayInhibit
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAllowGroupDelayInhibitBuilder) = (*_BACnetConstructedDataAllowGroupDelayInhibitBuilder)(nil)
 
-func (m *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) WithMandatoryFields(allowGroupDelayInhibit BACnetApplicationTagBoolean) BACnetConstructedDataAllowGroupDelayInhibitBuilder {
-	return m.WithAllowGroupDelayInhibit(allowGroupDelayInhibit)
+func (b *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) WithAllowGroupDelayInhibit(allowGroupDelayInhibit BACnetApplicationTagBoolean) BACnetConstructedDataAllowGroupDelayInhibitBuilder {
-	m.AllowGroupDelayInhibit = allowGroupDelayInhibit
-	return m
+func (b *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) WithMandatoryFields(allowGroupDelayInhibit BACnetApplicationTagBoolean) BACnetConstructedDataAllowGroupDelayInhibitBuilder {
+	return b.WithAllowGroupDelayInhibit(allowGroupDelayInhibit)
 }
 
-func (m *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) WithAllowGroupDelayInhibitBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataAllowGroupDelayInhibitBuilder {
-	builder := builderSupplier(m.AllowGroupDelayInhibit.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) WithAllowGroupDelayInhibit(allowGroupDelayInhibit BACnetApplicationTagBoolean) BACnetConstructedDataAllowGroupDelayInhibitBuilder {
+	b.AllowGroupDelayInhibit = allowGroupDelayInhibit
+	return b
+}
+
+func (b *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) WithAllowGroupDelayInhibitBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataAllowGroupDelayInhibitBuilder {
+	builder := builderSupplier(b.AllowGroupDelayInhibit.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.AllowGroupDelayInhibit, err = builder.Build()
+	b.AllowGroupDelayInhibit, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) Build() (BACnetConstructedDataAllowGroupDelayInhibit, error) {
-	if m.AllowGroupDelayInhibit == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) Build() (BACnetConstructedDataAllowGroupDelayInhibit, error) {
+	if b.AllowGroupDelayInhibit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'allowGroupDelayInhibit' not set"))
+		b.err.Append(errors.New("mandatory field 'allowGroupDelayInhibit' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAllowGroupDelayInhibit.deepCopy(), nil
+	return b._BACnetConstructedDataAllowGroupDelayInhibit.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) MustBuild() BACnetConstructedDataAllowGroupDelayInhibit {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) MustBuild() BACnetConstructedDataAllowGroupDelayInhibit {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAllowGroupDelayInhibitBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAllowGroupDelayInhibitBuilder().(*_BACnetConstructedDataAllowGroupDelayInhibitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAllowGroupDelayInhibitBuilder creates a BACnetConstructedDataAllowGroupDelayInhibitBuilder
-func (m *_BACnetConstructedDataAllowGroupDelayInhibit) CreateBACnetConstructedDataAllowGroupDelayInhibitBuilder() BACnetConstructedDataAllowGroupDelayInhibitBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAllowGroupDelayInhibit) CreateBACnetConstructedDataAllowGroupDelayInhibitBuilder() BACnetConstructedDataAllowGroupDelayInhibitBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAllowGroupDelayInhibitBuilder()
 	}
-	return &_BACnetConstructedDataAllowGroupDelayInhibitBuilder{_BACnetConstructedDataAllowGroupDelayInhibit: m.deepCopy()}
+	return &_BACnetConstructedDataAllowGroupDelayInhibitBuilder{_BACnetConstructedDataAllowGroupDelayInhibit: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -93,45 +93,64 @@ func NewNLMIAmRouterToNetworkBuilder() NLMIAmRouterToNetworkBuilder {
 type _NLMIAmRouterToNetworkBuilder struct {
 	*_NLMIAmRouterToNetwork
 
+	parentBuilder *_NLMBuilder
+
 	err *utils.MultiError
 }
 
 var _ (NLMIAmRouterToNetworkBuilder) = (*_NLMIAmRouterToNetworkBuilder)(nil)
 
-func (m *_NLMIAmRouterToNetworkBuilder) WithMandatoryFields(destinationNetworkAddresses []uint16) NLMIAmRouterToNetworkBuilder {
-	return m.WithDestinationNetworkAddresses(destinationNetworkAddresses...)
+func (b *_NLMIAmRouterToNetworkBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
 }
 
-func (m *_NLMIAmRouterToNetworkBuilder) WithDestinationNetworkAddresses(destinationNetworkAddresses ...uint16) NLMIAmRouterToNetworkBuilder {
-	m.DestinationNetworkAddresses = destinationNetworkAddresses
-	return m
+func (b *_NLMIAmRouterToNetworkBuilder) WithMandatoryFields(destinationNetworkAddresses []uint16) NLMIAmRouterToNetworkBuilder {
+	return b.WithDestinationNetworkAddresses(destinationNetworkAddresses...)
 }
 
-func (m *_NLMIAmRouterToNetworkBuilder) Build() (NLMIAmRouterToNetwork, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMIAmRouterToNetworkBuilder) WithDestinationNetworkAddresses(destinationNetworkAddresses ...uint16) NLMIAmRouterToNetworkBuilder {
+	b.DestinationNetworkAddresses = destinationNetworkAddresses
+	return b
+}
+
+func (b *_NLMIAmRouterToNetworkBuilder) Build() (NLMIAmRouterToNetwork, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMIAmRouterToNetwork.deepCopy(), nil
+	return b._NLMIAmRouterToNetwork.deepCopy(), nil
 }
 
-func (m *_NLMIAmRouterToNetworkBuilder) MustBuild() NLMIAmRouterToNetwork {
-	build, err := m.Build()
+func (b *_NLMIAmRouterToNetworkBuilder) MustBuild() NLMIAmRouterToNetwork {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMIAmRouterToNetworkBuilder) DeepCopy() any {
-	return m.CreateNLMIAmRouterToNetworkBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMIAmRouterToNetworkBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMIAmRouterToNetworkBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMIAmRouterToNetworkBuilder) DeepCopy() any {
+	_copy := b.CreateNLMIAmRouterToNetworkBuilder().(*_NLMIAmRouterToNetworkBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMIAmRouterToNetworkBuilder creates a NLMIAmRouterToNetworkBuilder
-func (m *_NLMIAmRouterToNetwork) CreateNLMIAmRouterToNetworkBuilder() NLMIAmRouterToNetworkBuilder {
-	if m == nil {
+func (b *_NLMIAmRouterToNetwork) CreateNLMIAmRouterToNetworkBuilder() NLMIAmRouterToNetworkBuilder {
+	if b == nil {
 		return NewNLMIAmRouterToNetworkBuilder()
 	}
-	return &_NLMIAmRouterToNetworkBuilder{_NLMIAmRouterToNetwork: m.deepCopy()}
+	return &_NLMIAmRouterToNetworkBuilder{_NLMIAmRouterToNetwork: b.deepCopy()}
 }
 
 ///////////////////////
@@ -277,9 +296,13 @@ func (m *_NLMIAmRouterToNetwork) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -93,45 +93,64 @@ func NewBACnetConstructedDataMultiStateInputFaultValuesBuilder() BACnetConstruct
 type _BACnetConstructedDataMultiStateInputFaultValuesBuilder struct {
 	*_BACnetConstructedDataMultiStateInputFaultValues
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMultiStateInputFaultValuesBuilder) = (*_BACnetConstructedDataMultiStateInputFaultValuesBuilder)(nil)
 
-func (m *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) WithMandatoryFields(faultValues []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateInputFaultValuesBuilder {
-	return m.WithFaultValues(faultValues...)
+func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) WithFaultValues(faultValues ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateInputFaultValuesBuilder {
-	m.FaultValues = faultValues
-	return m
+func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) WithMandatoryFields(faultValues []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateInputFaultValuesBuilder {
+	return b.WithFaultValues(faultValues...)
 }
 
-func (m *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) Build() (BACnetConstructedDataMultiStateInputFaultValues, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) WithFaultValues(faultValues ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateInputFaultValuesBuilder {
+	b.FaultValues = faultValues
+	return b
+}
+
+func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) Build() (BACnetConstructedDataMultiStateInputFaultValues, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataMultiStateInputFaultValues.deepCopy(), nil
+	return b._BACnetConstructedDataMultiStateInputFaultValues.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) MustBuild() BACnetConstructedDataMultiStateInputFaultValues {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) MustBuild() BACnetConstructedDataMultiStateInputFaultValues {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMultiStateInputFaultValuesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMultiStateInputFaultValuesBuilder().(*_BACnetConstructedDataMultiStateInputFaultValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMultiStateInputFaultValuesBuilder creates a BACnetConstructedDataMultiStateInputFaultValuesBuilder
-func (m *_BACnetConstructedDataMultiStateInputFaultValues) CreateBACnetConstructedDataMultiStateInputFaultValuesBuilder() BACnetConstructedDataMultiStateInputFaultValuesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMultiStateInputFaultValues) CreateBACnetConstructedDataMultiStateInputFaultValuesBuilder() BACnetConstructedDataMultiStateInputFaultValuesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMultiStateInputFaultValuesBuilder()
 	}
-	return &_BACnetConstructedDataMultiStateInputFaultValuesBuilder{_BACnetConstructedDataMultiStateInputFaultValues: m.deepCopy()}
+	return &_BACnetConstructedDataMultiStateInputFaultValuesBuilder{_BACnetConstructedDataMultiStateInputFaultValues: b.deepCopy()}
 }
 
 ///////////////////////
@@ -284,9 +303,13 @@ func (m *_BACnetConstructedDataMultiStateInputFaultValues) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

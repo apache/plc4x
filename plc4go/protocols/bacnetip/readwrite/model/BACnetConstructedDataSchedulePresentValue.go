@@ -100,64 +100,83 @@ func NewBACnetConstructedDataSchedulePresentValueBuilder() BACnetConstructedData
 type _BACnetConstructedDataSchedulePresentValueBuilder struct {
 	*_BACnetConstructedDataSchedulePresentValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataSchedulePresentValueBuilder) = (*_BACnetConstructedDataSchedulePresentValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataSchedulePresentValueBuilder) WithMandatoryFields(presentValue BACnetConstructedDataElement) BACnetConstructedDataSchedulePresentValueBuilder {
-	return m.WithPresentValue(presentValue)
+func (b *_BACnetConstructedDataSchedulePresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataSchedulePresentValueBuilder) WithPresentValue(presentValue BACnetConstructedDataElement) BACnetConstructedDataSchedulePresentValueBuilder {
-	m.PresentValue = presentValue
-	return m
+func (b *_BACnetConstructedDataSchedulePresentValueBuilder) WithMandatoryFields(presentValue BACnetConstructedDataElement) BACnetConstructedDataSchedulePresentValueBuilder {
+	return b.WithPresentValue(presentValue)
 }
 
-func (m *_BACnetConstructedDataSchedulePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetConstructedDataElementBuilder) BACnetConstructedDataElementBuilder) BACnetConstructedDataSchedulePresentValueBuilder {
-	builder := builderSupplier(m.PresentValue.CreateBACnetConstructedDataElementBuilder())
+func (b *_BACnetConstructedDataSchedulePresentValueBuilder) WithPresentValue(presentValue BACnetConstructedDataElement) BACnetConstructedDataSchedulePresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataSchedulePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetConstructedDataElementBuilder) BACnetConstructedDataElementBuilder) BACnetConstructedDataSchedulePresentValueBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetConstructedDataElementBuilder())
 	var err error
-	m.PresentValue, err = builder.Build()
+	b.PresentValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetConstructedDataElementBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataElementBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataSchedulePresentValueBuilder) Build() (BACnetConstructedDataSchedulePresentValue, error) {
-	if m.PresentValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataSchedulePresentValueBuilder) Build() (BACnetConstructedDataSchedulePresentValue, error) {
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataSchedulePresentValue.deepCopy(), nil
+	return b._BACnetConstructedDataSchedulePresentValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataSchedulePresentValueBuilder) MustBuild() BACnetConstructedDataSchedulePresentValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataSchedulePresentValueBuilder) MustBuild() BACnetConstructedDataSchedulePresentValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataSchedulePresentValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataSchedulePresentValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSchedulePresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSchedulePresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSchedulePresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSchedulePresentValueBuilder().(*_BACnetConstructedDataSchedulePresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataSchedulePresentValueBuilder creates a BACnetConstructedDataSchedulePresentValueBuilder
-func (m *_BACnetConstructedDataSchedulePresentValue) CreateBACnetConstructedDataSchedulePresentValueBuilder() BACnetConstructedDataSchedulePresentValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataSchedulePresentValue) CreateBACnetConstructedDataSchedulePresentValueBuilder() BACnetConstructedDataSchedulePresentValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataSchedulePresentValueBuilder()
 	}
-	return &_BACnetConstructedDataSchedulePresentValueBuilder{_BACnetConstructedDataSchedulePresentValue: m.deepCopy()}
+	return &_BACnetConstructedDataSchedulePresentValueBuilder{_BACnetConstructedDataSchedulePresentValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataSchedulePresentValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

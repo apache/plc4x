@@ -105,55 +105,59 @@ type _ModbusPDUWriteFileRecordResponseItemBuilder struct {
 
 var _ (ModbusPDUWriteFileRecordResponseItemBuilder) = (*_ModbusPDUWriteFileRecordResponseItemBuilder)(nil)
 
-func (m *_ModbusPDUWriteFileRecordResponseItemBuilder) WithMandatoryFields(referenceType uint8, fileNumber uint16, recordNumber uint16, recordData []byte) ModbusPDUWriteFileRecordResponseItemBuilder {
-	return m.WithReferenceType(referenceType).WithFileNumber(fileNumber).WithRecordNumber(recordNumber).WithRecordData(recordData...)
+func (b *_ModbusPDUWriteFileRecordResponseItemBuilder) WithMandatoryFields(referenceType uint8, fileNumber uint16, recordNumber uint16, recordData []byte) ModbusPDUWriteFileRecordResponseItemBuilder {
+	return b.WithReferenceType(referenceType).WithFileNumber(fileNumber).WithRecordNumber(recordNumber).WithRecordData(recordData...)
 }
 
-func (m *_ModbusPDUWriteFileRecordResponseItemBuilder) WithReferenceType(referenceType uint8) ModbusPDUWriteFileRecordResponseItemBuilder {
-	m.ReferenceType = referenceType
-	return m
+func (b *_ModbusPDUWriteFileRecordResponseItemBuilder) WithReferenceType(referenceType uint8) ModbusPDUWriteFileRecordResponseItemBuilder {
+	b.ReferenceType = referenceType
+	return b
 }
 
-func (m *_ModbusPDUWriteFileRecordResponseItemBuilder) WithFileNumber(fileNumber uint16) ModbusPDUWriteFileRecordResponseItemBuilder {
-	m.FileNumber = fileNumber
-	return m
+func (b *_ModbusPDUWriteFileRecordResponseItemBuilder) WithFileNumber(fileNumber uint16) ModbusPDUWriteFileRecordResponseItemBuilder {
+	b.FileNumber = fileNumber
+	return b
 }
 
-func (m *_ModbusPDUWriteFileRecordResponseItemBuilder) WithRecordNumber(recordNumber uint16) ModbusPDUWriteFileRecordResponseItemBuilder {
-	m.RecordNumber = recordNumber
-	return m
+func (b *_ModbusPDUWriteFileRecordResponseItemBuilder) WithRecordNumber(recordNumber uint16) ModbusPDUWriteFileRecordResponseItemBuilder {
+	b.RecordNumber = recordNumber
+	return b
 }
 
-func (m *_ModbusPDUWriteFileRecordResponseItemBuilder) WithRecordData(recordData ...byte) ModbusPDUWriteFileRecordResponseItemBuilder {
-	m.RecordData = recordData
-	return m
+func (b *_ModbusPDUWriteFileRecordResponseItemBuilder) WithRecordData(recordData ...byte) ModbusPDUWriteFileRecordResponseItemBuilder {
+	b.RecordData = recordData
+	return b
 }
 
-func (m *_ModbusPDUWriteFileRecordResponseItemBuilder) Build() (ModbusPDUWriteFileRecordResponseItem, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ModbusPDUWriteFileRecordResponseItemBuilder) Build() (ModbusPDUWriteFileRecordResponseItem, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ModbusPDUWriteFileRecordResponseItem.deepCopy(), nil
+	return b._ModbusPDUWriteFileRecordResponseItem.deepCopy(), nil
 }
 
-func (m *_ModbusPDUWriteFileRecordResponseItemBuilder) MustBuild() ModbusPDUWriteFileRecordResponseItem {
-	build, err := m.Build()
+func (b *_ModbusPDUWriteFileRecordResponseItemBuilder) MustBuild() ModbusPDUWriteFileRecordResponseItem {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ModbusPDUWriteFileRecordResponseItemBuilder) DeepCopy() any {
-	return m.CreateModbusPDUWriteFileRecordResponseItemBuilder()
+func (b *_ModbusPDUWriteFileRecordResponseItemBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUWriteFileRecordResponseItemBuilder().(*_ModbusPDUWriteFileRecordResponseItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateModbusPDUWriteFileRecordResponseItemBuilder creates a ModbusPDUWriteFileRecordResponseItemBuilder
-func (m *_ModbusPDUWriteFileRecordResponseItem) CreateModbusPDUWriteFileRecordResponseItemBuilder() ModbusPDUWriteFileRecordResponseItemBuilder {
-	if m == nil {
+func (b *_ModbusPDUWriteFileRecordResponseItem) CreateModbusPDUWriteFileRecordResponseItemBuilder() ModbusPDUWriteFileRecordResponseItemBuilder {
+	if b == nil {
 		return NewModbusPDUWriteFileRecordResponseItemBuilder()
 	}
-	return &_ModbusPDUWriteFileRecordResponseItemBuilder{_ModbusPDUWriteFileRecordResponseItem: m.deepCopy()}
+	return &_ModbusPDUWriteFileRecordResponseItemBuilder{_ModbusPDUWriteFileRecordResponseItem: b.deepCopy()}
 }
 
 ///////////////////////
@@ -359,9 +363,13 @@ func (m *_ModbusPDUWriteFileRecordResponseItem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

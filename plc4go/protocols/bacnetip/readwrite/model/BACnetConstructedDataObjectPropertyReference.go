@@ -100,64 +100,83 @@ func NewBACnetConstructedDataObjectPropertyReferenceBuilder() BACnetConstructedD
 type _BACnetConstructedDataObjectPropertyReferenceBuilder struct {
 	*_BACnetConstructedDataObjectPropertyReference
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataObjectPropertyReferenceBuilder) = (*_BACnetConstructedDataObjectPropertyReferenceBuilder)(nil)
 
-func (m *_BACnetConstructedDataObjectPropertyReferenceBuilder) WithMandatoryFields(propertyReference BACnetDeviceObjectPropertyReference) BACnetConstructedDataObjectPropertyReferenceBuilder {
-	return m.WithPropertyReference(propertyReference)
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataObjectPropertyReferenceBuilder) WithPropertyReference(propertyReference BACnetDeviceObjectPropertyReference) BACnetConstructedDataObjectPropertyReferenceBuilder {
-	m.PropertyReference = propertyReference
-	return m
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) WithMandatoryFields(propertyReference BACnetDeviceObjectPropertyReference) BACnetConstructedDataObjectPropertyReferenceBuilder {
+	return b.WithPropertyReference(propertyReference)
 }
 
-func (m *_BACnetConstructedDataObjectPropertyReferenceBuilder) WithPropertyReferenceBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceBuilder) BACnetDeviceObjectPropertyReferenceBuilder) BACnetConstructedDataObjectPropertyReferenceBuilder {
-	builder := builderSupplier(m.PropertyReference.CreateBACnetDeviceObjectPropertyReferenceBuilder())
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) WithPropertyReference(propertyReference BACnetDeviceObjectPropertyReference) BACnetConstructedDataObjectPropertyReferenceBuilder {
+	b.PropertyReference = propertyReference
+	return b
+}
+
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) WithPropertyReferenceBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceBuilder) BACnetDeviceObjectPropertyReferenceBuilder) BACnetConstructedDataObjectPropertyReferenceBuilder {
+	builder := builderSupplier(b.PropertyReference.CreateBACnetDeviceObjectPropertyReferenceBuilder())
 	var err error
-	m.PropertyReference, err = builder.Build()
+	b.PropertyReference, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataObjectPropertyReferenceBuilder) Build() (BACnetConstructedDataObjectPropertyReference, error) {
-	if m.PropertyReference == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) Build() (BACnetConstructedDataObjectPropertyReference, error) {
+	if b.PropertyReference == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'propertyReference' not set"))
+		b.err.Append(errors.New("mandatory field 'propertyReference' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataObjectPropertyReference.deepCopy(), nil
+	return b._BACnetConstructedDataObjectPropertyReference.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataObjectPropertyReferenceBuilder) MustBuild() BACnetConstructedDataObjectPropertyReference {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) MustBuild() BACnetConstructedDataObjectPropertyReference {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataObjectPropertyReferenceBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataObjectPropertyReferenceBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataObjectPropertyReferenceBuilder().(*_BACnetConstructedDataObjectPropertyReferenceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataObjectPropertyReferenceBuilder creates a BACnetConstructedDataObjectPropertyReferenceBuilder
-func (m *_BACnetConstructedDataObjectPropertyReference) CreateBACnetConstructedDataObjectPropertyReferenceBuilder() BACnetConstructedDataObjectPropertyReferenceBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataObjectPropertyReference) CreateBACnetConstructedDataObjectPropertyReferenceBuilder() BACnetConstructedDataObjectPropertyReferenceBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataObjectPropertyReferenceBuilder()
 	}
-	return &_BACnetConstructedDataObjectPropertyReferenceBuilder{_BACnetConstructedDataObjectPropertyReference: m.deepCopy()}
+	return &_BACnetConstructedDataObjectPropertyReferenceBuilder{_BACnetConstructedDataObjectPropertyReference: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataObjectPropertyReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -99,50 +99,69 @@ func NewCOTPPacketDataBuilder() COTPPacketDataBuilder {
 type _COTPPacketDataBuilder struct {
 	*_COTPPacketData
 
+	parentBuilder *_COTPPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (COTPPacketDataBuilder) = (*_COTPPacketDataBuilder)(nil)
 
-func (m *_COTPPacketDataBuilder) WithMandatoryFields(eot bool, tpduRef uint8) COTPPacketDataBuilder {
-	return m.WithEot(eot).WithTpduRef(tpduRef)
+func (b *_COTPPacketDataBuilder) setParent(contract COTPPacketContract) {
+	b.COTPPacketContract = contract
 }
 
-func (m *_COTPPacketDataBuilder) WithEot(eot bool) COTPPacketDataBuilder {
-	m.Eot = eot
-	return m
+func (b *_COTPPacketDataBuilder) WithMandatoryFields(eot bool, tpduRef uint8) COTPPacketDataBuilder {
+	return b.WithEot(eot).WithTpduRef(tpduRef)
 }
 
-func (m *_COTPPacketDataBuilder) WithTpduRef(tpduRef uint8) COTPPacketDataBuilder {
-	m.TpduRef = tpduRef
-	return m
+func (b *_COTPPacketDataBuilder) WithEot(eot bool) COTPPacketDataBuilder {
+	b.Eot = eot
+	return b
 }
 
-func (m *_COTPPacketDataBuilder) Build() (COTPPacketData, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_COTPPacketDataBuilder) WithTpduRef(tpduRef uint8) COTPPacketDataBuilder {
+	b.TpduRef = tpduRef
+	return b
+}
+
+func (b *_COTPPacketDataBuilder) Build() (COTPPacketData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._COTPPacketData.deepCopy(), nil
+	return b._COTPPacketData.deepCopy(), nil
 }
 
-func (m *_COTPPacketDataBuilder) MustBuild() COTPPacketData {
-	build, err := m.Build()
+func (b *_COTPPacketDataBuilder) MustBuild() COTPPacketData {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_COTPPacketDataBuilder) DeepCopy() any {
-	return m.CreateCOTPPacketDataBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_COTPPacketDataBuilder) Done() COTPPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_COTPPacketDataBuilder) buildForCOTPPacket() (COTPPacket, error) {
+	return b.Build()
+}
+
+func (b *_COTPPacketDataBuilder) DeepCopy() any {
+	_copy := b.CreateCOTPPacketDataBuilder().(*_COTPPacketDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCOTPPacketDataBuilder creates a COTPPacketDataBuilder
-func (m *_COTPPacketData) CreateCOTPPacketDataBuilder() COTPPacketDataBuilder {
-	if m == nil {
+func (b *_COTPPacketData) CreateCOTPPacketDataBuilder() COTPPacketDataBuilder {
+	if b == nil {
 		return NewCOTPPacketDataBuilder()
 	}
-	return &_COTPPacketDataBuilder{_COTPPacketData: m.deepCopy()}
+	return &_COTPPacketDataBuilder{_COTPPacketData: b.deepCopy()}
 }
 
 ///////////////////////
@@ -304,9 +323,13 @@ func (m *_COTPPacketData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -88,6 +88,8 @@ type ConnectedDataItemBuilder interface {
 	WithSequenceCount(uint16) ConnectedDataItemBuilder
 	// WithService adds Service (property field)
 	WithService(CipService) ConnectedDataItemBuilder
+	// WithServiceBuilder adds Service (property field) which is build by the builder
+	WithServiceBuilder(func(CipServiceBuilder) CipServiceBuilder) ConnectedDataItemBuilder
 	// Build builds the ConnectedDataItem or returns an error if something is wrong
 	Build() (ConnectedDataItem, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,56 +104,88 @@ func NewConnectedDataItemBuilder() ConnectedDataItemBuilder {
 type _ConnectedDataItemBuilder struct {
 	*_ConnectedDataItem
 
+	parentBuilder *_TypeIdBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ConnectedDataItemBuilder) = (*_ConnectedDataItemBuilder)(nil)
 
-func (m *_ConnectedDataItemBuilder) WithMandatoryFields(sequenceCount uint16, service CipService) ConnectedDataItemBuilder {
-	return m.WithSequenceCount(sequenceCount).WithService(service)
+func (b *_ConnectedDataItemBuilder) setParent(contract TypeIdContract) {
+	b.TypeIdContract = contract
 }
 
-func (m *_ConnectedDataItemBuilder) WithSequenceCount(sequenceCount uint16) ConnectedDataItemBuilder {
-	m.SequenceCount = sequenceCount
-	return m
+func (b *_ConnectedDataItemBuilder) WithMandatoryFields(sequenceCount uint16, service CipService) ConnectedDataItemBuilder {
+	return b.WithSequenceCount(sequenceCount).WithService(service)
 }
 
-func (m *_ConnectedDataItemBuilder) WithService(service CipService) ConnectedDataItemBuilder {
-	m.Service = service
-	return m
+func (b *_ConnectedDataItemBuilder) WithSequenceCount(sequenceCount uint16) ConnectedDataItemBuilder {
+	b.SequenceCount = sequenceCount
+	return b
 }
 
-func (m *_ConnectedDataItemBuilder) Build() (ConnectedDataItem, error) {
-	if m.Service == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ConnectedDataItemBuilder) WithService(service CipService) ConnectedDataItemBuilder {
+	b.Service = service
+	return b
+}
+
+func (b *_ConnectedDataItemBuilder) WithServiceBuilder(builderSupplier func(CipServiceBuilder) CipServiceBuilder) ConnectedDataItemBuilder {
+	builder := builderSupplier(b.Service.CreateCipServiceBuilder())
+	var err error
+	b.Service, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'service' not set"))
+		b.err.Append(errors.Wrap(err, "CipServiceBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._ConnectedDataItem.deepCopy(), nil
+	return b
 }
 
-func (m *_ConnectedDataItemBuilder) MustBuild() ConnectedDataItem {
-	build, err := m.Build()
+func (b *_ConnectedDataItemBuilder) Build() (ConnectedDataItem, error) {
+	if b.Service == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'service' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ConnectedDataItem.deepCopy(), nil
+}
+
+func (b *_ConnectedDataItemBuilder) MustBuild() ConnectedDataItem {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ConnectedDataItemBuilder) DeepCopy() any {
-	return m.CreateConnectedDataItemBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ConnectedDataItemBuilder) Done() TypeIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ConnectedDataItemBuilder) buildForTypeId() (TypeId, error) {
+	return b.Build()
+}
+
+func (b *_ConnectedDataItemBuilder) DeepCopy() any {
+	_copy := b.CreateConnectedDataItemBuilder().(*_ConnectedDataItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateConnectedDataItemBuilder creates a ConnectedDataItemBuilder
-func (m *_ConnectedDataItem) CreateConnectedDataItemBuilder() ConnectedDataItemBuilder {
-	if m == nil {
+func (b *_ConnectedDataItem) CreateConnectedDataItemBuilder() ConnectedDataItemBuilder {
+	if b == nil {
 		return NewConnectedDataItemBuilder()
 	}
-	return &_ConnectedDataItemBuilder{_ConnectedDataItem: m.deepCopy()}
+	return &_ConnectedDataItemBuilder{_ConnectedDataItem: b.deepCopy()}
 }
 
 ///////////////////////
@@ -326,9 +360,13 @@ func (m *_ConnectedDataItem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

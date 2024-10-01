@@ -98,64 +98,83 @@ func NewBACnetOptionalREALNullBuilder() BACnetOptionalREALNullBuilder {
 type _BACnetOptionalREALNullBuilder struct {
 	*_BACnetOptionalREALNull
 
+	parentBuilder *_BACnetOptionalREALBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetOptionalREALNullBuilder) = (*_BACnetOptionalREALNullBuilder)(nil)
 
-func (m *_BACnetOptionalREALNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetOptionalREALNullBuilder {
-	return m.WithNullValue(nullValue)
+func (b *_BACnetOptionalREALNullBuilder) setParent(contract BACnetOptionalREALContract) {
+	b.BACnetOptionalREALContract = contract
 }
 
-func (m *_BACnetOptionalREALNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetOptionalREALNullBuilder {
-	m.NullValue = nullValue
-	return m
+func (b *_BACnetOptionalREALNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetOptionalREALNullBuilder {
+	return b.WithNullValue(nullValue)
 }
 
-func (m *_BACnetOptionalREALNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetOptionalREALNullBuilder {
-	builder := builderSupplier(m.NullValue.CreateBACnetApplicationTagNullBuilder())
+func (b *_BACnetOptionalREALNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetOptionalREALNullBuilder {
+	b.NullValue = nullValue
+	return b
+}
+
+func (b *_BACnetOptionalREALNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetOptionalREALNullBuilder {
+	builder := builderSupplier(b.NullValue.CreateBACnetApplicationTagNullBuilder())
 	var err error
-	m.NullValue, err = builder.Build()
+	b.NullValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetOptionalREALNullBuilder) Build() (BACnetOptionalREALNull, error) {
-	if m.NullValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetOptionalREALNullBuilder) Build() (BACnetOptionalREALNull, error) {
+	if b.NullValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'nullValue' not set"))
+		b.err.Append(errors.New("mandatory field 'nullValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetOptionalREALNull.deepCopy(), nil
+	return b._BACnetOptionalREALNull.deepCopy(), nil
 }
 
-func (m *_BACnetOptionalREALNullBuilder) MustBuild() BACnetOptionalREALNull {
-	build, err := m.Build()
+func (b *_BACnetOptionalREALNullBuilder) MustBuild() BACnetOptionalREALNull {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetOptionalREALNullBuilder) DeepCopy() any {
-	return m.CreateBACnetOptionalREALNullBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetOptionalREALNullBuilder) Done() BACnetOptionalREALBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetOptionalREALNullBuilder) buildForBACnetOptionalREAL() (BACnetOptionalREAL, error) {
+	return b.Build()
+}
+
+func (b *_BACnetOptionalREALNullBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetOptionalREALNullBuilder().(*_BACnetOptionalREALNullBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetOptionalREALNullBuilder creates a BACnetOptionalREALNullBuilder
-func (m *_BACnetOptionalREALNull) CreateBACnetOptionalREALNullBuilder() BACnetOptionalREALNullBuilder {
-	if m == nil {
+func (b *_BACnetOptionalREALNull) CreateBACnetOptionalREALNullBuilder() BACnetOptionalREALNullBuilder {
+	if b == nil {
 		return NewBACnetOptionalREALNullBuilder()
 	}
-	return &_BACnetOptionalREALNullBuilder{_BACnetOptionalREALNull: m.deepCopy()}
+	return &_BACnetOptionalREALNullBuilder{_BACnetOptionalREALNull: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetOptionalREALNull) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

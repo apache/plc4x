@@ -124,84 +124,103 @@ func NewMonitoringParametersBuilder() MonitoringParametersBuilder {
 type _MonitoringParametersBuilder struct {
 	*_MonitoringParameters
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MonitoringParametersBuilder) = (*_MonitoringParametersBuilder)(nil)
 
-func (m *_MonitoringParametersBuilder) WithMandatoryFields(clientHandle uint32, samplingInterval float64, filter ExtensionObject, queueSize uint32, discardOldest bool) MonitoringParametersBuilder {
-	return m.WithClientHandle(clientHandle).WithSamplingInterval(samplingInterval).WithFilter(filter).WithQueueSize(queueSize).WithDiscardOldest(discardOldest)
+func (b *_MonitoringParametersBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_MonitoringParametersBuilder) WithClientHandle(clientHandle uint32) MonitoringParametersBuilder {
-	m.ClientHandle = clientHandle
-	return m
+func (b *_MonitoringParametersBuilder) WithMandatoryFields(clientHandle uint32, samplingInterval float64, filter ExtensionObject, queueSize uint32, discardOldest bool) MonitoringParametersBuilder {
+	return b.WithClientHandle(clientHandle).WithSamplingInterval(samplingInterval).WithFilter(filter).WithQueueSize(queueSize).WithDiscardOldest(discardOldest)
 }
 
-func (m *_MonitoringParametersBuilder) WithSamplingInterval(samplingInterval float64) MonitoringParametersBuilder {
-	m.SamplingInterval = samplingInterval
-	return m
+func (b *_MonitoringParametersBuilder) WithClientHandle(clientHandle uint32) MonitoringParametersBuilder {
+	b.ClientHandle = clientHandle
+	return b
 }
 
-func (m *_MonitoringParametersBuilder) WithFilter(filter ExtensionObject) MonitoringParametersBuilder {
-	m.Filter = filter
-	return m
+func (b *_MonitoringParametersBuilder) WithSamplingInterval(samplingInterval float64) MonitoringParametersBuilder {
+	b.SamplingInterval = samplingInterval
+	return b
 }
 
-func (m *_MonitoringParametersBuilder) WithFilterBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) MonitoringParametersBuilder {
-	builder := builderSupplier(m.Filter.CreateExtensionObjectBuilder())
+func (b *_MonitoringParametersBuilder) WithFilter(filter ExtensionObject) MonitoringParametersBuilder {
+	b.Filter = filter
+	return b
+}
+
+func (b *_MonitoringParametersBuilder) WithFilterBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) MonitoringParametersBuilder {
+	builder := builderSupplier(b.Filter.CreateExtensionObjectBuilder())
 	var err error
-	m.Filter, err = builder.Build()
+	b.Filter, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_MonitoringParametersBuilder) WithQueueSize(queueSize uint32) MonitoringParametersBuilder {
-	m.QueueSize = queueSize
-	return m
+func (b *_MonitoringParametersBuilder) WithQueueSize(queueSize uint32) MonitoringParametersBuilder {
+	b.QueueSize = queueSize
+	return b
 }
 
-func (m *_MonitoringParametersBuilder) WithDiscardOldest(discardOldest bool) MonitoringParametersBuilder {
-	m.DiscardOldest = discardOldest
-	return m
+func (b *_MonitoringParametersBuilder) WithDiscardOldest(discardOldest bool) MonitoringParametersBuilder {
+	b.DiscardOldest = discardOldest
+	return b
 }
 
-func (m *_MonitoringParametersBuilder) Build() (MonitoringParameters, error) {
-	if m.Filter == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_MonitoringParametersBuilder) Build() (MonitoringParameters, error) {
+	if b.Filter == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'filter' not set"))
+		b.err.Append(errors.New("mandatory field 'filter' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MonitoringParameters.deepCopy(), nil
+	return b._MonitoringParameters.deepCopy(), nil
 }
 
-func (m *_MonitoringParametersBuilder) MustBuild() MonitoringParameters {
-	build, err := m.Build()
+func (b *_MonitoringParametersBuilder) MustBuild() MonitoringParameters {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MonitoringParametersBuilder) DeepCopy() any {
-	return m.CreateMonitoringParametersBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MonitoringParametersBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MonitoringParametersBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_MonitoringParametersBuilder) DeepCopy() any {
+	_copy := b.CreateMonitoringParametersBuilder().(*_MonitoringParametersBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMonitoringParametersBuilder creates a MonitoringParametersBuilder
-func (m *_MonitoringParameters) CreateMonitoringParametersBuilder() MonitoringParametersBuilder {
-	if m == nil {
+func (b *_MonitoringParameters) CreateMonitoringParametersBuilder() MonitoringParametersBuilder {
+	if b == nil {
 		return NewMonitoringParametersBuilder()
 	}
-	return &_MonitoringParametersBuilder{_MonitoringParameters: m.deepCopy()}
+	return &_MonitoringParametersBuilder{_MonitoringParameters: b.deepCopy()}
 }
 
 ///////////////////////
@@ -431,9 +450,13 @@ func (m *_MonitoringParameters) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

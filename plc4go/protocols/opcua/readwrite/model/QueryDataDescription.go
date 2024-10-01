@@ -93,6 +93,8 @@ type QueryDataDescriptionBuilder interface {
 	WithMandatoryFields(relativePath ExtensionObjectDefinition, attributeId uint32, indexRange PascalString) QueryDataDescriptionBuilder
 	// WithRelativePath adds RelativePath (property field)
 	WithRelativePath(ExtensionObjectDefinition) QueryDataDescriptionBuilder
+	// WithRelativePathBuilder adds RelativePath (property field) which is build by the builder
+	WithRelativePathBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryDataDescriptionBuilder
 	// WithAttributeId adds AttributeId (property field)
 	WithAttributeId(uint32) QueryDataDescriptionBuilder
 	// WithIndexRange adds IndexRange (property field)
@@ -113,80 +115,112 @@ func NewQueryDataDescriptionBuilder() QueryDataDescriptionBuilder {
 type _QueryDataDescriptionBuilder struct {
 	*_QueryDataDescription
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (QueryDataDescriptionBuilder) = (*_QueryDataDescriptionBuilder)(nil)
 
-func (m *_QueryDataDescriptionBuilder) WithMandatoryFields(relativePath ExtensionObjectDefinition, attributeId uint32, indexRange PascalString) QueryDataDescriptionBuilder {
-	return m.WithRelativePath(relativePath).WithAttributeId(attributeId).WithIndexRange(indexRange)
+func (b *_QueryDataDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_QueryDataDescriptionBuilder) WithRelativePath(relativePath ExtensionObjectDefinition) QueryDataDescriptionBuilder {
-	m.RelativePath = relativePath
-	return m
+func (b *_QueryDataDescriptionBuilder) WithMandatoryFields(relativePath ExtensionObjectDefinition, attributeId uint32, indexRange PascalString) QueryDataDescriptionBuilder {
+	return b.WithRelativePath(relativePath).WithAttributeId(attributeId).WithIndexRange(indexRange)
 }
 
-func (m *_QueryDataDescriptionBuilder) WithAttributeId(attributeId uint32) QueryDataDescriptionBuilder {
-	m.AttributeId = attributeId
-	return m
+func (b *_QueryDataDescriptionBuilder) WithRelativePath(relativePath ExtensionObjectDefinition) QueryDataDescriptionBuilder {
+	b.RelativePath = relativePath
+	return b
 }
 
-func (m *_QueryDataDescriptionBuilder) WithIndexRange(indexRange PascalString) QueryDataDescriptionBuilder {
-	m.IndexRange = indexRange
-	return m
-}
-
-func (m *_QueryDataDescriptionBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) QueryDataDescriptionBuilder {
-	builder := builderSupplier(m.IndexRange.CreatePascalStringBuilder())
+func (b *_QueryDataDescriptionBuilder) WithRelativePathBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryDataDescriptionBuilder {
+	builder := builderSupplier(b.RelativePath.CreateExtensionObjectDefinitionBuilder())
 	var err error
-	m.IndexRange, err = builder.Build()
+	b.RelativePath, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_QueryDataDescriptionBuilder) Build() (QueryDataDescription, error) {
-	if m.RelativePath == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'relativePath' not set"))
-	}
-	if m.IndexRange == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
-		}
-		m.err.Append(errors.New("mandatory field 'indexRange' not set"))
-	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._QueryDataDescription.deepCopy(), nil
+func (b *_QueryDataDescriptionBuilder) WithAttributeId(attributeId uint32) QueryDataDescriptionBuilder {
+	b.AttributeId = attributeId
+	return b
 }
 
-func (m *_QueryDataDescriptionBuilder) MustBuild() QueryDataDescription {
-	build, err := m.Build()
+func (b *_QueryDataDescriptionBuilder) WithIndexRange(indexRange PascalString) QueryDataDescriptionBuilder {
+	b.IndexRange = indexRange
+	return b
+}
+
+func (b *_QueryDataDescriptionBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) QueryDataDescriptionBuilder {
+	builder := builderSupplier(b.IndexRange.CreatePascalStringBuilder())
+	var err error
+	b.IndexRange, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_QueryDataDescriptionBuilder) Build() (QueryDataDescription, error) {
+	if b.RelativePath == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'relativePath' not set"))
+	}
+	if b.IndexRange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'indexRange' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._QueryDataDescription.deepCopy(), nil
+}
+
+func (b *_QueryDataDescriptionBuilder) MustBuild() QueryDataDescription {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_QueryDataDescriptionBuilder) DeepCopy() any {
-	return m.CreateQueryDataDescriptionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_QueryDataDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_QueryDataDescriptionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_QueryDataDescriptionBuilder) DeepCopy() any {
+	_copy := b.CreateQueryDataDescriptionBuilder().(*_QueryDataDescriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateQueryDataDescriptionBuilder creates a QueryDataDescriptionBuilder
-func (m *_QueryDataDescription) CreateQueryDataDescriptionBuilder() QueryDataDescriptionBuilder {
-	if m == nil {
+func (b *_QueryDataDescription) CreateQueryDataDescriptionBuilder() QueryDataDescriptionBuilder {
+	if b == nil {
 		return NewQueryDataDescriptionBuilder()
 	}
-	return &_QueryDataDescriptionBuilder{_QueryDataDescription: m.deepCopy()}
+	return &_QueryDataDescriptionBuilder{_QueryDataDescription: b.deepCopy()}
 }
 
 ///////////////////////
@@ -366,9 +400,13 @@ func (m *_QueryDataDescription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

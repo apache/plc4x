@@ -98,64 +98,83 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder() BAC
 type _BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder struct {
 	*_BACnetFaultParameterFaultExtendedParametersEntryOctetString
 
+	parentBuilder *_BACnetFaultParameterFaultExtendedParametersEntryBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder)(nil)
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder {
-	return m.WithOctetStringValue(octetStringValue)
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) setParent(contract BACnetFaultParameterFaultExtendedParametersEntryContract) {
+	b.BACnetFaultParameterFaultExtendedParametersEntryContract = contract
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) WithOctetStringValue(octetStringValue BACnetApplicationTagOctetString) BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder {
-	m.OctetStringValue = octetStringValue
-	return m
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder {
+	return b.WithOctetStringValue(octetStringValue)
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) WithOctetStringValueBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder {
-	builder := builderSupplier(m.OctetStringValue.CreateBACnetApplicationTagOctetStringBuilder())
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) WithOctetStringValue(octetStringValue BACnetApplicationTagOctetString) BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder {
+	b.OctetStringValue = octetStringValue
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) WithOctetStringValueBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder {
+	builder := builderSupplier(b.OctetStringValue.CreateBACnetApplicationTagOctetStringBuilder())
 	var err error
-	m.OctetStringValue, err = builder.Build()
+	b.OctetStringValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryOctetString, error) {
-	if m.OctetStringValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryOctetString, error) {
+	if b.OctetStringValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'octetStringValue' not set"))
+		b.err.Append(errors.New("mandatory field 'octetStringValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetFaultParameterFaultExtendedParametersEntryOctetString.deepCopy(), nil
+	return b._BACnetFaultParameterFaultExtendedParametersEntryOctetString.deepCopy(), nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryOctetString {
-	build, err := m.Build()
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryOctetString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) DeepCopy() any {
-	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) buildForBACnetFaultParameterFaultExtendedParametersEntry() (BACnetFaultParameterFaultExtendedParametersEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) CreateBACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder() BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder {
-	if m == nil {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) CreateBACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder() BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder {
+	if b == nil {
 		return NewBACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder()
 	}
-	return &_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder{_BACnetFaultParameterFaultExtendedParametersEntryOctetString: m.deepCopy()}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder{_BACnetFaultParameterFaultExtendedParametersEntryOctetString: b.deepCopy()}
 }
 
 ///////////////////////
@@ -296,9 +315,13 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) String() 
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

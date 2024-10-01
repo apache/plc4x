@@ -110,88 +110,92 @@ type _BACnetActionListBuilder struct {
 
 var _ (BACnetActionListBuilder) = (*_BACnetActionListBuilder)(nil)
 
-func (m *_BACnetActionListBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, action []BACnetActionCommand, innerClosingTag BACnetClosingTag) BACnetActionListBuilder {
-	return m.WithInnerOpeningTag(innerOpeningTag).WithAction(action...).WithInnerClosingTag(innerClosingTag)
+func (b *_BACnetActionListBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, action []BACnetActionCommand, innerClosingTag BACnetClosingTag) BACnetActionListBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithAction(action...).WithInnerClosingTag(innerClosingTag)
 }
 
-func (m *_BACnetActionListBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetActionListBuilder {
-	m.InnerOpeningTag = innerOpeningTag
-	return m
+func (b *_BACnetActionListBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetActionListBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
 }
 
-func (m *_BACnetActionListBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetActionListBuilder {
-	builder := builderSupplier(m.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetActionListBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetActionListBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.InnerOpeningTag, err = builder.Build()
+	b.InnerOpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetActionListBuilder) WithAction(action ...BACnetActionCommand) BACnetActionListBuilder {
-	m.Action = action
-	return m
+func (b *_BACnetActionListBuilder) WithAction(action ...BACnetActionCommand) BACnetActionListBuilder {
+	b.Action = action
+	return b
 }
 
-func (m *_BACnetActionListBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetActionListBuilder {
-	m.InnerClosingTag = innerClosingTag
-	return m
+func (b *_BACnetActionListBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetActionListBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
 }
 
-func (m *_BACnetActionListBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetActionListBuilder {
-	builder := builderSupplier(m.InnerClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetActionListBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetActionListBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.InnerClosingTag, err = builder.Build()
+	b.InnerClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetActionListBuilder) Build() (BACnetActionList, error) {
-	if m.InnerOpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetActionListBuilder) Build() (BACnetActionList, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
 	}
-	if m.InnerClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetActionList.deepCopy(), nil
+	return b._BACnetActionList.deepCopy(), nil
 }
 
-func (m *_BACnetActionListBuilder) MustBuild() BACnetActionList {
-	build, err := m.Build()
+func (b *_BACnetActionListBuilder) MustBuild() BACnetActionList {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetActionListBuilder) DeepCopy() any {
-	return m.CreateBACnetActionListBuilder()
+func (b *_BACnetActionListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetActionListBuilder().(*_BACnetActionListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetActionListBuilder creates a BACnetActionListBuilder
-func (m *_BACnetActionList) CreateBACnetActionListBuilder() BACnetActionListBuilder {
-	if m == nil {
+func (b *_BACnetActionList) CreateBACnetActionListBuilder() BACnetActionListBuilder {
+	if b == nil {
 		return NewBACnetActionListBuilder()
 	}
-	return &_BACnetActionListBuilder{_BACnetActionList: m.deepCopy()}
+	return &_BACnetActionListBuilder{_BACnetActionList: b.deepCopy()}
 }
 
 ///////////////////////
@@ -368,9 +372,13 @@ func (m *_BACnetActionList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

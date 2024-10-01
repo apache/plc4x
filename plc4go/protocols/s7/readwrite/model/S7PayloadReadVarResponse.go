@@ -93,45 +93,64 @@ func NewS7PayloadReadVarResponseBuilder() S7PayloadReadVarResponseBuilder {
 type _S7PayloadReadVarResponseBuilder struct {
 	*_S7PayloadReadVarResponse
 
+	parentBuilder *_S7PayloadBuilder
+
 	err *utils.MultiError
 }
 
 var _ (S7PayloadReadVarResponseBuilder) = (*_S7PayloadReadVarResponseBuilder)(nil)
 
-func (m *_S7PayloadReadVarResponseBuilder) WithMandatoryFields(items []S7VarPayloadDataItem) S7PayloadReadVarResponseBuilder {
-	return m.WithItems(items...)
+func (b *_S7PayloadReadVarResponseBuilder) setParent(contract S7PayloadContract) {
+	b.S7PayloadContract = contract
 }
 
-func (m *_S7PayloadReadVarResponseBuilder) WithItems(items ...S7VarPayloadDataItem) S7PayloadReadVarResponseBuilder {
-	m.Items = items
-	return m
+func (b *_S7PayloadReadVarResponseBuilder) WithMandatoryFields(items []S7VarPayloadDataItem) S7PayloadReadVarResponseBuilder {
+	return b.WithItems(items...)
 }
 
-func (m *_S7PayloadReadVarResponseBuilder) Build() (S7PayloadReadVarResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_S7PayloadReadVarResponseBuilder) WithItems(items ...S7VarPayloadDataItem) S7PayloadReadVarResponseBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_S7PayloadReadVarResponseBuilder) Build() (S7PayloadReadVarResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._S7PayloadReadVarResponse.deepCopy(), nil
+	return b._S7PayloadReadVarResponse.deepCopy(), nil
 }
 
-func (m *_S7PayloadReadVarResponseBuilder) MustBuild() S7PayloadReadVarResponse {
-	build, err := m.Build()
+func (b *_S7PayloadReadVarResponseBuilder) MustBuild() S7PayloadReadVarResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_S7PayloadReadVarResponseBuilder) DeepCopy() any {
-	return m.CreateS7PayloadReadVarResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadReadVarResponseBuilder) Done() S7PayloadBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadReadVarResponseBuilder) buildForS7Payload() (S7Payload, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadReadVarResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadReadVarResponseBuilder().(*_S7PayloadReadVarResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateS7PayloadReadVarResponseBuilder creates a S7PayloadReadVarResponseBuilder
-func (m *_S7PayloadReadVarResponse) CreateS7PayloadReadVarResponseBuilder() S7PayloadReadVarResponseBuilder {
-	if m == nil {
+func (b *_S7PayloadReadVarResponse) CreateS7PayloadReadVarResponseBuilder() S7PayloadReadVarResponseBuilder {
+	if b == nil {
 		return NewS7PayloadReadVarResponseBuilder()
 	}
-	return &_S7PayloadReadVarResponseBuilder{_S7PayloadReadVarResponse: m.deepCopy()}
+	return &_S7PayloadReadVarResponseBuilder{_S7PayloadReadVarResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -286,9 +305,13 @@ func (m *_S7PayloadReadVarResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

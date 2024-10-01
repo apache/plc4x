@@ -125,75 +125,79 @@ type _NLMUpdateKeyUpdateControlFlagsBuilder struct {
 
 var _ (NLMUpdateKeyUpdateControlFlagsBuilder) = (*_NLMUpdateKeyUpdateControlFlagsBuilder)(nil)
 
-func (m *_NLMUpdateKeyUpdateControlFlagsBuilder) WithMandatoryFields(set1KeyRevisionActivationTimeExpirationTimePresent bool, set1KeyCountKeyParametersPresent bool, set1ShouldBeCleared bool, set2KeyRevisionActivationTimeExpirationTimePresent bool, set2KeyCountKeyParametersPresent bool, set2ShouldBeCleared bool, moreMessagesToBeExpected bool, removeAllKeys bool) NLMUpdateKeyUpdateControlFlagsBuilder {
-	return m.WithSet1KeyRevisionActivationTimeExpirationTimePresent(set1KeyRevisionActivationTimeExpirationTimePresent).WithSet1KeyCountKeyParametersPresent(set1KeyCountKeyParametersPresent).WithSet1ShouldBeCleared(set1ShouldBeCleared).WithSet2KeyRevisionActivationTimeExpirationTimePresent(set2KeyRevisionActivationTimeExpirationTimePresent).WithSet2KeyCountKeyParametersPresent(set2KeyCountKeyParametersPresent).WithSet2ShouldBeCleared(set2ShouldBeCleared).WithMoreMessagesToBeExpected(moreMessagesToBeExpected).WithRemoveAllKeys(removeAllKeys)
+func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) WithMandatoryFields(set1KeyRevisionActivationTimeExpirationTimePresent bool, set1KeyCountKeyParametersPresent bool, set1ShouldBeCleared bool, set2KeyRevisionActivationTimeExpirationTimePresent bool, set2KeyCountKeyParametersPresent bool, set2ShouldBeCleared bool, moreMessagesToBeExpected bool, removeAllKeys bool) NLMUpdateKeyUpdateControlFlagsBuilder {
+	return b.WithSet1KeyRevisionActivationTimeExpirationTimePresent(set1KeyRevisionActivationTimeExpirationTimePresent).WithSet1KeyCountKeyParametersPresent(set1KeyCountKeyParametersPresent).WithSet1ShouldBeCleared(set1ShouldBeCleared).WithSet2KeyRevisionActivationTimeExpirationTimePresent(set2KeyRevisionActivationTimeExpirationTimePresent).WithSet2KeyCountKeyParametersPresent(set2KeyCountKeyParametersPresent).WithSet2ShouldBeCleared(set2ShouldBeCleared).WithMoreMessagesToBeExpected(moreMessagesToBeExpected).WithRemoveAllKeys(removeAllKeys)
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlagsBuilder) WithSet1KeyRevisionActivationTimeExpirationTimePresent(set1KeyRevisionActivationTimeExpirationTimePresent bool) NLMUpdateKeyUpdateControlFlagsBuilder {
-	m.Set1KeyRevisionActivationTimeExpirationTimePresent = set1KeyRevisionActivationTimeExpirationTimePresent
-	return m
+func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) WithSet1KeyRevisionActivationTimeExpirationTimePresent(set1KeyRevisionActivationTimeExpirationTimePresent bool) NLMUpdateKeyUpdateControlFlagsBuilder {
+	b.Set1KeyRevisionActivationTimeExpirationTimePresent = set1KeyRevisionActivationTimeExpirationTimePresent
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlagsBuilder) WithSet1KeyCountKeyParametersPresent(set1KeyCountKeyParametersPresent bool) NLMUpdateKeyUpdateControlFlagsBuilder {
-	m.Set1KeyCountKeyParametersPresent = set1KeyCountKeyParametersPresent
-	return m
+func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) WithSet1KeyCountKeyParametersPresent(set1KeyCountKeyParametersPresent bool) NLMUpdateKeyUpdateControlFlagsBuilder {
+	b.Set1KeyCountKeyParametersPresent = set1KeyCountKeyParametersPresent
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlagsBuilder) WithSet1ShouldBeCleared(set1ShouldBeCleared bool) NLMUpdateKeyUpdateControlFlagsBuilder {
-	m.Set1ShouldBeCleared = set1ShouldBeCleared
-	return m
+func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) WithSet1ShouldBeCleared(set1ShouldBeCleared bool) NLMUpdateKeyUpdateControlFlagsBuilder {
+	b.Set1ShouldBeCleared = set1ShouldBeCleared
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlagsBuilder) WithSet2KeyRevisionActivationTimeExpirationTimePresent(set2KeyRevisionActivationTimeExpirationTimePresent bool) NLMUpdateKeyUpdateControlFlagsBuilder {
-	m.Set2KeyRevisionActivationTimeExpirationTimePresent = set2KeyRevisionActivationTimeExpirationTimePresent
-	return m
+func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) WithSet2KeyRevisionActivationTimeExpirationTimePresent(set2KeyRevisionActivationTimeExpirationTimePresent bool) NLMUpdateKeyUpdateControlFlagsBuilder {
+	b.Set2KeyRevisionActivationTimeExpirationTimePresent = set2KeyRevisionActivationTimeExpirationTimePresent
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlagsBuilder) WithSet2KeyCountKeyParametersPresent(set2KeyCountKeyParametersPresent bool) NLMUpdateKeyUpdateControlFlagsBuilder {
-	m.Set2KeyCountKeyParametersPresent = set2KeyCountKeyParametersPresent
-	return m
+func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) WithSet2KeyCountKeyParametersPresent(set2KeyCountKeyParametersPresent bool) NLMUpdateKeyUpdateControlFlagsBuilder {
+	b.Set2KeyCountKeyParametersPresent = set2KeyCountKeyParametersPresent
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlagsBuilder) WithSet2ShouldBeCleared(set2ShouldBeCleared bool) NLMUpdateKeyUpdateControlFlagsBuilder {
-	m.Set2ShouldBeCleared = set2ShouldBeCleared
-	return m
+func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) WithSet2ShouldBeCleared(set2ShouldBeCleared bool) NLMUpdateKeyUpdateControlFlagsBuilder {
+	b.Set2ShouldBeCleared = set2ShouldBeCleared
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlagsBuilder) WithMoreMessagesToBeExpected(moreMessagesToBeExpected bool) NLMUpdateKeyUpdateControlFlagsBuilder {
-	m.MoreMessagesToBeExpected = moreMessagesToBeExpected
-	return m
+func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) WithMoreMessagesToBeExpected(moreMessagesToBeExpected bool) NLMUpdateKeyUpdateControlFlagsBuilder {
+	b.MoreMessagesToBeExpected = moreMessagesToBeExpected
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlagsBuilder) WithRemoveAllKeys(removeAllKeys bool) NLMUpdateKeyUpdateControlFlagsBuilder {
-	m.RemoveAllKeys = removeAllKeys
-	return m
+func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) WithRemoveAllKeys(removeAllKeys bool) NLMUpdateKeyUpdateControlFlagsBuilder {
+	b.RemoveAllKeys = removeAllKeys
+	return b
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlagsBuilder) Build() (NLMUpdateKeyUpdateControlFlags, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) Build() (NLMUpdateKeyUpdateControlFlags, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._NLMUpdateKeyUpdateControlFlags.deepCopy(), nil
+	return b._NLMUpdateKeyUpdateControlFlags.deepCopy(), nil
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlagsBuilder) MustBuild() NLMUpdateKeyUpdateControlFlags {
-	build, err := m.Build()
+func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) MustBuild() NLMUpdateKeyUpdateControlFlags {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlagsBuilder) DeepCopy() any {
-	return m.CreateNLMUpdateKeyUpdateControlFlagsBuilder()
+func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) DeepCopy() any {
+	_copy := b.CreateNLMUpdateKeyUpdateControlFlagsBuilder().(*_NLMUpdateKeyUpdateControlFlagsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateNLMUpdateKeyUpdateControlFlagsBuilder creates a NLMUpdateKeyUpdateControlFlagsBuilder
-func (m *_NLMUpdateKeyUpdateControlFlags) CreateNLMUpdateKeyUpdateControlFlagsBuilder() NLMUpdateKeyUpdateControlFlagsBuilder {
-	if m == nil {
+func (b *_NLMUpdateKeyUpdateControlFlags) CreateNLMUpdateKeyUpdateControlFlagsBuilder() NLMUpdateKeyUpdateControlFlagsBuilder {
+	if b == nil {
 		return NewNLMUpdateKeyUpdateControlFlagsBuilder()
 	}
-	return &_NLMUpdateKeyUpdateControlFlagsBuilder{_NLMUpdateKeyUpdateControlFlags: m.deepCopy()}
+	return &_NLMUpdateKeyUpdateControlFlagsBuilder{_NLMUpdateKeyUpdateControlFlags: b.deepCopy()}
 }
 
 ///////////////////////
@@ -456,9 +460,13 @@ func (m *_NLMUpdateKeyUpdateControlFlags) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -90,6 +90,8 @@ type AddReferencesRequestBuilder interface {
 	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) AddReferencesRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
 	WithRequestHeader(ExtensionObjectDefinition) AddReferencesRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AddReferencesRequestBuilder
 	// WithNoOfReferencesToAdd adds NoOfReferencesToAdd (property field)
 	WithNoOfReferencesToAdd(int32) AddReferencesRequestBuilder
 	// WithReferencesToAdd adds ReferencesToAdd (property field)
@@ -108,61 +110,93 @@ func NewAddReferencesRequestBuilder() AddReferencesRequestBuilder {
 type _AddReferencesRequestBuilder struct {
 	*_AddReferencesRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AddReferencesRequestBuilder) = (*_AddReferencesRequestBuilder)(nil)
 
-func (m *_AddReferencesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) AddReferencesRequestBuilder {
-	return m.WithRequestHeader(requestHeader).WithNoOfReferencesToAdd(noOfReferencesToAdd).WithReferencesToAdd(referencesToAdd...)
+func (b *_AddReferencesRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_AddReferencesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) AddReferencesRequestBuilder {
-	m.RequestHeader = requestHeader
-	return m
+func (b *_AddReferencesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) AddReferencesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNoOfReferencesToAdd(noOfReferencesToAdd).WithReferencesToAdd(referencesToAdd...)
 }
 
-func (m *_AddReferencesRequestBuilder) WithNoOfReferencesToAdd(noOfReferencesToAdd int32) AddReferencesRequestBuilder {
-	m.NoOfReferencesToAdd = noOfReferencesToAdd
-	return m
+func (b *_AddReferencesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) AddReferencesRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
 }
 
-func (m *_AddReferencesRequestBuilder) WithReferencesToAdd(referencesToAdd ...ExtensionObjectDefinition) AddReferencesRequestBuilder {
-	m.ReferencesToAdd = referencesToAdd
-	return m
-}
-
-func (m *_AddReferencesRequestBuilder) Build() (AddReferencesRequest, error) {
-	if m.RequestHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AddReferencesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AddReferencesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._AddReferencesRequest.deepCopy(), nil
+	return b
 }
 
-func (m *_AddReferencesRequestBuilder) MustBuild() AddReferencesRequest {
-	build, err := m.Build()
+func (b *_AddReferencesRequestBuilder) WithNoOfReferencesToAdd(noOfReferencesToAdd int32) AddReferencesRequestBuilder {
+	b.NoOfReferencesToAdd = noOfReferencesToAdd
+	return b
+}
+
+func (b *_AddReferencesRequestBuilder) WithReferencesToAdd(referencesToAdd ...ExtensionObjectDefinition) AddReferencesRequestBuilder {
+	b.ReferencesToAdd = referencesToAdd
+	return b
+}
+
+func (b *_AddReferencesRequestBuilder) Build() (AddReferencesRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AddReferencesRequest.deepCopy(), nil
+}
+
+func (b *_AddReferencesRequestBuilder) MustBuild() AddReferencesRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AddReferencesRequestBuilder) DeepCopy() any {
-	return m.CreateAddReferencesRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AddReferencesRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AddReferencesRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AddReferencesRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAddReferencesRequestBuilder().(*_AddReferencesRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAddReferencesRequestBuilder creates a AddReferencesRequestBuilder
-func (m *_AddReferencesRequest) CreateAddReferencesRequestBuilder() AddReferencesRequestBuilder {
-	if m == nil {
+func (b *_AddReferencesRequest) CreateAddReferencesRequestBuilder() AddReferencesRequestBuilder {
+	if b == nil {
 		return NewAddReferencesRequestBuilder()
 	}
-	return &_AddReferencesRequestBuilder{_AddReferencesRequest: m.deepCopy()}
+	return &_AddReferencesRequestBuilder{_AddReferencesRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -349,9 +383,13 @@ func (m *_AddReferencesRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

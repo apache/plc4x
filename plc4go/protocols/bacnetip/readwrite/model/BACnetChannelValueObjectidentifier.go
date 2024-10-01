@@ -98,64 +98,83 @@ func NewBACnetChannelValueObjectidentifierBuilder() BACnetChannelValueObjectiden
 type _BACnetChannelValueObjectidentifierBuilder struct {
 	*_BACnetChannelValueObjectidentifier
 
+	parentBuilder *_BACnetChannelValueBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetChannelValueObjectidentifierBuilder) = (*_BACnetChannelValueObjectidentifierBuilder)(nil)
 
-func (m *_BACnetChannelValueObjectidentifierBuilder) WithMandatoryFields(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetChannelValueObjectidentifierBuilder {
-	return m.WithObjectidentifierValue(objectidentifierValue)
+func (b *_BACnetChannelValueObjectidentifierBuilder) setParent(contract BACnetChannelValueContract) {
+	b.BACnetChannelValueContract = contract
 }
 
-func (m *_BACnetChannelValueObjectidentifierBuilder) WithObjectidentifierValue(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetChannelValueObjectidentifierBuilder {
-	m.ObjectidentifierValue = objectidentifierValue
-	return m
+func (b *_BACnetChannelValueObjectidentifierBuilder) WithMandatoryFields(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetChannelValueObjectidentifierBuilder {
+	return b.WithObjectidentifierValue(objectidentifierValue)
 }
 
-func (m *_BACnetChannelValueObjectidentifierBuilder) WithObjectidentifierValueBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetChannelValueObjectidentifierBuilder {
-	builder := builderSupplier(m.ObjectidentifierValue.CreateBACnetApplicationTagObjectIdentifierBuilder())
+func (b *_BACnetChannelValueObjectidentifierBuilder) WithObjectidentifierValue(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetChannelValueObjectidentifierBuilder {
+	b.ObjectidentifierValue = objectidentifierValue
+	return b
+}
+
+func (b *_BACnetChannelValueObjectidentifierBuilder) WithObjectidentifierValueBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetChannelValueObjectidentifierBuilder {
+	builder := builderSupplier(b.ObjectidentifierValue.CreateBACnetApplicationTagObjectIdentifierBuilder())
 	var err error
-	m.ObjectidentifierValue, err = builder.Build()
+	b.ObjectidentifierValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetChannelValueObjectidentifierBuilder) Build() (BACnetChannelValueObjectidentifier, error) {
-	if m.ObjectidentifierValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetChannelValueObjectidentifierBuilder) Build() (BACnetChannelValueObjectidentifier, error) {
+	if b.ObjectidentifierValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectidentifierValue' not set"))
+		b.err.Append(errors.New("mandatory field 'objectidentifierValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetChannelValueObjectidentifier.deepCopy(), nil
+	return b._BACnetChannelValueObjectidentifier.deepCopy(), nil
 }
 
-func (m *_BACnetChannelValueObjectidentifierBuilder) MustBuild() BACnetChannelValueObjectidentifier {
-	build, err := m.Build()
+func (b *_BACnetChannelValueObjectidentifierBuilder) MustBuild() BACnetChannelValueObjectidentifier {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetChannelValueObjectidentifierBuilder) DeepCopy() any {
-	return m.CreateBACnetChannelValueObjectidentifierBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetChannelValueObjectidentifierBuilder) Done() BACnetChannelValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetChannelValueObjectidentifierBuilder) buildForBACnetChannelValue() (BACnetChannelValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetChannelValueObjectidentifierBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetChannelValueObjectidentifierBuilder().(*_BACnetChannelValueObjectidentifierBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetChannelValueObjectidentifierBuilder creates a BACnetChannelValueObjectidentifierBuilder
-func (m *_BACnetChannelValueObjectidentifier) CreateBACnetChannelValueObjectidentifierBuilder() BACnetChannelValueObjectidentifierBuilder {
-	if m == nil {
+func (b *_BACnetChannelValueObjectidentifier) CreateBACnetChannelValueObjectidentifierBuilder() BACnetChannelValueObjectidentifierBuilder {
+	if b == nil {
 		return NewBACnetChannelValueObjectidentifierBuilder()
 	}
-	return &_BACnetChannelValueObjectidentifierBuilder{_BACnetChannelValueObjectidentifier: m.deepCopy()}
+	return &_BACnetChannelValueObjectidentifierBuilder{_BACnetChannelValueObjectidentifier: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetChannelValueObjectidentifier) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

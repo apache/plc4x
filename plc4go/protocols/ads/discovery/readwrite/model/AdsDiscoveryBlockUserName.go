@@ -98,64 +98,83 @@ func NewAdsDiscoveryBlockUserNameBuilder() AdsDiscoveryBlockUserNameBuilder {
 type _AdsDiscoveryBlockUserNameBuilder struct {
 	*_AdsDiscoveryBlockUserName
 
+	parentBuilder *_AdsDiscoveryBlockBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsDiscoveryBlockUserNameBuilder) = (*_AdsDiscoveryBlockUserNameBuilder)(nil)
 
-func (m *_AdsDiscoveryBlockUserNameBuilder) WithMandatoryFields(userName AmsString) AdsDiscoveryBlockUserNameBuilder {
-	return m.WithUserName(userName)
+func (b *_AdsDiscoveryBlockUserNameBuilder) setParent(contract AdsDiscoveryBlockContract) {
+	b.AdsDiscoveryBlockContract = contract
 }
 
-func (m *_AdsDiscoveryBlockUserNameBuilder) WithUserName(userName AmsString) AdsDiscoveryBlockUserNameBuilder {
-	m.UserName = userName
-	return m
+func (b *_AdsDiscoveryBlockUserNameBuilder) WithMandatoryFields(userName AmsString) AdsDiscoveryBlockUserNameBuilder {
+	return b.WithUserName(userName)
 }
 
-func (m *_AdsDiscoveryBlockUserNameBuilder) WithUserNameBuilder(builderSupplier func(AmsStringBuilder) AmsStringBuilder) AdsDiscoveryBlockUserNameBuilder {
-	builder := builderSupplier(m.UserName.CreateAmsStringBuilder())
+func (b *_AdsDiscoveryBlockUserNameBuilder) WithUserName(userName AmsString) AdsDiscoveryBlockUserNameBuilder {
+	b.UserName = userName
+	return b
+}
+
+func (b *_AdsDiscoveryBlockUserNameBuilder) WithUserNameBuilder(builderSupplier func(AmsStringBuilder) AmsStringBuilder) AdsDiscoveryBlockUserNameBuilder {
+	builder := builderSupplier(b.UserName.CreateAmsStringBuilder())
 	var err error
-	m.UserName, err = builder.Build()
+	b.UserName, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "AmsStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "AmsStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_AdsDiscoveryBlockUserNameBuilder) Build() (AdsDiscoveryBlockUserName, error) {
-	if m.UserName == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_AdsDiscoveryBlockUserNameBuilder) Build() (AdsDiscoveryBlockUserName, error) {
+	if b.UserName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'userName' not set"))
+		b.err.Append(errors.New("mandatory field 'userName' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsDiscoveryBlockUserName.deepCopy(), nil
+	return b._AdsDiscoveryBlockUserName.deepCopy(), nil
 }
 
-func (m *_AdsDiscoveryBlockUserNameBuilder) MustBuild() AdsDiscoveryBlockUserName {
-	build, err := m.Build()
+func (b *_AdsDiscoveryBlockUserNameBuilder) MustBuild() AdsDiscoveryBlockUserName {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsDiscoveryBlockUserNameBuilder) DeepCopy() any {
-	return m.CreateAdsDiscoveryBlockUserNameBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsDiscoveryBlockUserNameBuilder) Done() AdsDiscoveryBlockBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsDiscoveryBlockUserNameBuilder) buildForAdsDiscoveryBlock() (AdsDiscoveryBlock, error) {
+	return b.Build()
+}
+
+func (b *_AdsDiscoveryBlockUserNameBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryBlockUserNameBuilder().(*_AdsDiscoveryBlockUserNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsDiscoveryBlockUserNameBuilder creates a AdsDiscoveryBlockUserNameBuilder
-func (m *_AdsDiscoveryBlockUserName) CreateAdsDiscoveryBlockUserNameBuilder() AdsDiscoveryBlockUserNameBuilder {
-	if m == nil {
+func (b *_AdsDiscoveryBlockUserName) CreateAdsDiscoveryBlockUserNameBuilder() AdsDiscoveryBlockUserNameBuilder {
+	if b == nil {
 		return NewAdsDiscoveryBlockUserNameBuilder()
 	}
-	return &_AdsDiscoveryBlockUserNameBuilder{_AdsDiscoveryBlockUserName: m.deepCopy()}
+	return &_AdsDiscoveryBlockUserNameBuilder{_AdsDiscoveryBlockUserName: b.deepCopy()}
 }
 
 ///////////////////////
@@ -299,9 +318,13 @@ func (m *_AdsDiscoveryBlockUserName) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

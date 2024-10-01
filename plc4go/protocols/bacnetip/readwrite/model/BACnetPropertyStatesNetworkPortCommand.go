@@ -98,64 +98,83 @@ func NewBACnetPropertyStatesNetworkPortCommandBuilder() BACnetPropertyStatesNetw
 type _BACnetPropertyStatesNetworkPortCommandBuilder struct {
 	*_BACnetPropertyStatesNetworkPortCommand
 
+	parentBuilder *_BACnetPropertyStatesBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetPropertyStatesNetworkPortCommandBuilder) = (*_BACnetPropertyStatesNetworkPortCommandBuilder)(nil)
 
-func (m *_BACnetPropertyStatesNetworkPortCommandBuilder) WithMandatoryFields(networkPortCommand BACnetNetworkPortCommandTagged) BACnetPropertyStatesNetworkPortCommandBuilder {
-	return m.WithNetworkPortCommand(networkPortCommand)
+func (b *_BACnetPropertyStatesNetworkPortCommandBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
 }
 
-func (m *_BACnetPropertyStatesNetworkPortCommandBuilder) WithNetworkPortCommand(networkPortCommand BACnetNetworkPortCommandTagged) BACnetPropertyStatesNetworkPortCommandBuilder {
-	m.NetworkPortCommand = networkPortCommand
-	return m
+func (b *_BACnetPropertyStatesNetworkPortCommandBuilder) WithMandatoryFields(networkPortCommand BACnetNetworkPortCommandTagged) BACnetPropertyStatesNetworkPortCommandBuilder {
+	return b.WithNetworkPortCommand(networkPortCommand)
 }
 
-func (m *_BACnetPropertyStatesNetworkPortCommandBuilder) WithNetworkPortCommandBuilder(builderSupplier func(BACnetNetworkPortCommandTaggedBuilder) BACnetNetworkPortCommandTaggedBuilder) BACnetPropertyStatesNetworkPortCommandBuilder {
-	builder := builderSupplier(m.NetworkPortCommand.CreateBACnetNetworkPortCommandTaggedBuilder())
+func (b *_BACnetPropertyStatesNetworkPortCommandBuilder) WithNetworkPortCommand(networkPortCommand BACnetNetworkPortCommandTagged) BACnetPropertyStatesNetworkPortCommandBuilder {
+	b.NetworkPortCommand = networkPortCommand
+	return b
+}
+
+func (b *_BACnetPropertyStatesNetworkPortCommandBuilder) WithNetworkPortCommandBuilder(builderSupplier func(BACnetNetworkPortCommandTaggedBuilder) BACnetNetworkPortCommandTaggedBuilder) BACnetPropertyStatesNetworkPortCommandBuilder {
+	builder := builderSupplier(b.NetworkPortCommand.CreateBACnetNetworkPortCommandTaggedBuilder())
 	var err error
-	m.NetworkPortCommand, err = builder.Build()
+	b.NetworkPortCommand, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetNetworkPortCommandTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetNetworkPortCommandTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetPropertyStatesNetworkPortCommandBuilder) Build() (BACnetPropertyStatesNetworkPortCommand, error) {
-	if m.NetworkPortCommand == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetPropertyStatesNetworkPortCommandBuilder) Build() (BACnetPropertyStatesNetworkPortCommand, error) {
+	if b.NetworkPortCommand == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'networkPortCommand' not set"))
+		b.err.Append(errors.New("mandatory field 'networkPortCommand' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetPropertyStatesNetworkPortCommand.deepCopy(), nil
+	return b._BACnetPropertyStatesNetworkPortCommand.deepCopy(), nil
 }
 
-func (m *_BACnetPropertyStatesNetworkPortCommandBuilder) MustBuild() BACnetPropertyStatesNetworkPortCommand {
-	build, err := m.Build()
+func (b *_BACnetPropertyStatesNetworkPortCommandBuilder) MustBuild() BACnetPropertyStatesNetworkPortCommand {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetPropertyStatesNetworkPortCommandBuilder) DeepCopy() any {
-	return m.CreateBACnetPropertyStatesNetworkPortCommandBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesNetworkPortCommandBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesNetworkPortCommandBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesNetworkPortCommandBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesNetworkPortCommandBuilder().(*_BACnetPropertyStatesNetworkPortCommandBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetPropertyStatesNetworkPortCommandBuilder creates a BACnetPropertyStatesNetworkPortCommandBuilder
-func (m *_BACnetPropertyStatesNetworkPortCommand) CreateBACnetPropertyStatesNetworkPortCommandBuilder() BACnetPropertyStatesNetworkPortCommandBuilder {
-	if m == nil {
+func (b *_BACnetPropertyStatesNetworkPortCommand) CreateBACnetPropertyStatesNetworkPortCommandBuilder() BACnetPropertyStatesNetworkPortCommandBuilder {
+	if b == nil {
 		return NewBACnetPropertyStatesNetworkPortCommandBuilder()
 	}
-	return &_BACnetPropertyStatesNetworkPortCommandBuilder{_BACnetPropertyStatesNetworkPortCommand: m.deepCopy()}
+	return &_BACnetPropertyStatesNetworkPortCommandBuilder{_BACnetPropertyStatesNetworkPortCommand: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -100,45 +100,49 @@ type _TriggerControlLabelOptionsBuilder struct {
 
 var _ (TriggerControlLabelOptionsBuilder) = (*_TriggerControlLabelOptionsBuilder)(nil)
 
-func (m *_TriggerControlLabelOptionsBuilder) WithMandatoryFields(labelFlavour TriggerControlLabelFlavour, labelType TriggerControlLabelType) TriggerControlLabelOptionsBuilder {
-	return m.WithLabelFlavour(labelFlavour).WithLabelType(labelType)
+func (b *_TriggerControlLabelOptionsBuilder) WithMandatoryFields(labelFlavour TriggerControlLabelFlavour, labelType TriggerControlLabelType) TriggerControlLabelOptionsBuilder {
+	return b.WithLabelFlavour(labelFlavour).WithLabelType(labelType)
 }
 
-func (m *_TriggerControlLabelOptionsBuilder) WithLabelFlavour(labelFlavour TriggerControlLabelFlavour) TriggerControlLabelOptionsBuilder {
-	m.LabelFlavour = labelFlavour
-	return m
+func (b *_TriggerControlLabelOptionsBuilder) WithLabelFlavour(labelFlavour TriggerControlLabelFlavour) TriggerControlLabelOptionsBuilder {
+	b.LabelFlavour = labelFlavour
+	return b
 }
 
-func (m *_TriggerControlLabelOptionsBuilder) WithLabelType(labelType TriggerControlLabelType) TriggerControlLabelOptionsBuilder {
-	m.LabelType = labelType
-	return m
+func (b *_TriggerControlLabelOptionsBuilder) WithLabelType(labelType TriggerControlLabelType) TriggerControlLabelOptionsBuilder {
+	b.LabelType = labelType
+	return b
 }
 
-func (m *_TriggerControlLabelOptionsBuilder) Build() (TriggerControlLabelOptions, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_TriggerControlLabelOptionsBuilder) Build() (TriggerControlLabelOptions, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._TriggerControlLabelOptions.deepCopy(), nil
+	return b._TriggerControlLabelOptions.deepCopy(), nil
 }
 
-func (m *_TriggerControlLabelOptionsBuilder) MustBuild() TriggerControlLabelOptions {
-	build, err := m.Build()
+func (b *_TriggerControlLabelOptionsBuilder) MustBuild() TriggerControlLabelOptions {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_TriggerControlLabelOptionsBuilder) DeepCopy() any {
-	return m.CreateTriggerControlLabelOptionsBuilder()
+func (b *_TriggerControlLabelOptionsBuilder) DeepCopy() any {
+	_copy := b.CreateTriggerControlLabelOptionsBuilder().(*_TriggerControlLabelOptionsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateTriggerControlLabelOptionsBuilder creates a TriggerControlLabelOptionsBuilder
-func (m *_TriggerControlLabelOptions) CreateTriggerControlLabelOptionsBuilder() TriggerControlLabelOptionsBuilder {
-	if m == nil {
+func (b *_TriggerControlLabelOptions) CreateTriggerControlLabelOptionsBuilder() TriggerControlLabelOptionsBuilder {
+	if b == nil {
 		return NewTriggerControlLabelOptionsBuilder()
 	}
-	return &_TriggerControlLabelOptionsBuilder{_TriggerControlLabelOptions: m.deepCopy()}
+	return &_TriggerControlLabelOptionsBuilder{_TriggerControlLabelOptions: b.deepCopy()}
 }
 
 ///////////////////////
@@ -349,9 +353,13 @@ func (m *_TriggerControlLabelOptions) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

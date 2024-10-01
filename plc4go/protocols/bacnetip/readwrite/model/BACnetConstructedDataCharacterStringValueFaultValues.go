@@ -103,63 +103,82 @@ func NewBACnetConstructedDataCharacterStringValueFaultValuesBuilder() BACnetCons
 type _BACnetConstructedDataCharacterStringValueFaultValuesBuilder struct {
 	*_BACnetConstructedDataCharacterStringValueFaultValues
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataCharacterStringValueFaultValuesBuilder) = (*_BACnetConstructedDataCharacterStringValueFaultValuesBuilder)(nil)
 
-func (m *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) WithMandatoryFields(faultValues []BACnetOptionalCharacterString) BACnetConstructedDataCharacterStringValueFaultValuesBuilder {
-	return m.WithFaultValues(faultValues...)
+func (b *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCharacterStringValueFaultValuesBuilder {
-	m.NumberOfDataElements = numberOfDataElements
-	return m
+func (b *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) WithMandatoryFields(faultValues []BACnetOptionalCharacterString) BACnetConstructedDataCharacterStringValueFaultValuesBuilder {
+	return b.WithFaultValues(faultValues...)
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCharacterStringValueFaultValuesBuilder {
-	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCharacterStringValueFaultValuesBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCharacterStringValueFaultValuesBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.NumberOfDataElements, err = builder.Build()
+	b.NumberOfDataElements, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) WithFaultValues(faultValues ...BACnetOptionalCharacterString) BACnetConstructedDataCharacterStringValueFaultValuesBuilder {
-	m.FaultValues = faultValues
-	return m
+func (b *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) WithFaultValues(faultValues ...BACnetOptionalCharacterString) BACnetConstructedDataCharacterStringValueFaultValuesBuilder {
+	b.FaultValues = faultValues
+	return b
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) Build() (BACnetConstructedDataCharacterStringValueFaultValues, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) Build() (BACnetConstructedDataCharacterStringValueFaultValues, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataCharacterStringValueFaultValues.deepCopy(), nil
+	return b._BACnetConstructedDataCharacterStringValueFaultValues.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) MustBuild() BACnetConstructedDataCharacterStringValueFaultValues {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) MustBuild() BACnetConstructedDataCharacterStringValueFaultValues {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataCharacterStringValueFaultValuesBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCharacterStringValueFaultValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCharacterStringValueFaultValuesBuilder().(*_BACnetConstructedDataCharacterStringValueFaultValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataCharacterStringValueFaultValuesBuilder creates a BACnetConstructedDataCharacterStringValueFaultValuesBuilder
-func (m *_BACnetConstructedDataCharacterStringValueFaultValues) CreateBACnetConstructedDataCharacterStringValueFaultValuesBuilder() BACnetConstructedDataCharacterStringValueFaultValuesBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataCharacterStringValueFaultValues) CreateBACnetConstructedDataCharacterStringValueFaultValuesBuilder() BACnetConstructedDataCharacterStringValueFaultValuesBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataCharacterStringValueFaultValuesBuilder()
 	}
-	return &_BACnetConstructedDataCharacterStringValueFaultValuesBuilder{_BACnetConstructedDataCharacterStringValueFaultValues: m.deepCopy()}
+	return &_BACnetConstructedDataCharacterStringValueFaultValuesBuilder{_BACnetConstructedDataCharacterStringValueFaultValues: b.deepCopy()}
 }
 
 ///////////////////////
@@ -367,9 +386,13 @@ func (m *_BACnetConstructedDataCharacterStringValueFaultValues) String() string 
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

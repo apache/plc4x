@@ -98,64 +98,83 @@ func NewBACnetValueSourceAddressBuilder() BACnetValueSourceAddressBuilder {
 type _BACnetValueSourceAddressBuilder struct {
 	*_BACnetValueSourceAddress
 
+	parentBuilder *_BACnetValueSourceBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetValueSourceAddressBuilder) = (*_BACnetValueSourceAddressBuilder)(nil)
 
-func (m *_BACnetValueSourceAddressBuilder) WithMandatoryFields(address BACnetAddressEnclosed) BACnetValueSourceAddressBuilder {
-	return m.WithAddress(address)
+func (b *_BACnetValueSourceAddressBuilder) setParent(contract BACnetValueSourceContract) {
+	b.BACnetValueSourceContract = contract
 }
 
-func (m *_BACnetValueSourceAddressBuilder) WithAddress(address BACnetAddressEnclosed) BACnetValueSourceAddressBuilder {
-	m.Address = address
-	return m
+func (b *_BACnetValueSourceAddressBuilder) WithMandatoryFields(address BACnetAddressEnclosed) BACnetValueSourceAddressBuilder {
+	return b.WithAddress(address)
 }
 
-func (m *_BACnetValueSourceAddressBuilder) WithAddressBuilder(builderSupplier func(BACnetAddressEnclosedBuilder) BACnetAddressEnclosedBuilder) BACnetValueSourceAddressBuilder {
-	builder := builderSupplier(m.Address.CreateBACnetAddressEnclosedBuilder())
+func (b *_BACnetValueSourceAddressBuilder) WithAddress(address BACnetAddressEnclosed) BACnetValueSourceAddressBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_BACnetValueSourceAddressBuilder) WithAddressBuilder(builderSupplier func(BACnetAddressEnclosedBuilder) BACnetAddressEnclosedBuilder) BACnetValueSourceAddressBuilder {
+	builder := builderSupplier(b.Address.CreateBACnetAddressEnclosedBuilder())
 	var err error
-	m.Address, err = builder.Build()
+	b.Address, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetAddressEnclosedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetAddressEnclosedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetValueSourceAddressBuilder) Build() (BACnetValueSourceAddress, error) {
-	if m.Address == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetValueSourceAddressBuilder) Build() (BACnetValueSourceAddress, error) {
+	if b.Address == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'address' not set"))
+		b.err.Append(errors.New("mandatory field 'address' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetValueSourceAddress.deepCopy(), nil
+	return b._BACnetValueSourceAddress.deepCopy(), nil
 }
 
-func (m *_BACnetValueSourceAddressBuilder) MustBuild() BACnetValueSourceAddress {
-	build, err := m.Build()
+func (b *_BACnetValueSourceAddressBuilder) MustBuild() BACnetValueSourceAddress {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetValueSourceAddressBuilder) DeepCopy() any {
-	return m.CreateBACnetValueSourceAddressBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetValueSourceAddressBuilder) Done() BACnetValueSourceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetValueSourceAddressBuilder) buildForBACnetValueSource() (BACnetValueSource, error) {
+	return b.Build()
+}
+
+func (b *_BACnetValueSourceAddressBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetValueSourceAddressBuilder().(*_BACnetValueSourceAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetValueSourceAddressBuilder creates a BACnetValueSourceAddressBuilder
-func (m *_BACnetValueSourceAddress) CreateBACnetValueSourceAddressBuilder() BACnetValueSourceAddressBuilder {
-	if m == nil {
+func (b *_BACnetValueSourceAddress) CreateBACnetValueSourceAddressBuilder() BACnetValueSourceAddressBuilder {
+	if b == nil {
 		return NewBACnetValueSourceAddressBuilder()
 	}
-	return &_BACnetValueSourceAddressBuilder{_BACnetValueSourceAddress: m.deepCopy()}
+	return &_BACnetValueSourceAddressBuilder{_BACnetValueSourceAddress: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetValueSourceAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

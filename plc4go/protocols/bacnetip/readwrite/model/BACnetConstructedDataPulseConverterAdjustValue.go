@@ -100,64 +100,83 @@ func NewBACnetConstructedDataPulseConverterAdjustValueBuilder() BACnetConstructe
 type _BACnetConstructedDataPulseConverterAdjustValueBuilder struct {
 	*_BACnetConstructedDataPulseConverterAdjustValue
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataPulseConverterAdjustValueBuilder) = (*_BACnetConstructedDataPulseConverterAdjustValueBuilder)(nil)
 
-func (m *_BACnetConstructedDataPulseConverterAdjustValueBuilder) WithMandatoryFields(adjustValue BACnetApplicationTagReal) BACnetConstructedDataPulseConverterAdjustValueBuilder {
-	return m.WithAdjustValue(adjustValue)
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataPulseConverterAdjustValueBuilder) WithAdjustValue(adjustValue BACnetApplicationTagReal) BACnetConstructedDataPulseConverterAdjustValueBuilder {
-	m.AdjustValue = adjustValue
-	return m
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) WithMandatoryFields(adjustValue BACnetApplicationTagReal) BACnetConstructedDataPulseConverterAdjustValueBuilder {
+	return b.WithAdjustValue(adjustValue)
 }
 
-func (m *_BACnetConstructedDataPulseConverterAdjustValueBuilder) WithAdjustValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataPulseConverterAdjustValueBuilder {
-	builder := builderSupplier(m.AdjustValue.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) WithAdjustValue(adjustValue BACnetApplicationTagReal) BACnetConstructedDataPulseConverterAdjustValueBuilder {
+	b.AdjustValue = adjustValue
+	return b
+}
+
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) WithAdjustValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataPulseConverterAdjustValueBuilder {
+	builder := builderSupplier(b.AdjustValue.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.AdjustValue, err = builder.Build()
+	b.AdjustValue, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataPulseConverterAdjustValueBuilder) Build() (BACnetConstructedDataPulseConverterAdjustValue, error) {
-	if m.AdjustValue == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) Build() (BACnetConstructedDataPulseConverterAdjustValue, error) {
+	if b.AdjustValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'adjustValue' not set"))
+		b.err.Append(errors.New("mandatory field 'adjustValue' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataPulseConverterAdjustValue.deepCopy(), nil
+	return b._BACnetConstructedDataPulseConverterAdjustValue.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataPulseConverterAdjustValueBuilder) MustBuild() BACnetConstructedDataPulseConverterAdjustValue {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) MustBuild() BACnetConstructedDataPulseConverterAdjustValue {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataPulseConverterAdjustValueBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataPulseConverterAdjustValueBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPulseConverterAdjustValueBuilder().(*_BACnetConstructedDataPulseConverterAdjustValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataPulseConverterAdjustValueBuilder creates a BACnetConstructedDataPulseConverterAdjustValueBuilder
-func (m *_BACnetConstructedDataPulseConverterAdjustValue) CreateBACnetConstructedDataPulseConverterAdjustValueBuilder() BACnetConstructedDataPulseConverterAdjustValueBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataPulseConverterAdjustValue) CreateBACnetConstructedDataPulseConverterAdjustValueBuilder() BACnetConstructedDataPulseConverterAdjustValueBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataPulseConverterAdjustValueBuilder()
 	}
-	return &_BACnetConstructedDataPulseConverterAdjustValueBuilder{_BACnetConstructedDataPulseConverterAdjustValue: m.deepCopy()}
+	return &_BACnetConstructedDataPulseConverterAdjustValueBuilder{_BACnetConstructedDataPulseConverterAdjustValue: b.deepCopy()}
 }
 
 ///////////////////////
@@ -335,9 +354,13 @@ func (m *_BACnetConstructedDataPulseConverterAdjustValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

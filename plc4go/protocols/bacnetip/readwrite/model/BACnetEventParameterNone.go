@@ -98,64 +98,83 @@ func NewBACnetEventParameterNoneBuilder() BACnetEventParameterNoneBuilder {
 type _BACnetEventParameterNoneBuilder struct {
 	*_BACnetEventParameterNone
 
+	parentBuilder *_BACnetEventParameterBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetEventParameterNoneBuilder) = (*_BACnetEventParameterNoneBuilder)(nil)
 
-func (m *_BACnetEventParameterNoneBuilder) WithMandatoryFields(none BACnetContextTagNull) BACnetEventParameterNoneBuilder {
-	return m.WithNone(none)
+func (b *_BACnetEventParameterNoneBuilder) setParent(contract BACnetEventParameterContract) {
+	b.BACnetEventParameterContract = contract
 }
 
-func (m *_BACnetEventParameterNoneBuilder) WithNone(none BACnetContextTagNull) BACnetEventParameterNoneBuilder {
-	m.None = none
-	return m
+func (b *_BACnetEventParameterNoneBuilder) WithMandatoryFields(none BACnetContextTagNull) BACnetEventParameterNoneBuilder {
+	return b.WithNone(none)
 }
 
-func (m *_BACnetEventParameterNoneBuilder) WithNoneBuilder(builderSupplier func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetEventParameterNoneBuilder {
-	builder := builderSupplier(m.None.CreateBACnetContextTagNullBuilder())
+func (b *_BACnetEventParameterNoneBuilder) WithNone(none BACnetContextTagNull) BACnetEventParameterNoneBuilder {
+	b.None = none
+	return b
+}
+
+func (b *_BACnetEventParameterNoneBuilder) WithNoneBuilder(builderSupplier func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetEventParameterNoneBuilder {
+	builder := builderSupplier(b.None.CreateBACnetContextTagNullBuilder())
 	var err error
-	m.None, err = builder.Build()
+	b.None, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetEventParameterNoneBuilder) Build() (BACnetEventParameterNone, error) {
-	if m.None == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetEventParameterNoneBuilder) Build() (BACnetEventParameterNone, error) {
+	if b.None == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'none' not set"))
+		b.err.Append(errors.New("mandatory field 'none' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetEventParameterNone.deepCopy(), nil
+	return b._BACnetEventParameterNone.deepCopy(), nil
 }
 
-func (m *_BACnetEventParameterNoneBuilder) MustBuild() BACnetEventParameterNone {
-	build, err := m.Build()
+func (b *_BACnetEventParameterNoneBuilder) MustBuild() BACnetEventParameterNone {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetEventParameterNoneBuilder) DeepCopy() any {
-	return m.CreateBACnetEventParameterNoneBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetEventParameterNoneBuilder) Done() BACnetEventParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetEventParameterNoneBuilder) buildForBACnetEventParameter() (BACnetEventParameter, error) {
+	return b.Build()
+}
+
+func (b *_BACnetEventParameterNoneBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventParameterNoneBuilder().(*_BACnetEventParameterNoneBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetEventParameterNoneBuilder creates a BACnetEventParameterNoneBuilder
-func (m *_BACnetEventParameterNone) CreateBACnetEventParameterNoneBuilder() BACnetEventParameterNoneBuilder {
-	if m == nil {
+func (b *_BACnetEventParameterNone) CreateBACnetEventParameterNoneBuilder() BACnetEventParameterNoneBuilder {
+	if b == nil {
 		return NewBACnetEventParameterNoneBuilder()
 	}
-	return &_BACnetEventParameterNoneBuilder{_BACnetEventParameterNone: m.deepCopy()}
+	return &_BACnetEventParameterNoneBuilder{_BACnetEventParameterNone: b.deepCopy()}
 }
 
 ///////////////////////
@@ -295,9 +314,13 @@ func (m *_BACnetEventParameterNone) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

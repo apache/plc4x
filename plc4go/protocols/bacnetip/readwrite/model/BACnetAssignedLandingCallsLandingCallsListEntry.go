@@ -105,83 +105,87 @@ type _BACnetAssignedLandingCallsLandingCallsListEntryBuilder struct {
 
 var _ (BACnetAssignedLandingCallsLandingCallsListEntryBuilder) = (*_BACnetAssignedLandingCallsLandingCallsListEntryBuilder)(nil)
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) WithMandatoryFields(floorNumber BACnetContextTagUnsignedInteger, direction BACnetLiftCarDirectionTagged) BACnetAssignedLandingCallsLandingCallsListEntryBuilder {
-	return m.WithFloorNumber(floorNumber).WithDirection(direction)
+func (b *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) WithMandatoryFields(floorNumber BACnetContextTagUnsignedInteger, direction BACnetLiftCarDirectionTagged) BACnetAssignedLandingCallsLandingCallsListEntryBuilder {
+	return b.WithFloorNumber(floorNumber).WithDirection(direction)
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) WithFloorNumber(floorNumber BACnetContextTagUnsignedInteger) BACnetAssignedLandingCallsLandingCallsListEntryBuilder {
-	m.FloorNumber = floorNumber
-	return m
+func (b *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) WithFloorNumber(floorNumber BACnetContextTagUnsignedInteger) BACnetAssignedLandingCallsLandingCallsListEntryBuilder {
+	b.FloorNumber = floorNumber
+	return b
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) WithFloorNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetAssignedLandingCallsLandingCallsListEntryBuilder {
-	builder := builderSupplier(m.FloorNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) WithFloorNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetAssignedLandingCallsLandingCallsListEntryBuilder {
+	builder := builderSupplier(b.FloorNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.FloorNumber, err = builder.Build()
+	b.FloorNumber, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) WithDirection(direction BACnetLiftCarDirectionTagged) BACnetAssignedLandingCallsLandingCallsListEntryBuilder {
-	m.Direction = direction
-	return m
+func (b *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) WithDirection(direction BACnetLiftCarDirectionTagged) BACnetAssignedLandingCallsLandingCallsListEntryBuilder {
+	b.Direction = direction
+	return b
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) WithDirectionBuilder(builderSupplier func(BACnetLiftCarDirectionTaggedBuilder) BACnetLiftCarDirectionTaggedBuilder) BACnetAssignedLandingCallsLandingCallsListEntryBuilder {
-	builder := builderSupplier(m.Direction.CreateBACnetLiftCarDirectionTaggedBuilder())
+func (b *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) WithDirectionBuilder(builderSupplier func(BACnetLiftCarDirectionTaggedBuilder) BACnetLiftCarDirectionTaggedBuilder) BACnetAssignedLandingCallsLandingCallsListEntryBuilder {
+	builder := builderSupplier(b.Direction.CreateBACnetLiftCarDirectionTaggedBuilder())
 	var err error
-	m.Direction, err = builder.Build()
+	b.Direction, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLiftCarDirectionTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLiftCarDirectionTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) Build() (BACnetAssignedLandingCallsLandingCallsListEntry, error) {
-	if m.FloorNumber == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) Build() (BACnetAssignedLandingCallsLandingCallsListEntry, error) {
+	if b.FloorNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'floorNumber' not set"))
+		b.err.Append(errors.New("mandatory field 'floorNumber' not set"))
 	}
-	if m.Direction == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Direction == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'direction' not set"))
+		b.err.Append(errors.New("mandatory field 'direction' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetAssignedLandingCallsLandingCallsListEntry.deepCopy(), nil
+	return b._BACnetAssignedLandingCallsLandingCallsListEntry.deepCopy(), nil
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) MustBuild() BACnetAssignedLandingCallsLandingCallsListEntry {
-	build, err := m.Build()
+func (b *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) MustBuild() BACnetAssignedLandingCallsLandingCallsListEntry {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) DeepCopy() any {
-	return m.CreateBACnetAssignedLandingCallsLandingCallsListEntryBuilder()
+func (b *_BACnetAssignedLandingCallsLandingCallsListEntryBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAssignedLandingCallsLandingCallsListEntryBuilder().(*_BACnetAssignedLandingCallsLandingCallsListEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetAssignedLandingCallsLandingCallsListEntryBuilder creates a BACnetAssignedLandingCallsLandingCallsListEntryBuilder
-func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) CreateBACnetAssignedLandingCallsLandingCallsListEntryBuilder() BACnetAssignedLandingCallsLandingCallsListEntryBuilder {
-	if m == nil {
+func (b *_BACnetAssignedLandingCallsLandingCallsListEntry) CreateBACnetAssignedLandingCallsLandingCallsListEntryBuilder() BACnetAssignedLandingCallsLandingCallsListEntryBuilder {
+	if b == nil {
 		return NewBACnetAssignedLandingCallsLandingCallsListEntryBuilder()
 	}
-	return &_BACnetAssignedLandingCallsLandingCallsListEntryBuilder{_BACnetAssignedLandingCallsLandingCallsListEntry: m.deepCopy()}
+	return &_BACnetAssignedLandingCallsLandingCallsListEntryBuilder{_BACnetAssignedLandingCallsLandingCallsListEntry: b.deepCopy()}
 }
 
 ///////////////////////
@@ -337,9 +341,13 @@ func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

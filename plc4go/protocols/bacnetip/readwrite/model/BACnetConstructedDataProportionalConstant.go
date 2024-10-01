@@ -100,64 +100,83 @@ func NewBACnetConstructedDataProportionalConstantBuilder() BACnetConstructedData
 type _BACnetConstructedDataProportionalConstantBuilder struct {
 	*_BACnetConstructedDataProportionalConstant
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataProportionalConstantBuilder) = (*_BACnetConstructedDataProportionalConstantBuilder)(nil)
 
-func (m *_BACnetConstructedDataProportionalConstantBuilder) WithMandatoryFields(proportionalConstant BACnetApplicationTagReal) BACnetConstructedDataProportionalConstantBuilder {
-	return m.WithProportionalConstant(proportionalConstant)
+func (b *_BACnetConstructedDataProportionalConstantBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataProportionalConstantBuilder) WithProportionalConstant(proportionalConstant BACnetApplicationTagReal) BACnetConstructedDataProportionalConstantBuilder {
-	m.ProportionalConstant = proportionalConstant
-	return m
+func (b *_BACnetConstructedDataProportionalConstantBuilder) WithMandatoryFields(proportionalConstant BACnetApplicationTagReal) BACnetConstructedDataProportionalConstantBuilder {
+	return b.WithProportionalConstant(proportionalConstant)
 }
 
-func (m *_BACnetConstructedDataProportionalConstantBuilder) WithProportionalConstantBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataProportionalConstantBuilder {
-	builder := builderSupplier(m.ProportionalConstant.CreateBACnetApplicationTagRealBuilder())
+func (b *_BACnetConstructedDataProportionalConstantBuilder) WithProportionalConstant(proportionalConstant BACnetApplicationTagReal) BACnetConstructedDataProportionalConstantBuilder {
+	b.ProportionalConstant = proportionalConstant
+	return b
+}
+
+func (b *_BACnetConstructedDataProportionalConstantBuilder) WithProportionalConstantBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataProportionalConstantBuilder {
+	builder := builderSupplier(b.ProportionalConstant.CreateBACnetApplicationTagRealBuilder())
 	var err error
-	m.ProportionalConstant, err = builder.Build()
+	b.ProportionalConstant, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataProportionalConstantBuilder) Build() (BACnetConstructedDataProportionalConstant, error) {
-	if m.ProportionalConstant == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataProportionalConstantBuilder) Build() (BACnetConstructedDataProportionalConstant, error) {
+	if b.ProportionalConstant == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'proportionalConstant' not set"))
+		b.err.Append(errors.New("mandatory field 'proportionalConstant' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataProportionalConstant.deepCopy(), nil
+	return b._BACnetConstructedDataProportionalConstant.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataProportionalConstantBuilder) MustBuild() BACnetConstructedDataProportionalConstant {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataProportionalConstantBuilder) MustBuild() BACnetConstructedDataProportionalConstant {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataProportionalConstantBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataProportionalConstantBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataProportionalConstantBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataProportionalConstantBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataProportionalConstantBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataProportionalConstantBuilder().(*_BACnetConstructedDataProportionalConstantBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataProportionalConstantBuilder creates a BACnetConstructedDataProportionalConstantBuilder
-func (m *_BACnetConstructedDataProportionalConstant) CreateBACnetConstructedDataProportionalConstantBuilder() BACnetConstructedDataProportionalConstantBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataProportionalConstant) CreateBACnetConstructedDataProportionalConstantBuilder() BACnetConstructedDataProportionalConstantBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataProportionalConstantBuilder()
 	}
-	return &_BACnetConstructedDataProportionalConstantBuilder{_BACnetConstructedDataProportionalConstant: m.deepCopy()}
+	return &_BACnetConstructedDataProportionalConstantBuilder{_BACnetConstructedDataProportionalConstant: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataProportionalConstant) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

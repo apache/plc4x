@@ -100,64 +100,83 @@ func NewBACnetConstructedDataNetworkNumberQualityBuilder() BACnetConstructedData
 type _BACnetConstructedDataNetworkNumberQualityBuilder struct {
 	*_BACnetConstructedDataNetworkNumberQuality
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataNetworkNumberQualityBuilder) = (*_BACnetConstructedDataNetworkNumberQualityBuilder)(nil)
 
-func (m *_BACnetConstructedDataNetworkNumberQualityBuilder) WithMandatoryFields(networkNumberQuality BACnetNetworkNumberQualityTagged) BACnetConstructedDataNetworkNumberQualityBuilder {
-	return m.WithNetworkNumberQuality(networkNumberQuality)
+func (b *_BACnetConstructedDataNetworkNumberQualityBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataNetworkNumberQualityBuilder) WithNetworkNumberQuality(networkNumberQuality BACnetNetworkNumberQualityTagged) BACnetConstructedDataNetworkNumberQualityBuilder {
-	m.NetworkNumberQuality = networkNumberQuality
-	return m
+func (b *_BACnetConstructedDataNetworkNumberQualityBuilder) WithMandatoryFields(networkNumberQuality BACnetNetworkNumberQualityTagged) BACnetConstructedDataNetworkNumberQualityBuilder {
+	return b.WithNetworkNumberQuality(networkNumberQuality)
 }
 
-func (m *_BACnetConstructedDataNetworkNumberQualityBuilder) WithNetworkNumberQualityBuilder(builderSupplier func(BACnetNetworkNumberQualityTaggedBuilder) BACnetNetworkNumberQualityTaggedBuilder) BACnetConstructedDataNetworkNumberQualityBuilder {
-	builder := builderSupplier(m.NetworkNumberQuality.CreateBACnetNetworkNumberQualityTaggedBuilder())
+func (b *_BACnetConstructedDataNetworkNumberQualityBuilder) WithNetworkNumberQuality(networkNumberQuality BACnetNetworkNumberQualityTagged) BACnetConstructedDataNetworkNumberQualityBuilder {
+	b.NetworkNumberQuality = networkNumberQuality
+	return b
+}
+
+func (b *_BACnetConstructedDataNetworkNumberQualityBuilder) WithNetworkNumberQualityBuilder(builderSupplier func(BACnetNetworkNumberQualityTaggedBuilder) BACnetNetworkNumberQualityTaggedBuilder) BACnetConstructedDataNetworkNumberQualityBuilder {
+	builder := builderSupplier(b.NetworkNumberQuality.CreateBACnetNetworkNumberQualityTaggedBuilder())
 	var err error
-	m.NetworkNumberQuality, err = builder.Build()
+	b.NetworkNumberQuality, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetNetworkNumberQualityTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetNetworkNumberQualityTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataNetworkNumberQualityBuilder) Build() (BACnetConstructedDataNetworkNumberQuality, error) {
-	if m.NetworkNumberQuality == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataNetworkNumberQualityBuilder) Build() (BACnetConstructedDataNetworkNumberQuality, error) {
+	if b.NetworkNumberQuality == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'networkNumberQuality' not set"))
+		b.err.Append(errors.New("mandatory field 'networkNumberQuality' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataNetworkNumberQuality.deepCopy(), nil
+	return b._BACnetConstructedDataNetworkNumberQuality.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataNetworkNumberQualityBuilder) MustBuild() BACnetConstructedDataNetworkNumberQuality {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataNetworkNumberQualityBuilder) MustBuild() BACnetConstructedDataNetworkNumberQuality {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataNetworkNumberQualityBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataNetworkNumberQualityBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNetworkNumberQualityBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNetworkNumberQualityBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNetworkNumberQualityBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNetworkNumberQualityBuilder().(*_BACnetConstructedDataNetworkNumberQualityBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataNetworkNumberQualityBuilder creates a BACnetConstructedDataNetworkNumberQualityBuilder
-func (m *_BACnetConstructedDataNetworkNumberQuality) CreateBACnetConstructedDataNetworkNumberQualityBuilder() BACnetConstructedDataNetworkNumberQualityBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataNetworkNumberQuality) CreateBACnetConstructedDataNetworkNumberQualityBuilder() BACnetConstructedDataNetworkNumberQualityBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataNetworkNumberQualityBuilder()
 	}
-	return &_BACnetConstructedDataNetworkNumberQualityBuilder{_BACnetConstructedDataNetworkNumberQuality: m.deepCopy()}
+	return &_BACnetConstructedDataNetworkNumberQualityBuilder{_BACnetConstructedDataNetworkNumberQuality: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataNetworkNumberQuality) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

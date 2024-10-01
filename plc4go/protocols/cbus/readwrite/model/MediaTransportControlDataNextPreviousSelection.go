@@ -97,45 +97,64 @@ func NewMediaTransportControlDataNextPreviousSelectionBuilder() MediaTransportCo
 type _MediaTransportControlDataNextPreviousSelectionBuilder struct {
 	*_MediaTransportControlDataNextPreviousSelection
 
+	parentBuilder *_MediaTransportControlDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (MediaTransportControlDataNextPreviousSelectionBuilder) = (*_MediaTransportControlDataNextPreviousSelectionBuilder)(nil)
 
-func (m *_MediaTransportControlDataNextPreviousSelectionBuilder) WithMandatoryFields(operation byte) MediaTransportControlDataNextPreviousSelectionBuilder {
-	return m.WithOperation(operation)
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
 }
 
-func (m *_MediaTransportControlDataNextPreviousSelectionBuilder) WithOperation(operation byte) MediaTransportControlDataNextPreviousSelectionBuilder {
-	m.Operation = operation
-	return m
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) WithMandatoryFields(operation byte) MediaTransportControlDataNextPreviousSelectionBuilder {
+	return b.WithOperation(operation)
 }
 
-func (m *_MediaTransportControlDataNextPreviousSelectionBuilder) Build() (MediaTransportControlDataNextPreviousSelection, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) WithOperation(operation byte) MediaTransportControlDataNextPreviousSelectionBuilder {
+	b.Operation = operation
+	return b
+}
+
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) Build() (MediaTransportControlDataNextPreviousSelection, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._MediaTransportControlDataNextPreviousSelection.deepCopy(), nil
+	return b._MediaTransportControlDataNextPreviousSelection.deepCopy(), nil
 }
 
-func (m *_MediaTransportControlDataNextPreviousSelectionBuilder) MustBuild() MediaTransportControlDataNextPreviousSelection {
-	build, err := m.Build()
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) MustBuild() MediaTransportControlDataNextPreviousSelection {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_MediaTransportControlDataNextPreviousSelectionBuilder) DeepCopy() any {
-	return m.CreateMediaTransportControlDataNextPreviousSelectionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataNextPreviousSelectionBuilder().(*_MediaTransportControlDataNextPreviousSelectionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateMediaTransportControlDataNextPreviousSelectionBuilder creates a MediaTransportControlDataNextPreviousSelectionBuilder
-func (m *_MediaTransportControlDataNextPreviousSelection) CreateMediaTransportControlDataNextPreviousSelectionBuilder() MediaTransportControlDataNextPreviousSelectionBuilder {
-	if m == nil {
+func (b *_MediaTransportControlDataNextPreviousSelection) CreateMediaTransportControlDataNextPreviousSelectionBuilder() MediaTransportControlDataNextPreviousSelectionBuilder {
+	if b == nil {
 		return NewMediaTransportControlDataNextPreviousSelectionBuilder()
 	}
-	return &_MediaTransportControlDataNextPreviousSelectionBuilder{_MediaTransportControlDataNextPreviousSelection: m.deepCopy()}
+	return &_MediaTransportControlDataNextPreviousSelectionBuilder{_MediaTransportControlDataNextPreviousSelection: b.deepCopy()}
 }
 
 ///////////////////////
@@ -325,9 +344,13 @@ func (m *_MediaTransportControlDataNextPreviousSelection) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

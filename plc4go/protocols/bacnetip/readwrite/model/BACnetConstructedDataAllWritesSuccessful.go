@@ -100,64 +100,83 @@ func NewBACnetConstructedDataAllWritesSuccessfulBuilder() BACnetConstructedDataA
 type _BACnetConstructedDataAllWritesSuccessfulBuilder struct {
 	*_BACnetConstructedDataAllWritesSuccessful
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataAllWritesSuccessfulBuilder) = (*_BACnetConstructedDataAllWritesSuccessfulBuilder)(nil)
 
-func (m *_BACnetConstructedDataAllWritesSuccessfulBuilder) WithMandatoryFields(allWritesSuccessful BACnetApplicationTagBoolean) BACnetConstructedDataAllWritesSuccessfulBuilder {
-	return m.WithAllWritesSuccessful(allWritesSuccessful)
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataAllWritesSuccessfulBuilder) WithAllWritesSuccessful(allWritesSuccessful BACnetApplicationTagBoolean) BACnetConstructedDataAllWritesSuccessfulBuilder {
-	m.AllWritesSuccessful = allWritesSuccessful
-	return m
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) WithMandatoryFields(allWritesSuccessful BACnetApplicationTagBoolean) BACnetConstructedDataAllWritesSuccessfulBuilder {
+	return b.WithAllWritesSuccessful(allWritesSuccessful)
 }
 
-func (m *_BACnetConstructedDataAllWritesSuccessfulBuilder) WithAllWritesSuccessfulBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataAllWritesSuccessfulBuilder {
-	builder := builderSupplier(m.AllWritesSuccessful.CreateBACnetApplicationTagBooleanBuilder())
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) WithAllWritesSuccessful(allWritesSuccessful BACnetApplicationTagBoolean) BACnetConstructedDataAllWritesSuccessfulBuilder {
+	b.AllWritesSuccessful = allWritesSuccessful
+	return b
+}
+
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) WithAllWritesSuccessfulBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataAllWritesSuccessfulBuilder {
+	builder := builderSupplier(b.AllWritesSuccessful.CreateBACnetApplicationTagBooleanBuilder())
 	var err error
-	m.AllWritesSuccessful, err = builder.Build()
+	b.AllWritesSuccessful, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataAllWritesSuccessfulBuilder) Build() (BACnetConstructedDataAllWritesSuccessful, error) {
-	if m.AllWritesSuccessful == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) Build() (BACnetConstructedDataAllWritesSuccessful, error) {
+	if b.AllWritesSuccessful == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'allWritesSuccessful' not set"))
+		b.err.Append(errors.New("mandatory field 'allWritesSuccessful' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataAllWritesSuccessful.deepCopy(), nil
+	return b._BACnetConstructedDataAllWritesSuccessful.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataAllWritesSuccessfulBuilder) MustBuild() BACnetConstructedDataAllWritesSuccessful {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) MustBuild() BACnetConstructedDataAllWritesSuccessful {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataAllWritesSuccessfulBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataAllWritesSuccessfulBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAllWritesSuccessfulBuilder().(*_BACnetConstructedDataAllWritesSuccessfulBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataAllWritesSuccessfulBuilder creates a BACnetConstructedDataAllWritesSuccessfulBuilder
-func (m *_BACnetConstructedDataAllWritesSuccessful) CreateBACnetConstructedDataAllWritesSuccessfulBuilder() BACnetConstructedDataAllWritesSuccessfulBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataAllWritesSuccessful) CreateBACnetConstructedDataAllWritesSuccessfulBuilder() BACnetConstructedDataAllWritesSuccessfulBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataAllWritesSuccessfulBuilder()
 	}
-	return &_BACnetConstructedDataAllWritesSuccessfulBuilder{_BACnetConstructedDataAllWritesSuccessful: m.deepCopy()}
+	return &_BACnetConstructedDataAllWritesSuccessfulBuilder{_BACnetConstructedDataAllWritesSuccessful: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

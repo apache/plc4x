@@ -105,55 +105,74 @@ func NewAdsMultiRequestItemWriteBuilder() AdsMultiRequestItemWriteBuilder {
 type _AdsMultiRequestItemWriteBuilder struct {
 	*_AdsMultiRequestItemWrite
 
+	parentBuilder *_AdsMultiRequestItemBuilder
+
 	err *utils.MultiError
 }
 
 var _ (AdsMultiRequestItemWriteBuilder) = (*_AdsMultiRequestItemWriteBuilder)(nil)
 
-func (m *_AdsMultiRequestItemWriteBuilder) WithMandatoryFields(itemIndexGroup uint32, itemIndexOffset uint32, itemWriteLength uint32) AdsMultiRequestItemWriteBuilder {
-	return m.WithItemIndexGroup(itemIndexGroup).WithItemIndexOffset(itemIndexOffset).WithItemWriteLength(itemWriteLength)
+func (b *_AdsMultiRequestItemWriteBuilder) setParent(contract AdsMultiRequestItemContract) {
+	b.AdsMultiRequestItemContract = contract
 }
 
-func (m *_AdsMultiRequestItemWriteBuilder) WithItemIndexGroup(itemIndexGroup uint32) AdsMultiRequestItemWriteBuilder {
-	m.ItemIndexGroup = itemIndexGroup
-	return m
+func (b *_AdsMultiRequestItemWriteBuilder) WithMandatoryFields(itemIndexGroup uint32, itemIndexOffset uint32, itemWriteLength uint32) AdsMultiRequestItemWriteBuilder {
+	return b.WithItemIndexGroup(itemIndexGroup).WithItemIndexOffset(itemIndexOffset).WithItemWriteLength(itemWriteLength)
 }
 
-func (m *_AdsMultiRequestItemWriteBuilder) WithItemIndexOffset(itemIndexOffset uint32) AdsMultiRequestItemWriteBuilder {
-	m.ItemIndexOffset = itemIndexOffset
-	return m
+func (b *_AdsMultiRequestItemWriteBuilder) WithItemIndexGroup(itemIndexGroup uint32) AdsMultiRequestItemWriteBuilder {
+	b.ItemIndexGroup = itemIndexGroup
+	return b
 }
 
-func (m *_AdsMultiRequestItemWriteBuilder) WithItemWriteLength(itemWriteLength uint32) AdsMultiRequestItemWriteBuilder {
-	m.ItemWriteLength = itemWriteLength
-	return m
+func (b *_AdsMultiRequestItemWriteBuilder) WithItemIndexOffset(itemIndexOffset uint32) AdsMultiRequestItemWriteBuilder {
+	b.ItemIndexOffset = itemIndexOffset
+	return b
 }
 
-func (m *_AdsMultiRequestItemWriteBuilder) Build() (AdsMultiRequestItemWrite, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_AdsMultiRequestItemWriteBuilder) WithItemWriteLength(itemWriteLength uint32) AdsMultiRequestItemWriteBuilder {
+	b.ItemWriteLength = itemWriteLength
+	return b
+}
+
+func (b *_AdsMultiRequestItemWriteBuilder) Build() (AdsMultiRequestItemWrite, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._AdsMultiRequestItemWrite.deepCopy(), nil
+	return b._AdsMultiRequestItemWrite.deepCopy(), nil
 }
 
-func (m *_AdsMultiRequestItemWriteBuilder) MustBuild() AdsMultiRequestItemWrite {
-	build, err := m.Build()
+func (b *_AdsMultiRequestItemWriteBuilder) MustBuild() AdsMultiRequestItemWrite {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_AdsMultiRequestItemWriteBuilder) DeepCopy() any {
-	return m.CreateAdsMultiRequestItemWriteBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsMultiRequestItemWriteBuilder) Done() AdsMultiRequestItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsMultiRequestItemWriteBuilder) buildForAdsMultiRequestItem() (AdsMultiRequestItem, error) {
+	return b.Build()
+}
+
+func (b *_AdsMultiRequestItemWriteBuilder) DeepCopy() any {
+	_copy := b.CreateAdsMultiRequestItemWriteBuilder().(*_AdsMultiRequestItemWriteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateAdsMultiRequestItemWriteBuilder creates a AdsMultiRequestItemWriteBuilder
-func (m *_AdsMultiRequestItemWrite) CreateAdsMultiRequestItemWriteBuilder() AdsMultiRequestItemWriteBuilder {
-	if m == nil {
+func (b *_AdsMultiRequestItemWrite) CreateAdsMultiRequestItemWriteBuilder() AdsMultiRequestItemWriteBuilder {
+	if b == nil {
 		return NewAdsMultiRequestItemWriteBuilder()
 	}
-	return &_AdsMultiRequestItemWriteBuilder{_AdsMultiRequestItemWrite: m.deepCopy()}
+	return &_AdsMultiRequestItemWriteBuilder{_AdsMultiRequestItemWrite: b.deepCopy()}
 }
 
 ///////////////////////
@@ -333,9 +352,13 @@ func (m *_AdsMultiRequestItemWrite) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

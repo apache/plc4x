@@ -89,40 +89,59 @@ func NewApduDataGroupValueReadBuilder() ApduDataGroupValueReadBuilder {
 type _ApduDataGroupValueReadBuilder struct {
 	*_ApduDataGroupValueRead
 
+	parentBuilder *_ApduDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataGroupValueReadBuilder) = (*_ApduDataGroupValueReadBuilder)(nil)
 
-func (m *_ApduDataGroupValueReadBuilder) WithMandatoryFields() ApduDataGroupValueReadBuilder {
-	return m
+func (b *_ApduDataGroupValueReadBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
 }
 
-func (m *_ApduDataGroupValueReadBuilder) Build() (ApduDataGroupValueRead, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataGroupValueReadBuilder) WithMandatoryFields() ApduDataGroupValueReadBuilder {
+	return b
+}
+
+func (b *_ApduDataGroupValueReadBuilder) Build() (ApduDataGroupValueRead, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataGroupValueRead.deepCopy(), nil
+	return b._ApduDataGroupValueRead.deepCopy(), nil
 }
 
-func (m *_ApduDataGroupValueReadBuilder) MustBuild() ApduDataGroupValueRead {
-	build, err := m.Build()
+func (b *_ApduDataGroupValueReadBuilder) MustBuild() ApduDataGroupValueRead {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataGroupValueReadBuilder) DeepCopy() any {
-	return m.CreateApduDataGroupValueReadBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataGroupValueReadBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataGroupValueReadBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataGroupValueReadBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataGroupValueReadBuilder().(*_ApduDataGroupValueReadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataGroupValueReadBuilder creates a ApduDataGroupValueReadBuilder
-func (m *_ApduDataGroupValueRead) CreateApduDataGroupValueReadBuilder() ApduDataGroupValueReadBuilder {
-	if m == nil {
+func (b *_ApduDataGroupValueRead) CreateApduDataGroupValueReadBuilder() ApduDataGroupValueReadBuilder {
+	if b == nil {
 		return NewApduDataGroupValueReadBuilder()
 	}
-	return &_ApduDataGroupValueReadBuilder{_ApduDataGroupValueRead: m.deepCopy()}
+	return &_ApduDataGroupValueReadBuilder{_ApduDataGroupValueRead: b.deepCopy()}
 }
 
 ///////////////////////
@@ -252,9 +271,13 @@ func (m *_ApduDataGroupValueRead) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

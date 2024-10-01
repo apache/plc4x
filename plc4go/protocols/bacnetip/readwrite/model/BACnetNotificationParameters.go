@@ -125,10 +125,114 @@ type BACnetNotificationParametersBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetNotificationParametersBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersBuilder
+	// AsBACnetNotificationParametersChangeOfBitString converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfBitString() interface {
+		BACnetNotificationParametersChangeOfBitStringBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfState converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfState() interface {
+		BACnetNotificationParametersChangeOfStateBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfValue converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfValue() interface {
+		BACnetNotificationParametersChangeOfValueBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersCommandFailure converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersCommandFailure() interface {
+		BACnetNotificationParametersCommandFailureBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersFloatingLimit converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersFloatingLimit() interface {
+		BACnetNotificationParametersFloatingLimitBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersOutOfRange converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersOutOfRange() interface {
+		BACnetNotificationParametersOutOfRangeBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersComplexEventType converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersComplexEventType() interface {
+		BACnetNotificationParametersComplexEventTypeBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfLifeSafety converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfLifeSafety() interface {
+		BACnetNotificationParametersChangeOfLifeSafetyBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersExtended converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersExtended() interface {
+		BACnetNotificationParametersExtendedBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersBufferReady converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersBufferReady() interface {
+		BACnetNotificationParametersBufferReadyBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersUnsignedRange converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersUnsignedRange() interface {
+		BACnetNotificationParametersUnsignedRangeBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersAccessEvent converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersAccessEvent() interface {
+		BACnetNotificationParametersAccessEventBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersDoubleOutOfRange converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersDoubleOutOfRange() interface {
+		BACnetNotificationParametersDoubleOutOfRangeBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersSignedOutOfRange converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersSignedOutOfRange() interface {
+		BACnetNotificationParametersSignedOutOfRangeBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersUnsignedOutOfRange converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersUnsignedOutOfRange() interface {
+		BACnetNotificationParametersUnsignedOutOfRangeBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfCharacterString converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfCharacterString() interface {
+		BACnetNotificationParametersChangeOfCharacterStringBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfStatusFlags converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfStatusFlags() interface {
+		BACnetNotificationParametersChangeOfStatusFlagsBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfReliability converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfReliability() interface {
+		BACnetNotificationParametersChangeOfReliabilityBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfDiscreteValue converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfDiscreteValue() interface {
+		BACnetNotificationParametersChangeOfDiscreteValueBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfTimer converts this build to a subType of BACnetNotificationParameters. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfTimer() interface {
+		BACnetNotificationParametersChangeOfTimerBuilder
+		Done() BACnetNotificationParametersBuilder
+	}
 	// Build builds the BACnetNotificationParameters or returns an error if something is wrong
-	Build() (BACnetNotificationParametersContract, error)
+	PartialBuild() (BACnetNotificationParametersContract, error)
 	// MustBuild does the same as Build but panics on error
-	MustBuild() BACnetNotificationParametersContract
+	PartialMustBuild() BACnetNotificationParametersContract
+	// Build builds the BACnetNotificationParameters or returns an error if something is wrong
+	Build() (BACnetNotificationParameters, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParameters
 }
 
 // NewBACnetNotificationParametersBuilder() creates a BACnetNotificationParametersBuilder
@@ -136,115 +240,469 @@ func NewBACnetNotificationParametersBuilder() BACnetNotificationParametersBuilde
 	return &_BACnetNotificationParametersBuilder{_BACnetNotificationParameters: new(_BACnetNotificationParameters)}
 }
 
+type _BACnetNotificationParametersChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetNotificationParametersContract)
+	buildForBACnetNotificationParameters() (BACnetNotificationParameters, error)
+}
+
 type _BACnetNotificationParametersBuilder struct {
 	*_BACnetNotificationParameters
+
+	childBuilder _BACnetNotificationParametersChildBuilder
 
 	err *utils.MultiError
 }
 
 var _ (BACnetNotificationParametersBuilder) = (*_BACnetNotificationParametersBuilder)(nil)
 
-func (m *_BACnetNotificationParametersBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetNotificationParametersBuilder {
-	return m.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+func (b *_BACnetNotificationParametersBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetNotificationParametersBuilder {
+	return b.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetNotificationParametersBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetNotificationParametersBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetNotificationParametersBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetNotificationParametersBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetNotificationParametersBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetNotificationParametersBuilder {
-	m.PeekedTagHeader = peekedTagHeader
-	return m
+func (b *_BACnetNotificationParametersBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetNotificationParametersBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
 }
 
-func (m *_BACnetNotificationParametersBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotificationParametersBuilder {
-	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+func (b *_BACnetNotificationParametersBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotificationParametersBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
 	var err error
-	m.PeekedTagHeader, err = builder.Build()
+	b.PeekedTagHeader, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetNotificationParametersBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetNotificationParametersBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetNotificationParametersBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetNotificationParametersBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetNotificationParametersBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetNotificationParametersBuilder) Build() (BACnetNotificationParametersContract, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetNotificationParametersBuilder) PartialBuild() (BACnetNotificationParametersContract, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.PeekedTagHeader == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetNotificationParameters.deepCopy(), nil
+	return b._BACnetNotificationParameters.deepCopy(), nil
 }
 
-func (m *_BACnetNotificationParametersBuilder) MustBuild() BACnetNotificationParametersContract {
-	build, err := m.Build()
+func (b *_BACnetNotificationParametersBuilder) PartialMustBuild() BACnetNotificationParametersContract {
+	build, err := b.PartialBuild()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetNotificationParametersBuilder) DeepCopy() any {
-	return m.CreateBACnetNotificationParametersBuilder()
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersChangeOfBitString() interface {
+	BACnetNotificationParametersChangeOfBitStringBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfBitStringBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfBitStringBuilder().(*_BACnetNotificationParametersChangeOfBitStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersChangeOfState() interface {
+	BACnetNotificationParametersChangeOfStateBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfStateBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfStateBuilder().(*_BACnetNotificationParametersChangeOfStateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersChangeOfValue() interface {
+	BACnetNotificationParametersChangeOfValueBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfValueBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfValueBuilder().(*_BACnetNotificationParametersChangeOfValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersCommandFailure() interface {
+	BACnetNotificationParametersCommandFailureBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersCommandFailureBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersCommandFailureBuilder().(*_BACnetNotificationParametersCommandFailureBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersFloatingLimit() interface {
+	BACnetNotificationParametersFloatingLimitBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersFloatingLimitBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersFloatingLimitBuilder().(*_BACnetNotificationParametersFloatingLimitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersOutOfRange() interface {
+	BACnetNotificationParametersOutOfRangeBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersOutOfRangeBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersOutOfRangeBuilder().(*_BACnetNotificationParametersOutOfRangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersComplexEventType() interface {
+	BACnetNotificationParametersComplexEventTypeBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersComplexEventTypeBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersComplexEventTypeBuilder().(*_BACnetNotificationParametersComplexEventTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersChangeOfLifeSafety() interface {
+	BACnetNotificationParametersChangeOfLifeSafetyBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfLifeSafetyBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfLifeSafetyBuilder().(*_BACnetNotificationParametersChangeOfLifeSafetyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersExtended() interface {
+	BACnetNotificationParametersExtendedBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersExtendedBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersExtendedBuilder().(*_BACnetNotificationParametersExtendedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersBufferReady() interface {
+	BACnetNotificationParametersBufferReadyBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersBufferReadyBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersBufferReadyBuilder().(*_BACnetNotificationParametersBufferReadyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersUnsignedRange() interface {
+	BACnetNotificationParametersUnsignedRangeBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersUnsignedRangeBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersUnsignedRangeBuilder().(*_BACnetNotificationParametersUnsignedRangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersAccessEvent() interface {
+	BACnetNotificationParametersAccessEventBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersAccessEventBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersAccessEventBuilder().(*_BACnetNotificationParametersAccessEventBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersDoubleOutOfRange() interface {
+	BACnetNotificationParametersDoubleOutOfRangeBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersDoubleOutOfRangeBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersDoubleOutOfRangeBuilder().(*_BACnetNotificationParametersDoubleOutOfRangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersSignedOutOfRange() interface {
+	BACnetNotificationParametersSignedOutOfRangeBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersSignedOutOfRangeBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersSignedOutOfRangeBuilder().(*_BACnetNotificationParametersSignedOutOfRangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersUnsignedOutOfRange() interface {
+	BACnetNotificationParametersUnsignedOutOfRangeBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersUnsignedOutOfRangeBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersUnsignedOutOfRangeBuilder().(*_BACnetNotificationParametersUnsignedOutOfRangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersChangeOfCharacterString() interface {
+	BACnetNotificationParametersChangeOfCharacterStringBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfCharacterStringBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfCharacterStringBuilder().(*_BACnetNotificationParametersChangeOfCharacterStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersChangeOfStatusFlags() interface {
+	BACnetNotificationParametersChangeOfStatusFlagsBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfStatusFlagsBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfStatusFlagsBuilder().(*_BACnetNotificationParametersChangeOfStatusFlagsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersChangeOfReliability() interface {
+	BACnetNotificationParametersChangeOfReliabilityBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfReliabilityBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfReliabilityBuilder().(*_BACnetNotificationParametersChangeOfReliabilityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersChangeOfDiscreteValue() interface {
+	BACnetNotificationParametersChangeOfDiscreteValueBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfDiscreteValueBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfDiscreteValueBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) AsBACnetNotificationParametersChangeOfTimer() interface {
+	BACnetNotificationParametersChangeOfTimerBuilder
+	Done() BACnetNotificationParametersBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfTimerBuilder
+		Done() BACnetNotificationParametersBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfTimerBuilder().(*_BACnetNotificationParametersChangeOfTimerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersBuilder) Build() (BACnetNotificationParameters, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetNotificationParameters()
+}
+
+func (b *_BACnetNotificationParametersBuilder) MustBuild() BACnetNotificationParameters {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetNotificationParametersBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersBuilder().(*_BACnetNotificationParametersBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetNotificationParametersChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetNotificationParametersBuilder creates a BACnetNotificationParametersBuilder
-func (m *_BACnetNotificationParameters) CreateBACnetNotificationParametersBuilder() BACnetNotificationParametersBuilder {
-	if m == nil {
+func (b *_BACnetNotificationParameters) CreateBACnetNotificationParametersBuilder() BACnetNotificationParametersBuilder {
+	if b == nil {
 		return NewBACnetNotificationParametersBuilder()
 	}
-	return &_BACnetNotificationParametersBuilder{_BACnetNotificationParameters: m.deepCopy()}
+	return &_BACnetNotificationParametersBuilder{_BACnetNotificationParameters: b.deepCopy()}
 }
 
 ///////////////////////

@@ -100,64 +100,83 @@ func NewBACnetConstructedDataIntervalOffsetBuilder() BACnetConstructedDataInterv
 type _BACnetConstructedDataIntervalOffsetBuilder struct {
 	*_BACnetConstructedDataIntervalOffset
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataIntervalOffsetBuilder) = (*_BACnetConstructedDataIntervalOffsetBuilder)(nil)
 
-func (m *_BACnetConstructedDataIntervalOffsetBuilder) WithMandatoryFields(intervalOffset BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntervalOffsetBuilder {
-	return m.WithIntervalOffset(intervalOffset)
+func (b *_BACnetConstructedDataIntervalOffsetBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataIntervalOffsetBuilder) WithIntervalOffset(intervalOffset BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntervalOffsetBuilder {
-	m.IntervalOffset = intervalOffset
-	return m
+func (b *_BACnetConstructedDataIntervalOffsetBuilder) WithMandatoryFields(intervalOffset BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntervalOffsetBuilder {
+	return b.WithIntervalOffset(intervalOffset)
 }
 
-func (m *_BACnetConstructedDataIntervalOffsetBuilder) WithIntervalOffsetBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIntervalOffsetBuilder {
-	builder := builderSupplier(m.IntervalOffset.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataIntervalOffsetBuilder) WithIntervalOffset(intervalOffset BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntervalOffsetBuilder {
+	b.IntervalOffset = intervalOffset
+	return b
+}
+
+func (b *_BACnetConstructedDataIntervalOffsetBuilder) WithIntervalOffsetBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIntervalOffsetBuilder {
+	builder := builderSupplier(b.IntervalOffset.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.IntervalOffset, err = builder.Build()
+	b.IntervalOffset, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataIntervalOffsetBuilder) Build() (BACnetConstructedDataIntervalOffset, error) {
-	if m.IntervalOffset == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataIntervalOffsetBuilder) Build() (BACnetConstructedDataIntervalOffset, error) {
+	if b.IntervalOffset == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'intervalOffset' not set"))
+		b.err.Append(errors.New("mandatory field 'intervalOffset' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataIntervalOffset.deepCopy(), nil
+	return b._BACnetConstructedDataIntervalOffset.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataIntervalOffsetBuilder) MustBuild() BACnetConstructedDataIntervalOffset {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataIntervalOffsetBuilder) MustBuild() BACnetConstructedDataIntervalOffset {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataIntervalOffsetBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataIntervalOffsetBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIntervalOffsetBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIntervalOffsetBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIntervalOffsetBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIntervalOffsetBuilder().(*_BACnetConstructedDataIntervalOffsetBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataIntervalOffsetBuilder creates a BACnetConstructedDataIntervalOffsetBuilder
-func (m *_BACnetConstructedDataIntervalOffset) CreateBACnetConstructedDataIntervalOffsetBuilder() BACnetConstructedDataIntervalOffsetBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataIntervalOffset) CreateBACnetConstructedDataIntervalOffsetBuilder() BACnetConstructedDataIntervalOffsetBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataIntervalOffsetBuilder()
 	}
-	return &_BACnetConstructedDataIntervalOffsetBuilder{_BACnetConstructedDataIntervalOffset: m.deepCopy()}
+	return &_BACnetConstructedDataIntervalOffsetBuilder{_BACnetConstructedDataIntervalOffset: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataIntervalOffset) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

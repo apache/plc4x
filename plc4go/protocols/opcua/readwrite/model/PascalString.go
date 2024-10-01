@@ -92,40 +92,44 @@ type _PascalStringBuilder struct {
 
 var _ (PascalStringBuilder) = (*_PascalStringBuilder)(nil)
 
-func (m *_PascalStringBuilder) WithMandatoryFields(stringValue string) PascalStringBuilder {
-	return m.WithStringValue(stringValue)
+func (b *_PascalStringBuilder) WithMandatoryFields(stringValue string) PascalStringBuilder {
+	return b.WithStringValue(stringValue)
 }
 
-func (m *_PascalStringBuilder) WithStringValue(stringValue string) PascalStringBuilder {
-	m.StringValue = stringValue
-	return m
+func (b *_PascalStringBuilder) WithStringValue(stringValue string) PascalStringBuilder {
+	b.StringValue = stringValue
+	return b
 }
 
-func (m *_PascalStringBuilder) Build() (PascalString, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_PascalStringBuilder) Build() (PascalString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._PascalString.deepCopy(), nil
+	return b._PascalString.deepCopy(), nil
 }
 
-func (m *_PascalStringBuilder) MustBuild() PascalString {
-	build, err := m.Build()
+func (b *_PascalStringBuilder) MustBuild() PascalString {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_PascalStringBuilder) DeepCopy() any {
-	return m.CreatePascalStringBuilder()
+func (b *_PascalStringBuilder) DeepCopy() any {
+	_copy := b.CreatePascalStringBuilder().(*_PascalStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreatePascalStringBuilder creates a PascalStringBuilder
-func (m *_PascalString) CreatePascalStringBuilder() PascalStringBuilder {
-	if m == nil {
+func (b *_PascalString) CreatePascalStringBuilder() PascalStringBuilder {
+	if b == nil {
 		return NewPascalStringBuilder()
 	}
-	return &_PascalStringBuilder{_PascalString: m.deepCopy()}
+	return &_PascalStringBuilder{_PascalString: b.deepCopy()}
 }
 
 ///////////////////////
@@ -304,9 +308,13 @@ func (m *_PascalString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

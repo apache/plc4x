@@ -100,64 +100,83 @@ func NewBACnetConstructedDataMachineRoomIDBuilder() BACnetConstructedDataMachine
 type _BACnetConstructedDataMachineRoomIDBuilder struct {
 	*_BACnetConstructedDataMachineRoomID
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataMachineRoomIDBuilder) = (*_BACnetConstructedDataMachineRoomIDBuilder)(nil)
 
-func (m *_BACnetConstructedDataMachineRoomIDBuilder) WithMandatoryFields(machineRoomId BACnetApplicationTagObjectIdentifier) BACnetConstructedDataMachineRoomIDBuilder {
-	return m.WithMachineRoomId(machineRoomId)
+func (b *_BACnetConstructedDataMachineRoomIDBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataMachineRoomIDBuilder) WithMachineRoomId(machineRoomId BACnetApplicationTagObjectIdentifier) BACnetConstructedDataMachineRoomIDBuilder {
-	m.MachineRoomId = machineRoomId
-	return m
+func (b *_BACnetConstructedDataMachineRoomIDBuilder) WithMandatoryFields(machineRoomId BACnetApplicationTagObjectIdentifier) BACnetConstructedDataMachineRoomIDBuilder {
+	return b.WithMachineRoomId(machineRoomId)
 }
 
-func (m *_BACnetConstructedDataMachineRoomIDBuilder) WithMachineRoomIdBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataMachineRoomIDBuilder {
-	builder := builderSupplier(m.MachineRoomId.CreateBACnetApplicationTagObjectIdentifierBuilder())
+func (b *_BACnetConstructedDataMachineRoomIDBuilder) WithMachineRoomId(machineRoomId BACnetApplicationTagObjectIdentifier) BACnetConstructedDataMachineRoomIDBuilder {
+	b.MachineRoomId = machineRoomId
+	return b
+}
+
+func (b *_BACnetConstructedDataMachineRoomIDBuilder) WithMachineRoomIdBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataMachineRoomIDBuilder {
+	builder := builderSupplier(b.MachineRoomId.CreateBACnetApplicationTagObjectIdentifierBuilder())
 	var err error
-	m.MachineRoomId, err = builder.Build()
+	b.MachineRoomId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataMachineRoomIDBuilder) Build() (BACnetConstructedDataMachineRoomID, error) {
-	if m.MachineRoomId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataMachineRoomIDBuilder) Build() (BACnetConstructedDataMachineRoomID, error) {
+	if b.MachineRoomId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'machineRoomId' not set"))
+		b.err.Append(errors.New("mandatory field 'machineRoomId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataMachineRoomID.deepCopy(), nil
+	return b._BACnetConstructedDataMachineRoomID.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataMachineRoomIDBuilder) MustBuild() BACnetConstructedDataMachineRoomID {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataMachineRoomIDBuilder) MustBuild() BACnetConstructedDataMachineRoomID {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataMachineRoomIDBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataMachineRoomIDBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMachineRoomIDBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMachineRoomIDBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMachineRoomIDBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMachineRoomIDBuilder().(*_BACnetConstructedDataMachineRoomIDBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataMachineRoomIDBuilder creates a BACnetConstructedDataMachineRoomIDBuilder
-func (m *_BACnetConstructedDataMachineRoomID) CreateBACnetConstructedDataMachineRoomIDBuilder() BACnetConstructedDataMachineRoomIDBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataMachineRoomID) CreateBACnetConstructedDataMachineRoomIDBuilder() BACnetConstructedDataMachineRoomIDBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataMachineRoomIDBuilder()
 	}
-	return &_BACnetConstructedDataMachineRoomIDBuilder{_BACnetConstructedDataMachineRoomID: m.deepCopy()}
+	return &_BACnetConstructedDataMachineRoomIDBuilder{_BACnetConstructedDataMachineRoomID: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataMachineRoomID) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

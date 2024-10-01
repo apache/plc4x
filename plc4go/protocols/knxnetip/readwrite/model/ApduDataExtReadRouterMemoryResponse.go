@@ -85,40 +85,59 @@ func NewApduDataExtReadRouterMemoryResponseBuilder() ApduDataExtReadRouterMemory
 type _ApduDataExtReadRouterMemoryResponseBuilder struct {
 	*_ApduDataExtReadRouterMemoryResponse
 
+	parentBuilder *_ApduDataExtBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataExtReadRouterMemoryResponseBuilder) = (*_ApduDataExtReadRouterMemoryResponseBuilder)(nil)
 
-func (m *_ApduDataExtReadRouterMemoryResponseBuilder) WithMandatoryFields() ApduDataExtReadRouterMemoryResponseBuilder {
-	return m
+func (b *_ApduDataExtReadRouterMemoryResponseBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
 }
 
-func (m *_ApduDataExtReadRouterMemoryResponseBuilder) Build() (ApduDataExtReadRouterMemoryResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataExtReadRouterMemoryResponseBuilder) WithMandatoryFields() ApduDataExtReadRouterMemoryResponseBuilder {
+	return b
+}
+
+func (b *_ApduDataExtReadRouterMemoryResponseBuilder) Build() (ApduDataExtReadRouterMemoryResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataExtReadRouterMemoryResponse.deepCopy(), nil
+	return b._ApduDataExtReadRouterMemoryResponse.deepCopy(), nil
 }
 
-func (m *_ApduDataExtReadRouterMemoryResponseBuilder) MustBuild() ApduDataExtReadRouterMemoryResponse {
-	build, err := m.Build()
+func (b *_ApduDataExtReadRouterMemoryResponseBuilder) MustBuild() ApduDataExtReadRouterMemoryResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataExtReadRouterMemoryResponseBuilder) DeepCopy() any {
-	return m.CreateApduDataExtReadRouterMemoryResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtReadRouterMemoryResponseBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtReadRouterMemoryResponseBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtReadRouterMemoryResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtReadRouterMemoryResponseBuilder().(*_ApduDataExtReadRouterMemoryResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataExtReadRouterMemoryResponseBuilder creates a ApduDataExtReadRouterMemoryResponseBuilder
-func (m *_ApduDataExtReadRouterMemoryResponse) CreateApduDataExtReadRouterMemoryResponseBuilder() ApduDataExtReadRouterMemoryResponseBuilder {
-	if m == nil {
+func (b *_ApduDataExtReadRouterMemoryResponse) CreateApduDataExtReadRouterMemoryResponseBuilder() ApduDataExtReadRouterMemoryResponseBuilder {
+	if b == nil {
 		return NewApduDataExtReadRouterMemoryResponseBuilder()
 	}
-	return &_ApduDataExtReadRouterMemoryResponseBuilder{_ApduDataExtReadRouterMemoryResponse: m.deepCopy()}
+	return &_ApduDataExtReadRouterMemoryResponseBuilder{_ApduDataExtReadRouterMemoryResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -234,9 +253,13 @@ func (m *_ApduDataExtReadRouterMemoryResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

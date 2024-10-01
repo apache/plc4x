@@ -100,64 +100,83 @@ func NewBACnetConstructedDataProtocolRevisionBuilder() BACnetConstructedDataProt
 type _BACnetConstructedDataProtocolRevisionBuilder struct {
 	*_BACnetConstructedDataProtocolRevision
 
+	parentBuilder *_BACnetConstructedDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConstructedDataProtocolRevisionBuilder) = (*_BACnetConstructedDataProtocolRevisionBuilder)(nil)
 
-func (m *_BACnetConstructedDataProtocolRevisionBuilder) WithMandatoryFields(protocolRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolRevisionBuilder {
-	return m.WithProtocolRevision(protocolRevision)
+func (b *_BACnetConstructedDataProtocolRevisionBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
 }
 
-func (m *_BACnetConstructedDataProtocolRevisionBuilder) WithProtocolRevision(protocolRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolRevisionBuilder {
-	m.ProtocolRevision = protocolRevision
-	return m
+func (b *_BACnetConstructedDataProtocolRevisionBuilder) WithMandatoryFields(protocolRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolRevisionBuilder {
+	return b.WithProtocolRevision(protocolRevision)
 }
 
-func (m *_BACnetConstructedDataProtocolRevisionBuilder) WithProtocolRevisionBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataProtocolRevisionBuilder {
-	builder := builderSupplier(m.ProtocolRevision.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+func (b *_BACnetConstructedDataProtocolRevisionBuilder) WithProtocolRevision(protocolRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolRevisionBuilder {
+	b.ProtocolRevision = protocolRevision
+	return b
+}
+
+func (b *_BACnetConstructedDataProtocolRevisionBuilder) WithProtocolRevisionBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataProtocolRevisionBuilder {
+	builder := builderSupplier(b.ProtocolRevision.CreateBACnetApplicationTagUnsignedIntegerBuilder())
 	var err error
-	m.ProtocolRevision, err = builder.Build()
+	b.ProtocolRevision, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConstructedDataProtocolRevisionBuilder) Build() (BACnetConstructedDataProtocolRevision, error) {
-	if m.ProtocolRevision == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConstructedDataProtocolRevisionBuilder) Build() (BACnetConstructedDataProtocolRevision, error) {
+	if b.ProtocolRevision == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'protocolRevision' not set"))
+		b.err.Append(errors.New("mandatory field 'protocolRevision' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConstructedDataProtocolRevision.deepCopy(), nil
+	return b._BACnetConstructedDataProtocolRevision.deepCopy(), nil
 }
 
-func (m *_BACnetConstructedDataProtocolRevisionBuilder) MustBuild() BACnetConstructedDataProtocolRevision {
-	build, err := m.Build()
+func (b *_BACnetConstructedDataProtocolRevisionBuilder) MustBuild() BACnetConstructedDataProtocolRevision {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConstructedDataProtocolRevisionBuilder) DeepCopy() any {
-	return m.CreateBACnetConstructedDataProtocolRevisionBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataProtocolRevisionBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataProtocolRevisionBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataProtocolRevisionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataProtocolRevisionBuilder().(*_BACnetConstructedDataProtocolRevisionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConstructedDataProtocolRevisionBuilder creates a BACnetConstructedDataProtocolRevisionBuilder
-func (m *_BACnetConstructedDataProtocolRevision) CreateBACnetConstructedDataProtocolRevisionBuilder() BACnetConstructedDataProtocolRevisionBuilder {
-	if m == nil {
+func (b *_BACnetConstructedDataProtocolRevision) CreateBACnetConstructedDataProtocolRevisionBuilder() BACnetConstructedDataProtocolRevisionBuilder {
+	if b == nil {
 		return NewBACnetConstructedDataProtocolRevisionBuilder()
 	}
-	return &_BACnetConstructedDataProtocolRevisionBuilder{_BACnetConstructedDataProtocolRevision: m.deepCopy()}
+	return &_BACnetConstructedDataProtocolRevisionBuilder{_BACnetConstructedDataProtocolRevision: b.deepCopy()}
 }
 
 ///////////////////////
@@ -334,9 +353,13 @@ func (m *_BACnetConstructedDataProtocolRevision) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

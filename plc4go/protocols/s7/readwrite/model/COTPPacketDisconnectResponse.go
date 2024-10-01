@@ -99,50 +99,69 @@ func NewCOTPPacketDisconnectResponseBuilder() COTPPacketDisconnectResponseBuilde
 type _COTPPacketDisconnectResponseBuilder struct {
 	*_COTPPacketDisconnectResponse
 
+	parentBuilder *_COTPPacketBuilder
+
 	err *utils.MultiError
 }
 
 var _ (COTPPacketDisconnectResponseBuilder) = (*_COTPPacketDisconnectResponseBuilder)(nil)
 
-func (m *_COTPPacketDisconnectResponseBuilder) WithMandatoryFields(destinationReference uint16, sourceReference uint16) COTPPacketDisconnectResponseBuilder {
-	return m.WithDestinationReference(destinationReference).WithSourceReference(sourceReference)
+func (b *_COTPPacketDisconnectResponseBuilder) setParent(contract COTPPacketContract) {
+	b.COTPPacketContract = contract
 }
 
-func (m *_COTPPacketDisconnectResponseBuilder) WithDestinationReference(destinationReference uint16) COTPPacketDisconnectResponseBuilder {
-	m.DestinationReference = destinationReference
-	return m
+func (b *_COTPPacketDisconnectResponseBuilder) WithMandatoryFields(destinationReference uint16, sourceReference uint16) COTPPacketDisconnectResponseBuilder {
+	return b.WithDestinationReference(destinationReference).WithSourceReference(sourceReference)
 }
 
-func (m *_COTPPacketDisconnectResponseBuilder) WithSourceReference(sourceReference uint16) COTPPacketDisconnectResponseBuilder {
-	m.SourceReference = sourceReference
-	return m
+func (b *_COTPPacketDisconnectResponseBuilder) WithDestinationReference(destinationReference uint16) COTPPacketDisconnectResponseBuilder {
+	b.DestinationReference = destinationReference
+	return b
 }
 
-func (m *_COTPPacketDisconnectResponseBuilder) Build() (COTPPacketDisconnectResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_COTPPacketDisconnectResponseBuilder) WithSourceReference(sourceReference uint16) COTPPacketDisconnectResponseBuilder {
+	b.SourceReference = sourceReference
+	return b
+}
+
+func (b *_COTPPacketDisconnectResponseBuilder) Build() (COTPPacketDisconnectResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._COTPPacketDisconnectResponse.deepCopy(), nil
+	return b._COTPPacketDisconnectResponse.deepCopy(), nil
 }
 
-func (m *_COTPPacketDisconnectResponseBuilder) MustBuild() COTPPacketDisconnectResponse {
-	build, err := m.Build()
+func (b *_COTPPacketDisconnectResponseBuilder) MustBuild() COTPPacketDisconnectResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_COTPPacketDisconnectResponseBuilder) DeepCopy() any {
-	return m.CreateCOTPPacketDisconnectResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_COTPPacketDisconnectResponseBuilder) Done() COTPPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_COTPPacketDisconnectResponseBuilder) buildForCOTPPacket() (COTPPacket, error) {
+	return b.Build()
+}
+
+func (b *_COTPPacketDisconnectResponseBuilder) DeepCopy() any {
+	_copy := b.CreateCOTPPacketDisconnectResponseBuilder().(*_COTPPacketDisconnectResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCOTPPacketDisconnectResponseBuilder creates a COTPPacketDisconnectResponseBuilder
-func (m *_COTPPacketDisconnectResponse) CreateCOTPPacketDisconnectResponseBuilder() COTPPacketDisconnectResponseBuilder {
-	if m == nil {
+func (b *_COTPPacketDisconnectResponse) CreateCOTPPacketDisconnectResponseBuilder() COTPPacketDisconnectResponseBuilder {
+	if b == nil {
 		return NewCOTPPacketDisconnectResponseBuilder()
 	}
-	return &_COTPPacketDisconnectResponseBuilder{_COTPPacketDisconnectResponse: m.deepCopy()}
+	return &_COTPPacketDisconnectResponseBuilder{_COTPPacketDisconnectResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -304,9 +323,13 @@ func (m *_COTPPacketDisconnectResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

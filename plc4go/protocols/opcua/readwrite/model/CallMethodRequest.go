@@ -121,98 +121,117 @@ func NewCallMethodRequestBuilder() CallMethodRequestBuilder {
 type _CallMethodRequestBuilder struct {
 	*_CallMethodRequest
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (CallMethodRequestBuilder) = (*_CallMethodRequestBuilder)(nil)
 
-func (m *_CallMethodRequestBuilder) WithMandatoryFields(objectId NodeId, methodId NodeId, noOfInputArguments int32, inputArguments []Variant) CallMethodRequestBuilder {
-	return m.WithObjectId(objectId).WithMethodId(methodId).WithNoOfInputArguments(noOfInputArguments).WithInputArguments(inputArguments...)
+func (b *_CallMethodRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_CallMethodRequestBuilder) WithObjectId(objectId NodeId) CallMethodRequestBuilder {
-	m.ObjectId = objectId
-	return m
+func (b *_CallMethodRequestBuilder) WithMandatoryFields(objectId NodeId, methodId NodeId, noOfInputArguments int32, inputArguments []Variant) CallMethodRequestBuilder {
+	return b.WithObjectId(objectId).WithMethodId(methodId).WithNoOfInputArguments(noOfInputArguments).WithInputArguments(inputArguments...)
 }
 
-func (m *_CallMethodRequestBuilder) WithObjectIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) CallMethodRequestBuilder {
-	builder := builderSupplier(m.ObjectId.CreateNodeIdBuilder())
+func (b *_CallMethodRequestBuilder) WithObjectId(objectId NodeId) CallMethodRequestBuilder {
+	b.ObjectId = objectId
+	return b
+}
+
+func (b *_CallMethodRequestBuilder) WithObjectIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) CallMethodRequestBuilder {
+	builder := builderSupplier(b.ObjectId.CreateNodeIdBuilder())
 	var err error
-	m.ObjectId, err = builder.Build()
+	b.ObjectId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CallMethodRequestBuilder) WithMethodId(methodId NodeId) CallMethodRequestBuilder {
-	m.MethodId = methodId
-	return m
+func (b *_CallMethodRequestBuilder) WithMethodId(methodId NodeId) CallMethodRequestBuilder {
+	b.MethodId = methodId
+	return b
 }
 
-func (m *_CallMethodRequestBuilder) WithMethodIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) CallMethodRequestBuilder {
-	builder := builderSupplier(m.MethodId.CreateNodeIdBuilder())
+func (b *_CallMethodRequestBuilder) WithMethodIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) CallMethodRequestBuilder {
+	builder := builderSupplier(b.MethodId.CreateNodeIdBuilder())
 	var err error
-	m.MethodId, err = builder.Build()
+	b.MethodId, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_CallMethodRequestBuilder) WithNoOfInputArguments(noOfInputArguments int32) CallMethodRequestBuilder {
-	m.NoOfInputArguments = noOfInputArguments
-	return m
+func (b *_CallMethodRequestBuilder) WithNoOfInputArguments(noOfInputArguments int32) CallMethodRequestBuilder {
+	b.NoOfInputArguments = noOfInputArguments
+	return b
 }
 
-func (m *_CallMethodRequestBuilder) WithInputArguments(inputArguments ...Variant) CallMethodRequestBuilder {
-	m.InputArguments = inputArguments
-	return m
+func (b *_CallMethodRequestBuilder) WithInputArguments(inputArguments ...Variant) CallMethodRequestBuilder {
+	b.InputArguments = inputArguments
+	return b
 }
 
-func (m *_CallMethodRequestBuilder) Build() (CallMethodRequest, error) {
-	if m.ObjectId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_CallMethodRequestBuilder) Build() (CallMethodRequest, error) {
+	if b.ObjectId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'objectId' not set"))
+		b.err.Append(errors.New("mandatory field 'objectId' not set"))
 	}
-	if m.MethodId == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.MethodId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'methodId' not set"))
+		b.err.Append(errors.New("mandatory field 'methodId' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._CallMethodRequest.deepCopy(), nil
+	return b._CallMethodRequest.deepCopy(), nil
 }
 
-func (m *_CallMethodRequestBuilder) MustBuild() CallMethodRequest {
-	build, err := m.Build()
+func (b *_CallMethodRequestBuilder) MustBuild() CallMethodRequest {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CallMethodRequestBuilder) DeepCopy() any {
-	return m.CreateCallMethodRequestBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CallMethodRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CallMethodRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_CallMethodRequestBuilder) DeepCopy() any {
+	_copy := b.CreateCallMethodRequestBuilder().(*_CallMethodRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCallMethodRequestBuilder creates a CallMethodRequestBuilder
-func (m *_CallMethodRequest) CreateCallMethodRequestBuilder() CallMethodRequestBuilder {
-	if m == nil {
+func (b *_CallMethodRequest) CreateCallMethodRequestBuilder() CallMethodRequestBuilder {
+	if b == nil {
 		return NewCallMethodRequestBuilder()
 	}
-	return &_CallMethodRequestBuilder{_CallMethodRequest: m.deepCopy()}
+	return &_CallMethodRequestBuilder{_CallMethodRequest: b.deepCopy()}
 }
 
 ///////////////////////
@@ -417,9 +436,13 @@ func (m *_CallMethodRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -84,6 +84,8 @@ type FirmataCommandSysexBuilder interface {
 	WithMandatoryFields(command SysexCommand) FirmataCommandSysexBuilder
 	// WithCommand adds Command (property field)
 	WithCommand(SysexCommand) FirmataCommandSysexBuilder
+	// WithCommandBuilder adds Command (property field) which is build by the builder
+	WithCommandBuilder(func(SysexCommandBuilder) SysexCommandBuilder) FirmataCommandSysexBuilder
 	// Build builds the FirmataCommandSysex or returns an error if something is wrong
 	Build() (FirmataCommandSysex, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,51 +100,83 @@ func NewFirmataCommandSysexBuilder() FirmataCommandSysexBuilder {
 type _FirmataCommandSysexBuilder struct {
 	*_FirmataCommandSysex
 
+	parentBuilder *_FirmataCommandBuilder
+
 	err *utils.MultiError
 }
 
 var _ (FirmataCommandSysexBuilder) = (*_FirmataCommandSysexBuilder)(nil)
 
-func (m *_FirmataCommandSysexBuilder) WithMandatoryFields(command SysexCommand) FirmataCommandSysexBuilder {
-	return m.WithCommand(command)
+func (b *_FirmataCommandSysexBuilder) setParent(contract FirmataCommandContract) {
+	b.FirmataCommandContract = contract
 }
 
-func (m *_FirmataCommandSysexBuilder) WithCommand(command SysexCommand) FirmataCommandSysexBuilder {
-	m.Command = command
-	return m
+func (b *_FirmataCommandSysexBuilder) WithMandatoryFields(command SysexCommand) FirmataCommandSysexBuilder {
+	return b.WithCommand(command)
 }
 
-func (m *_FirmataCommandSysexBuilder) Build() (FirmataCommandSysex, error) {
-	if m.Command == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_FirmataCommandSysexBuilder) WithCommand(command SysexCommand) FirmataCommandSysexBuilder {
+	b.Command = command
+	return b
+}
+
+func (b *_FirmataCommandSysexBuilder) WithCommandBuilder(builderSupplier func(SysexCommandBuilder) SysexCommandBuilder) FirmataCommandSysexBuilder {
+	builder := builderSupplier(b.Command.CreateSysexCommandBuilder())
+	var err error
+	b.Command, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.New("mandatory field 'command' not set"))
+		b.err.Append(errors.Wrap(err, "SysexCommandBuilder failed"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
-	}
-	return m._FirmataCommandSysex.deepCopy(), nil
+	return b
 }
 
-func (m *_FirmataCommandSysexBuilder) MustBuild() FirmataCommandSysex {
-	build, err := m.Build()
+func (b *_FirmataCommandSysexBuilder) Build() (FirmataCommandSysex, error) {
+	if b.Command == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'command' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._FirmataCommandSysex.deepCopy(), nil
+}
+
+func (b *_FirmataCommandSysexBuilder) MustBuild() FirmataCommandSysex {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_FirmataCommandSysexBuilder) DeepCopy() any {
-	return m.CreateFirmataCommandSysexBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FirmataCommandSysexBuilder) Done() FirmataCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FirmataCommandSysexBuilder) buildForFirmataCommand() (FirmataCommand, error) {
+	return b.Build()
+}
+
+func (b *_FirmataCommandSysexBuilder) DeepCopy() any {
+	_copy := b.CreateFirmataCommandSysexBuilder().(*_FirmataCommandSysexBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateFirmataCommandSysexBuilder creates a FirmataCommandSysexBuilder
-func (m *_FirmataCommandSysex) CreateFirmataCommandSysexBuilder() FirmataCommandSysexBuilder {
-	if m == nil {
+func (b *_FirmataCommandSysex) CreateFirmataCommandSysexBuilder() FirmataCommandSysexBuilder {
+	if b == nil {
 		return NewFirmataCommandSysexBuilder()
 	}
-	return &_FirmataCommandSysexBuilder{_FirmataCommandSysex: m.deepCopy()}
+	return &_FirmataCommandSysexBuilder{_FirmataCommandSysex: b.deepCopy()}
 }
 
 ///////////////////////
@@ -300,9 +334,13 @@ func (m *_FirmataCommandSysex) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

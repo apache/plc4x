@@ -99,50 +99,69 @@ func NewApduDataGroupValueResponseBuilder() ApduDataGroupValueResponseBuilder {
 type _ApduDataGroupValueResponseBuilder struct {
 	*_ApduDataGroupValueResponse
 
+	parentBuilder *_ApduDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ApduDataGroupValueResponseBuilder) = (*_ApduDataGroupValueResponseBuilder)(nil)
 
-func (m *_ApduDataGroupValueResponseBuilder) WithMandatoryFields(dataFirstByte int8, data []byte) ApduDataGroupValueResponseBuilder {
-	return m.WithDataFirstByte(dataFirstByte).WithData(data...)
+func (b *_ApduDataGroupValueResponseBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
 }
 
-func (m *_ApduDataGroupValueResponseBuilder) WithDataFirstByte(dataFirstByte int8) ApduDataGroupValueResponseBuilder {
-	m.DataFirstByte = dataFirstByte
-	return m
+func (b *_ApduDataGroupValueResponseBuilder) WithMandatoryFields(dataFirstByte int8, data []byte) ApduDataGroupValueResponseBuilder {
+	return b.WithDataFirstByte(dataFirstByte).WithData(data...)
 }
 
-func (m *_ApduDataGroupValueResponseBuilder) WithData(data ...byte) ApduDataGroupValueResponseBuilder {
-	m.Data = data
-	return m
+func (b *_ApduDataGroupValueResponseBuilder) WithDataFirstByte(dataFirstByte int8) ApduDataGroupValueResponseBuilder {
+	b.DataFirstByte = dataFirstByte
+	return b
 }
 
-func (m *_ApduDataGroupValueResponseBuilder) Build() (ApduDataGroupValueResponse, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_ApduDataGroupValueResponseBuilder) WithData(data ...byte) ApduDataGroupValueResponseBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ApduDataGroupValueResponseBuilder) Build() (ApduDataGroupValueResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ApduDataGroupValueResponse.deepCopy(), nil
+	return b._ApduDataGroupValueResponse.deepCopy(), nil
 }
 
-func (m *_ApduDataGroupValueResponseBuilder) MustBuild() ApduDataGroupValueResponse {
-	build, err := m.Build()
+func (b *_ApduDataGroupValueResponseBuilder) MustBuild() ApduDataGroupValueResponse {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ApduDataGroupValueResponseBuilder) DeepCopy() any {
-	return m.CreateApduDataGroupValueResponseBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataGroupValueResponseBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataGroupValueResponseBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataGroupValueResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataGroupValueResponseBuilder().(*_ApduDataGroupValueResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateApduDataGroupValueResponseBuilder creates a ApduDataGroupValueResponseBuilder
-func (m *_ApduDataGroupValueResponse) CreateApduDataGroupValueResponseBuilder() ApduDataGroupValueResponseBuilder {
-	if m == nil {
+func (b *_ApduDataGroupValueResponse) CreateApduDataGroupValueResponseBuilder() ApduDataGroupValueResponseBuilder {
+	if b == nil {
 		return NewApduDataGroupValueResponseBuilder()
 	}
-	return &_ApduDataGroupValueResponseBuilder{_ApduDataGroupValueResponse: m.deepCopy()}
+	return &_ApduDataGroupValueResponseBuilder{_ApduDataGroupValueResponse: b.deepCopy()}
 }
 
 ///////////////////////
@@ -306,9 +325,13 @@ func (m *_ApduDataGroupValueResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

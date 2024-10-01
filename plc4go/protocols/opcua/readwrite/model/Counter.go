@@ -83,35 +83,39 @@ type _CounterBuilder struct {
 
 var _ (CounterBuilder) = (*_CounterBuilder)(nil)
 
-func (m *_CounterBuilder) WithMandatoryFields() CounterBuilder {
-	return m
+func (b *_CounterBuilder) WithMandatoryFields() CounterBuilder {
+	return b
 }
 
-func (m *_CounterBuilder) Build() (Counter, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_CounterBuilder) Build() (Counter, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._Counter.deepCopy(), nil
+	return b._Counter.deepCopy(), nil
 }
 
-func (m *_CounterBuilder) MustBuild() Counter {
-	build, err := m.Build()
+func (b *_CounterBuilder) MustBuild() Counter {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_CounterBuilder) DeepCopy() any {
-	return m.CreateCounterBuilder()
+func (b *_CounterBuilder) DeepCopy() any {
+	_copy := b.CreateCounterBuilder().(*_CounterBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateCounterBuilder creates a CounterBuilder
-func (m *_Counter) CreateCounterBuilder() CounterBuilder {
-	if m == nil {
+func (b *_Counter) CreateCounterBuilder() CounterBuilder {
+	if b == nil {
 		return NewCounterBuilder()
 	}
-	return &_CounterBuilder{_Counter: m.deepCopy()}
+	return &_CounterBuilder{_Counter: b.deepCopy()}
 }
 
 ///////////////////////
@@ -219,9 +223,13 @@ func (m *_Counter) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

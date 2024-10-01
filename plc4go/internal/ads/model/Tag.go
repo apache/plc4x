@@ -160,11 +160,11 @@ func (m DirectPlcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m DirectPlcTag) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedOmitEmptyBoxes(), utils.WithWriteBufferBoxBasedMergeSingleBoxes())
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }
 
 func (m DirectPlcTag) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {

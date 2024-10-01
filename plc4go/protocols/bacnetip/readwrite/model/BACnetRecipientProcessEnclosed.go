@@ -118,107 +118,111 @@ type _BACnetRecipientProcessEnclosedBuilder struct {
 
 var _ (BACnetRecipientProcessEnclosedBuilder) = (*_BACnetRecipientProcessEnclosedBuilder)(nil)
 
-func (m *_BACnetRecipientProcessEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, recipientProcess BACnetRecipientProcess, closingTag BACnetClosingTag) BACnetRecipientProcessEnclosedBuilder {
-	return m.WithOpeningTag(openingTag).WithRecipientProcess(recipientProcess).WithClosingTag(closingTag)
+func (b *_BACnetRecipientProcessEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, recipientProcess BACnetRecipientProcess, closingTag BACnetClosingTag) BACnetRecipientProcessEnclosedBuilder {
+	return b.WithOpeningTag(openingTag).WithRecipientProcess(recipientProcess).WithClosingTag(closingTag)
 }
 
-func (m *_BACnetRecipientProcessEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetRecipientProcessEnclosedBuilder {
-	m.OpeningTag = openingTag
-	return m
+func (b *_BACnetRecipientProcessEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetRecipientProcessEnclosedBuilder {
+	b.OpeningTag = openingTag
+	return b
 }
 
-func (m *_BACnetRecipientProcessEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetRecipientProcessEnclosedBuilder {
-	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+func (b *_BACnetRecipientProcessEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetRecipientProcessEnclosedBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
 	var err error
-	m.OpeningTag, err = builder.Build()
+	b.OpeningTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetRecipientProcessEnclosedBuilder) WithRecipientProcess(recipientProcess BACnetRecipientProcess) BACnetRecipientProcessEnclosedBuilder {
-	m.RecipientProcess = recipientProcess
-	return m
+func (b *_BACnetRecipientProcessEnclosedBuilder) WithRecipientProcess(recipientProcess BACnetRecipientProcess) BACnetRecipientProcessEnclosedBuilder {
+	b.RecipientProcess = recipientProcess
+	return b
 }
 
-func (m *_BACnetRecipientProcessEnclosedBuilder) WithRecipientProcessBuilder(builderSupplier func(BACnetRecipientProcessBuilder) BACnetRecipientProcessBuilder) BACnetRecipientProcessEnclosedBuilder {
-	builder := builderSupplier(m.RecipientProcess.CreateBACnetRecipientProcessBuilder())
+func (b *_BACnetRecipientProcessEnclosedBuilder) WithRecipientProcessBuilder(builderSupplier func(BACnetRecipientProcessBuilder) BACnetRecipientProcessBuilder) BACnetRecipientProcessEnclosedBuilder {
+	builder := builderSupplier(b.RecipientProcess.CreateBACnetRecipientProcessBuilder())
 	var err error
-	m.RecipientProcess, err = builder.Build()
+	b.RecipientProcess, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetRecipientProcessBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetRecipientProcessBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetRecipientProcessEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetRecipientProcessEnclosedBuilder {
-	m.ClosingTag = closingTag
-	return m
+func (b *_BACnetRecipientProcessEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetRecipientProcessEnclosedBuilder {
+	b.ClosingTag = closingTag
+	return b
 }
 
-func (m *_BACnetRecipientProcessEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetRecipientProcessEnclosedBuilder {
-	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+func (b *_BACnetRecipientProcessEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetRecipientProcessEnclosedBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
 	var err error
-	m.ClosingTag, err = builder.Build()
+	b.ClosingTag, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetRecipientProcessEnclosedBuilder) Build() (BACnetRecipientProcessEnclosed, error) {
-	if m.OpeningTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetRecipientProcessEnclosedBuilder) Build() (BACnetRecipientProcessEnclosed, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
 	}
-	if m.RecipientProcess == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.RecipientProcess == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'recipientProcess' not set"))
+		b.err.Append(errors.New("mandatory field 'recipientProcess' not set"))
 	}
-	if m.ClosingTag == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetRecipientProcessEnclosed.deepCopy(), nil
+	return b._BACnetRecipientProcessEnclosed.deepCopy(), nil
 }
 
-func (m *_BACnetRecipientProcessEnclosedBuilder) MustBuild() BACnetRecipientProcessEnclosed {
-	build, err := m.Build()
+func (b *_BACnetRecipientProcessEnclosedBuilder) MustBuild() BACnetRecipientProcessEnclosed {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetRecipientProcessEnclosedBuilder) DeepCopy() any {
-	return m.CreateBACnetRecipientProcessEnclosedBuilder()
+func (b *_BACnetRecipientProcessEnclosedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetRecipientProcessEnclosedBuilder().(*_BACnetRecipientProcessEnclosedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetRecipientProcessEnclosedBuilder creates a BACnetRecipientProcessEnclosedBuilder
-func (m *_BACnetRecipientProcessEnclosed) CreateBACnetRecipientProcessEnclosedBuilder() BACnetRecipientProcessEnclosedBuilder {
-	if m == nil {
+func (b *_BACnetRecipientProcessEnclosed) CreateBACnetRecipientProcessEnclosedBuilder() BACnetRecipientProcessEnclosedBuilder {
+	if b == nil {
 		return NewBACnetRecipientProcessEnclosedBuilder()
 	}
-	return &_BACnetRecipientProcessEnclosedBuilder{_BACnetRecipientProcessEnclosed: m.deepCopy()}
+	return &_BACnetRecipientProcessEnclosedBuilder{_BACnetRecipientProcessEnclosed: b.deepCopy()}
 }
 
 ///////////////////////
@@ -402,9 +406,13 @@ func (m *_BACnetRecipientProcessEnclosed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

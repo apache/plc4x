@@ -122,84 +122,103 @@ func NewParsingResultBuilder() ParsingResultBuilder {
 type _ParsingResultBuilder struct {
 	*_ParsingResult
 
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
 	err *utils.MultiError
 }
 
 var _ (ParsingResultBuilder) = (*_ParsingResultBuilder)(nil)
 
-func (m *_ParsingResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) ParsingResultBuilder {
-	return m.WithStatusCode(statusCode).WithNoOfDataStatusCodes(noOfDataStatusCodes).WithDataStatusCodes(dataStatusCodes...).WithNoOfDataDiagnosticInfos(noOfDataDiagnosticInfos).WithDataDiagnosticInfos(dataDiagnosticInfos...)
+func (b *_ParsingResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (m *_ParsingResultBuilder) WithStatusCode(statusCode StatusCode) ParsingResultBuilder {
-	m.StatusCode = statusCode
-	return m
+func (b *_ParsingResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) ParsingResultBuilder {
+	return b.WithStatusCode(statusCode).WithNoOfDataStatusCodes(noOfDataStatusCodes).WithDataStatusCodes(dataStatusCodes...).WithNoOfDataDiagnosticInfos(noOfDataDiagnosticInfos).WithDataDiagnosticInfos(dataDiagnosticInfos...)
 }
 
-func (m *_ParsingResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) ParsingResultBuilder {
-	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+func (b *_ParsingResultBuilder) WithStatusCode(statusCode StatusCode) ParsingResultBuilder {
+	b.StatusCode = statusCode
+	return b
+}
+
+func (b *_ParsingResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) ParsingResultBuilder {
+	builder := builderSupplier(b.StatusCode.CreateStatusCodeBuilder())
 	var err error
-	m.StatusCode, err = builder.Build()
+	b.StatusCode, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_ParsingResultBuilder) WithNoOfDataStatusCodes(noOfDataStatusCodes int32) ParsingResultBuilder {
-	m.NoOfDataStatusCodes = noOfDataStatusCodes
-	return m
+func (b *_ParsingResultBuilder) WithNoOfDataStatusCodes(noOfDataStatusCodes int32) ParsingResultBuilder {
+	b.NoOfDataStatusCodes = noOfDataStatusCodes
+	return b
 }
 
-func (m *_ParsingResultBuilder) WithDataStatusCodes(dataStatusCodes ...StatusCode) ParsingResultBuilder {
-	m.DataStatusCodes = dataStatusCodes
-	return m
+func (b *_ParsingResultBuilder) WithDataStatusCodes(dataStatusCodes ...StatusCode) ParsingResultBuilder {
+	b.DataStatusCodes = dataStatusCodes
+	return b
 }
 
-func (m *_ParsingResultBuilder) WithNoOfDataDiagnosticInfos(noOfDataDiagnosticInfos int32) ParsingResultBuilder {
-	m.NoOfDataDiagnosticInfos = noOfDataDiagnosticInfos
-	return m
+func (b *_ParsingResultBuilder) WithNoOfDataDiagnosticInfos(noOfDataDiagnosticInfos int32) ParsingResultBuilder {
+	b.NoOfDataDiagnosticInfos = noOfDataDiagnosticInfos
+	return b
 }
 
-func (m *_ParsingResultBuilder) WithDataDiagnosticInfos(dataDiagnosticInfos ...DiagnosticInfo) ParsingResultBuilder {
-	m.DataDiagnosticInfos = dataDiagnosticInfos
-	return m
+func (b *_ParsingResultBuilder) WithDataDiagnosticInfos(dataDiagnosticInfos ...DiagnosticInfo) ParsingResultBuilder {
+	b.DataDiagnosticInfos = dataDiagnosticInfos
+	return b
 }
 
-func (m *_ParsingResultBuilder) Build() (ParsingResult, error) {
-	if m.StatusCode == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_ParsingResultBuilder) Build() (ParsingResult, error) {
+	if b.StatusCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._ParsingResult.deepCopy(), nil
+	return b._ParsingResult.deepCopy(), nil
 }
 
-func (m *_ParsingResultBuilder) MustBuild() ParsingResult {
-	build, err := m.Build()
+func (b *_ParsingResultBuilder) MustBuild() ParsingResult {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_ParsingResultBuilder) DeepCopy() any {
-	return m.CreateParsingResultBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ParsingResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ParsingResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ParsingResultBuilder) DeepCopy() any {
+	_copy := b.CreateParsingResultBuilder().(*_ParsingResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateParsingResultBuilder creates a ParsingResultBuilder
-func (m *_ParsingResult) CreateParsingResultBuilder() ParsingResultBuilder {
-	if m == nil {
+func (b *_ParsingResult) CreateParsingResultBuilder() ParsingResultBuilder {
+	if b == nil {
 		return NewParsingResultBuilder()
 	}
-	return &_ParsingResultBuilder{_ParsingResult: m.deepCopy()}
+	return &_ParsingResultBuilder{_ParsingResult: b.deepCopy()}
 }
 
 ///////////////////////
@@ -429,9 +448,13 @@ func (m *_ParsingResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

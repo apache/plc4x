@@ -85,40 +85,59 @@ func NewSecurityDataFireAlarmRaisedBuilder() SecurityDataFireAlarmRaisedBuilder 
 type _SecurityDataFireAlarmRaisedBuilder struct {
 	*_SecurityDataFireAlarmRaised
 
+	parentBuilder *_SecurityDataBuilder
+
 	err *utils.MultiError
 }
 
 var _ (SecurityDataFireAlarmRaisedBuilder) = (*_SecurityDataFireAlarmRaisedBuilder)(nil)
 
-func (m *_SecurityDataFireAlarmRaisedBuilder) WithMandatoryFields() SecurityDataFireAlarmRaisedBuilder {
-	return m
+func (b *_SecurityDataFireAlarmRaisedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
 }
 
-func (m *_SecurityDataFireAlarmRaisedBuilder) Build() (SecurityDataFireAlarmRaised, error) {
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+func (b *_SecurityDataFireAlarmRaisedBuilder) WithMandatoryFields() SecurityDataFireAlarmRaisedBuilder {
+	return b
+}
+
+func (b *_SecurityDataFireAlarmRaisedBuilder) Build() (SecurityDataFireAlarmRaised, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._SecurityDataFireAlarmRaised.deepCopy(), nil
+	return b._SecurityDataFireAlarmRaised.deepCopy(), nil
 }
 
-func (m *_SecurityDataFireAlarmRaisedBuilder) MustBuild() SecurityDataFireAlarmRaised {
-	build, err := m.Build()
+func (b *_SecurityDataFireAlarmRaisedBuilder) MustBuild() SecurityDataFireAlarmRaised {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_SecurityDataFireAlarmRaisedBuilder) DeepCopy() any {
-	return m.CreateSecurityDataFireAlarmRaisedBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataFireAlarmRaisedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataFireAlarmRaisedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataFireAlarmRaisedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataFireAlarmRaisedBuilder().(*_SecurityDataFireAlarmRaisedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateSecurityDataFireAlarmRaisedBuilder creates a SecurityDataFireAlarmRaisedBuilder
-func (m *_SecurityDataFireAlarmRaised) CreateSecurityDataFireAlarmRaisedBuilder() SecurityDataFireAlarmRaisedBuilder {
-	if m == nil {
+func (b *_SecurityDataFireAlarmRaised) CreateSecurityDataFireAlarmRaisedBuilder() SecurityDataFireAlarmRaisedBuilder {
+	if b == nil {
 		return NewSecurityDataFireAlarmRaisedBuilder()
 	}
-	return &_SecurityDataFireAlarmRaisedBuilder{_SecurityDataFireAlarmRaised: m.deepCopy()}
+	return &_SecurityDataFireAlarmRaisedBuilder{_SecurityDataFireAlarmRaised: b.deepCopy()}
 }
 
 ///////////////////////
@@ -230,9 +249,13 @@ func (m *_SecurityDataFireAlarmRaised) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -128,130 +128,149 @@ func NewBACnetConfirmedServiceRequestLifeSafetyOperationBuilder() BACnetConfirme
 type _BACnetConfirmedServiceRequestLifeSafetyOperationBuilder struct {
 	*_BACnetConfirmedServiceRequestLifeSafetyOperation
 
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
 	err *utils.MultiError
 }
 
 var _ (BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) = (*_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder)(nil)
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithMandatoryFields(requestingProcessIdentifier BACnetContextTagUnsignedInteger, requestingSource BACnetContextTagCharacterString, request BACnetLifeSafetyOperationTagged) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
-	return m.WithRequestingProcessIdentifier(requestingProcessIdentifier).WithRequestingSource(requestingSource).WithRequest(request)
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequestingProcessIdentifier(requestingProcessIdentifier BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
-	m.RequestingProcessIdentifier = requestingProcessIdentifier
-	return m
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithMandatoryFields(requestingProcessIdentifier BACnetContextTagUnsignedInteger, requestingSource BACnetContextTagCharacterString, request BACnetLifeSafetyOperationTagged) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	return b.WithRequestingProcessIdentifier(requestingProcessIdentifier).WithRequestingSource(requestingSource).WithRequest(request)
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequestingProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
-	builder := builderSupplier(m.RequestingProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequestingProcessIdentifier(requestingProcessIdentifier BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	b.RequestingProcessIdentifier = requestingProcessIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequestingProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	builder := builderSupplier(b.RequestingProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
 	var err error
-	m.RequestingProcessIdentifier, err = builder.Build()
+	b.RequestingProcessIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequestingSource(requestingSource BACnetContextTagCharacterString) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
-	m.RequestingSource = requestingSource
-	return m
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequestingSource(requestingSource BACnetContextTagCharacterString) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	b.RequestingSource = requestingSource
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequestingSourceBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
-	builder := builderSupplier(m.RequestingSource.CreateBACnetContextTagCharacterStringBuilder())
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequestingSourceBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	builder := builderSupplier(b.RequestingSource.CreateBACnetContextTagCharacterStringBuilder())
 	var err error
-	m.RequestingSource, err = builder.Build()
+	b.RequestingSource, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequest(request BACnetLifeSafetyOperationTagged) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
-	m.Request = request
-	return m
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequest(request BACnetLifeSafetyOperationTagged) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	b.Request = request
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequestBuilder(builderSupplier func(BACnetLifeSafetyOperationTaggedBuilder) BACnetLifeSafetyOperationTaggedBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
-	builder := builderSupplier(m.Request.CreateBACnetLifeSafetyOperationTaggedBuilder())
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequestBuilder(builderSupplier func(BACnetLifeSafetyOperationTaggedBuilder) BACnetLifeSafetyOperationTaggedBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	builder := builderSupplier(b.Request.CreateBACnetLifeSafetyOperationTaggedBuilder())
 	var err error
-	m.Request, err = builder.Build()
+	b.Request, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetLifeSafetyOperationTaggedBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetLifeSafetyOperationTaggedBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithOptionalObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
-	m.ObjectIdentifier = objectIdentifier
-	return m
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithOptionalObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithOptionalObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
-	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithOptionalObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
 	var err error
-	m.ObjectIdentifier, err = builder.Build()
+	b.ObjectIdentifier, err = builder.Build()
 	if err != nil {
-		if m.err == nil {
-			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
 	}
-	return m
+	return b
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) Build() (BACnetConfirmedServiceRequestLifeSafetyOperation, error) {
-	if m.RequestingProcessIdentifier == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) Build() (BACnetConfirmedServiceRequestLifeSafetyOperation, error) {
+	if b.RequestingProcessIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'requestingProcessIdentifier' not set"))
+		b.err.Append(errors.New("mandatory field 'requestingProcessIdentifier' not set"))
 	}
-	if m.RequestingSource == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.RequestingSource == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'requestingSource' not set"))
+		b.err.Append(errors.New("mandatory field 'requestingSource' not set"))
 	}
-	if m.Request == nil {
-		if m.err == nil {
-			m.err = new(utils.MultiError)
+	if b.Request == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
 		}
-		m.err.Append(errors.New("mandatory field 'request' not set"))
+		b.err.Append(errors.New("mandatory field 'request' not set"))
 	}
-	if m.err != nil {
-		return nil, errors.Wrap(m.err, "error occurred during build")
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
 	}
-	return m._BACnetConfirmedServiceRequestLifeSafetyOperation.deepCopy(), nil
+	return b._BACnetConfirmedServiceRequestLifeSafetyOperation.deepCopy(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) MustBuild() BACnetConfirmedServiceRequestLifeSafetyOperation {
-	build, err := m.Build()
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) MustBuild() BACnetConfirmedServiceRequestLifeSafetyOperation {
+	build, err := b.Build()
 	if err != nil {
 		panic(err)
 	}
 	return build
 }
 
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) DeepCopy() any {
-	return m.CreateBACnetConfirmedServiceRequestLifeSafetyOperationBuilder()
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestLifeSafetyOperationBuilder().(*_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
 }
 
 // CreateBACnetConfirmedServiceRequestLifeSafetyOperationBuilder creates a BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
-func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) CreateBACnetConfirmedServiceRequestLifeSafetyOperationBuilder() BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
-	if m == nil {
+func (b *_BACnetConfirmedServiceRequestLifeSafetyOperation) CreateBACnetConfirmedServiceRequestLifeSafetyOperationBuilder() BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	if b == nil {
 		return NewBACnetConfirmedServiceRequestLifeSafetyOperationBuilder()
 	}
-	return &_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder{_BACnetConfirmedServiceRequestLifeSafetyOperation: m.deepCopy()}
+	return &_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder{_BACnetConfirmedServiceRequestLifeSafetyOperation: b.deepCopy()}
 }
 
 ///////////////////////
@@ -456,9 +475,13 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }
