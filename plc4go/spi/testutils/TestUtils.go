@@ -34,6 +34,7 @@ import (
 
 	"github.com/ajankovic/xdiff"
 	"github.com/ajankovic/xdiff/parser"
+	"github.com/fatih/color"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -169,15 +170,22 @@ func getOrLeaveDuration(key string, setting *time.Duration) {
 }
 
 func shouldNoColor() bool {
+	if _, forceColorEnv := os.LookupEnv("FORCE_COLOR"); forceColorEnv {
+		color.NoColor = false // Apparently the color.NoColor is a bit to eager
+		return false
+	}
 	noColor := false
 	{
-		// TODO: this is really an issue with go-junit-report not sanitizing output before dumping into xml...
+		_, noColorEnv := os.LookupEnv("NO_COLOR")
 		onJenkins := os.Getenv("JENKINS_URL") != ""
 		onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
 		onCI := os.Getenv("CI") != ""
-		if onJenkins || onGithubAction || onCI {
+		if noColorEnv || onJenkins || onGithubAction || onCI {
 			noColor = true
 		}
+	}
+	if !noColor {
+		color.NoColor = false // Apparently the color.NoColor is a bit to eager
 	}
 	return noColor
 }
