@@ -683,44 +683,57 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 new DefaultPlcResponseItem<>(PlcResponseCode.NOT_FOUND, null))));
         }
 
-        CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
+        return CompletableFuture.supplyAsync(() -> {
+            LOGGER.error("Getting datatypeSizeInBytes");
+            String dataTypeName = directAdsTag.getPlcDataType();
+            AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
+            if (adsDataTypeTableEntry == null) {
+                return AdsDataType.valueOf(dataTypeName).getNumBytes();
+            } else {
+                return adsDataTypeTableEntry.getSize();
+            }
+        }).thenCompose(datatypeSizeInBytes -> {
+            LOGGER.error("Getting AdsReadResponse");
+            AmsPacket amsPacket = new AdsReadRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+                configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(), 0, getInvokeId(),
+                directAdsTag.getIndexGroup(), directAdsTag.getIndexOffset(),
+                datatypeSizeInBytes.longValue() * directAdsTag.getNumberOfElements());
+            AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
-        String dataTypeName = directAdsTag.getPlcDataType();
-        AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
-        long size;
-        if (adsDataTypeTableEntry == null) {
-            size = AdsDataType.valueOf(dataTypeName).getNumBytes();
-        } else {
-            size = adsDataTypeTableEntry.getSize();
-        }
+            // Start a new request-transaction (Is ended in the response-handler)
+            RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+            CompletableFuture<AdsReadResponse> future = new CompletableFuture<>();
+            transaction.submit(() ->
+                connectFutures(conversationContext.sendRequest(amsTCPPacket)
+                    .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+                    .onTimeout(future::completeExceptionally)
+                    .onError((p, e) -> future.completeExceptionally(e))
+                    .unwrap(AmsTCPPacket::getUserdata)
+                    .check(userdata -> userdata.getInvokeId() == amsPacket.getInvokeId())
+                    .only(AdsReadResponse.class)
+                    .unwrap(adsReadResponse -> {
+                        transaction.endRequest();
+                        return adsReadResponse;
+                    })
+                    .toFuture(), future)
+            );
+            return future;
+        }).thenApply(adsReadResponse -> {
+                LOGGER.error("Processing AdsReadResponse");
+                return convertToPlc4xReadResponse(readRequest, Map.of((AdsTag) readRequest.getTags().get(0), directAdsTag), adsReadResponse);
+            }
+        );
+    }
 
-        AmsPacket amsPacket = new AdsReadRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
-            configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(), 0, getInvokeId(),
-            directAdsTag.getIndexGroup(), directAdsTag.getIndexOffset(), size * directAdsTag.getNumberOfElements());
-        AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
-
-        // Start a new request-transaction (Is ended in the response-handler)
-        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> conversationContext.sendRequest(amsTCPPacket)
-            .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
-            .onTimeout(future::completeExceptionally)
-            .onError((p, e) -> future.completeExceptionally(e))
-            .unwrap(AmsTCPPacket::getUserdata)
-            .check(userdata -> userdata.getInvokeId() == amsPacket.getInvokeId())
-            .only(AdsReadResponse.class)
-            .handle(response -> {
-                if (response.getResult() == ReturnCode.OK) {
-                    final PlcReadResponse plcReadResponse = convertToPlc4xReadResponse(readRequest, Map.of((AdsTag) readRequest.getTags().get(0), directAdsTag), response);
-                    // Convert the response from the PLC into a PLC4X Response ...
-                    future.complete(plcReadResponse);
-                } else {
-                    // TODO: Implement this correctly.
-                    future.completeExceptionally(new PlcException("Unexpected return code " + response.getResult()));
-                }
-                // Finish the request-transaction.
-                transaction.endRequest();
-            }));
-        return future;
+    <T> void connectFutures(CompletableFuture<T> innerFuture, CompletableFuture<T> outerFuture) {
+        innerFuture.whenComplete((value, throwable) -> {
+            if(throwable != null) {
+                outerFuture.completeExceptionally(throwable);
+            }
+            else {
+                outerFuture.complete(value);
+            }
+        });
     }
 
     protected CompletableFuture<PlcReadResponse> multiRead(PlcReadRequest readRequest, Map<AdsTag, DirectAdsTag> resolvedTags) {
