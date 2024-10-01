@@ -68,11 +68,9 @@ class DefaultPlcBrowser(PlcBrowser):
             )
             # Return the response
             return response
-        except Exception:
-            # If an error occurs during the execution of the browse request, return a response with
-            # the INTERNAL_ERROR code. This exception is very general and probably should be replaced.
+        except Exception as e:
             # TODO:- This exception is very general and probably should be replaced
-            return PlcBrowseResponse(PlcResponseCode.INTERNAL_ERROR, {})
+            raise e
 
     def is_browse_supported(self) -> bool:
         """

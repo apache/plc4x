@@ -97,7 +97,7 @@
             [simple     uint 32         hardwareId]
             [simple     uint 16         blockNo]
             [simple     uint 16         offset]
-            [const      uint 16         blank 0x00]
+            [const      uint 8          blank 0x00]
         ]
         ['0xFD'     UmasPDUErrorResponse
             [array      uint 8          block count 'byteLength - 2']

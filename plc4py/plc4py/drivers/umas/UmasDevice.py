@@ -131,15 +131,16 @@ class UmasDevice:
         await self._send_read_memory_block(transport, loop)
         offset = 0x0000
         first_message = True
-        data_types: List[UmasDatatypeReference] = {}
+        data_types: List[UmasDatatypeReference] = []
         while offset != 0x0000 or first_message:
             first_message = False
             (
                 offset,
-                data_types,
+                temp_data_types,
             ) = await self._send_unlocated_variable_datatype_request(
                 transport, loop, offset
             )
+            data_types.extend(temp_data_types)
         data_type_children: Dict[str, List[UmasUDTDefinition]] = {}
         for data_type in data_types:
             if data_type.class_identifier == 2:
@@ -169,9 +170,11 @@ class UmasDevice:
     ) -> Dict[str, UmasVariable]:
         return_dict = {}
         for kea, tag in tags.items():
-            return_dict[kea] = UmasVariableBuilder(
+            temp_variable = UmasVariableBuilder(
                 kea, tag, data_types, data_type_children
             ).build()
+            if temp_variable is not None:
+                return_dict[kea] = temp_variable
         return return_dict
 
     async def _send_plc_ident(self, transport: Transport, loop: AbstractEventLoop):
@@ -267,9 +270,9 @@ class UmasDevice:
 
         request_pdu = UmasPDUReadUnlocatedVariableNamesRequestBuilder(
             record_type=0xDD03,
-            block_no=0x0000,
+            block_no=offset,
             index=self.index,
-            offset=offset,
+            offset=0x0000,
             hardware_id=self.hardware_id,
         ).build(0, 0)
 
@@ -288,7 +291,7 @@ class UmasDevice:
             bytearray(data_type_response.block), ByteOrder.LITTLE_ENDIAN
         )
         basic_info = UmasPDUReadDatatypeNamesResponse.static_parse(read_buffer)
-        return basic_info.next_address, basic_info.records
+        return basic_info.range, basic_info.records
 
     async def _send_unlocated_variable_datatype_format_request(
         self,
