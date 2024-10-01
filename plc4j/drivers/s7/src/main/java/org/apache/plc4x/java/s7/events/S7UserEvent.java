@@ -18,12 +18,21 @@
  */
 package org.apache.plc4x.java.s7.events;
 
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadDiagnosticMessage;
 
 public class S7UserEvent extends S7SysEvent {
 
-    public S7UserEvent(S7PayloadDiagnosticMessage payload) {
-        super(payload);
+    S7UserEvent(Instant instant, Map<String, Object> map) {
+        super(instant, map);
+    }
+
+    public static S7UserEvent of(S7PayloadDiagnosticMessage payload) {
+        S7SysEvent event = S7SysEvent.of(payload);
+        Map<String, Object> map = new HashMap<>(event.getMap());
         map.put(Fields.TYPE.name(), "USER");
+        return new S7UserEvent(event.getTimestamp(), map);
     }
 }

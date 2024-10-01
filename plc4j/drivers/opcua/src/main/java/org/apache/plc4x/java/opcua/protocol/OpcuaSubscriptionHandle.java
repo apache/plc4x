@@ -24,8 +24,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import org.apache.plc4x.java.api.messages.PlcMetadataKeys;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.metadata.Metadata;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.opcua.context.Conversation;
@@ -258,14 +260,21 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
      * @param values - array of data values to be sent to the client.
      */
     private void onSubscriptionValue(MonitoredItemNotification[] values) {
+        long receiveTs = System.currentTimeMillis();
+        Metadata responseMetadata = new Metadata.Builder()
+            .put(PlcMetadataKeys.RECEIVE_TIMESTAMP, receiveTs)
+            .build();
+
         LinkedHashSet<String> tagNameList = new LinkedHashSet<>();
         List<DataValue> dataValues = new ArrayList<>(values.length);
         for (MonitoredItemNotification value : values) {
             tagNameList.add(tagNames.get((int) value.getClientHandle() - 1));
             dataValues.add(value.getValue());
         }
-        Map<String, ResponseItem<PlcValue>> tags = plcSubscriber.readResponse(tagNameList, dataValues);
-        final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), tags);
+
+        Map<String, Metadata> metadata = new HashMap<>();
+        Map<String, ResponseItem<PlcValue>> tags = plcSubscriber.readResponse(tagNameList, dataValues, metadata, responseMetadata);
+        final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), tags, metadata);
 
         consumers.forEach(plcSubscriptionEventConsumer -> plcSubscriptionEventConsumer.accept(event));
     }
