@@ -26,6 +26,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func init() {
@@ -1029,7 +1030,17 @@ func TestNewAsciiBoxWriter(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewAsciiBoxWriter(), "NewAsciiBoxWriter()")
+			got := NewAsciiBoxWriter()
+			require.NotNil(t, got)
+			require.IsType(t, new(asciiBoxWriter), got)
+			boxWriter := got.(*asciiBoxWriter)
+			assert.NotNil(t, boxWriter.namePrinter)
+			boxWriter.namePrinter = nil
+			assert.NotNil(t, boxWriter.headerPrinter)
+			boxWriter.headerPrinter = nil
+			assert.NotNil(t, boxWriter.footerPrinter)
+			boxWriter.footerPrinter = nil
+			assert.Equalf(t, tt.want, got, "NewAsciiBoxWriter()")
 		})
 	}
 }
@@ -1363,6 +1374,9 @@ func Test_asciiBoxWriter_boxString(t *testing.T) {
 		borderWidth         int
 		newLineCharWidth    int
 		boxNameRegex        *regexp.Regexp
+		namePrinter         func(a ...any) string
+		headerPrinter       func(a ...any) string
+		footerPrinter       func(a ...any) string
 	}
 	type args struct {
 		data    string
@@ -1580,6 +1594,18 @@ func Test_asciiBoxWriter_boxString(t *testing.T) {
 				borderWidth:         tt.fields.borderWidth,
 				newLineCharWidth:    tt.fields.newLineCharWidth,
 				boxHeaderRegex:      tt.fields.boxNameRegex,
+				namePrinter:         tt.fields.namePrinter,
+				headerPrinter:       tt.fields.headerPrinter,
+				footerPrinter:       tt.fields.footerPrinter,
+			}
+			if a.namePrinter == nil {
+				a.namePrinter = fmt.Sprint
+			}
+			if a.headerPrinter == nil {
+				a.headerPrinter = fmt.Sprint
+			}
+			if a.footerPrinter == nil {
+				a.footerPrinter = fmt.Sprint
 			}
 			tt.want.asciiBoxWriter = a
 			assert.Equalf(t, tt.want, a.boxString(tt.args.data, tt.args.options...), "boxString(%v)", tt.args.data)
@@ -1670,6 +1696,15 @@ func Test_asciiBoxWriter_changeBoxName(t *testing.T) {
 				newLineCharWidth:    tt.fields.newLineCharWidth,
 				boxHeaderRegex:      tt.fields.boxHeaderRegex,
 				boxFooterRegex:      tt.fields.boxFooterRegex,
+			}
+			if a.namePrinter == nil {
+				a.namePrinter = fmt.Sprint
+			}
+			if a.headerPrinter == nil {
+				a.headerPrinter = fmt.Sprint
+			}
+			if a.footerPrinter == nil {
+				a.footerPrinter = fmt.Sprint
 			}
 			tt.want.asciiBoxWriter = a
 			assert.Equalf(t, tt.want, a.changeBoxName(tt.args.box, tt.args.newName), "changeBoxName(%v, %v)", tt.args.box, tt.args.newName)

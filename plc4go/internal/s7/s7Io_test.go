@@ -22,11 +22,11 @@ package s7
 import (
 	"context"
 	"fmt"
-	"github.com/stretchr/testify/require"
 	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
