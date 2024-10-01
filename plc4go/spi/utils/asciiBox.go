@@ -153,8 +153,9 @@ func NewAsciiBoxWriter(opts ...func(writer *asciiBoxWriter)) AsciiBoxWriter {
 	for _, opt := range opts {
 		opt(a)
 	}
-	a.boxHeaderRegex = regexp.MustCompile(`^` + a.defaultBoxSet.UpperLeftCorner + a.defaultBoxSet.HorizontalLine + `(?P<name>[\w /]+)` + a.defaultBoxSet.HorizontalLine + `*` + `(?P<header>[\w /]+)?` + a.defaultBoxSet.HorizontalLine + `*` + a.defaultBoxSet.UpperRightCorner)
-	a.boxFooterRegex = regexp.MustCompile(`(?m)^` + a.defaultBoxSet.LowerLeftCorner + a.defaultBoxSet.HorizontalLine + `*` + `(?P<footer>[\w /]+)` + a.defaultBoxSet.HorizontalLine + `*` + a.defaultBoxSet.LowerRightCorner)
+	hl := a.defaultBoxSet.HorizontalLine
+	a.boxHeaderRegex = regexp.MustCompile(`^` + a.defaultBoxSet.UpperLeftCorner + hl + `(?P<name>[^` + hl + `]+)` + hl + `*` + `(?P<header>[^` + hl + `]+)?` + hl + `*` + a.defaultBoxSet.UpperRightCorner)
+	a.boxFooterRegex = regexp.MustCompile(`(?m)^` + a.defaultBoxSet.LowerLeftCorner + hl + `*` + `(?P<footer>[^` + hl + `]+)` + hl + `*` + a.defaultBoxSet.LowerRightCorner)
 	return a
 }
 

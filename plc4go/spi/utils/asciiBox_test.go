@@ -1022,8 +1022,8 @@ func TestNewAsciiBoxWriter(t *testing.T) {
 				extraNameCharIndent: 1,
 				borderWidth:         1,
 				newLineCharWidth:    1,
-				boxHeaderRegex:      regexp.MustCompile(`^` + upperLeftCorner + horizontalLine + `(?P<name>[\w /]+)` + horizontalLine + `*` + `(?P<header>[\w /]+)?` + horizontalLine + `*` + upperRightCorner),
-				boxFooterRegex:      regexp.MustCompile(`(?m)^` + lowerLeftCorner + horizontalLine + `*` + `(?P<footer>[\w /]+)` + horizontalLine + `*` + lowerRightCorner),
+				boxHeaderRegex:      regexp.MustCompile(`^` + upperLeftCorner + horizontalLine + `(?P<name>[^` + horizontalLine + `]+)` + horizontalLine + `*` + `(?P<header>[^` + horizontalLine + `]+)?` + horizontalLine + `*` + upperRightCorner),
+				boxFooterRegex:      regexp.MustCompile(`(?m)^` + lowerLeftCorner + horizontalLine + `*` + `(?P<footer>[^` + horizontalLine + `]+)` + horizontalLine + `*` + lowerRightCorner),
 			},
 		},
 	}
