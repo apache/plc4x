@@ -1610,7 +1610,21 @@ func Test_asciiBoxWriter_changeBoxName(t *testing.T) {
 	}{
 		{
 			name: "change a name",
-			want: AsciiBox{data: "\x00\x00"},
+			args: args{box: AsciiBox{asciiBoxWriter: NewAsciiBoxWriter().(*asciiBoxWriter)}},
+			fields: fields{
+				newLine:             '\n',
+				emptyPadding:        " ",
+				extraNameCharIndent: 1,
+				borderWidth:         1,
+				newLineCharWidth:    1,
+				defaultBoxSet:       DefaultBoxSet(),
+				boxHeaderRegex:      regexp.MustCompile(`^` + DefaultBoxSet().UpperLeftCorner + DefaultBoxSet().HorizontalLine + `(?P<name>[\w /]+)` + DefaultBoxSet().HorizontalLine + `*` + `(?P<header>[\w /]+)?` + DefaultBoxSet().HorizontalLine + `*` + DefaultBoxSet().UpperRightCorner),
+				boxFooterRegex:      regexp.MustCompile(`(?m)^` + DefaultBoxSet().LowerLeftCorner + DefaultBoxSet().HorizontalLine + `*` + `(?P<footer>[\w /]+)` + DefaultBoxSet().HorizontalLine + `*` + DefaultBoxSet().LowerRightCorner),
+			},
+			want: AsciiBox{
+				data:             "╔═╗\n║ ║\n╚═╝",
+				compressedBoxSet: "╔╗═║╚╝",
+			},
 		},
 		{
 			name: "full box name",

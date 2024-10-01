@@ -311,7 +311,21 @@ func (b *boxedWriteBuffer) WriteSerializable(ctx context.Context, serializable S
 	if serializable == nil {
 		return nil
 	}
-	return serializable.SerializeWithWriteBuffer(ctx, b)
+	currentPos := int(b.pos) // used for footer so we remember that before we advance
+	if err := serializable.SerializeWithWriteBuffer(ctx, b); err != nil {
+		return err
+	}
+	back := b.Back()
+	if back == nil {
+		return nil
+	}
+	if ab, ok := back.Value.(AsciiBox); ok {
+		if la, ok := serializable.(LengthAware); ok {
+			bitLength := int(la.GetLengthInBits(ctx))
+			back.Value = ab.ChangeBoxFooter(b.getPosFooterWithCurrentPost(currentPos, bitLength))
+		}
+	}
+	return nil
 }
 
 func (b *boxedWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {
@@ -366,11 +380,15 @@ func (b *boxedWriteBuffer) move(bits uint) {
 }
 
 func (b *boxedWriteBuffer) getPosFooter(bitLength int) string {
+	return b.getPosFooterWithCurrentPost(int(b.pos), bitLength)
+}
+
+func (b *boxedWriteBuffer) getPosFooterWithCurrentPost(currentPos, bitLength int) string {
 	if !b.printPosLengthFooter {
 		return ""
 	}
-	bytePos := int(b.pos) / 8
-	bitRemainder := int(b.pos) % 8
+	bytePos := currentPos / 8
+	bitRemainder := currentPos % 8
 	pos := strconv.Itoa(bytePos)
 	if bitRemainder != 0 {
 		pos += "." + strconv.Itoa(bitRemainder)

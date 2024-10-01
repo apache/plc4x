@@ -320,24 +320,53 @@ func (a *asciiBoxWriter) getBoxFooter(box AsciiBox) string {
 }
 
 func (a *asciiBoxWriter) changeBoxName(box AsciiBox, newName string) AsciiBox {
-	if !a.hasBorders(box) {
-		return a.boxString(box.String(), WithAsciiBoxName(newName))
-	}
+	return a.changeBoxAttributes(box, &newName, nil, nil)
+}
+
+func (a *asciiBoxWriter) changeBoxHeader(box AsciiBox, newHeader string) AsciiBox {
+	return a.changeBoxAttributes(box, nil, &newHeader, nil)
+
+}
+
+func (a *asciiBoxWriter) changeBoxFooter(box AsciiBox, newFooter string) AsciiBox {
+	return a.changeBoxAttributes(box, nil, nil, &newFooter)
+}
+
+func (a *asciiBoxWriter) changeBoxAttributes(box AsciiBox, newName, newHeader, newFooter *string) AsciiBox {
+	// Current data
+	name := box.asciiBoxWriter.getBoxName(box)
 	header := box.asciiBoxWriter.getBoxHeader(box)
 	footer := box.asciiBoxWriter.getBoxFooter(box)
-	minimumWidth := countChars(a.defaultBoxSet.UpperLeftCorner + a.defaultBoxSet.HorizontalLine + newName + a.defaultBoxSet.UpperRightCorner)
-	if header != "" {
-		minimumWidth += countChars(a.defaultBoxSet.HorizontalLine + header)
+	// set new metadata
+	if newName != nil {
+		name = *newName
 	}
-	boxContent := a.unwrap(box)
-	rawWidth := boxContent.Width()
-	minimumWidth = max(minimumWidth, rawWidth+2)
-	newBox := a.BoxString(
-		boxContent.String(),
-		WithAsciiBoxName(newName),
+	if newHeader != nil {
+		header = *newHeader
+	}
+	if newFooter != nil {
+		footer = *newFooter
+	}
+	var newOptions = []func(options *BoxOptions){
+		WithAsciiBoxName(name),
 		WithAsciiBoxHeader(header),
 		WithAsciiBoxFooter(footer),
-		WithAsciiBoxCharWidth(minimumWidth),
+	}
+
+	if !a.hasBorders(box) { // this means that this is a naked box.
+		return a.boxString(box.String(), newOptions...)
+	}
+	minimumWidth := countChars(a.defaultBoxSet.UpperLeftCorner + a.defaultBoxSet.HorizontalLine + name + a.defaultBoxSet.UpperRightCorner)
+	if header != "" { // if we have a header we need to extend that minimum width to make space for the header
+		minimumWidth += countChars(a.defaultBoxSet.HorizontalLine + header)
+	}
+	boxContent := a.unwrap(box)                            // get the content itself ...
+	rawWidth := boxContent.Width()                         // ... and look at the width.
+	minimumWidth = max(minimumWidth, rawWidth+2)           // check that we have enough space for the content.
+	minimumWidth = max(minimumWidth, countChars(footer)+2) // check that we have enough space for the footer.
+	newBox := a.BoxString(
+		boxContent.String(),
+		append(newOptions, WithAsciiBoxCharWidth(minimumWidth))...,
 	)
 	newBox.compressedBoxSet = a.defaultBoxSet.contributeToCompressedBoxSet(box)
 	return newBox
@@ -450,6 +479,14 @@ func (m AsciiBox) GetBoxName() string {
 
 func (m AsciiBox) ChangeBoxName(newName string) AsciiBox {
 	return m.asciiBoxWriter.changeBoxName(m, newName)
+}
+
+func (m AsciiBox) ChangeBoxHeader(newHeader string) AsciiBox {
+	return m.asciiBoxWriter.changeBoxHeader(m, newHeader)
+}
+
+func (m AsciiBox) ChangeBoxFooter(newFooter string) AsciiBox {
+	return m.asciiBoxWriter.changeBoxFooter(m, newFooter)
 }
 
 func (m AsciiBox) IsEmpty() bool {
