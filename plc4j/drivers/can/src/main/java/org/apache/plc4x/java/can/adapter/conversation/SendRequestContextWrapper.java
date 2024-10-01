@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.can.adapter.conversation;
 
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -75,6 +76,13 @@ public class SendRequestContextWrapper<C, T> implements SendRequestContext<T> {
     @Override
     public ContextHandler handle(Consumer<T> packetConsumer) {
         throw new IllegalStateException("Not implemented");
+    }
+
+    @Override
+    public CompletableFuture<T> toFuture() {
+        CompletableFuture<T> future = new CompletableFuture<>();
+        handle(future::complete);
+        return future;
     }
 
     @Override
