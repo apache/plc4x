@@ -24,6 +24,7 @@ import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
@@ -83,6 +84,8 @@ public interface ConversationContext<T> {
          * @return this
          */
         ContextHandler handle(Consumer<T> packetConsumer);
+
+        CompletableFuture<T> toFuture();
 
         /**
          * allows to define a timeout handler which then calls {@code packetConsumer}
