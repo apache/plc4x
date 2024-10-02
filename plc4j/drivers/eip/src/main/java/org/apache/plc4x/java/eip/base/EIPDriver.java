@@ -29,7 +29,6 @@ import org.apache.plc4x.java.eip.base.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.base.configuration.EipTcpTransportConfiguration;
 import org.apache.plc4x.java.eip.base.tag.EipTag;
 import org.apache.plc4x.java.eip.base.protocol.EipProtocolLogic;
-import org.apache.plc4x.java.eip.base.tag.EipTagHandler;
 import org.apache.plc4x.java.eip.readwrite.EipPacket;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -37,8 +36,6 @@ import org.apache.plc4x.java.spi.connection.*;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.transport.Transport;
-
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 
 import java.util.Collections;
 import java.util.List;
@@ -90,16 +87,6 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     @Override
     protected List<String> getSupportedTransportCodes() {
         return Collections.singletonList("tcp");
-    }
-
-    @Override
-    protected PlcTagHandler getTagHandler() {
-        return new EipTagHandler();
-    }
-
-    @Override
-    protected PlcValueHandler getValueHandler() {
-        return new org.apache.plc4x.java.spi.values.PlcValueHandler();
     }
 
     @Override
@@ -222,7 +209,6 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
 
         return new DefaultNettyPlcConnection(
             canPing(), canRead(), canWrite(), canSubscribe(), canBrowse(),
-            getTagHandler(),
             getValueHandler(),
             configuration,
             channelFactory,

@@ -71,7 +71,7 @@ public class DefaultPlcUnsubscriptionRequest implements PlcUnsubscriptionRequest
         private final List<PlcSubscriptionHandle> plcSubscriptionHandles;
 
         public Builder(PlcSubscriber subscriber) {
-            this.subscriber = subscriber;
+            this.subscriber = Objects.requireNonNull(subscriber);
             plcSubscriptionHandles = new ArrayList<>();
         }
 

@@ -18,13 +18,12 @@
  */
 package org.apache.plc4x.java.mock.connection;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -34,11 +33,11 @@ import java.util.function.Consumer;
  */
 public interface MockDevice {
 
-    ResponseItem<PlcValue> read(String tagQuery);
+    PlcResponseItem<PlcValue> read(String tagQuery);
 
     PlcResponseCode write(String tagQuery, Object value);
 
-    ResponseItem<PlcSubscriptionHandle> subscribe(String tagQuery);
+    PlcResponseItem<PlcSubscriptionHandle> subscribe(String tagQuery);
 
     void unsubscribe();
 

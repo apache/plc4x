@@ -93,7 +93,7 @@ public class SimulatedTag implements PlcTag {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        return Collections.singletonList(new DefaultArrayInfo(0, numElements));
+        return Collections.singletonList(new DefaultArrayInfo(0, numElements - 1));
     }
 
     public SimulatedTagType getType() {

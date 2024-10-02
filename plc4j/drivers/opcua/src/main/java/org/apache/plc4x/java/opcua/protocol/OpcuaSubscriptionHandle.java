@@ -27,12 +27,14 @@ import java.util.concurrent.TimeUnit;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.opcua.context.Conversation;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcTagItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
@@ -260,11 +262,14 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     private void onSubscriptionValue(MonitoredItemNotification[] values) {
         LinkedHashSet<String> tagNameList = new LinkedHashSet<>();
         List<DataValue> dataValues = new ArrayList<>(values.length);
+        Map<String, PlcTag> tagMap = new LinkedHashMap<>();
         for (MonitoredItemNotification value : values) {
-            tagNameList.add(tagNames.get((int) value.getClientHandle() - 1));
+            String tagName = tagNames.get((int) value.getClientHandle() - 1);
+            tagNameList.add(tagName);
+            tagMap.put(tagName, subscriptionRequest.getTag(tagName).getTag());
             dataValues.add(value.getValue());
         }
-        Map<String, ResponseItem<PlcValue>> tags = plcSubscriber.readResponse(tagNameList, dataValues);
+        Map<String, PlcResponseItem<PlcValue>> tags = plcSubscriber.readResponse(tagNameList, tagMap, dataValues);
         final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), tags);
 
         consumers.forEach(plcSubscriptionEventConsumer -> plcSubscriptionEventConsumer.accept(event));

@@ -24,11 +24,9 @@ import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.iec608705104.readwrite.configuration.Iec608705014Configuration;
 import org.apache.plc4x.java.iec608705104.readwrite.configuration.Iec608705014TcpTransportConfiguration;
 import org.apache.plc4x.java.iec608705104.readwrite.protocol.Iec608705104Protocol;
-import org.apache.plc4x.java.iec608705104.readwrite.tag.Iec608705104TagHandler;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.Collections;
 import java.util.List;
@@ -81,16 +79,6 @@ public class Iec60870514PlcDriver extends GeneratedDriverBase<APDU> {
     @Override
     protected List<String> getSupportedTransportCodes() {
         return Collections.singletonList("tcp");
-    }
-
-    @Override
-    protected Iec608705104TagHandler getTagHandler() {
-        return new Iec608705104TagHandler();
-    }
-
-    @Override
-    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new PlcValueHandler();
     }
 
     /**

@@ -29,6 +29,7 @@ import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.*;
+import org.apache.plc4x.java.mock.tag.MockTag;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
@@ -36,10 +37,12 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
+import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcDINT;
 import org.apache.plc4x.java.spi.values.PlcLINT;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -127,26 +130,27 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
     private PlcEntityManager getInitializedEntityManager() throws PlcConnectionException {
         Map<String, PlcValue> map = new HashMap<>();
         String prefix = ConnectedEntity.class.getName() + ".";
-        map.put(prefix + "boolVar", PlcValueHandler.of(true));
-        map.put(prefix + "byteVar", PlcValueHandler.of((byte) 1));
-        map.put(prefix + "shortVar", PlcValueHandler.of((short) 1));
-        map.put(prefix + "intVar", PlcValueHandler.of(1));
-        map.put(prefix + "longVar", PlcValueHandler.of(1L));
-        map.put(prefix + "boxedBoolVar", PlcValueHandler.of(1L));
-        map.put(prefix + "boxedByteVar", PlcValueHandler.of((byte) 1));
-        map.put(prefix + "boxedShortVar", PlcValueHandler.of((short) 1));
-        map.put(prefix + "boxedIntegerVar", PlcValueHandler.of(1));
-        map.put(prefix + "boxedLongVar", PlcValueHandler.of(1L));
-        map.put(prefix + "bigIntegerVar", PlcValueHandler.of(BigInteger.ONE));
-        map.put(prefix + "floatVar", PlcValueHandler.of(1f));
-        map.put(prefix + "doubleVar", PlcValueHandler.of(1d));
-        map.put(prefix + "bigDecimalVar", PlcValueHandler.of(BigDecimal.ONE));
-        map.put(prefix + "localTimeVar", PlcValueHandler.of(LocalTime.of(1, 1)));
-        map.put(prefix + "localDateVar", PlcValueHandler.of(LocalDate.of(1, 1, 1)));
-        map.put(prefix + "localDateTimeVar", PlcValueHandler.of(LocalDateTime.of(1, 1, 1, 1, 1)));
-        map.put(prefix + "byteArrayVar", PlcValueHandler.of(new Byte[]{0x0, 0x1}));
-        map.put(prefix + "bigByteArrayVar", PlcValueHandler.of(new Byte[]{0x0, 0x1}));
-        map.put(prefix + "stringVar", PlcValueHandler.of("Hallo"));
+        PlcValueHandler valueHandler = new DefaultPlcValueHandler();
+        map.put(prefix + "boolVar", valueHandler.newPlcValue(new MockTag(prefix + "boolVar", PlcValueType.BOOL), true));
+        map.put(prefix + "byteVar", valueHandler.newPlcValue(new MockTag(prefix + "byteVar", PlcValueType.SINT), (byte) 1));
+        map.put(prefix + "shortVar", valueHandler.newPlcValue(new MockTag(prefix + "shortVar", PlcValueType.INT), (short) 1));
+        map.put(prefix + "intVar", valueHandler.newPlcValue(new MockTag(prefix + "intVar", PlcValueType.DINT), 1));
+        map.put(prefix + "longVar", valueHandler.newPlcValue(new MockTag(prefix + "longVar", PlcValueType.LINT), 1L));
+        map.put(prefix + "boxedBoolVar", valueHandler.newPlcValue(new MockTag(prefix + "boxedBoolVar", PlcValueType.BOOL), 1L));
+        map.put(prefix + "boxedByteVar", valueHandler.newPlcValue(new MockTag(prefix + "boxedByteVar", PlcValueType.SINT), (byte) 1));
+        map.put(prefix + "boxedShortVar", valueHandler.newPlcValue(new MockTag(prefix + "boxedShortVar", PlcValueType.INT), (short) 1));
+        map.put(prefix + "boxedIntegerVar", valueHandler.newPlcValue(new MockTag(prefix + "boxedIntegerVar", PlcValueType.DINT), 1));
+        map.put(prefix + "boxedLongVar", valueHandler.newPlcValue(new MockTag(prefix + "boxedLongVar", PlcValueType.LINT), 1L));
+        map.put(prefix + "bigIntegerVar", valueHandler.newPlcValue(new MockTag(prefix + "bigIntegerVar", PlcValueType.LINT), BigInteger.ONE));
+        map.put(prefix + "floatVar", valueHandler.newPlcValue(new MockTag(prefix + "floatVar", PlcValueType.REAL), 1f));
+        map.put(prefix + "doubleVar", valueHandler.newPlcValue(new MockTag(prefix + "doubleVar", PlcValueType.LREAL), 1d));
+        map.put(prefix + "bigDecimalVar", valueHandler.newPlcValue(new MockTag(prefix + "bigDecimalVar", PlcValueType.LREAL), BigDecimal.ONE));
+        map.put(prefix + "localTimeVar", valueHandler.newPlcValue(new MockTag(prefix + "localTimeVar", PlcValueType.TIME), LocalTime.of(1, 1)));
+        map.put(prefix + "localDateVar", valueHandler.newPlcValue(new MockTag(prefix + "localDateVar", PlcValueType.DATE), LocalDate.of(1, 1, 1)));
+        map.put(prefix + "localDateTimeVar", valueHandler.newPlcValue(new MockTag(prefix + "localDateTimeVar", PlcValueType.DATE_AND_TIME), LocalDateTime.of(1, 1, 1, 1, 1)));
+        map.put(prefix + "byteArrayVar", valueHandler.newPlcValue(new MockTag(prefix + "byteArrayVar", PlcValueType.RAW_BYTE_ARRAY), new Byte[]{0x0, 0x1}));
+        map.put(prefix + "bigByteArrayVar", valueHandler.newPlcValue(new MockTag(prefix + "bigByteArrayVar", PlcValueType.RAW_BYTE_ARRAY), new Byte[]{0x0, 0x1}));
+        map.put(prefix + "stringVar", valueHandler.newPlcValue(new MockTag(prefix + "stringVar", PlcValueType.STRING), "Hallo"));
         return getPlcEntityManager(map);
     }
 
@@ -226,10 +230,10 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         });
 
         PlcReader reader = readRequest -> {
-            Map<String, ResponseItem<PlcValue>> map = readRequest.getTagNames().stream()
+            Map<String, PlcResponseItem<PlcValue>> map = readRequest.getTagNames().stream()
                 .collect(Collectors.toMap(
                     Function.identity(),
-                    s -> new ResponseItem<>(PlcResponseCode.OK, Objects.requireNonNull(responses.get(s), s + " not found"))
+                    s -> new DefaultPlcResponseItem<>(PlcResponseCode.OK, Objects.requireNonNull(responses.get(s), s + " not found"))
                 ));
             return CompletableFuture.completedFuture(new DefaultPlcReadResponse(readRequest, map));
         };
@@ -242,17 +246,13 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
                 ));
             return CompletableFuture.completedFuture(new DefaultPlcWriteResponse(writeRequest, map));
         };
-        when(connection.writeRequestBuilder()).then(invocation -> new DefaultPlcWriteRequest.Builder(writer, getTagHandler(), getValueHandler()));
+        when(connection.writeRequestBuilder()).then(invocation -> new DefaultPlcWriteRequest.Builder(writer, getTagHandler(), new DefaultPlcValueHandler()));
 
         return new PlcEntityManager(mock);
     }
 
     private PlcTagHandler getTagHandler() {
         return new NoOpPlcTagHandler();
-    }
-
-    private org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new NoOpPlcValueHandler();
     }
 
     private static class NoOpPlcTagHandler implements PlcTagHandler {
@@ -279,28 +279,6 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         @Override
         public PlcQuery parseQuery(String query) {
             throw new UnsupportedOperationException("This driver doesn't support browsing");
-        }
-    }
-
-    private static class NoOpPlcValueHandler implements org.apache.plc4x.java.api.value.PlcValueHandler {
-        @Override
-        public PlcValue newPlcValue(Object value) {
-            throw new RuntimeException("Data Type " + value.getClass().getSimpleName() + "Is not supported");
-        }
-
-        @Override
-        public PlcValue newPlcValue(Object[] values) {
-            throw new RuntimeException("Data Type " + values.getClass().getSimpleName() + "Is not supported");
-        }
-
-        @Override
-        public PlcValue newPlcValue(org.apache.plc4x.java.api.model.PlcTag tag, Object value) {
-            throw new RuntimeException("Data Type " + value.getClass().getSimpleName() + "Is not supported");
-        }
-
-        @Override
-        public PlcValue newPlcValue(org.apache.plc4x.java.api.model.PlcTag tag, Object[] values) {
-            throw new RuntimeException("Data Type " + values.getClass().getSimpleName() + "Is not supported");
         }
     }
 

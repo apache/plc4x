@@ -22,14 +22,11 @@ import io.netty.buffer.ByteBuf;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.modbus.ascii.context.ModbusAsciiContext;
-import org.apache.plc4x.java.modbus.readwrite.ModbusADU;
-import org.apache.plc4x.java.modbus.readwrite.ModbusRtuADU;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.modbus.ascii.config.ModbusAsciiConfiguration;
 import org.apache.plc4x.java.modbus.ascii.protocol.ModbusAsciiProtocolLogic;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
-import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.readwrite.ModbusAsciiADU;
 import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpTransportConfiguration;
@@ -39,7 +36,6 @@ import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -120,16 +116,6 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
     @Override
     protected BaseOptimizer getOptimizer() {
         return new SingleTagOptimizer();
-    }
-
-    @Override
-    protected ModbusTagHandler getTagHandler() {
-        return new ModbusTagHandler();
-    }
-
-    @Override
-    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new PlcValueHandler();
     }
 
     @Override

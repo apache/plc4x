@@ -75,7 +75,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         this.protocolBase = protocol;
         this.authentication = authentication;
         this.timeoutManager = timeoutManager;
-        this.protocolBase.setContext(new ConversationContext<T>() {
+        this.protocolBase.setConversationContext(new ConversationContext<T>() {
 
             @Override
             public PlcAuthentication getAuthentication() {
@@ -188,7 +188,9 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                 } catch (Exception e) {
                     logger.trace("Failure while processing payload {} with handler {}", message, registration, e);
                     BiConsumer biConsumer = registration.getErrorConsumer();
-                    biConsumer.accept(message, e);
+                    if(biConsumer != null) {
+                        biConsumer.accept(message, e);
+                    }
                     registration.confirmError();
                 }
                 return;
@@ -218,7 +220,6 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
     /**
      * Performs registration of packet handler and makes sure that its timeout will be handled properly.
-     *
      * Since timeouts are controlled by {@link TimeoutManager} there is a need to decorate handler
      * operations so both sides know what's going on.
      *

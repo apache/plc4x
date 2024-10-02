@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -33,7 +34,9 @@ public interface PlcTagRequest extends PlcRequest {
 
     LinkedHashSet<String> getTagNames();
 
-    PlcTag getTag(String name);
+    PlcResponseCode getTagResponseCode(String tagName);
+
+    PlcTag getTag(String tagName);
 
     List<PlcTag> getTags();
 

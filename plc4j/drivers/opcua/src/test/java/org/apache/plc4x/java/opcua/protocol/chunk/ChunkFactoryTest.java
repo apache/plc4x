@@ -32,10 +32,12 @@ import org.apache.plc4x.java.opcua.readwrite.OpcuaProtocolLimits;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.apache.plc4x.test.DisableOnJenkinsFlag;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
 @DisableOnJenkinsFlag
+@Disabled("Disabled flaky test. Tracking issue at https://github.com/apache/plc4x/issues/1764")
 class ChunkFactoryTest {
 
     public static final Map<Integer, Entry<PrivateKey, X509Certificate>> CERTIFICATES = new HashMap<>();

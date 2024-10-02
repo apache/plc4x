@@ -35,7 +35,7 @@ import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.slf4j.Logger;
@@ -145,7 +145,7 @@ public class ProfinetDevice implements PlcSubscriber {
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         return CompletableFuture.supplyAsync(() -> {
-            Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+            Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
 
             return new DefaultPlcSubscriptionResponse(subscriptionRequest, values);
         });
@@ -406,7 +406,7 @@ public class ProfinetDevice implements PlcSubscriber {
     }
 
     public void handleRealTimeResponse(PnDcp_Pdu_RealTimeCyclic cyclicPdu) {
-        Map<String, ResponseItem<PlcValue>> tags = new HashMap<>();
+        Map<String, PlcResponseItem<PlcValue>> tags = new HashMap<>();
         ReadBuffer buffer = new ReadBufferByteBased(cyclicPdu.getDataUnit().getData());
 
         if (firstMessage) {
@@ -419,8 +419,8 @@ public class ProfinetDevice implements PlcSubscriber {
                 module.parseTags(tags, deviceContext.getDeviceName(), buffer);
             }
 
-            Map<Consumer<PlcSubscriptionEvent>, Map<String, ResponseItem<PlcValue>>> response = new HashMap<>();
-            for (Map.Entry<String, ResponseItem<PlcValue>> entry : tags.entrySet()) {
+            Map<Consumer<PlcSubscriptionEvent>, Map<String, PlcResponseItem<PlcValue>>> response = new HashMap<>();
+            for (Map.Entry<String, PlcResponseItem<PlcValue>> entry : tags.entrySet()) {
                 boolean processTag = false;
                 ProfinetSubscriptionHandle handle = deviceContext.getSubscriptionHandle(entry.getKey());
                 if (handle != null) {
@@ -451,7 +451,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 }
             }
 
-            for (Map.Entry<Consumer<PlcSubscriptionEvent>, Map<String, ResponseItem<PlcValue>>> entry : response.entrySet()) {
+            for (Map.Entry<Consumer<PlcSubscriptionEvent>, Map<String, PlcResponseItem<PlcValue>>> entry : response.entrySet()) {
                 entry.getKey().accept(new DefaultPlcSubscriptionEvent(Instant.now(), entry.getValue()));
             }
         } catch (ParseException e) {

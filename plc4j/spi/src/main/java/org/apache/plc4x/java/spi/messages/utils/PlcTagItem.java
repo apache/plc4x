@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,27 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.plc4x.java.spi.messages.utils;
 
 import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
-public class TagValueItem {
+public interface PlcTagItem {
 
-    private final PlcTag tag;
-    private final PlcValue value;
-
-    public TagValueItem(PlcTag tag, PlcValue value) {
-        this.tag = tag;
-        this.value = value;
+    default PlcResponseCode getResponseCode() {
+        return PlcResponseCode.OK;
     }
 
-    public PlcTag getTag() {
-        return tag;
-    }
-
-    public PlcValue getValue() {
-        return value;
+    default PlcTag getTag() {
+        return null;
     }
 
 }

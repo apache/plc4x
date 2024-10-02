@@ -28,11 +28,11 @@ import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.listener.ConnectionStateListener;
 import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.api.messages.PlcPingResponse;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.events.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcPingRequest;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +66,6 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                                      boolean canWrite,
                                      boolean canSubscribe,
                                      boolean canBrowse,
-                                     PlcTagHandler tagHandler,
                                      PlcValueHandler valueHandler,
                                      PlcConnectionConfiguration configuration,
                                      ChannelFactory channelFactory,
@@ -77,7 +76,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                                      ProtocolStackConfigurer<?> stackConfigurer,
                                      BaseOptimizer optimizer,
                                      PlcAuthentication authentication) {
-        super(canPing, canRead, canWrite, canSubscribe, canBrowse, tagHandler, valueHandler, optimizer, authentication);
+        super(canPing, canRead, canWrite, canSubscribe, canBrowse, valueHandler, optimizer, authentication);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.fireDiscoverEvent = fireDiscoverEvent;

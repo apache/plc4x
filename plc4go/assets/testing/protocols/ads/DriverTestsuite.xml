@@ -1150,9 +1150,13 @@
               <PlcTagRequest>
                 <tags isList="true">
                   <hurz>
-                    <SymbolicAdsTag>
-                      <symbolicAddress dataType="string" bitLength="128" encoding="UTF-8">MAIN.hurz_Struct</symbolicAddress>
-                    </SymbolicAdsTag>
+                    <PlcTagItem>
+                      <tag>
+                        <SymbolicAdsTag>
+                          <symbolicAddress dataType="string" bitLength="128" encoding="UTF-8">MAIN.hurz_Struct</symbolicAddress>
+                        </SymbolicAdsTag>
+                      </tag>
+                    </PlcTagItem>
                   </hurz>
                 </tags>
               </PlcTagRequest>
@@ -1160,7 +1164,7 @@
           </request>
           <values isList="true">
             <hurz>
-              <ResponseItem>
+              <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcStruct>
@@ -1232,7 +1236,7 @@
                     </hurz_DATE>
                   </PlcStruct>
                 </value>
-              </ResponseItem>
+              </PlcResponseItem>
             </hurz>
           </values>
         </PlcReadResponse>
@@ -1580,12 +1584,12 @@
           </PlcReadRequest>
           <values isList="true">
             <hurz>
-              <ResponseItem>
+              <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
                 </value>
-              </ResponseItem>
+              </PlcResponseItem>
             </hurz>
           </values>
         </PlcReadResponse>
@@ -1754,20 +1758,20 @@
           </PlcReadRequest>
           <values isList="true">
             <hurz1>
-              <ResponseItem>
+              <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
                 </value>
-              </ResponseItem>
+              </PlcResponseItem>
             </hurz1>
             <hurz2>
-              <ResponseItem>
+              <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
                 </value>
-              </ResponseItem>
+              </PlcResponseItem>
             </hurz2>
           </values>
         </PlcReadResponse>
@@ -2040,12 +2044,12 @@
           </PlcReadRequest>
           <values isList="true">
             <hurz1>
-              <ResponseItem>
+              <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcBOOL dataType="bit" bitLength="1">false</PlcBOOL>
                 </value>
-              </ResponseItem>
+              </PlcResponseItem>
             </hurz1>
           </values>
         </PlcReadResponse>
@@ -2319,12 +2323,12 @@
           </PlcReadRequest>
           <values isList="true">
             <hurz1>
-              <ResponseItem>
+              <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcBOOL dataType="bit" bitLength="1">false</PlcBOOL>
                 </value>
-              </ResponseItem>
+              </PlcResponseItem>
             </hurz1>
           </values>
         </PlcReadResponse>
@@ -2474,12 +2478,12 @@
           </PlcReadRequest>
           <values isList="true">
             <hurz1>
-              <ResponseItem>
+              <PlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcBOOL dataType="bit" bitLength="1">false</PlcBOOL>
                 </value>
-              </ResponseItem>
+              </PlcResponseItem>
             </hurz1>
           </values>
         </PlcReadResponse>

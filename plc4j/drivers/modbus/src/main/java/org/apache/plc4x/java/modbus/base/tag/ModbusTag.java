@@ -75,7 +75,7 @@ public abstract class ModbusTag implements PlcTag, Serializable {
             address += ":" + getDataType().name();
         }
         if(!getArrayInfo().isEmpty()) {
-            address += "[" + getArrayInfo().get(0).getUpperBound() + "]";
+            address += "[" + (getArrayInfo().get(0).getUpperBound() + 1) + "]";
         }
         return address;
     }
@@ -158,7 +158,7 @@ public abstract class ModbusTag implements PlcTag, Serializable {
     @Override
     public List<ArrayInfo> getArrayInfo() {
         if(quantity != 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, quantity));
+            return Collections.singletonList(new DefaultArrayInfo(0, quantity - 1));
         }
         return Collections.emptyList();
     }

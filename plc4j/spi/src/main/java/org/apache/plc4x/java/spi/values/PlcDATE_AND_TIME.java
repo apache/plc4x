@@ -18,25 +18,46 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 
-public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
+public class PlcDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
 
     public static PlcDATE_AND_TIME of(Object value) {
-        if (value instanceof LocalDateTime) {
+        if (value instanceof PlcDATE_AND_TIME) {
+            return (PlcDATE_AND_TIME) value;
+        } else if (value instanceof LocalDateTime) {
             return new PlcDATE_AND_TIME((LocalDateTime) value);
+        } else if (value instanceof Byte) {
+            return new PlcDATE_AND_TIME((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcDATE_AND_TIME((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcDATE_AND_TIME((Integer) value);
         } else if (value instanceof Long) {
-            return new PlcDATE_AND_TIME(LocalDateTime.ofInstant(
-                Instant.ofEpochSecond((long) value), ZoneOffset.UTC));
+            return new PlcDATE_AND_TIME((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcDATE_AND_TIME((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcDATE_AND_TIME((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcDATE_AND_TIME((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcDATE_AND_TIME((BigDecimal) value);
+        } else {
+            return new PlcDATE_AND_TIME(LocalDateTime.parse(value.toString()));
         }
-        throw new PlcRuntimeException("Invalid value type");
     }
 
     public static PlcDATE_AND_TIME ofSecondsSinceEpoch(long secondsSinceEpoch) {
@@ -48,17 +69,62 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
         return new PlcDATE_AND_TIME(LocalDateTime.of(year, month, day, hour, minutes, seconds, nanoseconds));
     }
 
-    public PlcDATE_AND_TIME(LocalDateTime value) {
-        super(value, true);
+    public PlcDATE_AND_TIME(Byte secondsSinceEpoch) {
+        this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
+            ZoneOffset.UTC);
+        this.isNullable = false;
     }
 
-    public PlcDATE_AND_TIME(long secondsSinceEpoch) {
-        super(LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
-            ZoneOffset.UTC), true);
+    public PlcDATE_AND_TIME(Short secondsSinceEpoch) {
+        this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
+            ZoneOffset.UTC);
+        this.isNullable = false;
+    }
+
+    public PlcDATE_AND_TIME(Integer secondsSinceEpoch) {
+        this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
+            ZoneOffset.UTC);
+        this.isNullable = false;
+    }
+
+    public PlcDATE_AND_TIME(Long secondsSinceEpoch) {
+        this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
+            ZoneOffset.UTC);
+        this.isNullable = false;
+    }
+
+    public PlcDATE_AND_TIME(Float secondsSinceEpoch) {
+        this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
+            ZoneOffset.UTC);
+        this.isNullable = false;
+    }
+
+    public PlcDATE_AND_TIME(Double secondsSinceEpoch) {
+        this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
+            ZoneOffset.UTC);
+        this.isNullable = false;
+    }
+
+    public PlcDATE_AND_TIME(BigInteger secondsSinceEpoch) {
+        this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
+            ZoneOffset.UTC);
+        this.isNullable = false;
+    }
+
+    public PlcDATE_AND_TIME(BigDecimal secondsSinceEpoch) {
+        this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
+            ZoneOffset.UTC);
+        this.isNullable = false;
+    }
+
+    public PlcDATE_AND_TIME(LocalDateTime value) {
+        this.value = value;
+        this.isNullable = false;
     }
 
     public PlcDATE_AND_TIME(int year, int month, int day, int hour, int minutes, int seconds, int nanoseconds) {
-        super(LocalDateTime.of(year, month, day, hour, minutes, seconds, nanoseconds), true);
+        this.value = LocalDateTime.of(year, month, day, hour, minutes, seconds, nanoseconds);
+        this.isNullable = false;
     }
 
     @Override
@@ -67,7 +133,7 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
     }
 
     public long getSecondsSinceEpoch() {
-        Instant instant = getDateTime().toInstant(ZoneOffset.of(ZoneOffset.UTC.getId()));
+        Instant instant = getDateTime().toInstant(ZoneOffset.UTC);
         return instant.getEpochSecond();
     }
 

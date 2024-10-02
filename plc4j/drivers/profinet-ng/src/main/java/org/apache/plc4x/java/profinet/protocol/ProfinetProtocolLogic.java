@@ -33,10 +33,12 @@ import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.packets.PnDcpPacketFactory;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
+import org.apache.plc4x.java.profinet.tag.ProfinetTagHandler;
 import org.apache.plc4x.java.profinet.utils.ProfinetDataTypeMapper;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseItem;
 import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseResponse;
@@ -76,6 +78,11 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     @Override
     public void setConfiguration(ProfinetConfiguration configuration) {
         this.configuration = configuration;
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new ProfinetTagHandler();
     }
 
     @Override
@@ -572,7 +579,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             expectedSubmodules.add(new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0, Collections.singletonList(new PnIoCm_ExpectedSubmoduleBlockReqApi(slotNumber, 0x00000020, 0x0000, expectedSubmoduleData))));
         }
 
-        RawSocketChannel rawSocketChannel = (RawSocketChannel) context.getChannel();
+        RawSocketChannel rawSocketChannel = (RawSocketChannel) conversationContext.getChannel();
         MacAddress remoteMacAddress = new MacAddress(rawSocketChannel.getRemoteMacAddress().getAddress());
         InetSocketAddress remoteAddress = (InetSocketAddress) rawSocketChannel.getRemoteAddress();
         MacAddress localMacAddress = new MacAddress(rawSocketChannel.getLocalMacAddress().getAddress());
@@ -699,7 +706,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             udpFrame);
 
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
-        context.sendRequest(requestEthernetFrame)
+        conversationContext.sendRequest(requestEthernetFrame)
             .name("Expect Subscription response")
             .expectResponse(Ethernet_Frame.class, Duration.ofMillis(1000))
             .onTimeout(future::completeExceptionally)
@@ -716,7 +723,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                 // TODO: Maybe do some checks on this.
 
                 // Now we wait for an incoming ApplicationReady request and confirm that.
-                context.expectRequest(Ethernet_Frame.class, Duration.ofMillis(500000))
+                conversationContext.expectRequest(Ethernet_Frame.class, Duration.ofMillis(500000))
                     .name("Expect ApplicationReady request")
                     .onTimeout(future::completeExceptionally)
                     .check(ethernetFrame -> ethernetFrame.getPayload() instanceof Ethernet_FramePayload_IPv4)
@@ -732,8 +739,8 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                         int sessionKey = pnIoCmBlock.getSessionKey();
 
                         // Send back a response, but this is just a hack ... we need to move this into the subscribe method, or we can't complete the future that we're returning.
-                        RawSocketChannel pnChannel = (RawSocketChannel) context.getChannel();
-                        PnDcpPacketFactory.sendApplicationReadyResponse(context, pnChannel, profinetDriverContext, payloadIPv4.getSourcePort(), dceRpc_packet.getActivityUuid(), arUuid, sessionKey);
+                        RawSocketChannel pnChannel = (RawSocketChannel) conversationContext.getChannel();
+                        PnDcpPacketFactory.sendApplicationReadyResponse(conversationContext, pnChannel, profinetDriverContext, payloadIPv4.getSourcePort(), dceRpc_packet.getActivityUuid(), arUuid, sessionKey);
 
                         connected = true;
                         // TODO: Prepare the subscription response.
@@ -741,7 +748,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                     });
 
                 // Now send the ParameterEnd request and wait for a response.
-                CompletableFuture<PnIoCm_Control_Response_ParameterEnd> parameterEndFuture = PnDcpPacketFactory.sendParameterEndRequest(context, rawSocketChannel, profinetDriverContext);
+                CompletableFuture<PnIoCm_Control_Response_ParameterEnd> parameterEndFuture = PnDcpPacketFactory.sendParameterEndRequest(conversationContext, rawSocketChannel, profinetDriverContext);
                 parameterEndFuture.whenComplete((parameterEnd, throwable) -> {
                     // We needed to put the code to expect the ApplicationReady to subscribe before sending,
                     // as the device sends it within 4 ms, and we can't guarantee that we're done setting up

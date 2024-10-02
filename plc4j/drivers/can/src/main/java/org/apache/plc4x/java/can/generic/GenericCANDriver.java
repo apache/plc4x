@@ -18,12 +18,12 @@
  */
 package org.apache.plc4x.java.can.generic;
 
+import org.apache.plc4x.java.can.generic.tag.GenericCANTagHandler;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.can.adapter.CANDriverAdapter;
 import org.apache.plc4x.java.can.generic.configuration.GenericCANConfiguration;
 import org.apache.plc4x.java.can.generic.context.GenericCANDriverContext;
-import org.apache.plc4x.java.can.generic.tag.GenericCANTagHandler;
 import org.apache.plc4x.java.can.generic.protocol.GenericCANProtocolLogic;
 import org.apache.plc4x.java.can.generic.transport.GenericCANFrameDataHandler;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
@@ -33,7 +33,6 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.transport.can.CANTransport;
 
 import java.util.Optional;
@@ -80,16 +79,6 @@ public class GenericCANDriver extends GeneratedDriverBase<Message> {
         return true;
     }
 
-    @Override
-    protected GenericCANTagHandler getTagHandler() {
-        return new GenericCANTagHandler();
-    }
-
-    @Override
-    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new PlcValueHandler();
-    }
-
     /**
      * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
      * @return false
@@ -122,7 +111,8 @@ public class GenericCANDriver extends GeneratedDriverBase<Message> {
                 ConfigurationFactory.configure(cfg, protocolLogic);
                 return new CANDriverAdapter<>(protocolLogic,
                     canTransport.getMessageType(), canTransport.adapter(),
-                    new GenericCANFrameDataHandler(canTransport::getTransportFrameBuilder)
+                    new GenericCANFrameDataHandler(canTransport::getTransportFrameBuilder),
+                    new GenericCANTagHandler()
                 );
             })
             .withDriverContext(cfg -> new GenericCANDriverContext())

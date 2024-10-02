@@ -33,7 +33,7 @@ import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryItem;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryResponse;
 import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
-import org.apache.plc4x.java.spi.values.PlcValues;
+import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransport;
 import org.pcap4j.core.NotOpenException;
 import org.pcap4j.core.PcapHandle;
@@ -230,16 +230,16 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
             }
 
             Map<String, PlcValue> attributes = new HashMap<>();
-            attributes.put("ipAddress", PlcValues.of(remoteAddress));
-            attributes.put("subnetMask", PlcValues.of(remoteSubnetMask));
-            attributes.put("macAddress", PlcValues.of(srcAddr.toString()));
-            attributes.put("localMacAddress", PlcValues.of(dstAddr.toString()));
-            attributes.put("deviceTypeName", PlcValues.of(deviceTypeName));
-            attributes.put("deviceName", PlcValues.of(deviceName));
-            attributes.put("vendorId", PlcValues.of(vendorId));
-            attributes.put("deviceId", PlcValues.of(deviceId));
-            attributes.put("role", PlcValues.of(role));
-            attributes.put("packetType", PlcValues.of("dcp"));
+            attributes.put("ipAddress", new PlcSTRING(remoteAddress));
+            attributes.put("subnetMask", new PlcSTRING(remoteSubnetMask));
+            attributes.put("macAddress", new PlcSTRING(srcAddr.toString()));
+            attributes.put("localMacAddress", new PlcSTRING(dstAddr.toString()));
+            attributes.put("deviceTypeName", new PlcSTRING(deviceTypeName));
+            attributes.put("deviceName", new PlcSTRING(deviceName));
+            attributes.put("vendorId", new PlcSTRING(vendorId));
+            attributes.put("deviceId", new PlcSTRING(deviceId));
+            attributes.put("role", new PlcSTRING(role));
+            attributes.put("packetType", new PlcSTRING("dcp"));
 
             String name = deviceTypeName + " - " + deviceName;
 

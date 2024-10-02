@@ -111,8 +111,8 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
         private final LinkedHashMap<String, List<Consumer<PlcSubscriptionEvent>>> preRegisteredConsumers;
 
         public Builder(PlcSubscriber subscriber, PlcTagHandler tagHandler) {
-            this.subscriber = subscriber;
-            this.tagHandler = tagHandler;
+            this.subscriber = Objects.requireNonNull(subscriber);
+            this.tagHandler = Objects.requireNonNull(tagHandler);
             this.tags = new TreeMap<>();
             this.preRegisteredConsumers = new LinkedHashMap<>();
         }

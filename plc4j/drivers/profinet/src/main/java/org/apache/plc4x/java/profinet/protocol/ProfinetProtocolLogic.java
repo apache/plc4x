@@ -32,11 +32,14 @@ import org.apache.plc4x.java.profinet.device.*;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
+import org.apache.plc4x.java.profinet.tag.ProfinetTagHandler;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
 import org.pcap4j.core.*;
@@ -92,8 +95,8 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     }
 
     @Override
-    public void setContext(ConversationContext<Ethernet_Frame> context) {
-        super.setContext(context);
+    public void setConversationContext(ConversationContext<Ethernet_Frame> conversationContext) {
+        super.setConversationContext(conversationContext);
 
         // Open the receiving UDP port and keep it open.
         try {
@@ -105,8 +108,13 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         profinetDriverContext.getHandler().setConfiguredDevices(devices);
 
         for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
-            device.getValue().setContext(context, this.profinetDriverContext.getChannel());
+            device.getValue().setContext(conversationContext, this.profinetDriverContext.getChannel());
         }
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new ProfinetTagHandler();
     }
 
     /**
@@ -238,7 +246,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         return CompletableFuture.supplyAsync(() -> {
-            Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+            Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
 
             for (String fieldName : subscriptionRequest.getTagNames()) {
                 PlcSubscriptionTag tag = subscriptionRequest.getTag(fieldName);
@@ -250,9 +258,9 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                 device.getDeviceContext().addSubscriptionHandle(fieldDefaultPlcSubscription.getAddressString(), subscriptionHandle);
 
                 if (!(fieldDefaultPlcSubscription.getTag() instanceof ProfinetTag)) {
-                    values.put(fieldName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
+                    values.put(fieldName, new DefaultPlcResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
                 } else {
-                    values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, subscriptionHandle));
+                    values.put(fieldName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, subscriptionHandle));
                 }
             }
             return new DefaultPlcSubscriptionResponse(subscriptionRequest, values);

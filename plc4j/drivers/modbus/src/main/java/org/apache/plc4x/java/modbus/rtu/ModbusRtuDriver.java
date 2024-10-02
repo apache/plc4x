@@ -24,7 +24,6 @@ import org.apache.plc4x.java.modbus.rtu.context.ModbusRtuContext;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
-import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.readwrite.ModbusRtuADU;
 import org.apache.plc4x.java.modbus.rtu.config.ModbusRtuConfiguration;
@@ -33,12 +32,10 @@ import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpTransportConfiguration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.generation.MessageInput;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.Arrays;
 import java.util.List;
@@ -117,16 +114,6 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
     @Override
     protected BaseOptimizer getOptimizer() {
         return new SingleTagOptimizer();
-    }
-
-    @Override
-    protected ModbusTagHandler getTagHandler() {
-        return new ModbusTagHandler();
-    }
-
-    @Override
-    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new PlcValueHandler();
     }
 
     @Override

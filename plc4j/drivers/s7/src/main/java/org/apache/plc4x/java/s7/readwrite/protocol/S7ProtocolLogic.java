@@ -41,11 +41,16 @@ import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
 import org.apache.plc4x.java.s7.utils.S7ParamErrorCode;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
-import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcTagItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcTagValueItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcTagItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcTagValueItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.plc4x.java.spi.values.*;
@@ -69,8 +74,6 @@ import org.apache.plc4x.java.s7.events.S7ModeEvent;
 import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.events.S7UserEvent;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionRequest;
-
-import javax.xml.crypto.Data;
 
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
@@ -141,6 +144,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // S7ParameterSetupCommunication response.
         this.tm = new RequestTransactionManager(1);
         eventLogic.start();
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new S7PlcTagHandler();
     }
 
     @Override
@@ -445,7 +453,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
             // Start a new request-transaction (Is ended in the response-handler)
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-            transaction.submit(() -> context.sendRequest(tpktPacket)
+            transaction.submit(() -> conversationContext.sendRequest(tpktPacket)
                 .onTimeout(new TransactionErrorCallback<>(future, transaction))
                 .onError(new TransactionErrorCallback<>(future, transaction))
                 .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
@@ -476,7 +484,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             }
 
             try {
-                HashMap<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+                HashMap<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
                 valuesResponse.forEach((s, p) -> {
                     if (p != null)
                         values.putAll(((DefaultPlcSubscriptionResponse) p).getValues());
@@ -526,7 +534,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(tpktPacket)
+        transaction.submit(() -> conversationContext.sendRequest(tpktPacket)
             .onTimeout(new TransactionErrorCallback<>(future, transaction))
             .onError(new TransactionErrorCallback<>(future, transaction))
             .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
@@ -616,7 +624,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                                                                     S7Message responseMessage)
         throws PlcProtocolException {
 
-        Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+        Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
         short errorClass = 0;
         short errorCode = 0;
         if (responseMessage instanceof S7MessageUserData) {
@@ -648,7 +656,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 logger.warn("Got an error response from the PLC. This particular response code usually indicates " +
                     "that PUT/GET is not enabled on the PLC.");
                 for (String tagName : plcSubscriptionRequest.getTagNames()) {
-                    values.put(tagName, new ResponseItem<>(PlcResponseCode.REMOTE_ERROR, null));
+                    values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.REMOTE_ERROR, null));
                 }
                 return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
             }
@@ -659,7 +667,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     "data on a PLC that doesn't support subscriptions (S7-1200 or S7-1500)",
                     errorClass, errorCode);
                 for (String tagName : plcSubscriptionRequest.getTagNames()) {
-                    values.put(tagName, new ResponseItem<>(PlcResponseCode.UNSUPPORTED, null));
+                    values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.UNSUPPORTED, null));
                 }
                 return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
             } else {
@@ -669,7 +677,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         "containing a capture of the communication.",
                     errorClass, errorCode);
                 for (String tagName : plcSubscriptionRequest.getTagNames()) {
-                    values.put(tagName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+                    values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                 }
                 return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
             }
@@ -720,12 +728,12 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             //String tagName = (String) plcSubscriptionRequest.getTagNames().toArray()[0];
             //TODO: Chequear si tagName es el correcto           
             //logger.info("strTagName: " + strTagName);
-            values.put(strTagName, new ResponseItem<>(PlcResponseCode.OK, null));
+            values.put(strTagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, null));
             for (short s : items.getMessageObjects()) {
                 if (s == 0x0000) {
-                    values.put(Integer.toHexString(s), new ResponseItem<>(PlcResponseCode.OK, null));
+                    values.put(Integer.toHexString(s), new DefaultPlcResponseItem<>(PlcResponseCode.OK, null));
                 } else if (s == 0x000a) {
-                    values.put(Integer.toHexString(s), new ResponseItem<>(PlcResponseCode.NOT_FOUND, null));
+                    values.put(Integer.toHexString(s), new DefaultPlcResponseItem<>(PlcResponseCode.NOT_FOUND, null));
                 }
             }
 
@@ -737,7 +745,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             //        payloadItems.get(0);
             //String fieldName = (String) S7PayloadUserDataItemCyclicServicesPush .getFieldNames().toArray()[0];
             //logger.warn("Request field: " + strTagName + ": " + S7ParamErrorCode.valueOf(errorCode) + " " + S7ParamErrorCode.valueOf(errorCode).getEvent());
-            values.put(strTagName, new ResponseItem<>(PlcResponseCode.NOT_FOUND, null));
+            values.put(strTagName, new DefaultPlcResponseItem<>(PlcResponseCode.NOT_FOUND, null));
             return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
 
         } else if (payloadItems.get(0) instanceof S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) {
@@ -809,7 +817,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             }
 
             PlcResponseCode resCode = (items.getReturnCode() == DataTransportErrorCode.OK) ? PlcResponseCode.OK : PlcResponseCode.INTERNAL_ERROR;
-            values.put(strTagName, new ResponseItem<>(resCode, null));
+            values.put(strTagName, new DefaultPlcResponseItem<>(resCode, null));
             return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
 
         } else if (payloadItems.get(0) instanceof S7PayloadUserDataItemCyclicServicesSubscribeResponse) {
@@ -832,7 +840,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
             S7PlcSubscriptionHandle cycHandle = new S7PlcSubscriptionHandle(strTagName, EventType.CYC, eventLogic);
 
-            ResponseItem<PlcSubscriptionHandle> response = new ResponseItem<>(PlcResponseCode.OK, cycHandle);
+            PlcResponseItem<PlcSubscriptionHandle> response = new DefaultPlcResponseItem<>(PlcResponseCode.OK, cycHandle);
             plcSubscriptionRequest.getTagNames().forEach(s -> values.put(s, response));
 
             return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
@@ -851,7 +859,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             eventQueue.add(cycEvent);
 
             S7PlcSubscriptionHandle cycHandle = new S7PlcSubscriptionHandle(strTagName, EventType.CYC, eventLogic);
-            values.put(strTagName, new ResponseItem<>(PlcResponseCode.OK, cycHandle));
+            values.put(strTagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, cycHandle));
             return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
 
         } else if (payloadItems.get(0) instanceof S7PayloadUserDataItemCyclicServicesErrorResponse) {
@@ -864,11 +872,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             /*if (errorCode == 0x8104) {
                 values.put(strTagName, new ResponseItem(PlcResponseCode.UNSUPPORTED, null));
             } else {*/
-            values.put(strTagName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+            values.put(strTagName, new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
             // }
             return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
         } else if (payloadItems.get(0) instanceof S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) {
-            values.put(strTagName, new ResponseItem<>(PlcResponseCode.OK, null));
+            values.put(strTagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, null));
             return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
         }
 
@@ -878,16 +886,16 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 S7SubscriptionTag tag = (S7SubscriptionTag) dTag.getTag();
                 switch (tag.getEventType()) {
                     case MODE:
-                        values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, modeHandle));
+                        values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, modeHandle));
                         break;
                     case SYS:
-                        values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, sysHandle));
+                        values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, sysHandle));
                         break;
                     case USR:
-                        values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, usrHandle));
+                        values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, usrHandle));
                         break;
                     case ALM:
-                        values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, almHandle));
+                        values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, almHandle));
                         break;
                 }
 
@@ -1292,19 +1300,21 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // Replace the var-length string fields with requests to read the
         // length information instead of the string content.
         int numVarLengthStrings = 0;
-        LinkedHashMap<String, PlcTag> updatedRequestItems = new LinkedHashMap<>(request.getNumberOfTags());
+        LinkedHashMap<String, PlcTagItem> updatedRequestItems = new LinkedHashMap<>(request.getNumberOfTags());
         for (String tagName : request.getTagNames()) {
-            S7Tag s7tag = (S7Tag) request.getTag(tagName);
-            if(s7tag instanceof S7StringVarLengthTag) {
-                if(s7tag.getDataType() == TransportSize.STRING) {
-                    updatedRequestItems.put(tagName, new S7Tag(TransportSize.BYTE, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 2));
+            PlcTagItem plcTagItem = request.getTagItem(tagName);
+            if(plcTagItem.getTag() instanceof S7StringVarLengthTag) {
+                S7Tag s7Tag = (S7Tag) plcTagItem.getTag();
+                TransportSize dataType = s7Tag.getDataType();
+                if(dataType == TransportSize.STRING) {
+                    updatedRequestItems.put(tagName, new DefaultPlcTagItem(new S7Tag(TransportSize.BYTE, s7Tag.getMemoryArea(), s7Tag.getBlockNumber(), s7Tag.getByteOffset(), s7Tag.getBitOffset(), 2)));
                     numVarLengthStrings++;
-                } else if(s7tag.getDataType() == TransportSize.WSTRING) {
-                    updatedRequestItems.put(tagName, new S7Tag(TransportSize.BYTE, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 4));
+                } else if(dataType == TransportSize.WSTRING) {
+                    updatedRequestItems.put(tagName, new DefaultPlcTagItem(new S7Tag(TransportSize.BYTE, s7Tag.getMemoryArea(), s7Tag.getBlockNumber(), s7Tag.getByteOffset(), s7Tag.getBitOffset(), 4)));
                     numVarLengthStrings++;
                 }
             } else {
-                updatedRequestItems.put(tagName, s7tag);
+                updatedRequestItems.put(tagName, plcTagItem);
             }
         }
 
@@ -1316,24 +1326,24 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 return;
             }
             // Collect the responses for the var-length strings and read them separately.
-            LinkedHashMap<String, PlcTag> varLengthStringTags = new LinkedHashMap<>(finalNumVarLengthStrings);
+            LinkedHashMap<String, PlcTagItem> varLengthStringTags = new LinkedHashMap<>(finalNumVarLengthStrings);
             int curItem = 0;
             for (String tagName : request.getTagNames()) {
                 S7Tag s7tag = (S7Tag) request.getTag(tagName);
                 if(s7tag instanceof S7StringVarLengthTag) {
                     S7VarPayloadDataItem s7VarPayloadDataItem = ((S7PayloadReadVarResponse) s7Message.getPayload()).getItems().get(curItem);
-                    // Simply ignore processing var-lenght strings that are not ok
+                    // Simply ignore processing var-length strings that are not ok
                     if(s7VarPayloadDataItem.getReturnCode() == DataTransportErrorCode.OK) {
                         ReadBuffer rb = new ReadBufferByteBased(s7VarPayloadDataItem.getData());
                         try {
                             if (s7tag.getDataType() == TransportSize.STRING) {
                                 rb.readShort(8);
                                 int stringLength = rb.readShort(8);
-                                varLengthStringTags.put(tagName, new S7StringFixedLengthTag(TransportSize.STRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength));
+                                varLengthStringTags.put(tagName, new DefaultPlcTagItem(new S7StringFixedLengthTag(TransportSize.STRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength)));
                             } else if (s7tag.getDataType() == TransportSize.WSTRING) {
                                 rb.readInt(16);
                                 int stringLength = rb.readInt(16);
-                                varLengthStringTags.put(tagName, new S7StringFixedLengthTag(TransportSize.WSTRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength));
+                                varLengthStringTags.put(tagName, new DefaultPlcTagItem(new S7StringFixedLengthTag(TransportSize.WSTRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength)));
                             }
                         } catch (Exception e) {
                             logger.warn("Error parsing string size for tag {}", tagName, e);
@@ -1428,7 +1438,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             } else {
                 // Create an alternative list of request items, where all var-length string tags are replaced with
                 // fixed-length string tags using the string length returned by the previous request.
-                LinkedHashMap<String, TagValueItem> updatedRequestItems = new LinkedHashMap<>(request.getNumberOfTags());
+                LinkedHashMap<String, PlcTagValueItem> updatedRequestItems = new LinkedHashMap<>(request.getNumberOfTags());
                 for (String tagName : request.getTagNames()) {
                     PlcTag tag = request.getTag(tagName);
                     PlcValue value = request.getPlcValue(tagName);
@@ -1438,9 +1448,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         S7StringFixedLengthTag newTag = new S7StringFixedLengthTag(varLengthTag.getDataType(), varLengthTag.getMemoryArea(),
                             varLengthTag.getBlockNumber(), varLengthTag.getByteOffset(), varLengthTag.getBitOffset(),
                             varLengthTag.getNumberOfElements(), stringLength);
-                        updatedRequestItems.put(tagName, new TagValueItem(newTag, value));
+                        updatedRequestItems.put(tagName, new DefaultPlcTagValueItem(newTag, value));
                     } else {
-                        updatedRequestItems.put(tagName, new TagValueItem(tag, value));
+                        updatedRequestItems.put(tagName, new DefaultPlcTagValueItem(tag, value));
                     }
                 }
 
@@ -1497,7 +1507,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         // Send the request.
-        transaction.submit(() -> context.sendRequest(tpktPacket)
+        transaction.submit(() -> conversationContext.sendRequest(tpktPacket)
             .onTimeout(new TransactionErrorCallback<>(future, transaction))
             .onError(new TransactionErrorCallback<>(future, transaction))
             .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
@@ -1716,7 +1726,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
     private PlcResponse decodeReadResponse(S7Message responseMessage, PlcReadRequest plcReadRequest) throws PlcProtocolException {
-        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+        Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
         short errorClass;
         short errorCode;
 
@@ -1745,7 +1755,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 logger.warn("Got an error response from the PLC. This particular response code usually indicates " +
                     "that PUT/GET is not enabled on the PLC.");
                 for (String tagName : plcReadRequest.getTagNames()) {
-                    ResponseItem<PlcValue> result = new ResponseItem<>(PlcResponseCode.ACCESS_DENIED, new PlcNull());
+                    PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(PlcResponseCode.ACCESS_DENIED, new PlcNull());
                     values.put(tagName, result);
                 }
                 return new DefaultPlcReadResponse(plcReadRequest, values);
@@ -1754,7 +1764,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     "that we sent a too large packet or would be receiving a too large one. " +
                     "Please report this, as this is most probably a bug.");
                 for (String tagName : plcReadRequest.getTagNames()) {
-                    ResponseItem<PlcValue> result = new ResponseItem<>(PlcResponseCode.ACCESS_DENIED, new PlcNull());
+                    PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(PlcResponseCode.ACCESS_DENIED, new PlcNull());
                     values.put(tagName, result);
                 }
                 return new DefaultPlcReadResponse(plcReadRequest, values);
@@ -1765,7 +1775,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         "containing a capture of the communication.",
                     errorClass, errorCode);
                 for (String tagName : plcReadRequest.getTagNames()) {
-                    ResponseItem<PlcValue> result = new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, new PlcNull());
+                    PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, new PlcNull());
                     values.put(tagName, result);
                 }
                 return new DefaultPlcReadResponse(plcReadRequest, values);
@@ -1875,7 +1885,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     plcValue = new PlcList(plcValues);
                 }
 
-                ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
+                PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(responseCode, plcValue);
                 values.put(tagName, result);
                 index++;
             }
@@ -1913,7 +1923,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 }
             }
 
-            ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
+            PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(responseCode, plcValue);
             values.put(tagName, result);
             index++;
         }
@@ -2059,7 +2069,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         }
                         return null;
                     }).toArray(PlcValue[]::new);
-                    return PlcValueHandler.of(resultItems);
+                    return DefaultPlcValueHandler.of(tag, resultItems);
                 }
             }
         } catch (ParseException e) {
@@ -2156,19 +2166,19 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
     private boolean isConnected() {
-        return context.getChannel().attr(S7HMuxImpl.IS_CONNECTED).get();
+        return conversationContext.getChannel().attr(S7HMuxImpl.IS_CONNECTED).get();
         //return true;
     }
 
     private boolean isPrimaryChannel() {
-        return context.getChannel().attr(S7HMuxImpl.IS_PRIMARY).get() == null || context.getChannel().attr(S7HMuxImpl.IS_PRIMARY).get();
+        return conversationContext.getChannel().attr(S7HMuxImpl.IS_PRIMARY).get() == null || conversationContext.getChannel().attr(S7HMuxImpl.IS_PRIMARY).get();
     }
 
     private void setChannelFeatures() {
-        context.getChannel().attr(S7HMuxImpl.READ_TIME_OUT).set(s7DriverContext.getReadTimeout());
-        context.getChannel().attr(S7HMuxImpl.IS_PING_ACTIVE).set(s7DriverContext.getPing());
-        context.getChannel().attr(S7HMuxImpl.PING_TIME).set(s7DriverContext.getPingTime());
-        context.getChannel().attr(S7HMuxImpl.RETRY_TIME).set(s7DriverContext.getRetryTime());
+        conversationContext.getChannel().attr(S7HMuxImpl.READ_TIME_OUT).set(s7DriverContext.getReadTimeout());
+        conversationContext.getChannel().attr(S7HMuxImpl.IS_PING_ACTIVE).set(s7DriverContext.getPing());
+        conversationContext.getChannel().attr(S7HMuxImpl.PING_TIME).set(s7DriverContext.getPingTime());
+        conversationContext.getChannel().attr(S7HMuxImpl.RETRY_TIME).set(s7DriverContext.getRetryTime());
     }
 
 
@@ -2186,7 +2196,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         TPKTPacket request = createSzlReassembledRequest(tpduId, sequenceNumber);
 
-        context.sendRequest(request)
+        conversationContext.sendRequest(request)
             .onTimeout(e -> {
                 logger.warn("Timeout during Connection establishing, closing channel...");
                 //context.getChannel().close();
@@ -2226,7 +2236,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         TPKTPacket request = createAlarmQueryReassembledRequest(tpduId, sequenceNumber);
 
-        context.sendRequest(request)
+        conversationContext.sendRequest(request)
             .onTimeout(e -> {
                 logger.warn("Timeout during Connection establishing, closing channel...");
                 //context.getChannel().close();

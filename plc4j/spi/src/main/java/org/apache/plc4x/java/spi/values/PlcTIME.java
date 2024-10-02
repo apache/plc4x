@@ -18,40 +18,91 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
-import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-import java.nio.charset.StandardCharsets;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 
-public class PlcTIME extends PlcSimpleValue<Duration> {
+public class PlcTIME extends PlcIECValue<Duration> {
 
     public static PlcTIME of(Object value) {
-        if (value instanceof Duration) {
+        if (value instanceof PlcTIME) {
+            return (PlcTIME) value;
+        } else if (value instanceof Duration) {
             return new PlcTIME((Duration) value);
+        } else if (value instanceof Byte) {
+            return new PlcTIME((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcTIME((Short) value);
         } else if (value instanceof Integer) {
-            return new PlcTIME(Duration.of((long) value, ChronoUnit.MILLIS));
+            return new PlcTIME((Integer) value);
         } else if (value instanceof Long) {
-            return new PlcTIME(Duration.of((long) value, ChronoUnit.MILLIS));
+            return new PlcTIME((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcTIME((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcTIME((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcTIME((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcTIME((BigDecimal) value);
+        } else {
+            return new PlcTIME(Duration.parse(value.toString()));
         }
-        throw new PlcRuntimeException("Invalid value type");
+        //throw new PlcRuntimeException("Invalid value type");
     }
 
     public static PlcTIME ofMilliseconds(long milliseconds) {
         return new PlcTIME(Duration.ofMillis(milliseconds));
     }
 
-    public PlcTIME(Duration value) {
-        super(value, true);
+    public PlcTIME(Byte milliseconds) {
+        this.value = Duration.ofMillis(milliseconds);
+        this.isNullable = false;
     }
 
-    public PlcTIME(long milliseconds) {
-        super(Duration.ofMillis(milliseconds), true);
+    public PlcTIME(Short milliseconds) {
+        this.value = Duration.ofMillis(milliseconds);
+        this.isNullable = false;
+    }
+
+    public PlcTIME(Integer milliseconds) {
+        this.value = Duration.ofMillis(milliseconds);
+        this.isNullable = false;
+    }
+
+    public PlcTIME(Long milliseconds) {
+        this.value = Duration.ofMillis(milliseconds);
+        this.isNullable = false;
+    }
+
+    public PlcTIME(Float milliseconds) {
+        this.value = Duration.ofMillis(milliseconds.longValue());
+        this.isNullable = false;
+    }
+
+    public PlcTIME(Double milliseconds) {
+        this.value = Duration.ofMillis(milliseconds.longValue());
+        this.isNullable = false;
+    }
+
+    public PlcTIME(BigInteger milliseconds) {
+        this.value = Duration.ofMillis(milliseconds.longValue());
+        this.isNullable = false;
+    }
+
+    public PlcTIME(BigDecimal milliseconds) {
+        this.value = Duration.ofMillis(milliseconds.longValue());
+        this.isNullable = false;
+    }
+
+    public PlcTIME(Duration value) {
+        this.value = value;
+        this.isNullable = false;
     }
 
     @Override

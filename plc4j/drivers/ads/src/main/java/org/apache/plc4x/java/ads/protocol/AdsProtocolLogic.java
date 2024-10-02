@@ -24,6 +24,7 @@ import org.apache.plc4x.java.ads.discovery.readwrite.*;
 import org.apache.plc4x.java.ads.model.AdsSubscriptionHandle;
 import org.apache.plc4x.java.ads.readwrite.*;
 import org.apache.plc4x.java.ads.tag.AdsTag;
+import org.apache.plc4x.java.ads.tag.AdsTagHandler;
 import org.apache.plc4x.java.ads.tag.DirectAdsStringTag;
 import org.apache.plc4x.java.ads.tag.DirectAdsTag;
 import org.apache.plc4x.java.ads.tag.SymbolicAdsTag;
@@ -40,9 +41,11 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
@@ -110,6 +113,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     @Override
     public void setConfiguration(AdsConfiguration configuration) {
         this.configuration = configuration;
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new AdsTagHandler();
     }
 
     @Override
@@ -247,7 +255,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         new Thread(() -> {
             LOGGER.debug("Setting up remote AMS routes.");
-            SocketAddress localSocketAddress = context.getChannel().localAddress();
+            SocketAddress localSocketAddress = conversationContext.getChannel().localAddress();
             InetAddress localAddress = ((InetSocketAddress) localSocketAddress).getAddress();
 
             // Prepare the request message.
@@ -274,7 +282,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 addOrUpdateRouteRequest.serialize(writeBuffer);
 
                 // Get the target IP from the connection
-                SocketAddress remoteSocketAddress = context.getChannel().remoteAddress();
+                SocketAddress remoteSocketAddress = conversationContext.getChannel().remoteAddress();
                 InetAddress remoteAddress = ((InetSocketAddress) remoteSocketAddress).getAddress();
 
                 // Create the UDP packet to the broadcast address.
@@ -513,7 +521,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     itemArrayInfo.add(new DefaultPlcBrowseItemArrayInfo(
                         adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
                 }
-                DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo), symbol.getName(),
+                DefaultPlcBrowseItemList item = new DefaultPlcBrowseItemList(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo), symbol.getName(),
                     true, !symbol.getFlagReadOnly(), true, false, childMap, options, itemArrayInfo);
 
                 // Check if this item should be added to the result
@@ -576,7 +584,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
             }
             // Add the type itself.
-            values.add(new DefaultListPlcBrowseItem(new SymbolicAdsTag(
+            values.add(new DefaultPlcBrowseItemList(new SymbolicAdsTag(
                 basePath + "." + child.getPropertyName(), plc4xPlcValueType, arrayInfo), child.getPropertyName(),
                 true, parentWritable, true, false, childMap, options, itemArrayInfo));
         }
@@ -592,10 +600,10 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             configuration.getSourceAmsNetId(), 800, 0, getInvokeId());
 
         RequestTransactionManager.RequestTransaction readDeviceInfoTx = tm.startRequest();
-        readDeviceInfoTx.submit(() -> context.sendRequest(new AmsTCPPacket(readDeviceInfoRequest))
+        readDeviceInfoTx.submit(() -> conversationContext.sendRequest(new AmsTCPPacket(readDeviceInfoRequest))
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
-            .onTimeout(e -> context.getChannel().pipeline().fireExceptionCaught(e))
-            .onError((p, e) -> context.getChannel().pipeline().fireExceptionCaught(e))
+            .onTimeout(e -> conversationContext.getChannel().pipeline().fireExceptionCaught(e))
+            .onError((p, e) -> conversationContext.getChannel().pipeline().fireExceptionCaught(e))
             .unwrap(AmsTCPPacket::getUserdata)
             .check(userdata -> userdata.getInvokeId() == readDeviceInfoRequest.getInvokeId())
             .only(AdsReadDeviceInfoResponse.class)
@@ -672,7 +680,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         if(directAdsTag == null) {
             return CompletableFuture.completedFuture(new DefaultPlcReadResponse(readRequest, Collections.singletonMap(
                 readRequest.getTagNames().stream().findFirst().orElseThrow(),
-                new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null))));
+                new DefaultPlcResponseItem<>(PlcResponseCode.NOT_FOUND, null))));
         }
 
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
@@ -693,7 +701,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+        transaction.submit(() -> conversationContext.sendRequest(amsTCPPacket)
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
@@ -766,7 +774,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+        transaction.submit(() -> conversationContext.sendRequest(amsTCPPacket)
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
@@ -822,11 +830,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Read the values next
         if (readBuffer != null) {
-            Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+            Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
             for (String tagName : readRequest.getTagNames()) {
                 // If the response-code was anything but OK, we don't need to parse the payload.
                 if(responseCodes.get(tagName) != PlcResponseCode.OK) {
-                    values.put(tagName, new ResponseItem<>(responseCodes.get(tagName), null));
+                    values.put(tagName, new DefaultPlcResponseItem<>(responseCodes.get(tagName), null));
                 }
                 // If the response-code was ok, parse the data returned.
                 else {
@@ -849,7 +857,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         }
     }
 
-    private ResponseItem<PlcValue> parseResponseItem(DirectAdsTag tag, ReadBuffer readBuffer) {
+    private PlcResponseItem<PlcValue> parseResponseItem(DirectAdsTag tag, ReadBuffer readBuffer) {
         try {
             String dataTypeName = tag.getPlcDataType();
             AdsDataTypeTableEntry adsDataTypeTableEntry;
@@ -872,7 +880,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 // Sometimes the ADS device just sends shorter strings than we asked for.
                 int remainingBytes = readBufferByteBased.getTotalBytes() - readBufferByteBased.getPos();
                 final int singleStringLength = Math.min(remainingBytes - 1, stringLength);
-                return new ResponseItem<>(PlcResponseCode.OK, parsePlcValue(plcValueType, adsDataTypeTableEntry, singleStringLength, readBuffer));
+                return new DefaultPlcResponseItem<>(PlcResponseCode.OK, parsePlcValue(plcValueType, adsDataTypeTableEntry, singleStringLength, readBuffer));
             } else {
                 // Fetch all
                 final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
@@ -883,11 +891,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     }
                     return null;
                 }).toArray(PlcValue[]::new);
-                return new ResponseItem<>(PlcResponseCode.OK, PlcValueHandler.of(resultItems));
+                return new DefaultPlcResponseItem<>(PlcResponseCode.OK, DefaultPlcValueHandler.of(tag, resultItems));
             }
         } catch (Exception e) {
             LOGGER.warn(String.format("Error parsing tag item of type: '%s'", tag.getPlcDataType()), e);
-            return new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null);
+            return new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null);
         }
     }
 
@@ -1046,7 +1054,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+        transaction.submit(() -> conversationContext.sendRequest(amsTCPPacket)
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
@@ -1124,7 +1132,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+        transaction.submit(() -> conversationContext.sendRequest(amsTCPPacket)
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
@@ -1329,7 +1337,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             })
             .collect(Collectors.toList());
 
-        Map<String, ResponseItem<PlcSubscriptionHandle>> responses = new HashMap<>();
+        Map<String, PlcResponseItem<PlcSubscriptionHandle>> responses = new HashMap<>();
 
         // Start the first request-transaction (it is ended in the response-handler).
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -1347,7 +1355,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     private Runnable subscribeRecursively(PlcSubscriptionRequest subscriptionRequest,
                                           Iterator<String> tagNames,
                                           Map<AdsTag, DirectAdsTag> resolvedTags,
-                                          Map<String, ResponseItem<PlcSubscriptionHandle>> responses,
+                                          Map<String, PlcResponseItem<PlcSubscriptionHandle>> responses,
                                           CompletableFuture<PlcSubscriptionResponse> future,
                                           Iterator<AmsTCPPacket> amsTCPPackets,
                                           RequestTransactionManager.RequestTransaction transaction) {
@@ -1355,7 +1363,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             AmsTCPPacket packet = amsTCPPackets.next();
             boolean hasMorePackets = amsTCPPackets.hasNext();
             String tagName = tagNames.next();
-            context.sendRequest(packet)
+            conversationContext.sendRequest(packet)
                 .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
@@ -1368,7 +1376,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get((resolvedTags.get((AdsTag) subscriptionTag.getTag())).getPlcDataType());
 
                         // Collect notification handle from individual response.
-                        responses.put(tagName, new ResponseItem<>(
+                        responses.put(tagName, new DefaultPlcResponseItem<>(
                             parsePlcResponseCode(response.getResult()),
                             new AdsSubscriptionHandle(this,
                                 tagName,
@@ -1436,7 +1444,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         return () -> {
             AmsTCPPacket packet = amsTCPPackets.next();
             boolean hasMorePackets = amsTCPPackets.hasNext();
-            context.sendRequest(packet)
+            conversationContext.sendRequest(packet)
                 .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
@@ -1498,11 +1506,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         }
     }
 
-    private Map<String, ResponseItem<PlcValue>> convertSampleToPlc4XResult(AdsSubscriptionHandle subscriptionHandle, byte[] data) throws
+    private Map<String, PlcResponseItem<PlcValue>> convertSampleToPlc4XResult(AdsSubscriptionHandle subscriptionHandle, byte[] data) throws
         ParseException {
-        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+        Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN);
-        values.put(subscriptionHandle.getTagName(), new ResponseItem<>(PlcResponseCode.OK,
+        values.put(subscriptionHandle.getTagName(), new DefaultPlcResponseItem<>(PlcResponseCode.OK,
             DataItem.staticParse(readBuffer, getPlcValueTypeForAdsDataType(subscriptionHandle.getAdsDataType()), data.length)));
         return values;
     }
@@ -1614,7 +1622,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+        transaction.submit(() -> conversationContext.sendRequest(amsTCPPacket)
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
@@ -1665,7 +1673,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+        transaction.submit(() -> conversationContext.sendRequest(amsTCPPacket)
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))

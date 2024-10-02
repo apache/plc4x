@@ -25,7 +25,8 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public abstract class BaseOptimizer {
     }
 
     protected PlcReadResponse processReadResponses(PlcReadRequest readRequest, Map<PlcReadRequest, SubResponse<PlcReadResponse>> readResponses, DriverContext driverContext) {
-        Map<String, ResponseItem<PlcValue>> tags = new HashMap<>();
+        Map<String, PlcResponseItem<PlcValue>> tags = new HashMap<>();
         for (Map.Entry<PlcReadRequest, SubResponse<PlcReadResponse>> requestsEntries : readResponses.entrySet()) {
             PlcReadRequest curRequest = requestsEntries.getKey();
             SubResponse<PlcReadResponse> readResponse = requestsEntries.getValue();
@@ -50,9 +51,9 @@ public abstract class BaseOptimizer {
                     PlcReadResponse subReadResponse = readResponse.getResponse();
                     PlcResponseCode responseCode = subReadResponse.getResponseCode(tagName);
                     PlcValue value = subReadResponse.getAsPlcValue().getValue(tagName);
-                    tags.put(tagName, new ResponseItem<>(responseCode, value));
+                    tags.put(tagName, new DefaultPlcResponseItem<>(responseCode, value));
                 } else {
-                    tags.put(tagName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+                    tags.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                 }
             }
         }

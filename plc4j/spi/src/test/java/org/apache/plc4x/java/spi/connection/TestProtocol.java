@@ -26,6 +26,11 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 public class TestProtocol extends Plc4xProtocolBase<TestMessage> {
 
     @Override
+    public PlcTagHandler getTagHandler() {
+        return null;
+    }
+
+    @Override
     public void onDiscover(ConversationContext<TestMessage> context) {
         context.fireDiscovered(null);
     }

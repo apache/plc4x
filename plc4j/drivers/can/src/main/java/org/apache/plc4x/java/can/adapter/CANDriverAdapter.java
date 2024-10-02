@@ -32,6 +32,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.can.adapter.conversation.ConversationContextWrapper;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.transport.can.CANTransport.FrameHandler;
 import org.apache.plc4x.java.transport.can.FrameData;
@@ -42,12 +43,14 @@ public class CANDriverAdapter<C, T> extends Plc4xProtocolBase<C> {
     private final Class<C> wireType;
     private final Function<C, FrameData> adapter;
     private final FrameHandler<C, T> frameHandler;
+    private final PlcTagHandler tagHandler;
 
-    public CANDriverAdapter(Plc4xCANProtocolBase<T> delegate, Class<C> wireType, Function<C, FrameData> adapter, FrameHandler<C, T> frameHandler) {
+    public CANDriverAdapter(Plc4xCANProtocolBase<T> delegate, Class<C> wireType, Function<C, FrameData> adapter, FrameHandler<C, T> frameHandler, PlcTagHandler tagHandler) {
         this.delegate = delegate;
         this.wireType = wireType;
         this.adapter = adapter;
         this.frameHandler = frameHandler;
+        this.tagHandler = tagHandler;
     }
 
     @Override
@@ -61,8 +64,13 @@ public class CANDriverAdapter<C, T> extends Plc4xProtocolBase<C> {
     }
 
     @Override
-    public void setContext(ConversationContext<C> context) {
-        delegate.setContext(new ConversationContextWrapper<>(context, wireType, adapter, frameHandler, context.getAuthentication()));
+    public void setConversationContext(ConversationContext<C> conversationContext) {
+        delegate.setConversationContext(new ConversationContextWrapper<>(conversationContext, wireType, adapter, frameHandler, conversationContext.getAuthentication()));
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return tagHandler;
     }
 
     @Override

@@ -34,9 +34,9 @@ import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.values.*;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,7 +163,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
 
         PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
 
-        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+        Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
         for (String tagName : plcReadRequest.getTagNames()) {
             AbEthTag tag = (AbEthTag) plcReadRequest.getTag(tagName);
             PlcResponseCode responseCode = decodeResponseCode(plcReadResponse.getResponse().getStatus());
@@ -179,7 +179,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 if(data.size() == 1) {
                                     plcValue = new PlcINT(data.get(0));
                                 } else {
-                                    plcValue = PlcValueHandler.of(data);
+                                    plcValue = DefaultPlcValueHandler.of(tag, data);
                                 }
                             }
                             break;
@@ -188,9 +188,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 List<Short> data = df1PTLR.getData();
                                 if (((data.get(1)>> 7) & 1) == 0)  {
-                                    plcValue = PlcValueHandler.of((data.get(1) << 8) + data.get(0));  // positive number
+                                    plcValue = DefaultPlcValueHandler.of(tag, (data.get(1) << 8) + data.get(0));  // positive number
                                 } else {
-                                    plcValue = PlcValueHandler.of((((~data.get(1) & 0b01111111) << 8) + (-data.get(0) & 0b11111111))  * -1);  // negative number
+                                    plcValue = DefaultPlcValueHandler.of(tag, (((~data.get(1) & 0b01111111) << 8) + (-data.get(0) & 0b11111111))  * -1);  // negative number
                                 }
                             }
                             break;
@@ -199,9 +199,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 List<Short> data = df1PTLR.getData();
                                 if (((data.get(3)>> 7) & 1) == 0)  {
-                                    plcValue = PlcValueHandler.of((data.get(3) << 24) + (data.get(2) << 16) + (data.get(1) << 8) + data.get(0));  // positive number
+                                    plcValue = DefaultPlcValueHandler.of(tag, (data.get(3) << 24) + (data.get(2) << 16) + (data.get(1) << 8) + data.get(0));  // positive number
                                 } else {
-                                    plcValue = PlcValueHandler.of((((~data.get(3) & 0b01111111) << 24) + ((-data.get(2) & 0b11111111) << 16)+ ((-data.get(1) & 0b11111111) << 8) + (-data.get(0) & 0b11111111))  * -1);  // negative number
+                                    plcValue = DefaultPlcValueHandler.of(tag, (((~data.get(3) & 0b01111111) << 24) + ((-data.get(2) & 0b11111111) << 16)+ ((-data.get(1) & 0b11111111) << 8) + (-data.get(0) & 0b11111111))  * -1);  // negative number
                                 }
                             }
                             break;
@@ -210,9 +210,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 List<Short> data = df1PTLR.getData();
                                 if (tag.getBitNumber() < 8) {
-                                    plcValue = PlcValueHandler.of((data.get(0) & (1 <<  tag.getBitNumber())) != 0);         // read from first byte
+                                    plcValue = DefaultPlcValueHandler.of(tag, (data.get(0) & (1 <<  tag.getBitNumber())) != 0);         // read from first byte
                                 } else {
-                                    plcValue = PlcValueHandler.of((data.get(1) & (1 << (tag.getBitNumber() - 8) )) != 0);   // read from second byte
+                                    plcValue = DefaultPlcValueHandler.of(tag, (data.get(1) & (1 << (tag.getBitNumber() - 8) )) != 0);   // read from second byte
                                 }
                             }
                             break;
@@ -225,7 +225,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                     logger.warn("Some other error occurred casting field {}, TagInformation: {}",tagName, tag,e);
                 }
             }
-            ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
+            PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(responseCode, plcValue);
             values.put(tagName, result);
         }
 

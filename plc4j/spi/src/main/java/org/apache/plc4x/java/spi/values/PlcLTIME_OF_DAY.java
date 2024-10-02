@@ -18,28 +18,42 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 
-public class PlcLTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
+public class PlcLTIME_OF_DAY extends PlcIECValue<LocalTime> {
 
     public static PlcLTIME_OF_DAY of(Object value) {
-        if (value instanceof LocalTime) {
+        if (value instanceof PlcLTIME_OF_DAY) {
+            return (PlcLTIME_OF_DAY) value;
+        } else if (value instanceof LocalTime) {
             return new PlcLTIME_OF_DAY((LocalTime) value);
+        } else if (value instanceof Byte) {
+            return new PlcLTIME_OF_DAY((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcLTIME_OF_DAY((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcLTIME_OF_DAY((Integer) value);
         } else if (value instanceof Long) {
-            return new PlcLTIME_OF_DAY(LocalTime.ofSecondOfDay(((Long) value) / 1000));
+            return new PlcLTIME_OF_DAY((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcLTIME_OF_DAY((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcLTIME_OF_DAY((Double) value);
         } else if (value instanceof BigInteger) {
-            // TODO: Not 100% correct, we're loosing precision here
-            return new PlcLTIME_OF_DAY(LocalTime.ofSecondOfDay(((BigInteger) value).longValue() / 1000));
+            return new PlcLTIME_OF_DAY((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcLTIME_OF_DAY((BigDecimal) value);
+        } else {
+            return new PlcLTIME_OF_DAY(LocalTime.parse(value.toString()));
         }
-        throw new PlcRuntimeException("Invalid value type");
     }
 
     public static PlcLTIME_OF_DAY ofNanosecondsSinceMidnight(BigInteger nanosecondsSinceMidnight) {
@@ -47,17 +61,49 @@ public class PlcLTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
         return new PlcLTIME_OF_DAY(LocalTime.ofNanoOfDay(nanosecondsSinceMidnight.longValue()));
     }
 
+    public PlcLTIME_OF_DAY(Byte millisecondsSinceMidnight) {
+        this.value = LocalTime.ofNanoOfDay((long) millisecondsSinceMidnight * 1000000);
+        this.isNullable = false;
+    }
+
+    public PlcLTIME_OF_DAY(Short millisecondsSinceMidnight) {
+        this.value = LocalTime.ofNanoOfDay((long) millisecondsSinceMidnight * 1000000);
+        this.isNullable = false;
+    }
+
+    public PlcLTIME_OF_DAY(Integer millisecondsSinceMidnight) {
+        this.value = LocalTime.ofNanoOfDay((long) millisecondsSinceMidnight * 1000000);
+        this.isNullable = false;
+    }
+
+    public PlcLTIME_OF_DAY(Long millisecondsSinceMidnight) {
+        this.value = LocalTime.ofNanoOfDay(millisecondsSinceMidnight * 1000000);
+        this.isNullable = false;
+    }
+
+    public PlcLTIME_OF_DAY(Float millisecondsSinceMidnight) {
+        this.value = LocalTime.ofNanoOfDay(millisecondsSinceMidnight.longValue() * 1000000);
+        this.isNullable = false;
+    }
+
+    public PlcLTIME_OF_DAY(Double millisecondsSinceMidnight) {
+        this.value = LocalTime.ofNanoOfDay(millisecondsSinceMidnight.longValue() * 1000000);
+        this.isNullable = false;
+    }
+
+    public PlcLTIME_OF_DAY(BigInteger millisecondsSinceMidnight) {
+        this.value = LocalTime.ofNanoOfDay(millisecondsSinceMidnight.longValue() * 1000000);
+        this.isNullable = false;
+    }
+
+    public PlcLTIME_OF_DAY(BigDecimal millisecondsSinceMidnight) {
+        this.value = LocalTime.ofNanoOfDay(millisecondsSinceMidnight.longValue() * 1000000);
+        this.isNullable = false;
+    }
+
     public PlcLTIME_OF_DAY(LocalTime value) {
-        super(value, true);
-    }
-
-    public PlcLTIME_OF_DAY(Long nanosecondsSinceMidnight) {
-        super(LocalTime.ofNanoOfDay(nanosecondsSinceMidnight), true);
-    }
-
-    public PlcLTIME_OF_DAY(BigInteger nanosecondsSinceMidnight) {
-        // TODO: Not 100% correct, we're loosing precision here
-        super(LocalTime.ofNanoOfDay(nanosecondsSinceMidnight.longValue()), true);
+        this.value = value;
+        this.isNullable = false;
     }
 
     @Override

@@ -32,12 +32,15 @@ import org.apache.plc4x.java.knxnetip.ets.model.GroupAddress;
 import org.apache.plc4x.java.knxnetip.model.KnxNetIpSubscriptionHandle;
 import org.apache.plc4x.java.knxnetip.readwrite.*;
 import org.apache.plc4x.java.knxnetip.tag.KnxNetIpTag;
+import org.apache.plc4x.java.knxnetip.tag.KnxNetIpTagHandler;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
@@ -78,6 +81,11 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         // No concurrent requests can be sent anyway. It will be updated when receiving the
         // S7ParameterSetupCommunication response.
         this.tm = new RequestTransactionManager(1);
+    }
+
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new KnxNetIpTagHandler();
     }
 
     @Override
@@ -258,7 +266,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 new HPAIControlEndpoint(HostProtocolCode.IPV4_UDP,
                     knxNetIpDriverContext.getLocalIPAddress(),
                     knxNetIpDriverContext.getLocalPort()));
-        context.sendRequest(connectionStateRequest)
+        conversationContext.sendRequest(connectionStateRequest)
             .expectResponse(KnxNetIpMessage.class, Duration.ofMillis(1000))
             .only(ConnectionStateResponse.class)
             .handle(connectionStateResponse -> {
@@ -374,7 +382,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
             // Start a new request-transaction (Is ended in the response-handler)
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             // Start a new request-transaction (Is ended in the response-handler)
-            transaction.submit(() -> context.sendRequest(knxRequest)
+            transaction.submit(() -> conversationContext.sendRequest(knxRequest)
                 .expectResponse(KnxNetIpMessage.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((tr, e) -> future.completeExceptionally(e))
@@ -540,13 +548,13 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
 
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
-        Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+        Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
         for (String tagName : subscriptionRequest.getTagNames()) {
             final DefaultPlcSubscriptionTag tag = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
             if (!(tag.getTag() instanceof KnxNetIpTag)) {
-                values.put(tagName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
+                values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
             } else {
-                values.put(tagName, new ResponseItem<>(PlcResponseCode.OK,
+                values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK,
                     new KnxNetIpSubscriptionHandle(this, (KnxNetIpTag) tag.getTag())));
             }
         }
@@ -572,7 +580,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         // Create a subscription event from the input.
         // TODO: Check this ... this is sort of not really right ...
         final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
-            Collections.singletonMap("knxData", new ResponseItem<>(PlcResponseCode.OK, plcValue)));
+            Collections.singletonMap("knxData", new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue)));
 
         // Try sending the subscription event to all listeners.
         for (Map.Entry<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> entry : consumers.entrySet()) {

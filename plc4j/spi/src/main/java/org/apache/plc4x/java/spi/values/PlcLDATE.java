@@ -18,43 +18,113 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
-public class PlcLDATE extends PlcSimpleValue<LocalDate> {
+public class PlcLDATE extends PlcIECValue<LocalDate> {
 
     public static PlcLDATE of(Object value) {
-        if (value instanceof LocalDate) {
+        if (value instanceof PlcLDATE) {
+            return (PlcLDATE) value;
+        } else if (value instanceof LocalDate) {
             return new PlcLDATE((LocalDate) value);
+        } else if (value instanceof Byte) {
+            return new PlcLDATE((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcLDATE((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcLDATE((Integer) value);
         } else if (value instanceof Long) {
-            return new PlcLDATE(LocalDateTime.ofInstant(
-                Instant.ofEpochSecond((long) value), ZoneOffset.UTC).toLocalDate());
+            return new PlcLDATE((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcLDATE((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcLDATE((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcLDATE((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcLDATE((BigDecimal) value);
+        } else {
+            return new PlcLDATE(LocalDate.parse(value.toString()));
         }
-        throw new PlcRuntimeException("Invalid value type");
     }
 
     public static PlcLDATE ofNanosecondsSinceEpoch(BigInteger nanosecondsSinceEpoch) {
         BigInteger epochSecond = nanosecondsSinceEpoch.divide(BigInteger.valueOf(1000_000));
         BigInteger nanoOfSecond = nanosecondsSinceEpoch.mod(BigInteger.valueOf(1000_000));
         return new PlcLDATE(LocalDateTime.ofEpochSecond(epochSecond.longValue(), nanoOfSecond.intValue(),
-            ZoneOffset.of(ZoneOffset.systemDefault().getId())).toLocalDate());
+            ZoneOffset.UTC).toLocalDate());
     }
 
     public PlcLDATE(LocalDate value) {
-        super(value, true);
+        this.value = value;
+        this.isNullable = false;
     }
 
-    public PlcLDATE(BigInteger nanosecondsSinceEpoch) {
-        super(LocalDateTime.ofEpochSecond(nanosecondsSinceEpoch.longValue() / 1000000,
-            (int) (nanosecondsSinceEpoch.longValue() % 1000000),
-            ZoneOffset.of(ZoneOffset.systemDefault().getId())).toLocalDate(), true);
+    public PlcLDATE(Byte secondsSinceEpoch) {
+        // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
+        this.value = LocalDateTime.ofEpochSecond((long) secondsSinceEpoch, 0,
+            ZoneOffset.UTC).toLocalDate();
+        this.isNullable = false;
+    }
+
+    public PlcLDATE(Short secondsSinceEpoch) {
+        // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
+        this.value = LocalDateTime.ofEpochSecond((long) secondsSinceEpoch, 0,
+            ZoneOffset.UTC).toLocalDate();
+        this.isNullable = false;
+    }
+
+    public PlcLDATE(Integer secondsSinceEpoch) {
+        // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
+        this.value = LocalDateTime.ofEpochSecond((long) secondsSinceEpoch, 0,
+            ZoneOffset.UTC).toLocalDate();
+        this.isNullable = false;
+    }
+
+    public PlcLDATE(Long secondsSinceEpoch) {
+        // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
+        this.value = LocalDateTime.ofEpochSecond((long) secondsSinceEpoch, 0,
+            ZoneOffset.UTC).toLocalDate();
+        this.isNullable = false;
+    }
+
+    public PlcLDATE(Float secondsSinceEpoch) {
+        // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
+        this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
+            ZoneOffset.UTC).toLocalDate();
+        this.isNullable = false;
+    }
+
+    public PlcLDATE(Double secondsSinceEpoch) {
+        // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
+        this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
+            ZoneOffset.UTC).toLocalDate();
+        this.isNullable = false;
+    }
+
+    public PlcLDATE(BigInteger secondsSinceEpoch) {
+        // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
+        this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
+            ZoneOffset.UTC).toLocalDate();
+        this.isNullable = false;
+    }
+
+    public PlcLDATE(BigDecimal secondsSinceEpoch) {
+        // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
+        this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
+            ZoneOffset.UTC).toLocalDate();
+        this.isNullable = false;
     }
 
     @Override
@@ -63,7 +133,7 @@ public class PlcLDATE extends PlcSimpleValue<LocalDate> {
     }
 
     public BigInteger getNanosecondsSinceEpoch() {
-        Instant instant = getDateTime().toInstant(ZoneOffset.of(ZoneOffset.systemDefault().getId()));
+        Instant instant = getDateTime().toInstant(ZoneOffset.UTC);
         return BigInteger.valueOf(instant.getEpochSecond()).multiply(BigInteger.valueOf(1000_000_000)).add(BigInteger.valueOf(instant.getNano()));
     }
 

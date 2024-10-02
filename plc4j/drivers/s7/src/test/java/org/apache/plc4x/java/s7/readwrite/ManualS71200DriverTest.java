@@ -68,7 +68,7 @@ public class ManualS71200DriverTest extends ManualTest {
      */
 
     public ManualS71200DriverTest(String connectionString) {
-        super(connectionString);
+        super(connectionString, true, true, true, true, 100);
     }
 
     public static void main(String[] args) throws Exception {
@@ -95,7 +95,7 @@ public class ManualS71200DriverTest extends ManualTest {
         test.addTestCase("%DB4:70:DATE", new PlcDATE(LocalDate.parse("1998-03-28")));
         test.addTestCase("%DB4:72:TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
         test.addTestCase("%DB4:908:CHAR[5]", new PlcList(Arrays.asList(new PlcCHAR("w"), new PlcCHAR("i"), new PlcCHAR("e"), new PlcCHAR("s"), new PlcCHAR("e"))));
-        test.addTestCase("%DB4:914:BYTE[11]", new PlcRawByteArray(new byte[] {(byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6, (byte) 7, (byte) 8, (byte) 9, (byte) 10, (byte) 11}));
+        test.addTestCase("%DB4:914:RAW_BYTE_ARRAY[11]", new PlcRawByteArray(new byte[] {(byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6, (byte) 7, (byte) 8, (byte) 9, (byte) 10, (byte) 11}));
 
         long start = System.currentTimeMillis();
         test.run();

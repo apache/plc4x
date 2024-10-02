@@ -56,6 +56,7 @@ import org.apache.plc4x.java.canopen.readwrite.NMTState;
 import org.apache.plc4x.java.canopen.readwrite.NMTStateRequest;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
@@ -66,7 +67,8 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcUnsubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
@@ -125,6 +127,11 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
     }
 
     @Override
+    public PlcTagHandler getTagHandler() {
+        return new CANOpenTagHandler();
+    }
+
+    @Override
     public void close(ConversationContext<CANOpenFrame> context) {
         tm.shutdown();
     }
@@ -154,9 +161,9 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
     }
 
     @Override
-    public void setContext(ConversationContext<CANOpenFrame> context) {
-        super.setContext(context);
-        this.conversation = new CANTransportConversation(configuration.getNodeId(), context, configuration.getRequestTimeout());
+    public void setConversationContext(ConversationContext<CANOpenFrame> conversationContext) {
+        super.setConversationContext(conversationContext);
+        this.conversation = new CANTransportConversation(configuration.getNodeId(), conversationContext, configuration.getRequestTimeout());
     }
 
     private CANOpenFrame createFrame(CANOpenHeartbeatPayload state) throws ParseException {
@@ -224,7 +231,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(writeValue, tag.getCanOpenDataType(), writeValue.getLength()), ByteOrder.LITTLE_ENDIAN);
             DataItem.staticSerialize(writeBuffer, writeValue, tag.getCanOpenDataType(), writeValue.getLength(), ByteOrder.LITTLE_ENDIAN);
             final CANOpenPDOPayload payload = new CANOpenPDOPayload(new CANOpenPDO(writeBuffer.getBytes()));
-            context.sendToWire(new CANOpenFrame((short) tag.getNodeId(), tag.getService(), payload));
+            conversationContext.sendToWire(new CANOpenFrame((short) tag.getNodeId(), tag.getService(), payload));
             response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(tagName, PlcResponseCode.OK)));
         } catch (Exception e) {
             response.completeExceptionally(e);
@@ -257,27 +264,27 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest request) {
         DefaultPlcSubscriptionRequest rq = (DefaultPlcSubscriptionRequest) request;
 
-        Map<String, ResponseItem<PlcSubscriptionHandle>> answers = new LinkedHashMap<>();
+        Map<String, PlcResponseItem<PlcSubscriptionHandle>> answers = new LinkedHashMap<>();
         DefaultPlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse(rq, answers);
 
         for (String key : rq.getTagNames()) {
             DefaultPlcSubscriptionTag subscription = (DefaultPlcSubscriptionTag) rq.getTag(key);
             if (subscription.getPlcSubscriptionType() != PlcSubscriptionType.EVENT) {
-                answers.put(key, new ResponseItem<>(PlcResponseCode.UNSUPPORTED, null));
+                answers.put(key, new DefaultPlcResponseItem<>(PlcResponseCode.UNSUPPORTED, null));
             } else if ((subscription.getTag() instanceof CANOpenPDOTag)) {
-                answers.put(key, new ResponseItem<>(PlcResponseCode.OK,
+                answers.put(key, new DefaultPlcResponseItem<>(PlcResponseCode.OK,
                     new CANOpenSubscriptionHandle(this, key, (CANOpenPDOTag) subscription.getTag())
                 ));
             } else if ((subscription.getTag() instanceof CANOpenNMTTag)) {
-                answers.put(key, new ResponseItem<>(PlcResponseCode.OK,
+                answers.put(key, new DefaultPlcResponseItem<>(PlcResponseCode.OK,
                     new CANOpenSubscriptionHandle(this, key, (CANOpenNMTTag) subscription.getTag())
                 ));
             } else if ((subscription.getTag() instanceof CANOpenHeartbeatTag)) {
-                answers.put(key, new ResponseItem<>(PlcResponseCode.OK,
+                answers.put(key, new DefaultPlcResponseItem<>(PlcResponseCode.OK,
                     new CANOpenSubscriptionHandle(this, key, (CANOpenHeartbeatTag) subscription.getTag())
                 ));
             } else {
-                answers.put(key, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
+                answers.put(key, new DefaultPlcResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
             }
         }
 
@@ -302,11 +309,11 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
         CompletableFuture<PlcValue> callback = new CompletableFuture<>();
         callback.whenComplete((value, error) -> {
             if (error != null) {
-                Map<String, ResponseItem<PlcValue>> tags = new HashMap<>();
+                Map<String, PlcResponseItem<PlcValue>> tags = new HashMap<>();
                 if (error instanceof CANOpenAbortException) {
-                    tags.put(tagName, new ResponseItem<>(PlcResponseCode.REMOTE_ERROR, new PlcLINT(((CANOpenAbortException) error).getAbortCode())));
+                    tags.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.REMOTE_ERROR, new PlcLINT(((CANOpenAbortException) error).getAbortCode())));
                 } else {
-                    tags.put(tagName, new ResponseItem<>(PlcResponseCode.REMOTE_ERROR, null));
+                    tags.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.REMOTE_ERROR, null));
                 }
                 response.complete(new DefaultPlcReadResponse(readRequest, tags));
                 transaction.endRequest();
@@ -314,8 +321,8 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
                 return;
             }
 
-            Map<String, ResponseItem<PlcValue>> tags = new HashMap<>();
-            tags.put(tagName, new ResponseItem<>(PlcResponseCode.OK, value));
+            Map<String, PlcResponseItem<PlcValue>> tags = new HashMap<>();
+            tags.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, value));
             response.complete(new DefaultPlcReadResponse(readRequest, tags));
             transaction.endRequest();
         });
@@ -363,7 +370,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
                                 Instant.now(),
                                 Collections.singletonMap(
                                     handle.getName(),
-                                    new ResponseItem<>(PlcResponseCode.OK, value)
+                                    new DefaultPlcResponseItem<>(PlcResponseCode.OK, value)
                                 )
                             );
                             consumer.accept(event);
@@ -373,7 +380,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
                                 Instant.now(),
                                 Collections.singletonMap(
                                     handle.getName(),
-                                    new ResponseItem<>(PlcResponseCode.INVALID_DATA, new PlcNull())
+                                    new DefaultPlcResponseItem<>(PlcResponseCode.INVALID_DATA, new PlcNull())
                                 )
                             );
                             consumer.accept(event);
@@ -393,7 +400,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
                             Instant.now(),
                             Collections.singletonMap(
                                 handle.getName(),
-                                new ResponseItem<>(PlcResponseCode.OK, struct)
+                                new DefaultPlcResponseItem<>(PlcResponseCode.OK, struct)
                             )
                         );
                         consumer.accept(event);
@@ -412,7 +419,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
                             Instant.now(),
                             Collections.singletonMap(
                                 handle.getName(),
-                                new ResponseItem<>(PlcResponseCode.OK, struct)
+                                new DefaultPlcResponseItem<>(PlcResponseCode.OK, struct)
                             )
                         );
                         consumer.accept(event);

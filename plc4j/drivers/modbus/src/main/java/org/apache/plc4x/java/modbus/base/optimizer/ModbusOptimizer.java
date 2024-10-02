@@ -45,7 +45,10 @@ import org.apache.plc4x.java.spi.generation.WriteBufferXmlBased;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.PlcReader;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcTagItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcTagItem;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.slf4j.Logger;
@@ -179,12 +182,12 @@ public class ModbusOptimizer extends SingleTagOptimizer {
             }
 
             // Now go through the original requests and try to answer them by using the raw data we now have.
-            Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+            Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
             for (String tagName : readRequest.getTagNames()) {
                 ModbusTag modbusTag = (ModbusTag) readRequest.getTag(tagName);
                 String tagType = modbusTag.getClass().getSimpleName().substring("ModbusTag".length());
                 if (!responses.containsKey(tagType)) {
-                    values.put(tagName, new ResponseItem<>(PlcResponseCode.NOT_FOUND, null));
+                    values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.NOT_FOUND, null));
                     continue;
                 }
                 // Go through all responses till we find one where that contains the current tag's data.
@@ -197,7 +200,7 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                             //  current request exceeds the address range, all items in this chunk will fail, even
                             //  if only one element was invalid.
                             if(response.getResponseCode() != PlcResponseCode.OK) {
-                                values.put(tagName, new ResponseItem<>(response.getResponseCode(), null));
+                                values.put(tagName, new DefaultPlcResponseItem<>(response.getResponseCode(), null));
                                 break;
                             }
 
@@ -210,7 +213,7 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                             int bytePosition = bitPosition / 8;
                             int bitPositionInByte = bitPosition % 8;
                             boolean isBitSet = (responseData[bytePosition] & (1 << bitPositionInByte)) != 0;
-                            values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, new PlcBOOL(isBitSet)));
+                            values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcBOOL(isBitSet)));
                             break;
                         }
                     }
@@ -222,7 +225,7 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                         //  current request exceeds the address range, all items in this chunk will fail, even
                         //  if only one element was invalid.
                         if(response.getResponseCode() != PlcResponseCode.OK) {
-                            values.put(tagName, new ResponseItem<>(response.getResponseCode(), null));
+                            values.put(tagName, new DefaultPlcResponseItem<>(response.getResponseCode(), null));
                             break;
                         }
 
@@ -232,16 +235,16 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                             PlcValue plcValue = DataItem.staticParse(readBuffer, modbusTag.getDataType(),
                                 modbusTag.getNumberOfElements(),
                                 modbusContext.getByteOrder() == ModbusByteOrder.BIG_ENDIAN);
-                            values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, plcValue));
+                            values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue));
                         } catch (ParseException e) {
-                            values.put(tagName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+                            values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                         }
                         break;
                     }
                 }
                 // If no response was found that contains the data, that's probably something we need to fix.
                 if (!values.containsKey(tagName)) {
-                    values.put(tagName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+                    values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                 }
             }
 
@@ -302,8 +305,8 @@ public class ModbusOptimizer extends SingleTagOptimizer {
             // finish this one and start a new one.
             if (tag.getAddress() + (sizeInCoils * tag.getNumberOfElements()) > maxCoilCurRequest) {
                 // Finish the current sub-request
-                LinkedHashMap<String, PlcTag> subTags = new LinkedHashMap<>();
-                subTags.put("coils" + subRequests.size(), new ModbusTagCoil(firstCoil, lastCoil - firstCoil, ModbusDataType.BYTE, Collections.emptyMap()));
+                LinkedHashMap<String, PlcTagItem> subTags = new LinkedHashMap<>();
+                subTags.put("coils" + subRequests.size(), new DefaultPlcTagItem(new ModbusTagCoil(firstCoil, lastCoil - firstCoil, ModbusDataType.BYTE, Collections.emptyMap())));
                 subRequests.add(new DefaultPlcReadRequest(reader, subTags));
 
                 // Re-initialize the structures for the next request.
@@ -318,8 +321,8 @@ public class ModbusOptimizer extends SingleTagOptimizer {
         }
 
         // Finish the last sub-request
-        LinkedHashMap<String, PlcTag> subTags = new LinkedHashMap<>();
-        subTags.put("coils" + subRequests.size(), new ModbusTagCoil(firstCoil, lastCoil - firstCoil, ModbusDataType.BYTE, Collections.emptyMap()));
+        LinkedHashMap<String, PlcTagItem> subTags = new LinkedHashMap<>();
+        subTags.put("coils" + subRequests.size(), new DefaultPlcTagItem(new ModbusTagCoil(firstCoil, lastCoil - firstCoil, ModbusDataType.BYTE, Collections.emptyMap())));
         subRequests.add(new DefaultPlcReadRequest(reader, subTags));
         return subRequests;
     }
@@ -343,8 +346,8 @@ public class ModbusOptimizer extends SingleTagOptimizer {
             // finish this one and start a new one.
             if (tag.getAddress() + (sizeInRegisters * tag.getNumberOfElements()) > maxRegisterCurRequest) {
                 // Finish the current sub-request
-                LinkedHashMap<String, PlcTag> subTags = new LinkedHashMap<>();
-                subTags.put("registers" + subRequests.size(), tagFactory.createTag(firstRegister, lastRegister - firstRegister, ModbusDataType.WORD));
+                LinkedHashMap<String, PlcTagItem> subTags = new LinkedHashMap<>();
+                subTags.put("registers" + subRequests.size(), new DefaultPlcTagItem(tagFactory.createTag(firstRegister, lastRegister - firstRegister, ModbusDataType.WORD)));
                 subRequests.add(new DefaultPlcReadRequest(reader, subTags));
 
                 // Re-initialize the structures for the next request.
@@ -359,8 +362,8 @@ public class ModbusOptimizer extends SingleTagOptimizer {
         }
 
         // Finish the last sub-request
-        LinkedHashMap<String, PlcTag> subTags = new LinkedHashMap<>();
-        subTags.put("registers" + subRequests.size(), tagFactory.createTag(firstRegister, lastRegister - firstRegister, ModbusDataType.WORD));
+        LinkedHashMap<String, PlcTagItem> subTags = new LinkedHashMap<>();
+        subTags.put("registers" + subRequests.size(), new DefaultPlcTagItem(tagFactory.createTag(firstRegister, lastRegister - firstRegister, ModbusDataType.WORD)));
         subRequests.add(new DefaultPlcReadRequest(reader, subTags));
         return subRequests;
     }

@@ -21,17 +21,19 @@ package org.apache.plc4x.java.spi.connection;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,29 +57,21 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     private boolean canWrite = false;
     private boolean canSubscribe = false;
     private boolean canBrowse = false;
-    private PlcTagHandler tagHandler;
-    private PlcValueHandler valueHandler;
+    private final PlcValueHandler valueHandler;
+    private final BaseOptimizer optimizer;
+    private final PlcAuthentication authentication;
     private Plc4xProtocolBase<? extends Message> protocol;
-    private BaseOptimizer optimizer;
-    private PlcAuthentication authentication;
-
-    /**
-     * @deprecated only for compatibility reasons.
-     */
-    @Deprecated
-    protected AbstractPlcConnection() {
-    }
+    private PlcTagHandler tagHandler;
 
     protected AbstractPlcConnection(boolean canPing, boolean canRead, boolean canWrite,
                                     boolean canSubscribe, boolean canBrowse,
-                                    PlcTagHandler tagHandler, PlcValueHandler valueHandler,
+                                    PlcValueHandler valueHandler,
                                     BaseOptimizer optimizer, PlcAuthentication authentication) {
         this.canPing = canPing;
         this.canRead = canRead;
         this.canWrite = canWrite;
         this.canSubscribe = canSubscribe;
         this.canBrowse = canBrowse;
-        this.tagHandler = tagHandler;
         this.valueHandler = valueHandler;
         this.optimizer = optimizer;
         this.authentication = authentication;
@@ -85,6 +79,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
 
     public void setProtocol(Plc4xProtocolBase<? extends Message> protocol) {
         this.protocol = protocol;
+        this.tagHandler = protocol.getTagHandler();
     }
 
     public Plc4xProtocolBase<? extends Message> getProtocol() {
@@ -102,6 +97,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         future.completeExceptionally(new PlcUnsupportedOperationException("The connection does not support pinging"));
         return future;
     }
+
 
     @Override
     public boolean isReadSupported() {
@@ -241,9 +237,20 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         try {
             plcTag = tagHandler.parseTag(tagAddress);
         } catch (Exception e) {
-            logger.error("Error parsing tag address {}", tagAddress);
-            return Optional.empty();
+            throw new PlcRuntimeException("Error parsing tag address: " + tagAddress, e);
         }
         return Optional.ofNullable(plcTag);
     }
+
+    @Override
+    public Optional<PlcValue> parseTagValue(PlcTag tag, Object... values) {
+        PlcValue plcValue;
+        try {
+            plcValue = valueHandler.newPlcValue(tag, values);
+        } catch (Exception e) {
+            throw new PlcRuntimeException("Error parsing tag value " + tag, e);
+        }
+        return Optional.of(plcValue);
+    }
+
 }

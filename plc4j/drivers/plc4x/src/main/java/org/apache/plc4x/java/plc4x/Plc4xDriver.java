@@ -23,14 +23,11 @@ import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
 import org.apache.plc4x.java.plc4x.config.Plc4xTcpTransportConfiguration;
-import org.apache.plc4x.java.plc4x.tag.Plc4XTagHandler;
 import org.apache.plc4x.java.plc4x.protocol.Plc4xProtocolLogic;
 import org.apache.plc4x.java.plc4x.readwrite.Plc4xMessage;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.Collections;
 import java.util.List;
@@ -72,16 +69,6 @@ public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> {
     @Override
     protected List<String> getSupportedTransportCodes() {
         return Collections.singletonList("tcp");
-    }
-
-    @Override
-    protected PlcTagHandler getTagHandler() {
-        return new Plc4XTagHandler();
-    }
-
-    @Override
-    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new PlcValueHandler();
     }
 
     /**

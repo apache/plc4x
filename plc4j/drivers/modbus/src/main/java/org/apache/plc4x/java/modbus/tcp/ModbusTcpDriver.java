@@ -29,12 +29,9 @@ import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpConfiguration;
 import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpTransportConfiguration;
 import org.apache.plc4x.java.modbus.tcp.discovery.ModbusPlcDiscoverer;
-import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU;
 import org.apache.plc4x.java.modbus.tcp.protocol.ModbusTcpProtocolLogic;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
-import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
@@ -122,16 +119,6 @@ public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
     @Override
     protected BaseOptimizer getOptimizer() {
         return new /*SingleTagOptimizer();/*/ModbusOptimizer();
-    }
-
-    @Override
-    protected ModbusTagHandler getTagHandler() {
-        return new ModbusTagHandler();
-    }
-
-    @Override
-    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new PlcValueHandler();
     }
 
     @Override

@@ -56,7 +56,7 @@ public class DatatypesTest {
             builder.addTagAddress("lreal-value", "%DB2:70:LREAL"); // 3.14159265358979
             builder.addTagAddress("lreal-array", "%DB2:78:LREAL[2]"); // 1.2345, -1.2345
             builder.addTagAddress("string-value", "%DB2:94:STRING(10)"); // "Hurz"
-            // When reading a sized STRING string array, this has to be translated into multiple items
+            // When reading a sized STRING array, this has to be translated into multiple items
             //builder.addField("string-array", "%DB2:350:STRING(10)[2]"); // "Wolf", "Lamm"
             builder.addTagAddress("time-value", "%DB2:862:TIME"); // 1234ms
             builder.addTagAddress("time-array", "%DB2:866:TIME[2]"); // 123ms, 234ms

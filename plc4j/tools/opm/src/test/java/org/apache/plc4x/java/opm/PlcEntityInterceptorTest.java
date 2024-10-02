@@ -26,7 +26,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.connection.MockDevice;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -118,7 +118,7 @@ public class PlcEntityInterceptorTest implements WithAssertions {
     @Test
     public void getTyped_notOkResponse_throws() {
         DefaultPlcReadResponse response = new DefaultPlcReadResponse(null,
-            Collections.singletonMap("tag", new ResponseItem<>(PlcResponseCode.NOT_FOUND, null)));
+            Collections.singletonMap("tag", new DefaultPlcResponseItem<>(PlcResponseCode.NOT_FOUND, null)));
         assertThatThrownBy(() -> PlcEntityInterceptor.getTyped(Long.class, response, "tag"))
             .isInstanceOf(PlcRuntimeException.class)
             .hasMessage("Unable to read specified tag 'tag', response code was 'NOT_FOUND'");

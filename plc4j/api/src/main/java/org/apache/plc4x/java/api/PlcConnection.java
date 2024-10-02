@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.exceptions.*;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -62,6 +63,8 @@ public interface PlcConnection extends AutoCloseable {
      * @return An optional holding the parsed PLC tag if successful, otherwise an empty optional.
      */
     Optional<PlcTag> parseTagAddress(String tagAddress);
+
+    Optional<PlcValue> parseTagValue(PlcTag tag, Object... values);
 
     /**
      * Provides connection metadata.

@@ -23,14 +23,12 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7TcpTransportConfiguration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.transport.Transport;
 import org.slf4j.Logger;
@@ -163,7 +161,6 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         return new S7HPlcConnection(
             canPing(),
             canRead(), canWrite(), canSubscribe(), canBrowse(),
-            getTagHandler(),
             getValueHandler(),
             configuration,
             channelFactory,
@@ -177,15 +174,6 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
             getAuthentication());
     }
 
-    @Override
-    protected PlcTagHandler getTagHandler() {
-        throw new UnsupportedOperationException("getTagHandler, Not supported yet.");
-    }
-
-    @Override
-    protected PlcValueHandler getValueHandler() {
-        throw new UnsupportedOperationException("getValueHandler, Not supported yet.");
-    }
     @Override
     protected ProtocolStackConfigurer<TPKTPacket> getStackConfigurer() {
         throw new UnsupportedOperationException("getStackConfigurer, Not supported yet.");

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -17,30 +17,12 @@
  * under the License.
  */
 
-package model
+package org.apache.plc4x.java.spi.messages.utils;
 
-import (
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-)
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
-//go:generate plc4xGenerator -type=ResponseItem
-type ResponseItem struct {
-	code  apiModel.PlcResponseCode `stringer:"true"`
-	value values.PlcValue
-}
+public interface PlcResponseItem<T> {
+    PlcResponseCode getCode();
 
-func NewResponseItem(code apiModel.PlcResponseCode, value values.PlcValue) *ResponseItem {
-	return &ResponseItem{
-		code:  code,
-		value: value,
-	}
-}
-
-func (r *ResponseItem) GetCode() apiModel.PlcResponseCode {
-	return r.code
-}
-
-func (r *ResponseItem) GetValue() values.PlcValue {
-	return r.value
+    T getValue();
 }

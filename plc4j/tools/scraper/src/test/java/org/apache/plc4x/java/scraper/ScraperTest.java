@@ -25,7 +25,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.values.PlcDINT;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.connection.MockDevice;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
 import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Disabled;
@@ -83,7 +83,7 @@ class ScraperTest implements WithAssertions {
         MockConnection connection = (MockConnection) driverManager.getConnection("mock:m1");
         connection.setDevice(mockDevice);
 
-        when(mockDevice.read(any())).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcDINT(1)));
+        when(mockDevice.read(any())).thenReturn(new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcDINT(1)));
 
         ScraperImpl scraper = new ScraperImpl((j, a, m) -> {}, driverManager, Collections.singletonList(
             new ScrapeJobImpl("job1",
@@ -134,7 +134,7 @@ class ScraperTest implements WithAssertions {
         MockConnection connection = (MockConnection) driverManager.getConnection("mock:m1");
         connection.setDevice(mockDevice);
 
-        when(mockDevice.read(any())).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcDINT(1)));
+        when(mockDevice.read(any())).thenReturn(new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcDINT(1)));
 
         Scraper scraper = new ScraperImpl((j, a, m) -> {}, driverManager, Collections.singletonList(
             new ScrapeJobImpl("job1",

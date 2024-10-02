@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi.values;
 
 import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.generation.WriteBufferXmlBased;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.math.BigDecimal;
@@ -28,7 +29,12 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 public abstract class PlcValueAdapter implements PlcValue, Serializable {
 
@@ -288,6 +294,33 @@ public abstract class PlcValueAdapter implements PlcValue, Serializable {
     @Override
     public PlcValue getMetaData(String key) {
         return metaData.get(key);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlcValueAdapter that = (PlcValueAdapter) o;
+        try {
+            WriteBufferXmlBased thisWb = new WriteBufferXmlBased();
+            thisWb.pushContext(getClass().getSimpleName());
+            thisWb.writeSerializable(this);
+            thisWb.popContext(getClass().getSimpleName());
+
+            WriteBufferXmlBased thatWb = new WriteBufferXmlBased();
+            thatWb.pushContext(o.getClass().getSimpleName());
+            thatWb.writeSerializable(that);
+            thatWb.popContext(o.getClass().getSimpleName());
+
+            return thisWb.getXmlString().equals(thatWb.getXmlString());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(metaData);
     }
 
 }

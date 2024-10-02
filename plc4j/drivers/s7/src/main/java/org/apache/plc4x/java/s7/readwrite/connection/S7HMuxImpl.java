@@ -102,11 +102,11 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      */
     public final static AttributeKey<Integer> RETRY_TIME = AttributeKey.valueOf("RETRY_TIME");
 
-    ChannelHandlerContext embed_ctx = null;
-    protected Channel embeded_channel = null;
-    protected Channel tcp_channel = null;
-    protected Channel primary_channel = null;
-    protected Channel secondary_channel = null;
+    ChannelHandlerContext embedCtx = null;
+    protected Channel embededChannel = null;
+    protected Channel tcpChannel = null;
+    protected Channel primaryChannel = null;
+    protected Channel secondaryChannel = null;
 
     /*
      * From S7ProtocolLogic
@@ -114,13 +114,15 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      * the Embedded channel when we created it.
      */
     @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf outbb, List<Object> list) throws Exception {
-        logger.debug("ENCODE: " + outbb.toString());
-        if ((embed_ctx == null) && (ctx.channel() instanceof EmbeddedChannel)) embed_ctx = ctx;
-        if ((tcp_channel != null) && (embed_ctx == ctx)) {
-            tcp_channel.writeAndFlush(outbb.copy());
+    protected void encode(ChannelHandlerContext ctx, ByteBuf outBB, List<Object> list) {
+        logger.debug("ENCODE: {}", outBB.toString());
+        if ((embedCtx == null) && (ctx.channel() instanceof EmbeddedChannel)) {
+            embedCtx = ctx;
+        }
+        if ((tcpChannel != null) && (embedCtx == ctx)) {
+            tcpChannel.writeAndFlush(outBB.copy());
         } else {
-            list.add(outbb.copy());
+            list.add(outBB.copy());
         }
     }
 
@@ -131,7 +133,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      */
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf inbb, List<Object> list) throws Exception {
-        embed_ctx.fireChannelRead(inbb.copy());
+        embedCtx.fireChannelRead(inbb.copy());
     }
 
     @Override
@@ -165,16 +167,16 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
         logger.info("{}  userEventTriggered: {} Event: {}", LocalTime.now(), ctx.name(), evt);
         if (evt instanceof ConnectEvent) {
             try {
-                tcp_channel.pipeline().remove("watchdog");
+                tcpChannel.pipeline().remove("watchdog");
             } catch (Exception ex) {
                 logger.info(ex.toString());
             }
             try {
-                tcp_channel.pipeline().addFirst("watchdog", new ReadTimeoutHandler(30));
-                if (tcp_channel.isActive()) {
-                    embeded_channel.attr(IS_CONNECTED).set(true);
+                tcpChannel.pipeline().addFirst("watchdog", new ReadTimeoutHandler(30));
+                if (tcpChannel.isActive()) {
+                    embededChannel.attr(IS_CONNECTED).set(true);
                 } else {
-                    embeded_channel.attr(IS_CONNECTED).set(false);
+                    embededChannel.attr(IS_CONNECTED).set(false);
                 }
             } catch (Exception ex) {
                 logger.info(ex.toString());
@@ -209,39 +211,39 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         super.channelUnregistered(ctx);
         logger.debug("{} channelUnregistered: {}", LocalTime.now(), ctx.name());
-        String strCanal = (tcp_channel == primary_channel) ? "PRIMARY" : "SECONDARY";
-        logger.debug("Unregistered of channel: " + strCanal);
+        String strCanal = (tcpChannel == primaryChannel) ? "PRIMARY" : "SECONDARY";
+        logger.debug("Unregistered of channel: {}", strCanal);
         //TODO: If embedded channel is closed, we need close all channels
-        if (ctx == embed_ctx) return;
+        if (ctx == embedCtx) return;
 
-        if (tcp_channel == ctx.channel())
-            embeded_channel.attr(IS_CONNECTED).set(false);
+        if (tcpChannel == ctx.channel())
+            embededChannel.attr(IS_CONNECTED).set(false);
 
-        logger.info(embed_ctx.executor().toString());
+        logger.info(embedCtx.executor().toString());
 
-        if ((tcp_channel == primary_channel) &&
-            (primary_channel == ctx.channel()))
-            if ((!primary_channel.isActive()) &&
-                (secondary_channel != null)) {
-                if (secondary_channel.isActive())
-                    synchronized (tcp_channel) {
+        if ((tcpChannel == primaryChannel) &&
+            (primaryChannel == ctx.channel()))
+            if ((!primaryChannel.isActive()) &&
+                (secondaryChannel != null)) {
+                if (secondaryChannel.isActive())
+                    synchronized (tcpChannel) {
                         logger.info("Using secondary TCP channel.");
-                        tcp_channel = secondary_channel;
-                        embeded_channel.attr(IS_PRIMARY).set(false);
-                        embeded_channel.pipeline().fireUserEventTriggered(new ConnectEvent());
+                        tcpChannel = secondaryChannel;
+                        embededChannel.attr(IS_PRIMARY).set(false);
+                        embededChannel.pipeline().fireUserEventTriggered(new ConnectEvent());
                     }
             }
 
 
-        if ((tcp_channel == secondary_channel) &&
-            (secondary_channel == ctx.channel()))
-            if ((!secondary_channel.isActive() &&
-                (primary_channel.isActive()))) {
-                synchronized (tcp_channel) {
+        if ((tcpChannel == secondaryChannel) &&
+            (secondaryChannel == ctx.channel()))
+            if ((!secondaryChannel.isActive() &&
+                (primaryChannel.isActive()))) {
+                synchronized (tcpChannel) {
                     logger.info("Using primary TCP channel.");
-                    tcp_channel = primary_channel;
-                    embeded_channel.attr(IS_PRIMARY).set(true);
-                    embeded_channel.pipeline().fireUserEventTriggered(new ConnectEvent());
+                    tcpChannel = primaryChannel;
+                    embededChannel.attr(IS_PRIMARY).set(true);
+                    embededChannel.pipeline().fireUserEventTriggered(new ConnectEvent());
                 }
             }
     }
@@ -249,32 +251,32 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
 
     @Override
     public void setEmbeddedChannel(Channel embeded_channel) {
-        this.embeded_channel = embeded_channel;
-        this.embeded_channel.attr(IS_CONNECTED).set(false);
-        this.embeded_channel.attr(IS_PRIMARY).set(true);
-        this.embeded_channel.attr(READ_TIME_OUT).set(8);
-        this.embeded_channel.attr(IS_PING_ACTIVE).set(false);
-        this.embeded_channel.attr(PING_TIME).set(-1);
-        this.embeded_channel.attr(RETRY_TIME).set(8);
+        this.embededChannel = embeded_channel;
+        this.embededChannel.attr(IS_CONNECTED).set(false);
+        this.embededChannel.attr(IS_PRIMARY).set(true);
+        this.embededChannel.attr(READ_TIME_OUT).set(8);
+        this.embededChannel.attr(IS_PING_ACTIVE).set(false);
+        this.embededChannel.attr(PING_TIME).set(-1);
+        this.embededChannel.attr(RETRY_TIME).set(8);
     }
 
     public void setPrimaryChannel(Channel primary_channel) {
-        if ((this.primary_channel == null) && (tcp_channel == null)) {
+        if ((this.primaryChannel == null) && (tcpChannel == null)) {
             if (primary_channel != null) {
-                this.primary_channel = primary_channel;
-                tcp_channel = primary_channel;
-                embeded_channel.attr(IS_PRIMARY).set(true);
+                this.primaryChannel = primary_channel;
+                tcpChannel = primary_channel;
+                embededChannel.attr(IS_PRIMARY).set(true);
             }
-        } else if ((!this.primary_channel.isActive()) && (tcp_channel == secondary_channel)) {
-            this.primary_channel = primary_channel;
-        } else if ((!this.primary_channel.isActive()) && (tcp_channel == this.primary_channel)) {
-            synchronized (tcp_channel) {
-                tcp_channel.close();
-                this.primary_channel = primary_channel;
-                tcp_channel = primary_channel;
-                embeded_channel.attr(IS_PRIMARY).set(true);
-                if (tcp_channel.isActive()) {
-                    embed_ctx.fireUserEventTriggered(new ConnectEvent());
+        } else if ((!this.primaryChannel.isActive()) && (tcpChannel == secondaryChannel)) {
+            this.primaryChannel = primary_channel;
+        } else if ((!this.primaryChannel.isActive()) && (tcpChannel == this.primaryChannel)) {
+            synchronized (tcpChannel) {
+                tcpChannel.close();
+                this.primaryChannel = primary_channel;
+                tcpChannel = primary_channel;
+                embededChannel.attr(IS_PRIMARY).set(true);
+                if (tcpChannel.isActive()) {
+                    embedCtx.fireUserEventTriggered(new ConnectEvent());
                 }
             }
         }
@@ -282,25 +284,25 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
 
     @Override
     public void setSecondaryChannel(Channel secondary_channel) {
-        if ((this.primary_channel == null) && (tcp_channel == null)) {
+        if ((this.primaryChannel == null) && (tcpChannel == null)) {
             if (secondary_channel != null) {
-                this.secondary_channel = secondary_channel;
-                tcp_channel = secondary_channel;
-                embeded_channel.attr(IS_PRIMARY).set(false);
+                this.secondaryChannel = secondary_channel;
+                tcpChannel = secondary_channel;
+                embededChannel.attr(IS_PRIMARY).set(false);
             }
-        } else if ((this.secondary_channel == null) || (tcp_channel == primary_channel)) {
-            this.secondary_channel = secondary_channel;
-        } else if ((!this.secondary_channel.isActive()) && (tcp_channel == primary_channel)) {
-            this.secondary_channel = secondary_channel;
-        } else if ((!this.secondary_channel.isActive()) && (tcp_channel == this.secondary_channel)) {
-            synchronized (tcp_channel) {
-                tcp_channel.close();
-                this.secondary_channel = secondary_channel;
-                tcp_channel = secondary_channel;
-                embeded_channel.attr(IS_PRIMARY).set(false);
+        } else if ((this.secondaryChannel == null) || (tcpChannel == primaryChannel)) {
+            this.secondaryChannel = secondary_channel;
+        } else if ((!this.secondaryChannel.isActive()) && (tcpChannel == primaryChannel)) {
+            this.secondaryChannel = secondary_channel;
+        } else if ((!this.secondaryChannel.isActive()) && (tcpChannel == this.secondaryChannel)) {
+            synchronized (tcpChannel) {
+                tcpChannel.close();
+                this.secondaryChannel = secondary_channel;
+                tcpChannel = secondary_channel;
+                embededChannel.attr(IS_PRIMARY).set(false);
             }
-            if (tcp_channel.isActive()) {
-                embed_ctx.fireUserEventTriggered(new ConnectEvent());
+            if (tcpChannel.isActive()) {
+                embedCtx.fireUserEventTriggered(new ConnectEvent());
             }
         }
     }

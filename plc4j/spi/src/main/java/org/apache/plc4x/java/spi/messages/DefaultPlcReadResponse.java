@@ -25,13 +25,13 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.values.PlcStruct;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -45,10 +45,10 @@ import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithRend
 public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
 
     private final PlcReadRequest request;
-    private final Map<String, ResponseItem<PlcValue>> values;
+    private final Map<String, PlcResponseItem<PlcValue>> values;
 
     public DefaultPlcReadResponse(PlcReadRequest request,
-                                  Map<String, ResponseItem<PlcValue>> values) {
+                                  Map<String, PlcResponseItem<PlcValue>> values) {
         this.request = request;
         this.values = values;
     }
@@ -70,7 +70,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
 
     @Override
     public PlcValue getPlcValue(String name) {
-        return values.getOrDefault(name, new ResponseItem<>(null, null)).getValue();
+        return values.getOrDefault(name, new DefaultPlcResponseItem<>(null, null)).getValue();
     }
 
     @Override
@@ -102,7 +102,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
         return values.get(name).getCode();
     }
 
-    public Map<String, ResponseItem<PlcValue>> getValues() {
+    public Map<String, PlcResponseItem<PlcValue>> getValues() {
         return values;
     }
 
@@ -605,11 +605,11 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
         return Collections.singletonList(tagInternal.getDateTime());
     }
 
-    public void add(String key, ResponseItem<PlcValue> value) {
+    public void add(String key, PlcResponseItem<PlcValue> value) {
         values.put(key, value);
     }
 
-    public Map<String, ResponseItem<PlcValue>> getMap() {
+    public Map<String, PlcResponseItem<PlcValue>> getMap() {
         return values;
     }
 
@@ -653,11 +653,14 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
         writeBuffer.popContext("request");
 
         writeBuffer.pushContext("values", WithRenderAsList(true));
-        for (Map.Entry<String, ResponseItem<PlcValue>> valueEntry : values.entrySet()) {
+        for (Map.Entry<String, PlcResponseItem<PlcValue>> valueEntry : values.entrySet()) {
             String tagName = valueEntry.getKey();
             writeBuffer.pushContext(tagName);
-            ResponseItem<PlcValue> valueResponse = valueEntry.getValue();
-            valueResponse.serialize(writeBuffer);
+            PlcResponseItem<PlcValue> valueResponse = valueEntry.getValue();
+            if (!(valueResponse instanceof Serializable)) {
+                throw new RuntimeException("Error serializing. PlcResponseItem doesn't implement Serializable");
+            }
+            ((Serializable) valueResponse).serialize(writeBuffer);
             writeBuffer.popContext(tagName);
         }
         writeBuffer.popContext("values");

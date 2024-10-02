@@ -24,6 +24,7 @@ import org.apache.plc4x.java.spi.ConversationContext;
 import java.time.Duration;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -106,6 +107,13 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
         finisher.accept(registration);
         context.sendToWire(request);
         return new DefaultContextHandler(registration, registration::cancel);
+    }
+
+    @Override
+    public CompletableFuture<T> toFuture() {
+        CompletableFuture<T> future = new CompletableFuture<>();
+        handle(future::complete);
+        return future;
     }
 
     @Override
