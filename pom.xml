@@ -124,7 +124,7 @@
     <commons-text.version>1.12.0</commons-text.version>
     <commons-csv.version>1.12.0</commons-csv.version>
     <dom4j.version>2.1.4</dom4j.version>
-    <equalsverifier.version>3.16.2</equalsverifier.version>
+    <equalsverifier.version>3.17</equalsverifier.version>
     <!-- It seems freemarker 2.3.32 was the last to support Java 11, 2.3.33 requires Java 16 -->
     <freemarker.version>2.3.32</freemarker.version>
     <groovy.version>4.0.23</groovy.version>
