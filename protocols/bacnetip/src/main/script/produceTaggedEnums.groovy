@@ -32,10 +32,10 @@ bacnetEnumsFile.eachLine {
     if (matcher.find()) {
         def enumName = matcher[0][1]
         if (enumName in skippedEnums) {
-            log.info("Skipping generation of tagged type for {}", enumName)
+            log.info("Skipping generation of tagged type for ${enumName}")
             return
         }
-        log.info("Generating type for {}", enumName)
+        log.info("Generating type for ${enumName}")
         foundEnums << [name: enumName]
     }
 }
@@ -91,7 +91,7 @@ if (!mspecTargetDir.exists()) {
     mspecTargetDir.mkdirs()
 }
 def vendorIdMspec = new File(mspecTargetDir, "bacnet-enums-tagged.mspec")
-if(vendorIdMspec.exists()) {
+if (vendorIdMspec.exists()) {
     vendorIdMspec.delete()
 }
 

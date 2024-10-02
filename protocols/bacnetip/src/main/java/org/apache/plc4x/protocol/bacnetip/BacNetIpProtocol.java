@@ -67,6 +67,12 @@ public class BacNetIpProtocol implements Protocol, ProtocolHelpers {
         LOGGER.info("Parsing: bacnet-enums-tagged.mspec");
         typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-bit-strings-tagged"), typeContext);
 
+        LOGGER.info("Parsing: bacnet-properties.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-properties"), typeContext);
+
+        LOGGER.info("Parsing: bacnet-objects.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-objects"), typeContext);
+
         typeContext.validate();
 
         return typeContext;

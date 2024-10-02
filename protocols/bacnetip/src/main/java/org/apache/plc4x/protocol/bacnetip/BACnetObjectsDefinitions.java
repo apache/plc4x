@@ -21,7 +21,6 @@ package org.apache.plc4x.protocol.bacnetip;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.apache.plc4x.protocol.bacnetip.BACnetObjectsDefinitions.ConformanceCode.Type.O;
 import static org.apache.plc4x.protocol.bacnetip.BACnetObjectsDefinitions.ConformanceCode.Type.*;
 
 public class BACnetObjectsDefinitions {
@@ -59,6 +58,8 @@ public class BACnetObjectsDefinitions {
 
     static Map<PropertyTypeCombination, Integer> propertyTypeCombinationCount;
 
+    static Set<String> propertyDataTypes;
+
     static {
         createBacnetObjectsList();
         createObjectNameToBacNetObjectMap();
@@ -67,6 +68,7 @@ public class BACnetObjectsDefinitions {
         createPropertyTypeCombinationCount();
         createPropertyIdToPropertyNameMap();
         createPropertyToPropertyTypesMaps();
+        createPropertyDataTypes();
     }
 
     private static void createBacnetObjectsList() {
@@ -2426,7 +2428,6 @@ public class BACnetObjectsDefinitions {
     private static BacNetObject createAnalogInput() {
         return b("Analog Input",
             p("Object_Identifier", "BACnetObjectIdentifier", c(R)),
-            p("Object_Identifier", "BACnetObjectIdentifier", c(R)),
             p("Object_Name", "CharacterString", c(R)),
             p("Object_Type", "BACnetObjectType", c(R)),
             p("Present_Value", "REAL", c(R, 1)),
@@ -2545,6 +2546,13 @@ public class BACnetObjectsDefinitions {
         });
     }
 
+    static void createPropertyDataTypes() {
+        propertyDataTypes = new HashSet<>();
+        propertyTypeCombinationToObjectNameMap.keySet().forEach(propertyTypeCombination -> {
+            propertyDataTypes.add(propertyTypeCombination.propertyDataType);
+        });
+    }
+
     static String mapPropertyNameToEnumName(String propertyName) {
         String upperCase = propertyName.toUpperCase();
         String minusReplaced = upperCase.replaceAll("-", "_");
@@ -2597,7 +2605,7 @@ public class BACnetObjectsDefinitions {
         final Type type;
         final List<Integer> additionalFootnotes;
 
-        public ConformanceCode(Type type, List<Integer> additionalFootnotes) {
+        ConformanceCode(Type type, List<Integer> additionalFootnotes) {
             this.type = type;
             this.additionalFootnotes = additionalFootnotes;
         }
