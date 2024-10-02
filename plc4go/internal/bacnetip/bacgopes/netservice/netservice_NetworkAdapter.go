@@ -61,6 +61,9 @@ func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, 
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
+	if _debug != nil {
+		_debug("__init__ %s %r %r cid=%r", sap, net, addr, n.GetClientID())
+	}
 	// record if this was 0=learned, 1=configured, None=unknown
 	if net != nil {
 		var state = 1
@@ -101,6 +104,9 @@ func (n *NetworkAdapter) Confirmation(args Args, kwArgs KWArgs) error {
 		Msg("confirmation")
 
 	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("confirmation %r (net=%r)", pdu, n.adapterNet)
+	}
 
 	npdu, err := NewNPDU(NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
 	if err != nil {
@@ -118,6 +124,9 @@ func (n *NetworkAdapter) ProcessNPDU(npdu NPDU) error {
 		Stringer("npdu", npdu).
 		Interface("adapterNet", n.adapterNet).
 		Msg("ProcessNPDU")
+	if _debug != nil {
+		_debug("process_npdu %r (net=%r)", npdu, n.adapterNet)
+	}
 
 	pdu := NewPDU(NoArgs, NKW(KWCPCIUserData, npdu.GetPDUUserData()))
 	if err := npdu.Encode(pdu); err != nil {

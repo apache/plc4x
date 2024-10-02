@@ -91,6 +91,7 @@ func (d *DebugContents) LeafNameOrFallback() string {
 		if leafNameSupplier, ok := debuggable.(interface{ GetLeafName() string }); ok {
 			return leafNameSupplier.GetLeafName()
 		}
+		return QualifiedTypeName(debuggable)
 	}
 	return StructName()
 }

@@ -61,6 +61,9 @@ func NewNetworkServiceElement(localLog zerolog.Logger, options ...Option) (*Netw
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service element")
 	}
+	if _debug != nil {
+		_debug("__init__ eid=%r", n.GetElementId())
+	}
 
 	// network number is timeout
 	n.networkNumberIsTask = time.Time{}
@@ -78,21 +81,36 @@ func WithNetworkServiceElementStartupDisabled(startupDisabled bool) GenericAppli
 
 func (n *NetworkServiceElement) Startup(_ Args, _ KWArgs) error {
 	n.log.Debug().Msg("Startup")
+	if _debug != nil {
+		_debug("startup")
+	}
 
 	// reference the service access point
 	sap := n.GetElementService().(*NetworkServiceAccessPoint) // TODO: hard cast but seems like adapters appears first in network service access point (so hard binding)
 	n.log.Debug().Stringer("sap", sap).Msg("sap")
+	if _debug != nil {
+		_debug("    - sap: %r", sap)
+	}
 
 	// loop through all the adapters
 	for _, adapter := range sap.adapters {
 		n.log.Debug().Stringer("adapter", adapter).Msg("adapter")
+		if _debug != nil {
+			_debug("    - adapter: %r", adapter)
+		}
 
 		if adapter.adapterNet == nil {
 			n.log.Trace().Msg("skipping, unknown net")
+			if _debug != nil {
+				_debug("    - skipping, unknown net")
+			}
 			continue
 		}
 		if adapter.adapterAddr == nil {
 			n.log.Trace().Msg("skipping, unknown addr")
+			if _debug != nil {
+				_debug("    - skipping, unknown addr")
+			}
 			continue
 		}
 
@@ -112,6 +130,9 @@ func (n *NetworkServiceElement) Startup(_ Args, _ KWArgs) error {
 		// skip for an empty list, perhaps they are not yet learned
 		if len(netlist) == 0 {
 			n.log.Trace().Msg("skipping, no netlist")
+			if _debug != nil {
+				_debug("    - skipping, no netlist")
+			}
 			continue
 		}
 
@@ -131,6 +152,9 @@ func (n *NetworkServiceElement) Indication(args Args, kwArgs KWArgs) error {
 
 	adapter := GA[*NetworkAdapter](args, 0)
 	npdu := GA[NPDU](args, 1)
+	if _debug != nil {
+		_debug("indication %r %r", adapter, npdu)
+	}
 
 	switch message := npdu.GetRootMessage().(type) {
 	case model.NPDU:
@@ -140,25 +164,25 @@ func (n *NetworkServiceElement) Indication(args Args, kwArgs KWArgs) error {
 		case model.NLMIAmRouterToNetwork:
 			return n.IAmRouterToNetwork(adapter, npdu, nlm)
 		case model.NLMICouldBeRouterToNetwork:
-			return n.ICouldBeRouterToNetwork(adapter, nlm)
+			return n.ICouldBeRouterToNetwork(adapter, npdu, nlm)
 		case model.NLMRejectMessageToNetwork:
-			return n.RejectRouterToNetwork(adapter, nlm)
+			return n.RejectRouterToNetwork(adapter, npdu, nlm)
 		case model.NLMRouterBusyToNetwork:
-			return n.RouterBusyToNetwork(adapter, nlm)
+			return n.RouterBusyToNetwork(adapter, npdu, nlm)
 		case model.NLMRouterAvailableToNetwork:
-			return n.RouterAvailableToNetwork(adapter, nlm)
+			return n.RouterAvailableToNetwork(adapter, npdu, nlm)
 		case model.NLMInitializeRoutingTable:
-			return n.InitalizeRoutingTable(adapter, nlm)
+			return n.InitalizeRoutingTable(adapter, npdu, nlm)
 		case model.NLMInitializeRoutingTableAck:
-			return n.InitalizeRoutingTableAck(adapter, nlm)
+			return n.InitalizeRoutingTableAck(adapter, npdu, nlm)
 		case model.NLMEstablishConnectionToNetwork:
-			return n.EstablishConnectionToNetwork(adapter, nlm)
+			return n.EstablishConnectionToNetwork(adapter, npdu, nlm)
 		case model.NLMDisconnectConnectionToNetwork:
-			return n.DisconnectConnectionToNetwork(adapter, nlm)
+			return n.DisconnectConnectionToNetwork(adapter, npdu, nlm)
 		case model.NLMWhatIsNetworkNumber:
-			return n.WhatIsNetworkNumber(adapter, nlm)
+			return n.WhatIsNetworkNumber(adapter, npdu, nlm)
 		case model.NLMNetworkNumberIs:
-			return n.NetworkNumberIs(adapter, nlm)
+			return n.NetworkNumberIs(adapter, npdu, nlm)
 		default:
 			n.log.Debug().Stringer("nlm", nlm).Msg("Unhandled")
 		}
@@ -173,6 +197,9 @@ func (n *NetworkServiceElement) Confirmation(args Args, kwArgs KWArgs) error {
 
 	adapter := GA[*NetworkAdapter](args, 0)
 	npdu := GA[NPDU](args, 1)
+	if _debug != nil {
+		_debug("confirmation %r %r", adapter, npdu)
+	}
 
 	switch message := npdu.GetRootMessage().(type) {
 	case model.NPDU:
@@ -182,25 +209,25 @@ func (n *NetworkServiceElement) Confirmation(args Args, kwArgs KWArgs) error {
 		case model.NLMIAmRouterToNetwork:
 			return n.IAmRouterToNetwork(adapter, npdu, nlm)
 		case model.NLMICouldBeRouterToNetwork:
-			return n.ICouldBeRouterToNetwork(adapter, nlm)
+			return n.ICouldBeRouterToNetwork(adapter, npdu, nlm)
 		case model.NLMRejectMessageToNetwork:
-			return n.RejectRouterToNetwork(adapter, nlm)
+			return n.RejectRouterToNetwork(adapter, npdu, nlm)
 		case model.NLMRouterBusyToNetwork:
-			return n.RouterBusyToNetwork(adapter, nlm)
+			return n.RouterBusyToNetwork(adapter, npdu, nlm)
 		case model.NLMRouterAvailableToNetwork:
-			return n.RouterAvailableToNetwork(adapter, nlm)
+			return n.RouterAvailableToNetwork(adapter, npdu, nlm)
 		case model.NLMInitializeRoutingTable:
-			return n.InitalizeRoutingTable(adapter, nlm)
+			return n.InitalizeRoutingTable(adapter, npdu, nlm)
 		case model.NLMInitializeRoutingTableAck:
-			return n.InitalizeRoutingTableAck(adapter, nlm)
+			return n.InitalizeRoutingTableAck(adapter, npdu, nlm)
 		case model.NLMEstablishConnectionToNetwork:
-			return n.EstablishConnectionToNetwork(adapter, nlm)
+			return n.EstablishConnectionToNetwork(adapter, npdu, nlm)
 		case model.NLMDisconnectConnectionToNetwork:
-			return n.DisconnectConnectionToNetwork(adapter, nlm)
+			return n.DisconnectConnectionToNetwork(adapter, npdu, nlm)
 		case model.NLMWhatIsNetworkNumber:
-			return n.WhatIsNetworkNumber(adapter, nlm)
+			return n.WhatIsNetworkNumber(adapter, npdu, nlm)
 		case model.NLMNetworkNumberIs:
-			return n.NetworkNumberIs(adapter, nlm)
+			return n.NetworkNumberIs(adapter, npdu, nlm)
 		default:
 			n.log.Debug().Stringer("nlm", nlm).Msg("Unhandled")
 		}
@@ -215,10 +242,16 @@ func (n *NetworkServiceElement) iamRouterToNetwork(args Args, _ KWArgs) error {
 	destination, _ := GAO[*Address](args, 1, nil)
 	network, _ := GAO[[]*uint16](args, 2, nil)
 	n.log.Debug().Stringer("adapter", adapter).Stringer("destination", destination).Interface("network", network).Msg("IamRouterToNetwork")
+	if _debug != nil {
+		_debug("i_am_router_to_network %r %r %r", adapter, destination, network)
+	}
 
 	// reference the service access point
 	sap := n.GetElementService().(*NetworkServiceAccessPoint) // TODO: hard cast but seems like adapters appears first in network service access point (so hard binding)
 	n.log.Debug().Interface("sap", sap).Msg("SAP")
+	if _debug != nil {
+		_debug("    - sap: %r", sap)
+	}
 
 	// if we're not a router, trouble
 	if len(sap.adapters) == 1 {
@@ -277,6 +310,9 @@ func (n *NetworkServiceElement) iamRouterToNetwork(args Args, _ KWArgs) error {
 		}
 	}
 	n.log.Debug().Stringer("adapter", adapter).Stringer("destination", destination).Interface("network", network).Msg("adapter, destination, network")
+	if _debug != nil {
+		_debug("    - adapter, destination, network: %r, %r, %r", adapter, destination, network)
+	}
 
 	// process a single adapter or all of the adapters
 	var adapterList []*NetworkAdapter
@@ -315,6 +351,9 @@ func (n *NetworkServiceElement) iamRouterToNetwork(args Args, _ KWArgs) error {
 		}
 		iamrtn.SetPDUDestination(destination)
 		n.log.Debug().Stringer("adapter", adapter).Stringer("iamrtn", iamrtn).Msg("adapter, iamrtn")
+		if _debug != nil {
+			_debug("    - adapter, iamrtn: %r, %r", adapter, iamrtn)
+		}
 
 		// send it back
 		if err := n.Request(NA(adapter, iamrtn), NoKWArgs()); err != nil {
@@ -327,19 +366,31 @@ func (n *NetworkServiceElement) iamRouterToNetwork(args Args, _ KWArgs) error {
 
 func (n *NetworkServiceElement) WhoIsRouterToNetwork(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMWhoIsRouterToNetwork) error {
 	n.log.Debug().Stringer("adapter", adapter).Stringer("npdu", npdu).Stringer("nlm", nlm).Msg("WhoIsRouteToNetwork")
+	if _debug != nil {
+		_debug("WhoIsRouterToNetwork %r %r", adapter, npdu)
+	}
 
 	// reference the service access point
 	sap := n.GetElementService().(*NetworkServiceAccessPoint) // TODO: check hard cast here...
 	n.log.Debug().Stringer("sap", sap).Msg("sap")
+	if _debug != nil {
+		_debug("    - sap: %r", sap)
+	}
 
 	// if we're not a router, skip it
 	if len(sap.adapters) == 1 {
 		n.log.Trace().Msg("not a router")
+		if _debug != nil {
+			_debug("    - not a router")
+		}
 		return nil
 	}
 	if destinationNetworkAddress := nlm.GetDestinationNetworkAddress(); destinationNetworkAddress == nil {
 		// requesting all networks
 		n.log.Trace().Msg("requesting all network")
+		if _debug != nil {
+			_debug("    - requesting all networks")
+		}
 
 		// build a list of reachable networks
 		var netlist []uint16
@@ -357,6 +408,9 @@ func (n *NetworkServiceElement) WhoIsRouterToNetwork(adapter *NetworkAdapter, np
 
 		if len(netlist) > 0 {
 			n.log.Debug().Uints16("netlist", netlist).Msg("found these")
+			if _debug != nil {
+				_debug("    - found these: %r", netlist)
+			}
 
 			// build a response
 			iamrtn, err := NewIAmRouterToNetwork(NoArgs, NewKWArgs(KWCPCIUserData, npdu.GetPDUUserData()), WithIAmRouterToNetworkNetworkList(netlist...))
@@ -375,14 +429,23 @@ func (n *NetworkServiceElement) WhoIsRouterToNetwork(adapter *NetworkAdapter, np
 		wirtnNetwork := *destinationNetworkAddress
 		// requesting a specific network
 		n.log.Debug().Uint16("wirtnNetwork", wirtnNetwork).Msg("requesting specific network")
+		if _debug != nil {
+			_debug("    - requesting specific network: %r", wirtnNetwork)
+		}
 		dnet := wirtnNetwork
 
 		// check the directly connected networks
 		if otherAdapter, ok := sap.adapters[nk(&dnet)]; ok {
 			n.log.Trace().Msg("directly connected")
+			if _debug != nil {
+				_debug("    - directly connected")
+			}
 
 			if otherAdapter == adapter {
 				n.log.Trace().Msg("same network")
+				if _debug != nil {
+					_debug("    - same network")
+				}
 				return nil
 			}
 
@@ -412,9 +475,15 @@ func (n *NetworkServiceElement) WhoIsRouterToNetwork(adapter *NetworkAdapter, np
 		// found a path
 		if routerInfo != nil {
 			n.log.Debug().Stringer("routerInfo", routerInfo).Msg("router round")
+			if _debug != nil {
+				_debug("    - router found: %r", routerInfo)
+			}
 
 			if snetAdapter == adapter {
 				n.log.Trace().Msg("same network")
+				if _debug != nil {
+					_debug("    - same network")
+				}
 				return nil
 			}
 
@@ -429,6 +498,9 @@ func (n *NetworkServiceElement) WhoIsRouterToNetwork(adapter *NetworkAdapter, np
 			return n.Response(NA(adapter, iamrtn), NoKWArgs())
 		} else {
 			n.log.Trace().Msg("forwarding to other adapters")
+			if _debug != nil {
+				_debug("    - forwarding to other adapters")
+			}
 
 			whoisrtn, err := NewWhoIsRouterToNetwork(NoArgs, NewKWArgs(KWCPCIUserData, npdu.GetPDUUserData()), WithWhoIsRouterToNetworkNet(dnet))
 			if err != nil {
@@ -446,11 +518,17 @@ func (n *NetworkServiceElement) WhoIsRouterToNetwork(adapter *NetworkAdapter, np
 				}
 				whoisrtn.SetNpduSADR(station)
 			}
+			if _debug != nil {
+				_debug("    - whoisrtn: %r", whoisrtn)
+			}
 
 			// send it to all (other) adapters
 			for _, xadapter := range sap.adapters {
 				if xadapter != adapter {
 					n.log.Debug().Stringer("xadapter", xadapter).Msg("Sending to adapter")
+					if _debug != nil {
+						_debug("    - sending on adapter: %r", xadapter)
+					}
 					if err := n.Request(NA(xadapter, whoisrtn), NoKWArgs()); err != nil {
 						return errors.Wrap(err, "error sending Who is router to network")
 					}
@@ -463,10 +541,16 @@ func (n *NetworkServiceElement) WhoIsRouterToNetwork(adapter *NetworkAdapter, np
 
 func (n *NetworkServiceElement) IAmRouterToNetwork(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMIAmRouterToNetwork) error {
 	n.log.Debug().Stringer("adapter", adapter).Stringer("npdu", npdu).Stringer("nlm", nlm).Msg("IAmRouterToNetwork")
+	if _debug != nil {
+		_debug("IAmRouterToNetwork %r %r", adapter, npdu)
+	}
 
 	// reference the service access point
 	sap := n.GetElementService().(*NetworkServiceAccessPoint) // TODO: check hard cast here...
 	n.log.Debug().Stringer("sap", sap).Msg("sap")
+	if _debug != nil {
+		_debug("    - sap: %r", sap)
+	}
 
 	// pass along the service access point
 	if err := sap.UpdateRouterReference(adapter.adapterNet, npdu.GetPDUSource(), nlm.GetDestinationNetworkAddresses()); err != nil {
@@ -476,8 +560,14 @@ func (n *NetworkServiceElement) IAmRouterToNetwork(adapter *NetworkAdapter, npdu
 	// if we're not a router, skip it
 	if len(sap.adapters) == 1 {
 		n.log.Trace().Msg("not a router")
+		if _debug != nil {
+			_debug("    - not a router")
+		}
 	} else {
 		n.log.Trace().Msg("forwarding other adapters")
+		if _debug != nil {
+			_debug("    - forwarding to other adapters")
+		}
 
 		// Build a broadcast announcement
 		iamrtn, err := NewIAmRouterToNetwork(NoArgs, NoKWArgs(), WithIAmRouterToNetworkNetworkList(nlm.GetDestinationNetworkAddresses()...))
@@ -490,6 +580,9 @@ func (n *NetworkServiceElement) IAmRouterToNetwork(adapter *NetworkAdapter, npdu
 		for _, xadapter := range sap.adapters {
 			if xadapter != adapter {
 				n.log.Debug().Stringer("xadapter", xadapter).Msg("Sending to adapter")
+				if _debug != nil {
+					_debug("    - sending on adapter: %r", xadapter)
+				}
 				if err := n.Request(NA(xadapter, iamrtn), NoKWArgs()); err != nil {
 					return errors.Wrap(err, "error sending I am router to network")
 				}
@@ -502,6 +595,9 @@ func (n *NetworkServiceElement) IAmRouterToNetwork(adapter *NetworkAdapter, npdu
 		pendingNpdus, ok := sap.pendingNets[nk(&dnet)]
 		if ok {
 			n.log.Debug().Int("pendingNpdus", len(pendingNpdus)).Uint16("dnet", dnet).Msg("pending NPDUs to dnet")
+			if _debug != nil {
+				_debug("    - %d pending to %r", len(pendingNpdus), dnet)
+			}
 
 			// delete the references
 			delete(sap.pendingNets, nk(&dnet))
@@ -509,6 +605,9 @@ func (n *NetworkServiceElement) IAmRouterToNetwork(adapter *NetworkAdapter, npdu
 			// now reprocess them
 			for _, pendingNPDU := range pendingNpdus {
 				n.log.Debug().Stringer("pendingNPDU", pendingNPDU).Msg("sending")
+				if _debug != nil {
+					_debug("    - sending %r", pendingNPDU)
+				}
 
 				// the destination is the address of the router
 				pendingNPDU.SetPDUDestination(npdu.GetPDUSource())
@@ -523,43 +622,73 @@ func (n *NetworkServiceElement) IAmRouterToNetwork(adapter *NetworkAdapter, npdu
 	return nil
 }
 
-func (n *NetworkServiceElement) ICouldBeRouterToNetwork(adapter *NetworkAdapter, nlm model.NLMICouldBeRouterToNetwork) error {
+func (n *NetworkServiceElement) ICouldBeRouterToNetwork(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMICouldBeRouterToNetwork) error {
+	if _debug != nil {
+		_debug("ICouldBeRouterToNetwork %r %r", adapter, npdu)
+	}
 	panic("not implemented") // TODO: implement me
 }
 
-func (n *NetworkServiceElement) RejectRouterToNetwork(adapter *NetworkAdapter, nlm model.NLMRejectMessageToNetwork) error {
+func (n *NetworkServiceElement) RejectRouterToNetwork(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMRejectMessageToNetwork) error {
+	if _debug != nil {
+		_debug("RejectMessageToNetwork %r %r", adapter, npdu)
+	}
 	panic("not implemented") // TODO: implement me
 }
 
-func (n *NetworkServiceElement) RouterBusyToNetwork(adapter *NetworkAdapter, nlm model.NLMRouterBusyToNetwork) error {
+func (n *NetworkServiceElement) RouterBusyToNetwork(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMRouterBusyToNetwork) error {
+	if _debug != nil {
+		_debug("RouterBusyToNetwork %r %r", adapter, npdu)
+	}
 	panic("not implemented") // TODO: implement me
 }
 
-func (n *NetworkServiceElement) RouterAvailableToNetwork(adapter *NetworkAdapter, nlm model.NLMRouterAvailableToNetwork) error {
+func (n *NetworkServiceElement) RouterAvailableToNetwork(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMRouterAvailableToNetwork) error {
+	if _debug != nil {
+		_debug("RouterAvailableToNetwork %r %r", adapter, npdu)
+	}
 	panic("not implemented") // TODO: implement me
 }
 
-func (n *NetworkServiceElement) InitalizeRoutingTable(adapter *NetworkAdapter, nlm model.NLMInitializeRoutingTable) error {
+func (n *NetworkServiceElement) InitalizeRoutingTable(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMInitializeRoutingTable) error {
+	if _debug != nil {
+		_debug("InitializeRoutingTable %r %r", adapter, npdu)
+	}
 	panic("not implemented") // TODO: implement me
 }
 
-func (n *NetworkServiceElement) InitalizeRoutingTableAck(adapter *NetworkAdapter, nlm model.NLMInitializeRoutingTableAck) error {
+func (n *NetworkServiceElement) InitalizeRoutingTableAck(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMInitializeRoutingTableAck) error {
+	if _debug != nil {
+		_debug("InitializeRoutingTableAck %r %r", adapter, npdu)
+	}
 	panic("not implemented") // TODO: implement me
 }
 
-func (n *NetworkServiceElement) EstablishConnectionToNetwork(adapter *NetworkAdapter, nlm model.NLMEstablishConnectionToNetwork) error {
+func (n *NetworkServiceElement) EstablishConnectionToNetwork(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMEstablishConnectionToNetwork) error {
+	if _debug != nil {
+		_debug("EstablishConnectionToNetwork %r %r", adapter, npdu)
+	}
 	panic("not implemented") // TODO: implement me
 }
 
-func (n *NetworkServiceElement) DisconnectConnectionToNetwork(adapter *NetworkAdapter, nlm model.NLMDisconnectConnectionToNetwork) error {
+func (n *NetworkServiceElement) DisconnectConnectionToNetwork(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMDisconnectConnectionToNetwork) error {
+	if _debug != nil {
+		_debug("DisconnectConnectionToNetwork %r %r", adapter, npdu)
+	}
 	panic("not implemented") // TODO: implement me
 }
 
-func (n *NetworkServiceElement) WhatIsNetworkNumber(adapter *NetworkAdapter, nlm model.NLMWhatIsNetworkNumber) error {
+func (n *NetworkServiceElement) WhatIsNetworkNumber(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMWhatIsNetworkNumber) error {
+	if _debug != nil {
+		_debug("WhatIsNetworkNumber %r %r", adapter, npdu)
+	}
 	panic("not implemented") // TODO: implement me
 }
 
-func (n *NetworkServiceElement) NetworkNumberIs(adapter *NetworkAdapter, nlm model.NLMNetworkNumberIs) error {
+func (n *NetworkServiceElement) NetworkNumberIs(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMNetworkNumberIs) error {
+	if _debug != nil {
+		_debug("NetworkNumberIs %r %r", adapter, npdu)
+	}
 	panic("not implemented") // TODO: implement me
 }
 

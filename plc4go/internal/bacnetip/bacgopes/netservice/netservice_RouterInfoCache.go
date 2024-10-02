@@ -20,6 +20,8 @@
 package netservice
 
 import (
+	"maps"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
@@ -79,6 +81,9 @@ type RouterInfoCache struct {
 
 func NewRouterInfoCache(localLog zerolog.Logger) *RouterInfoCache {
 	localLog.Trace().Msg("NewRouterInfoCache")
+	if _debug != nil {
+		_debug("__init__")
+	}
 	return &RouterInfoCache{
 		routers:  map[netKey]*Router{},
 		pathInfo: map[snetDnetTuple]*RouterInfo{},
@@ -89,9 +94,15 @@ func NewRouterInfoCache(localLog zerolog.Logger) *RouterInfoCache {
 
 func (n *RouterInfoCache) GetRouterInfo(snet, dnet netKey) *RouterInfo {
 	n.log.Debug().Stringer("snet", snet).Stringer("dnet", dnet).Msg("GetRouterInfo")
+	if _debug != nil {
+		_debug("get_routerInfo %r %r", snet, dnet)
+	}
 
 	// return the network and address
 	routerInfo, _ := n.pathInfo[snetDnetTuple{snet, dnet}]
+	if _debug != nil {
+		_debug("   - routerInfo: %r", routerInfo)
+	}
 	return routerInfo
 }
 
@@ -100,6 +111,9 @@ func (n *RouterInfoCache) UpdateRouterInfo(snet netKey, address *Address, dnets 
 		status = ToPtr(ROUTER_AVAILABLE)
 	}
 	n.log.Debug().Stringer("snet", snet).Stringer("dnet", address).Uints16("dnets", dnets).Msg("UpdateRouterInfo")
+	if _debug != nil {
+		_debug("update_routerInfo %r %r %r", snet, address, dnets)
+	}
 
 	var existingRouterInfo *RouterInfo
 	if r, ok := n.routers[snet]; ok {
@@ -125,6 +139,9 @@ func (n *RouterInfoCache) UpdateRouterInfo(snet netKey, address *Address, dnets 
 					Uint16("dnet", dnet).
 					Stringer("routerInfoAddress", routerInfo.address).
 					Msg("del path: snet -> dnet via routerInfoAddress")
+				if _debug != nil {
+					_debug("    - del path: %r -> %r via %r", snet, dnet, routerInfo.address)
+				}
 			}
 		}
 		if len(routerInfo.dnets) == 0 {
@@ -133,6 +150,9 @@ func (n *RouterInfoCache) UpdateRouterInfo(snet netKey, address *Address, dnets 
 				Stringer("snet", snet).
 				Stringer("routerInfoAddress", routerInfo.address).
 				Msg("no dnets: snet via routerInfoAddress")
+			if _debug != nil {
+				_debug("    - no dnets: %r via %r", snet, routerInfo.address)
+			}
 		}
 	}
 
@@ -154,6 +174,9 @@ func (n *RouterInfoCache) UpdateRouterInfo(snet netKey, address *Address, dnets 
 				Uint16("dnet", dnet).
 				Stringer("routerInfoAddress", routerInfo.address).
 				Msg("add path: snet -> dnet via routerInfoAddress")
+			if _debug != nil {
+				_debug("    - add path: %r -> %r via %r", snet, dnet, routerInfo.address)
+			}
 			routerInfo.dnets[nk(&dnet)] = *status
 		}
 	} else {
@@ -164,6 +187,9 @@ func (n *RouterInfoCache) UpdateRouterInfo(snet netKey, address *Address, dnets 
 					Stringer("snet", snet).
 					Uint16("dnet", dnet).
 					Msg("add path: snet -> dnet")
+				if _debug != nil {
+					_debug("    - add path: %r -> %r", snet, dnet)
+				}
 			}
 			existingRouterInfo.dnets[nk(&dnet)] = *status
 		}
@@ -173,6 +199,9 @@ func (n *RouterInfoCache) UpdateRouterInfo(snet netKey, address *Address, dnets 
 
 func (n *RouterInfoCache) UpdateRouterStatus(snet netKey, address *Address, status RouterStatus) error {
 	n.log.Debug().Stringer("snet", snet).Stringer("dnet", address).Stringer("status", status).Msg("UpdateRouterStatus")
+	if _debug != nil {
+		_debug("update_router_status %r %r %r", snet, address, status)
+	}
 
 	var existingRouterInfo *RouterInfo
 	if r, ok := n.routers[snet]; ok {
@@ -181,16 +210,25 @@ func (n *RouterInfoCache) UpdateRouterStatus(snet netKey, address *Address, stat
 
 	if existingRouterInfo == nil {
 		n.log.Trace().Msg("not a router we know about")
+		if _debug != nil {
+			_debug("    - not a router we know about")
+		}
 		return nil
 	}
 
 	existingRouterInfo.status = status
 	n.log.Trace().Msg("status updated")
+	if _debug != nil {
+		_debug("    - status updated")
+	}
 	return nil
 }
 
 func (n *RouterInfoCache) DeleteRouterInfo(snet netKey, address *Address, dnets []uint16) error {
 	n.log.Debug().Stringer("snet", snet).Stringer("dnet", address).Uints16("dnets", dnets).Msg("DeleteRouterInfo")
+	if _debug != nil {
+		_debug("delete_routerInfo %r %r %r", dnets)
+	}
 	if address == nil && len(dnets) == 0 {
 		return errors.New("inconsistent parameters")
 	}
@@ -203,6 +241,9 @@ func (n *RouterInfoCache) DeleteRouterInfo(snet netKey, address *Address, dnets 
 		}
 		if routerInfo == nil {
 			n.log.Trace().Msg("no router info")
+			if _debug != nil {
+				_debug("    - no route info")
+			}
 		} else {
 			for dnet := range routerInfo.dnets {
 				if !dnet.IsNil {
@@ -215,6 +256,9 @@ func (n *RouterInfoCache) DeleteRouterInfo(snet netKey, address *Address, dnets 
 					Uint16("dnet", dnet).
 					Stringer("routerInfoAddress", routerInfo.address).
 					Msg("del path: snet -> dnet via routerInfoAddress")
+				if _debug != nil {
+					_debug("    - del path: %r -> %r via %r", snet, dnet, routerInfo.address)
+				}
 			}
 		}
 		return nil
@@ -240,6 +284,9 @@ func (n *RouterInfoCache) DeleteRouterInfo(snet netKey, address *Address, dnets 
 					Uint16("dnet", dnet).
 					Stringer("routerInfoAddress", routerInfo.address).
 					Msg("del path: snet -> dnet via routerInfoAddress")
+				if _debug != nil {
+					_debug("    - del path: %r -> %r via %r", snet, dnet, routerInfo.address)
+				}
 			}
 		}
 		if len(routerInfo.dnets) == 0 {
@@ -248,6 +295,9 @@ func (n *RouterInfoCache) DeleteRouterInfo(snet netKey, address *Address, dnets 
 				Stringer("snet", snet).
 				Stringer("routerInfoAddress", routerInfo.address).
 				Msg("no dnets: snet via routerInfoAddress")
+			if _debug != nil {
+				_debug("    - no dnets: %r via %r", snet, routerInfo.address)
+			}
 		}
 	}
 	return nil
@@ -255,9 +305,15 @@ func (n *RouterInfoCache) DeleteRouterInfo(snet netKey, address *Address, dnets 
 
 func (n *RouterInfoCache) UpdateSourceNetwork(oldSnet netKey, newSnet netKey) error {
 	n.log.Debug().Stringer("oldSnet", oldSnet).Stringer("newSnet", newSnet).Msg("UpdateSourceNetwork")
+	if _debug != nil {
+		_debug("update_source_network %r %r", oldSnet, newSnet)
+	}
 
 	if _, ok := n.routers[oldSnet]; !ok {
 		n.log.Debug().Interface("routers", n.routers).Msg("No router references")
+		if _debug != nil {
+			_debug("    - no router references: %r", maps.Keys(n.routers))
+		}
 		return nil
 	}
 

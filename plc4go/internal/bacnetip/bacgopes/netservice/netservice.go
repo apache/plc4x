@@ -19,9 +19,12 @@
 
 package netservice
 
-import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+)
 
-// TODO: add debug printing
+var _debug = CreateDebugPrinter()
 
 // used for net keys like snet and dnet (tri state)
 type netKey = NillableKey[uint16]

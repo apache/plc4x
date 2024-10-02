@@ -21,6 +21,7 @@ package apdu
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/pkg/errors"
 
@@ -63,7 +64,7 @@ func NewAPDU(args Args, kwArgs KWArgs, options ...Option) (APDU, error) {
 
 func (a *__APDU) Encode(pdu Arg) error {
 	if _debug != nil {
-		_debug("encode %s", pdu)
+		_debug("encode %s", pdu.(fmt.Stringer).String())
 	}
 	if err := a._APCI.Encode(pdu); err != nil {
 		return errors.Wrap(err, "error encoding APCI")
@@ -77,7 +78,7 @@ func (a *__APDU) Encode(pdu Arg) error {
 
 func (a *__APDU) Decode(pdu Arg) error {
 	if _debug != nil {
-		_debug("decode %s", pdu)
+		_debug("decode %s", pdu.(fmt.Stringer).String())
 	}
 	var rootMessage spi.Message
 	switch pdu := pdu.(type) { // Save a root message as long as we have enough data
