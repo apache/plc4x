@@ -170,7 +170,7 @@ func (n *Node) Format(s fmt.State, v rune) {
 
 func (n *Node) AlternateString() (string, bool) {
 	if IsDebuggingActive() {
-		return fmt.Sprintf("%s", n), true // Delegate to debugging format
+		return fmt.Sprintf("%r", n), true // Delegate to debugging format
 	}
 	return "", false
 }

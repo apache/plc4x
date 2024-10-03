@@ -162,19 +162,16 @@ func (p *__PCI) Update(pci Arg) error {
 }
 
 func (p *__PCI) deepCopy() *__PCI {
-	rootMessage := p.rootMessage // those are immutable so no copy needed
-	pduUserData := p.pduUserData // those are immutable so no copy needed
-	pduSource := p.pduSource
-	if pduSource != nil {
-		copyPduSource := *pduSource
-		pduSource = &copyPduSource
+	newP := &__PCI{
+		nil,
+		p.rootMessage, // those are immutable so no copy needed
+		p.pduUserData, // those are immutable so no copy needed
+		p.pduSource.deepCopy(),
+		p.pduDestination.deepCopy(),
+		p._leafName,
 	}
-	pduDestination := p.pduDestination
-	if pduDestination != nil {
-		copyPduDestination := *pduDestination
-		pduDestination = &copyPduDestination
-	}
-	return &__PCI{p.DebugContents, rootMessage, pduUserData, pduSource, pduDestination, p._leafName}
+	newP.DebugContents = NewDebugContents(newP, "pduUserData+", "pduSource", "pduDestination") // TODO: bit ugly to repeat that here again but what are the options...
+	return newP
 }
 
 func (p *__PCI) DeepCopy() any {

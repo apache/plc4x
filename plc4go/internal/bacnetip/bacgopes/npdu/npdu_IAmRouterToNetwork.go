@@ -103,9 +103,5 @@ func (i *IAmRouterToNetwork) Decode(npdu Arg) error {
 			}
 		}
 	}
-	switch npdu := npdu.(type) {
-	case PDUData:
-		i.SetPduData(npdu.GetPduData())
-	}
 	return nil
 }

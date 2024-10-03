@@ -24,50 +24,20 @@ import (
 )
 
 // NPDUTypes is a dictionary of message type values and structs
-var NPDUTypes map[uint8]func() Decoder
+var NPDUTypes map[uint8]func(args Args, kwArgs KWArgs, options ...Option) (Decoder, error)
 
 func init() {
-	NPDUTypes = map[uint8]func() Decoder{
-		0x00: func() Decoder {
-			v, _ := NewWhoIsRouterToNetwork(Nothing())
-			return v
-		},
-		0x01: func() Decoder {
-			v, _ := NewIAmRouterToNetwork(Nothing())
-			return v
-		},
-		0x02: func() Decoder {
-			v, _ := NewICouldBeRouterToNetwork(Nothing())
-			return v
-		},
-		0x03: func() Decoder {
-			v, _ := NewRejectMessageToNetwork(Nothing())
-			return v
-		},
-		0x04: func() Decoder {
-			v, _ := NewRouterBusyToNetwork(Nothing())
-			return v
-		},
-		0x05: func() Decoder {
-			v, _ := NewRouterAvailableToNetwork(Nothing())
-			return v
-		},
-		0x06: func() Decoder {
-			v, _ := NewInitializeRoutingTable(Nothing())
-			return v
-		},
-		0x07: func() Decoder {
-			v, _ := NewInitializeRoutingTableAck(Nothing())
-			return v
-		},
-		0x08: func() Decoder {
-			v, _ := NewEstablishConnectionToNetwork(Nothing())
-			return v
-		},
-		0x09: func() Decoder {
-			v, _ := NewDisconnectConnectionToNetwork(Nothing())
-			return v
-		},
+	NPDUTypes = map[uint8]func(args Args, kwArgs KWArgs, options ...Option) (Decoder, error){
+		0x00: convertNPDUType(NewWhoIsRouterToNetwork),
+		0x01: convertNPDUType(NewIAmRouterToNetwork),
+		0x02: convertNPDUType(NewICouldBeRouterToNetwork),
+		0x03: convertNPDUType(NewRejectMessageToNetwork),
+		0x04: convertNPDUType(NewRouterBusyToNetwork),
+		0x05: convertNPDUType(NewRouterAvailableToNetwork),
+		0x06: convertNPDUType(NewInitializeRoutingTable),
+		0x07: convertNPDUType(NewInitializeRoutingTableAck),
+		0x08: convertNPDUType(NewEstablishConnectionToNetwork),
+		0x09: convertNPDUType(NewDisconnectConnectionToNetwork),
 		// 0x0A: NewChallengeRequest, // TODO: not present upstream
 		// 0x0B: NewSecurityPayload, // TODO: not present upstream
 		// 0x0C: NewSecurityResponse, // TODO: not present upstream
@@ -76,13 +46,13 @@ func init() {
 		// 0x0F: NewUpdateKeyDistributionKey, // TODO: not present upstream
 		// 0x10: NewRequestMasterKey, // TODO: not present upstream
 		// 0x11: NewSetMasterKey, // TODO: not present upstream
-		0x12: func() Decoder {
-			v, _ := NewWhatIsNetworkNumber(Nothing())
-			return v
-		},
-		0x13: func() Decoder {
-			v, _ := NewNetworkNumberIs(Nothing())
-			return v
-		},
+		0x12: convertNPDUType(NewWhatIsNetworkNumber),
+		0x13: convertNPDUType(NewNetworkNumberIs),
+	}
+}
+
+func convertNPDUType[T Decoder](in func(args Args, kwArgs KWArgs, options ...Option) (T, error)) func(args Args, kwArgs KWArgs, options ...Option) (Decoder, error) {
+	return func(args Args, kwArgs KWArgs, options ...Option) (Decoder, error) {
+		return in(args, kwArgs, options...)
 	}
 }

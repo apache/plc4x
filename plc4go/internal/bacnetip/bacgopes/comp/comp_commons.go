@@ -33,6 +33,13 @@ type NillableKey[T any] struct {
 	IsNil bool
 }
 
+func (n NillableKey[T]) Format(s fmt.State, v rune) {
+	switch v {
+	case 'v', 's', 'r':
+		_, _ = fmt.Fprint(s, n.String())
+	}
+}
+
 func (n NillableKey[T]) String() string {
 	if n.IsNil {
 		return "nil"

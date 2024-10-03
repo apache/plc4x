@@ -528,18 +528,21 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 
 		if processLocally && n.HasServerPeer() {
 			n.log.Trace().Msg("processing APDU locally")
+			if _debug != nil {
+				_debug("    - processing APDU locally")
+			}
 			// decode as a generic APDU
 			apdu, err := NewAPDU(NoArgs, NKW(KWCPCIUserData, npdu.GetPDUUserData())) // Note: upstream uses _APDU which looks like the _APDU class but is an alias to APDU
 			if err != nil {
 				return errors.Wrap(err, "error creating APDU")
 			}
-			if _debug != nil {
-				_debug("    - apdu: %r", apdu)
-			}
 			if err := apdu.Decode(DeepCopy[NPDU](npdu)); err != nil {
 				return errors.Wrap(err, "error decoding APDU")
 			}
 			n.log.Debug().Stringer("apdu", apdu).Msg("apdu")
+			if _debug != nil {
+				_debug("    - apdu: %r", apdu)
+			}
 
 			// see if it needs to look routed
 			if len(n.adapters) > 1 && adapter != n.localAdapter {
@@ -623,8 +626,11 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			}
 
 			// do a deeper decode of the NPDU
-			xpdu := np()
-			if err := xpdu.Decode(npdu); err != nil {
+			xpdu, err := np(NoArgs, NKW(KWCPCIUserData, npdu.GetPDUUserData()))
+			if err != nil {
+				return errors.Wrap(err, "error creating NPDU")
+			}
+			if err := xpdu.Decode(npdu.DeepCopy()); err != nil {
 				return errors.Wrap(err, "error decoding NPDU")
 			}
 
@@ -851,7 +857,7 @@ func (n *NetworkServiceAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) er
 
 func (n *NetworkServiceAccessPoint) AlternateString() (string, bool) {
 	if IsDebuggingActive() {
-		return fmt.Sprintf("%s", n), true // Delegate to the format method
+		return fmt.Sprintf("%r", n), true // Delegate to the format method
 	}
 	return "", false
 }

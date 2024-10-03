@@ -149,7 +149,7 @@ func NewApplicationNode(localLog zerolog.Logger, address string, vlan *Network) 
 
 func (a *ApplicationNode) AlternateString() (string, bool) {
 	if IsDebuggingActive() {
-		return fmt.Sprintf("%s", a), true
+		return fmt.Sprintf("%r", a), true
 	}
 	return "", false
 }

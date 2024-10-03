@@ -491,22 +491,30 @@ func (a *_APCI) Decode(pdu Arg) error {
 }
 
 func (a *_APCI) deepCopy() *_APCI {
-	return &_APCI{
-		PCI:                   a.PCI.DeepCopy().(PCI),
-		apduType:              CopyPtr(a.apduType),
-		apduSeg:               a.apduSeg,
-		apduMor:               a.apduMor,
-		apduSA:                a.apduSA,
-		apduSrv:               a.apduSrv,
-		apduNak:               a.apduNak,
-		apduSeq:               CopyPtr(a.apduSeq),
-		apduWin:               CopyPtr(a.apduWin),
-		apduMaxSegs:           CopyPtr(a.apduMaxSegs),
-		apduMaxResp:           CopyPtr(a.apduMaxResp),
-		apduService:           CopyPtr(a.apduService),
-		apduInvokeID:          CopyPtr(a.apduInvokeID),
-		apduAbortRejectReason: CopyPtr(a.apduAbortRejectReason),
+	newA := &_APCI{
+		a.PCI.DeepCopy().(PCI),
+		nil,
+		CopyPtr(a.apduType),
+		a.apduSeg,
+		a.apduMor,
+		a.apduSA,
+		a.apduSrv,
+		a.apduNak,
+		CopyPtr(a.apduSeq),
+		CopyPtr(a.apduWin),
+		CopyPtr(a.apduMaxSegs),
+		CopyPtr(a.apduMaxResp),
+		CopyPtr(a.apduService),
+		CopyPtr(a.apduInvokeID),
+		CopyPtr(a.apduAbortRejectReason),
+		a.bytesToDiscard,
+		a._leafName,
 	}
+	newA.DebugContents = NewDebugContents(newA, "apduType", "apduSeg", "apduMor", "apduSA", "apduSrv",
+		"apduNak", "apduSeq", "apduWin", "apduMaxSegs", "apduMaxResp",
+		"apduService", "apduInvokeID", "apduAbortRejectReason") // TODO: bit ugly to repeat that here again but what are the options...
+	newA.AddExtraPrinters(newA.PCI.(DebugContentPrinter))
+	return newA
 }
 
 func (a *_APCI) String() string {

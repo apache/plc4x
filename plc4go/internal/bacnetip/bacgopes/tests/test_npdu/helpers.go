@@ -99,7 +99,10 @@ func (n *NPDUCodec) Confirmation(args Args, kwArgs KWArgs) error {
 	}
 
 	// do a deeper decode of the _NPDU
-	ypdu := NPDUTypes[*xpdu.GetNPDUNetMessage()]()
+	ypdu, err := NPDUTypes[*xpdu.GetNPDUNetMessage()](Nothing())
+	if err != nil {
+		return errors.Wrap(err, "error creating NPDU")
+	}
 	if err := ypdu.Decode(xpdu); err != nil {
 		return errors.Wrap(err, "error decoding ypdu")
 	}

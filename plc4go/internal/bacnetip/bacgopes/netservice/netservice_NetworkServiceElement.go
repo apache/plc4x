@@ -694,7 +694,7 @@ func (n *NetworkServiceElement) NetworkNumberIs(adapter *NetworkAdapter, npdu NP
 
 func (n *NetworkServiceElement) AlternateString() (string, bool) {
 	if IsDebuggingActive() {
-		return fmt.Sprintf("%s", n), true // Delegate to format
+		return fmt.Sprintf("%r", n), true // Delegate to format
 	}
 	return "", false
 }

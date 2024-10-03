@@ -145,7 +145,7 @@ func (n *NetworkAdapter) DisconnectConnectionToNetwork(net any) error {
 
 func (n *NetworkAdapter) AlternateString() (string, bool) {
 	if IsDebuggingActive() {
-		return fmt.Sprintf("%s", n), true // Delegate to debugging format
+		return fmt.Sprintf("%r", n), true // Delegate to debugging format
 	}
 	return "", false
 }

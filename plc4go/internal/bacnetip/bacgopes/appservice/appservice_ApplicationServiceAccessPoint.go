@@ -235,7 +235,7 @@ func (a *ApplicationServiceAccessPoint) SapConfirmation(args Args, kwArgs KWArgs
 
 func (a *ApplicationServiceAccessPoint) AlternateString() (string, bool) {
 	if IsDebuggingActive() {
-		return fmt.Sprintf("%s", a), true
+		return fmt.Sprintf("%r", a), true
 	}
 	return "", false
 }

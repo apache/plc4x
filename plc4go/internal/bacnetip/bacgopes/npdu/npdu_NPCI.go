@@ -186,7 +186,7 @@ func (n *_NPCI) Encode(pdu Arg) error {
 		pdu.Put(control)
 
 		// make sure expecting reply and priority get passed down
-		pdu.SetExpectingReply(true)
+		pdu.SetExpectingReply(n.GetExpectingReply())
 		pdu.SetNetworkPriority(n.GetNetworkPriority())
 
 		// encode the destination address
@@ -505,16 +505,22 @@ func (n *_NPCI) buildNPDU(hopCount uint8, source *Address, destination *Address,
 }
 
 func (n *_NPCI) deepCopy() *_NPCI {
-	return &_NPCI{
-		PCI:            n.PCI.DeepCopy().(PCI),
-		npduVersion:    n.npduVersion,
-		npduControl:    n.npduControl,
-		npduDADR:       n.npduDADR.DeepCopy().(*Address),
-		npduSADR:       n.npduSADR.DeepCopy().(*Address),
-		npduHopCount:   CopyPtr(n.npduHopCount),
-		npduNetMessage: CopyPtr(n.npduNetMessage),
-		npduVendorID:   CopyPtr(n.npduVendorID),
+	newN := &_NPCI{
+		n.PCI.DeepCopy().(PCI),
+		nil,
+		n.npduVersion,
+		n.npduControl,
+		n.npduDADR.DeepCopy().(*Address),
+		n.npduSADR.DeepCopy().(*Address),
+		CopyPtr(n.npduHopCount),
+		CopyPtr(n.npduNetMessage),
+		CopyPtr(n.npduVendorID),
+		n.bytesToDiscard,
 	}
+	newN.DebugContents = NewDebugContents(newN, "npduVersion", "npduControl", "npduDADR", "npduSADR",
+		"npduHopCount", "npduNetMessage", "npduVendorID")
+	newN.AddExtraPrinters(newN.PCI.(DebugContentPrinter))
+	return newN
 }
 
 func (n *_NPCI) DeepCopy() any {

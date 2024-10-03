@@ -81,6 +81,7 @@ func (d *DebugContents) Format(s fmt.State, v rune) {
 		_, _ = s.Write(d.StructHeader())
 		_, _ = s.Write([]byte{'\n'})
 		_, _ = s.Write(append([]byte("    "), d.StructHeader()...)) // TODO: why is this duplicated?
+		_, _ = s.Write([]byte{'\n'})
 		d.PrintDebugContents(2, s, nil)
 	}
 }
@@ -211,7 +212,7 @@ func (d *DebugContents) PrintDebugContents(indent int, file io.Writer, _ids []ui
 			for key, elem := range _map {
 				keyPrintVerb := VerbForType(key, 'r')
 				elemPrintVerb := VerbForType(elem, 'r')
-				_, _ = fmt.Fprintf(file, "%s"+string(keyPrintVerb)+" : "+string(elemPrintVerb)+"\n", strings.Repeat("    ", indent), key, elem)
+				_, _ = fmt.Fprintf(file, "%s%"+string(keyPrintVerb)+" : %"+string(elemPrintVerb)+"\n", strings.Repeat("    ", indent), key, elem)
 				if deepDebugContent, ok := elem.(interface {
 					DebugContents(int, io.Writer, []uintptr)
 				}); goDeep && ok {

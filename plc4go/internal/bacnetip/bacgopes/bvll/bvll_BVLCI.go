@@ -202,5 +202,16 @@ func (b *_BVLCI) getBVLCI() BVLCI {
 }
 
 func (b *_BVLCI) deepCopy() *_BVLCI {
-	return &_BVLCI{PCI: b.PCI.DeepCopy().(PCI)}
+	newB := &_BVLCI{
+		b.PCI.DeepCopy().(PCI),
+		nil,
+		nil, // TODO: what to do with that? Clone will be useless...
+		b.bvlciType,
+		b.bvlciFunction,
+		b.bvlciLength,
+		b.bytesToDiscard,
+	}
+	newB.DebugContents = NewDebugContents(newB, "bvlciType", "bvlciFunction", "bvlciLength") // TODO: bit ugly to repeat that here again but what are the options...
+	newB.AddExtraPrinters(newB.PCI.(DebugContentPrinter))
+	return newB
 }

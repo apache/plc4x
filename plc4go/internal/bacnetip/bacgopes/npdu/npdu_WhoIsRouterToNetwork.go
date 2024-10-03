@@ -60,7 +60,9 @@ func WithWhoIsRouterToNetworkNet(net uint16) GenericApplier[*WhoIsRouterToNetwor
 func (w *WhoIsRouterToNetwork) GetDebugAttr(attr string) any {
 	switch attr {
 	case "wirtnNetwork":
-		return w.wirtnNetwork
+		if w.wirtnNetwork != nil {
+			return *w.wirtnNetwork
+		}
 	}
 	return nil
 }
@@ -101,10 +103,6 @@ func (w *WhoIsRouterToNetwork) Decode(npdu Arg) error {
 				w.SetRootMessage(rm)
 			}
 		}
-	}
-	switch npdu := npdu.(type) {
-	case PDUData:
-		w.SetPduData(npdu.GetPduData())
 	}
 	return nil
 }

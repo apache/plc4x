@@ -65,13 +65,15 @@ func VerbForType(value any, printVerb rune) rune {
 		printVerb = 't'
 	case int8, uint8, int16, uint16, int32, uint32, int64, uint64, int, uint, uintptr:
 		printVerb = 'd'
+	case *int8, *uint8, *int16, *uint16, *int32, *uint32, *int64, *uint64, *int, *uint, *uintptr:
+		printVerb = 'v'
 	case float32, float64:
 		printVerb = 'f'
 	case complex64, complex128:
 		printVerb = 'v' // TODO: what is it meant for?
 	case time.Time, time.Duration:
 		printVerb = 's'
-	case []byte:
+	case []int8, []uint8, []int16, []uint16, []int32, []uint32, []int64, []uint64, []int, []uint, []uintptr:
 		printVerb = 'v'
 	case interface{ PLC4XEnumName() string }: // shortcut to handle model enums
 		printVerb = 'd'

@@ -539,7 +539,7 @@ func (s *StateMachineAccessPoint) GetApplicationTimeout() uint {
 
 func (s *StateMachineAccessPoint) AlternateString() (string, bool) {
 	if IsDebuggingActive() {
-		return fmt.Sprintf("%s", s), true
+		return fmt.Sprintf("%r", s), true
 	}
 	return "", false
 }
