@@ -85,6 +85,22 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         this.authentication = authentication;
     }
 
+    protected AbstractPlcConnection(boolean canPing, boolean canRead, boolean canWrite,
+                                    boolean canSubscribe, boolean canBrowse,
+                                    PlcValueHandler valueHandler,
+                                    PlcTagHandler tagHandler,
+                                    BaseOptimizer optimizer, PlcAuthentication authentication) {
+        this.canPing = canPing;
+        this.canRead = canRead;
+        this.canWrite = canWrite;
+        this.canSubscribe = canSubscribe;
+        this.canBrowse = canBrowse;
+        this.valueHandler = valueHandler;
+        this.tagHandler = tagHandler;
+        this.optimizer = optimizer;
+        this.authentication = authentication;
+    }
+
     public void setProtocol(Plc4xProtocolBase<? extends Message> protocol) {
         this.protocol = protocol;
         this.tagHandler = protocol.getTagHandler();

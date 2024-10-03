@@ -26,8 +26,11 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.simulated.tag.SimulatedTag;
 import org.apache.plc4x.java.simulated.tag.SimulatedTagHandler;
+import org.apache.plc4x.java.spi.ConversationContext;
+import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
+import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
@@ -66,7 +69,7 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     public SimulatedConnection(SimulatedDevice device) {
         super(true, true, true, true, false,
-            new DefaultPlcValueHandler(), null, null);
+            new DefaultPlcValueHandler(), new SimulatedTagHandler(), null, null);
         this.device = device;
     }
 
