@@ -71,6 +71,10 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
         return new LinkedHashSet<>(tags.keySet());
     }
 
+    public PlcTagValueItem getTagValueItem(String tagName) {
+        return tags.get(tagName);
+    }
+
     @Override
     public PlcResponseCode getTagResponseCode(String tagName) {
         return tags.get(tagName).getResponseCode();

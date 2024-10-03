@@ -73,6 +73,10 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
         return values.getOrDefault(name, new DefaultPlcResponseItem<>(null, null)).getValue();
     }
 
+    public PlcResponseItem<PlcValue> getPlcResponseItem(String name) {
+        return values.getOrDefault(name, new DefaultPlcResponseItem<>(null, null));
+    }
+
     @Override
     public int getNumberOfValues(String name) {
         PlcValue tagInternal = getTagInternal(name);
