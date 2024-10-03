@@ -108,7 +108,6 @@
             </Import-Package>
             <Private-Package>com.github.jinahya.bit.io</Private-Package>
             <Export-package>io.netty.bootstrap,*</Export-package>
-
             <SPI-consumer>*</SPI-consumer>
             <SPI-Provider>*</SPI-Provider>
           </instructions>

@@ -67,7 +67,7 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
     public SimulatedConnection(SimulatedDevice device) {
         super(true, true, true, true, false,
             new DefaultPlcValueHandler(), null, null);
-        this.device = device;
+        this.device = device;        
     }
 
     @Override

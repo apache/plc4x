@@ -235,7 +235,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     public Optional<PlcTag> parseTagAddress(String tagAddress) {
         PlcTag plcTag;
         try {
-            plcTag = tagHandler.parseTag(tagAddress);
+            plcTag = getPlcTagHandler().parseTag(tagAddress);
         } catch (Exception e) {
             throw new PlcRuntimeException("Error parsing tag address: " + tagAddress, e);
         }

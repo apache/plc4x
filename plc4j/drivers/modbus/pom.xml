@@ -80,6 +80,7 @@
             <Import-Package>
               *
             </Import-Package>
+	     <SPI-Consumer>*</SPI-Consumer>
           </instructions>
         </configuration>
       </plugin>
