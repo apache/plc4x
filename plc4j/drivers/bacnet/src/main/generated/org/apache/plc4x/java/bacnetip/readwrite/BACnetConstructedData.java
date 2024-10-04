@@ -6668,6 +6668,17 @@ public abstract class BACnetConstructedData implements Message {
               objectTypeArgument,
               propertyIdentifierArgument,
               arrayIndexArgument);
+    } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.LIGHTING_OUTPUT)
+        && EvaluationHelper.equals(
+            propertyIdentifierArgument, BACnetPropertyIdentifier.TRACKING_VALUE)
+        && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
+      builder =
+          BACnetConstructedDataLightingOutputTrackingValue.staticParseBACnetConstructedDataBuilder(
+              readBuffer,
+              tagNumber,
+              objectTypeArgument,
+              propertyIdentifierArgument,
+              arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.TRACKING_VALUE)

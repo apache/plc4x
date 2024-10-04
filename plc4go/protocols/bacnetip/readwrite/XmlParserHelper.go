@@ -72,8 +72,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumberArgument := uint8(parsedUint0)
 		return BACnetOpeningTagParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumberArgument)
-	case "NetworkPort":
-		return NetworkPortParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetPriorityArray":
 		objectTypeArgument, _ := BACnetObjectTypeByName(parserArguments[0])
 		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 8)
@@ -136,8 +134,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumber := uint8(parsedUint0)
 		return BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
-	case "LifeSafetyZone":
-		return LifeSafetyZoneParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetTimeValue":
 		return BACnetTimeValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetTagPayloadOctetString":
@@ -179,8 +175,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetTimerStateTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "NotificationClass":
-		return NotificationClassParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetDateRangeEnclosed":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -233,8 +227,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		objectTypeArgument, _ := BACnetObjectTypeByName(parserArguments[1])
 		return BACnetReadAccessResultListOfResultsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, objectTypeArgument)
-	case "EventEnrollment":
-		return EventEnrollmentParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetRouterEntryStatusTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -347,8 +339,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumber := uint8(parsedUint0)
 		return BACnetRecipientEnclosedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
-	case "CredentialDataInput":
-		return CredentialDataInputParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConfirmedServiceRequest":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {
@@ -378,8 +368,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetAccessUserTypeTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "Averaging":
-		return AveragingParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetRestartReasonTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -460,8 +448,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetAccumulatorRecordParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetDailySchedule":
 		return BACnetDailyScheduleParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "File":
-		return FileParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetLogDataLogDataEntry":
 		return BACnetLogDataLogDataEntryParseWithBuffer[BACnetLogDataLogDataEntry](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetOptionalBinaryPV":
@@ -491,8 +477,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetAuthenticationPolicyParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetPropertyAccessResult":
 		return BACnetPropertyAccessResultParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "MultistateValue":
-		return MultistateValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -523,8 +507,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetDoorSecuredStatusTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "EventLog":
-		return EventLogParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ErrorClassTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -574,8 +556,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumber := uint8(parsedUint0)
 		return BACnetNotificationParametersChangeOfDiscreteValueNewValueParseWithBuffer[BACnetNotificationParametersChangeOfDiscreteValueNewValue](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
-	case "Group":
-		return GroupParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetReadAccessPropertyReadResult":
 		objectTypeArgument, _ := BACnetObjectTypeByName(parserArguments[0])
 		propertyIdentifierArgument, _ := BACnetPropertyIdentifierByName(parserArguments[1])
@@ -586,8 +566,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetActionCommandParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetFaultParameterFaultExtendedParametersEntry":
 		return BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer[BACnetFaultParameterFaultExtendedParametersEntry](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "PulseConverter":
-		return PulseConverterParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetTagPayloadDate":
 		return BACnetTagPayloadDateParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged":
@@ -615,8 +593,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "BACnetReadAccessProperty":
 		objectTypeArgument, _ := BACnetObjectTypeByName(parserArguments[0])
 		return BACnetReadAccessPropertyParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument)
-	case "LightingOutput":
-		return LightingOutputParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetLifeSafetyOperationTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -633,8 +609,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetWeekNDayTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "StructuredView":
-		return StructuredViewParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetEventTransitionBitsTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -650,8 +624,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumber := uint8(parsedUint0)
 		return BACnetLogDataParseWithBuffer[BACnetLogData](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
-	case "TrendLog":
-		return TrendLogParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetFaultParameterFaultCharacterStringListOfFaultValues":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -712,8 +684,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetLifeSafetyStateTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
 	case "BACnetVTSession":
 		return BACnetVTSessionParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "Accumulator":
-		return AccumulatorParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetEventTimestampsEnclosed":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -721,8 +691,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumber := uint8(parsedUint0)
 		return BACnetEventTimestampsEnclosedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
-	case "CharacterStringValue":
-		return CharacterStringValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetSecurityLevelTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -738,8 +706,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumber := uint8(parsedUint0)
 		return BACnetLogRecordLogDatumParseWithBuffer[BACnetLogRecordLogDatum](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
-	case "Loop":
-		return LoopParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetDateTimeEnclosed":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -765,8 +731,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetProgramRequestTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "Lift":
-		return LiftParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -775,10 +739,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "AccessRights":
-		return AccessRightsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "AlertEnrollment":
-		return AlertEnrollmentParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetDateRange":
 		return BACnetDateRangeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetEventParameter":
@@ -791,8 +751,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetLiftFaultTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "BinaryOutput":
-		return BinaryOutputParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetPropertyStatesEnclosed":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -856,8 +814,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumber := uint8(parsedUint0)
 		return BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
-	case "AccessPoint":
-		return AccessPointParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference":
 		return BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetApplicationTag":
@@ -903,10 +859,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetRelationshipTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "Device":
-		return DeviceParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "Channel":
-		return ChannelParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetRecipientProcessEnclosed":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -918,8 +870,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetAccessRuleParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetHostNPort":
 		return BACnetHostNPortParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "NotificationForwarder":
-		return NotificationForwarderParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetShedStateTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -951,8 +901,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetAccessCredentialDisableTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "BinaryLightingOutput":
-		return BinaryLightingOutputParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetLiftCarCallList":
 		return BACnetLiftCarCallListParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetLightingTransitionTagged":
@@ -967,8 +915,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return NLMUpdateKeyUpdateControlFlagsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetAssignedLandingCalls":
 		return BACnetAssignedLandingCallsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "Timer":
-		return TimerParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetNotifyTypeTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -977,8 +923,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetNotifyTypeTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "DateTimePatternValue":
-		return DateTimePatternValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetAuthorizationExemptionTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1018,8 +962,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetAccessAuthenticationFactorDisableTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "BinaryInput":
-		return BinaryInputParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetAuthorizationModeTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1036,8 +978,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "DatePatternValue":
-		return DatePatternValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetDoorStatusTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1056,8 +996,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetVendorIdTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
 	case "BACnetEventTimestamps":
 		return BACnetEventTimestampsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "PositiveIntegerValue":
-		return PositiveIntegerValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetNameValueCollection":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1065,8 +1003,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumber := uint8(parsedUint0)
 		return BACnetNameValueCollectionParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
-	case "TrendLogMultiple":
-		return TrendLogMultipleParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetTagPayloadEnumerated":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {
@@ -1110,10 +1046,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetRecipientProcessParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetReadAccessSpecification":
 		return BACnetReadAccessSpecificationParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "OptionalProperty":
-		// TODO: find a way to parse the sub types
-		var bacType string
-		return OptionalPropertyParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), bacType)
 	case "BACnetAuthenticationPolicyList":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1132,8 +1064,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetLiftCarCallListFloorListParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetAccessThreatLevel":
 		return BACnetAccessThreatLevelParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "DateTimeValue":
-		return DateTimeValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetCalendarEntryEnclosed":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1170,12 +1100,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetSecurityPolicyTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
 	case "BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord":
 		return BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer[BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "Escalator":
-		return EscalatorParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BVLC":
 		return BVLCParseWithBuffer[BVLC](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ElevatorGroup":
-		return ElevatorGroupParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ConfirmedEventNotificationRequest":
 		return ConfirmedEventNotificationRequestParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetLandingDoorStatusLandingDoorsListEntry":
@@ -1188,10 +1114,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetLiftCarDirectionTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "LoadControl":
-		return LoadControlParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "IntegerValue":
-		return IntegerValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1201,23 +1123,13 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetAddressBinding":
 		return BACnetAddressBindingParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "Command":
-		return CommandParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "BitStringValue":
-		return BitStringValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetLandingCallStatusCommand":
 		return BACnetLandingCallStatusCommandParseWithBuffer[BACnetLandingCallStatusCommand](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "Schedule":
-		return ScheduleParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ListOfCovNotificationsValue":
 		objectTypeArgument, _ := BACnetObjectTypeByName(parserArguments[0])
 		return ListOfCovNotificationsValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument)
 	case "BACnetLandingCallStatus":
 		return BACnetLandingCallStatusParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "MultistateOutput":
-		return MultistateOutputParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "AccessCredential":
-		return AccessCredentialParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetEventParameterChangeOfStateListOfValues":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1243,8 +1155,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetOptionalUnsignedParseWithBuffer[BACnetOptionalUnsigned](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetHostAddress":
 		return BACnetHostAddressParseWithBuffer[BACnetHostAddress](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "AnalogValue":
-		return AnalogValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ListOfCovNotificationsList":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1267,8 +1177,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetVTClassTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "BinaryValue":
-		return BinaryValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetDeviceObjectPropertyReference":
 		return BACnetDeviceObjectPropertyReferenceParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged":
@@ -1288,8 +1196,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumber := uint8(parsedUint0)
 		return BACnetAssignedLandingCallsLandingCallsListParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
-	case "AccessZone":
-		return AccessZoneParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetTagPayloadDouble":
 		return BACnetTagPayloadDoubleParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetAccumulatorRecordAccumulatorStatusTagged":
@@ -1305,12 +1211,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetTimerStateChangeValueParseWithBuffer[BACnetTimerStateChangeValue](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument)
 	case "BACnetSpecialEventPeriod":
 		return BACnetSpecialEventPeriodParseWithBuffer[BACnetSpecialEventPeriod](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "WritableProperty":
-		// TODO: find a way to parse the sub types
-		var bacType string
-		return WritablePropertyParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), bacType)
-	case "AccessUser":
-		return AccessUserParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetKeyIdentifier":
 		return BACnetKeyIdentifierParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetNetworkNumberQualityTagged":
@@ -1321,8 +1221,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetNetworkNumberQualityTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "OctetStringValue":
-		return OctetStringValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetLogStatusTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1348,12 +1246,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetProgramErrorTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
 	case "Error":
 		return ErrorParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "AccessDoor":
-		return AccessDoorParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetPropertyReference":
 		return BACnetPropertyReferenceParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "AnalogOutput":
-		return AnalogOutputParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetContextTag":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1390,8 +1284,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "BACnetPriorityValue":
 		objectTypeArgument, _ := BACnetObjectTypeByName(parserArguments[0])
 		return BACnetPriorityValueParseWithBuffer[BACnetPriorityValue](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument)
-	case "TimePatternValue":
-		return TimePatternValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetLogRecord":
 		return BACnetLogRecordParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetCalendarEntry":
@@ -1435,8 +1327,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := TagClassByName(parserArguments[1])
 		return BACnetReliabilityTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "DateValue":
-		return DateValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetDoorValueTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1447,8 +1337,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetDoorValueTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
 	case "BACnetScale":
 		return BACnetScaleParseWithBuffer[BACnetScale](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "NetworkSecurity":
-		return NetworkSecurityParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetNotificationParametersChangeOfValueNewValue":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1456,8 +1344,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumber := uint8(parsedUint0)
 		return BACnetNotificationParametersChangeOfValueNewValueParseWithBuffer[BACnetNotificationParametersChangeOfValueNewValue](context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
-	case "Calendar":
-		return CalendarParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ErrorCodeTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1501,8 +1387,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetEventTypeTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
 	case "BACnetObjectPropertyReference":
 		return BACnetObjectPropertyReferenceParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "Program":
-		return ProgramParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetBinaryLightingPVTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1524,8 +1408,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetAuthenticationFactorEnclosedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetEventSummary":
 		return BACnetEventSummaryParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "AnalogInput":
-		return AnalogInputParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetAccessZoneOccupancyStateTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1572,10 +1454,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetPropertyWriteDefinitionParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument)
 	case "BACnetEventLogRecord":
 		return BACnetEventLogRecordParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ReadableProperty":
-		// TODO: find a way to parse the sub types
-		var bacType string
-		return ReadablePropertyParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), bacType)
 	case "BACnetBinaryPVTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1650,8 +1528,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetTimeStampsEnclosedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry":
 		return BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "LargeAnalogValue":
-		return LargeAnalogValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetHostAddressEnclosed":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1691,12 +1567,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return BACnetProtocolLevelTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
 	case "BACnetCOVMultipleSubscription":
 		return BACnetCOVMultipleSubscriptionParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "GlobalGroup":
-		return GlobalGroupParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetActionList":
 		return BACnetActionListParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "TimeValue":
-		return TimeValueParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetLightingCommand":
 		return BACnetLightingCommandParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "SubscribeCOVPropertyMultipleErrorFirstFailedSubscription":
@@ -1708,10 +1580,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetAuthenticationFactor":
 		return BACnetAuthenticationFactorParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "MultistateInput":
-		return MultistateInputParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "LifeSafetyPoint":
-		return LifeSafetyPointParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetWriteAccessSpecification":
 		return BACnetWriteAccessSpecificationParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetLightingCommandEnclosed":
