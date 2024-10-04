@@ -127,7 +127,7 @@ public abstract class BACnetPropertyStates implements Message {
               readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetPropertyStatesProgramChange.staticParseBACnetPropertyStatesBuilder(
+          BACnetPropertyStatesProgramState.staticParseBACnetPropertyStatesBuilder(
               readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
@@ -151,7 +151,7 @@ public abstract class BACnetPropertyStates implements Message {
               readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 11)) {
       builder =
-          BACnetPropertyStatesExtendedValue.staticParseBACnetPropertyStatesBuilder(
+          BACnetPropertyStatesUnsignedValue.staticParseBACnetPropertyStatesBuilder(
               readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 12)) {
       builder =

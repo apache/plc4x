@@ -29,7 +29,7 @@ if (matcher.find()) {
     matcher.each {
         def enumName = it[1]
         def firstFoundEnum = it[2]
-        log.info("Generating type for {} with first found enum {}", enumName, firstFoundEnum)
+        log.info("Generating type for ${enumName} with first found enum ${firstFoundEnum}")
         foundEnums << [name: enumName, firstEnum: firstFoundEnum]
     }
 }
@@ -78,7 +78,7 @@ if (!mspecTargetDir.exists()) {
     mspecTargetDir.mkdirs()
 }
 def vendorIdMspec = new File(mspecTargetDir, "bacnet-private-enums-tagged.mspec")
-if(vendorIdMspec.exists()) {
+if (vendorIdMspec.exists()) {
     vendorIdMspec.delete()
 }
 

@@ -17,7 +17,9 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -66,7 +68,7 @@
       <id>update-generated-code</id>
       <build>
         <plugins>
-          <!-- Fetch the vendor ids which will be used to translate venmdor ids to readable names -->
+          <!-- Fetch the vendor ids which will be used to translate vendor ids to readable names -->
           <!--
             We're intentionally not using the download plugin as this would either download only once
             and not get any updates or it would try downloading for every build. This however might result
@@ -75,9 +77,9 @@
             So this script makes sure the bacnet-vendorid.mspec is updated at most every 24h
           -->
           <plugin>
-            <groupId>org.codehaus.gmaven</groupId>
-            <artifactId>groovy-maven-plugin</artifactId>
-            <version>2.1.1</version>
+            <groupId>org.codehaus.gmavenplus</groupId>
+            <artifactId>gmavenplus-plugin</artifactId>
+            <version>3.0.2</version>
             <executions>
               <!-- Do some pre-build checks and report any findings to the user -->
               <execution>
@@ -87,7 +89,9 @@
                   <goal>execute</goal>
                 </goals>
                 <configuration>
-                  <source>${project.basedir}/src/main/script/getVendorIds.groovy</source>
+                  <scripts>
+                    <script>${project.basedir}/src/main/script/getVendorIds.groovy</script>
+                  </scripts>
                 </configuration>
               </execution>
               <execution>
@@ -97,7 +101,9 @@
                   <goal>execute</goal>
                 </goals>
                 <configuration>
-                  <source>${project.basedir}/src/main/script/produceTaggedEnums.groovy</source>
+                  <scripts>
+                    <script>${project.basedir}/src/main/script/produceTaggedEnums.groovy</script>
+                  </scripts>
                 </configuration>
               </execution>
               <execution>
@@ -107,7 +113,9 @@
                   <goal>execute</goal>
                 </goals>
                 <configuration>
-                  <source>${project.basedir}/src/main/script/produceTaggedPrivateEnums.groovy</source>
+                  <scripts>
+                    <script>${project.basedir}/src/main/script/produceTaggedPrivateEnums.groovy</script>
+                  </scripts>
                 </configuration>
               </execution>
               <execution>
@@ -117,7 +125,9 @@
                   <goal>execute</goal>
                 </goals>
                 <configuration>
-                  <source>${project.basedir}/src/main/script/produceTaggedBitStrings.groovy</source>
+                  <scripts>
+                    <script>${project.basedir}/src/main/script/produceTaggedBitStrings.groovy</script>
+                  </scripts>
                 </configuration>
               </execution>
             </executions>
@@ -125,6 +135,16 @@
               <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
+                <version>${groovy.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy-templates</artifactId>
+                <version>${groovy.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy-ant</artifactId>
                 <version>${groovy.version}</version>
               </dependency>
               <dependency>

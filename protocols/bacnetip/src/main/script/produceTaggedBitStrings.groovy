@@ -42,7 +42,7 @@ if (matcher.find()) {
             def enumCamelCase = enumInstanceName.toLowerCase().replaceAll("(_)([A-Za-z0-9])", { it[2].toUpperCase() })
             enumEntries[enumId] = [enumId: enumId, enumInstanceName: enumInstanceName, enumCamelCase: enumCamelCase]
         }
-        log.info("Generating type for {} with {} entries", enumName, enumEntries.size())
+        log.info("Generating type for ${enumName} with ${enumEntries.size()} entries")
         foundEnums << [name: enumName, enumContent: enumContent, enumEntries: enumEntries]
     }
 }
