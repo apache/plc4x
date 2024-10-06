@@ -123,7 +123,7 @@ class SerialPollingSelector extends AbstractSelector {
     public Selector wakeup() {
         logger.debug("being asked to wake up from select");
         // throw new NotImplementedException("Not implemented for this selector, should not be needed.");
-        if (!selectPromise.isDone()) {
+        if ((selectPromise != null) && !selectPromise.isDone()) {
             selectPromise.setSuccess(null);
         }
         return this;
