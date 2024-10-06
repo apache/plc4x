@@ -1300,17 +1300,17 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // Replace the var-length string fields with requests to read the
         // length information instead of the string content.
         int numVarLengthStrings = 0;
-        LinkedHashMap<String, PlcTagItem> updatedRequestItems = new LinkedHashMap<>(request.getNumberOfTags());
+        LinkedHashMap<String, PlcTagItem<PlcTag>> updatedRequestItems = new LinkedHashMap<>(request.getNumberOfTags());
         for (String tagName : request.getTagNames()) {
-            PlcTagItem plcTagItem = request.getTagItem(tagName);
+            PlcTagItem<PlcTag> plcTagItem = request.getTagItem(tagName);
             if(plcTagItem.getTag() instanceof S7StringVarLengthTag) {
                 S7Tag s7Tag = (S7Tag) plcTagItem.getTag();
                 TransportSize dataType = s7Tag.getDataType();
                 if(dataType == TransportSize.STRING) {
-                    updatedRequestItems.put(tagName, new DefaultPlcTagItem(new S7Tag(TransportSize.BYTE, s7Tag.getMemoryArea(), s7Tag.getBlockNumber(), s7Tag.getByteOffset(), s7Tag.getBitOffset(), 2)));
+                    updatedRequestItems.put(tagName, new DefaultPlcTagItem<>(new S7Tag(TransportSize.BYTE, s7Tag.getMemoryArea(), s7Tag.getBlockNumber(), s7Tag.getByteOffset(), s7Tag.getBitOffset(), 2)));
                     numVarLengthStrings++;
                 } else if(dataType == TransportSize.WSTRING) {
-                    updatedRequestItems.put(tagName, new DefaultPlcTagItem(new S7Tag(TransportSize.BYTE, s7Tag.getMemoryArea(), s7Tag.getBlockNumber(), s7Tag.getByteOffset(), s7Tag.getBitOffset(), 4)));
+                    updatedRequestItems.put(tagName, new DefaultPlcTagItem<>(new S7Tag(TransportSize.BYTE, s7Tag.getMemoryArea(), s7Tag.getBlockNumber(), s7Tag.getByteOffset(), s7Tag.getBitOffset(), 4)));
                     numVarLengthStrings++;
                 }
             } else {
@@ -1326,7 +1326,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 return;
             }
             // Collect the responses for the var-length strings and read them separately.
-            LinkedHashMap<String, PlcTagItem> varLengthStringTags = new LinkedHashMap<>(finalNumVarLengthStrings);
+            LinkedHashMap<String, PlcTagItem<PlcTag>> varLengthStringTags = new LinkedHashMap<>(finalNumVarLengthStrings);
             int curItem = 0;
             for (String tagName : request.getTagNames()) {
                 S7Tag s7tag = (S7Tag) request.getTag(tagName);
@@ -1339,11 +1339,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                             if (s7tag.getDataType() == TransportSize.STRING) {
                                 rb.readShort(8);
                                 int stringLength = rb.readShort(8);
-                                varLengthStringTags.put(tagName, new DefaultPlcTagItem(new S7StringFixedLengthTag(TransportSize.STRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength)));
+                                varLengthStringTags.put(tagName, new DefaultPlcTagItem<>(new S7StringFixedLengthTag(TransportSize.STRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength)));
                             } else if (s7tag.getDataType() == TransportSize.WSTRING) {
                                 rb.readInt(16);
                                 int stringLength = rb.readInt(16);
-                                varLengthStringTags.put(tagName, new DefaultPlcTagItem(new S7StringFixedLengthTag(TransportSize.WSTRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength)));
+                                varLengthStringTags.put(tagName, new DefaultPlcTagItem<>(new S7StringFixedLengthTag(TransportSize.WSTRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength)));
                             }
                         } catch (Exception e) {
                             logger.warn("Error parsing string size for tag {}", tagName, e);
@@ -1438,7 +1438,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             } else {
                 // Create an alternative list of request items, where all var-length string tags are replaced with
                 // fixed-length string tags using the string length returned by the previous request.
-                LinkedHashMap<String, PlcTagValueItem> updatedRequestItems = new LinkedHashMap<>(request.getNumberOfTags());
+                LinkedHashMap<String, PlcTagValueItem<PlcTag>> updatedRequestItems = new LinkedHashMap<>(request.getNumberOfTags());
                 for (String tagName : request.getTagNames()) {
                     PlcTag tag = request.getTag(tagName);
                     PlcValue value = request.getPlcValue(tagName);
@@ -1448,9 +1448,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         S7StringFixedLengthTag newTag = new S7StringFixedLengthTag(varLengthTag.getDataType(), varLengthTag.getMemoryArea(),
                             varLengthTag.getBlockNumber(), varLengthTag.getByteOffset(), varLengthTag.getBitOffset(),
                             varLengthTag.getNumberOfElements(), stringLength);
-                        updatedRequestItems.put(tagName, new DefaultPlcTagValueItem(newTag, value));
+                        updatedRequestItems.put(tagName, new DefaultPlcTagValueItem<>(newTag, value));
                     } else {
-                        updatedRequestItems.put(tagName, new DefaultPlcTagValueItem(tag, value));
+                        updatedRequestItems.put(tagName, new DefaultPlcTagValueItem<>(tag, value));
                     }
                 }
 

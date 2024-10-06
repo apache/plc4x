@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.opcua.optimizer;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
@@ -37,11 +38,11 @@ public class OpcuaOptimizer extends BaseOptimizer{
         List<PlcReadRequest> processedRequests = new LinkedList<>();
 
         // List of all items in the current request.
-        LinkedHashMap<String, PlcTagItem> curTags = new LinkedHashMap<>();
+        LinkedHashMap<String, PlcTagItem<PlcTag>> curTags = new LinkedHashMap<>();
 
         for (String tagName : readRequest.getTagNames()) {
             OpcuaTag tag = (OpcuaTag) readRequest.getTag(tagName);
-            curTags.put(tagName, new DefaultPlcTagItem(tag));
+            curTags.put(tagName, new DefaultPlcTagItem<>(tag));
         }
 
         // Create a new PlcReadRequest from the remaining tag items.

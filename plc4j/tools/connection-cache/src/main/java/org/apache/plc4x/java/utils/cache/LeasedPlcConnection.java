@@ -338,15 +338,25 @@ public class LeasedPlcConnection implements EventPlcConnection {
                     }
 
                     @Override
+                    public PlcResponseCode getTagResponseCode(String tagName) {
+                        return innerPlcSubscriptionRequest.getTagResponseCode(tagName);
+                    }
+
+                    @Override
                     public List<PlcSubscriptionTag> getTags() {
                         return innerPlcSubscriptionRequest.getTags();
                     }
 
                     @Override
-                    public Map<String, List<Consumer<PlcSubscriptionEvent>>> getPreRegisteredConsumers() {
-                        return innerPlcSubscriptionRequest.getPreRegisteredConsumers();
+                    public Consumer<PlcSubscriptionEvent> getConsumer() {
+                        return innerPlcSubscriptionRequest.getConsumer();
                     }
                 };
+            }
+
+            @Override
+            public PlcSubscriptionRequest.Builder setConsumer(Consumer<PlcSubscriptionEvent> consumer) {
+                return innerBuilder.setConsumer(consumer);
             }
 
             @Override
@@ -377,11 +387,6 @@ public class LeasedPlcConnection implements EventPlcConnection {
             @Override
             public PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag) {
                 return innerBuilder.addEventTag(name, tag);
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addPreRegisteredConsumer(String name, Consumer<PlcSubscriptionEvent> preRegisteredConsumer) {
-                return innerBuilder.addPreRegisteredConsumer(name, preRegisteredConsumer);
             }
         };
     }

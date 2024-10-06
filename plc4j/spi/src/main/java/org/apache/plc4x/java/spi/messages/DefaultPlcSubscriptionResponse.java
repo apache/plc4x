@@ -45,13 +45,13 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
                                           Map<String, PlcResponseItem<PlcSubscriptionHandle>> values) {
         this.request = request;
         this.values = values;
-        request.getPreRegisteredConsumers().forEach((subscriptionTagName, consumers) -> {
+        /*request.getPreRegisteredConsumers().forEach((subscriptionTagName, consumers) -> {
             PlcSubscriptionHandle subscriptionHandle = getSubscriptionHandle(subscriptionTagName);
             if (subscriptionHandle == null) {
                 throw new PlcRuntimeException("PlcSubscriptionHandle for " + subscriptionTagName + " not found");
             }
             consumers.forEach(subscriptionHandle::register);
-        });
+        });*/
     }
 
     @Override
@@ -60,8 +60,8 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
         if (response == null) {
             return null;
         }
-        if (response.getCode() != PlcResponseCode.OK) {
-            throw new PlcRuntimeException("Item " + name + " failed to subscribe: " + response.getCode());
+        if (response.getResponseCode() != PlcResponseCode.OK) {
+            throw new PlcRuntimeException("Item " + name + " failed to subscribe: " + response.getResponseCode());
         }
         return response.getValue();
     }
@@ -82,7 +82,7 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
         if (response == null) {
             return null;
         }
-        return response.getCode();
+        return response.getResponseCode();
     }
 
     @Override

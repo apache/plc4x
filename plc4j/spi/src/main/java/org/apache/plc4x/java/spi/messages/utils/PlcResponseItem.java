@@ -22,7 +22,9 @@ package org.apache.plc4x.java.spi.messages.utils;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 public interface PlcResponseItem<T> {
-    PlcResponseCode getCode();
+
+    PlcResponseCode getResponseCode();
 
     T getValue();
+
 }

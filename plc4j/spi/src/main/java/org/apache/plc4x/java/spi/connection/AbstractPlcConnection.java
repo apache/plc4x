@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -34,6 +35,7 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcTagItem;
 import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.messages.utils.PlcTagItem;
 import org.apache.plc4x.java.spi.messages.utils.PlcTagValueItem;
@@ -269,12 +271,43 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
 
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
+        PlcSubscriptionRequest filteredSubscriptionRequest = getFilteredSubscriptionRequest((DefaultPlcSubscriptionRequest) subscriptionRequest);
+        return internalSubscribe(filteredSubscriptionRequest)
+            .thenApply(filteredSubscriptionResponse -> {
+                // Shortcut for the case that all tags were valid.
+                if(subscriptionRequest.getNumberOfTags() == filteredSubscriptionRequest.getNumberOfTags()) {
+                    return filteredSubscriptionResponse;
+                }
+
+                Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+                for (String tagName : subscriptionRequest.getTagNames()) {
+                    // If the tag was correct, then we expect a response in the response.
+                    if(filteredSubscriptionRequest.getTagResponseCode(tagName) != null) {
+                        values.put(tagName, new DefaultPlcResponseItem<>(filteredSubscriptionRequest.getTagResponseCode(tagName), filteredSubscriptionResponse.getSubscriptionHandle(tagName)));
+                    }
+                    // In all other cases forward the initial error to the final output.
+                    else {
+                        values.put(tagName, new DefaultPlcResponseItem<>(subscriptionRequest.getTagResponseCode(tagName), null));
+                    }
+                }
+                return new DefaultPlcSubscriptionResponse(subscriptionRequest, values);
+            });
+    }
+
+    public CompletableFuture<PlcSubscriptionResponse> internalSubscribe(PlcSubscriptionRequest subscriptionRequest) {
         if(optimizer != null) {
             return optimizer.optimizedSubscribe(subscriptionRequest, protocol);
         }
         return protocol.subscribe(subscriptionRequest);
     }
 
+    /**
+     * No need to do the whole innerUnsubscribe thing here, as the request only contains handles
+     * returned by the previous subscription request. So we've already filtered out the invalid
+     * tags.
+     * @param unsubscriptionRequest unsubscription request containing at least one unsubscription request item.
+     * @return future for the response.
+     */
     @Override
     public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
         if(optimizer != null) {
@@ -326,7 +359,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     }
 
     protected PlcReadRequest getFilteredReadRequest(DefaultPlcReadRequest readRequest) {
-        LinkedHashMap<String, PlcTagItem> filteredTags = new LinkedHashMap<>();
+        LinkedHashMap<String, PlcTagItem<PlcTag>> filteredTags = new LinkedHashMap<>();
         for (String tagName : readRequest.getTagNames()) {
             if(readRequest.getTagResponseCode(tagName) == PlcResponseCode.OK) {
                 filteredTags.put(tagName, readRequest.getTagItem(tagName));
@@ -336,13 +369,23 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     }
 
     protected PlcWriteRequest getFilteredWriteRequest(DefaultPlcWriteRequest writeRequest) {
-        LinkedHashMap<String, PlcTagValueItem> filteredTags = new LinkedHashMap<>();
+        LinkedHashMap<String, PlcTagValueItem<PlcTag>> filteredTags = new LinkedHashMap<>();
         for (String tagName : writeRequest.getTagNames()) {
             if(writeRequest.getTagResponseCode(tagName) == PlcResponseCode.OK) {
                 filteredTags.put(tagName, writeRequest.getTagValueItem(tagName));
             }
         }
         return new DefaultPlcWriteRequest(writeRequest.getWriter(), filteredTags);
+    }
+
+    protected PlcSubscriptionRequest getFilteredSubscriptionRequest(DefaultPlcSubscriptionRequest subscriptionRequest) {
+        LinkedHashMap<String, PlcTagItem<PlcSubscriptionTag>> filteredTags = new LinkedHashMap<>();
+        for (String tagName : subscriptionRequest.getTagNames()) {
+            if(subscriptionRequest.getTagResponseCode(tagName) == PlcResponseCode.OK) {
+                filteredTags.put(tagName, new DefaultPlcTagItem<>(subscriptionRequest.getTag(tagName)));
+            }
+        }
+        return new DefaultPlcSubscriptionRequest(subscriptionRequest.getSubscriber(), filteredTags, subscriptionRequest.getConsumer());
     }
 
 }

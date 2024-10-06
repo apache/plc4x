@@ -18,9 +18,10 @@
  */
 package org.apache.plc4x.java.spi.messages.utils;
 
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 
-public interface PlcTagValueItem extends PlcTagItem {
+public interface PlcTagValueItem<T extends PlcTag> extends PlcTagItem<T> {
 
     default PlcValue getValue() {
         return null;

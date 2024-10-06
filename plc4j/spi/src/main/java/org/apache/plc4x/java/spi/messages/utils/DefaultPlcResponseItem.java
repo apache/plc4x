@@ -37,7 +37,7 @@ public class DefaultPlcResponseItem<T> implements Serializable, PlcResponseItem<
     }
 
     @Override
-    public PlcResponseCode getCode() {
+    public PlcResponseCode getResponseCode() {
         return code;
     }
 
