@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 
 public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, PlcResponse, Serializable {
 
+    private final PlcSubscriptionRequest request;
 
     private final Map<String, PlcResponseItem<PlcSubscriptionHandle>> values;
 
