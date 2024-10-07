@@ -20,6 +20,8 @@
 package basetypes
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -40,6 +42,10 @@ func NewCOVSubscription(arg Arg) (*COVSubscription, error) {
 			NewElement("covIncrement", V2E(NewReal), WithElementContext(4), WithElementOptional(true)),
 		},
 	}
-	panic("implementchoice")
+	var err error
+	s.Sequence, err = NewSequence(Nothing())
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating sequence")
+	}
 	return s, nil
 }

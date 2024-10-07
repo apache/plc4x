@@ -38,7 +38,7 @@ func NewElevatorGroupObject(arg Arg) (*ElevatorGroupObject, error) {
 		properties: []Property{
 			NewReadableProperty("machineRoomID", Vs2P(NewObjectIdentifier)),
 			NewReadableProperty("groupID", V2P(NewUnsigned8)),
-			NewReadableProperty("groupMembers", ArrayOfsP(NewObjectIdentifier, 0, 0)),
+			NewReadableProperty("groupMembers", ArrayOfPs(NewObjectIdentifier, 0, 0)),
 			NewOptionalProperty("groupMode", V2P(NewLiftGroupMode)),
 			NewOptionalProperty("landingCalls", ListOfP(NewLandingCallStatus)),
 			NewOptionalProperty("landingCallControl", V2P(NewLandingCallStatus)),

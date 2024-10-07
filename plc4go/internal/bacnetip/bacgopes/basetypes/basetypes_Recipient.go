@@ -20,6 +20,8 @@
 package basetypes
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -30,13 +32,18 @@ type Recipient struct {
 	choiceElements []Element
 }
 
-func NewRecipient(arg Arg) (*Recipient, error) {
+func NewRecipient(_ Arg) (*Recipient, error) {
 	s := &Recipient{
 		choiceElements: []Element{
 			NewElement("device", Vs2E(NewObjectIdentifier), WithElementContext(0)),
 			NewElement("address", V2E(NewDeviceAddress), WithElementContext(1)),
 		},
 	}
-	panic("implementchoice")
+
+	var err error
+	s.Choice, err = NewChoice(Nothing())
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating choice")
+	}
 	return s, nil
 }

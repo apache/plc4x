@@ -20,6 +20,8 @@
 package basetypes
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 )
@@ -54,6 +56,18 @@ func NewAuditOperationFlags(arg Arg) (*AuditOperationFlags, error) {
 		},
 		bitLen: 16,
 	}
-	panic("implement me")
+	var err error
+	s.BitString, err = NewBitStringWithExtension(s, NA(arg))
+	if err != nil {
+		return nil, errors.Wrap(err, "NewBitStringWithExtension failed")
+	}
 	return s, nil
+}
+
+func (a AuditOperationFlags) GetBitNames() map[string]int {
+	return a.bitNames
+}
+
+func (a AuditOperationFlags) GetBitLen() int {
+	return a.bitLen
 }

@@ -35,7 +35,7 @@ func NewEventParameterChangeOfBitstring(arg Arg) (*EventParameterChangeOfBitstri
 		sequenceElements: []Element{
 			NewElement("timeDelay", V2E(NewUnsigned), WithElementContext(0)),
 			NewElement("bitmask", Vs2E(NewBitString), WithElementContext(1)),
-			NewElement("listOfBitstringValues", SequenceOfsE(NewBitString), WithElementContext(2)),
+			NewElement("listOfBitstringValues", SequenceOfEs(NewBitString), WithElementContext(2)),
 		},
 	}
 	panic("implementchoice")

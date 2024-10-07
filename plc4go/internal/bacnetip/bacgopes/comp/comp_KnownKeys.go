@@ -92,4 +92,5 @@ const (
 	KWMaxSegmentsAccepted       = KnownKey("segmentsAccepted")
 	KWNumberOfAPDURetries       = KnownKey("numberOfAPDURetries")
 	KWVendorIdentifier          = KnownKey("vendorIdentifier")
+	KWCls                       = KnownKey("cls")
 )

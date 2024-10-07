@@ -46,7 +46,7 @@ func NewBitStringValueObject(arg Arg) (*BitStringValueObject, error) {
 			NewOptionalProperty("relinquishDefault", Vs2P(NewBitString)),
 			NewOptionalProperty("timeDelay", V2P(NewUnsigned)),
 			NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
-			NewOptionalProperty("alarmValues", ArrayOfsP(NewBitString, 0, 0)),
+			NewOptionalProperty("alarmValues", ArrayOfPs(NewBitString, 0, 0)),
 			NewOptionalProperty("bitMask", Vs2P(NewBitString)),
 			NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
 			NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),

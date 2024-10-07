@@ -21,13 +21,17 @@ package device
 
 import (
 	"fmt"
+	"io"
+	"strings"
 
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/object"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
@@ -48,18 +52,10 @@ type LocalDeviceObject interface {
 	SetObjectList([]string)
 }
 
-type _LocalDeviceObject struct {
-	*CurrentPropertyListMixIn
-	*DeviceObject
-	*DefaultRFormatter
-
-	properties        []Property
-	defaultProperties map[string]any
-
-	App any `ignore:"true"` // TODO: is *Application but creates a circular dependency. figure out what is a smart way
-}
-
-func NewLocalDeviceObject(args Args, kwArgs KWArgs, options ...Option) (LocalDeviceObject, error) {
+func NewLocalDeviceObject(_ Args, kwArgs KWArgs, options ...Option) (LocalDeviceObject, error) {
+	if _debug != nil {
+		_debug("__init__ %r", kwArgs)
+	}
 	l := &_LocalDeviceObject{
 		DefaultRFormatter: NewDefaultRFormatter(),
 		properties: []Property{
@@ -82,8 +78,143 @@ func NewLocalDeviceObject(args Args, kwArgs KWArgs, options ...Option) (LocalDev
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating mixing")
 	}
+	l.DeviceObject, err = NewDeviceObject(nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating device object")
+	}
+
+	// start with an empty dictionary of device object properties
+	initArgs := make(KWArgs)
+	iniArg, _ := KWO[KWArgs](kwArgs, "ini", nil)
+	if _debug != nil {
+		_debug("    - ini_arg: %r", iniArg)
+	}
+
+	if _, ok := RegisteredObjectTypes[fmt.Sprintf("%T", l)]; !ok {
+		if _debug != nil {
+			_debug("    - unregistered", kwArgs)
+		}
+		vendorIdentifier, ok := KWO(kwArgs, KWVendorIdentifier, -1)
+		if _debug != nil {
+			_debug("    - keyword vendor identifier: %r", vendorIdentifier)
+		}
+
+		if !ok {
+			vendorIdentifier, ok = KWO[int](iniArg, "vendorIdentifier", -1)
+			_debug("    - INI vendor identifier: %r", vendorIdentifier)
+		}
+
+		if !ok {
+			return nil, errors.New("vendorIdentifier required to auto-register the LocalDeviceObject class")
+		}
+
+		if _, err := RegisterObjectType(NKW(KWCls, l, KWVendorIdentifier, vendorIdentifier)); err != nil {
+			return nil, errors.Wrap(err, "error register object type")
+		}
+	}
+
+	// look for properties, fill in values from the keyword arguments or
+	// the INI parameter (converted to a proper value) if it was provided
+	for propid, prop := range l.DeviceObject.Get_Properties() {
+		// special processing for object identifier
+		if propid == "objectIdentifier" {
+			continue
+		}
+
+		// use keyword argument if it was provided
+		var propValue any
+		var propDataType any
+		if v, ok := kwArgs[KnownKey(propid)]; ok {
+			propValue = v
+		} else {
+			propValue, ok = KWO[any](iniArg, KnownKey(strings.ToLower(propid)), nil)
+			if !ok {
+				continue
+			}
+
+			propDataType = prop.GetDataType()
+			// TODO: convert
+			_ = propDataType
+			// at long last
+			initArgs[KnownKey(propid)] = propValue
+		}
+	}
+	// check for object identifier as a keyword parameter or in the INI file,
+	// and it might be just an int, so make it a tuple if necessary
+	var objectIdentifier any
+	if v, ok := KWO[any](kwArgs, "objectIdentifier", nil); ok {
+		objectIdentifier = v
+		if vint, ok := v.(int); ok {
+			objectIdentifier = ObjectIdentifierTuple{Left: "device", Right: vint}
+		}
+	} else if v, ok = KWO[any](iniArg, "objectidentifier", nil); ok {
+		objectIdentifier = ObjectIdentifierTuple{Left: "device", Right: v.(int)}
+	} else {
+		return nil, errors.New("objectIdentifier required")
+	}
+	initArgs["objectIdentifier"] = objectIdentifier
+	if _debug != nil {
+		_debug("    - object identifier: %r", objectIdentifier)
+	}
+
+	// fill in default property values not in init_args
+	for attr, value := range l.defaultProperties {
+		if _, ok := initArgs[KnownKey(attr)]; !ok {
+			initArgs[KnownKey(attr)] = value
+		}
+	}
+
+	// check for properties this class implements
+	if _, ok := initArgs[KnownKey("localDate")]; ok {
+		return nil, errors.New("localDate is provided by LocalDeviceObject and cannot be overridden")
+	}
+	if _, ok := initArgs[KnownKey("localTime")]; ok {
+		return nil, errors.New("localTime is provided by LocalDeviceObject and cannot be overridden")
+	}
+	if _, ok := initArgs[KnownKey("protocolServicesSupported")]; ok {
+		return nil, errors.New("protocolServicesSupported is provided by LocalDeviceObject and cannot be overridden")
+	}
+
+	// the object list is provided
+	if _, ok := initArgs[KnownKey("objectList")]; ok {
+		return nil, errors.New("objectList is provided by LocalDeviceObject and cannot be overridden")
+	}
+	initArgs["objectList"] = ArrayOfEs[ObjectIdentifier](NewObjectIdentifier, 0, nil)
+
+	// check for a minimum value
+	if v, ok := KWO[int](kwArgs, "maxApduLengthAccepted", 0); ok && v < 50 {
+		return nil, errors.New("invalid max APDU length accepted")
+	}
+
+	// dump the updated attributes
+	if _debug != nil {
+		_debug("    - init_args: %r", initArgs)
+	}
+
+	// proceed as usual
+	// TODO: how?
+
+	// pass along special property values that are not BACnet properties
+	for key, value := range kwArgs {
+		if strings.HasPrefix(string(key), "_") {
+			l.DeviceObject.SetAttr(string(key), value)
+		}
+	}
 	return l, nil
 }
+
+type _LocalDeviceObject struct {
+	*CurrentPropertyListMixIn
+	*DeviceObject
+	*DefaultRFormatter
+
+	properties        []Property
+	defaultProperties map[string]any
+
+	App any `ignore:"true"` // TODO: is *Application but creates a circular dependency. figure out what is a smart way
+}
+
+var _ Object = (*_LocalDeviceObject)(nil)
 
 func (l *_LocalDeviceObject) GetObjectIdentifier() string {
 	attr, ok := l.CurrentPropertyListMixIn.GetAttr("objectIdentifier")
@@ -171,4 +302,49 @@ func (l *_LocalDeviceObject) GetObjectList() []string {
 
 func (l *_LocalDeviceObject) SetObjectList(strings []string) {
 	l.CurrentPropertyListMixIn.SetAttr("objectList", strings)
+}
+
+func (l *_LocalDeviceObject) GetAttr(name string) (any, bool) {
+	// ambiguous selector avoidance
+	return l.DeviceObject.GetAttr(name)
+}
+
+func (l *_LocalDeviceObject) SetAttr(name string, value any) {
+	// ambiguous selector avoidance
+	l.DeviceObject.SetAttr(name, value)
+}
+
+func (l *_LocalDeviceObject) AddProperty(prop Property) {
+	// ambiguous selector avoidance
+	l.DeviceObject.AddProperty(prop)
+}
+
+func (l *_LocalDeviceObject) ReadProperty(args Args, kwArgs KWArgs) error {
+	// ambiguous selector avoidance
+	return l.DeviceObject.ReadProperty(args, kwArgs)
+}
+
+func (l *_LocalDeviceObject) WriteProperty(args Args, kwArgs KWArgs) error {
+	// ambiguous selector avoidance
+	return l.DeviceObject.WriteProperty(args, kwArgs)
+}
+
+func (l *_LocalDeviceObject) DeleteProperty(prop string) {
+	// ambiguous selector avoidance
+	l.DeviceObject.DeleteProperty(prop)
+}
+
+func (l *_LocalDeviceObject) Get_Properties() map[string]Property {
+	// ambiguous selector avoidance
+	return l.DeviceObject.Get_Properties()
+}
+
+func (l *_LocalDeviceObject) Set_Properties(_properties map[string]Property) {
+	// ambiguous selector avoidance
+	l.DeviceObject.Set_Properties(_properties)
+}
+
+func (l *_LocalDeviceObject) PrintDebugContents(indent int, file io.Writer, _ids []uintptr) {
+	// ambiguous selector avoidance
+	l.DeviceObject.PrintDebugContents(indent, file, _ids)
 }

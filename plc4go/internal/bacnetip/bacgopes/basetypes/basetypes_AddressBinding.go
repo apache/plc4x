@@ -20,6 +20,8 @@
 package basetypes
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -30,13 +32,17 @@ type AddressBinding struct {
 	sequenceElements []Element
 }
 
-func NewAddressBinding(arg Arg) (*AddressBinding, error) {
+func NewAddressBinding(_ Arg) (*AddressBinding, error) {
 	s := &AddressBinding{
 		sequenceElements: []Element{
 			NewElement("deviceObjectIdentifier", Vs2E(NewObjectIdentifier)),
 			NewElement("deviceAddress", V2E(NewDeviceAddress)),
 		},
 	}
-	panic("implementchoice")
+	var err error
+	s.Sequence, err = NewSequence(Nothing())
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating sequence")
+	}
 	return s, nil
 }

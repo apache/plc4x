@@ -25,6 +25,7 @@ import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 type Property interface {
 	ReadProperty(args Args, kwArgs KWArgs) error
 	WriteProperty(args Args, kwArgs KWArgs) error
+	GetDataType() any
 	IsOptional() bool
 	Get_Default() any
 	IsMutable() bool
@@ -34,21 +35,30 @@ type PropertyKlass interface {
 	Encode(Arg) error
 }
 
-func NewProperty(name string, klass func(Args, KWArgs) (PropertyKlass, error), options ...Option) Property {
+func NewProperty(identifier string, datatype func(Args, KWArgs) (PropertyKlass, error), options ...Option) Property {
 	i := &_Property{
-		name:  name,
-		klass: klass,
+		// keep the arguments
+		identifier: identifier,
+		dataType:   datatype,
 	}
 	ApplyAppliers(options, i)
+
+	// check the datatype
+	dataType, _ := i.dataType(Nothing())
+	switch dataType.(type) {
+	default:
+		// TODO: check for Atomic, Sequence, Choice, Array, List, AnyAtomic
+	}
+
 	return i
 }
 
 type _Property struct {
-	name     string
-	klass    func(Args, KWArgs) (PropertyKlass, error)
-	optional bool
-	_default any
-	mutable  bool
+	identifier string
+	dataType   func(Args, KWArgs) (PropertyKlass, error)
+	optional   bool
+	_default   any
+	mutable    bool
 }
 
 var _ Property = (*_Property)(nil)
@@ -63,6 +73,10 @@ func WithPropertyDefault(_default any) GenericApplier[*_Property] {
 
 func WithPropertyMutable(mutable bool) GenericApplier[*_Property] {
 	return WrapGenericApplier(func(e *_Property) { e.mutable = mutable })
+}
+
+func (p *_Property) GetDataType() any {
+	return p.dataType
 }
 
 func (p *_Property) IsOptional() bool {

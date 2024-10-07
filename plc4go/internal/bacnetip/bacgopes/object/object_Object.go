@@ -39,6 +39,8 @@ type Object interface {
 	DeleteProperty(prop string)
 	ReadProperty(Args, KWArgs) error
 	WriteProperty(Args, KWArgs) error
+	Set_Properties(_properties map[string]Property)
+	Get_Properties() map[string]Property
 }
 
 type _Object struct {
@@ -64,7 +66,7 @@ func NewObject(kwArgs KWArgs, options ...Option) (Object, error) {
 			NewReadableProperty("propertyList", ArrayOfP(NewPropertyIdentifier, 0, 0)),
 			NewOptionalProperty("auditLevel", V2P(NewAuditLevel)),
 			NewOptionalProperty("auditableOperations", V2P(NewAuditOperationFlags)),
-			NewOptionalProperty("tags", ArrayOfsP(NewNameValue, 0, 0)),
+			NewOptionalProperty("tags", ArrayOfPs(NewNameValue, 0, 0)),
 			NewOptionalProperty("profileLocation", V2P(NewCharacterString)),
 			NewOptionalProperty("profileName", V2P(NewCharacterString)),
 		},
@@ -134,6 +136,14 @@ func WithObject_Properties(_properties map[string]Property) GenericApplier[*_Obj
 	return WrapGenericApplier(func(o *_Object) {
 		o._properties = _properties
 	})
+}
+
+func (o *_Object) Set_Properties(_properties map[string]Property) {
+	o._properties = _properties
+}
+
+func (o *_Object) Get_Properties() map[string]Property {
+	return o._properties
 }
 
 func (o *_Object) PrintDebugContents(indent int, file io.Writer, _ids []uintptr) {
