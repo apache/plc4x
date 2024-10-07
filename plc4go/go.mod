@@ -38,7 +38,7 @@ require (
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/viney-shih/go-lock v1.1.2
 	golang.org/x/net v0.29.0
-	golang.org/x/text v0.18.0
+	golang.org/x/text v0.19.0
 	golang.org/x/tools v0.25.0
 )
 
