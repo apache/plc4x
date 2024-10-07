@@ -43,4 +43,6 @@ public interface PlcSubscriptionTagRequest extends PlcRequest {
 
     Consumer<PlcSubscriptionEvent> getConsumer();
 
+    Consumer<PlcSubscriptionEvent> getTagConsumer(String name);
+
 }

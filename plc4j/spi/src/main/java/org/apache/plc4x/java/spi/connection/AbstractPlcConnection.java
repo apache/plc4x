@@ -380,12 +380,17 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
 
     protected PlcSubscriptionRequest getFilteredSubscriptionRequest(DefaultPlcSubscriptionRequest subscriptionRequest) {
         LinkedHashMap<String, PlcTagItem<PlcSubscriptionTag>> filteredTags = new LinkedHashMap<>();
+        LinkedHashMap<String, Consumer<PlcSubscriptionEvent>> filteredConsumers = new LinkedHashMap<>();
         for (String tagName : subscriptionRequest.getTagNames()) {
             if(subscriptionRequest.getTagResponseCode(tagName) == PlcResponseCode.OK) {
                 filteredTags.put(tagName, new DefaultPlcTagItem<>(subscriptionRequest.getTag(tagName)));
+                if(subscriptionRequest.getTagConsumer(tagName) != null) {
+                    filteredConsumers.put(tagName, subscriptionRequest.getTagConsumer(tagName));
+                }
             }
         }
-        return new DefaultPlcSubscriptionRequest(subscriptionRequest.getSubscriber(), filteredTags, subscriptionRequest.getConsumer());
+        return new DefaultPlcSubscriptionRequest(subscriptionRequest.getSubscriber(),
+            filteredTags, subscriptionRequest.getConsumer(), filteredConsumers);
     }
 
 }

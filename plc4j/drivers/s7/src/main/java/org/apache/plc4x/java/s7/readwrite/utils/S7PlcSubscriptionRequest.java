@@ -59,13 +59,16 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
     private final LinkedHashMap<String, PlcTagItem<PlcSubscriptionTag>> tags;
 
     private final Consumer<PlcSubscriptionEvent> consumer;
+    private final Map<String, Consumer<PlcSubscriptionEvent>> tagConsumers;
 
     public S7PlcSubscriptionRequest(PlcSubscriber subscriber,
                                     LinkedHashMap<String, PlcTagItem<PlcSubscriptionTag>> tags,
-                                    Consumer<PlcSubscriptionEvent> consumer) {
+                                    Consumer<PlcSubscriptionEvent> consumer,
+                                    Map<String, Consumer<PlcSubscriptionEvent>> tagConsumers) {
         this.subscriber = subscriber;
         this.tags = tags;
         this.consumer = consumer;
+        this.tagConsumers = tagConsumers;
     }
 
     @Override
@@ -96,6 +99,15 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
     @Override
     public Consumer<PlcSubscriptionEvent> getConsumer() {
         return consumer;
+    }
+
+    @Override
+    public Consumer<PlcSubscriptionEvent> getTagConsumer(String tagName) {
+        return tagConsumers.get(tagName);
+    }
+
+    public Map<String, Consumer<PlcSubscriptionEvent>> getTagConsumers() {
+        return tagConsumers;
     }
 
     @Override
@@ -142,6 +154,11 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
             return this;
         }
 
+        @Override
+        public PlcSubscriptionRequest.Builder addCyclicTagAddress(String name, String tagAddress, Duration pollingInterval) {
+            return addCyclicTagAddress(name, tagAddress, pollingInterval, null);
+        }
+
         /*
         * This method receives a String that describes an S7Tag and the 
         * interval required for its sampling.
@@ -164,7 +181,7 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
         * 
         */
         @Override
-        public PlcSubscriptionRequest.Builder addCyclicTagAddress(String name, String tagAddress, Duration pollingInterval) {
+        public PlcSubscriptionRequest.Builder addCyclicTagAddress(String name, String tagAddress, Duration pollingInterval, Consumer<PlcSubscriptionEvent> consumer) {
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException(CONST_DUPLICATE_TAG + " '" + name + "'");
             }
@@ -172,8 +189,13 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
             short multiplier = getMultiplier(tb, pollingInterval);
             S7Tag[] s7tags = new S7Tag[]{S7Tag.of(tagAddress)};
             S7SubscriptionTag tag = new S7SubscriptionTag(S7SubscriptionType.CYCLIC_SUBSCRIPTION, s7tags, tb, multiplier);
-            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CYCLIC, pollingInterval));
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CYCLIC, pollingInterval, consumer));
             return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval) {
+            return addCyclicTag(name, tag, pollingInterval, null);
         }
 
         /*
@@ -187,44 +209,59 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
         * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor
         */
         @Override
-        public PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval) {
+        public PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval, Consumer<PlcSubscriptionEvent> consumer) {
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException(CONST_DUPLICATE_TAG + " '" + name + "'");
             }
             if (!(tag instanceof S7SubscriptionTag)){
                 throw new PlcRuntimeException(CONST_INVALID_TYPE);
             }                
-            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CYCLIC, pollingInterval));
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CYCLIC, pollingInterval, consumer));
             return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
+            return addChangeOfStateTagAddress(tagAddress, name);
         }
 
         /*
         *
         */
         @Override
-        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
+        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer) {
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException(CONST_DUPLICATE_TAG + " '" + name + "'");
             }
             S7Tag[] s7tags = new S7Tag[]{S7Tag.of(tagAddress)};   
             S7SubscriptionTag tag = new S7SubscriptionTag(S7SubscriptionType.CYCLIC_SUBSCRIPTION, s7tags, TimeBase.B01SEC, (short) 1);            
-            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE));
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE, consumer));
             return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag) {
+            return addChangeOfStateTag(name, tag, null);
         }
 
         /*
         *
         */        
         @Override
-        public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag) {
+        public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer) {
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException(CONST_DUPLICATE_TAG + " '" + name + "'");
             }
             if (!(tag instanceof S7SubscriptionTag)){
                 throw new PlcRuntimeException(CONST_INVALID_TYPE);
             }              
-            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE));
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE, consumer));
             return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addEventTagAddress(String name, String tagAddress) {
+            return addEventTagAddress(name, tagAddress, null);
         }
 
         /*
@@ -256,7 +293,7 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
         * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor
         */
         @Override
-        public PlcSubscriptionRequest.Builder addEventTagAddress(String name, String tagAddress) {
+        public PlcSubscriptionRequest.Builder addEventTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer) {
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException(CONST_DUPLICATE_TAG + " '" + name + "'");
             }
@@ -264,8 +301,13 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
             if (!(tag instanceof S7SubscriptionTag)){
                 throw new PlcRuntimeException(CONST_INVALID_TYPE);
             }              
-            tags.put(name, new BuilderItem(() -> tagHandler.parseTag(tagAddress), PlcSubscriptionType.EVENT));
+            tags.put(name, new BuilderItem(() -> tagHandler.parseTag(tagAddress), PlcSubscriptionType.EVENT, consumer));
             return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag) {
+            return addEventTag(name, tag, null);
         }
 
         /*
@@ -278,14 +320,14 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
         * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor        
         */
         @Override
-        public PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag) {
+        public PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer) {
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException(CONST_DUPLICATE_TAG + " '" + name + "'");
             }
             if (!(tag instanceof S7SubscriptionTag)){
                 throw new PlcRuntimeException(CONST_INVALID_TYPE);
             }            
-            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.EVENT));
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.EVENT, consumer));
             return this;
         }
 
@@ -293,27 +335,33 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
         public PlcSubscriptionRequest build() {
             LinkedHashMap<String, PlcTagItem<PlcSubscriptionTag>> parsedTags = new LinkedHashMap<>();
 
+            Map<String, Consumer<PlcSubscriptionEvent>> tagConsumers = new LinkedHashMap<>();
             tags.forEach((name, builderItem) -> {
                 PlcTag parsedTag = builderItem.tag.get();
                 parsedTags.put(name, new DefaultPlcTagItem<>(new DefaultPlcSubscriptionTag(builderItem.plcSubscriptionType, parsedTag, builderItem.duration)));
+                if(builderItem.consumer != null) {
+                    tagConsumers.put(name, builderItem.consumer);
+                }
             });
 
-            return new S7PlcSubscriptionRequest(subscriber, parsedTags, consumer);
+            return new S7PlcSubscriptionRequest(subscriber, parsedTags, consumer, tagConsumers);
         }
 
         private static class BuilderItem {
             private final Supplier<PlcTag> tag;
             private final PlcSubscriptionType plcSubscriptionType;
             private final Duration duration;
+            private final Consumer<PlcSubscriptionEvent> consumer;
 
-            private BuilderItem(Supplier<PlcTag> tag, PlcSubscriptionType plcSubscriptionType) {
-                this(tag, plcSubscriptionType, null);
+            private BuilderItem(Supplier<PlcTag> tag, PlcSubscriptionType plcSubscriptionType, Consumer<PlcSubscriptionEvent> consumer) {
+                this(tag, plcSubscriptionType, null, consumer);
             }
 
-            private BuilderItem(Supplier<PlcTag> tag, PlcSubscriptionType plcSubscriptionType, Duration duration) {
+            private BuilderItem(Supplier<PlcTag> tag, PlcSubscriptionType plcSubscriptionType, Duration duration, Consumer<PlcSubscriptionEvent> consumer) {
                 this.tag = tag;
                 this.plcSubscriptionType = plcSubscriptionType;
                 this.duration = duration;
+                this.consumer = consumer;
             }
 
         }
