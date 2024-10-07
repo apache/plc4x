@@ -20,6 +20,8 @@
 package basetypes
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -38,6 +40,10 @@ func NewTimeStamp(arg Arg) (*TimeStamp, error) {
 			NewElement("dateTime", V2E(NewDateTime), WithElementContext(2)),
 		},
 	}
-	panic("implementchoice")
+	var err error
+	s.Choice, err = NewChoice(Nothing())
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating choice")
+	}
 	return s, nil
 }

@@ -20,6 +20,8 @@
 package basetypes
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -30,7 +32,7 @@ type COVMultipleSubscriptionListOfCOVReference struct {
 	sequenceElements []Element
 }
 
-func NewCOVMultipleSubscriptionListOfCOVReference(arg Arg) (*COVMultipleSubscriptionListOfCOVReference, error) {
+func NewCOVMultipleSubscriptionListOfCOVReference(_ Arg) (*COVMultipleSubscriptionListOfCOVReference, error) {
 	s := &COVMultipleSubscriptionListOfCOVReference{
 		sequenceElements: []Element{
 			NewElement("monitoredProperty", V2E(NewPropertyReference), WithElementContext(0)),
@@ -38,6 +40,10 @@ func NewCOVMultipleSubscriptionListOfCOVReference(arg Arg) (*COVMultipleSubscrip
 			NewElement("timestamped", V2E(NewBoolean), WithElementContext(2)),
 		},
 	}
-	panic("implementchoice")
+	var err error
+	s.Sequence, err = NewSequence(Nothing())
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating sequence")
+	}
 	return s, nil
 }

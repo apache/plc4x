@@ -20,6 +20,8 @@
 package basetypes
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -30,7 +32,7 @@ type VTSession struct {
 	sequenceElements []Element
 }
 
-func NewVTSession(arg Arg) (*VTSession, error) {
+func NewVTSession(_ Arg) (*VTSession, error) {
 	s := &VTSession{
 		sequenceElements: []Element{
 			NewElement("localVtSessionID", V2E(NewUnsigned)),
@@ -38,6 +40,10 @@ func NewVTSession(arg Arg) (*VTSession, error) {
 			NewElement("remoteVtAddress", V2E(NewDeviceAddress)),
 		},
 	}
-	panic("implementchoice")
+	var err error
+	s.Sequence, err = NewSequence(Nothing())
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating sequence")
+	}
 	return s, nil
 }

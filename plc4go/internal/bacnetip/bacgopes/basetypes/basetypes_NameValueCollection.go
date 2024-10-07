@@ -32,7 +32,7 @@ type NameValueCollection struct {
 func NewNameValueCollection(arg Arg) (*NameValueCollection, error) {
 	s := &NameValueCollection{
 		sequenceElements: []Element{
-			NewElement("members", SequenceOfsE(NewNameValue), WithElementContext(0)),
+			NewElement("members", SequenceOfEs(NewNameValue), WithElementContext(0)),
 		},
 	}
 	panic("implementchoice")

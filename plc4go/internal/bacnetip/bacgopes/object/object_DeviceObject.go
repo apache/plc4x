@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -47,8 +49,8 @@ func NewDeviceObject(arg Arg) (*DeviceObject, error) {
 			NewReadableProperty("protocolRevision", V2P(NewUnsigned)),
 			NewReadableProperty("protocolServicesSupported", V2P(NewServicesSupported)),
 			NewReadableProperty("protocolObjectTypesSupported", V2P(NewObjectTypesSupported)),
-			NewReadableProperty("objectList", ArrayOfsP(NewObjectIdentifier, 0, 0)),
-			NewOptionalProperty("structuredObjectList", ArrayOfsP(NewObjectIdentifier, 0, 0)),
+			NewReadableProperty("objectList", ArrayOfPs(NewObjectIdentifier, 0, 0)),
+			NewOptionalProperty("structuredObjectList", ArrayOfPs(NewObjectIdentifier, 0, 0)),
 			NewReadableProperty("maxApduLengthAccepted", V2P(NewUnsigned)),
 			NewReadableProperty("segmentationSupported", V2P(NewSegmentation)),
 			NewOptionalProperty("vtClassesSupported", ListOfP(NewVTClass)),
@@ -65,7 +67,7 @@ func NewDeviceObject(arg Arg) (*DeviceObject, error) {
 			NewOptionalProperty("maxInfoFrames", V2P(NewUnsigned)),
 			NewReadableProperty("deviceAddressBinding", ListOfP(NewAddressBinding)),
 			NewReadableProperty("databaseRevision", V2P(NewUnsigned)),
-			NewOptionalProperty("configurationFiles", ArrayOfsP(NewObjectIdentifier, 0, 0)),
+			NewOptionalProperty("configurationFiles", ArrayOfPs(NewObjectIdentifier, 0, 0)),
 			NewOptionalProperty("lastRestoreTime", V2P(NewTimeStamp)),
 			NewOptionalProperty("backupFailureTimeout", V2P(NewUnsigned)),
 			NewOptionalProperty("backupPreparationTime", V2P(NewUnsigned)),
@@ -104,6 +106,13 @@ func NewDeviceObject(arg Arg) (*DeviceObject, error) {
 			NewOptionalProperty("deployedProfileLocation", V2P(NewCharacterString)),
 		},
 	}
-	// TODO: @register_object_type
+	var err error
+	o.Object, err = NewObject(NoKWArgs())
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, o)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
 	return o, nil
 }

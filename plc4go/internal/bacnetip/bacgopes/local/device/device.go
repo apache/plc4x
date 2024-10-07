@@ -17,45 +17,10 @@
  * under the License.
  */
 
-package basetypes
+package device
 
 import (
-	"github.com/pkg/errors"
-
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 )
 
-type StatusFlags struct {
-	*BitString
-	bitLen      int
-	bitNames    map[string]int
-	vendorRange vendorRange
-}
-
-func NewStatusFlags(arg Arg) (*StatusFlags, error) {
-	s := &StatusFlags{
-		bitNames: map[string]int{
-			"inAlarm":      0,
-			"fault":        1,
-			"overridden":   2,
-			"outOfService": 3,
-		},
-		bitLen: 4,
-	}
-
-	var err error
-	s.BitString, err = NewBitStringWithExtension(s, NA(arg))
-	if err != nil {
-		return nil, errors.Wrap(err, "NewBitStringWithExtension failed")
-	}
-	return s, nil
-}
-
-func (s StatusFlags) GetBitNames() map[string]int {
-	return s.bitNames
-}
-
-func (s StatusFlags) GetBitLen() int {
-	return s.bitLen
-}
+var _debug = CreateDebugPrinter()

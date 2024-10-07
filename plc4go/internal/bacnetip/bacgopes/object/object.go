@@ -32,22 +32,49 @@ import (
 
 var _debug = CreateDebugPrinter()
 
-var _arrayOfMap map[any]func(Args, KWArgs) (PropertyKlass, error)
-var _arrayOfClasses map[any]struct{}
-var _sequenceOfClasses map[any]struct{}
-var _listOfClasses map[any]struct{}
+var _arrayOfMap = make(map[any]func(Args, KWArgs) (PropertyKlass, error))
+var _listOfMap = make(map[any]func(Args, KWArgs) (PropertyKlass, error))
+var _arrayOfClasses = make(map[any]struct{})
+var _sequenceOfClasses = make(map[any]struct{})
+var _listOfClasses = make(map[any]struct{})
 
-func init() {
-	_arrayOfMap = make(map[any]func(Args, KWArgs) (PropertyKlass, error))
-	_arrayOfClasses = make(map[any]struct{})
-	_sequenceOfClasses = make(map[any]struct{})
-	_listOfClasses = make(map[any]struct{})
-}
+var RegisteredObjectTypes = make(map[any]struct{})
 
-var registeredObjectTypes map[any]struct{}
+func RegisterObjectType(kwargs KWArgs) (any, error) {
+	cls, aCls := KWO[any](kwargs, KWCls, nil)
+	vendorId, _ := KWO[int](kwargs, KWVendorIdentifier, 0)
 
-func init() {
-	registeredObjectTypes = make(map[any]struct{})
+	if _debug != nil {
+		_debug("register_object_type %r vendor_id=%s", cls, vendorId)
+	}
+
+	if !aCls {
+		panic("implement me")
+	}
+
+	// make sure it's an Object derived class
+	if _, ok := cls.(Object); !ok {
+		return nil, errors.New("Object derived struct required")
+	}
+
+	// build a property dictionary by going through the class and all its parents
+	_properties := map[string]Property{}
+	// TODO: how?
+
+	// if the object type hasn't been provided, make an immutable one
+	if _, ok := _properties["objectType"]; ok {
+		_properties["objectType"] = NewReadableProperty("objectType", func(args Args, _ KWArgs) (PropertyKlass, error) { return NewObjectType(args) }, WithPropertyMutable(false))
+	}
+
+	// store it in the struct
+	cls.(interface {
+		Set_Properties(_properties map[string]Property)
+	}).Set_Properties(_properties)
+
+	RegisteredObjectTypes[cls] = struct{}{} // TODO: key needs to be objectType + vendor id
+
+	// return the struct as decorator
+	return cls, nil
 }
 
 type PropertyError struct {
@@ -95,23 +122,25 @@ type _ArrayOf[T any] struct {
 	prototype   any
 }
 
-func (a _ArrayOf[T]) Encode(arg Arg) (O error) {
+var _ PropertyKlass = (*_ArrayOf[any])(nil)
+
+func (a *_ArrayOf[T]) Encode(arg Arg) (O error) {
 	panic("implement me")
 }
 
-func ArrayOfP[T any](b func(arg Arg) (*T, error), fixedLength int, prototype any) func(Args, KWArgs) (PropertyKlass, error) {
-	return ArrayOfsP(func(args Args) (*T, error) {
+func ArrayOfP[T any](klass func(arg Arg) (*T, error), fixedLength int, prototype any) func(Args, KWArgs) (PropertyKlass, error) {
+	return ArrayOfPs(func(args Args) (*T, error) {
 		if len(args) == 0 {
-			return b(NoArgs)
+			return klass(NoArgs)
 		}
 		if len(args) > 1 {
 			panic(fmt.Sprintf("oh no %d", len(args)))
 		}
-		return b(args[0])
+		return klass(args[0])
 	}, fixedLength, prototype)
 }
 
-func ArrayOfsP[T any](klass func(args Args) (*T, error), fixedLength int, prototype any) func(Args, KWArgs) (PropertyKlass, error) {
+func ArrayOfPs[T any](klass func(args Args) (*T, error), fixedLength int, prototype any) func(Args, KWArgs) (PropertyKlass, error) {
 	elementKlass, err := klass(NoArgs)
 	if err != nil {
 		return func(_ Args, _ KWArgs) (PropertyKlass, error) {
@@ -178,7 +207,78 @@ func ArrayOfsP[T any](klass func(args Args) (*T, error), fixedLength int, protot
 	}
 }
 
-// TODO: finish // convert to kwArgs and check wtf we are doing here...
+// TODO: big WIP
+type _ListOf[T any] struct {
+	name    string
+	subType func(Args) (*T, error)
+}
+
+func (a _ListOf[T]) Encode(arg Arg) (O error) {
+	panic("implement me")
+}
+
 func ListOfP[T any](b func(arg Arg) (*T, error)) func(Args, KWArgs) (PropertyKlass, error) {
-	panic("finish me")
+	return ListOfPs(func(args Args) (*T, error) {
+		if len(args) == 0 {
+			return b(NoArgs)
+		}
+		if len(args) > 1 {
+			panic(fmt.Sprintf("oh no %d", len(args)))
+		}
+		return b(args[0])
+	})
+}
+
+func ListOfPs[T any](klass func(args Args) (*T, error)) func(Args, KWArgs) (PropertyKlass, error) {
+	elementKlass, err := klass(NoArgs)
+	if err != nil {
+		return func(_ Args, _ KWArgs) (PropertyKlass, error) {
+			return nil, errors.Wrap(err, "can't get zero object")
+		}
+	}
+	switch any(elementKlass).(type) {
+	case IsAtomic:
+	// TODO: add prototype check...
+	default:
+		// TODO: add check
+	}
+
+	// if this has already been built, return the cached one
+	if v, ok := _listOfMap[fmt.Sprintf("%T", elementKlass)]; ok {
+		return v
+	}
+
+	// no ArrayOf(ArrayOf(...)) allowed
+	if _, ok := _listOfClasses[fmt.Sprintf("%T", elementKlass)]; ok {
+		return func(_ Args, _ KWArgs) (PropertyKlass, error) {
+			return nil, errors.New("nested lists disallowed")
+		}
+	}
+	// no ArrayOf(SequenceOf(...)) allowed
+	if _, ok := _arrayOfClasses[fmt.Sprintf("%T", elementKlass)]; ok {
+		return func(_ Args, _ KWArgs) (PropertyKlass, error) {
+			return nil, errors.New("list of arrays disallowed")
+		}
+	}
+
+	// define a generic class for lists
+	_listOf := struct {
+		*_ListOf[T]
+	}{&_ListOf[T]{}}
+
+	// constrain it to a list of a specific type of item
+	_listOf.subType = klass
+
+	// update the name
+	_listOf.name = "ListOf" + fmt.Sprintf("%T", elementKlass)
+
+	// cache this type
+	_listOfMap[fmt.Sprintf("%T", elementKlass)] = func(_ Args, _ KWArgs) (PropertyKlass, error) {
+		return _listOf, nil
+	}
+	_listOfClasses[fmt.Sprintf("%T", _listOf)] = struct{}{}
+
+	return func(args Args, kwArgs KWArgs) (PropertyKlass, error) {
+		return _listOf, nil
+	}
 }
