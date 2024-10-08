@@ -53,16 +53,19 @@ func RegisterObjectType(kwargs KWArgs) (any, error) {
 	}
 
 	// make sure it's an Object derived class
-	if _, ok := cls.(Object); !ok {
+	objClass, ok := cls.(Object)
+	if !ok {
 		return nil, errors.New("Object derived struct required")
 	}
 
 	// build a property dictionary by going through the class and all its parents
 	_properties := map[string]Property{}
-	// TODO: how?
+	for _, property := range objClass.GetProperties() {
+		_properties[property.GetIdentifier()] = property
+	}
 
 	// if the object type hasn't been provided, make an immutable one
-	if _, ok := _properties["objectType"]; ok {
+	if _, ok := _properties["objectType"]; !ok {
 		_properties["objectType"] = NewReadableProperty("objectType", func(args Args, _ KWArgs) (PropertyKlass, error) { return NewObjectType(args) }, WithPropertyMutable(false))
 	}
 

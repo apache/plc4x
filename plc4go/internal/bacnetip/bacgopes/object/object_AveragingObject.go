@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,28 +29,31 @@ import (
 
 type AveragingObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewAveragingObject(arg Arg) (*AveragingObject, error) {
-	o := &AveragingObject{
-		objectType: "averaging",
-		properties: []Property{
-			NewReadableProperty("minimumValue", V2P(NewReal)),
-			NewOptionalProperty("minimumValueTimestamp", V2P(NewDateTime)),
-			NewReadableProperty("averageValue", V2P(NewReal)),
-			NewOptionalProperty("varianceValue", V2P(NewReal)),
-			NewReadableProperty("maximumValue", V2P(NewReal)),
-			NewOptionalProperty("maximumValueTimestamp", V2P(NewDateTime)),
-			NewWritableProperty("attemptedSamples", V2P(NewUnsigned)),
-			NewReadableProperty("validSamples", V2P(NewUnsigned)),
-			NewReadableProperty("objectPropertyReference", V2P(NewDeviceObjectPropertyReference)),
-			NewWritableProperty("windowInterval", V2P(NewUnsigned)),
-			NewWritableProperty("windowSamples", V2P(NewUnsigned)),
-		},
+func NewAveragingObject(options ...Option) (*AveragingObject, error) {
+	a := new(AveragingObject)
+	objectType := "averaging"
+	properties := []Property{
+		NewReadableProperty("minimumValue", V2P(NewReal)),
+		NewOptionalProperty("minimumValueTimestamp", V2P(NewDateTime)),
+		NewReadableProperty("averageValue", V2P(NewReal)),
+		NewOptionalProperty("varianceValue", V2P(NewReal)),
+		NewReadableProperty("maximumValue", V2P(NewReal)),
+		NewOptionalProperty("maximumValueTimestamp", V2P(NewDateTime)),
+		NewWritableProperty("attemptedSamples", V2P(NewUnsigned)),
+		NewReadableProperty("validSamples", V2P(NewUnsigned)),
+		NewReadableProperty("objectPropertyReference", V2P(NewDeviceObjectPropertyReference)),
+		NewWritableProperty("windowInterval", V2P(NewUnsigned)),
+		NewWritableProperty("windowSamples", V2P(NewUnsigned)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	a.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, a)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return a, nil
 }

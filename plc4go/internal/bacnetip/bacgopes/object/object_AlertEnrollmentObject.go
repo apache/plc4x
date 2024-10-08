@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,29 +29,32 @@ import (
 
 type AlertEnrollmentObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewAlertEnrollmentObject(arg Arg) (*AlertEnrollmentObject, error) {
-	o := &AlertEnrollmentObject{
-		objectType: "alertEnrollment",
-		properties: []Property{
-			NewReadableProperty("presentValue", Vs2P(NewObjectIdentifier)),
-			NewReadableProperty("eventState", V2P(NewEventState)),
-			NewReadableProperty("eventDetectionEnable", V2P(NewBoolean)),
-			NewReadableProperty("notificationClass", V2P(NewUnsigned)),
-			NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("notifyType", V2P(NewNotifyType)),
-			NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
-			NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventAlgorithmInhibitRef", V2P(NewObjectPropertyReference)),
-			NewOptionalProperty("eventAlgorithmInhibit", V2P(NewBoolean)),
-		},
+func NewAlertEnrollmentObject(options ...Option) (*AlertEnrollmentObject, error) {
+	a := new(AlertEnrollmentObject)
+	objectType := "alertEnrollment"
+	properties := []Property{
+		NewReadableProperty("presentValue", Vs2P(NewObjectIdentifier)),
+		NewReadableProperty("eventState", V2P(NewEventState)),
+		NewReadableProperty("eventDetectionEnable", V2P(NewBoolean)),
+		NewReadableProperty("notificationClass", V2P(NewUnsigned)),
+		NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("notifyType", V2P(NewNotifyType)),
+		NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
+		NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventAlgorithmInhibitRef", V2P(NewObjectPropertyReference)),
+		NewOptionalProperty("eventAlgorithmInhibit", V2P(NewBoolean)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	a.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, a)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return a, nil
 }

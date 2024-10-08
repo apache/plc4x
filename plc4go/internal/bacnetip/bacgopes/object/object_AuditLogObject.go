@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,37 +29,40 @@ import (
 
 type AuditLogObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewAuditLogObject(arg Arg) (*AuditLogObject, error) {
-	o := &AuditLogObject{
-		objectType: "auditLog",
-		properties: []Property{
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewReadableProperty("eventState", V2P(NewEventState)),
-			NewOptionalProperty("reliability", V2P(NewReliability)),
-			NewWritableProperty("enable", V2P(NewBoolean)),
-			NewReadableProperty("bufferSize", V2P(NewUnsigned)), // Unsigned32
-			NewReadableProperty("logBuffer", ListOfP(NewAuditLogRecord)),
-			NewReadableProperty("recordCount", V2P(NewUnsigned)),      // Unsigned64
-			NewReadableProperty("totalRecordCount", V2P(NewUnsigned)), // Unsigned64
-			NewOptionalProperty("memberOf", V2P(NewDeviceObjectReference)),
-			NewOptionalProperty("deleteOnForward", V2P(NewBoolean)),
-			NewOptionalProperty("issueConfirmedNotifications", V2P(NewBoolean)),
-			NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
-			NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
-			NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("notifyType", V2P(NewNotifyType)),
-			NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
-			NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
-		},
+func NewAuditLogObject(options ...Option) (*AuditLogObject, error) {
+	a := new(AuditLogObject)
+	objectType := "auditLog"
+	properties := []Property{
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewReadableProperty("eventState", V2P(NewEventState)),
+		NewOptionalProperty("reliability", V2P(NewReliability)),
+		NewWritableProperty("enable", V2P(NewBoolean)),
+		NewReadableProperty("bufferSize", V2P(NewUnsigned)), // Unsigned32
+		NewReadableProperty("logBuffer", ListOfP(NewAuditLogRecord)),
+		NewReadableProperty("recordCount", V2P(NewUnsigned)),      // Unsigned64
+		NewReadableProperty("totalRecordCount", V2P(NewUnsigned)), // Unsigned64
+		NewOptionalProperty("memberOf", V2P(NewDeviceObjectReference)),
+		NewOptionalProperty("deleteOnForward", V2P(NewBoolean)),
+		NewOptionalProperty("issueConfirmedNotifications", V2P(NewBoolean)),
+		NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
+		NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
+		NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("notifyType", V2P(NewNotifyType)),
+		NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
+		NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	a.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, a)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return a, nil
 }

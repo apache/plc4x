@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,31 +29,34 @@ import (
 
 type OctetStringValueObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewOctetStringValueObject(arg Arg) (*OctetStringValueObject, error) {
-	o := &OctetStringValueObject{
-		objectType:           "octetstringValue",
-		_object_supports_cov: true,
-		properties: []Property{
-			NewReadableProperty("presentValue", V2P(NewOctetString)),
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewOptionalProperty("eventState", V2P(NewEventState)),
-			NewOptionalProperty("reliability", V2P(NewReliability)),
-			NewOptionalProperty("outOfService", V2P(NewBoolean)),
-			NewOptionalProperty("priorityArray", V2P(NewPriorityArray)),
-			NewOptionalProperty("relinquishDefault", V2P(NewOctetString)),
-			NewOptionalProperty("currentCommandPriority", V2P(NewOptionalUnsigned)),
-			NewOptionalProperty("valueSource", V2P(NewValueSource)),
-			NewOptionalProperty("valueSourceArray", ArrayOfP(NewValueSource, 16, 0)),
-			NewOptionalProperty("lastCommandTime", V2P(NewTimeStamp)),
-			NewOptionalProperty("commandTimeArray", ArrayOfP(NewTimeStamp, 16, 0)),
-			NewOptionalProperty("auditablePriorityFilter", V2P(NewOptionalPriorityFilter)),
-		},
+func NewOctetStringValueObject(options ...Option) (*OctetStringValueObject, error) {
+	o := new(OctetStringValueObject)
+	objectType := "octetstringValue"
+	_object_supports_cov := true
+	properties := []Property{
+		NewReadableProperty("presentValue", V2P(NewOctetString)),
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewOptionalProperty("eventState", V2P(NewEventState)),
+		NewOptionalProperty("reliability", V2P(NewReliability)),
+		NewOptionalProperty("outOfService", V2P(NewBoolean)),
+		NewOptionalProperty("priorityArray", V2P(NewPriorityArray)),
+		NewOptionalProperty("relinquishDefault", V2P(NewOctetString)),
+		NewOptionalProperty("currentCommandPriority", V2P(NewOptionalUnsigned)),
+		NewOptionalProperty("valueSource", V2P(NewValueSource)),
+		NewOptionalProperty("valueSourceArray", ArrayOfP(NewValueSource, 16, 0)),
+		NewOptionalProperty("lastCommandTime", V2P(NewTimeStamp)),
+		NewOptionalProperty("commandTimeArray", ArrayOfP(NewTimeStamp, 16, 0)),
+		NewOptionalProperty("auditablePriorityFilter", V2P(NewOptionalPriorityFilter)),
 	}
-	// TODO: @register_object_type
+	var err error
+	o.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties), WithObjectSupportsCov(_object_supports_cov))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, o)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
 	return o, nil
 }

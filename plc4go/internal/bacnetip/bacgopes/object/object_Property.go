@@ -19,16 +19,23 @@
 
 package object
 
-import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+import (
+	"fmt"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/errors"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+)
 
 // TODO: big WIP
 type Property interface {
-	ReadProperty(args Args, kwArgs KWArgs) error
-	WriteProperty(args Args, kwArgs KWArgs) error
+	GetIdentifier() string
 	GetDataType() any
 	IsOptional() bool
 	Get_Default() any
 	IsMutable() bool
+	ReadProperty(args Args, kwArgs KWArgs) error
+	WriteProperty(args Args, kwArgs KWArgs) error
 }
 
 type PropertyKlass interface {
@@ -75,6 +82,10 @@ func WithPropertyMutable(mutable bool) GenericApplier[*_Property] {
 	return WrapGenericApplier(func(e *_Property) { e.mutable = mutable })
 }
 
+func (p *_Property) GetIdentifier() string {
+	return p.identifier
+}
+
 func (p *_Property) GetDataType() any {
 	return p.dataType
 }
@@ -96,7 +107,60 @@ func (p *_Property) ReadProperty(Args, KWArgs) error {
 	panic("implement me")
 }
 
-func (p *_Property) WriteProperty(Args, KWArgs) error {
-	//TODO implement me
-	panic("implement me")
+func (p *_Property) WriteProperty(args Args, kwArgs KWArgs) error {
+	obj := GA[Object](args, 0)
+	value := GA[any](args, 1)
+	arrayIndex, hasArrayIndex := KWO[int](kwArgs, "arrayIndex", 0)
+	priority, _ := KWO[int](kwArgs, "priority", 0)
+	direct, _ := KWO[bool](kwArgs, "direct", false)
+	if _debug != nil {
+		_debug("WriteProperty %r %r arrayIndex=%r priority=%r", obj, value, arrayIndex, priority)
+	}
+	if direct {
+		if _debug != nil {
+			_debug("    - direct write")
+		}
+	} else {
+		// see if it must be provided
+		if !p.optional && IsNil(value) {
+			return ValueError{Message: fmt.Sprintf("%v value required", p.identifier)}
+		}
+
+		// see if it can be changed
+		if !p.mutable {
+			return errors.ExecutionError{ErrorClass: readWriteModel.ErrorClass_PROPERTY, ErrorCode: readWriteModel.ErrorCode_WRITE_ACCESS_DENIED}
+		}
+
+		// if changing the length if the array, the value is unsigned
+		if hasArrayIndex && arrayIndex == 0 {
+			panic("implement unsigned check") // TODO
+		}
+		panic("finish me") // TODO
+	}
+
+	// local check if the property is monitored
+	_, isMonitored := obj.Get_PropertiesMonitors()[p.GetIdentifier()]
+
+	if hasArrayIndex {
+		panic("finish me") // TODO
+	} else {
+		var oldValue any
+		if isMonitored {
+			oldValue = obj.Get_Values()[p.GetIdentifier()]
+		}
+
+		// seems to be OK
+		obj.Get_Values()[p.GetIdentifier()] = value
+
+		// check for monitors, call each one with the old and new value
+		if isMonitored {
+			for _, fn := range obj.Get_PropertiesMonitors()[p.GetIdentifier()] {
+				if _debug != nil {
+					_debug("    - monitor: %r", fn)
+				}
+				fn(oldValue, value)
+			}
+		}
+	}
+	return nil
 }

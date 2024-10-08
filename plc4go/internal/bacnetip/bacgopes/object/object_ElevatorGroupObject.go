@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,23 +29,26 @@ import (
 
 type ElevatorGroupObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewElevatorGroupObject(arg Arg) (*ElevatorGroupObject, error) {
-	o := &ElevatorGroupObject{
-		objectType: "elevatorGroup",
-		properties: []Property{
-			NewReadableProperty("machineRoomID", Vs2P(NewObjectIdentifier)),
-			NewReadableProperty("groupID", V2P(NewUnsigned8)),
-			NewReadableProperty("groupMembers", ArrayOfPs(NewObjectIdentifier, 0, 0)),
-			NewOptionalProperty("groupMode", V2P(NewLiftGroupMode)),
-			NewOptionalProperty("landingCalls", ListOfP(NewLandingCallStatus)),
-			NewOptionalProperty("landingCallControl", V2P(NewLandingCallStatus)),
-		},
+func NewElevatorGroupObject(options ...Option) (*ElevatorGroupObject, error) {
+	e := new(ElevatorGroupObject)
+	objectType := "elevatorGroup"
+	properties := []Property{
+		NewReadableProperty("machineRoomID", Vs2P(NewObjectIdentifier)),
+		NewReadableProperty("groupID", V2P(NewUnsigned8)),
+		NewReadableProperty("groupMembers", ArrayOfPs(NewObjectIdentifier, 0, 0)),
+		NewOptionalProperty("groupMode", V2P(NewLiftGroupMode)),
+		NewOptionalProperty("landingCalls", ListOfP(NewLandingCallStatus)),
+		NewOptionalProperty("landingCallControl", V2P(NewLandingCallStatus)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	e.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, e)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return e, nil
 }

@@ -74,11 +74,11 @@ func NewLocalDeviceObject(_ Args, kwArgs KWArgs, options ...Option) (LocalDevice
 	}
 	options = AddSharedSuperIfAbundant[Object](options)
 	var err error
-	l.CurrentPropertyListMixIn, err = NewCurrentPropertyListMixIn(kwArgs, options...)
+	l.CurrentPropertyListMixIn, err = NewCurrentPropertyListMixIn(options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating mixing")
 	}
-	l.DeviceObject, err = NewDeviceObject(nil)
+	l.DeviceObject, err = NewDeviceObject(options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating device object")
 	}
@@ -192,7 +192,9 @@ func NewLocalDeviceObject(_ Args, kwArgs KWArgs, options ...Option) (LocalDevice
 	}
 
 	// proceed as usual
-	// TODO: how?
+	if err := l.DeviceObject.Init(NoArgs, initArgs); err != nil {
+		return nil, errors.Wrap(err, "error creating device object")
+	}
 
 	// pass along special property values that are not BACnet properties
 	for key, value := range kwArgs {
@@ -304,47 +306,72 @@ func (l *_LocalDeviceObject) SetObjectList(strings []string) {
 	l.CurrentPropertyListMixIn.SetAttr("objectList", strings)
 }
 
+func (l *_LocalDeviceObject) Init(args Args, kwArgs KWArgs) error {
+	// ambiguous selector avoidance
+	return l.CurrentPropertyListMixIn.Init(args, kwArgs)
+}
+
+func (l *_LocalDeviceObject) GetObjectType() string {
+	// ambiguous selector avoidance
+	return l.CurrentPropertyListMixIn.GetObjectType()
+}
+
 func (l *_LocalDeviceObject) GetAttr(name string) (any, bool) {
 	// ambiguous selector avoidance
-	return l.DeviceObject.GetAttr(name)
+	return l.CurrentPropertyListMixIn.GetAttr(name)
 }
 
 func (l *_LocalDeviceObject) SetAttr(name string, value any) {
 	// ambiguous selector avoidance
-	l.DeviceObject.SetAttr(name, value)
+	l.CurrentPropertyListMixIn.SetAttr(name, value)
 }
 
 func (l *_LocalDeviceObject) AddProperty(prop Property) {
 	// ambiguous selector avoidance
-	l.DeviceObject.AddProperty(prop)
+	l.CurrentPropertyListMixIn.AddProperty(prop)
 }
 
 func (l *_LocalDeviceObject) ReadProperty(args Args, kwArgs KWArgs) error {
 	// ambiguous selector avoidance
-	return l.DeviceObject.ReadProperty(args, kwArgs)
+	return l.CurrentPropertyListMixIn.ReadProperty(args, kwArgs)
 }
 
 func (l *_LocalDeviceObject) WriteProperty(args Args, kwArgs KWArgs) error {
 	// ambiguous selector avoidance
-	return l.DeviceObject.WriteProperty(args, kwArgs)
+	return l.CurrentPropertyListMixIn.WriteProperty(args, kwArgs)
 }
 
 func (l *_LocalDeviceObject) DeleteProperty(prop string) {
 	// ambiguous selector avoidance
-	l.DeviceObject.DeleteProperty(prop)
+	l.CurrentPropertyListMixIn.DeleteProperty(prop)
+}
+
+func (l *_LocalDeviceObject) GetProperties() []Property {
+	// ambiguous selector avoidance
+	return l.CurrentPropertyListMixIn.GetProperties()
 }
 
 func (l *_LocalDeviceObject) Get_Properties() map[string]Property {
 	// ambiguous selector avoidance
-	return l.DeviceObject.Get_Properties()
+	return l.CurrentPropertyListMixIn.Get_Properties()
+}
+
+func (l *_LocalDeviceObject) Get_PropertiesMonitors() map[string][]func(old, new any) {
+	// ambiguous selector avoidance
+	return l.CurrentPropertyListMixIn.Get_PropertiesMonitors()
+}
+
+func (l *_LocalDeviceObject) Get_Values() map[string]any {
+	// ambiguous selector avoidance
+	return l.CurrentPropertyListMixIn.Get_Values()
 }
 
 func (l *_LocalDeviceObject) Set_Properties(_properties map[string]Property) {
 	// ambiguous selector avoidance
-	l.DeviceObject.Set_Properties(_properties)
+	l.CurrentPropertyListMixIn.Set_Properties(_properties)
 }
 
 func (l *_LocalDeviceObject) PrintDebugContents(indent int, file io.Writer, _ids []uintptr) {
 	// ambiguous selector avoidance
-	l.DeviceObject.PrintDebugContents(indent, file, _ids)
+	l.CurrentPropertyListMixIn.PrintDebugContents(indent, file, _ids)
 }

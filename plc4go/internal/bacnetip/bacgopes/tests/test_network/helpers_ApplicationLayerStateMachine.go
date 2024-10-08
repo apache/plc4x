@@ -21,6 +21,7 @@ package test_network
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -30,6 +31,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
@@ -65,9 +67,13 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 	}
 
 	// build a local device object
+	atoiAdrerss, err := strconv.Atoi(address)
+	if err != nil {
+		return nil, errors.Wrap(err, "error converting address")
+	}
 	localDevice, err := NewTestDeviceObject(NoArgs,
 		NKW(KWObjectName, a.name,
-			KWObjectIdentifier, "device:"+address,
+			KWObjectIdentifier, primitivedata.ObjectIdentifierTuple{Left: "device", Right: atoiAdrerss},
 			KWVendorIdentifier, 999,
 		))
 	if err != nil {

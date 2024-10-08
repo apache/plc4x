@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,19 +29,22 @@ import (
 
 type CalendarObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewCalendarObject(arg Arg) (*CalendarObject, error) {
-	o := &CalendarObject{
-		objectType: "calendar",
-		properties: []Property{
-			NewReadableProperty("presentValue", V2P(NewBoolean)),
-			NewReadableProperty("dateList", ListOfP(NewCalendarEntry)),
-		},
+func NewCalendarObject(options ...Option) (*CalendarObject, error) {
+	c := new(CalendarObject)
+	objectType := "calendar"
+	properties := []Property{
+		NewReadableProperty("presentValue", V2P(NewBoolean)),
+		NewReadableProperty("dateList", ListOfP(NewCalendarEntry)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	c.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, c)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return c, nil
 }

@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,28 +29,31 @@ import (
 
 type AccessUserObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewAccessUserObject(arg Arg) (*AccessUserObject, error) {
-	o := &AccessUserObject{
-		objectType: "accessUser",
-		properties: []Property{
-			NewWritableProperty("globalIdentifier", V2P(NewUnsigned)),
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewReadableProperty("reliability", V2P(NewReliability)),
-			NewReadableProperty("userType", V2P(NewAccessUserType)),
-			NewOptionalProperty("userName", V2P(NewCharacterString)),
-			NewOptionalProperty("userExternalIdentifier", V2P(NewCharacterString)),
-			NewOptionalProperty("userInformationReference", V2P(NewCharacterString)),
-			NewOptionalProperty("members", ListOfP(NewDeviceObjectReference)),
-			NewOptionalProperty("memberOf", ListOfP(NewDeviceObjectReference)),
-			NewReadableProperty("credentials", ListOfP(NewDeviceObjectReference)),
-			NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
-		},
+func NewAccessUserObject(options ...Option) (*AccessUserObject, error) {
+	a := new(AccessUserObject)
+	objectType := "accessUser"
+	properties := []Property{
+		NewWritableProperty("globalIdentifier", V2P(NewUnsigned)),
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewReadableProperty("reliability", V2P(NewReliability)),
+		NewReadableProperty("userType", V2P(NewAccessUserType)),
+		NewOptionalProperty("userName", V2P(NewCharacterString)),
+		NewOptionalProperty("userExternalIdentifier", V2P(NewCharacterString)),
+		NewOptionalProperty("userInformationReference", V2P(NewCharacterString)),
+		NewOptionalProperty("members", ListOfP(NewDeviceObjectReference)),
+		NewOptionalProperty("memberOf", ListOfP(NewDeviceObjectReference)),
+		NewReadableProperty("credentials", ListOfP(NewDeviceObjectReference)),
+		NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	a.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, a)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return a, nil
 }

@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,43 +29,45 @@ import (
 
 type AccessCredentialObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewAccessCredentialObject(arg Arg) (*AccessCredentialObject, error) {
-	o := &AccessCredentialObject{
-		objectType: "accessCredential",
-		properties: []Property{
-			NewWritableProperty("globalIdentifier", V2P(NewUnsigned)),
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewReadableProperty("reliability", V2P(NewReliability)),
-			NewReadableProperty("credentialStatus", V2P(NewBinaryPV)),
-			NewReadableProperty("reasonForDisable", ListOfP(NewAccessCredentialDisableReason)),
-			NewReadableProperty("authenticationFactors", ArrayOfP(NewCredentialAuthenticationFactor, 0, 0)),
-			NewReadableProperty("activationTime", V2P(NewDateTime)),
-			NewReadableProperty("expirationTime", V2P(NewDateTime)),
-			NewReadableProperty("credentialDisable", V2P(NewAccessCredentialDisable)),
-			NewOptionalProperty("daysRemaining", V2P(NewInteger)),
-			NewOptionalProperty("usesRemaining", V2P(NewInteger)),
-			NewOptionalProperty("absenteeLimit", V2P(NewUnsigned)),
-			NewOptionalProperty("belongsTo", V2P(NewDeviceObjectReference)),
-			NewReadableProperty("assignedAccessRights", ArrayOfP(NewAssignedAccessRights, 0, 0)),
-			NewOptionalProperty("lastAccessPoint", V2P(NewDeviceObjectReference)),
-			NewOptionalProperty("lastAccessEvent", V2P(NewAccessEvent)),
-			NewOptionalProperty("lastUseTime", V2P(NewDateTime)),
-			NewOptionalProperty("traceFlag", V2P(NewBoolean)),
-			NewOptionalProperty("threatAuthority", V2P(NewAccessThreatLevel)),
-			NewOptionalProperty("extendedTimeEnable", V2P(NewBoolean)),
-			NewOptionalProperty("authorizationExemptions", ListOfP(NewAuthorizationException)),
-			NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
-			//       , NewOptionalProperty("masterExemption", V2P(NewBoolean)
-			//       , NewOptionalProperty("passbackExemption", V2P(NewBoolean)
-			//       , NewOptionalProperty("occupancyExemption", V2P(NewBoolean)
-		},
+func NewAccessCredentialObject(options ...Option) (*AccessCredentialObject, error) {
+	a := new(AccessCredentialObject)
+	objectType := "accessCredential"
+	properties := []Property{
+		NewWritableProperty("globalIdentifier", V2P(NewUnsigned)),
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewReadableProperty("reliability", V2P(NewReliability)),
+		NewReadableProperty("credentialStatus", V2P(NewBinaryPV)),
+		NewReadableProperty("reasonForDisable", ListOfP(NewAccessCredentialDisableReason)),
+		NewReadableProperty("authenticationFactors", ArrayOfP(NewCredentialAuthenticationFactor, 0, 0)),
+		NewReadableProperty("activationTime", V2P(NewDateTime)),
+		NewReadableProperty("expirationTime", V2P(NewDateTime)),
+		NewReadableProperty("credentialDisable", V2P(NewAccessCredentialDisable)),
+		NewOptionalProperty("daysRemaining", V2P(NewInteger)),
+		NewOptionalProperty("usesRemaining", V2P(NewInteger)),
+		NewOptionalProperty("absenteeLimit", V2P(NewUnsigned)),
+		NewOptionalProperty("belongsTo", V2P(NewDeviceObjectReference)),
+		NewReadableProperty("assignedAccessRights", ArrayOfP(NewAssignedAccessRights, 0, 0)),
+		NewOptionalProperty("lastAccessPoint", V2P(NewDeviceObjectReference)),
+		NewOptionalProperty("lastAccessEvent", V2P(NewAccessEvent)),
+		NewOptionalProperty("lastUseTime", V2P(NewDateTime)),
+		NewOptionalProperty("traceFlag", V2P(NewBoolean)),
+		NewOptionalProperty("threatAuthority", V2P(NewAccessThreatLevel)),
+		NewOptionalProperty("extendedTimeEnable", V2P(NewBoolean)),
+		NewOptionalProperty("authorizationExemptions", ListOfP(NewAuthorizationException)),
+		NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
+		//       , NewOptionalProperty("masterExemption", V2P(NewBoolean)
+		//       , NewOptionalProperty("passbackExemption", V2P(NewBoolean)
+		//       , NewOptionalProperty("occupancyExemption", V2P(NewBoolean)
 	}
-	return o, nil
+	var err error
+	a.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, a)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return a, nil
 }
-
-// TODO: @register_object_type

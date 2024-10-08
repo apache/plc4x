@@ -28,6 +28,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/capability"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/errors"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -247,16 +248,16 @@ func (w *WhoIsIAmServices) DoIAmRequest(apdu APDU) error {
 	iam := apdu.(*IAmRequest)
 	// check for required parameters
 	if _, ok := iam.GetAttr("iAmDeviceIdentifier"); !ok {
-		return MissingRequiredParameter{Message: "iAmDeviceIdentifier required"}
+		return MissingRequiredParameter{RejectException{Exception: Exception{Message: "iAmDeviceIdentifier required"}}}
 	}
 	if _, ok := iam.GetAttr("maxAPDULengthAccepted"); !ok {
-		return MissingRequiredParameter{Message: "maxAPDULengthAccepted required"}
+		return MissingRequiredParameter{RejectException{Exception: Exception{Message: "maxAPDULengthAccepted required"}}}
 	}
 	if _, ok := iam.GetAttr("segmentationSupported"); !ok {
-		return MissingRequiredParameter{Message: "segmentationSupported required"}
+		return MissingRequiredParameter{RejectException{Exception: Exception{Message: "segmentationSupported required"}}}
 	}
 	if _, ok := iam.GetAttr("vendorID"); !ok {
-		return MissingRequiredParameter{Message: "vendorID required"}
+		return MissingRequiredParameter{RejectException{Exception: Exception{Message: "vendorID required"}}}
 	}
 
 	// extract the device instance number

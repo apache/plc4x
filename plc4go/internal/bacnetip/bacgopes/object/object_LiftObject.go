@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,61 +29,64 @@ import (
 
 type LiftObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewLiftObject(arg Arg) (*LiftObject, error) {
-	o := &LiftObject{
-		objectType: "lift",
-		properties: []Property{
-			NewReadableProperty("trackingValue", V2P(NewReal)),
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewReadableProperty("elevatorGroup", Vs2P(NewObjectIdentifier)),
-			NewReadableProperty("groupID", V2P(NewUnsigned8)),
-			NewReadableProperty("installationID", V2P(NewUnsigned8)),
-			NewOptionalProperty("floorText", ArrayOfP(NewCharacterString, 0, 0)),
-			NewOptionalProperty("carDoorText", ArrayOfP(NewCharacterString, 0, 0)),
-			NewOptionalProperty("assignedLandingCalls", ArrayOfP(NewAssignedLandingCalls, 0, 0)),
-			NewOptionalProperty("makingCarCall", ArrayOfP(NewUnsigned8, 0, 0)),
-			NewOptionalProperty("registeredCarCall", ArrayOfP(NewLiftCarCallList, 0, 0)),
-			NewOptionalProperty("carPosition", V2P(NewUnsigned8)),
-			NewOptionalProperty("carMovingDirection", V2P(NewLiftCarDirection)),
-			NewOptionalProperty("carAssignedDirection", V2P(NewLiftCarDirection)),
-			NewOptionalProperty("carDoorStatus", ArrayOfP(NewDoorStatus, 0, 0)),
-			NewOptionalProperty("carDoorCommand", ArrayOfP(NewLiftCarDoorCommand, 0, 0)),
-			NewOptionalProperty("carDoorZone", V2P(NewBoolean)),
-			NewOptionalProperty("carMode", V2P(NewLiftCarMode)),
-			NewOptionalProperty("carLoad", V2P(NewReal)),
-			NewOptionalProperty("carLoadUnits", V2P(NewEngineeringUnits)),
-			NewOptionalProperty("nextStoppingFloor", V2P(NewUnsigned)),
-			NewReadableProperty("passengerAlarm", V2P(NewBoolean)),
-			NewOptionalProperty("timeDelay", V2P(NewUnsigned)),
-			NewOptionalProperty("timeDelayNormal", V2P(NewUnsigned)),
-			NewOptionalProperty("energyMeter", V2P(NewReal)),
-			NewOptionalProperty("energyMeterRef", V2P(NewDeviceObjectReference)),
-			NewOptionalProperty("reliability", V2P(NewReliability)),
-			NewOptionalProperty("outOfService", V2P(NewBoolean)),
-			NewOptionalProperty("carDriveStatus", V2P(NewLiftCarDriveStatus)),
-			NewOptionalProperty("faultSignals", ListOfP(NewLiftFault)),
-			NewOptionalProperty("landingDoorStatus", ArrayOfP(NewLandingDoorStatus, 0, 0)),
-			NewOptionalProperty("higherDeck", Vs2P(NewObjectIdentifier)),
-			NewOptionalProperty("lowerDeck", Vs2P(NewObjectIdentifier)),
-			NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
-			NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
-			NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("eventState", V2P(NewEventState)),
-			NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("notifyType", V2P(NewNotifyType)),
-			NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
-			NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventAlgorithmInhibitRef", V2P(NewObjectPropertyReference)),
-			NewOptionalProperty("eventAlgorithmInhibit", V2P(NewBoolean)),
-			NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
-		},
+func NewLiftObject(options ...Option) (*LiftObject, error) {
+	l := new(LiftObject)
+	objectType := "lift"
+	properties := []Property{
+		NewReadableProperty("trackingValue", V2P(NewReal)),
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewReadableProperty("elevatorGroup", Vs2P(NewObjectIdentifier)),
+		NewReadableProperty("groupID", V2P(NewUnsigned8)),
+		NewReadableProperty("installationID", V2P(NewUnsigned8)),
+		NewOptionalProperty("floorText", ArrayOfP(NewCharacterString, 0, 0)),
+		NewOptionalProperty("carDoorText", ArrayOfP(NewCharacterString, 0, 0)),
+		NewOptionalProperty("assignedLandingCalls", ArrayOfP(NewAssignedLandingCalls, 0, 0)),
+		NewOptionalProperty("makingCarCall", ArrayOfP(NewUnsigned8, 0, 0)),
+		NewOptionalProperty("registeredCarCall", ArrayOfP(NewLiftCarCallList, 0, 0)),
+		NewOptionalProperty("carPosition", V2P(NewUnsigned8)),
+		NewOptionalProperty("carMovingDirection", V2P(NewLiftCarDirection)),
+		NewOptionalProperty("carAssignedDirection", V2P(NewLiftCarDirection)),
+		NewOptionalProperty("carDoorStatus", ArrayOfP(NewDoorStatus, 0, 0)),
+		NewOptionalProperty("carDoorCommand", ArrayOfP(NewLiftCarDoorCommand, 0, 0)),
+		NewOptionalProperty("carDoorZone", V2P(NewBoolean)),
+		NewOptionalProperty("carMode", V2P(NewLiftCarMode)),
+		NewOptionalProperty("carLoad", V2P(NewReal)),
+		NewOptionalProperty("carLoadUnits", V2P(NewEngineeringUnits)),
+		NewOptionalProperty("nextStoppingFloor", V2P(NewUnsigned)),
+		NewReadableProperty("passengerAlarm", V2P(NewBoolean)),
+		NewOptionalProperty("timeDelay", V2P(NewUnsigned)),
+		NewOptionalProperty("timeDelayNormal", V2P(NewUnsigned)),
+		NewOptionalProperty("energyMeter", V2P(NewReal)),
+		NewOptionalProperty("energyMeterRef", V2P(NewDeviceObjectReference)),
+		NewOptionalProperty("reliability", V2P(NewReliability)),
+		NewOptionalProperty("outOfService", V2P(NewBoolean)),
+		NewOptionalProperty("carDriveStatus", V2P(NewLiftCarDriveStatus)),
+		NewOptionalProperty("faultSignals", ListOfP(NewLiftFault)),
+		NewOptionalProperty("landingDoorStatus", ArrayOfP(NewLandingDoorStatus, 0, 0)),
+		NewOptionalProperty("higherDeck", Vs2P(NewObjectIdentifier)),
+		NewOptionalProperty("lowerDeck", Vs2P(NewObjectIdentifier)),
+		NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
+		NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
+		NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("eventState", V2P(NewEventState)),
+		NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("notifyType", V2P(NewNotifyType)),
+		NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
+		NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventAlgorithmInhibitRef", V2P(NewObjectPropertyReference)),
+		NewOptionalProperty("eventAlgorithmInhibit", V2P(NewBoolean)),
+		NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	l.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, l)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return l, nil
 }

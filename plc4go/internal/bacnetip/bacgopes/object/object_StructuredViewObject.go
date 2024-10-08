@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,26 +29,29 @@ import (
 
 type StructuredViewObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewStructuredViewObject(arg Arg) (*StructuredViewObject, error) {
-	o := &StructuredViewObject{
-		objectType: "structuredView",
-		properties: []Property{
-			NewReadableProperty("nodeType", V2P(NewNodeType)),
-			NewOptionalProperty("nodeSubtype", V2P(NewCharacterString)),
-			NewReadableProperty("subordinateList", ArrayOfP(NewDeviceObjectReference, 0, 0)),
-			NewOptionalProperty("subordinateAnnotations", ArrayOfP(NewCharacterString, 0, 0)),
-			NewOptionalProperty("subordinateTags", ArrayOfP(NewNameValueCollection, 0, 0)),
-			NewOptionalProperty("subordinateNodeTypes", ArrayOfP(NewNodeType, 0, 0)),
-			NewOptionalProperty("subordinateRelationships", ArrayOfP(NewRelationship, 0, 0)),
-			NewOptionalProperty("defaultSubordinateRelationship", V2P(NewRelationship)),
-			NewOptionalProperty("represents", V2P(NewDeviceObjectReference)),
-		},
+func NewStructuredViewObject(options ...Option) (*StructuredViewObject, error) {
+	s := new(StructuredViewObject)
+	objectType := "structuredView"
+	properties := []Property{
+		NewReadableProperty("nodeType", V2P(NewNodeType)),
+		NewOptionalProperty("nodeSubtype", V2P(NewCharacterString)),
+		NewReadableProperty("subordinateList", ArrayOfP(NewDeviceObjectReference, 0, 0)),
+		NewOptionalProperty("subordinateAnnotations", ArrayOfP(NewCharacterString, 0, 0)),
+		NewOptionalProperty("subordinateTags", ArrayOfP(NewNameValueCollection, 0, 0)),
+		NewOptionalProperty("subordinateNodeTypes", ArrayOfP(NewNodeType, 0, 0)),
+		NewOptionalProperty("subordinateRelationships", ArrayOfP(NewRelationship, 0, 0)),
+		NewOptionalProperty("defaultSubordinateRelationship", V2P(NewRelationship)),
+		NewOptionalProperty("represents", V2P(NewDeviceObjectReference)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	s.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, s)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return s, nil
 }

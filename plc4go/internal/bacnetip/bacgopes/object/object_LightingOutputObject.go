@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,48 +29,51 @@ import (
 
 type LightingOutputObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewLightingOutputObject(arg Arg) (*LightingOutputObject, error) {
-	o := &LightingOutputObject{
-		objectType:           "lightingOutput",
-		_object_supports_cov: true,
-		properties: []Property{
-			NewWritableProperty("presentValue", V2P(NewReal)),
-			NewReadableProperty("trackingValue", V2P(NewReal)),
-			NewWritableProperty("lightingCommand", V2P(NewLightingCommand)),
-			NewReadableProperty("inProgress", V2P(NewLightingInProgress)),
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewOptionalProperty("reliability", V2P(NewReliability)),
-			NewReadableProperty("outOfService", V2P(NewBoolean)),
-			NewReadableProperty("blinkWarnEnable", V2P(NewBoolean)),
-			NewReadableProperty("egressTime", V2P(NewUnsigned)),
-			NewReadableProperty("egressActive", V2P(NewBoolean)),
-			NewReadableProperty("defaultFadeTime", V2P(NewUnsigned)),
-			NewReadableProperty("defaultRampRate", V2P(NewReal)),
-			NewReadableProperty("defaultStepIncrement", V2P(NewReal)),
-			NewOptionalProperty("transition", V2P(NewLightingTransition)),
-			NewOptionalProperty("feedbackValue", V2P(NewReal)),
-			NewReadableProperty("priorityArray", V2P(NewPriorityArray)),
-			NewReadableProperty("relinquishDefault", V2P(NewReal)),
-			NewOptionalProperty("power", V2P(NewReal)),
-			NewOptionalProperty("instantaneousPower", V2P(NewReal)),
-			NewOptionalProperty("minActualValue", V2P(NewReal)),
-			NewOptionalProperty("maxActualValue", V2P(NewReal)),
-			NewReadableProperty("lightingCommandDefaultPriority", V2P(NewUnsigned)),
-			NewOptionalProperty("covIncrement", V2P(NewReal)),
-			NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
-			NewOptionalProperty("currentCommandPriority", V2P(NewOptionalUnsigned)),
-			NewOptionalProperty("valueSource", V2P(NewValueSource)),
-			NewOptionalProperty("valueSourceArray", ArrayOfP(NewValueSource, 16, 0)),
-			NewOptionalProperty("lastCommandTime", V2P(NewTimeStamp)),
-			NewOptionalProperty("commandTimeArray", ArrayOfP(NewTimeStamp, 16, 0)),
-			NewOptionalProperty("auditablePriorityFilter", V2P(NewOptionalPriorityFilter)),
-		},
+func NewLightingOutputObject(options ...Option) (*LightingOutputObject, error) {
+	l := new(LightingOutputObject)
+	objectType := "lightingOutput"
+	_object_supports_cov := true
+	properties := []Property{
+		NewWritableProperty("presentValue", V2P(NewReal)),
+		NewReadableProperty("trackingValue", V2P(NewReal)),
+		NewWritableProperty("lightingCommand", V2P(NewLightingCommand)),
+		NewReadableProperty("inProgress", V2P(NewLightingInProgress)),
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewOptionalProperty("reliability", V2P(NewReliability)),
+		NewReadableProperty("outOfService", V2P(NewBoolean)),
+		NewReadableProperty("blinkWarnEnable", V2P(NewBoolean)),
+		NewReadableProperty("egressTime", V2P(NewUnsigned)),
+		NewReadableProperty("egressActive", V2P(NewBoolean)),
+		NewReadableProperty("defaultFadeTime", V2P(NewUnsigned)),
+		NewReadableProperty("defaultRampRate", V2P(NewReal)),
+		NewReadableProperty("defaultStepIncrement", V2P(NewReal)),
+		NewOptionalProperty("transition", V2P(NewLightingTransition)),
+		NewOptionalProperty("feedbackValue", V2P(NewReal)),
+		NewReadableProperty("priorityArray", V2P(NewPriorityArray)),
+		NewReadableProperty("relinquishDefault", V2P(NewReal)),
+		NewOptionalProperty("power", V2P(NewReal)),
+		NewOptionalProperty("instantaneousPower", V2P(NewReal)),
+		NewOptionalProperty("minActualValue", V2P(NewReal)),
+		NewOptionalProperty("maxActualValue", V2P(NewReal)),
+		NewReadableProperty("lightingCommandDefaultPriority", V2P(NewUnsigned)),
+		NewOptionalProperty("covIncrement", V2P(NewReal)),
+		NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
+		NewOptionalProperty("currentCommandPriority", V2P(NewOptionalUnsigned)),
+		NewOptionalProperty("valueSource", V2P(NewValueSource)),
+		NewOptionalProperty("valueSourceArray", ArrayOfP(NewValueSource, 16, 0)),
+		NewOptionalProperty("lastCommandTime", V2P(NewTimeStamp)),
+		NewOptionalProperty("commandTimeArray", ArrayOfP(NewTimeStamp, 16, 0)),
+		NewOptionalProperty("auditablePriorityFilter", V2P(NewOptionalPriorityFilter)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	l.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties), WithObjectSupportsCov(_object_supports_cov))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, l)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return l, nil
 }

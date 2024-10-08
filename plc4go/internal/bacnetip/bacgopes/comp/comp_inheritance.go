@@ -27,6 +27,10 @@ import (
 
 var inheritanceDebug = func(_ string, _ ...interface{}) {}
 
+type Initializer interface {
+	Init(Args, KWArgs) error
+}
+
 // GenericConstructor is the generic signature for constructors
 type GenericConstructor[T any] func(args Args, kwArgs KWArgs, options ...Option) (*T, error)
 

@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,44 +29,47 @@ import (
 
 type GlobalGroupObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewGlobalGroupObject(arg Arg) (*GlobalGroupObject, error) {
-	o := &GlobalGroupObject{
-		objectType: "globalGroup",
-		properties: []Property{
-			NewReadableProperty("groupMembers", ArrayOfP(NewDeviceObjectPropertyReference, 0, 0)),
-			NewOptionalProperty("groupMemberNames", ArrayOfP(NewCharacterString, 0, 0)),
-			NewReadableProperty("presentValue", ArrayOfP(NewPropertyAccessResult, 0, 0)),
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewReadableProperty("eventState", V2P(NewEventState)),
-			NewReadableProperty("memberStatusFlags", V2P(NewStatusFlags)),
-			NewOptionalProperty("reliability", V2P(NewReliability)),
-			NewReadableProperty("outOfService", V2P(NewBoolean)),
-			NewOptionalProperty("updateInterval", V2P(NewUnsigned)),
-			NewOptionalProperty("requestedUpdateInterval", V2P(NewUnsigned)),
-			NewOptionalProperty("covResubscriptionInterval", V2P(NewUnsigned)),
-			NewOptionalProperty("clientCovIncrement", V2P(NewClientCOV)),
-			NewOptionalProperty("timeDelay", V2P(NewUnsigned)),
-			NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
-			NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("notifyType", V2P(NewNotifyType)),
-			NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
-			NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
-			NewOptionalProperty("eventAlgorithmInhibitRef", V2P(NewObjectPropertyReference)),
-			NewOptionalProperty("eventAlgorithmInhibit", V2P(NewBoolean)),
-			NewOptionalProperty("timeDelayNormal", V2P(NewUnsigned)),
-			NewOptionalProperty("covuPeriod", V2P(NewUnsigned)),
-			NewOptionalProperty("covuRecipients", ListOfP(NewRecipient)),
-			NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
-		},
+func NewGlobalGroupObject(options ...Option) (*GlobalGroupObject, error) {
+	g := new(GlobalGroupObject)
+	objectType := "globalGroup"
+	properties := []Property{
+		NewReadableProperty("groupMembers", ArrayOfP(NewDeviceObjectPropertyReference, 0, 0)),
+		NewOptionalProperty("groupMemberNames", ArrayOfP(NewCharacterString, 0, 0)),
+		NewReadableProperty("presentValue", ArrayOfP(NewPropertyAccessResult, 0, 0)),
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewReadableProperty("eventState", V2P(NewEventState)),
+		NewReadableProperty("memberStatusFlags", V2P(NewStatusFlags)),
+		NewOptionalProperty("reliability", V2P(NewReliability)),
+		NewReadableProperty("outOfService", V2P(NewBoolean)),
+		NewOptionalProperty("updateInterval", V2P(NewUnsigned)),
+		NewOptionalProperty("requestedUpdateInterval", V2P(NewUnsigned)),
+		NewOptionalProperty("covResubscriptionInterval", V2P(NewUnsigned)),
+		NewOptionalProperty("clientCovIncrement", V2P(NewClientCOV)),
+		NewOptionalProperty("timeDelay", V2P(NewUnsigned)),
+		NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
+		NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("notifyType", V2P(NewNotifyType)),
+		NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
+		NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
+		NewOptionalProperty("eventAlgorithmInhibitRef", V2P(NewObjectPropertyReference)),
+		NewOptionalProperty("eventAlgorithmInhibit", V2P(NewBoolean)),
+		NewOptionalProperty("timeDelayNormal", V2P(NewUnsigned)),
+		NewOptionalProperty("covuPeriod", V2P(NewUnsigned)),
+		NewOptionalProperty("covuRecipients", ListOfP(NewRecipient)),
+		NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	g.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, g)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return g, nil
 }

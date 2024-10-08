@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,26 +29,27 @@ import (
 
 type FileObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewFileObject(arg Arg) (*FileObject, error) {
-	o := &FileObject{
-		objectType: "file",
-		properties: []Property{
-			NewReadableProperty("fileType", V2P(NewCharacterString)),
-			NewReadableProperty("fileSize", V2P(NewUnsigned)),
-			NewReadableProperty("modificationDate", V2P(NewDateTime)),
-			NewWritableProperty("archive", V2P(NewBoolean)),
-			NewReadableProperty("readOnly", V2P(NewBoolean)),
-			NewReadableProperty("fileAccessMethod", V2P(NewFileAccessMethod)),
-			NewOptionalProperty("recordCount", V2P(NewUnsigned)),
-		},
-
-		//-----
+func NewFileObject(options ...Option) (*FileObject, error) {
+	f := new(FileObject)
+	objectType := "file"
+	properties := []Property{
+		NewReadableProperty("fileType", V2P(NewCharacterString)),
+		NewReadableProperty("fileSize", V2P(NewUnsigned)),
+		NewReadableProperty("modificationDate", V2P(NewDateTime)),
+		NewWritableProperty("archive", V2P(NewBoolean)),
+		NewReadableProperty("readOnly", V2P(NewBoolean)),
+		NewReadableProperty("fileAccessMethod", V2P(NewFileAccessMethod)),
+		NewOptionalProperty("recordCount", V2P(NewUnsigned)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	f.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, f)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return f, nil
 }

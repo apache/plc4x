@@ -20,25 +20,30 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 )
 
 type GroupObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewGroupObject(arg Arg) (*GroupObject, error) {
-	o := &GroupObject{
-		objectType: "group",
-		properties: []Property{
-			NewReadableProperty("listOfGroupMembers", ListOfP(NewReadAccessSpecification)),
-			NewReadableProperty("presentValue", ListOfP(NewReadAccessResult)),
-		},
+func NewGroupObject(options ...Option) (*GroupObject, error) {
+	g := new(GroupObject)
+	objectType := "group"
+	properties := []Property{
+		NewReadableProperty("listOfGroupMembers", ListOfP(NewReadAccessSpecification)),
+		NewReadableProperty("presentValue", ListOfP(NewReadAccessResult)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	g.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, g)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return g, nil
 }

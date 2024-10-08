@@ -19,7 +19,12 @@
 
 package object
 
-import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+import (
+	"fmt"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
 
 // TODO: big WIP
 type ObjectIdentifierProperty interface {
@@ -36,7 +41,30 @@ func NewObjectIdentifierProperty(name string, klass func(Args, KWArgs) (Property
 	return o
 }
 
-func (o *_ObjectIdentifierProperty) WriteProperty(Args, KWArgs) error {
-	//TODO implement me
-	panic("implement me")
+func (o *_ObjectIdentifierProperty) WriteProperty(args Args, kwArgs KWArgs) error {
+	obj := GA[Object](args, 0)
+	value := GA[any](args, 1)
+	arrayIndex, _ := KWO[int](kwArgs, "arrayIndex", 0)
+	priority, _ := KWO[int](kwArgs, "priority", 0)
+	if _debug != nil {
+		_debug("WriteProperty %r %r arrayIndex=%r priority=%r", obj, value, arrayIndex, priority)
+	}
+
+	// make it easy to default
+	if value == nil {
+		return nil
+	}
+	switch castedValue := value.(type) {
+	case int:
+		value = ObjectIdentifierTuple{Left: obj.GetObjectType(), Right: castedValue}
+	case ObjectIdentifierTuple:
+		if castedValue.Left != obj.GetObjectType() {
+			return ValueError{Message: fmt.Sprintf("%s required", obj.GetObjectType())}
+		}
+	default:
+		return TypeError{Message: "object required"}
+	}
+
+	args[1] = value
+	return o.ReadableProperty.WriteProperty(args, kwArgs)
 }

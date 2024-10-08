@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,49 +29,52 @@ import (
 
 type BinaryLightingOutputObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewBinaryLightingOutputObject(arg Arg) (*BinaryLightingOutputObject, error) {
-	o := &BinaryLightingOutputObject{
-		objectType: "binaryLightingOutput",
-		properties: []Property{
-			NewWritableProperty("presentValue", V2P(NewBinaryLightingPV)),
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewOptionalProperty("eventState", V2P(NewEventState)),
-			NewOptionalProperty("reliability", V2P(NewReliability)),
-			NewReadableProperty("outOfService", V2P(NewBoolean)),
-			NewReadableProperty("blinkWarnEnable", V2P(NewBoolean)),
-			NewReadableProperty("egressTime", V2P(NewUnsigned)),
-			NewReadableProperty("egressActive", V2P(NewBoolean)),
-			NewOptionalProperty("feedbackValue", V2P(NewBinaryLightingPV)),
-			NewReadableProperty("priorityArray", V2P(NewPriorityArray)),
-			NewReadableProperty("relinquishDefault", V2P(NewBinaryLightingPV)),
-			NewOptionalProperty("power", V2P(NewReal)),
-			NewOptionalProperty("polarity", V2P(NewPolarity)),
-			NewOptionalProperty("elapsedActiveTime", V2P(NewUnsigned)), // Unsigned32,
-			NewOptionalProperty("timeOfActiveTimeReset", V2P(NewDateTime)),
-			NewOptionalProperty("strikeCount", V2P(NewUnsigned)),
-			NewOptionalProperty("timeOfStrikeCountReset", V2P(NewDateTime)),
-			NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
-			NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
-			NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("notifyType", V2P(NewNotifyType)),
-			NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
-			NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
-			NewReadableProperty("currentCommandPriority", V2P(NewOptionalUnsigned)),
-			NewOptionalProperty("valueSource", V2P(NewValueSource)),
-			NewOptionalProperty("valueSourceArray", ArrayOfP(NewValueSource, 16, 0)),
-			NewOptionalProperty("lastCommandTime", V2P(NewTimeStamp)),
-			NewOptionalProperty("commandTimeArray", ArrayOfP(NewTimeStamp, 16, 0)),
-			NewOptionalProperty("auditablePriorityFilter", V2P(NewOptionalPriorityFilter)),
-		},
+func NewBinaryLightingOutputObject(options ...Option) (*BinaryLightingOutputObject, error) {
+	b := new(BinaryLightingOutputObject)
+	objectType := "binaryLightingOutput"
+	properties := []Property{
+		NewWritableProperty("presentValue", V2P(NewBinaryLightingPV)),
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewOptionalProperty("eventState", V2P(NewEventState)),
+		NewOptionalProperty("reliability", V2P(NewReliability)),
+		NewReadableProperty("outOfService", V2P(NewBoolean)),
+		NewReadableProperty("blinkWarnEnable", V2P(NewBoolean)),
+		NewReadableProperty("egressTime", V2P(NewUnsigned)),
+		NewReadableProperty("egressActive", V2P(NewBoolean)),
+		NewOptionalProperty("feedbackValue", V2P(NewBinaryLightingPV)),
+		NewReadableProperty("priorityArray", V2P(NewPriorityArray)),
+		NewReadableProperty("relinquishDefault", V2P(NewBinaryLightingPV)),
+		NewOptionalProperty("power", V2P(NewReal)),
+		NewOptionalProperty("polarity", V2P(NewPolarity)),
+		NewOptionalProperty("elapsedActiveTime", V2P(NewUnsigned)), // Unsigned32,
+		NewOptionalProperty("timeOfActiveTimeReset", V2P(NewDateTime)),
+		NewOptionalProperty("strikeCount", V2P(NewUnsigned)),
+		NewOptionalProperty("timeOfStrikeCountReset", V2P(NewDateTime)),
+		NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
+		NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
+		NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("notifyType", V2P(NewNotifyType)),
+		NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
+		NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
+		NewReadableProperty("currentCommandPriority", V2P(NewOptionalUnsigned)),
+		NewOptionalProperty("valueSource", V2P(NewValueSource)),
+		NewOptionalProperty("valueSourceArray", ArrayOfP(NewValueSource, 16, 0)),
+		NewOptionalProperty("lastCommandTime", V2P(NewTimeStamp)),
+		NewOptionalProperty("commandTimeArray", ArrayOfP(NewTimeStamp, 16, 0)),
+		NewOptionalProperty("auditablePriorityFilter", V2P(NewOptionalPriorityFilter)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	b.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, b)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return b, nil
 }

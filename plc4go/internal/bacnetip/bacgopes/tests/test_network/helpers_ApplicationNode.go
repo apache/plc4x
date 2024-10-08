@@ -32,6 +32,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
@@ -72,7 +73,7 @@ func NewApplicationNode(localLog zerolog.Logger, address string, vlan *Network) 
 	localDevice, err := NewTestDeviceObject(NoArgs,
 		NKW(
 			KWObjectName, a.name,
-			KWObjectIdentifier, "device:999",
+			KWObjectIdentifier, primitivedata.ObjectIdentifierTuple{Left: "device", Right: 999},
 			KWVendorIdentifier, 999,
 		),
 	)

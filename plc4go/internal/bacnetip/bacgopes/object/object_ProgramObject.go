@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,35 +29,38 @@ import (
 
 type ProgramObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewProgramObject(arg Arg) (*ProgramObject, error) {
-	o := &ProgramObject{
-		objectType: "program",
-		properties: []Property{
-			NewReadableProperty("programState", V2P(NewProgramState)),
-			NewWritableProperty("programChange", V2P(NewProgramRequest)),
-			NewOptionalProperty("reasonForHalt", V2P(NewProgramError)),
-			NewOptionalProperty("descriptionOfHalt", V2P(NewCharacterString)),
-			NewOptionalProperty("programLocation", V2P(NewCharacterString)),
-			NewOptionalProperty("instanceOf", V2P(NewCharacterString)),
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewOptionalProperty("reliability", V2P(NewReliability)),
-			NewReadableProperty("outOfService", V2P(NewBoolean)),
-			NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
-			NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
-			NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("notifyType", V2P(NewNotifyType)),
-			NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
-			NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
-		},
+func NewProgramObject(options ...Option) (*ProgramObject, error) {
+	p := new(ProgramObject)
+	objectType := "program"
+	properties := []Property{
+		NewReadableProperty("programState", V2P(NewProgramState)),
+		NewWritableProperty("programChange", V2P(NewProgramRequest)),
+		NewOptionalProperty("reasonForHalt", V2P(NewProgramError)),
+		NewOptionalProperty("descriptionOfHalt", V2P(NewCharacterString)),
+		NewOptionalProperty("programLocation", V2P(NewCharacterString)),
+		NewOptionalProperty("instanceOf", V2P(NewCharacterString)),
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewOptionalProperty("reliability", V2P(NewReliability)),
+		NewReadableProperty("outOfService", V2P(NewBoolean)),
+		NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
+		NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
+		NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("notifyType", V2P(NewNotifyType)),
+		NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
+		NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	p.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, p)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return p, nil
 }

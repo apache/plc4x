@@ -28,19 +28,15 @@ import (
 
 type CurrentPropertyListMixIn struct {
 	Object
-
-	properties []Property
 }
 
-func NewCurrentPropertyListMixIn(kwArgs KWArgs, options ...Option) (*CurrentPropertyListMixIn, error) {
-	c := &CurrentPropertyListMixIn{
-
-		properties: []Property{
-			NewCurrentPropertyList(),
-		},
+func NewCurrentPropertyListMixIn(options ...Option) (*CurrentPropertyListMixIn, error) {
+	c := new(CurrentPropertyListMixIn)
+	extraProperties := []Property{
+		NewCurrentPropertyList(),
 	}
 	var err error
-	c.Object, err = NewObject(kwArgs, options...)
+	c.Object, err = NewObject(Combine(options, WithObjectExtraProperties(extraProperties))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating object")
 	}

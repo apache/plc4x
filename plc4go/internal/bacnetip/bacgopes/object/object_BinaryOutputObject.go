@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,57 +29,60 @@ import (
 
 type BinaryOutputObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewBinaryOutputObject(arg Arg) (*BinaryOutputObject, error) {
-	o := &BinaryOutputObject{
-		objectType:           "binaryOutput",
-		_object_supports_cov: true,
-		properties: []Property{
-			NewWritableProperty("presentValue", V2P(NewBinaryPV)),
-			NewOptionalProperty("deviceType", V2P(NewCharacterString)),
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewReadableProperty("eventState", V2P(NewEventState)),
-			NewOptionalProperty("reliability", V2P(NewReliability)),
-			NewReadableProperty("outOfService", V2P(NewBoolean)),
-			NewReadableProperty("polarity", V2P(NewPolarity)),
-			NewOptionalProperty("inactiveText", V2P(NewCharacterString)),
-			NewOptionalProperty("activeText", V2P(NewCharacterString)),
-			NewOptionalProperty("changeOfStateTime", V2P(NewDateTime)),
-			NewOptionalProperty("changeOfStateCount", V2P(NewUnsigned)),
-			NewOptionalProperty("timeOfStateCountReset", V2P(NewDateTime)),
-			NewOptionalProperty("elapsedActiveTime", V2P(NewUnsigned)),
-			NewOptionalProperty("timeOfActiveTimeReset", V2P(NewDateTime)),
-			NewOptionalProperty("minimumOffTime", V2P(NewUnsigned)),
-			NewOptionalProperty("minimumOnTime", V2P(NewUnsigned)),
-			NewReadableProperty("priorityArray", V2P(NewPriorityArray)),
-			NewReadableProperty("relinquishDefault", V2P(NewBinaryPV)),
-			NewOptionalProperty("timeDelay", V2P(NewUnsigned)),
-			NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
-			NewOptionalProperty("feedbackValue", V2P(NewBinaryPV)),
-			NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("notifyType", V2P(NewNotifyType)),
-			NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
-			NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
-			NewOptionalProperty("eventAlgorithmInhibitRef", V2P(NewObjectPropertyReference)),
-			NewOptionalProperty("eventAlgorithmInhibit", V2P(NewBoolean)),
-			NewOptionalProperty("timeDelayNormal", V2P(NewUnsigned)),
-			NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
-			NewOptionalProperty("interfaceValue", V2P(NewOptionalBinaryPV)),
-			NewOptionalProperty("currentCommandPriority", V2P(NewOptionalUnsigned)),
-			NewOptionalProperty("valueSource", V2P(NewValueSource)),
-			NewOptionalProperty("valueSourceArray", ArrayOfP(NewValueSource, 16, 0)),
-			NewOptionalProperty("lastCommandTime", V2P(NewTimeStamp)),
-			NewOptionalProperty("commandTimeArray", ArrayOfP(NewTimeStamp, 16, 0)),
-			NewOptionalProperty("auditablePriorityFilter", V2P(NewOptionalPriorityFilter)),
-		},
+func NewBinaryOutputObject(options ...Option) (*BinaryOutputObject, error) {
+	b := new(BinaryOutputObject)
+	objectType := "binaryOutput"
+	_object_supports_cov := true
+	properties := []Property{
+		NewWritableProperty("presentValue", V2P(NewBinaryPV)),
+		NewOptionalProperty("deviceType", V2P(NewCharacterString)),
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewReadableProperty("eventState", V2P(NewEventState)),
+		NewOptionalProperty("reliability", V2P(NewReliability)),
+		NewReadableProperty("outOfService", V2P(NewBoolean)),
+		NewReadableProperty("polarity", V2P(NewPolarity)),
+		NewOptionalProperty("inactiveText", V2P(NewCharacterString)),
+		NewOptionalProperty("activeText", V2P(NewCharacterString)),
+		NewOptionalProperty("changeOfStateTime", V2P(NewDateTime)),
+		NewOptionalProperty("changeOfStateCount", V2P(NewUnsigned)),
+		NewOptionalProperty("timeOfStateCountReset", V2P(NewDateTime)),
+		NewOptionalProperty("elapsedActiveTime", V2P(NewUnsigned)),
+		NewOptionalProperty("timeOfActiveTimeReset", V2P(NewDateTime)),
+		NewOptionalProperty("minimumOffTime", V2P(NewUnsigned)),
+		NewOptionalProperty("minimumOnTime", V2P(NewUnsigned)),
+		NewReadableProperty("priorityArray", V2P(NewPriorityArray)),
+		NewReadableProperty("relinquishDefault", V2P(NewBinaryPV)),
+		NewOptionalProperty("timeDelay", V2P(NewUnsigned)),
+		NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
+		NewOptionalProperty("feedbackValue", V2P(NewBinaryPV)),
+		NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("notifyType", V2P(NewNotifyType)),
+		NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
+		NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
+		NewOptionalProperty("eventAlgorithmInhibitRef", V2P(NewObjectPropertyReference)),
+		NewOptionalProperty("eventAlgorithmInhibit", V2P(NewBoolean)),
+		NewOptionalProperty("timeDelayNormal", V2P(NewUnsigned)),
+		NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
+		NewOptionalProperty("interfaceValue", V2P(NewOptionalBinaryPV)),
+		NewOptionalProperty("currentCommandPriority", V2P(NewOptionalUnsigned)),
+		NewOptionalProperty("valueSource", V2P(NewValueSource)),
+		NewOptionalProperty("valueSourceArray", ArrayOfP(NewValueSource, 16, 0)),
+		NewOptionalProperty("lastCommandTime", V2P(NewTimeStamp)),
+		NewOptionalProperty("commandTimeArray", ArrayOfP(NewTimeStamp, 16, 0)),
+		NewOptionalProperty("auditablePriorityFilter", V2P(NewOptionalPriorityFilter)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	b.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties), WithObjectSupportsCov(_object_supports_cov))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, b)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return b, nil
 }

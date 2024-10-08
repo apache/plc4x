@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,40 +29,43 @@ import (
 
 type TimePatternValueObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewTimePatternValueObject(arg Arg) (*TimePatternValueObject, error) {
-	o := &TimePatternValueObject{
-		objectType:           "timePatternValue",
-		_object_supports_cov: true,
-		properties: []Property{
-			NewReadableProperty("presentValue", Vs2P(NewTime)),
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewOptionalProperty("eventState", V2P(NewEventState)),
-			NewOptionalProperty("reliability", V2P(NewReliability)),
-			NewOptionalProperty("outOfService", V2P(NewBoolean)),
-			NewOptionalProperty("priorityArray", V2P(NewPriorityArray)),
-			NewOptionalProperty("relinquishDefault", Vs2P(NewTime)),
-			NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
-			NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
-			NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
-			NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("notifyType", V2P(NewNotifyType)),
-			NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
-			NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("currentCommandPriority", V2P(NewOptionalUnsigned)),
-			NewOptionalProperty("valueSource", V2P(NewValueSource)),
-			NewOptionalProperty("valueSourceArray", ArrayOfP(NewValueSource, 16, 0)),
-			NewOptionalProperty("lastCommandTime", V2P(NewTimeStamp)),
-			NewOptionalProperty("commandTimeArray", ArrayOfP(NewTimeStamp, 16, 0)),
-			NewOptionalProperty("auditablePriorityFilter", V2P(NewOptionalPriorityFilter)),
-		},
+func NewTimePatternValueObject(options ...Option) (*TimePatternValueObject, error) {
+	t := new(TimePatternValueObject)
+	objectType := "timePatternValue"
+	_object_supports_cov := true
+	properties := []Property{
+		NewReadableProperty("presentValue", Vs2P(NewTime)),
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewOptionalProperty("eventState", V2P(NewEventState)),
+		NewOptionalProperty("reliability", V2P(NewReliability)),
+		NewOptionalProperty("outOfService", V2P(NewBoolean)),
+		NewOptionalProperty("priorityArray", V2P(NewPriorityArray)),
+		NewOptionalProperty("relinquishDefault", Vs2P(NewTime)),
+		NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
+		NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
+		NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
+		NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("notifyType", V2P(NewNotifyType)),
+		NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
+		NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("currentCommandPriority", V2P(NewOptionalUnsigned)),
+		NewOptionalProperty("valueSource", V2P(NewValueSource)),
+		NewOptionalProperty("valueSourceArray", ArrayOfP(NewValueSource, 16, 0)),
+		NewOptionalProperty("lastCommandTime", V2P(NewTimeStamp)),
+		NewOptionalProperty("commandTimeArray", ArrayOfP(NewTimeStamp, 16, 0)),
+		NewOptionalProperty("auditablePriorityFilter", V2P(NewOptionalPriorityFilter)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	t.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties), WithObjectSupportsCov(_object_supports_cov))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, t)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return t, nil
 }

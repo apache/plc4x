@@ -19,10 +19,26 @@
 
 package comp
 
-type MissingRequiredParameter struct {
+type TypeError struct {
 	Message string
 }
 
-func (m MissingRequiredParameter) Error() string {
+func (m TypeError) Error() string {
+	return m.Message
+}
+
+type ValueError struct {
+	Message string
+}
+
+func (m ValueError) Error() string {
+	return m.Message
+}
+
+type Exception struct {
+	Message string
+}
+
+func (m Exception) Error() string {
 	return m.Message
 }

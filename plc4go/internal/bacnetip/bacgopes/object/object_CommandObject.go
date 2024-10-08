@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,35 +29,38 @@ import (
 
 type CommandObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewCommandObject(arg Arg) (*CommandObject, error) {
-	o := &CommandObject{
-		objectType: "command",
-		properties: []Property{
-			NewWritableProperty("presentValue", V2P(NewUnsigned)),
-			NewReadableProperty("inProcess", V2P(NewBoolean)),
-			NewReadableProperty("allWritesSuccessful", V2P(NewBoolean)),
-			NewReadableProperty("action", ArrayOfP(NewActionList, 0, 0)),
-			NewOptionalProperty("actionText", ArrayOfP(NewCharacterString, 0, 0)),
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewOptionalProperty("eventState", V2P(NewEventState)),
-			NewOptionalProperty("reliability", V2P(NewReliability)),
-			NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
-			NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
-			NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("notifyType", V2P(NewNotifyType)),
-			NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
-			NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
-			NewOptionalProperty("valueSource", V2P(NewValueSource)),
-		},
+func NewCommandObject(options ...Option) (*CommandObject, error) {
+	c := new(CommandObject)
+	objectType := "command"
+	properties := []Property{
+		NewWritableProperty("presentValue", V2P(NewUnsigned)),
+		NewReadableProperty("inProcess", V2P(NewBoolean)),
+		NewReadableProperty("allWritesSuccessful", V2P(NewBoolean)),
+		NewReadableProperty("action", ArrayOfP(NewActionList, 0, 0)),
+		NewOptionalProperty("actionText", ArrayOfP(NewCharacterString, 0, 0)),
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewOptionalProperty("eventState", V2P(NewEventState)),
+		NewOptionalProperty("reliability", V2P(NewReliability)),
+		NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
+		NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
+		NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("notifyType", V2P(NewNotifyType)),
+		NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
+		NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
+		NewOptionalProperty("valueSource", V2P(NewValueSource)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	c.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, c)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return c, nil
 }

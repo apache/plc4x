@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,28 +29,31 @@ import (
 
 type NetworkSecurityObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewNetworkSecurityObject(arg Arg) (*NetworkSecurityObject, error) {
-	o := &NetworkSecurityObject{
-		objectType: "networkSecurity",
-		properties: []Property{
-			NewWritableProperty("baseDeviceSecurityPolicy", V2P(NewSecurityLevel)),
-			NewWritableProperty("networkAccessSecurityPolicies", ArrayOfP(NewNetworkSecurityPolicy, 0, 0)),
-			NewWritableProperty("securityTimeWindow", V2P(NewUnsigned)),
-			NewWritableProperty("packetReorderTime", V2P(NewUnsigned)),
-			NewReadableProperty("distributionKeyRevision", V2P(NewUnsigned)),
-			NewReadableProperty("keySets", ArrayOfP(NewSecurityKeySet, 0, 0)),
-			NewWritableProperty("lastKeyServer", V2P(NewAddressBinding)),
-			NewWritableProperty("securityPDUTimeout", V2P(NewUnsigned)),
-			NewReadableProperty("updateKeySetTimeout", V2P(NewUnsigned)),
-			NewReadableProperty("supportedSecurityAlgorithms", ListOfP(NewUnsigned)),
-			NewWritableProperty("doNotHide", V2P(NewBoolean)),
-		},
+func NewNetworkSecurityObject(options ...Option) (*NetworkSecurityObject, error) {
+	n := new(NetworkSecurityObject)
+	objectType := "networkSecurity"
+	properties := []Property{
+		NewWritableProperty("baseDeviceSecurityPolicy", V2P(NewSecurityLevel)),
+		NewWritableProperty("networkAccessSecurityPolicies", ArrayOfP(NewNetworkSecurityPolicy, 0, 0)),
+		NewWritableProperty("securityTimeWindow", V2P(NewUnsigned)),
+		NewWritableProperty("packetReorderTime", V2P(NewUnsigned)),
+		NewReadableProperty("distributionKeyRevision", V2P(NewUnsigned)),
+		NewReadableProperty("keySets", ArrayOfP(NewSecurityKeySet, 0, 0)),
+		NewWritableProperty("lastKeyServer", V2P(NewAddressBinding)),
+		NewWritableProperty("securityPDUTimeout", V2P(NewUnsigned)),
+		NewReadableProperty("updateKeySetTimeout", V2P(NewUnsigned)),
+		NewReadableProperty("supportedSecurityAlgorithms", ListOfP(NewUnsigned)),
+		NewWritableProperty("doNotHide", V2P(NewBoolean)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	n.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, n)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return n, nil
 }
