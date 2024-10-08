@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,46 +29,49 @@ import (
 
 type BitStringValueObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewBitStringValueObject(arg Arg) (*BitStringValueObject, error) {
-	o := &BitStringValueObject{
-		objectType: "bitstringValue",
-		properties: []Property{
-			NewReadableProperty("presentValue", Vs2P(NewBitString)),
-			NewOptionalProperty("bitText", ArrayOfP(NewCharacterString, 0, 0)),
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewOptionalProperty("eventState", V2P(NewEventState)),
-			NewOptionalProperty("reliability", V2P(NewReliability)),
-			NewOptionalProperty("outOfService", V2P(NewBoolean)),
-			NewOptionalProperty("priorityArray", V2P(NewPriorityArray)),
-			NewOptionalProperty("relinquishDefault", Vs2P(NewBitString)),
-			NewOptionalProperty("timeDelay", V2P(NewUnsigned)),
-			NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
-			NewOptionalProperty("alarmValues", ArrayOfPs(NewBitString, 0, 0)),
-			NewOptionalProperty("bitMask", Vs2P(NewBitString)),
-			NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("notifyType", V2P(NewNotifyType)),
-			NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
-			NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
-			NewOptionalProperty("eventAlgorithmInhibitRef", V2P(NewObjectPropertyReference)),
-			NewOptionalProperty("eventAlgorithmInhibit", V2P(NewBoolean)),
-			NewOptionalProperty("timeDelayNormal", V2P(NewUnsigned)),
-			NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
-			NewOptionalProperty("currentCommandPriority", V2P(NewOptionalUnsigned)),
-			NewOptionalProperty("valueSource", V2P(NewValueSource)),
-			NewOptionalProperty("valueSourceArray", ArrayOfP(NewValueSource, 16, 0)),
-			NewOptionalProperty("lastCommandTime", V2P(NewTimeStamp)),
-			NewOptionalProperty("commandTimeArray", ArrayOfP(NewTimeStamp, 16, 0)),
-			NewOptionalProperty("auditablePriorityFilter", V2P(NewOptionalPriorityFilter)),
-		},
+func NewBitStringValueObject(options ...Option) (*BitStringValueObject, error) {
+	b := new(BitStringValueObject)
+	objectType := "bitstringValue"
+	properties := []Property{
+		NewReadableProperty("presentValue", Vs2P(NewBitString)),
+		NewOptionalProperty("bitText", ArrayOfP(NewCharacterString, 0, 0)),
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewOptionalProperty("eventState", V2P(NewEventState)),
+		NewOptionalProperty("reliability", V2P(NewReliability)),
+		NewOptionalProperty("outOfService", V2P(NewBoolean)),
+		NewOptionalProperty("priorityArray", V2P(NewPriorityArray)),
+		NewOptionalProperty("relinquishDefault", Vs2P(NewBitString)),
+		NewOptionalProperty("timeDelay", V2P(NewUnsigned)),
+		NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
+		NewOptionalProperty("alarmValues", ArrayOfPs(NewBitString, 0, 0)),
+		NewOptionalProperty("bitMask", Vs2P(NewBitString)),
+		NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("notifyType", V2P(NewNotifyType)),
+		NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
+		NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
+		NewOptionalProperty("eventAlgorithmInhibitRef", V2P(NewObjectPropertyReference)),
+		NewOptionalProperty("eventAlgorithmInhibit", V2P(NewBoolean)),
+		NewOptionalProperty("timeDelayNormal", V2P(NewUnsigned)),
+		NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
+		NewOptionalProperty("currentCommandPriority", V2P(NewOptionalUnsigned)),
+		NewOptionalProperty("valueSource", V2P(NewValueSource)),
+		NewOptionalProperty("valueSourceArray", ArrayOfP(NewValueSource, 16, 0)),
+		NewOptionalProperty("lastCommandTime", V2P(NewTimeStamp)),
+		NewOptionalProperty("commandTimeArray", ArrayOfP(NewTimeStamp, 16, 0)),
+		NewOptionalProperty("auditablePriorityFilter", V2P(NewOptionalPriorityFilter)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	b.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, b)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return b, nil
 }

@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,37 +29,40 @@ import (
 
 type AuditReporterObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewAuditReporterObject(arg Arg) (*AuditReporterObject, error) {
-	o := &AuditReporterObject{
-		objectType: "auditReporter",
-		properties: []Property{
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewOptionalProperty("reliability", V2P(NewReliability)),
-			NewReadableProperty("eventState", V2P(NewEventState)),
-			NewReadableProperty("auditLevel", V2P(NewAuditLevel)),
-			NewReadableProperty("auditSourceReporter", V2P(NewBoolean)),
-			NewReadableProperty("auditableOperations", V2P(NewAuditOperationFlags)),
-			NewReadableProperty("auditablePriorityFilter", V2P(NewPriorityFilter)),
-			NewReadableProperty("issueConfirmedNotifications", V2P(NewBoolean)),
-			NewOptionalProperty("monitoredObjects", ArrayOfP(NewObjectSelector, 0, 0)),
-			NewOptionalProperty("maximumSendDelay", V2P(NewUnsigned)),
-			NewOptionalProperty("sendNow", V2P(NewBoolean)),
-			NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
-			NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
-			NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("notifyType", V2P(NewNotifyType)),
-			NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
-			NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
-		},
+func NewAuditReporterObject(options ...Option) (*AuditReporterObject, error) {
+	a := new(AuditReporterObject)
+	objectType := "auditReporter"
+	properties := []Property{
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewOptionalProperty("reliability", V2P(NewReliability)),
+		NewReadableProperty("eventState", V2P(NewEventState)),
+		NewReadableProperty("auditLevel", V2P(NewAuditLevel)),
+		NewReadableProperty("auditSourceReporter", V2P(NewBoolean)),
+		NewReadableProperty("auditableOperations", V2P(NewAuditOperationFlags)),
+		NewReadableProperty("auditablePriorityFilter", V2P(NewPriorityFilter)),
+		NewReadableProperty("issueConfirmedNotifications", V2P(NewBoolean)),
+		NewOptionalProperty("monitoredObjects", ArrayOfP(NewObjectSelector, 0, 0)),
+		NewOptionalProperty("maximumSendDelay", V2P(NewUnsigned)),
+		NewOptionalProperty("sendNow", V2P(NewBoolean)),
+		NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
+		NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
+		NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("notifyType", V2P(NewNotifyType)),
+		NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
+		NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	a.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, a)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return a, nil
 }

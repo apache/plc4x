@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,26 +29,28 @@ import (
 
 type AccessRightsObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewAccessRightsObject(arg Arg) (*AccessRightsObject, error) {
-	o := &AccessRightsObject{
-		objectType: "accessRights",
-		properties: []Property{
-			NewWritableProperty("globalIdentifier", V2P(NewUnsigned)),
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewReadableProperty("reliability", V2P(NewReliability)),
-			NewReadableProperty("enable", V2P(NewBoolean)),
-			NewReadableProperty("negativeAccessRules", ArrayOfP(NewAccessRule, 0, 0)),
-			NewReadableProperty("positiveAccessRules", ArrayOfP(NewAccessRule, 0, 0)),
-			NewOptionalProperty("accompaniment", V2P(NewDeviceObjectReference)),
-			NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
-		},
+func NewAccessRightsObject(options ...Option) (*AccessRightsObject, error) {
+	a := new(AccessRightsObject)
+	objectType := "accessRights"
+	properties := []Property{
+		NewWritableProperty("globalIdentifier", V2P(NewUnsigned)),
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewReadableProperty("reliability", V2P(NewReliability)),
+		NewReadableProperty("enable", V2P(NewBoolean)),
+		NewReadableProperty("negativeAccessRules", ArrayOfP(NewAccessRule, 0, 0)),
+		NewReadableProperty("positiveAccessRules", ArrayOfP(NewAccessRule, 0, 0)),
+		NewOptionalProperty("accompaniment", V2P(NewDeviceObjectReference)),
+		NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
 	}
-	return o, nil
+	var err error
+	a.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, a)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return a, nil
 }
-
-// TODO: @register_object_type

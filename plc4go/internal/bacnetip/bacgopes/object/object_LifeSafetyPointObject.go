@@ -20,6 +20,8 @@
 package object
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
@@ -27,52 +29,55 @@ import (
 
 type LifeSafetyPointObject struct {
 	Object
-	objectType           string // TODO: migrateme
-	properties           []Property
-	_object_supports_cov bool
 }
 
-func NewLifeSafetyPointObject(arg Arg) (*LifeSafetyPointObject, error) {
-	o := &LifeSafetyPointObject{
-		objectType:           "lifeSafetyPoint",
-		_object_supports_cov: true,
-		properties: []Property{
-			NewReadableProperty("presentValue", V2P(NewLifeSafetyState)),
-			NewReadableProperty("trackingValue", V2P(NewLifeSafetyState)),
-			NewOptionalProperty("deviceType", V2P(NewCharacterString)),
-			NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
-			NewReadableProperty("eventState", V2P(NewEventState)),
-			NewReadableProperty("reliability", V2P(NewReliability)),
-			NewReadableProperty("outOfService", V2P(NewBoolean)),
-			NewWritableProperty("mode", V2P(NewLifeSafetyMode)),
-			NewReadableProperty("acceptedModes", ListOfP(NewLifeSafetyMode)),
-			NewOptionalProperty("timeDelay", V2P(NewUnsigned)),
-			NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
-			NewOptionalProperty("lifeSafetyAlarmValues", ListOfP(NewLifeSafetyState)),
-			NewOptionalProperty("alarmValues", ListOfP(NewLifeSafetyState)),
-			NewOptionalProperty("faultValues", ListOfP(NewLifeSafetyState)),
-			NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
-			NewOptionalProperty("notifyType", V2P(NewNotifyType)),
-			NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
-			NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
-			NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
-			NewOptionalProperty("eventAlgorithmInhibitRef", V2P(NewObjectPropertyReference)),
-			NewOptionalProperty("eventAlgorithmInhibit", V2P(NewBoolean)),
-			NewOptionalProperty("timeDelayNormal", V2P(NewUnsigned)),
-			NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
-			NewReadableProperty("silenced", V2P(NewSilencedState)),
-			NewReadableProperty("operationExpected", V2P(NewLifeSafetyOperation)),
-			NewOptionalProperty("maintenanceRequired", V2P(NewMaintenance)),
-			NewOptionalProperty("setting", V2P(NewUnsigned)),
-			NewOptionalProperty("directReading", V2P(NewReal)),
-			NewOptionalProperty("units", V2P(NewEngineeringUnits)),
-			NewOptionalProperty("memberOf", ListOfP(NewDeviceObjectReference)),
-			NewOptionalProperty("floorNumber", V2P(NewUnsigned8)),
-			NewOptionalProperty("valueSource", V2P(NewValueSource)),
-		},
+func NewLifeSafetyPointObject(options ...Option) (*LifeSafetyPointObject, error) {
+	l := new(LifeSafetyPointObject)
+	objectType := "lifeSafetyPoint"
+	_object_supports_cov := true
+	properties := []Property{
+		NewReadableProperty("presentValue", V2P(NewLifeSafetyState)),
+		NewReadableProperty("trackingValue", V2P(NewLifeSafetyState)),
+		NewOptionalProperty("deviceType", V2P(NewCharacterString)),
+		NewReadableProperty("statusFlags", V2P(NewStatusFlags)),
+		NewReadableProperty("eventState", V2P(NewEventState)),
+		NewReadableProperty("reliability", V2P(NewReliability)),
+		NewReadableProperty("outOfService", V2P(NewBoolean)),
+		NewWritableProperty("mode", V2P(NewLifeSafetyMode)),
+		NewReadableProperty("acceptedModes", ListOfP(NewLifeSafetyMode)),
+		NewOptionalProperty("timeDelay", V2P(NewUnsigned)),
+		NewOptionalProperty("notificationClass", V2P(NewUnsigned)),
+		NewOptionalProperty("lifeSafetyAlarmValues", ListOfP(NewLifeSafetyState)),
+		NewOptionalProperty("alarmValues", ListOfP(NewLifeSafetyState)),
+		NewOptionalProperty("faultValues", ListOfP(NewLifeSafetyState)),
+		NewOptionalProperty("eventEnable", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("ackedTransitions", V2P(NewEventTransitionBits)),
+		NewOptionalProperty("notifyType", V2P(NewNotifyType)),
+		NewOptionalProperty("eventTimeStamps", ArrayOfP(NewTimeStamp, 3, 0)),
+		NewOptionalProperty("eventMessageTexts", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventMessageTextsConfig", ArrayOfP(NewCharacterString, 3, 0)),
+		NewOptionalProperty("eventDetectionEnable", V2P(NewBoolean)),
+		NewOptionalProperty("eventAlgorithmInhibitRef", V2P(NewObjectPropertyReference)),
+		NewOptionalProperty("eventAlgorithmInhibit", V2P(NewBoolean)),
+		NewOptionalProperty("timeDelayNormal", V2P(NewUnsigned)),
+		NewOptionalProperty("reliabilityEvaluationInhibit", V2P(NewBoolean)),
+		NewReadableProperty("silenced", V2P(NewSilencedState)),
+		NewReadableProperty("operationExpected", V2P(NewLifeSafetyOperation)),
+		NewOptionalProperty("maintenanceRequired", V2P(NewMaintenance)),
+		NewOptionalProperty("setting", V2P(NewUnsigned)),
+		NewOptionalProperty("directReading", V2P(NewReal)),
+		NewOptionalProperty("units", V2P(NewEngineeringUnits)),
+		NewOptionalProperty("memberOf", ListOfP(NewDeviceObjectReference)),
+		NewOptionalProperty("floorNumber", V2P(NewUnsigned8)),
+		NewOptionalProperty("valueSource", V2P(NewValueSource)),
 	}
-	// TODO: @register_object_type
-	return o, nil
+	var err error
+	l.Object, err = NewObject(Combine(options, WithObjectType(objectType), WithObjectExtraProperties(properties), WithObjectSupportsCov(_object_supports_cov))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	if _, err := RegisterObjectType(NKW(KWCls, l)); err != nil {
+		return nil, errors.Wrap(err, "error registering object type")
+	}
+	return l, nil
 }

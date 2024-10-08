@@ -26,6 +26,7 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/errors"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
@@ -121,7 +122,7 @@ func (s *NameValue) Decode(arg Arg) error {
 	// look for the context encoded character string
 	tag := tagList.Peek()
 	if tag == nil || (tag.GetTagClass() != readWriteModel.TagClass_CONTEXT_SPECIFIC_TAGS) || (tag.GetTagNumber() != 0) {
-		return MissingRequiredParameter{Message: fmt.Sprintf("%s is a missing required element of %p", s.name, s)}
+		return MissingRequiredParameter{RejectException{Exception: Exception{Message: fmt.Sprintf("%s is a missing required element of %p", s.name, s)}}}
 	}
 
 	// pop it off and save the value
