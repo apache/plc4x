@@ -41,6 +41,9 @@ func GetLicenseFileContent(licenseFileName string, verbose bool) []byte {
 		}
 		licenseFileNameWithPath = filepath.Join(currentDir, licenseFileName)
 		if _, err := os.Stat(licenseFileNameWithPath); errors.Is(err, os.ErrNotExist) {
+			if currentDir == "/" {
+				return nil
+			}
 			// path/to/whatever does not exist
 			currentDir = filepath.Join(currentDir, "..")
 			continue
